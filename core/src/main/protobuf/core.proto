@@ -1,0 +1,9 @@
+syntax = "proto2";
+
+import "scalapb/scalapb.proto";
+
+option (scalapb.options) = {
+  import: "net.glorat.dlcrypto.encode._"
+  package_name: "com.gainstrack.core.messages"
+  flat_package: true
+};

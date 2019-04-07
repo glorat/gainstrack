@@ -1,0 +1,17 @@
+*.class
+*.log
+target/
+lib_managed/
+.scala_dependencies
+.project
+.classpath
+.cache
+.idea
+
+.settings
+.cache-main
+.cache-tests
+.DS_Store
+eventstore
+dlcrypto
+dlstore
