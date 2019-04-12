@@ -10,10 +10,10 @@ import AssetType._
 class First extends FlatSpec {
 
   val equity = AccountCreation(
+    LocalDate.parse("2010-01-01"),
     AccountKey(
       name = "Equity",
-      accountType = "Equity",
-      assetId = AssetId(Currency, "GBP")
+      assetId = AssetId( "GBP")
     ),
     assetNonStdScu = None,
     code = "",
@@ -23,10 +23,10 @@ class First extends FlatSpec {
   )
 
   val asset = AccountCreation(
+    LocalDate.parse("2010-01-01"),
     AccountKey.apply(
       name = "Assets",
-      accountType = "Asset",
-      assetId = AssetId(Currency, "GBP")
+      assetId = AssetId( "GBP")
     ),
     assetNonStdScu = None,
     code = "",
@@ -37,11 +37,10 @@ class First extends FlatSpec {
 
 
   val hkhkd = AccountCreation(
+    LocalDate.parse("2010-01-01"),
     AccountKey.apply(
-      "HSBC HK",
-      "Asset",
-      AssetId(Currency, "HKD"),
-      asset.guid
+      "Assets:HSBC HK",
+      AssetId( "HKD")
     ),
     assetNonStdScu = None,
     code = "",
@@ -51,11 +50,10 @@ class First extends FlatSpec {
   )
 
   val hkusd = AccountCreation(
+    LocalDate.parse("2010-01-01"),
     AccountKey(
-      name = "HSBC US",
-      accountType = "Asset",
-      assetId = AssetId(Currency, "USD"),
-      parentGuid = asset.guid
+      name = "Assets:HSBC US",
+      assetId = AssetId( "USD")
     ),
     assetNonStdScu = None,
     code = "",
@@ -70,9 +68,9 @@ class First extends FlatSpec {
     dest = hkusd.guid,
     date = LocalDate.parse("2019-01-02"),
     sourceValue = 40000,
-    sourceCurrency = AssetId(Currency, "HKD"),
+    sourceCurrency = AssetId( "HKD"),
     targetValue = 5084.91,
-    targetCurrency = AssetId(Currency, "USD")
+    targetCurrency = AssetId( "USD")
   )
 
   val bohkd = BalanceObservation(
@@ -80,7 +78,7 @@ class First extends FlatSpec {
     accountId = hkhkd.guid,
     date = LocalDate.parse("2019-01-01"), // post or enter?
     value = 138668.37,
-    currency = AssetId(Currency, "HKD")
+    currency = AssetId( "HKD")
   )
 
   val bohkd2 = BalanceObservation(
@@ -88,7 +86,7 @@ class First extends FlatSpec {
     accountId = hkhkd.guid,
     date = LocalDate.parse("2014-01-04"), // post or enter?
     value = 33030.33,
-    currency = AssetId(Currency, "HKD")
+    currency = AssetId( "HKD")
   )
 
   "transfer" should "calc fx rate" in {

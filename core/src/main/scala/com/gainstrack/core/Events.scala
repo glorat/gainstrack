@@ -1,6 +1,7 @@
 package com.gainstrack.core
 
 import net.glorat.cqrs.DomainEvent
+import spire.math.SafeLong
 
 trait CommodityDB {
 
@@ -17,12 +18,18 @@ object AssetType  extends Enumeration {
   val Ticker, ISIN, CUSIP, Currency, User = Value
 }
 
-import AssetType.AssetType
+object AccountType extends Enumeration {
+  type AccountType = Value
+  val Assets,
+  Liabilities,
+  Equity,
+  Income,
+  Expenses = Value
+}
 
-case class AssetId(
-                      namespace: AssetType,
-                      symbol: String
-                      )
+//import AssetType.AssetType
+
+case class AssetId(symbol: String)
 
 case class Commodity (
   guid: GUID,
@@ -34,24 +41,25 @@ case class Commodity (
 )
 
 case class AccountKey(
-                       guid : GUID,
+                       guid : AccountId,
                        name: String,
-                       accountType: String,
-                       assetId: AssetId,
-                       parentGuid: Option[GUID]
-                     )
-
-object AccountKey {
-  def apply(name:String, accountType:String, assetId:AssetId) : AccountKey = {
-    AccountKey(java.util.UUID.randomUUID(), name, accountType, assetId, None)
+                       assetId: AssetId
+                     ) {
+  def inferAccountType: String = {
+    name.split(':').head
   }
 
-  def apply(name:String, accountType:String, assetId:AssetId, parentGuid:GUID) : AccountKey = {
-    AccountKey(java.util.UUID.randomUUID(), name, accountType, assetId, Some(parentGuid))
+  AccountType.withName(inferAccountType)
+}
+
+object AccountKey {
+  def apply(name:String, assetId:AssetId) : AccountKey = {
+    AccountKey(java.util.UUID.randomUUID(), name, assetId)
   }
 }
 
 case class AccountCreation (
+                           date: LocalDate,
                            key: AccountKey,
                              assetNonStdScu: Option[Int],
                              code:String,
@@ -61,7 +69,6 @@ case class AccountCreation (
                            ) extends AccountEvent {
   def guid = key.guid
   def accountId = guid
-  def date = MinDate // First event for account
 }
 
 case class BalanceObservation (
@@ -89,26 +96,41 @@ case class Transfer(
 }
 
 case class Transaction (
-                      id: GUID,
-                      currency: GUID,
-                      num: String,
                        /** Business time */
-                      postDate: ZonedDateTime,
+                      postDate: LocalDate,
+                       description: String,
+                       postings: Seq[Posting],
                        /** System time */
-                      enterDate: LocalDate,
-                      description: String,
-                      splits: Seq[Split]
+                      enterDate: ZonedDateTime
+
                     ) {
+  require(postings.length>=2, "A transaction must have at least 2 postings")
+  def filledPostings: Seq[Posting] = {
+    // Logic allows one post to have no amount
+    val idx = postings.indexWhere(p => p.isEmpty)
+    val ret = if (idx == -1) {
+      postings
+    }
+    else {
+      val firstPost = postings.head
+      val zero = firstPost.weight.value*0 // Hmm...
+      val weight : Fraction = postings.map(p=>p.weight.value).foldLeft(zero)((a:Fraction,b:Fraction)=>a+b)
+      val newPost = postings(idx).copy(value = Some(Balance(-weight, firstPost.weight.ccy)))
+      postings.updated(idx,newPost)
+    }
+    require(!ret.exists(p => p.isEmpty), "No more than one posting can be empty")
+    ret
+  }
   //require(splits.map(_.value).sum == 0, "Total value of splits must be zero")
 }
 
 object Transaction {
-  def simple(currency:GUID, enterDate: LocalDate): Transaction = {
+  def simple(postDate: LocalDate): Transaction = {
     val id = java.util.UUID.randomUUID()
     val src = ???
     val dest = ???
-    val splits : Seq[Split] = Seq(src, dest)
-    Transaction(id, currency, "", now(), enterDate, "", splits)
+    val splits : Seq[Posting] = Seq(src, dest)
+    Transaction( postDate,"", splits, now())
   }
 }
 
@@ -119,5 +141,84 @@ case class Split (
                  action: String,
                  value: Fraction,
                  quantity: Fraction
-
                  )
+
+case class Balance(value:Fraction, ccy:AssetId) {
+  private val errmsg = "Balance can only combine single currency"
+
+  def +(rhs: Balance): Balance = {
+    require(rhs.ccy == this.ccy, errmsg)
+    Balance(value + rhs.value, ccy)
+  }
+
+  def -(rhs: Balance): Balance = {
+    require(rhs.ccy == this.ccy, errmsg)
+    Balance(value - rhs.value, ccy)
+  }
+
+  def *(rhs: Balance): Balance = {
+    require(rhs.ccy == this.ccy, errmsg)
+    Balance(value * rhs.value, ccy)
+  }
+
+  def /(rhs: Balance): Balance = {
+    require(rhs.ccy == this.ccy, errmsg)
+    Balance(value / rhs.value, ccy)
+  }
+
+  def +(rhs:Fraction): Balance = Balance(value + rhs, ccy)
+  def -(rhs:Fraction): Balance = Balance(value - rhs, ccy)
+  def *(rhs:Fraction): Balance = Balance(value * rhs, ccy)
+  def /(rhs:Fraction): Balance = Balance(value / rhs, ccy)
+}
+object Balance {
+  def apply(value:Fraction, ccy:String):Balance = {
+    apply(value.limitDenominatorTo(SafeLong(1000000)), AssetId(ccy))
+  }
+}
+
+case class Posting (
+                   account: String,
+                   value: Option[Balance],
+                   price: Option[Balance], // @ 123 USD
+                   cost: Option[Balance]   // {123 USD}
+
+                   ) {
+  def weight : Balance = {
+    if (cost.isDefined) {
+      cost.get * value.get.value
+    }
+    else if (price.isDefined) {
+      price.get * value.get.value
+    }
+    else if (value.isDefined) {
+      value.get
+    }
+    else {
+      // Elided value from tx
+      Balance(0, AssetId("USD"))
+    }
+  }
+
+  def isEmpty:Boolean = value.isEmpty // Needs eliding
+}
+object Posting {
+  def apply(account:String):Posting = {
+    // Expects interpolation
+    apply(account, None,None,None)
+  }
+  def apply(account:String, value:Balance):Posting = {
+    apply(account, Some(value), None, None)
+  }
+  def apply(account:String, value:Balance, price:Balance):Posting = {
+    apply(account, Some(value), Some(price), None)
+  }
+
+  def withCost(account:String, value:Balance, cost:Balance):Posting = {
+    apply(account, Some(value), None, Some(cost))
+  }
+
+  def withCostAndPrice(account:String, value:Balance, cost:Balance, price:Balance):Posting = {
+    apply(account, Some(value), Some(price), Some(cost))
+  }
+}
