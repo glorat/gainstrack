@@ -67,10 +67,8 @@ class First extends FlatSpec {
     source = hkhkd.guid,
     dest = hkusd.guid,
     date = LocalDate.parse("2019-01-02"),
-    sourceValue = 40000,
-    sourceCurrency = AssetId( "HKD"),
-    targetValue = 5084.91,
-    targetCurrency = AssetId( "USD")
+    sourceValue = Balance(40000,"HKD"),
+    targetValue = Balance(5084.91, "USD")
   )
 
   val bohkd = BalanceObservation(
@@ -94,5 +92,6 @@ class First extends FlatSpec {
     assert(fx == 0.12712275)
     assert (fx.denominatorIsValidLong)
     //assert ((1/fx) == 7.8664)
+    assert(tx.toTransaction.isBalanced)
   }
 }

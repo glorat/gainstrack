@@ -1,7 +1,7 @@
 package com.gainstrack.core
 
 import net.glorat.cqrs.DomainEvent
-import spire.math.SafeLong
+import spire.math.{Rational, SafeLong}
 
 trait CommodityDB {
 
@@ -85,13 +85,18 @@ case class Transfer(
                    source: AccountId,
                    dest: AccountId,
                    date: LocalDate,
-                   sourceValue: Fraction,
-                   sourceCurrency: AssetId,
-                   targetValue: Fraction,
-                   targetCurrency: AssetId
+                   sourceValue: Balance,
+                   targetValue: Balance
                    ) extends UserExperience {
   def fxRate:Fraction = {
-    targetValue/sourceValue
+    targetValue.value/sourceValue.value
+  }
+
+  def toTransaction : Transaction = {
+    Transaction(date, "", Seq(
+      Posting(source, -sourceValue, Balance(fxRate,targetValue.ccy)),
+      Posting(dest, targetValue)
+    ))
   }
 }
 
@@ -105,7 +110,7 @@ case class Transaction (
 
                     ) {
   require(postings.length>=2, "A transaction must have at least 2 postings")
-  def filledPostings: Seq[Posting] = {
+  lazy val filledPostings: Seq[Posting] = {
     // Logic allows one post to have no amount
     val idx = postings.indexWhere(p => p.isEmpty)
     val ret = if (idx == -1) {
@@ -113,18 +118,26 @@ case class Transaction (
     }
     else {
       val firstPost = postings.head
-      val zero = firstPost.weight.value*0 // Hmm...
-      val weight : Fraction = postings.map(p=>p.weight.value).foldLeft(zero)((a:Fraction,b:Fraction)=>a+b)
+      val weight : Fraction = postings.map(p=>p.weight.value).foldLeft(zeroFraction)((a:Fraction,b:Fraction)=>a+b)
       val newPost = postings(idx).copy(value = Some(Balance(-weight, firstPost.weight.ccy)))
       postings.updated(idx,newPost)
     }
     require(!ret.exists(p => p.isEmpty), "No more than one posting can be empty")
     ret
   }
-  //require(splits.map(_.value).sum == 0, "Total value of splits must be zero")
+
+  lazy val isBalanced : Boolean = {
+    val filled = filledPostings
+    val ccy = filled.head.weight.ccy
+    filled.forall(p => p.weight.ccy == ccy) &&
+      filled.map(_.weight.value).foldLeft(zeroFraction)((a:Fraction,b:Fraction)=>a+b) == 0
+  }
 }
 
 object Transaction {
+  def apply(postDate:LocalDate, description:String, postings:Seq[Posting]) : Transaction = {
+    apply(postDate, description, postings, now())
+  }
   def apply(postDateStr:String, description:String, postings:Seq[Posting]) : Transaction = {
     apply(parseDate(postDateStr), description, postings, now())
   }
@@ -149,6 +162,7 @@ case class Split (
 case class Balance(value:Fraction, ccy:AssetId) {
   private val errmsg = "Balance can only combine single currency"
 
+  override def toString: AccountId = s"${value} ${ccy}"
   def +(rhs: Balance): Balance = {
     require(rhs.ccy == this.ccy, errmsg)
     Balance(value + rhs.value, ccy)
@@ -173,6 +187,7 @@ case class Balance(value:Fraction, ccy:AssetId) {
   def -(rhs:Fraction): Balance = Balance(value - rhs, ccy)
   def *(rhs:Fraction): Balance = Balance(value * rhs, ccy)
   def /(rhs:Fraction): Balance = Balance(value / rhs, ccy)
+  def unary_-(): Balance = Balance(-value, ccy)
 }
 object Balance {
   def apply(value:Fraction, ccy:String):Balance = {
@@ -187,7 +202,7 @@ case class Posting (
                    cost: Option[Balance]   // {123 USD}
 
                    ) {
-  def weight : Balance = {
+  val weight : Balance = {
     if (cost.isDefined) {
       cost.get * value.get.value
     }

@@ -35,8 +35,8 @@ case class ValidationState(id:GUID, accounts:Seq[AccountKey]) extends AggregateR
     val srcAccount = srcAccountOpt.get
     val tgtAccount = tgtAccountOpt.get
 
-    require(srcAccount.assetId == s.sourceCurrency, "Source currency doesn't match")
-    require(tgtAccount.assetId == s.targetCurrency, "Destination currency doesn't match")
+    require(srcAccount.assetId == s.sourceValue.ccy, "Source currency doesn't match")
+    require(tgtAccount.assetId == s.targetValue.ccy, "Destination currency doesn't match")
     // No change in state
     this
   }
