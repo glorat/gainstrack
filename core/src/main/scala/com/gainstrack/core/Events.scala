@@ -9,7 +9,7 @@ trait CommodityDB {
 
 trait UserExperience extends DomainEvent
 trait AccountEvent extends UserExperience {
-  def accountId: GUID
+  def accountId: AccountId
   def date:LocalDate
 }
 
@@ -54,7 +54,7 @@ case class AccountKey(
 
 object AccountKey {
   def apply(name:String, assetId:AssetId) : AccountKey = {
-    AccountKey(java.util.UUID.randomUUID(), name, assetId)
+    AccountKey(name, name, assetId)
   }
 }
 
@@ -73,7 +73,7 @@ case class AccountCreation (
 
 case class BalanceObservation (
                                 id: GUID,
-                                accountId:GUID,
+                                accountId:AccountId,
                                 date: LocalDate, // post or enter?
                                 value: Fraction,
                                 currency: AssetId
@@ -82,8 +82,8 @@ case class BalanceObservation (
 
 case class Transfer(
                    id:GUID,
-                   source: GUID,
-                   dest: GUID,
+                   source: AccountId,
+                   dest: AccountId,
                    date: LocalDate,
                    sourceValue: Fraction,
                    sourceCurrency: AssetId,
@@ -125,6 +125,9 @@ case class Transaction (
 }
 
 object Transaction {
+  def apply(postDateStr:String, description:String, postings:Seq[Posting]) : Transaction = {
+    apply(parseDate(postDateStr), description, postings, now())
+  }
   def simple(postDate: LocalDate): Transaction = {
     val id = java.util.UUID.randomUUID()
     val src = ???

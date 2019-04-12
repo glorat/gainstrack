@@ -25,10 +25,10 @@ class TransactionBalanceTest extends FlatSpec {
     //2012-11-03 * "Transfer to pay credit card"
     //  Assets:MyBank:Checking            -400.00 USD
     //  Liabilities:CreditCard
-    val tx = Transaction(LocalDate.parse("2012-11-03"), "Transfer to pay credit card", Seq(
+    val tx = Transaction("2012-11-03", "Transfer to pay credit card", Seq(
       Posting("Assets:MyBank:Checking", Balance(-400.00, "USD")),
       Posting("Assets:MyBank:Checking")
-    ), ZonedDateTime.now)
+    ))
 
     assert(tx.postings(1).value.isEmpty)
     assert(tx.filledPostings(1).value.get == Balance(400, "USD"))
