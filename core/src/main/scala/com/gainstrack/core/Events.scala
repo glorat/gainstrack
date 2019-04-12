@@ -1,5 +1,7 @@
 package com.gainstrack.core
 
+import java.math.RoundingMode
+
 import net.glorat.cqrs.DomainEvent
 import spire.math.{Rational, SafeLong}
 
@@ -162,7 +164,7 @@ case class Split (
 case class Balance(value:Fraction, ccy:AssetId) {
   private val errmsg = "Balance can only combine single currency"
 
-  override def toString: AccountId = s"${value} ${ccy}"
+  override def toString: AccountId = s"${value.toDouble} ${ccy.symbol}"
   def +(rhs: Balance): Balance = {
     require(rhs.ccy == this.ccy, errmsg)
     Balance(value + rhs.value, ccy)
@@ -219,6 +221,24 @@ case class Posting (
   }
 
   def isEmpty:Boolean = value.isEmpty // Needs eliding
+
+  override def toString: String = {
+    val sb = new StringBuilder
+    sb.append(account)
+
+    if (value.isDefined) {
+      sb.append(" ")
+      sb.append(value.get)
+      if (cost.isDefined) {
+        sb.append(s" {${cost.get}}")
+      }
+      if (price.isDefined) {
+        sb.append(s" @${price.get}")
+      }
+    }
+    sb.toString()
+  }
+
 }
 object Posting {
   def apply(account:String):Posting = {
