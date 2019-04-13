@@ -4,7 +4,6 @@ import java.time.{LocalDate, ZonedDateTime}
 
 import com.gainstrack.core._
 import org.scalatest.FlatSpec
-import AssetType._
 
 class TransactionBalanceTest extends FlatSpec {
 
@@ -41,5 +40,16 @@ class TransactionBalanceTest extends FlatSpec {
 
     assert(tx.postings(1).value.isEmpty)
     assert(tx.filledPostings(1).value.get == Balance(400, "USD"))
+  }
+
+  "Security Purchase" should "balance" in {
+    // 2014-02-11 * "Bought shares of S&P 500"
+    //  Assets:ETrade:IVV                10 IVV {183.07 USD}
+    //  Assets:ETrade:Cash         -1830.70 USD
+    val sp = SecurityPurchase("Assets:Broker", LocalDate.parse("2014-02-11"), Balance(10, "IVV"), Balance(183.07, "USD"))
+    val tx = sp.toTransaction
+    assert(tx.isBalanced)
+    assert(tx.filledPostings(0).toString == "Assets:Broker:USD -1830.7 USD")
+    println(tx)
   }
 }

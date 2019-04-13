@@ -5,7 +5,6 @@ import java.time.LocalDate
 import com.gainstrack.core._
 import org.scalatest.FlatSpec
 
-import AssetType._
 
 class First extends FlatSpec {
 
@@ -39,7 +38,7 @@ class First extends FlatSpec {
   val hkhkd = AccountCreation(
     LocalDate.parse("2010-01-01"),
     AccountKey.apply(
-      "Assets:HSBC HK",
+      "Assets:HSBCHK",
       AssetId( "HKD")
     ),
     assetNonStdScu = None,
@@ -52,8 +51,8 @@ class First extends FlatSpec {
   val hkusd = AccountCreation(
     LocalDate.parse("2010-01-01"),
     AccountKey(
-      name = "Assets:HSBC US",
-      assetId = AssetId( "USD")
+      name = "Assets:HSBCUS",
+      assetId = AssetId("USD")
     ),
     assetNonStdScu = None,
     code = "",
@@ -63,28 +62,23 @@ class First extends FlatSpec {
   )
 
   val tx = Transfer(
-    id = java.util.UUID.randomUUID(),
-    source = hkhkd.guid,
-    dest = hkusd.guid,
+    source = "Assets:HSBCHK",
+    dest = "Assets:HSBCUS",
     date = LocalDate.parse("2019-01-02"),
-    sourceValue = Balance(40000,"HKD"),
-    targetValue = Balance(5084.91, "USD")
+    sourceValue = "40000 HKD",
+    targetValue = "5084.91 USD"
   )
 
   val bohkd = BalanceObservation(
-    id = java.util.UUID.randomUUID(),
-    accountId = hkhkd.guid,
+    accountId = "Assets:HSBCHK",
     date = LocalDate.parse("2019-01-01"), // post or enter?
-    value = 138668.37,
-    currency = AssetId( "HKD")
+    balance = "138668.37 HKD"
   )
 
   val bohkd2 = BalanceObservation(
-    id = java.util.UUID.randomUUID(),
-    accountId = hkhkd.guid,
+    accountId = "Assets:HSBCHK",
     date = LocalDate.parse("2014-01-04"), // post or enter?
-    value = 33030.33,
-    currency = AssetId( "HKD")
+    balance = "33030.33 HKD"
   )
 
   "transfer" should "calc fx rate" in {

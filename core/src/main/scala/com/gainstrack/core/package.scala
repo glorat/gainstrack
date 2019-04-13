@@ -10,5 +10,8 @@ package object core {
   def MinDate : LocalDate = java.time.LocalDate.MIN
   def now(): ZonedDateTime = java.time.ZonedDateTime.now()
   def parseDate(str:String):LocalDate = java.time.LocalDate.parse(str) // TODO: yyyy-mm-dd
+  def parseNumber(str:String): Fraction = spire.math.Rational(BigDecimal(str))
   def zeroFraction:Fraction = spire.math.Rational.zero
+
+  implicit def stringToBalance(str:String) = Balance.parse(str)
 }
