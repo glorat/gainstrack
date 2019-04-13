@@ -38,9 +38,48 @@ object SecurityPurchase extends CommandParser {
 
   def parse(str:String):SecurityPurchase = {
     str match {
-      case re(date, acct, security, cost) => SecurityPurchase(acct, parseDate(date), Balance.parse(security), Balance(0,""))
+      case re(date, acct, security, cost) => SecurityPurchase(acct, parseDate(date), Balance.parse(security), cost)
     }
   }
 
   def apply(str:String) = parse(str)
+}
+
+/** Generates postings based on costs for money transfers */
+case class Transfer(
+                     source: AccountId,
+                     dest: AccountId,
+                     date: LocalDate,
+                     sourceValue: Balance,
+                     targetValue: Balance
+                   ) extends AccountCommand {
+  if (sourceValue.ccy == targetValue.ccy) {
+    require(sourceValue.value == targetValue.value, "Single transfer amount must match (until fees supported")
+  }
+
+  def fxRate:Fraction = {
+    targetValue.value/sourceValue.value
+  }
+
+  def toTransaction : Transaction = {
+    Transaction(date, "", Seq(
+      Posting(source, -sourceValue, Balance(fxRate,targetValue.ccy)),
+      Posting(dest, targetValue)
+    ))
+  }
+
+}
+
+object Transfer extends CommandParser {
+  val prefix = "tfr"
+  import Patterns._
+  private val balanceRe = raw"(\S+ \S+)"
+  private val re =s"${datePattern} ${prefix} ${acctPattern} ${acctPattern} ${balanceRe} ${balanceRe}".r
+
+  override def parse(str: String): Transfer = {
+    str match {
+      case re(date, srcAcct, tgtAcct, srcValue, tgtValue) =>
+        Transfer(srcAcct, tgtAcct, parseDate(date), srcValue, tgtValue)
+    }
+  }
 }

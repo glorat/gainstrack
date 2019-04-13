@@ -10,6 +10,7 @@ case class AccountCreation (
                              placeholder: Boolean
                            ) extends AccountCommand {
   def accountId = key.name
+  def name = key.name
 
   def toBeancount : String = {
     s"${date} open ${key.name} ${key.assetId.symbol}"
@@ -26,7 +27,9 @@ object AccountCreation extends CommandParser {
 
   override def parse(str: String): AccountCreation = {
     str match {
-      case re(date, acct, ccy) => AccountCreation(parseDate(date), AccountKey(acct, AssetId(ccy)), None,"","",false,false)
+      case re(date, acct, ccy) => AccountCreation(parseDate(date), AccountKey(acct, AssetId(ccy)))
     }
   }
+
+  def apply(date:LocalDate, key:AccountKey) : AccountCreation = AccountCreation(date, key, None,"","",false,false)
 }

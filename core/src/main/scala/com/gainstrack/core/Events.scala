@@ -107,31 +107,3 @@ case class BalanceObservation (
 }
 
 
-/** Generates postings based on costs for money transfers */
-case class Transfer(
-                   source: AccountId,
-                   dest: AccountId,
-                   date: LocalDate,
-                   sourceValue: Balance,
-                   targetValue: Balance
-                   ) extends AccountCommand {
-  def fxRate:Fraction = {
-    targetValue.value/sourceValue.value
-  }
-
-  def toTransaction : Transaction = {
-    Transaction(date, "", Seq(
-      Posting(source, -sourceValue, Balance(fxRate,targetValue.ccy)),
-      Posting(dest, targetValue)
-    ))
-  }
-
-}
-
-object Transfer extends CommandParser {
-  val prefix = "tfr"
-
-  override def parse(str: String): Transfer = {
-    ???
-  }
-}

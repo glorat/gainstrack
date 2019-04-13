@@ -8,7 +8,7 @@ class BeancountGenerator extends AggregateRoot {
     "option \"operating_currency\" \"USD\""
   )
   def toBeancount: String = {
-    val lines:Seq[String] = headers ++ getState.accts.map(_.toBeancount) ++ getState.txs
+    val lines:Seq[String] = headers ++ getState.accounts.map(_.toBeancount) ++ getState.txs
     lines.mkString("\n")
   }
 
@@ -21,7 +21,7 @@ class BeancountGenerator extends AggregateRoot {
 
 }
 
-case class BeancountState(id:GUID, accts:Seq[AccountCreation], txs:Seq[String])
+case class BeancountState(id:GUID, accounts:Seq[AccountCreation], txs:Seq[String])
 extends AggregateRootState {
   def handle(e: DomainEvent): AggregateRootState = {
     e match {
@@ -33,7 +33,7 @@ extends AggregateRootState {
   }
 
   private def process(e:AccountCreation):BeancountState = {
-    copy(accts = accts :+ e)
+    copy(accounts = accounts :+ e)
   }
 
   private def process(e:Transfer):BeancountState = {
@@ -41,7 +41,24 @@ extends AggregateRootState {
   }
 
   private def process(e:SecurityPurchase): BeancountState = {
-    copy(txs = txs :+ e.toTransaction.toBeancount)
+
+    var ret = this
+    val baseAcct = accounts.find(x => x.name == e.acct)
+    require(baseAcct.isDefined)
+    if (!accounts.exists(x => x.name == e.srcAcct)) {
+      // Auto vivify sub-accounts of securities account
+      val newAcct = AccountCreation(baseAcct.get.date, AccountKey(e.srcAcct, e.cost.ccy))
+      ret = ret.copy(accounts = ret.accounts :+ newAcct)
+    }
+    if (!accounts.exists(x => x.name == e.secAcct)) {
+      // Auto vivify sub-accounts of securities account
+      val newAcct = AccountCreation(baseAcct.get.date, AccountKey(e.secAcct, e.security.ccy))
+      ret=ret.copy(accounts = ret.accounts :+ newAcct)
+    }
+
+    val newTxs = e.toTransaction.toBeancount
+    ret = ret.copy(txs = ret.txs :+ e.toTransaction.toBeancount )
+    ret
   }
 
   private def process(e:BalanceObservation) = {
