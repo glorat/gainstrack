@@ -9,7 +9,30 @@ trait CommodityDB {
 
 }
 
-trait AccountCommand extends Command
+trait AccountCommand extends Command with DomainEvent with Ordered[AccountCommand] {
+  def date : LocalDate
+
+  // import scala.math.Ordered.orderingToOrdered
+
+  override def compare(that: AccountCommand): Int = {
+    this.toOrderValue.compare(that.toOrderValue)
+  }
+
+  def toOrderValue:Long = {
+    val typeOrder = this match {
+      case _:AccountCreation => 1  // They come first
+
+      case _ => 10
+    }
+
+    val dateOrder = date.toEpochDay
+    // Type then date
+    (typeOrder*1000000) + dateOrder
+  }
+}
+object AccountCommand  {
+
+}
 
 trait CommandParser {
   def parse(str:String) : AccountCommand
@@ -71,7 +94,17 @@ case class BalanceObservation (
                                 accountId:AccountId,
                                 date: LocalDate, // post or enter?
                               balance:Balance
-                              ) extends AccountCommand
+                              ) extends AccountCommand {
+  val relatedAccount : AccountId = {
+    val parts:Seq[String] = accountId.split(":").updated(0,"Equity").toSeq
+    parts.mkString(":")
+  }
+  def toBeancounts : Seq[String] = {
+    val l1 = s"${date.minusDays(1)} pad ${accountId} ${relatedAccount}"
+    val l2 = s"${date} balance ${accountId} ${balance}"
+    Seq(l1,l2)
+  }
+}
 
 
 /** Generates postings based on costs for money transfers */
@@ -92,5 +125,13 @@ case class Transfer(
       Posting(dest, targetValue)
     ))
   }
+
 }
 
+object Transfer extends CommandParser {
+  val prefix = "tfr"
+
+  override def parse(str: String): Transfer = {
+    ???
+  }
+}

@@ -34,12 +34,14 @@ case class Transaction (
       filled.map(_.weight.value).foldLeft(zeroFraction)((a:Fraction,b:Fraction)=>a+b) == 0
   }
 
-  override def toString: AccountId = {
+  def toBeancount: String = {
     val sb = new StringBuilder
     sb.append(postDate.toString).append(" * \"").append(description).append("\"\n")
     filledPostings.foreach(p => sb.append("  ").append(p).append("\n"))
     sb.toString()
   }
+
+  override def toString: String = toBeancount
 }
 
 object Transaction {

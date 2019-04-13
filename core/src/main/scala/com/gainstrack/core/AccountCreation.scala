@@ -10,13 +10,19 @@ case class AccountCreation (
                              placeholder: Boolean
                            ) extends AccountCommand {
   def accountId = key.name
+
+  def toBeancount : String = {
+    s"${date} open ${key.name} ${key.assetId.symbol}"
+  }
+
+  override def toString: String = toBeancount
 }
 
 object AccountCreation extends CommandParser {
   import Patterns._
 
   val prefix = "open"
-  private val re =s"${datePattern} ${prefix} ${acctPattern} (\S+)".r
+  private val re =s"${datePattern} ${prefix} ${acctPattern} (\\S+)".r
 
   override def parse(str: String): AccountCreation = {
     str match {

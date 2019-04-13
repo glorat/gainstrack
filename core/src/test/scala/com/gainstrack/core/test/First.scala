@@ -8,6 +8,9 @@ import org.scalatest.FlatSpec
 
 class First extends FlatSpec {
 
+  val eqhkd = AccountCreation.parse("2010-01-01 open Equity:HSBCHK HKD")
+  val equsd = AccountCreation.parse("2010-01-01 open Equity:HSBCUS USD")
+
   val hkhkd = AccountCreation(
     LocalDate.parse("2010-01-01"),
     AccountKey.apply(
@@ -54,7 +57,9 @@ class First extends FlatSpec {
     balance = "33030.33 HKD"
   )
 
-  val cmds:Seq[AccountCommand] = Seq(hkhkd, hkusd, tx, bohkd, bohkd2)
+  val cmds:Seq[AccountCommand] = Seq(eqhkd, equsd, hkhkd, hkusd, tx, bohkd, bohkd2)
+
+  val orderedCmds = cmds.sorted
 
   "transfer" should "calc fx rate" in {
     val fx = tx.fxRate
@@ -62,5 +67,20 @@ class First extends FlatSpec {
     assert (fx.denominatorIsValidLong)
     //assert ((1/fx) == 7.8664)
     assert(tx.toTransaction.isBalanced)
+  }
+
+  "cmds" should "process" in {
+    val machine = new OrderedCommandValidator
+    orderedCmds.foreach(cmd => {
+      machine.applyChange(cmd)
+    })
+  }
+
+  it should "generate beancount" in {
+    val bg = new BeancountGenerator
+    for (elem <- orderedCmds) {
+      bg.applyChange(elem)
+    }
+    println(bg.toBeancount)
   }
 }

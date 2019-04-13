@@ -2,7 +2,7 @@ package com.gainstrack.core
 
 import net.glorat.cqrs.{AggregateRoot, AggregateRootState, DomainEvent}
 
-class UserExperienceValidator extends AggregateRoot {
+class OrderedCommandValidator extends AggregateRoot {
   override protected var state: AggregateRootState = ValidationState(java.util.UUID.randomUUID(),Seq())
 
   override def id: GUID = getState.id
@@ -17,6 +17,8 @@ case class ValidationState(id:GUID, accounts:Seq[AccountKey]) extends AggregateR
         process(e)
       }
       case e:Transfer => process(e)
+      case e:SecurityPurchase =>  process(e)
+      case e:BalanceObservation => process(e)
     }
   }
 
@@ -38,6 +40,24 @@ case class ValidationState(id:GUID, accounts:Seq[AccountKey]) extends AggregateR
     require(srcAccount.assetId == s.sourceValue.ccy, "Source currency doesn't match")
     require(tgtAccount.assetId == s.targetValue.ccy, "Destination currency doesn't match")
     // No change in state
+    this
+  }
+
+  private def process(e:SecurityPurchase) : ValidationState = {
+    var ret = this
+    require(accounts.exists(x => x.name == e.acct))
+    if (!accounts.exists(x => x.name == e.srcAcct)) {
+      // Auto vivify sub-accounts of securities account
+      ret = copy(accounts = accounts :+ AccountKey(e.srcAcct, e.cost.ccy))
+    }
+    if (!accounts.exists(x => x.name == e.secAcct)) {
+      // Auto vivify sub-accounts of securities account
+      ret=copy(accounts = accounts :+ AccountKey(e.secAcct, e.security.ccy))
+    }
+    ret
+  }
+
+  private def process(e:BalanceObservation) : ValidationState = {
     this
   }
 }
