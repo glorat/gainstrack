@@ -18,7 +18,7 @@ case class ValidationState(id:GUID, accounts:Seq[AccountKey]) extends AggregateR
       }
       case e:Transfer => process(e)
       case e:SecurityPurchase =>  process(e)
-      case e:BalanceObservation => process(e)
+      case e:BalanceAdjustment => process(e)
     }
   }
 
@@ -57,7 +57,7 @@ case class ValidationState(id:GUID, accounts:Seq[AccountKey]) extends AggregateR
     ret
   }
 
-  private def process(e:BalanceObservation) : ValidationState = {
+  private def process(e:BalanceAdjustment) : ValidationState = {
     this
   }
 }

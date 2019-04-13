@@ -21,6 +21,7 @@ trait AccountCommand extends Command with DomainEvent with Ordered[AccountComman
   def toOrderValue:Long = {
     val typeOrder = this match {
       case _:AccountCreation => 1  // They come first
+      case _:SecurityPurchase => 2 // These can auto-vivify accounts
 
       case _ => 10
     }
@@ -83,22 +84,5 @@ object AccountKey {
 
 }
 
-
-
-case class BalanceObservation (
-                                accountId:AccountId,
-                                date: LocalDate, // post or enter?
-                              balance:Balance
-                              ) extends AccountCommand {
-  val relatedAccount : AccountId = {
-    val parts:Seq[String] = accountId.split(":").updated(0,"Equity").toSeq
-    parts.mkString(":")
-  }
-  def toBeancounts : Seq[String] = {
-    val l1 = s"${date.minusDays(1)} pad ${accountId} ${relatedAccount}"
-    val l2 = s"${date} balance ${accountId} ${balance}"
-    Seq(l1,l2)
-  }
-}
 
 

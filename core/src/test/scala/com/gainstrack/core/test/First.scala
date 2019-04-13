@@ -8,43 +8,31 @@ import org.scalatest.FlatSpec
 
 
 class First extends FlatSpec {
-
-
-  val bohkd = BalanceObservation(
-    accountId = "Assets:HSBCHK",
-    date = LocalDate.parse("2019-01-01"), // post or enter?
-    balance = "138668.37 HKD"
-  )
-
-  val bohkd2 = BalanceObservation(
-    accountId = "Assets:HSBCHK",
-    date = LocalDate.parse("2014-01-04"), // post or enter?
-    balance = "33030.33 HKD"
-  )
-
-  val cmdLines = Seq(
+  val cmds = Seq(
     "2010-01-01 open Assets:HSBCHK HKD",
     "2010-01-01 open Equity:HSBCHK HKD",
     "2010-01-01 open Assets:Investment:HSBC USD",
     "2010-01-01 open Assets:Investment:HSBC:USD USD",
     "2019-04-01 open Assets:Investment:IBUSD USD",
+    "2019-01-01 adj Assets:HSBCHK 138668.37 HKD Equity:HSBCHK",
     "2019-01-02 tfr Assets:HSBCHK Assets:Investment:HSBC:USD 40000 HKD 5084.91 USD",
-    "2019-09-11 tfr Assets:Investment:HSBC:USD Assets:Investment:IBUSD:USD 34975 USD 34975 USD",
     "2019-01-02 trade Assets:Investment:HSBC 100 VTI {127.6300 USD}",
     "2019-03-08 trade Assets:Investment:HSBC 13 VCSH {79.0700 USD}",
     "2019-03-15 trade Assets:Investment:HSBC 14 VTI {144.6200 USD}",
     "2019-03-26 trade Assets:Investment:HSBC 30 VTI {143.8300 USD}",
     "2019-03-27 trade Assets:Investment:HSBC 15 BRK-B {200.5800 USD}",
+    "2019-04-11 tfr Assets:Investment:HSBC:USD Assets:Investment:IBUSD:USD 34975 USD 34975 USD",
     "2019-04-11 trade Assets:Investment:IBUSD 100 VWRD {85.7900 USD}",
     "2019-04-11 trade Assets:Investment:IBUSD 230 VWRD {85.8300 USD}",
     "2019-04-11 trade Assets:Investment:IBUSD 1000 IUAA {5.2250 USD}",
     "2019-04-11 trade Assets:Investment:IBUSD 6 BRK-B {206.5300 USD}"
   ).map(CommandParser.parseLine).map(_.get)
-  val cmds:Seq[AccountCommand] = Seq(bohkd, bohkd2) ++ cmdLines
+  //val cmds:Seq[AccountCommand] = Seq(bohkd, bohkd2) ++ cmdLines
 
   val orderedCmds = cmds.sorted
-  val tx = Transfer.parse("2019-01-02 tfr Assets:HSBCHK Assets:Investment:HSBC:USD 40000 HKD 5084.91 USD")
 
+
+  val tx = Transfer.parse("2019-01-02 tfr Assets:HSBCHK Assets:Investment:HSBC:USD 40000 HKD 5084.91 USD")
 
   "transfer" should "calc fx rate" in {
     val fx = tx.fxRate
@@ -64,6 +52,18 @@ class First extends FlatSpec {
     )
 
     assert(tx == tx2)
+  }
+
+  "adj" should "parse" in {
+
+    val bohkd = BalanceAdjustment(
+      accountId = "Assets:HSBCHK",
+      date = LocalDate.parse("2019-01-01"), // post or enter?
+      balance = "138668.37 HKD",
+      adjAccount = "Equity:HSBCHK"
+    )
+
+    assert(BalanceAdjustment.parse("2019-01-01 adj Assets:HSBCHK 138668.37 HKD Equity:HSBCHK") == bohkd)
   }
 
   "cmds" should "process" in {

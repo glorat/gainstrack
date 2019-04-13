@@ -10,7 +10,8 @@ object CommandParser {
   val parsers:Map[String, CommandParser] = Map (
     "open" -> AccountCreation,
     "tfr" -> Transfer,
-    "trade" -> SecurityPurchase
+    "trade" -> SecurityPurchase,
+    "adj" -> BalanceAdjustment
   )
 
   import Patterns._
@@ -21,7 +22,7 @@ object CommandParser {
   def parseLine(line:String) : Option[AccountCommand] = {
     line match {
       case re(dateStr, prefix) => {
-        require(parsers.contains(prefix), s"${prefix} is an announce command")
+        require(parsers.contains(prefix), s"${prefix} is an unknown command")
         Some(parsers(prefix).parse(line))
       }
       case _ => None
