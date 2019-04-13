@@ -2,12 +2,20 @@ package com.gainstrack.core
 
 import java.math.RoundingMode
 
-import net.glorat.cqrs.DomainEvent
+import net.glorat.cqrs.{Command, DomainEvent}
 import spire.math.{Rational, SafeLong}
 
 trait CommodityDB {
 
 }
+
+trait AccountCommand extends Command
+
+trait CommandParser {
+  def parse(str:String) : AccountCommand
+  def prefix : String
+}
+
 
 trait UserExperience extends DomainEvent
 trait AccountEvent extends UserExperience {
@@ -26,7 +34,12 @@ object AccountType extends Enumeration {
 
 //import AssetType.AssetType
 
-case class AssetId(symbol: String)
+case class AssetId(symbol: String) {
+  require(symbol.toUpperCase == symbol, s"Asset id must be all caps: ${symbol}")
+}
+object AssetId {
+
+}
 
 case class Commodity (
   guid: GUID,
@@ -52,23 +65,13 @@ object AccountKey {
 
 }
 
-case class AccountCreation (
-                           date: LocalDate,
-                           key: AccountKey,
-                             assetNonStdScu: Option[Int],
-                             code:String,
-                             description:String,
-                             hidden: Boolean,
-                             placeholder: Boolean
-                           ) extends AccountEvent {
-  def accountId = key.name
-}
+
 
 case class BalanceObservation (
                                 accountId:AccountId,
                                 date: LocalDate, // post or enter?
                               balance:Balance
-                              ) extends AccountEvent
+                              ) extends AccountCommand
 
 
 /** Generates postings based on costs for money transfers */
@@ -78,7 +81,7 @@ case class Transfer(
                    date: LocalDate,
                    sourceValue: Balance,
                    targetValue: Balance
-                   ) extends UserExperience {
+                   ) extends AccountCommand {
   def fxRate:Fraction = {
     targetValue.value/sourceValue.value
   }

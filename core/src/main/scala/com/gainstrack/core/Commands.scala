@@ -7,7 +7,7 @@ case class SecurityPurchase(
                              security:Balance,
                              cost:Balance,
                              commission:Balance
-                           ) {
+                           ) extends AccountCommand {
   // Auto-gen the account name
   val srcAcct = s"${acct}:${cost.ccy.symbol}"
   val secAcct = s"${acct}:${security.ccy.symbol}"
@@ -21,13 +21,13 @@ case class SecurityPurchase(
     ))
   }
 }
-object SecurityPurchase {
-  private val dateRe = raw"(\d{4}-\d{2}-\d{2})"
-  private val acctRe = raw"(\S+)"
+object SecurityPurchase extends CommandParser {
+  import Patterns._
+  val prefix = "trade"
   private val balanceRe = raw"(\S+ \S+)"
   private val costRe = raw"\{(\S+ \S+)\}"
 
-  private val re =s"${dateRe} trade ${acctRe} ${balanceRe} ${costRe}".r
+  private val re =s"${datePattern} ${prefix} ${acctPattern} ${balanceRe} ${costRe}".r
 
   def apply(acct: AccountId,
             date:LocalDate,
@@ -36,10 +36,11 @@ object SecurityPurchase {
     apply(acct, date, security, cost, Balance(0, cost.ccy))
   }
 
-  def apply(str:String):SecurityPurchase = {
+  def parse(str:String):SecurityPurchase = {
     str match {
       case re(date, acct, security, cost) => SecurityPurchase(acct, parseDate(date), Balance.parse(security), Balance(0,""))
     }
-
   }
+
+  def apply(str:String) = parse(str)
 }

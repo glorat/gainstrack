@@ -8,33 +8,6 @@ import org.scalatest.FlatSpec
 
 class First extends FlatSpec {
 
-  val equity = AccountCreation(
-    LocalDate.parse("2010-01-01"),
-    AccountKey(
-      name = "Equity",
-      assetId = AssetId( "GBP")
-    ),
-    assetNonStdScu = None,
-    code = "",
-    description = "",
-    hidden = false,
-    placeholder = true
-  )
-
-  val asset = AccountCreation(
-    LocalDate.parse("2010-01-01"),
-    AccountKey.apply(
-      name = "Assets",
-      assetId = AssetId( "GBP")
-    ),
-    assetNonStdScu = None,
-    code = "",
-    description = "",
-    hidden = false,
-    placeholder = true
-  )
-
-
   val hkhkd = AccountCreation(
     LocalDate.parse("2010-01-01"),
     AccountKey.apply(
@@ -80,6 +53,8 @@ class First extends FlatSpec {
     date = LocalDate.parse("2014-01-04"), // post or enter?
     balance = "33030.33 HKD"
   )
+
+  val cmds:Seq[AccountCommand] = Seq(hkhkd, hkusd, tx, bohkd, bohkd2)
 
   "transfer" should "calc fx rate" in {
     val fx = tx.fxRate
