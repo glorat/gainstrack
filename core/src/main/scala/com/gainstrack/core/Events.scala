@@ -34,11 +34,6 @@ object AccountCommand  {
 
 }
 
-trait CommandParser {
-  def parse(str:String) : AccountCommand
-  def prefix : String
-}
-
 
 trait UserExperience extends DomainEvent
 trait AccountEvent extends UserExperience {

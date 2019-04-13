@@ -32,8 +32,8 @@ case class ValidationState(id:GUID, accounts:Seq[AccountKey]) extends AggregateR
   private def process(s:Transfer) : ValidationState = {
     val srcAccountOpt = accounts.find(x => x.name == s.source)
     val tgtAccountOpt = accounts.find(x => x.name == s.dest)
-    require(srcAccountOpt.nonEmpty, "Invalid source account")
-    require(tgtAccountOpt.nonEmpty, "Invalid source account")
+    require(srcAccountOpt.nonEmpty, s"Invalid source account: ${s.source}")
+    require(tgtAccountOpt.nonEmpty, s"Invalid source account: ${s.dest}")
     val srcAccount = srcAccountOpt.get
     val tgtAccount = tgtAccountOpt.get
 
