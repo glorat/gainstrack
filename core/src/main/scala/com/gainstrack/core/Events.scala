@@ -28,7 +28,7 @@ trait AccountCommand extends Command with DomainEvent with Ordered[AccountComman
 
     val dateOrder = date.toEpochDay
     // Type then date
-    (typeOrder*1000000) + dateOrder
+    (typeOrder*10000000) + dateOrder
   }
 }
 object AccountCommand  {

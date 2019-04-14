@@ -13,9 +13,14 @@ case class SecurityPurchase(
   val secAcct = s"${acct}:${security.ccy.symbol}"
   //val expenseAcct = acct.replace("Asset", "Expenses")
 
+  def toDescription : String = {
+    val buysell = if (security.value>0) "BUY" else "SELL"
+    s"${buysell} ${security} @${cost}"
+  }
+
   // TODO: expense account
   val toTransaction : Transaction = {
-    Transaction(date, "", Seq(
+    Transaction(date, toDescription, Seq(
       Posting(srcAcct, -cost*security.value),
       Posting.withCost(secAcct, security, cost)
     ))
