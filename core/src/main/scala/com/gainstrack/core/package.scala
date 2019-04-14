@@ -14,4 +14,8 @@ package object core {
   def zeroFraction:Fraction = spire.math.Rational.zero
 
   implicit def stringToBalance(str:String) = Balance.parse(str)
+
+  implicit val localDateOrdering: Ordering[LocalDate] = new Ordering[LocalDate] {
+    def compare(x: LocalDate, y: LocalDate): Int = x compareTo y
+  }
 }
