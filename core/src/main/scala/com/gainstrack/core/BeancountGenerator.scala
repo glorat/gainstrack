@@ -5,7 +5,8 @@ import net.glorat.cqrs.{AggregateRoot, AggregateRootState, DomainEvent}
 class BeancountGenerator extends AggregateRoot {
   val headers:Seq[String] = Seq (
     "option \"title\" \"Example Beancount file\"",
-    "option \"operating_currency\" \"USD\""
+    "option \"operating_currency\" \"GBP\"",
+    "plugin \"beancount.plugins.implicit_prices\""
   )
   def toBeancount: String = {
     val lines:Seq[String] = headers ++ getState.accounts.map(_.toBeancount) ++ getState.txs
@@ -43,7 +44,7 @@ extends AggregateRootState {
   private def process(e:SecurityPurchase): BeancountState = {
 
     var ret = this
-    val baseAcct = accounts.find(x => x.name == e.acct)
+    val baseAcct = accounts.find(x => x.name == e.accountId)
     require(baseAcct.isDefined)
     if (!accounts.exists(x => x.name == e.srcAcct)) {
       // Auto vivify sub-accounts of securities account
@@ -56,8 +57,8 @@ extends AggregateRootState {
       ret=ret.copy(accounts = ret.accounts :+ newAcct)
     }
 
-    val newTxs = e.toTransaction.toBeancount
-    ret = ret.copy(txs = ret.txs :+ e.toTransaction.toBeancount )
+    val newTxs = e.toTransaction(baseAcct.get.options).toBeancount
+    ret = ret.copy(txs = ret.txs :+ e.toTransaction(baseAcct.get.options).toBeancount )
     ret
   }
 

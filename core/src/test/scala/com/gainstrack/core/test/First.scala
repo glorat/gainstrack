@@ -10,18 +10,21 @@ import scala.collection.SortedMap
 
 
 class First extends FlatSpec {
-  val cmds = Seq(
+  val parser = new GainstrackParser
+  Seq(
     "2010-01-01 open Assets:HSBCHK HKD",
     "2010-01-01 open Assets:HSBCCN CNY",
     "2000-01-01 open Assets:Bank:Nationwide GBP",
     "2000-01-01 open Assets:Bank:NationwideSavings GBP",
     "2000-01-01 open Assets:Bank:HSBCUK GBP",
+    "1970-01-01 open Expenses:Investment:Fees:USD USD",
     "2010-01-01 open Equity:Opening:HKD HKD",
     "2010-01-01 open Equity:Opening:CNY CNY",
     "2010-01-01 open Equity:Opening:GBP GBP",
     "2010-01-01 open Assets:Investment:HSBC USD",
     "2010-01-01 open Assets:Investment:HSBC:USD USD",
     "2019-04-01 open Assets:Investment:IBUSD USD",
+    "  expenseAccount: Expenses:Investment:Fees:USD",
     "2010-01-01 open Assets:Investment:Zurich GBP",
     "2010-01-01 open Assets:Investment:Zurich:GBP GBP",
     "2010-01-01 open Assets:Investment:OldMutual GBP",
@@ -36,7 +39,7 @@ class First extends FlatSpec {
     "2019-01-01 adj Assets:HSBCCN 547413.70 CNY Equity:Opening:CNY",
 
     "2019-01-01 adj Assets:Investment:Zurich:GBP 348045.34 GBP Equity:Opening:GBP",
-    "2019-01-01 trade Assets:Investment:Zurich 30511.46 AMER {5.09 GBP}",
+    "2019-01-01 trade Assets:Investment:Zurich 30511.46 AMER @5.09 GBP}",
     "2019-01-01 trade Assets:Investment:Zurich 75296 FTSE {2.1 GBP}",
     "2019-01-01 trade Assets:Investment:Zurich 28146.69 TBOND {1.23 GBP}",
 
@@ -58,12 +61,14 @@ class First extends FlatSpec {
     "2019-03-27 trade Assets:Investment:HSBC 15 BRK-B {200.5800 USD}",
     "2019-04-11 tfr Assets:Bank:Nationwide Assets:Bank:HSBCUK 19000 GBP 19000 GBP",
     "2019-04-11 tfr Assets:Investment:HSBC:USD Assets:Investment:IBUSD:USD 34975 USD 34975 USD",
-    "2019-04-11 trade Assets:Investment:IBUSD 100 VWRD {85.7900 USD}",
-    "2019-04-11 trade Assets:Investment:IBUSD 230 VWRD {85.8300 USD}",
-    "2019-04-11 trade Assets:Investment:IBUSD 1000 IUAA {5.2250 USD}",
-    "2019-04-11 trade Assets:Investment:IBUSD 6 BRK-B {206.5300 USD}"
-  ).map(CommandParser.parseLine).map(_.get)
+    "2019-04-11 trade Assets:Investment:IBUSD 100 VWRD {85.7900 USD} 4.76 USD",
+    "2019-04-11 trade Assets:Investment:IBUSD 230 VWRD {85.8300 USD} 10.84 USD",
+    "2019-04-11 trade Assets:Investment:IBUSD 1000 IUAA {5.2250 USD} 2.93 USD",
+    "2019-04-11 trade Assets:Investment:IBUSD 6 BRK-B {206.5300 USD} 0.34 USD"
+  ).foreach(parser.parseLine)
   //val cmds:Seq[AccountCommand] = Seq(bohkd, bohkd2) ++ cmdLines
+
+  val cmds = parser.getCommands
 
   val orderedCmds = cmds.sorted
 
@@ -114,6 +119,11 @@ class First extends FlatSpec {
     validator
   }
 
+  it should "parse account options" in {
+    val acct = validator.getState.accounts.find(x => x.name == "Assets:Investment:IBUSD").getOrElse(fail("Missing account"))
+    assert (acct.options.expenseAccount == Some("Expenses:Investment:Fees:USD"))
+  }
+
   it should "generate beancount" in {
     val bg = new BeancountGenerator
     for (elem <- orderedCmds) {
@@ -134,7 +144,7 @@ class First extends FlatSpec {
       bp.applyChange(elem)
     }
     // After commissions, should be 172.05
-    assert(bp.getState.balances("Assets:Investment:IBUSD:USD").last._2 == 190.92)
-    //assert(bp.getState.balances("Assets:Investment:IBUSD:USD") == SortedMap())
+    assert(bp.getState.balances("Assets:Investment:IBUSD:USD").last._2 == 172.05)
+    assert(bp.getState.balances("Expenses:Investment:Fees:USD").last._2 == 18.87)
   }
 }

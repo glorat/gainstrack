@@ -1,13 +1,17 @@
 package com.gainstrack.core
 
+case class AccountOptions (
+                          expenseAccount:Option[String] = None,
+                          description:String = "",
+                          assetNonStdScu:Option[Int] = None,
+                          hidden:Boolean = false,
+                          placeholder:Boolean = false
+                          )
+
 case class AccountCreation (
                            date: LocalDate,
                            key: AccountKey,
-                             assetNonStdScu: Option[Int],
-                             code:String,
-                             description:String,
-                             hidden: Boolean,
-                             placeholder: Boolean
+                           options:AccountOptions
                            ) extends AccountCommand {
   def accountId = key.name
   def name = key.name
@@ -17,6 +21,13 @@ case class AccountCreation (
   }
 
   override def toString: String = toBeancount
+
+  override def withOption(key:String, valueStr:String) : AccountCreation = {
+    key match {
+      case "expenseAccount" => copy(options = options.copy(expenseAccount =  Some(valueStr)))
+      case _ => this
+    }
+  }
 }
 
 object AccountCreation extends CommandParser {
@@ -31,5 +42,5 @@ object AccountCreation extends CommandParser {
     }
   }
 
-  def apply(date:LocalDate, key:AccountKey) : AccountCreation = AccountCreation(date, key, None,"","",false,false)
+  def apply(date:LocalDate, key:AccountKey) : AccountCreation = AccountCreation(date, key, AccountOptions())
 }

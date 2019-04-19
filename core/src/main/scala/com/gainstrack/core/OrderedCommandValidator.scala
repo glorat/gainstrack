@@ -10,7 +10,7 @@ class OrderedCommandValidator extends AggregateRoot {
   override def getState: ValidationState = state.asInstanceOf[ValidationState]
 }
 
-case class ValidationState(id:GUID, accounts:Seq[AccountKey]) extends AggregateRootState {
+case class ValidationState(id:GUID, accounts:Seq[AccountCreation]) extends AggregateRootState {
   override def handle(e: DomainEvent): AggregateRootState = {
     e match {
       case e:AccountCreation => {
@@ -26,7 +26,7 @@ case class ValidationState(id:GUID, accounts:Seq[AccountKey]) extends AggregateR
     // Check name doesn't already exist
     // Check if any chosen parent exists
     // Check guid doesn't already exist
-    copy(accounts = accounts :+ e.key)
+    copy(accounts = accounts :+ e)
   }
 
   private def process(s:Transfer) : ValidationState = {
@@ -37,22 +37,25 @@ case class ValidationState(id:GUID, accounts:Seq[AccountKey]) extends AggregateR
     val srcAccount = srcAccountOpt.get
     val tgtAccount = tgtAccountOpt.get
 
-    require(srcAccount.assetId == s.sourceValue.ccy, "Source currency doesn't match")
-    require(tgtAccount.assetId == s.targetValue.ccy, "Destination currency doesn't match")
+    require(srcAccount.key.assetId == s.sourceValue.ccy, "Source currency doesn't match")
+    require(tgtAccount.key.assetId == s.targetValue.ccy, "Destination currency doesn't match")
     // No change in state
     this
   }
 
   private def process(e:SecurityPurchase) : ValidationState = {
     var ret = this
-    require(accounts.exists(x => x.name == e.acct))
+    require(accounts.exists(x => x.name == e.accountId))
+    val acct = accounts.find(x => x.name == e.accountId).getOrElse(throw new IllegalArgumentException(s"${e.accountId} account must exist"))
     if (!accounts.exists(x => x.name == e.srcAcct)) {
       // Auto vivify sub-accounts of securities account
-      ret = copy(accounts = accounts :+ AccountKey(e.srcAcct, e.cost.ccy))
+      val newAcct = acct.copy(key = AccountKey(e.srcAcct, e.cost.ccy))
+      ret = copy(accounts = accounts :+ newAcct)
     }
     if (!accounts.exists(x => x.name == e.secAcct)) {
       // Auto vivify sub-accounts of securities account
-      ret=copy(accounts = accounts :+ AccountKey(e.secAcct, e.security.ccy))
+      val newAcct = acct.copy(key = AccountKey(e.secAcct, e.security.ccy))
+      ret=copy(accounts = accounts :+ newAcct)
     }
     ret
   }

@@ -1,16 +1,19 @@
 package com.gainstrack.core
 
+import java.time.LocalDate
+
 
 case class SecurityPurchase(
-                             acct: AccountId,
+                             accountId: AccountId,
                              date:LocalDate,
                              security:Balance,
                              cost:Balance,
                              commission:Balance
                            ) extends AccountCommand {
+
   // Auto-gen the account name
-  val srcAcct = s"${acct}:${cost.ccy.symbol}"
-  val secAcct = s"${acct}:${security.ccy.symbol}"
+  val srcAcct = s"${accountId}:${cost.ccy.symbol}"
+  val secAcct = s"${accountId}:${security.ccy.symbol}"
   //val expenseAcct = acct.replace("Asset", "Expenses")
 
   def toDescription : String = {
@@ -19,11 +22,20 @@ case class SecurityPurchase(
   }
 
   // TODO: expense account
-  val toTransaction : Transaction = {
-    Transaction(date, toDescription, Seq(
-      Posting(srcAcct, -cost*security.value),
-      Posting.withCost(secAcct, security, cost)
-    ))
+  def toTransaction(opts:AccountOptions) : Transaction = {
+    val expense = (-cost*security.value - commission)
+    require(opts.expenseAccount.isDefined || commission.value == zeroFraction)
+
+    var postings = Seq(
+      Posting(srcAcct, expense),
+      Posting(secAcct, security, cost)
+    )
+    if (commission.value != zeroFraction) {
+      // TODO: currency match check?
+      postings = postings :+ Posting(opts.expenseAccount.get, commission)
+    }
+
+    Transaction(date, toDescription, postings )
   }
 }
 object SecurityPurchase extends CommandParser {
@@ -32,7 +44,8 @@ object SecurityPurchase extends CommandParser {
   private val balanceRe = raw"(\S+ \S+)"
   private val costRe = raw"\{(\S+ \S+)\}"
 
-  private val re =s"${datePattern} ${prefix} ${acctPattern} ${balanceRe} ${costRe}".r
+  private val Purchase =s"${datePattern} ${prefix} ${acctPattern} ${balanceRe} ${costRe}".r
+  private val PurchaseWithCommision =s"${datePattern} ${prefix} ${acctPattern} ${balanceRe} ${costRe} ${balanceRe}".r
 
   def apply(acct: AccountId,
             date:LocalDate,
@@ -43,7 +56,9 @@ object SecurityPurchase extends CommandParser {
 
   def parse(str:String):SecurityPurchase = {
     str match {
-      case re(date, acct, security, cost) => SecurityPurchase(acct, parseDate(date), Balance.parse(security), cost)
+      case PurchaseWithCommision(date, acct, security, cost, commission) =>
+        SecurityPurchase(acct, parseDate(date), Balance.parse(security), cost, Balance.parse(commission))
+      case Purchase(date, acct, security, cost) => SecurityPurchase(acct, parseDate(date), Balance.parse(security), cost)
     }
   }
 
@@ -58,6 +73,8 @@ case class Transfer(
                      sourceValue: Balance,
                      targetValue: Balance
                    ) extends AccountCommand {
+  def accountId : AccountId = source // Source is where the action was triggered!
+
   if (sourceValue.ccy == targetValue.ccy) {
     require(sourceValue.value == targetValue.value, "Single transfer amount must match (until fees supported")
   }
@@ -122,4 +139,9 @@ object BalanceAdjustment extends CommandParser {
     }
   }
 
+}
+
+case object DummyCommand extends AccountCommand {
+  val date = MinDate
+  val accountId = "Dummy"
 }

@@ -11,6 +11,7 @@ trait CommodityDB {
 
 trait AccountCommand extends Command with DomainEvent with Ordered[AccountCommand] {
   def date : LocalDate
+  def accountId: AccountId
 
   // import scala.math.Ordered.orderingToOrdered
 
@@ -29,6 +30,10 @@ trait AccountCommand extends Command with DomainEvent with Ordered[AccountComman
     val dateOrder = date.toEpochDay
     // Type then date
     (typeOrder*10000000) + dateOrder
+  }
+
+  def withOption(key:String, valueStr:String):AccountCommand = {
+    throw new IllegalArgumentException(s"Option ${key} is not supported by ${this.getClass.getName}")
   }
 }
 object AccountCommand  {

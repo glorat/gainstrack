@@ -4,8 +4,8 @@ import net.glorat.cqrs.{AggregateRoot, AggregateRootState, DomainEvent}
 
 import scala.collection.SortedMap
 
-class BalanceProjector(accountIds:Seq[AccountKey]) extends AggregateRoot {
-  override protected var state: AggregateRootState = BalanceState(accountIds )
+class BalanceProjector(accounts:Seq[AccountCreation]) extends AggregateRoot {
+  override protected var state: AggregateRootState = BalanceState(accounts )
 
   override def id: GUID = getState.id
 
@@ -13,7 +13,7 @@ class BalanceProjector(accountIds:Seq[AccountKey]) extends AggregateRoot {
 
 }
 
-case class BalanceState(id:GUID, accountIds:Seq[AccountKey], balances:Map[AccountId,SortedMap[LocalDate,Fraction]]) extends AggregateRootState {
+case class BalanceState(id:GUID, accounts:Seq[AccountCreation], balances:Map[AccountId,SortedMap[LocalDate,Fraction]]) extends AggregateRootState {
   type Balances = Map[AccountId,SortedMap[LocalDate,Fraction]]
   type Series = SortedMap[LocalDate,Fraction]
 
@@ -37,7 +37,10 @@ case class BalanceState(id:GUID, accountIds:Seq[AccountKey], balances:Map[Accoun
   }
 
   private def process(e:SecurityPurchase): BalanceState = {
-    process(e.toTransaction)
+    val baseAcct = accounts.find(x => x.name == e.accountId)
+    require(baseAcct.isDefined)
+    val opts = baseAcct.get.options
+    process(e.toTransaction(opts))
   }
 
   private def process(e:BalanceAdjustment): BalanceState = {
@@ -62,9 +65,9 @@ case class BalanceState(id:GUID, accountIds:Seq[AccountKey], balances:Map[Accoun
 }
 
 object BalanceState {
-  def apply(accountIds : Seq[AccountKey]) : BalanceState = {
+  def apply(accounts : Seq[AccountCreation]) : BalanceState = {
     val emptySeries : SortedMap[LocalDate,Fraction] = SortedMap.empty
-    val initMap:Map[AccountId,SortedMap[LocalDate,Fraction]] = accountIds.map(x => x.name -> emptySeries).toMap
-    BalanceState(java.util.UUID.randomUUID(), accountIds, initMap)
+    val initMap:Map[AccountId,SortedMap[LocalDate,Fraction]] = accounts.map(x => x.name -> emptySeries).toMap
+    BalanceState(java.util.UUID.randomUUID(), accounts, initMap)
   }
 }
