@@ -2,6 +2,7 @@ package com.gainstrack.core
 
 class GainstrackParser {
   private var commands:Seq[AccountCommand] = Seq()
+  private var lineCount : Int = 0
   def getCommands : Seq[AccountCommand] = commands
 
   val parsers:Map[String, CommandParser] = Map (
@@ -17,7 +18,9 @@ class GainstrackParser {
   private val Metadata = s"\\s*([a-z][A-Za-z0-9_-]+):\\s*(.*)".r
 
 
-  def parseLine(line:String) : Option[AccountCommand] = {
+  private def tryParseLine(line:String) : Option[AccountCommand] = {
+    lineCount += 1
+
     line match {
       case AccountCommand(dateStr, prefix) => {
         require(parsers.contains(prefix), s"${prefix} is an unknown command")
@@ -31,6 +34,15 @@ class GainstrackParser {
         Some(newLast)
       }
       case _ => None
+    }
+  }
+
+  def parseLine(line:String) : Option[AccountCommand] = {
+    try {
+      tryParseLine(line)
+    }
+    catch {
+      case e:Exception => throw new Exception(s"Parsing failed on line ${lineCount}: ${line}", e)
     }
   }
 }
