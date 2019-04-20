@@ -1,6 +1,7 @@
 package com.gainstrack.core
 
 import net.glorat.cqrs.{AggregateRoot, AggregateRootState, DomainEvent}
+import spire.math.SafeLong
 
 import scala.collection.SortedMap
 
@@ -16,6 +17,13 @@ class BalanceProjector(accounts:Seq[AccountCreation]) extends AggregateRoot {
 case class BalanceState(id:GUID, accounts:Seq[AccountCreation], balances:Map[AccountId,SortedMap[LocalDate,Fraction]]) extends AggregateRootState {
   type Balances = Map[AccountId,SortedMap[LocalDate,Fraction]]
   type Series = SortedMap[LocalDate,Fraction]
+  val interp = TimeSeriesInterpolator.from(SortedMap[LocalDate,Fraction]())
+
+  def getBalance(account:AccountId, date: LocalDate) : Option[Fraction] = {
+    val ret:Option[Fraction] = interp.getValue(balances.getOrElse(account, SortedMap()), date)
+        .map(x => x)
+    ret.map(f => f.limitDenominatorTo(SafeLong(1000000)))
+  }
 
   override def handle(e: DomainEvent): AggregateRootState = {
     e match {
