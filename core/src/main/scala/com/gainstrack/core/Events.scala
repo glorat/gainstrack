@@ -11,7 +11,7 @@ trait CommodityDB {
 
 trait AccountCommand extends Command with DomainEvent with Ordered[AccountCommand] {
   def date : LocalDate
-  def accountId: AccountId
+  //def accountId: AccountId
 
   // import scala.math.Ordered.orderingToOrdered
 

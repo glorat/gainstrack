@@ -11,15 +11,16 @@ class PriceCollector extends AggregateRoot {
 
 }
 
-case class PriceState(id:GUID, prices:Map[AssetId, Map[LocalDate, Balance]]) extends AggregateRootState {
+case class AssetTuple(fx1:AssetId, fx2:AssetId)
+
+case class PriceState(id:GUID, prices:Map[AssetTuple, Map[LocalDate, Fraction]]) extends AggregateRootState {
   private val implicitPrices = true
 
   def process(e: Transfer): PriceState = {
     if (e.sourceValue.ccy != e.targetValue.ccy) {
       val price = e.sourceValue / e.targetValue.value
-      val newByDate = prices.getOrElse(e.targetValue.ccy, Map()).updated(e.date, price)
-      copy(prices = prices.updated(e.targetValue.ccy, newByDate))
-    }
+      this.withNewPrice(e.date, price, e.targetValue.ccy)
+     }
     else {
       this
     }
@@ -27,8 +28,16 @@ case class PriceState(id:GUID, prices:Map[AssetId, Map[LocalDate, Balance]]) ext
 
   def process (e: SecurityPurchase):PriceState = {
     val price = e.price
-    val newByDate = prices.getOrElse(e.security.ccy,Map()).updated(e.date, price)
-    copy(prices = prices.updated(e.security.ccy, newByDate))
+    this.withNewPrice(e.date, e.price, e.security.ccy)
+  }
+
+  private def withNewPrice(date:LocalDate, price:Balance, tgt:AssetId) : PriceState = {
+    require(tgt != price.ccy)
+    val fx1 = AssetTuple(tgt,price.ccy)
+    val fx2 = AssetTuple(price.ccy, tgt)
+    val newByDate = prices.getOrElse(fx1,Map()).updated(date, price.value)
+    val new2ByDate = prices.getOrElse(fx2, Map()).updated(date, 1/price.value)
+    copy(prices = prices.updated(fx1, newByDate).updated(fx2, new2ByDate))
   }
 
   def handle(e: DomainEvent): PriceState = {

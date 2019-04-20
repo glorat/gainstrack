@@ -23,6 +23,7 @@ case class BalanceState(id:GUID, accounts:Seq[AccountCreation], balances:Map[Acc
       case e:Transfer => process(e)
       case e:SecurityPurchase =>  process(e)
       case e:BalanceAdjustment => process(e)
+      case e:PriceObservation => this
     }
   }
 

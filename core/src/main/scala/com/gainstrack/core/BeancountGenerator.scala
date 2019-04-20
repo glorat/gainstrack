@@ -30,7 +30,12 @@ extends AggregateRootState {
       case e:Transfer => process(e)
       case e:SecurityPurchase =>  process(e)
       case e:BalanceAdjustment => process(e)
+      case e:PriceObservation => process(e)
     }
+  }
+
+  private def process(e:PriceObservation):BeancountState = {
+    copy(txs = txs :+ e.toBeancount)
   }
 
   private def process(e:AccountCreation):BeancountState = {

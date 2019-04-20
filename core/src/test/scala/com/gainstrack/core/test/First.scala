@@ -105,16 +105,16 @@ class First extends FlatSpec {
   }
 
   it should "infer prices from transfers" in {
-    assert(priceCollector.getState.prices.size == 16)
+    assert(priceCollector.getState.prices.size == 32)
 
-    assert(priceCollector.getState.prices(AssetId("USD"))
-      == Map(parseDate("2019-01-02")->Balance.parse("7.866412581540283 HKD")))
+    assert(priceCollector.getState.prices(AssetTuple(AssetId("USD"),AssetId("HKD")))
+      == Map(parseDate("2019-01-02")-> 7.866412581540283))
 
-    assert(priceCollector.getState.prices(AssetId("VTI")) == Map(
-      parseDate("2019-01-02") -> Balance.parse("127.63 USD"),
-      parseDate("2019-03-15") -> Balance.parse("144.62 USD"),
-      parseDate("2019-03-26") -> Balance.parse("143.83 USD")
-    ))
+    assert(priceCollector.getState.prices(AssetTuple(AssetId("VTI"),AssetId("USD"))) == Map(
+      parseDate("2019-01-02") ->127.63,
+      parseDate("2019-03-15") -> 144.62,
+      parseDate("2019-03-26") -> 143.83)
+    )
 
   }
 

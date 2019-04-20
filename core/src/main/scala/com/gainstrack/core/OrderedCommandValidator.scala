@@ -16,6 +16,7 @@ case class ValidationState(id:GUID, accounts:Seq[AccountCreation]) extends Aggre
       case e:AccountCreation => {
         process(e)
       }
+      case e:PriceObservation => this // Nothing to see
       case e:Transfer => process(e)
       case e:SecurityPurchase =>  process(e)
       case e:BalanceAdjustment => process(e)

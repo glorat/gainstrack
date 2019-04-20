@@ -9,7 +9,8 @@ class GainstrackParser {
     "open" -> AccountCreation,
     "tfr" -> Transfer,
     "trade" -> SecurityPurchase,
-    "adj" -> BalanceAdjustment
+    "adj" -> BalanceAdjustment,
+    "price" -> PriceObservation
   )
 
   import Patterns._
