@@ -1,12 +1,6 @@
-val ScalatraVersion = "2.5.1"
-
-organization := "com.gainstrack"
+val ScalatraVersion = "2.6.5"
 
 name := "web"
-
-version := "0.1.0-SNAPSHOT"
-
-scalaVersion := "2.11.7"
 
 libraryDependencies ++= Seq(
   "org.scalatra" %% "scalatra" % ScalatraVersion,
