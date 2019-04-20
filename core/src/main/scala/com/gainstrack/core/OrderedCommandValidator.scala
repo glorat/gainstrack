@@ -49,7 +49,7 @@ case class ValidationState(id:GUID, accounts:Seq[AccountCreation]) extends Aggre
     val acct = accounts.find(x => x.name == e.accountId).getOrElse(throw new IllegalArgumentException(s"${e.accountId} account must exist"))
     if (!accounts.exists(x => x.name == e.srcAcct)) {
       // Auto vivify sub-accounts of securities account
-      val newAcct = acct.copy(key = AccountKey(e.srcAcct, e.cost.ccy))
+      val newAcct = acct.copy(key = AccountKey(e.srcAcct, e.price.ccy))
       ret = copy(accounts = accounts :+ newAcct)
     }
     if (!accounts.exists(x => x.name == e.secAcct)) {

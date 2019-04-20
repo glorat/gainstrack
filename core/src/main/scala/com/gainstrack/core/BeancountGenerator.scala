@@ -48,7 +48,7 @@ extends AggregateRootState {
     require(baseAcct.isDefined)
     if (!accounts.exists(x => x.name == e.srcAcct)) {
       // Auto vivify sub-accounts of securities account
-      val newAcct = AccountCreation(baseAcct.get.date, AccountKey(e.srcAcct, e.cost.ccy))
+      val newAcct = AccountCreation(baseAcct.get.date, AccountKey(e.srcAcct, e.price.ccy))
       ret = ret.copy(accounts = ret.accounts :+ newAcct)
     }
     if (!accounts.exists(x => x.name == e.secAcct)) {

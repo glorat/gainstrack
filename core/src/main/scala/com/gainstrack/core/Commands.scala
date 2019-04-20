@@ -7,28 +7,28 @@ case class SecurityPurchase(
                              accountId: AccountId,
                              date:LocalDate,
                              security:Balance,
-                             cost:Balance,
+                             price:Balance,
                              commission:Balance
                            ) extends AccountCommand {
 
   // Auto-gen the account name
-  val srcAcct = s"${accountId}:${cost.ccy.symbol}"
+  val srcAcct = s"${accountId}:${price.ccy.symbol}"
   val secAcct = s"${accountId}:${security.ccy.symbol}"
   //val expenseAcct = acct.replace("Asset", "Expenses")
 
   def toDescription : String = {
     val buysell = if (security.value>0) "BUY" else "SELL"
-    s"${buysell} ${security} @${cost}"
+    s"${buysell} ${security} @${price}"
   }
 
   // TODO: expense account
   def toTransaction(opts:AccountOptions) : Transaction = {
-    val expense = (-cost*security.value - commission)
+    val expense = (-price*security.value - commission)
     require(opts.expenseAccount.isDefined || commission.value == zeroFraction)
 
     var postings = Seq(
       Posting(srcAcct, expense),
-      Posting(secAcct, security, cost)
+      Posting(secAcct, security, price)
     )
     if (commission.value != zeroFraction) {
       // TODO: currency match check?
