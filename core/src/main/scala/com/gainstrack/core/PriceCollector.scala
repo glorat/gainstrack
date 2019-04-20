@@ -1,6 +1,12 @@
 package com.gainstrack.core
 
+import java.time.Period
+
 import net.glorat.cqrs.{AggregateRoot, AggregateRootState, DomainEvent}
+import spire.math.SafeLong
+
+import scala.collection.SortedMap
+import scala.math.ScalaNumber
 
 class PriceCollector extends AggregateRoot {
   override protected var state: AggregateRootState = PriceState(java.util.UUID.randomUUID(), Map())
@@ -12,9 +18,22 @@ class PriceCollector extends AggregateRoot {
 }
 
 case class AssetTuple(fx1:AssetId, fx2:AssetId)
+object AssetTuple {
+  def apply(fx1:String, fx2:String):AssetTuple = AssetTuple(AssetId(fx1),AssetId(fx2))
+}
 
-case class PriceState(id:GUID, prices:Map[AssetTuple, Map[LocalDate, Fraction]]) extends AggregateRootState {
+case class PriceState(id:GUID, prices:Map[AssetTuple, SortedMap[LocalDate, Fraction]]) extends AggregateRootState {
   private val implicitPrices = true
+
+  private val interp = TimeSeriesInterpolator.from(SortedMap[LocalDate, Fraction]())
+
+  def getFX(tuple:AssetTuple, date:LocalDate, maxDenom:Long=1000000):Option[Fraction] = {
+    val timeSeries = prices.getOrElse(tuple, SortedMap())
+    val ret:Option[Fraction] = interp.getValue(timeSeries, date).map(x => x)
+
+    ret.map(f => f.limitDenominatorTo(SafeLong(maxDenom)))
+  }
+
 
   def process(e: Transfer): PriceState = {
     if (e.sourceValue.ccy != e.targetValue.ccy) {
@@ -35,8 +54,8 @@ case class PriceState(id:GUID, prices:Map[AssetTuple, Map[LocalDate, Fraction]])
     require(tgt != price.ccy)
     val fx1 = AssetTuple(tgt,price.ccy)
     val fx2 = AssetTuple(price.ccy, tgt)
-    val newByDate = prices.getOrElse(fx1,Map()).updated(date, price.value)
-    val new2ByDate = prices.getOrElse(fx2, Map()).updated(date, 1/price.value)
+    val newByDate = prices.getOrElse(fx1,SortedMap()).updated(date, price.value)
+    val new2ByDate = prices.getOrElse(fx2, SortedMap()).updated(date, 1/price.value)
     copy(prices = prices.updated(fx1, newByDate).updated(fx2, new2ByDate))
   }
 

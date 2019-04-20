@@ -115,7 +115,11 @@ class First extends FlatSpec {
       parseDate("2019-03-15") -> 144.62,
       parseDate("2019-03-26") -> 143.83)
     )
-
   }
 
+  it should "provide interpolated prices" in {
+    val fx = priceCollector.getState.getFX(AssetTuple("VTI","USD"), parseDate("2019-02-01"))
+    // Interp between 127 and 144
+    assert(fx.get ==  161651.0/1200.0) //134.709166666
+  }
 }
