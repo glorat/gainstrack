@@ -42,10 +42,10 @@ object SecurityPurchase extends CommandParser {
   import Patterns._
   val prefix = "trade"
   private val balanceRe = raw"(\S+ \S+)"
-  private val costRe = raw"\{(\S+ \S+)\}"
+  private val costRe = raw"@(\S+ \S+)"
 
   private val Purchase =s"${datePattern} ${prefix} ${acctPattern} ${balanceRe} ${costRe}".r
-  private val PurchaseWithCommision =s"${datePattern} ${prefix} ${acctPattern} ${balanceRe} ${costRe} ${balanceRe}".r
+  private val PurchaseWithCommision =s"${datePattern} ${prefix} ${acctPattern} ${balanceRe} ${costRe} C${balanceRe}".r
 
   def apply(acct: AccountId,
             date:LocalDate,
