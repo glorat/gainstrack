@@ -1,5 +1,70 @@
 package com.gainstrack.core
 
+/**
+  * Unit trusts that continually reinvest your income into units
+  * The individual transaction records are too unwieldy - they just
+  * give you your new updated balances include accumulated units and
+  * with costs already deducted
+  * @param accountId
+  * @param date
+  * @param security
+  * @param units
+  * @param price
+  */
+case class UnitTrustBalance(
+                           accountId: AccountId,
+                           date: LocalDate,
+                           security: Balance,
+                           price:Balance
+                           ) extends AccountCommand {
+  def value:Balance = price * security.value
+
+  require(accountId.startsWith("Asset:"))
+  val cashAccountId = accountId + s":${price.ccy.symbol}"
+  val incomeAccountId = accountId.replace("Asset:", "Income")
+  val securityAccountId = accountId + s":${security.ccy.symbol}"
+
+  def toTransaction(oldBalance:Balance) : Transaction = {
+    val newUnits = security-oldBalance
+    val unitIncrease : Posting = Posting(securityAccountId, newUnits, price )
+    val income:Posting = Posting(incomeAccountId, -newUnits*price)
+    Transaction(date, s"Unit statement: ${security} @${price}", Seq(unitIncrease, income))
+  }
+
+  def createRequiredAccounts(baseAcct:AccountCreation) : Seq[AccountCreation] = {
+    require(baseAcct.accountId == accountId)
+    val newBaseAccount = AccountCreation(baseAcct.date, AccountKey(cashAccountId, price.ccy))
+    val cashAcct = newBaseAccount.copy(key = AccountKey(cashAccountId + s":${price.ccy.symbol}", price.ccy))
+    val incomeAcct = newBaseAccount.copy(key = AccountKey(incomeAccountId, price.ccy))
+    // val expenseAcct = newBaseAccount.copy(key = AccountKey(expenseAcctId, price.ccy))
+
+    Seq(newBaseAccount, cashAcct, incomeAcct)
+  }
+}
+object UnitTrustBalance extends CommandParser {
+  import Patterns._
+  val prefix = "unit"
+  private val balanceRe = raw"(\S+ \S+)"
+  private val priceRe = raw"@(\S+ \S+)"
+
+  private val Statement =s"${datePattern} ${prefix} ${acctPattern} ${balanceRe} ${priceRe}".r
+
+  def apply(acct: AccountId,
+            date:LocalDate,
+            security:Balance,
+            price:Balance) : UnitTrustBalance = {
+    apply(acct, date, security, price)
+  }
+
+  def parse(str:String):UnitTrustBalance = {
+    str match {
+      case Statement(date, acct, security, price) => UnitTrustBalance(acct, parseDate(date), Balance.parse(security), price)
+    }
+  }
+
+
+}
+
 case class SecurityPurchase(
                              accountId: AccountId,
                              date:LocalDate,
@@ -9,8 +74,12 @@ case class SecurityPurchase(
                            ) extends AccountCommand {
 
   // Auto-gen the account name
-  val srcAcct = s"${accountId}:${price.ccy.symbol}"
-  val secAcct = s"${accountId}:${security.ccy.symbol}"
+  val cashAccountId = s"${accountId}:${price.ccy.symbol}"
+  val securityAccountId = s"${accountId}:${security.ccy.symbol}"
+  val incomeAcctId = accountId.replace("Assets:", "Income:")+s":${price.ccy.symbol}"
+  val expenseAcctId = accountId.replace("Assets:", "Expenses:")+s":${price.ccy.symbol}"
+  val requiredAccountIds:Seq[AccountId] = Seq(cashAccountId, securityAccountId, incomeAcctId, expenseAcctId)
+
   //val expenseAcct = acct.replace("Asset", "Expenses")
 
   def toDescription : String = {
@@ -18,14 +87,23 @@ case class SecurityPurchase(
     s"${buysell} ${security} @${price}"
   }
 
-  // TODO: expense account
+  def createRequiredAccounts(baseAcct:AccountCreation) : Seq[AccountCreation] = {
+    require(baseAcct.accountId == accountId)
+    val newBaseAccount = AccountCreation(baseAcct.date, AccountKey(cashAccountId, price.ccy))
+    val cashAcct = newBaseAccount.copy(key = AccountKey(cashAccountId + s":${price.ccy.symbol}", price.ccy))
+    val incomeAcct = newBaseAccount.copy(key = AccountKey(incomeAcctId, price.ccy))
+    val expenseAcct = newBaseAccount.copy(key = AccountKey(expenseAcctId, price.ccy))
+
+    Seq(newBaseAccount, cashAcct, incomeAcct, expenseAcct)
+  }
+
   def toTransaction(opts:AccountOptions) : Transaction = {
     val expense = (-price*security.value - commission)
     require(opts.expenseAccount.isDefined || commission.value == zeroFraction)
 
     var postings = Seq(
-      Posting(srcAcct, expense),
-      Posting(secAcct, security, price)
+      Posting(cashAccountId, expense),
+      Posting(securityAccountId, security, price)
     )
     if (commission.value != zeroFraction) {
       // TODO: currency match check?

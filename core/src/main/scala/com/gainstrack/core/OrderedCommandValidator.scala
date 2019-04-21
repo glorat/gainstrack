@@ -48,14 +48,14 @@ case class ValidationState(id:GUID, accounts:Seq[AccountCreation]) extends Aggre
     var ret = this
     require(accounts.exists(x => x.name == e.accountId))
     val acct = accounts.find(x => x.name == e.accountId).getOrElse(throw new IllegalArgumentException(s"${e.accountId} account must exist"))
-    if (!accounts.exists(x => x.name == e.srcAcct)) {
+    if (!accounts.exists(x => x.name == e.cashAccountId)) {
       // Auto vivify sub-accounts of securities account
-      val newAcct = acct.copy(key = AccountKey(e.srcAcct, e.price.ccy))
+      val newAcct = acct.copy(key = AccountKey(e.cashAccountId, e.price.ccy))
       ret = copy(accounts = accounts :+ newAcct)
     }
-    if (!accounts.exists(x => x.name == e.secAcct)) {
+    if (!accounts.exists(x => x.name == e.securityAccountId)) {
       // Auto vivify sub-accounts of securities account
-      val newAcct = acct.copy(key = AccountKey(e.secAcct, e.security.ccy))
+      val newAcct = acct.copy(key = AccountKey(e.securityAccountId, e.security.ccy))
       ret=copy(accounts = accounts :+ newAcct)
     }
     ret

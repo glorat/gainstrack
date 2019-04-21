@@ -50,30 +50,39 @@ extends AggregateRootState {
 
     var ret = this
     var newLines : Seq[String] = Seq()
-    val baseAcct = accounts.find(x => x.name == e.accountId)
-    require(baseAcct.isDefined)
+    val baseAcct = accounts.find(x => x.name == e.accountId).getOrElse(throw new IllegalStateException(s"${e.accountId} is not an open account"))
 
-    val incomeAcctId = e.accountId.replace("Assets:", "Income:")+s":${e.price.ccy.symbol}"
-    val expenseAcctId = e.accountId.replace("Assets:", "Expenses:")+s":${e.price.ccy.symbol}"
-
-    if (!accounts.exists(x => x.name == e.srcAcct)) {
+    if (!accounts.exists(x => x.name == e.cashAccountId)) {
       // Auto vivify sub-accounts of securities account
-      val newBaseAccount = AccountCreation(baseAcct.get.date, AccountKey(e.srcAcct, e.price.ccy))
-      val cashAcct = newBaseAccount.copy(key = AccountKey(e.srcAcct + s":${e.price.ccy.symbol}", e.price.ccy))
-      val incomeAcct = newBaseAccount.copy(key = AccountKey(incomeAcctId, e.price.ccy))
-      val expenseAcct = newBaseAccount.copy(key = AccountKey(expenseAcctId, e.price.ccy))
-      ret = ret.copy(accounts = ret.accounts ++ Seq(newBaseAccount, cashAcct, incomeAcct, expenseAcct))
+      val newAccts = e.createRequiredAccounts(baseAcct)
+      ret = ret.copy(accounts = ret.accounts ++ newAccts)
     }
-    if (!accounts.exists(x => x.name == e.secAcct)) {
+    if (!accounts.exists(x => x.name == e.securityAccountId)) {
       // Auto vivify sub-accounts of securities account
-      val newAcct = AccountCreation(baseAcct.get.date, AccountKey(e.secAcct, e.security.ccy))
+      val newAcct = AccountCreation(baseAcct.date, AccountKey(e.securityAccountId, e.security.ccy))
       newLines = newLines :+ "plugin \"beancount.plugins.book_conversions\" " +
-        s""""${e.secAcct},${incomeAcctId}""""
+        s""""${e.securityAccountId},${e.incomeAcctId}""""
       ret=ret.copy(accounts = ret.accounts :+ newAcct)
     }
 
-    newLines = newLines :+ e.toTransaction(baseAcct.get.options).toBeancount
+    newLines = newLines :+ e.toTransaction(baseAcct.options).toBeancount
     ret = ret.copy(txs = txs ++ newLines )
+    ret
+  }
+
+  private def process(e:UnitTrustBalance):BeancountState = {
+    val baseAcct = accounts.find(x => x.name == e.accountId).getOrElse(throw new IllegalStateException(s"${e.accountId} is not an open account"))
+    var ret = this
+    if (!accounts.exists(x => x.name == e.cashAccountId)) {
+      // Auto vivify sub accounts of unit trust account
+      val newAccts = e.createRequiredAccounts(baseAcct)
+      ret = ret.copy(accounts = ret.accounts ++ newAccts)
+    }
+    if (!accounts.exists(x => x.name == e.securityAccountId)) {
+      // Auto vivify sub-accounts of securities account
+      val newAcct = AccountCreation(baseAcct.date, AccountKey(e.securityAccountId, e.security.ccy))
+      ret=ret.copy(accounts = ret.accounts :+ newAcct)
+    }
     ret
   }
 
