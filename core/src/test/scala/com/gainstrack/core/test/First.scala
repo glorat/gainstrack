@@ -1,13 +1,9 @@
 package com.gainstrack.core.test
 
-import java.nio.file.Files
 import java.time.LocalDate
 
 import com.gainstrack.core._
 import org.scalatest.FlatSpec
-
-import scala.collection.SortedMap
-
 
 class First extends FlatSpec {
   val parser = new GainstrackParser

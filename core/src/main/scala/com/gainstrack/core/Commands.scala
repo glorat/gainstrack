@@ -1,8 +1,5 @@
 package com.gainstrack.core
 
-import java.time.LocalDate
-
-
 case class SecurityPurchase(
                              accountId: AccountId,
                              date:LocalDate,
@@ -96,12 +93,15 @@ object Transfer extends CommandParser {
   val prefix = "tfr"
   import Patterns._
   private val balanceRe = raw"(\S+ \S+)"
-  private val re =s"${datePattern} ${prefix} ${acctPattern} ${acctPattern} ${balanceRe} ${balanceRe}".r
+  private val FxTransfer =s"${datePattern} ${prefix} ${acctPattern} ${acctPattern} ${balanceRe} ${balanceRe}".r
+  private val SimpleTransfer = s"${datePattern} ${prefix} ${acctPattern} ${acctPattern} ${balanceRe}".r
 
   override def parse(str: String): Transfer = {
     str match {
-      case re(date, srcAcct, tgtAcct, srcValue, tgtValue) =>
+      case FxTransfer(date, srcAcct, tgtAcct, srcValue, tgtValue) =>
         Transfer(srcAcct, tgtAcct, parseDate(date), srcValue, tgtValue)
+      case SimpleTransfer(date, srcAcct, tgtAcct, value) =>
+        Transfer(srcAcct, tgtAcct, parseDate(date), value, value)
     }
   }
 }

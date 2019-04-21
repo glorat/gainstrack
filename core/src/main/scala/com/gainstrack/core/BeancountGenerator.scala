@@ -49,21 +49,31 @@ extends AggregateRootState {
   private def process(e:SecurityPurchase): BeancountState = {
 
     var ret = this
+    var newLines : Seq[String] = Seq()
     val baseAcct = accounts.find(x => x.name == e.accountId)
     require(baseAcct.isDefined)
+
+    val incomeAcctId = e.accountId.replace("Assets:", "Income:")+s":${e.price.ccy.symbol}"
+    val expenseAcctId = e.accountId.replace("Assets:", "Expenses:")+s":${e.price.ccy.symbol}"
+
     if (!accounts.exists(x => x.name == e.srcAcct)) {
       // Auto vivify sub-accounts of securities account
-      val newAcct = AccountCreation(baseAcct.get.date, AccountKey(e.srcAcct, e.price.ccy))
-      ret = ret.copy(accounts = ret.accounts :+ newAcct)
+      val newBaseAccount = AccountCreation(baseAcct.get.date, AccountKey(e.srcAcct, e.price.ccy))
+      val cashAcct = newBaseAccount.copy(key = AccountKey(e.srcAcct + s":${e.price.ccy.symbol}", e.price.ccy))
+      val incomeAcct = newBaseAccount.copy(key = AccountKey(incomeAcctId, e.price.ccy))
+      val expenseAcct = newBaseAccount.copy(key = AccountKey(expenseAcctId, e.price.ccy))
+      ret = ret.copy(accounts = ret.accounts ++ Seq(newBaseAccount, cashAcct, incomeAcct, expenseAcct))
     }
     if (!accounts.exists(x => x.name == e.secAcct)) {
       // Auto vivify sub-accounts of securities account
       val newAcct = AccountCreation(baseAcct.get.date, AccountKey(e.secAcct, e.security.ccy))
+      newLines = newLines :+ "plugin \"beancount.plugins.book_conversions\" " +
+        s""""${e.secAcct},${incomeAcctId}""""
       ret=ret.copy(accounts = ret.accounts :+ newAcct)
     }
 
-    val newTxs = e.toTransaction(baseAcct.get.options).toBeancount
-    ret = ret.copy(txs = ret.txs :+ e.toTransaction(baseAcct.get.options).toBeancount )
+    newLines = newLines :+ e.toTransaction(baseAcct.get.options).toBeancount
+    ret = ret.copy(txs = txs ++ newLines )
     ret
   }
 

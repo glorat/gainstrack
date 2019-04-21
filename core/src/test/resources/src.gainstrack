@@ -12,9 +12,7 @@
 2019-04-01 open Assets:Investment:IBUSD USD
   expenseAccount: Expenses:Investment:Fees:USD
 2010-01-01 open Assets:Investment:Zurich GBP
-2010-01-01 open Assets:Investment:Zurich:GBP GBP
 2010-01-01 open Assets:Investment:OldMutual GBP
-2010-01-01 open Assets:Investment:OldMutual:GBP GBP
 2014-01-04 adj Assets:Bank:Nationwide 25613.71 GBP Equity:Opening:GBP
 ;"2018-07-31 adj Assets:Bank:Nationwide 57721.15 GBP Equity:Opening:GBP
 
@@ -45,7 +43,7 @@
 2019-03-15 trade Assets:Investment:HSBC 14 VTI @144.6200 USD
 2019-03-26 trade Assets:Investment:HSBC 30 VTI @143.8300 USD
 2019-03-27 trade Assets:Investment:HSBC 15 BRK-B @200.5800 USD
-2019-04-11 tfr Assets:Bank:Nationwide Assets:Bank:HSBCUK 19000 GBP 19000 GBP
+2019-04-11 tfr Assets:Bank:Nationwide Assets:Bank:HSBCUK 19000 GBP
 2019-04-11 tfr Assets:Investment:HSBC:USD Assets:Investment:IBUSD:USD 34975 USD 34975 USD
 2019-04-11 trade Assets:Investment:IBUSD 100 VWRD @85.7900 USD C4.76 USD
 2019-04-11 trade Assets:Investment:IBUSD 230 VWRD @85.8300 USD C10.84 USD
