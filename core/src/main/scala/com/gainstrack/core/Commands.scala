@@ -19,15 +19,25 @@ case class UnitTrustBalance(
                            ) extends AccountCommand {
   def value:Balance = price * security.value
 
-  require(accountId.startsWith("Asset:"))
+  require(accountId.startsWith("Assets:"))
   val cashAccountId = accountId + s":${price.ccy.symbol}"
-  val incomeAccountId = accountId.replace("Asset:", "Income")
+  val incomeAccountId = accountId.replace("Assets:", "Income:")+s":${price.ccy.symbol}"
   val securityAccountId = accountId + s":${security.ccy.symbol}"
 
-  def toTransaction(oldBalance:Balance) : Transaction = {
+  def toBeancount(oldBalance:Balance) : String = {
+    if (security == oldBalance) {
+      // No transaction just emit a price
+      PriceObservation(date, security.ccy, price).toBeancount
+    }
+    else {
+      toTransaction(oldBalance).toBeancount
+    }
+  }
+
+  private def toTransaction(oldBalance:Balance) : Transaction = {
     val newUnits = security-oldBalance
     val unitIncrease : Posting = Posting(securityAccountId, newUnits, price )
-    val income:Posting = Posting(incomeAccountId, -newUnits*price)
+    val income:Posting = Posting(incomeAccountId, price * -newUnits.value)
     Transaction(date, s"Unit statement: ${security} @${price}", Seq(unitIncrease, income))
   }
 
@@ -48,13 +58,13 @@ object UnitTrustBalance extends CommandParser {
   private val priceRe = raw"@(\S+ \S+)"
 
   private val Statement =s"${datePattern} ${prefix} ${acctPattern} ${balanceRe} ${priceRe}".r
-
+/*
   def apply(acct: AccountId,
             date:LocalDate,
             security:Balance,
             price:Balance) : UnitTrustBalance = {
     apply(acct, date, security, price)
-  }
+  }*/
 
   def parse(str:String):UnitTrustBalance = {
     str match {

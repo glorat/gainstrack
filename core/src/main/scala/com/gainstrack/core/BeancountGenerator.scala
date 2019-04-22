@@ -15,7 +15,7 @@ class BeancountGenerator(cmds:Seq[AccountCommand])  {
     cmds.foldLeft(BeancountAccountState(Seq(), Seq())) ( (state, ev) => state.handle(ev))
   // Second pass for transations
   val txState:BeancountTransactionState =
-    cmds.foldLeft(BeancountTransactionState(acctState.accounts, Seq())) ( (state, ev) => state.handle(ev))
+    cmds.foldLeft(BeancountTransactionState(acctState.accounts, Map(), Seq())) ( (state, ev) => state.handle(ev))
 
   val lines = headers ++ acctState.accounts.map(_.toBeancount) ++ acctState.txs ++ txState.txs
 
@@ -35,6 +35,7 @@ extends AggregateRootState {
       case e:SecurityPurchase =>  process(e)
       case e:BalanceAdjustment => process(e)
       case e:PriceObservation => process(e)
+      case e:UnitTrustBalance => process(e)
     }
   }
 
@@ -83,7 +84,9 @@ extends AggregateRootState {
     if (!accounts.exists(x => x.name == e.securityAccountId)) {
       // Auto vivify sub-accounts of securities account
       val newAcct = AccountCreation(baseAcct.date, AccountKey(e.securityAccountId, e.security.ccy))
-      ret=ret.copy(accounts = ret.accounts :+ newAcct)
+      val plugin = "plugin \"beancount.plugins.book_conversions\" " +
+        s""""${e.securityAccountId},${e.incomeAccountId}""""
+      ret=ret.copy(accounts = ret.accounts :+ newAcct, txs = txs :+ plugin)
     }
     ret
   }
@@ -94,7 +97,7 @@ extends AggregateRootState {
 }
 
 
-case class BeancountTransactionState(accounts:Seq[AccountCreation], txs:Seq[String])
+case class BeancountTransactionState(accounts:Seq[AccountCreation], unitBalance:Map[AccountId,Balance], txs:Seq[String])
   extends AggregateRootState {
   def handle(e: DomainEvent): BeancountTransactionState = {
     e match {
@@ -103,6 +106,7 @@ case class BeancountTransactionState(accounts:Seq[AccountCreation], txs:Seq[Stri
       case e:SecurityPurchase =>  process(e)
       case e:BalanceAdjustment => process(e)
       case e:PriceObservation => process(e)
+      case e:UnitTrustBalance => process(e)
     }
   }
 
@@ -131,8 +135,9 @@ case class BeancountTransactionState(accounts:Seq[AccountCreation], txs:Seq[Stri
 
   private def process(e:UnitTrustBalance):BeancountTransactionState = {
     val baseAcct = accounts.find(x => x.name == e.accountId).getOrElse(throw new IllegalStateException(s"${e.accountId} is not an open account"))
-    var ret = this
-    ret
+    val oldBalance = unitBalance.getOrElse(e.securityAccountId, Balance(0,e.security.ccy))
+    val newLine = e.toBeancount(oldBalance)
+    copy(txs = txs :+ newLine, unitBalance = unitBalance.updated(e.securityAccountId, e.security))
   }
 
   private def process(e:BalanceAdjustment):BeancountTransactionState = {
