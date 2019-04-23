@@ -28,8 +28,8 @@
 2019-01-01 trade Assets:Investment:Zurich 28146.69 TBOND @1.23 GBP
 
 2019-01-01 adj Assets:Investment:OldMutual:GBP 80300.28 GBP Equity:Opening:GBP
-2019-01-01 trade Assets:Investment:OldMutual 2221.2587 QS90 @15.03 GBP
-2019-01-01 trade Assets:Investment:OldMutual 525.5707 OPXC @35.02 GBP
+2019-01-01 unit Assets:Investment:OldMutual 2221.2587 QS90 @15.03 GBP
+2019-01-01 unit Assets:Investment:OldMutual 525.5707 OPXC @35.02 GBP
 2019-01-01 trade Assets:Investment:OldMutual 538.2539 OPY7 @32.22 GBP
 2019-01-01 trade Assets:Investment:OldMutual 752.8264 SVDK @2.533 GBP
 2019-01-01 trade Assets:Investment:OldMutual 243.2453 GBR06HUW @16.37 GBP

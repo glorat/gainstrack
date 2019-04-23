@@ -34,7 +34,7 @@ case class UnitTrustBalance(
     }
   }
 
-  private def toTransaction(oldBalance:Balance) : Transaction = {
+  def toTransaction(oldBalance:Balance) : Transaction = {
     val newUnits = security-oldBalance
     val unitIncrease : Posting = Posting(securityAccountId, newUnits, price )
     val income:Posting = Posting(incomeAccountId, price * -newUnits.value)

@@ -50,6 +50,11 @@ case class PriceState(id:GUID, prices:Map[AssetTuple, SortedMap[LocalDate, Fract
     this.withNewPrice(e.date, e.price, e.security.ccy)
   }
 
+  def process(e:UnitTrustBalance) : PriceState = {
+    val price = e.price
+    this.withNewPrice(e.date, e.price, e.security.ccy)
+  }
+
   private def withNewPrice(date:LocalDate, price:Balance, tgt:AssetId) : PriceState = {
     require(tgt != price.ccy)
     val fx1 = AssetTuple(tgt,price.ccy)
@@ -63,6 +68,7 @@ case class PriceState(id:GUID, prices:Map[AssetTuple, SortedMap[LocalDate, Fract
     e match {
       case e:Transfer => process(e)
       case e:SecurityPurchase => process(e)
+      case e:UnitTrustBalance => process(e)
       case _ => this
     }
   }

@@ -49,20 +49,17 @@ class First extends FlatSpec {
     assert(BalanceAdjustment.parse("2019-01-01 adj Assets:HSBCHK 138668.37 HKD Equity:Opening:HKD") == bohkd)
   }
 
-  lazy val validator : OrderedCommandValidator = {
-    val machine = new OrderedCommandValidator
-    orderedCmds.foreach(cmd => {
-      machine.applyChange(cmd)
-    })
-    machine
-  }
+  // First pass for accounts
+  lazy val acctState:BeancountAccountState =
+    orderedCmds.foldLeft(BeancountAccountState(Seq(), Seq())) ( (state, ev) => state.handle(ev))
+
 
   "cmds" should "process" in {
-    validator
+    acctState
   }
 
   it should "parse account options" in {
-    val acct = validator.getState.accounts.find(x => x.name == "Assets:Investment:IBUSD").getOrElse(fail("Missing account"))
+    val acct = acctState.accounts.find(x => x.name == "Assets:Investment:IBUSD").getOrElse(fail("Missing account"))
     assert (acct.options.expenseAccount == Some("Expenses:Investment:Fees:USD"))
   }
 

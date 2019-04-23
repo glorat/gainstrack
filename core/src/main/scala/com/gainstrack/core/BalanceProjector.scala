@@ -32,6 +32,7 @@ case class BalanceState(id:GUID, accounts:Seq[AccountCreation], balances:Map[Acc
       case e:SecurityPurchase =>  process(e)
       case e:BalanceAdjustment => process(e)
       case e:PriceObservation => this
+      case e:UnitTrustBalance => process(e)
     }
   }
 
@@ -50,6 +51,12 @@ case class BalanceState(id:GUID, accounts:Seq[AccountCreation], balances:Map[Acc
     require(baseAcct.isDefined)
     val opts = baseAcct.get.options
     process(e.toTransaction(opts))
+  }
+
+  private def process(e:UnitTrustBalance) : BalanceState = {
+    val oldBalance :Fraction = balances(e.securityAccountId).lastOption.map(_._2).getOrElse(zeroFraction)
+    val tx = e.toTransaction(Balance(oldBalance, e.security.ccy))
+    process(tx)
   }
 
   private def process(e:BalanceAdjustment): BalanceState = {
