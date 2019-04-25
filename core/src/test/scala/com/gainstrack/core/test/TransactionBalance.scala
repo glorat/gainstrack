@@ -52,4 +52,21 @@ class TransactionBalanceTest extends FlatSpec {
     assert(tx.filledPostings(0).toString == "Assets:Broker:USD -1830.7 USD")
     println(tx)
   }
+
+  "unit commands" should "project balance" in {
+    val parser = new GainstrackParser
+    import scala.io.Source
+    Source.fromResource("unit.gainstrack").getLines.foreach(parser.parseLine)
+    val cmds = parser.getCommands
+
+    val orderedCmds = cmds.sorted
+    val bg = new BeancountGenerator(cmds.sorted)
+
+    bg.writeFile("/tmp/unit.beancount")
+
+    val end = bg.balanceState.getBalance("Assets:Pension:Barclays:BGIL", parseDate("2019-12-31")).get
+    assert (end == 600)
+    val endIncome = bg.balanceState.getBalance("Income:Pension:Barclays:GBP", parseDate("2019-12-31")).get
+    assert (endIncome == -1500)
+  }
 }

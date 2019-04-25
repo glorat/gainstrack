@@ -13,9 +13,13 @@ class BeancountGenerator(cmds:Seq[AccountCommand])  {
   // First pass for accounts
   val acctState:BeancountAccountState =
     cmds.foldLeft(BeancountAccountState(Seq(), Seq())) ( (state, ev) => state.handle(ev))
-  // Second pass for transations
+  // Second pass for balances
+  val balanceState:BalanceState =
+    cmds.foldLeft(BalanceState(acctState.accounts)) ( (state,ev) => state.handle(ev))
+
+  // Third pass for transations
   val txState:BeancountTransactionState =
-    cmds.foldLeft(BeancountTransactionState(acctState.accounts, Map(), Seq())) ( (state, ev) => state.handle(ev))
+    cmds.foldLeft(BeancountTransactionState(acctState.accounts, balanceState, Seq())) ( (state, ev) => state.handle(ev))
 
   val lines = headers ++ acctState.accounts.map(_.toBeancount) ++ acctState.txs ++ txState.txs
 
@@ -23,6 +27,14 @@ class BeancountGenerator(cmds:Seq[AccountCommand])  {
     lines.mkString("\n")
   }
 
+  def writeFile(filename:String) = {
+    import java.nio.file.{Paths, Files}
+    import java.nio.charset.StandardCharsets
+
+    val str = this.toBeancount
+    Files.write(Paths.get(filename), str.getBytes(StandardCharsets.UTF_8))
+
+  }
 }
 
 
@@ -97,7 +109,7 @@ extends AggregateRootState {
 }
 
 
-case class BeancountTransactionState(accounts:Seq[AccountCreation], unitBalance:Map[AccountId,Balance], txs:Seq[String])
+case class BeancountTransactionState(accounts:Seq[AccountCreation], balanceState:BalanceState, txs:Seq[String])
   extends AggregateRootState {
   def handle(e: DomainEvent): BeancountTransactionState = {
     e match {
@@ -135,12 +147,14 @@ case class BeancountTransactionState(accounts:Seq[AccountCreation], unitBalance:
 
   private def process(e:UnitTrustBalance):BeancountTransactionState = {
     val baseAcct = accounts.find(x => x.name == e.accountId).getOrElse(throw new IllegalStateException(s"${e.accountId} is not an open account"))
-    val oldBalance = unitBalance.getOrElse(e.securityAccountId, Balance(0,e.security.ccy))
-    val newLine = e.toBeancount(oldBalance)
-    copy(txs = txs :+ newLine, unitBalance = unitBalance.updated(e.securityAccountId, e.security))
+    // FIXME: Wrong account
+    val oldBalance = balanceState.getBalance(e.securityAccountId, e.date.minusDays(1)).getOrElse(zeroFraction)
+    val newLine = e.toBeancount(Balance(oldBalance, e.security.ccy))
+    copy(txs = txs :+ newLine)
   }
 
   private def process(e:BalanceAdjustment):BeancountTransactionState = {
-    copy(txs = txs ++ e.toBeancounts)
+    val oldBalance = balanceState.getBalance(e.accountId, e.date.minusDays(1)).get
+    copy(txs = txs ++ e.toBeancounts(oldBalance))
   }
 }

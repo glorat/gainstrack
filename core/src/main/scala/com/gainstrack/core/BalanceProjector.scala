@@ -19,13 +19,19 @@ case class BalanceState(id:GUID, accounts:Seq[AccountCreation], balances:Map[Acc
   type Series = SortedMap[LocalDate,Fraction]
   val interp = TimeSeriesInterpolator.from(SortedMap[LocalDate,Fraction]())
 
-  def getBalance(account:AccountId, date: LocalDate) : Option[Fraction] = {
-    val ret:Option[Fraction] = interp.getValue(balances.getOrElse(account, SortedMap()), date)
+  def interpBalance(account:AccountId, date: LocalDate) : Option[Fraction] = {
+    val ret:Option[Fraction] = interp.interpValue(balances.getOrElse(account, SortedMap()), date)
         .map(x => x)
     ret.map(f => f.limitDenominatorTo(SafeLong(1000000)))
   }
 
-  override def handle(e: DomainEvent): AggregateRootState = {
+  def getBalance(account:AccountId, date: LocalDate) : Option[Fraction] = {
+    val ret:Option[Fraction] = interp.getValue(balances.getOrElse(account, SortedMap()), date)
+      .map(x => x)
+    ret
+  }
+
+  override def handle(e: DomainEvent): BalanceState = {
     e match {
       case e:AccountCreation => process(e)
       case e:Transfer => process(e)

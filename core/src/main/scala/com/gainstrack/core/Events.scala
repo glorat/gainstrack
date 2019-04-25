@@ -20,6 +20,8 @@ trait AccountCommand extends Command with DomainEvent with Ordered[AccountComman
   }
 
   def toOrderValue:Long = {
+    date.toEpochDay
+    /*
     val typeOrder = this match {
       case _:AccountCreation => 1  // They come first
       case _:SecurityPurchase => 2 // These can auto-vivify accounts
@@ -29,7 +31,7 @@ trait AccountCommand extends Command with DomainEvent with Ordered[AccountComman
 
     val dateOrder = date.toEpochDay
     // Type then date
-    (typeOrder*10000000) + dateOrder
+    (typeOrder*10000000) + dateOrder*/
   }
 
   def withOption(key:String, valueStr:String):AccountCommand = {

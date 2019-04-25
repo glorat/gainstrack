@@ -13,17 +13,31 @@ class TestTimeSeriesInterpolator extends FlatSpec {
   val interp = TimeSeriesInterpolator.from(data)
 
   "TimeSeriesTest" should "extrapolate before start" in {
-    assert(interp.getValue(data, parseDate("2018-01-01")) == Some(1))
+    assert(interp.interpValue(data, parseDate("2018-01-01")) == Some(1))
   }
   it should "extrapolate after end" in {
-    assert(interp.getValue(data, parseDate("2020-01-01")) == Some(365))
+    assert(interp.interpValue(data, parseDate("2020-01-01")) == Some(365))
   }
   it should "return exact values" in {
+    assert(interp.interpValue(data, parseDate("2019-01-01")) == Some(1))
+    assert(interp.interpValue(data, parseDate("2019-12-31")) == Some(365))
+  }
+  it should "linearly interpolate in between" in  {
+    assert(interp.interpValue(data, parseDate("2019-01-02")) == Some(2))
+    assert(interp.interpValue(data, parseDate("2019-12-30")) == Some(364))
+  }
+  it should "get zero before start" in {
+    assert(interp.getValue(data, parseDate("2018-01-01")) == Some(0))
+  }
+  it should "get max after end" in {
+    assert(interp.getValue(data, parseDate("2020-01-01")) == Some(365))
+  }
+  it should "get exact values" in {
     assert(interp.getValue(data, parseDate("2019-01-01")) == Some(1))
     assert(interp.getValue(data, parseDate("2019-12-31")) == Some(365))
   }
-  it should "linearly interpolate in between" in  {
-    assert(interp.getValue(data, parseDate("2019-01-02")) == Some(2))
-    assert(interp.getValue(data, parseDate("2019-12-30")) == Some(364))
+  it should "get flat in between" in  {
+    assert(interp.getValue(data, parseDate("2019-01-02")) == Some(1))
+    assert(interp.getValue(data, parseDate("2019-12-30")) == Some(1))
   }
 }

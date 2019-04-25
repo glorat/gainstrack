@@ -22,6 +22,8 @@ case class UnitTrustBalance(
   require(accountId.startsWith("Assets:"))
   val cashAccountId = accountId + s":${price.ccy.symbol}"
   val incomeAccountId = accountId.replace("Assets:", "Income:")+s":${price.ccy.symbol}"
+  val expenseAccountId = accountId.replace("Assets:", "Expenses:")+s":${price.ccy.symbol}"
+
   val securityAccountId = accountId + s":${security.ccy.symbol}"
 
   def toBeancount(oldBalance:Balance) : String = {
@@ -43,12 +45,11 @@ case class UnitTrustBalance(
 
   def createRequiredAccounts(baseAcct:AccountCreation) : Seq[AccountCreation] = {
     require(baseAcct.accountId == accountId)
-    val newBaseAccount = AccountCreation(baseAcct.date, AccountKey(cashAccountId, price.ccy))
-    val cashAcct = newBaseAccount.copy(key = AccountKey(cashAccountId + s":${price.ccy.symbol}", price.ccy))
-    val incomeAcct = newBaseAccount.copy(key = AccountKey(incomeAccountId, price.ccy))
-    // val expenseAcct = newBaseAccount.copy(key = AccountKey(expenseAcctId, price.ccy))
+    val cashAcct = baseAcct.copy(key = AccountKey(cashAccountId, price.ccy))
+    val incomeAcct = baseAcct.copy(key = AccountKey(incomeAccountId, price.ccy))
+    val expenseAcct = baseAcct.copy(key = AccountKey(expenseAccountId, price.ccy))
 
-    Seq(newBaseAccount, cashAcct, incomeAcct)
+    Seq(cashAcct, incomeAcct, expenseAcct)
   }
 }
 object UnitTrustBalance extends CommandParser {
@@ -99,12 +100,11 @@ case class SecurityPurchase(
 
   def createRequiredAccounts(baseAcct:AccountCreation) : Seq[AccountCreation] = {
     require(baseAcct.accountId == accountId)
-    val newBaseAccount = AccountCreation(baseAcct.date, AccountKey(cashAccountId, price.ccy))
-    val cashAcct = newBaseAccount.copy(key = AccountKey(cashAccountId + s":${price.ccy.symbol}", price.ccy))
-    val incomeAcct = newBaseAccount.copy(key = AccountKey(incomeAcctId, price.ccy))
-    val expenseAcct = newBaseAccount.copy(key = AccountKey(expenseAcctId, price.ccy))
+    val cashAcct = baseAcct.copy(key = AccountKey(cashAccountId, price.ccy))
+    val incomeAcct = baseAcct.copy(key = AccountKey(incomeAcctId, price.ccy))
+    val expenseAcct = baseAcct.copy(key = AccountKey(expenseAcctId, price.ccy))
 
-    Seq(newBaseAccount, cashAcct, incomeAcct, expenseAcct)
+    Seq(cashAcct, incomeAcct, expenseAcct)
   }
 
   def toTransaction(opts:AccountOptions) : Transaction = {
@@ -169,7 +169,7 @@ case class Transfer(
   }
 
   def toTransaction : Transaction = {
-    Transaction(date, "", Seq(
+    Transaction(date, s"${source} -> ${dest}", Seq(
       Posting(source, -sourceValue, Balance(fxRate,targetValue.ccy)),
       Posting(dest, targetValue)
     ))
@@ -208,6 +208,16 @@ case class BalanceAdjustment(
     val l1 = s"${date.minusDays(1)} pad ${accountId} ${adjAccount}"
     val l2 = s"${date} balance ${accountId} ${balance}"
     Seq(l1,l2)
+  }
+
+  // With old balance value, avoid using pad
+  def toBeancounts(oldValue:Fraction) : Seq[String] = {
+    val newUnits = balance-oldValue
+    val unitIncrease : Posting = Posting(accountId, newUnits )
+    val income:Posting = Posting(adjAccount, -newUnits)
+    val tx = Transaction(date.minusDays(1), s"Adjustment: ${oldValue.toDouble} -> ${balance}", Seq(unitIncrease, income)).toBeancount
+    val bal = s"${date} balance ${accountId} ${balance}"
+    Seq(tx, bal)
   }
 }
 
