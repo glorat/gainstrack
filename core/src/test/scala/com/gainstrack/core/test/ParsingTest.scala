@@ -1,6 +1,6 @@
 package com.gainstrack.core.test
 
-import com.gainstrack.core.SecurityPurchase
+import com.gainstrack.command.SecurityPurchase
 import org.scalatest.FlatSpec
 
 class ParsingTest extends FlatSpec {

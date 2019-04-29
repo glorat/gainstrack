@@ -2,6 +2,7 @@ package com.gainstrack.core.test
 
 import java.time.LocalDate
 
+import com.gainstrack.command.{BalanceAdjustment, Transfer}
 import com.gainstrack.core._
 import org.scalatest.FlatSpec
 

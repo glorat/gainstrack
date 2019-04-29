@@ -1,5 +1,7 @@
 package com.gainstrack.core
 
+import com.gainstrack.command._
+
 class GainstrackParser {
   private var commands:Seq[AccountCommand] = Seq()
   private var lineCount : Int = 0
@@ -14,7 +16,7 @@ class GainstrackParser {
     "unit" -> UnitTrustBalance
   )
 
-  import Patterns._
+  import com.gainstrack.command.Patterns._
   private val prefix = raw"(\w+)"
   private val AccountCommand =s"${datePattern} ${prefix}.*".r
   private val Metadata = s"\\s*([a-z][A-Za-z0-9_-]+):\\s*(.*)".r

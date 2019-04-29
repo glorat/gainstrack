@@ -2,6 +2,7 @@ package com.gainstrack.core
 
 import java.time.Period
 
+import com.gainstrack.command.{SecurityPurchase, Transfer, UnitTrustBalance}
 import net.glorat.cqrs.{AggregateRoot, AggregateRootState, DomainEvent}
 import spire.math.SafeLong
 

@@ -1,5 +1,7 @@
 package com.gainstrack.core
 
+import com.gainstrack.command.CommandParser
+
 case class AccountOptions (
                           expenseAccount:Option[String] = None,
                           description:String = "",
@@ -41,7 +43,7 @@ case class AccountCreation (
 }
 
 object AccountCreation extends CommandParser {
-  import Patterns._
+  import com.gainstrack.command.Patterns._
 
   val prefix = "open"
   private val re =s"${datePattern} ${prefix} ${acctPattern} (\\S+)".r

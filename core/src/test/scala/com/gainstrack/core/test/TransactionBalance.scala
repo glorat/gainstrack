@@ -2,6 +2,7 @@ package com.gainstrack.core.test
 
 import java.time.{LocalDate, ZonedDateTime}
 
+import com.gainstrack.command.SecurityPurchase
 import com.gainstrack.core._
 import org.scalatest.FlatSpec
 

@@ -1,5 +1,6 @@
 package com.gainstrack.core
 
+import com.gainstrack.command._
 import net.glorat.cqrs.{AggregateRoot, AggregateRootState, DomainEvent}
 import spire.math.SafeLong
 
