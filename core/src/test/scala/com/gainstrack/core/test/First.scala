@@ -77,15 +77,6 @@ class First extends FlatSpec {
 
   }
 
-  it should "project balances" in {
-    val bp = new BalanceProjector(bg.acctState.accounts)
-    for (elem <- orderedCmds) {
-      bp.applyChange(elem)
-    }
-    // After commissions, should be 172.05
-    assert(bp.getState.balances("Assets:Investment:IBUSD:USD").last._2 == 172.05)
-    assert(bp.getState.balances("Expenses:Investment:Fees:USD").last._2 == 18.87)
-  }
   lazy val priceCollector : PriceCollector = {
     val machine = new PriceCollector
     orderedCmds.foreach(cmd => {
@@ -93,6 +84,31 @@ class First extends FlatSpec {
     })
     machine
   }
+
+  {
+    val bp = new BalanceProjector(bg.acctState.accounts)
+    for (elem <- orderedCmds) {
+      bp.applyChange(elem)
+    }
+    "BalanceProjector" should "project balances" in {
+
+      // After commissions, should be 172.05
+      assert(bp.getState.balances("Assets:Investment:IBUSD:USD").last._2 == 172.05)
+      assert(bp.getState.balances("Expenses:Investment:Fees:USD").last._2 == 18.87)
+    }
+
+
+    it should "list balances by account" in {
+      val today = parseDate("2019-12-31")
+      acctState.accounts.sortBy(_.name).foreach(account => {
+        val value = bp.getState.getBalance(account.accountId, today).getOrElse(zeroFraction)
+        println(s"${account.accountId}: ${value.toDouble} ${account.key.assetId.symbol}")
+      })
+    }
+
+  }
+
+
   "price collector" should "process" in {
     priceCollector
   }
