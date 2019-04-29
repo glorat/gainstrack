@@ -65,6 +65,8 @@ class First extends FlatSpec {
 
   val bg = new BeancountGenerator(orderedCmds)
 
+  val accountMap = bg.acctState.accountMap
+
   it should "generate beancount" in {
 
     val output = "option \"title\" \"Example Beancount file\"\noption \"operating_currency\" \"USD\"\n2010-01-01 open Equity:Opening:HKD HKD\n2010-01-01 open Equity:HSBCUS USD\n2010-01-01 open Assets:HSBCHK HKD\n2010-01-01 open Assets:HSBCUS USD\n2014-01-03 pad Assets:HSBCHK Equity:Opening:HKD\n2014-01-04 balance Assets:HSBCHK 33030.33 HKD\n2018-12-31 pad Assets:HSBCHK Equity:Opening:HKD\n2019-01-01 balance Assets:HSBCHK 138668.37 HKD\n2019-01-02 * \"\"\n  Assets:HSBCHK -40000.0 HKD @0.12712275 USD\n  Assets:HSBCUS 5084.91 USD\n"
@@ -90,6 +92,9 @@ class First extends FlatSpec {
     for (elem <- orderedCmds) {
       bp.applyChange(elem)
     }
+    val today = parseDate("2019-12-31")
+
+
     "BalanceProjector" should "project balances" in {
 
       // After commissions, should be 172.05
@@ -106,7 +111,32 @@ class First extends FlatSpec {
       })
     }
 
+    it should "sum all asset balances to a position set" in {
+      val assets = acctState.accounts.filter(_.name.startsWith("Assets:")).foldLeft(PositionSet())((ps,account) => {
+        val value:Fraction = bp.getState.getBalance(account.accountId, today).getOrElse(zeroFraction)
+         ps + Balance(value, account.key.assetId.symbol)
+      }).assetBalance
+
+      assert(assets(AssetId("USD")) == -52857.23)
+
+    }
+        /*
+    it should "aggregate a tree of position sets" in {
+      // Aggregate assets up the tree...
+      var accountsToReduce = accountMap.keys
+      var current = acctState.accounts.filter(_.name.startsWith("Assets:")).foldLeft(PositionSet())((ps,account) => {
+        val value:Fraction = bp.getState.getBalance(account.accountId, today).getOrElse(zeroFraction)
+        ps + Balance(value, account.key.assetId.symbol)
+      }).assetBalance
+      while (accountsToReduce.size > 0) {
+        val parents = accountsToReduce.map(accountId => accountMap.get(accountId))
+
+      }
+    }
+    */
   }
+
+
 
 
   "price collector" should "process" in {

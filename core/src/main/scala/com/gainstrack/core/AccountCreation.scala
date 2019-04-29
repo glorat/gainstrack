@@ -16,6 +16,16 @@ case class AccountCreation (
   def accountId = key.name
   def name = key.name
 
+  def parentAccountId:Option[AccountId] = {
+    val idx = key.name.lastIndexOf(":")
+    if (idx>0) {
+      Some(key.name.take(idx-1))
+    }
+    else {
+      None
+    }
+  }
+
   def toBeancount : String = {
     s"${date} open ${key.name} ${key.assetId.symbol}"
   }

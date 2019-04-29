@@ -77,7 +77,7 @@ case class Commodity (
 )
 
 case class AccountKey(
-                       name: String,
+                       name: AccountId,
                        assetId: AssetId
                      ) {
   def inferAccountType: String = {

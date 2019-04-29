@@ -40,6 +40,9 @@ class BeancountGenerator(cmds:Seq[AccountCommand])  {
 
 case class BeancountAccountState(accounts:Seq[AccountCreation], txs:Seq[String])
 extends AggregateRootState {
+
+  lazy val accountMap:Map[AccountId, AccountCreation] = accounts.map(a => a.accountId -> a)(collection.breakOut)
+
   def handle(e: DomainEvent): BeancountAccountState = {
     e match {
       case e:AccountCreation => process(e)
