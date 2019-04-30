@@ -9,7 +9,7 @@ case class Transaction (
                          /** System time */
                          enterDate: ZonedDateTime
 
-                       ) {
+                       ) extends BeancountCommand {
   require(postings.length>=2, "A transaction must have at least 2 postings")
   lazy val filledPostings: Seq[Posting] = {
     // Logic allows one post to have no amount

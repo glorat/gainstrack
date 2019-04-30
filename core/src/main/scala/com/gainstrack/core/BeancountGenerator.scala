@@ -22,7 +22,8 @@ class BeancountGenerator(cmds:Seq[AccountCommand])  {
   val txState:BeancountTransactionState =
     cmds.foldLeft(BeancountTransactionState(acctState.accounts, balanceState, Seq())) ( (state, ev) => state.handle(ev))
 
-  val lines = headers ++ acctState.accounts.map(_.toBeancount) ++ acctState.txs ++ txState.txs
+  //val lines = headers ++ acctState.accounts.map(_.toBeancount) ++ acctState.txs ++ txState.txs
+  val lines = headers ++ acctState.accounts.map(_.toBeancount) ++ acctState.txs ++ txState.cmds.map(_.toBeancount)
 
   def toBeancount: String = {
     lines.mkString("\n")
@@ -113,8 +114,9 @@ extends AggregateRootState {
 }
 
 
-case class BeancountTransactionState(accounts:Seq[AccountCreation], balanceState:BalanceState, txs:Seq[String])
+case class BeancountTransactionState(accounts:Seq[AccountCreation], balanceState:BalanceState, cmds:Seq[BeancountCommand])
   extends AggregateRootState {
+
   def handle(e: DomainEvent): BeancountTransactionState = {
     e match {
       case e:AccountCreation => process(e)
@@ -127,15 +129,16 @@ case class BeancountTransactionState(accounts:Seq[AccountCreation], balanceState
   }
 
   private def process(e:PriceObservation):BeancountTransactionState = {
-    copy(txs = txs :+ e.toBeancount)
+    copy(cmds = cmds :+ e)
   }
 
   private def process(e:AccountCreation):BeancountTransactionState = {
+    //copy(cmds = cmds :+ e)
     this
   }
 
   private def process(e:Transfer):BeancountTransactionState = {
-    copy(txs = txs :+ e.toTransaction.toBeancount)
+    copy(cmds = cmds :+ e.toTransaction)
   }
 
   private def process(e:SecurityPurchase): BeancountTransactionState = {
@@ -144,8 +147,7 @@ case class BeancountTransactionState(accounts:Seq[AccountCreation], balanceState
     var newLines : Seq[String] = Seq()
     val baseAcct = accounts.find(x => x.name == e.accountId).getOrElse(throw new IllegalStateException(s"${e.accountId} is not an open account"))
 
-    newLines = newLines :+ e.toTransaction(baseAcct.options).toBeancount
-    ret = ret.copy(txs = txs ++ newLines )
+    ret = ret.copy(cmds = cmds :+ e.toTransaction(baseAcct.options) )
     ret
   }
 
@@ -153,12 +155,11 @@ case class BeancountTransactionState(accounts:Seq[AccountCreation], balanceState
     val baseAcct = accounts.find(x => x.name == e.accountId).getOrElse(throw new IllegalStateException(s"${e.accountId} is not an open account"))
     // FIXME: Wrong account
     val oldBalance = balanceState.getBalance(e.securityAccountId, e.date.minusDays(1)).getOrElse(zeroFraction)
-    val newLine = e.toBeancount(Balance(oldBalance, e.security.ccy))
-    copy(txs = txs :+ newLine)
+    copy(cmds = cmds :+ e.toBeancountCommand(Balance(oldBalance, e.security.ccy)))
   }
 
   private def process(e:BalanceAdjustment):BeancountTransactionState = {
     val oldBalance = balanceState.getBalance(e.accountId, e.date.minusDays(1)).get
-    copy(txs = txs ++ e.toBeancounts(oldBalance))
+    copy(cmds = cmds :+ e.toBeancountCommand(oldBalance))
   }
 }

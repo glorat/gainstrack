@@ -14,7 +14,7 @@ case class AccountCreation (
                            date: LocalDate,
                            key: AccountKey,
                            options:AccountOptions
-                           ) extends AccountCommand {
+                           ) extends AccountCommand with BeancountCommand {
   def accountId = key.name
   def name = key.name
 

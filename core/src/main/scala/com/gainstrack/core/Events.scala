@@ -38,13 +38,16 @@ trait AccountCommand extends Command with DomainEvent with Ordered[AccountComman
     throw new IllegalArgumentException(s"Option ${key} is not supported by ${this.getClass.getName}")
   }
 }
+
+trait BeancountCommand {
+  def toBeancount : String
+}
+
 object AccountCommand  {
 
 }
 
-
-trait UserExperience extends DomainEvent
-trait AccountEvent extends UserExperience {
+trait AccountEvent extends DomainEvent {
   def accountId: AccountId
   def date:LocalDate
 }

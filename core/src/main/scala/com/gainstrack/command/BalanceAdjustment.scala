@@ -27,6 +27,12 @@ case class BalanceAdjustment(
     val bal = s"${date} balance ${accountId} ${balance}"
     Seq(tx, bal)
   }
+
+  def toBeancountCommand(oldValue:Fraction) : BeancountCommand = {
+    new BeancountCommand {
+      override def toBeancount: String = toBeancounts(oldValue).mkString("\n")
+    }
+  }
 }
 
 object BalanceAdjustment extends CommandParser {

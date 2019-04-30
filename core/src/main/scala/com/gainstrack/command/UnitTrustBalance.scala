@@ -29,6 +29,16 @@ case class UnitTrustBalance(
 
   val securityAccountId = accountId + s":${security.ccy.symbol}"
 
+  def toBeancountCommand(oldBalance:Balance) : BeancountCommand = {
+    if (security == oldBalance) {
+      // No transaction just emit a price
+      PriceObservation(date, security.ccy, price)
+    }
+    else {
+      toTransaction(oldBalance)
+    }
+  }
+
   def toBeancount(oldBalance:Balance) : String = {
     if (security == oldBalance) {
       // No transaction just emit a price

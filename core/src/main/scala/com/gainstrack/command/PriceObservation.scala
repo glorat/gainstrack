@@ -1,8 +1,9 @@
 package com.gainstrack.command
 
-import com.gainstrack.core.{AccountCommand, AssetId, Balance, LocalDate, parseDate}
+import com.gainstrack.core.{AccountCommand, AssetId, Balance, BeancountCommand, LocalDate, parseDate}
 
-case class PriceObservation(date:LocalDate, assetId: AssetId, price:Balance) extends AccountCommand {
+case class PriceObservation(date:LocalDate, assetId: AssetId, price:Balance)
+  extends AccountCommand with BeancountCommand {
   def toBeancount : String = {
      s"${date} price ${assetId.symbol} ${price}"
   }
