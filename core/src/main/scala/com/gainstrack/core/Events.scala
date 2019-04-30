@@ -40,6 +40,7 @@ trait AccountCommand extends Command with DomainEvent with Ordered[AccountComman
 }
 
 trait BeancountCommand {
+  def origin: AccountCommand
   def toBeancount : String
 }
 

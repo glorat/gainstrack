@@ -24,7 +24,7 @@ case class Transfer(
     Transaction(date, s"${source} -> ${dest}", Seq(
       Posting(source, -sourceValue, Balance(fxRate,targetValue.ccy)),
       Posting(dest, targetValue)
-    ))
+    ), this)
   }
 
 }

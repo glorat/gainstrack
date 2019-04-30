@@ -8,6 +8,7 @@ case class BalanceAdjustment(
                               balance:Balance,
                               adjAccount:AccountId
                             ) extends AccountCommand {
+  private val self = this
   /*val relatedAccount : AccountId = {
     val parts:Seq[String] = accountId.split(":").updated(0,"Equity").toSeq
     parts.mkString(":")
@@ -19,19 +20,16 @@ case class BalanceAdjustment(
   }
 
   // With old balance value, avoid using pad
-  def toBeancounts(oldValue:Fraction) : Seq[String] = {
+  def toBeancounts(oldValue:Fraction) : Seq[BeancountCommand] = {
     val newUnits = balance-oldValue
     val unitIncrease : Posting = Posting(accountId, newUnits )
     val income:Posting = Posting(adjAccount, -newUnits)
-    val tx = Transaction(date.minusDays(1), s"Adjustment: ${oldValue.toDouble} -> ${balance}", Seq(unitIncrease, income)).toBeancount
-    val bal = s"${date} balance ${accountId} ${balance}"
-    Seq(tx, bal)
-  }
-
-  def toBeancountCommand(oldValue:Fraction) : BeancountCommand = {
-    new BeancountCommand {
-      override def toBeancount: String = toBeancounts(oldValue).mkString("\n")
+    val tx = Transaction(date.minusDays(1), s"Adjustment: ${oldValue.toDouble} -> ${balance}", Seq(unitIncrease, income), this)
+    val balcmd = new BeancountCommand {
+      override def origin: AccountCommand = self
+      override def toBeancount: String = s"${date} balance ${accountId} ${balance}"
     }
+    Seq[BeancountCommand](tx, balcmd)
   }
 }
 

@@ -52,7 +52,7 @@ class First extends FlatSpec {
 
   // First pass for accounts
   lazy val acctState:BeancountAccountState =
-    orderedCmds.foldLeft(BeancountAccountState(Seq(), Seq())) ( (state, ev) => state.handle(ev))
+    orderedCmds.foldLeft(BeancountAccountState(Seq())) ( (state, ev) => state.handle(ev))
 
 
   "cmds" should "process" in {
@@ -161,5 +161,69 @@ class First extends FlatSpec {
     val fx = priceCollector.getState.getFX(AssetTuple("VTI","USD"), parseDate("2019-02-01"))
     // Interp between 127 and 144
     assert(fx.get ==  161651.0/1200.0) //134.709166666
+  }
+
+  "IRR Calc" should "compute IRR" in {
+    val accountId = "Assets:Investment:Zurich"
+    val ccy = AssetId("GBP")
+    val initBalance = Balance(zeroFraction, ccy)// TODO: Get ccy from parent account
+    val queryDate = LocalDate.parse("2019-12-31")
+
+    // Find all inflows from Asset/Equity accounts as negative
+    val inflows = bg.txState.cmds.foldLeft(Seq[Cashflow]())((flow, cmd) => {
+      cmd match {
+        case tx:Transaction => {
+          tx.origin match {
+              // FIXME: Ensure "other" account is Equity/Asset/Liability?
+              // Need a cash dividend use case
+            case tfr:Transfer => {
+              if (tfr.source.startsWith(accountId) && !tfr.dest.startsWith(accountId)) {
+                flow :+ Cashflow(tx.postDate,  -tfr.sourceValue)
+              }
+              else if (!tfr.source.startsWith(accountId) && tfr.dest.startsWith(accountId)) {
+                flow :+ Cashflow(tx.postDate, -tfr.targetValue)
+              }
+              else {
+                flow // Intra account trade
+              }
+            }
+            case adj: BalanceAdjustment => {
+              if (adj.accountId.startsWith(accountId)
+                && !adj.adjAccount.startsWith(accountId)
+                && adj.adjAccount.matches("^(Assets|Equity).*")
+              ) {
+                val tfr = tx.filledPostings.find(p => p.account == adj.accountId).get.value.get
+                flow :+ Cashflow(tx.postDate, -tfr)
+              }
+              else {
+                flow
+              }
+            }
+            case _ => flow
+          }
+        }
+        case _ => flow
+      }
+    })
+
+    // Note how this excludes the internal income transaction
+    assert (inflows == Seq(Cashflow("2013-06-30","-265000.0 GBP")))
+
+    // Take just the final equity balance as positive
+    val allAccounts = bg.acctState.accounts.filter(a => a.accountId.startsWith(accountId))
+    val balance:Balance = allAccounts.foldLeft(initBalance)((total, account) => {
+      val b = bg.balanceState.getBalance(account.accountId, queryDate).getOrElse(zeroFraction)
+      // FX this into parent ccy
+      val fx = priceCollector.getState.getFX(AssetTuple(account.key.assetId, ccy), queryDate).getOrElse(throw new Exception(s"Missing FX for ${account.key.assetId.symbol}/${ccy.symbol}"))
+      total + b*fx
+    })
+    assert (balance == Balance.parse("348045.34 GBP"))
+    val cashflows = inflows :+ Cashflow(queryDate, balance)
+
+    // Do a an NPV=0 solve to find irr
+    val irr = CashflowTable(cashflows).irr
+    val npv = CashflowTable(cashflows).npv(irr)
+    assert(npv < 0.000001)
+    assert(irr == 0.04278473708136136)
   }
 }

@@ -37,7 +37,7 @@ class TransactionBalanceTest extends FlatSpec {
     val tx = Transaction("2012-11-03", "Transfer to pay credit card", Seq(
       Posting("Assets:MyBank:Checking", Balance(-400.00, "USD")),
       Posting("Assets:MyBank:Checking")
-    ))
+    ), null)
 
     assert(tx.postings(1).value.isEmpty)
     assert(tx.filledPostings(1).value.get == Balance(400, "USD"))

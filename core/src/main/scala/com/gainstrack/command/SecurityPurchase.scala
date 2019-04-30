@@ -46,7 +46,7 @@ case class SecurityPurchase(
       postings = postings :+ Posting(opts.expenseAccount.get, commission)
     }
 
-    Transaction(date, toDescription, postings )
+    Transaction(date, toDescription, postings, this )
   }
 }
 

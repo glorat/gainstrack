@@ -29,10 +29,14 @@ case class PriceState(id:GUID, prices:Map[AssetTuple, SortedMap[LocalDate, Fract
   private val interp = TimeSeriesInterpolator.from(SortedMap[LocalDate, Fraction]())
 
   def getFX(tuple:AssetTuple, date:LocalDate, maxDenom:Long=1000000):Option[Fraction] = {
-    val timeSeries = prices.getOrElse(tuple, SortedMap())
-    val ret:Option[Fraction] = interp.interpValue(timeSeries, date).map(x => x)
-
-    ret.map(f => f.limitDenominatorTo(SafeLong(maxDenom)))
+    if (tuple.fx1 == tuple.fx2) {
+      Some(1)
+    }
+    else {
+      val timeSeries = prices.getOrElse(tuple, SortedMap())
+      val ret:Option[Fraction] = interp.interpValue(timeSeries, date).map(x => x)
+      ret.map(f => f.limitDenominatorTo(SafeLong(maxDenom)))
+    }
   }
 
 

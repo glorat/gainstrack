@@ -4,6 +4,8 @@ import com.gainstrack.command.CommandParser
 
 case class AccountOptions (
                           expenseAccount:Option[String] = None,
+                          tradingAccount: Boolean = false,
+                          incomeAccount:Option[String] = None,
                           description:String = "",
                           assetNonStdScu:Option[Int] = None,
                           hidden:Boolean = false,
@@ -15,6 +17,7 @@ case class AccountCreation (
                            key: AccountKey,
                            options:AccountOptions
                            ) extends AccountCommand with BeancountCommand {
+  override def origin: AccountCommand = this
   def accountId = key.name
   def name = key.name
 
@@ -28,8 +31,19 @@ case class AccountCreation (
     }
   }
 
+  def enableTrading(incomeAccountId:AccountId) : AccountCreation = {
+    copy(options = options.copy(tradingAccount = true, incomeAccount=Some(incomeAccountId)))
+  }
+
   def toBeancount : String = {
-    s"${date} open ${key.name} ${key.assetId.symbol}"
+    val open = s"${date} open ${key.name} ${key.assetId.symbol}"
+    if (options.tradingAccount) {
+      open + "\nplugin \"beancount.plugins.book_conversions\" " +
+        s""""${accountId},${options.incomeAccount.get}""""
+    }
+    else {
+      open
+    }
   }
 
   override def toString: String = toBeancount

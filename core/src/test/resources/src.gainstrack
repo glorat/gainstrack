@@ -22,7 +22,8 @@
 2019-01-01 adj Assets:HSBCHK 138668.37 HKD Equity:Opening:HKD
 2019-01-01 adj Assets:HSBCCN 547413.70 CNY Equity:Opening:CNY
 
-2019-01-01 adj Assets:Investment:Zurich:GBP 348045.34 GBP Equity:Opening:GBP
+2013-07-01 adj Assets:Investment:Zurich:GBP 265000 GBP Equity:Opening:GBP
+2019-01-01 adj Assets:Investment:Zurich:GBP 348045.34 GBP Income:Investment:Zurich:GBP
 2019-01-01 trade Assets:Investment:Zurich 30511.46 AMER @5.09 GBP
 2019-01-01 trade Assets:Investment:Zurich 75296 FTSE @2.1 GBP
 2019-01-01 trade Assets:Investment:Zurich 28146.69 TBOND @1.23 GBP
