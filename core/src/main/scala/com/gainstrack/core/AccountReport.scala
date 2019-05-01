@@ -11,13 +11,13 @@ class AccountReport(accountId: AccountId, ccy:AssetId, queryDate: LocalDate, bg:
   // Where can that income go? Assume to bank accounts etc. for now?
   // TODO: Be careful about income (e.g dividends) that go straight back to investment! (i.e. self asset)
   val income : Seq[Cashflow] = account.options.incomeAccount.map(incomeAccountId => {
-    val incomeFlow = new InflowCalculator(bg, Set(Equity,Assets,Liabilities), 1)
+    val incomeFlow = new InflowCalculator(bg, Set(Equity,Assets,Liabilities), -1)
       .calcInflows(incomeAccountId)
     incomeFlow
   }).getOrElse(Seq())
 
   // Take just the final equity balance as positive
-  val allAccounts = bg.acctState.accounts.filter(a => a.accountId.startsWith(accountId))
+  val allAccounts = bg.acctState.accounts.filter(a => isSubAccountOf(a.accountId, accountId))
   val initBalance = Balance(zeroFraction, ccy)
 
   val balance: Balance = allAccounts.foldLeft(initBalance)((total, account) => {

@@ -45,21 +45,20 @@ class Real extends FlatSpec {
     assert(output == "")
   }
 
-  it should "calculate IRR for investment accounts" in {
-    val invs = orderedCmds.filter(cmd => cmd match {
-      case ac : AccountCreation => {
-        //ac.accountId.startsWith("Assets:Investment") ||
-        //ac.accountId.startsWith("Assets:ISA") ||
-        ac.accountId.startsWith("Assets:Property:PP")
-      }
+  val queryDate = java.time.LocalDate.now
 
+  it should "calculate IRR for investment accounts" in {
+    val assetClasses = Seq("Bank","ISA","Property", "Investment")
+
+    val test = (acctId:String) => {assetClasses.foldLeft(false)((bool:Boolean,str:AccountId) => bool || acctId.startsWith("Assets:"+str))}
+
+    val invs = orderedCmds.filter(cmd => cmd match {
+      case ac : AccountCreation => test(ac.accountId)
       case _ => false
     })
 
     val invAccts = invs.map(_.asInstanceOf[AccountCreation])
     //assert(invAccts.map(_.accountId) == Seq("Assets:Investment:NationwideUTM", "Assets:Investment:HSBC", "Assets:Investment:Zurich", "Assets:Investment:IBUSD", "Assets:Investment:IBGBP"))
-
-    val queryDate = java.time.LocalDate.now
 
     invAccts.foreach(account => {
       val accountId = account.accountId
@@ -69,12 +68,20 @@ class Real extends FlatSpec {
       accountReport.cashflowTable.sorted.foreach(cf => {
         println(s"   ${cf.date} ${cf.value}")
       })
-      println(s"IRR: ${accountReport.cashflowTable.irr}")
+      println(f"IRR: ${100*accountReport.cashflowTable.irr}%1.2f%%")
 
     })
+  }
 
+  it should "calc sane irrs for my Zurich" in {
+    val rep = new AccountReport("Assets:Investment:Zurich", AssetId("GBP"), queryDate, bg, priceCollector)
+    assert(rep.cashflowTable.irr < 0.05)
+    assert(rep.cashflowTable.irr > 0.04)
+  }
 
-
-
+  it should "calc sane irrs for my PP" in {
+    val rep = new AccountReport("Assets:Property:PP", AssetId("GBP"), queryDate, bg, priceCollector)
+    assert(rep.cashflowTable.irr < 0.09)
+    assert(rep.cashflowTable.irr > 0.03)
   }
 }

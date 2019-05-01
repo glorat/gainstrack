@@ -18,4 +18,8 @@ package object core {
   implicit val localDateOrdering: Ordering[LocalDate] = new Ordering[LocalDate] {
     def compare(x: LocalDate, y: LocalDate): Int = x compareTo y
   }
+
+  def isSubAccountOf(accountId:AccountId, parentId:AccountId):Boolean = {
+    (accountId == parentId) || (accountId.startsWith(parentId + ":"))
+  }
 }
