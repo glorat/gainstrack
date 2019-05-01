@@ -2,7 +2,7 @@ package com.gainstrack.core.test
 
 import java.time.LocalDate
 
-import com.gainstrack.core.{AccountCreation, AccountReport, BeancountGenerator, GainstrackParser, PriceCollector}
+import com.gainstrack.core._
 import org.scalatest.FlatSpec
 
 class Real extends FlatSpec {
@@ -47,20 +47,24 @@ class Real extends FlatSpec {
 
   it should "calculate IRR for investment accounts" in {
     val invs = orderedCmds.filter(cmd => cmd match {
-      case ac : AccountCreation => ac.accountId.startsWith("Assets:Investment")
+      case ac : AccountCreation => ac.accountId.startsWith("Assets:Investment") || ac.accountId.startsWith("Assets:ISA")
       case _ => false
     })
 
     val invAccts = invs.map(_.asInstanceOf[AccountCreation])
-    assert(invAccts.map(_.accountId) == Seq("Assets:Investment:NationwideUTM", "Assets:Investment:HSBC", "Assets:Investment:Zurich", "Assets:Investment:IBUSD", "Assets:Investment:IBGBP"))
+    //assert(invAccts.map(_.accountId) == Seq("Assets:Investment:NationwideUTM", "Assets:Investment:HSBC", "Assets:Investment:Zurich", "Assets:Investment:IBUSD", "Assets:Investment:IBGBP"))
 
-    val queryDate = LocalDate.parse("2019-12-31")
+    val queryDate = java.time.LocalDate.now
 
     invAccts.foreach(account => {
       val accountId = account.accountId
       val ccy = account.key.assetId
       val accountReport = new AccountReport(accountId, ccy, queryDate, bg, priceCollector)
-      println(s"${accountId} ${accountReport.balance} ${accountReport.cashflowTable.irr}")
+      println(s"${accountId} ${accountReport.balance}")
+      accountReport.cashflowTable.sorted.foreach(cf => {
+        println(s"   ${cf.date} ${cf.value}")
+      })
+      println(s"IRR: ${accountReport.cashflowTable.irr}")
 
     })
 
