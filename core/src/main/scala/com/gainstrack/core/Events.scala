@@ -53,13 +53,30 @@ trait AccountEvent extends DomainEvent {
   def date:LocalDate
 }
 
-object AccountType extends Enumeration {
-  type AccountType = Value
-  val Assets,
-  Liabilities,
-  Equity,
-  Income,
-  Expenses = Value
+
+trait AccountType
+case object Assets extends AccountType
+case object Liabilities extends AccountType
+case object Equity extends AccountType
+case object Income extends AccountType
+case object Expenses extends AccountType
+object AccountType {
+  def apply(str:String) : AccountType = {
+    str match {
+      case "Assets" => Assets
+      case "Liabilities" => Liabilities
+      case "Equity" => Equity
+      case "Income" => Income
+      case "Expenses" => Expenses
+      case _ => throw new IllegalArgumentException(s"${str} is not an account type")
+    }
+  }
+
+  def fromAccountId(str:AccountId):AccountType = {
+    val prefix = str.split(":").headOption
+      .getOrElse(throw new IllegalArgumentException(s"${str} is not in account format") )
+    AccountType(prefix)
+  }
 }
 
 //import AssetType.AssetType
@@ -88,12 +105,11 @@ case class AccountKey(
     name.split(':').head
   }
 
-  AccountType.withName(inferAccountType)
+  AccountType(inferAccountType)
 }
 
 object AccountKey {
 
 }
-
 
 

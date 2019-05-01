@@ -47,7 +47,12 @@ class Real extends FlatSpec {
 
   it should "calculate IRR for investment accounts" in {
     val invs = orderedCmds.filter(cmd => cmd match {
-      case ac : AccountCreation => ac.accountId.startsWith("Assets:Investment") || ac.accountId.startsWith("Assets:ISA")
+      case ac : AccountCreation => {
+        //ac.accountId.startsWith("Assets:Investment") ||
+        //ac.accountId.startsWith("Assets:ISA") ||
+        ac.accountId.startsWith("Assets:Property:PP")
+      }
+
       case _ => false
     })
 

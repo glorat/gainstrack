@@ -51,6 +51,7 @@ case class AccountCreation (
   override def withOption(key:String, valueStr:String) : AccountCreation = {
     key match {
       case "expenseAccount" => copy(options = options.copy(expenseAccount =  Some(valueStr)))
+      case "incomeAccount" => copy(options = options.copy(incomeAccount =  Some(valueStr)))
       case _ => this
     }
   }

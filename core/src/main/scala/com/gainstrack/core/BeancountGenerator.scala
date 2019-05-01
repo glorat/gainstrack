@@ -13,7 +13,7 @@ class BeancountGenerator(cmds:Seq[AccountCommand])  {
 
   // First pass for accounts
   val acctState:BeancountAccountState =
-    cmds.foldLeft(BeancountAccountState(Seq())) ( (state, ev) => state.handle(ev))
+    cmds.foldLeft(BeancountAccountState()) ( (state, ev) => state.handle(ev))
   // Second pass for balances
   val balanceState:BalanceState =
     cmds.foldLeft(BalanceState(acctState.accounts)) ( (state,ev) => state.handle(ev))
@@ -38,8 +38,10 @@ class BeancountGenerator(cmds:Seq[AccountCommand])  {
   }
 }
 
-
-case class BeancountAccountState(accounts:Seq[AccountCreation])
+object BeancountAccountState {
+  def apply() : BeancountAccountState = BeancountAccountState(Set())
+}
+case class BeancountAccountState(accounts:Set[AccountCreation])
 extends AggregateRootState {
 
   lazy val accountMap:Map[AccountId, AccountCreation] = accounts.map(a => a.accountId -> a)(collection.breakOut)
@@ -60,7 +62,7 @@ extends AggregateRootState {
   }
 
   private def process(e:AccountCreation):BeancountAccountState = {
-    copy(accounts = accounts :+ e)
+    copy(accounts = accounts + e)
   }
 
   private def process(e:Transfer):BeancountAccountState = {
@@ -72,17 +74,25 @@ extends AggregateRootState {
     var ret = this
     var newLines : Seq[String] = Seq()
     val baseAcct = accounts.find(x => x.name == e.accountId).getOrElse(throw new IllegalStateException(s"${e.accountId} is not an open account"))
+    var newBaseAcct = baseAcct
 
     if (!accounts.exists(x => x.name == e.cashAccountId)) {
       // Auto vivify sub-accounts of securities account
       val newAccts = e.createRequiredAccounts(baseAcct)
       ret = ret.copy(accounts = ret.accounts ++ newAccts)
+
+      val newOpts = baseAcct.options.copy(incomeAccount = Some(e.incomeAcctId),
+        expenseAccount = Some(e.expenseAcctId))
+
+      // Update base account with related accounts
+      ret = ret.copy(accounts = ret.accounts - baseAcct + baseAcct.copy(options = newOpts))
+
     }
     if (!accounts.exists(x => x.name == e.securityAccountId)) {
       // Auto vivify sub-accounts of securities account
       val newAcct = AccountCreation(baseAcct.date, AccountKey(e.securityAccountId, e.security.ccy))
           .enableTrading(e.incomeAcctId)
-      ret=ret.copy(accounts = ret.accounts :+ newAcct)
+      ret=ret.copy(accounts = ret.accounts + newAcct)
     }
     ret
   }
@@ -99,7 +109,7 @@ extends AggregateRootState {
       // Auto vivify sub-accounts of securities account
       val newAcct = AccountCreation(baseAcct.date, AccountKey(e.securityAccountId, e.security.ccy))
         .enableTrading(e.incomeAccountId)
-      ret=ret.copy(accounts = ret.accounts :+ newAcct)
+      ret=ret.copy(accounts = ret.accounts + newAcct)
     }
     ret
   }
@@ -110,7 +120,7 @@ extends AggregateRootState {
 }
 
 
-case class BeancountTransactionState(accounts:Seq[AccountCreation], balanceState:BalanceState, cmds:Seq[BeancountCommand])
+case class BeancountTransactionState(accounts:Set[AccountCreation], balanceState:BalanceState, cmds:Seq[BeancountCommand])
   extends AggregateRootState {
 
   def handle(e: DomainEvent): BeancountTransactionState = {

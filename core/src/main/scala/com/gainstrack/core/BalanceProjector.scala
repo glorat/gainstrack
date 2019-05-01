@@ -6,7 +6,7 @@ import spire.math.SafeLong
 
 import scala.collection.SortedMap
 
-class BalanceProjector(accounts:Seq[AccountCreation]) extends AggregateRoot {
+class BalanceProjector(accounts:Set[AccountCreation]) extends AggregateRoot {
   override protected var state: AggregateRootState = BalanceState(accounts )
 
   override def id: GUID = getState.id
@@ -15,7 +15,7 @@ class BalanceProjector(accounts:Seq[AccountCreation]) extends AggregateRoot {
 
 }
 
-case class BalanceState(id:GUID, accounts:Seq[AccountCreation], balances:Map[AccountId,SortedMap[LocalDate,Fraction]]) extends AggregateRootState {
+case class BalanceState(id:GUID, accounts:Set[AccountCreation], balances:Map[AccountId,SortedMap[LocalDate,Fraction]]) extends AggregateRootState {
   type Balances = Map[AccountId,SortedMap[LocalDate,Fraction]]
   type Series = SortedMap[LocalDate,Fraction]
   val interp = TimeSeriesInterpolator.from(SortedMap[LocalDate,Fraction]())
@@ -39,7 +39,8 @@ case class BalanceState(id:GUID, accounts:Seq[AccountCreation], balances:Map[Acc
   }
 
   private def process(e:AccountCreation):BalanceState = {
-    val newBalance = balances(e.accountId).updated(e.date, zeroFraction)
+    // Need to minus one in case we trade on the same day as opening!!!
+    val newBalance = balances(e.accountId).updated(e.date.minusDays(1), zeroFraction)
     copy(balances = balances.updated(e.accountId, newBalance))
   }
 
@@ -75,7 +76,8 @@ case class BalanceState(id:GUID, accounts:Seq[AccountCreation], balances:Map[Acc
       // TODO: Unit check?
       val newBalance : Fraction=  p.value.get.value + latestBalance
       val series : Series = bs(p.account).updated(tx.postDate, newBalance)
-      bs.updated(p.account, series)
+      val newbs = bs.updated(p.account, series)
+      newbs
     })
 
     copy(balances = newBalances)
@@ -83,7 +85,7 @@ case class BalanceState(id:GUID, accounts:Seq[AccountCreation], balances:Map[Acc
 }
 
 object BalanceState {
-  def apply(accounts : Seq[AccountCreation]) : BalanceState = {
+  def apply(accounts : Set[AccountCreation]) : BalanceState = {
     val emptySeries : SortedMap[LocalDate,Fraction] = SortedMap.empty
     val initMap:Map[AccountId,SortedMap[LocalDate,Fraction]] = accounts.map(x => x.name -> emptySeries).toMap
     BalanceState(java.util.UUID.randomUUID(), accounts, initMap)

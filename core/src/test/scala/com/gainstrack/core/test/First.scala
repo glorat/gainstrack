@@ -52,16 +52,16 @@ class First extends FlatSpec {
 
   // First pass for accounts
   lazy val acctState:BeancountAccountState =
-    orderedCmds.foldLeft(BeancountAccountState(Seq())) ( (state, ev) => state.handle(ev))
+    orderedCmds.foldLeft(BeancountAccountState()) ( (state, ev) => state.handle(ev))
 
 
   "cmds" should "process" in {
     acctState
   }
 
-  it should "parse account options" in {
+  it should "handle related accounts" in {
     val acct = acctState.accounts.find(x => x.name == "Assets:Investment:IBUSD").getOrElse(fail("Missing account"))
-    assert (acct.options.expenseAccount == Some("Expenses:Investment:Fees:USD"))
+    assert (acct.options.expenseAccount == Some("Expenses:Investment:IBUSD:USD"))
   }
 
   val bg = new BeancountGenerator(orderedCmds)
@@ -100,13 +100,13 @@ class First extends FlatSpec {
 
       // After commissions, should be 172.05
       assert(bp.getState.balances("Assets:Investment:IBUSD:USD").last._2 == 172.05)
-      assert(bp.getState.balances("Expenses:Investment:Fees:USD").last._2 == 18.87)
+      assert(bp.getState.balances("Expenses:Investment:IBUSD:USD").last._2 == 18.87)
     }
 
 
     it should "list balances by account" in {
       val today = parseDate("2019-12-31")
-      acctState.accounts.sortBy(_.name).foreach(account => {
+      acctState.accounts.toSeq.sortBy(_.name).foreach(account => {
         val value = bp.getState.getBalance(account.accountId, today).getOrElse(zeroFraction)
         println(s"${account.accountId}: ${value.toDouble} ${account.key.assetId.symbol}")
       })

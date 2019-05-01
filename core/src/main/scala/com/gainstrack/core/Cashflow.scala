@@ -17,7 +17,7 @@ case class Cashflow(date:LocalDate, value:Balance) {
 
     if (dcf == 0)  0
     else if (-1 < rate)  -dcf * amount / Math.pow(1 + rate, dcf + 1)
-    else if (rate < -1)  ???
+    else if (rate < -1)  0 // FIXME: ???
     else  0
   }
 }
