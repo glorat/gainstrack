@@ -25,12 +25,15 @@ case class BalanceAdjustment(
     val unitIncrease : Posting = Posting(accountId, newUnits )
     val income:Posting = Posting(adjAccount, -newUnits)
     val tx = Transaction(date.minusDays(1), s"Adjustment: ${oldValue.toDouble} -> ${balance}", Seq(unitIncrease, income), this)
-    val balcmd = new BeancountCommand {
-      override def origin: AccountCommand = self
-      override def toBeancount: String = s"${date} balance ${accountId} ${balance}"
-    }
+    val balcmd = BalanceAssertion(date, accountId, balance, this)
     Seq[BeancountCommand](tx, balcmd)
   }
+}
+
+case class BalanceAssertion(date:LocalDate, accountId:AccountId, balance:Balance, origin:BalanceAdjustment)
+  extends BeancountCommand {
+
+  override def toBeancount: String = s"${date} balance ${accountId} ${balance}"
 }
 
 object BalanceAdjustment extends CommandParser {

@@ -1,7 +1,11 @@
-package com.gainstrack.core
+package com.gainstrack.report
 
-class AccountReport(accountId: AccountId, ccy:AssetId, queryDate: LocalDate, bg:BeancountGenerator, priceCollector: PriceCollector) {
+import com.gainstrack.core._
+
+class AccountInvestmentReport(accountId: AccountId, ccy:AssetId, queryDate: LocalDate, bg:BeancountGenerator, priceCollector: PriceCollector) {
   val account = bg.acctState.accountMap(accountId)
+
+  val allFlows = new InflowCalculator(bg, Set(Equity,Assets, Liabilities, Income, Expenses),1).calcInflows(accountId)
 
   // TODO: Get this from accounts
   // Find all inflows from Asset/Equity/Liabilities. Should be negative

@@ -2,7 +2,9 @@ package com.gainstrack.core.test
 
 import java.time.LocalDate
 
+import com.gainstrack.command.BalanceAssertion
 import com.gainstrack.core._
+import com.gainstrack.report.AccountInvestmentReport
 import org.scalatest.FlatSpec
 
 class Real extends FlatSpec {
@@ -63,7 +65,7 @@ class Real extends FlatSpec {
     invAccts.foreach(account => {
       val accountId = account.accountId
       val ccy = account.key.assetId
-      val accountReport = new AccountReport(accountId, ccy, queryDate, bg, priceCollector)
+      val accountReport = new AccountInvestmentReport(accountId, ccy, queryDate, bg, priceCollector)
       println(s"${accountId} ${accountReport.balance}")
       accountReport.cashflowTable.sorted.foreach(cf => {
         println(s"   ${cf.date} ${cf.value}")
@@ -74,14 +76,29 @@ class Real extends FlatSpec {
   }
 
   it should "calc sane irrs for my Zurich" in {
-    val rep = new AccountReport("Assets:Investment:Zurich", AssetId("GBP"), queryDate, bg, priceCollector)
+    val rep = new AccountInvestmentReport("Assets:Investment:Zurich", AssetId("GBP"), queryDate, bg, priceCollector)
     assert(rep.cashflowTable.irr < 0.05)
     assert(rep.cashflowTable.irr > 0.04)
   }
 
   it should "calc sane irrs for my PP" in {
-    val rep = new AccountReport("Assets:Property:PP", AssetId("GBP"), queryDate, bg, priceCollector)
+    val rep = new AccountInvestmentReport("Assets:Property:PP", AssetId("GBP"), queryDate, bg, priceCollector)
     assert(rep.cashflowTable.irr < 0.09)
     assert(rep.cashflowTable.irr > 0.03)
+  }
+
+  it should "list all txs for an account" in {
+    val accountId = "Assets:Investment:HSBC"
+    val txs = bg.txState.cmds.filter(bcmd => bcmd match {
+      case tx:Transaction => tx.postings.find(p=>isSubAccountOf(p.account, accountId)).isDefined
+      case _ => false
+    }).map(_.asInstanceOf[Transaction])
+
+    txs.map(tx => s"${tx.postDate} ${tx.description} ${tx.subBalanceChange(accountId).toDouble}")
+      .foreach(println(_))
+    /*val rep = new AccountReport("Assets:Investment:HSBC", AssetId("USD"), queryDate, bg, priceCollector)
+    rep.allFlows.foreach(cf => {
+      println(s"   ${cf.date} ${cf.value}")
+    })*/
   }
 }

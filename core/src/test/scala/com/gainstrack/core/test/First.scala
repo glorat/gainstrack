@@ -4,6 +4,7 @@ import java.time.LocalDate
 
 import com.gainstrack.command.{BalanceAdjustment, Transfer}
 import com.gainstrack.core._
+import com.gainstrack.report.AccountInvestmentReport
 import org.scalatest.FlatSpec
 
 class First extends FlatSpec {
@@ -167,7 +168,7 @@ class First extends FlatSpec {
     val accountId = "Assets:Investment:Zurich"
     val queryDate = LocalDate.parse("2019-12-31")
 
-    val accountReport = new AccountReport(accountId, AssetId("GBP"), queryDate, bg, priceCollector)
+    val accountReport = new AccountInvestmentReport(accountId, AssetId("GBP"), queryDate, bg, priceCollector)
 
     assert(accountReport.balance == Balance.parse("348045.34 GBP"))
 
