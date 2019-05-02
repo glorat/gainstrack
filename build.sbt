@@ -44,13 +44,22 @@ lazy val dlstore = localCheck(project, dlstoreFile.exists, "dlstore/dlstore")
 
 lazy val useLocalDlcrypto = file("dlcrypto/build.sbt").exists()
 
+lazy val commonSettings = Seq(
+  libraryDependencies ++= dlsuite_deps,
+  resolvers ++= myResolvers,
+  test in assembly := {}
+)
+
 lazy val web = project
   .dependsOn(core % "compile->compile;test->test")
-  .settings(libraryDependencies ++= dlsuite_deps, resolvers ++= myResolvers)
+  .settings(commonSettings: _*)
+  .settings(
+    mainClass in assembly := Some("JettyLauncher"),
+  )
 
 lazy val core = project
   .dependsOn(dlstore)
-  .settings(libraryDependencies ++= dlsuite_deps, resolvers ++= myResolvers)
+  .settings(commonSettings: _*)
 
 lazy val root = (project in file("."))
   .aggregate(core, web)
