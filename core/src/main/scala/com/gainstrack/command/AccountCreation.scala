@@ -6,6 +6,7 @@ case class AccountOptions (
                           expenseAccount:Option[String] = None,
                           tradingAccount: Boolean = false,
                           incomeAccount:Option[String] = None,
+                          fundingAccount:Option[String] = None,
                           description:String = "",
                           assetNonStdScu:Option[Int] = None,
                           hidden:Boolean = false,
@@ -56,7 +57,8 @@ case class AccountCreation (
     key match {
       case "expenseAccount" => copy(options = options.copy(expenseAccount =  Some(valueStr)))
       case "incomeAccount" => copy(options = options.copy(incomeAccount =  Some(valueStr)))
-      case _ => this
+      case "fundingAccount" => copy(options = options.copy(fundingAccount = Some(valueStr)))
+      case _ => throw new IllegalArgumentException(s"Unknown account option: ${key}")
     }
   }
 }

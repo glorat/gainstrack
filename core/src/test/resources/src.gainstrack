@@ -7,10 +7,10 @@
 2010-01-01 open Equity:Opening:HKD HKD
 2010-01-01 open Equity:Opening:CNY CNY
 2010-01-01 open Equity:Opening:GBP GBP
+2010-01-01 open Income:Salary:CNY CNY
 2010-01-01 open Assets:Investment:HSBC USD
 2010-01-01 open Assets:Investment:HSBC:USD USD
 2019-04-01 open Assets:Investment:IBUSD USD
-  expenseAccount: Expenses:Investment:Fees:USD
 2010-01-01 open Assets:Investment:Zurich GBP
 2010-01-01 open Assets:Investment:OldMutual GBP
 2014-01-04 adj Assets:Bank:Nationwide 25613.71 GBP Equity:Opening:GBP
@@ -21,6 +21,7 @@
 2019-02-14 adj Assets:HSBCHK 33030.33 HKD Equity:Opening:HKD
 2019-01-01 adj Assets:HSBCHK 138668.37 HKD Equity:Opening:HKD
 2019-01-01 adj Assets:HSBCCN 547413.70 CNY Equity:Opening:CNY
+2018-07-26 earn Assets:HSBCCN Salary 50000.00 CNY
 
 2013-07-01 adj Assets:Investment:Zurich:GBP 265000 GBP Equity:Opening:GBP
 2019-01-01 adj Assets:Investment:Zurich:GBP 348045.34 GBP Income:Investment:Zurich:GBP

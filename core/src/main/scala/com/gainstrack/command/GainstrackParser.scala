@@ -11,6 +11,7 @@ class GainstrackParser {
 
   val parsers:Map[String, CommandParser] = Map (
     "open" -> AccountCreation,
+    "earn" -> Transfer,
     "tfr" -> Transfer,
     "trade" -> SecurityPurchase,
     "adj" -> BalanceAdjustment,
