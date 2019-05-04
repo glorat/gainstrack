@@ -1,0 +1,22 @@
+#import(com.gainstrack.report._)
+<%@ val summary: IrrSummary %>
+<%@ val urlFor: controllers.MainController.UrlFn %>
+
+<table class="queryresults sortable">
+<thead>
+    <tr>
+        <th data-sort="string">account</th>
+        <th data-sort="num">balance</th>
+        <th data-sort="num">irr</th>
+    </tr>
+</thead>
+<tbody>
+#for (acctId <- summary.accounts.keys.toSeq.sorted)
+    <tr>
+        <td><a href="<%= urlFor("gainstrack/irr", Seq()) %>/<%= escape(acctId) %>">${acctId}</a></td>
+        <td class="num">${summary.accounts(acctId).balance}</td>
+        <td class="num">${summary.accounts(acctId).cashflowTable.irr*100 }</td>
+    </tr>
+#end
+</tbody>
+</table>

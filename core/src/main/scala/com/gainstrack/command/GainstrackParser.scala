@@ -2,10 +2,12 @@ package com.gainstrack.command
 
 import com.gainstrack.core.AccountCommand
 
+import scala.io.Source
+
 class GainstrackParser {
   private var commands:Seq[AccountCommand] = Seq()
   private var lineCount : Int = 0
-  def getCommands : Seq[AccountCommand] = commands
+  def getCommands : Seq[AccountCommand] = commands.sorted
 
   val parsers:Map[String, CommandParser] = Map (
     "open" -> AccountCreation,
@@ -48,5 +50,10 @@ class GainstrackParser {
     catch {
       case e:Exception => throw new Exception(s"Parsing failed on line ${lineCount}: ${line}", e)
     }
+  }
+
+  def parseFile(filename:String) : Unit = {
+    val src = Source.fromFile(filename)
+    src.getLines.foreach(this.parseLine)
   }
 }

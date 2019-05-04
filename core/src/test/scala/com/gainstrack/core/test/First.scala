@@ -152,7 +152,7 @@ class First extends FlatSpec {
     val accountId = "Assets:Investment:Zurich"
     val queryDate = LocalDate.parse("2019-12-31")
 
-    val accountReport = new AccountInvestmentReport(accountId, AssetId("GBP"), queryDate, bg, priceState)
+    val accountReport = new AccountInvestmentReport(accountId, AssetId("GBP"), queryDate, bg.acctState, bg.balanceState, bg.txState, priceState)
 
     assert(accountReport.balance == Balance.parse("348045.34 GBP"))
 

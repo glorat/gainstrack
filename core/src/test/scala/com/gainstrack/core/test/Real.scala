@@ -7,16 +7,9 @@ import org.scalatest.FlatSpec
 
 class Real extends FlatSpec {
   val parser = new GainstrackParser
-  import scala.io.Source
-
   val realFile = "real"
-
-  val src = Source.fromFile(s"data/${realFile}.gainstrack")
-  src.getLines.foreach(parser.parseLine)
-
-  val cmds = parser.getCommands
-
-  val orderedCmds = cmds.sorted
+  parser.parseFile(s"data/${realFile}.gainstrack")
+  val orderedCmds = parser.getCommands
   val bg = new GainstrackGenerator(orderedCmds)
 
   lazy val priceState : PriceState = bg.priceState
@@ -56,7 +49,7 @@ class Real extends FlatSpec {
     invAccts.foreach(account => {
       val accountId = account.accountId
       val ccy = account.key.assetId
-      val accountReport = new AccountInvestmentReport(accountId, ccy, queryDate, bg, priceState)
+      val accountReport = new AccountInvestmentReport(accountId, ccy, queryDate, bg.acctState, bg.balanceState, bg.txState, priceState)
       println(s"${accountId} ${accountReport.balance}")
       accountReport.cashflowTable.sorted.foreach(cf => {
         println(s"   ${cf.date} ${cf.value}")
@@ -67,13 +60,17 @@ class Real extends FlatSpec {
   }
 
   it should "calc sane irrs for my Zurich" in {
-    val rep = new AccountInvestmentReport("Assets:Investment:Zurich", AssetId("GBP"), queryDate, bg, priceState)
+    val accountId = "Assets:Investment:Zurich"
+    val rep = new AccountInvestmentReport(accountId, AssetId("GBP"), queryDate, bg.acctState, bg.balanceState, bg.txState, priceState)
+
     assert(rep.cashflowTable.irr < 0.05)
     assert(rep.cashflowTable.irr > 0.04)
   }
 
   it should "calc sane irrs for my PP" in {
-    val rep = new AccountInvestmentReport("Assets:Property:PP", AssetId("GBP"), queryDate, bg, priceState)
+    val accountId = "Assets:Property:PP"
+    val rep = new AccountInvestmentReport(accountId, AssetId("GBP"), queryDate, bg.acctState, bg.balanceState, bg.txState, priceState)
+
     assert(rep.cashflowTable.irr < 0.09)
     assert(rep.cashflowTable.irr > 0.03)
   }

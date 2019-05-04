@@ -3,11 +3,11 @@ package com.gainstrack.report
 import com.gainstrack.command.{BalanceAdjustment, Transfer}
 import com.gainstrack.core.{AccountId, AccountType, Cashflow, Transaction, isSubAccountOf}
 
-class InflowCalculator(bg:GainstrackGenerator, sources:Set[AccountType], multiplier:Double) {
+class InflowCalculator(txState:TransactionState, sources:Set[AccountType], multiplier:Double) {
 
   def calcInflows(accountId: AccountId) = {
 
-    bg.txState.cmds.foldLeft(Seq[Cashflow]())((flow, cmd) => {
+    txState.cmds.foldLeft(Seq[Cashflow]())((flow, cmd) => {
       cmd match {
         case tx: Transaction => {
           tx.origin match {
