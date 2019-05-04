@@ -1,0 +1,15 @@
+<%@ val body: String %>
+<%@ val short_title: String %>
+
+<%@ val page_title: String = short_title %>
+
+<%@ val errors: Seq[String] = Seq() %>
+
+<div id="svelte-charts"></div>
+<%= unescape(body) %>
+<input type="hidden" id="data-document-title" value="${short_title} - Gainstrack">
+<input type="hidden" id="data-error-count" value="${errors.length}">
+
+<script type="text/html" id="data-page-title">${page_title}</script>
+<script type="application/json" id="chart-data">[]</script>
+

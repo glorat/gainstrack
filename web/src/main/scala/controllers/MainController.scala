@@ -8,15 +8,23 @@ import org.json4s.{CustomSerializer, Formats}
 import org.json4s.JsonAST.JString
 import org.scalatra._
 import org.scalatra.json.JacksonJsonSupport
+import org.scalatra.scalate.ScalateSupport
 
 import scala.concurrent.ExecutionContext
 
 case class Hello(world:String)
 
-class MainController (implicit val ec :ExecutionContext) extends ScalatraServlet with JacksonJsonSupport {
+class MainController (implicit val ec :ExecutionContext) extends ScalatraServlet with JacksonJsonSupport with ScalateSupport {
   protected implicit val jsonFormats: Formats = org.json4s.DefaultFormats + LocalDateSerializer
   before() {
     contentType = formats("json")
+  }
+
+  get("/gainstrack/foo/") {
+    contentType="text/html"
+
+    layoutTemplate("/WEB-INF/views/foo.ssp", ("short_title"->"Foo"))
+    //ssp("/foo")
   }
 
   get("/") {
