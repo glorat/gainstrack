@@ -70,15 +70,7 @@ class First extends FlatSpec {
   val accountMap = bg.acctState.accountMap
 
   it should "generate beancount" in {
-
-    val output = "option \"title\" \"Example Beancount file\"\noption \"operating_currency\" \"USD\"\n2010-01-01 open Equity:Opening:HKD HKD\n2010-01-01 open Equity:HSBCUS USD\n2010-01-01 open Assets:HSBCHK HKD\n2010-01-01 open Assets:HSBCUS USD\n2014-01-03 pad Assets:HSBCHK Equity:Opening:HKD\n2014-01-04 balance Assets:HSBCHK 33030.33 HKD\n2018-12-31 pad Assets:HSBCHK Equity:Opening:HKD\n2019-01-01 balance Assets:HSBCHK 138668.37 HKD\n2019-01-02 * \"\"\n  Assets:HSBCHK -40000.0 HKD @0.12712275 USD\n  Assets:HSBCUS 5084.91 USD\n"
-    //assert (output == bg.toBeancount)
-    import java.nio.file.{Paths, Files}
-    import java.nio.charset.StandardCharsets
-
-    val str = bg.toBeancount
-    Files.write(Paths.get("/tmp/gainstrack.beancount"), str.getBytes(StandardCharsets.UTF_8))
-
+    bg.writeFile("/tmp/gainstrack.beancount")
   }
 
   lazy val priceState : PriceState = bg.priceState
