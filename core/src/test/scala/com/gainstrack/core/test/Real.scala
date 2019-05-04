@@ -11,7 +11,7 @@ class Real extends FlatSpec {
 
   val realFile = "real"
 
-  val src = Source.fromResource(s"${realFile}.gainstrack")
+  val src = Source.fromFile(s"data/${realFile}.gainstrack")
   src.getLines.foreach(parser.parseLine)
 
   val cmds = parser.getCommands
