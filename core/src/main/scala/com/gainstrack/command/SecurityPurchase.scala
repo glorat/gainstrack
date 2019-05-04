@@ -17,9 +17,12 @@ case class SecurityPurchase(
   val expenseAcctId = accountId.replace("Assets:", "Expenses:")+s":${price.ccy.symbol}"
   val requiredAccountIds:Seq[AccountId] = Seq(cashAccountId, securityAccountId, incomeAcctId, expenseAcctId)
 
+  override def mainAccounts: Set[AccountId] = Set(accountId)
+  override def involvedAccounts: Set[AccountId] = toTransaction.filledPostings.map(p => p.account).toSet
+
   //val expenseAcct = acct.replace("Asset", "Expenses")
 
-  def toDescription : String = {
+  def description : String = {
     val buysell = if (security.value>0) "BUY" else "SELL"
     s"${buysell} ${security} @${price}"
   }
@@ -33,9 +36,8 @@ case class SecurityPurchase(
     Seq(cashAcct, incomeAcct, expenseAcct)
   }
 
-  def toTransaction(opts:AccountOptions) : Transaction = {
+  def toTransaction : Transaction = {
     val expense = (-price*security.value - commission)
-    require(opts.expenseAccount.isDefined || commission.value == zeroFraction)
 
     var postings = Seq(
       Posting(cashAccountId, expense),
@@ -43,10 +45,10 @@ case class SecurityPurchase(
     )
     if (commission.value != zeroFraction) {
       // TODO: currency match check?
-      postings = postings :+ Posting(opts.expenseAccount.get, commission)
+      postings = postings :+ Posting(expenseAcctId, commission)
     }
 
-    Transaction(date, toDescription, postings, this )
+    Transaction(date, description, postings, this )
   }
 }
 

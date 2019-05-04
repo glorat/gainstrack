@@ -11,6 +11,10 @@ case class Transfer(
                      targetValue: Balance
                    ) extends AccountCommand {
   def accountId : AccountId = source // Source is where the action was triggered!
+  override def mainAccounts: Set[AccountId] = Set(source, dest)
+  override def involvedAccounts: Set[AccountId] = Set(source, dest)
+  def fxDescription = if (sourceValue.ccy == targetValue.ccy) "" else s"@${1/fxRate.toDouble}"
+  def description:String = s"Transfer ${sourceValue} ${source} -> ${dest}" + fxDescription
 
   if (sourceValue.ccy == targetValue.ccy) {
     require(sourceValue.value == targetValue.value, "Single transfer amount must match (until fees supported")
@@ -21,7 +25,7 @@ case class Transfer(
   }
 
   def toTransaction : Transaction = {
-    Transaction(date, s"${source} -> ${dest}", Seq(
+    Transaction(date, description, Seq(
       Posting(source, -sourceValue, Balance(fxRate,targetValue.ccy)),
       Posting(dest, targetValue)
     ), this)

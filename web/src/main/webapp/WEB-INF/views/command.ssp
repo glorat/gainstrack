@@ -1,0 +1,21 @@
+#import(com.gainstrack.report._)
+#import(com.gainstrack.command._)
+
+<%@ val data: Seq[AccountCreation] %>
+<%@ val urlFor: controllers.MainController.UrlFn %>
+
+
+<table class="queryresults sortable">
+<thead>
+    <tr>
+        <th data-sort="string">account</th>
+    </tr>
+</thead>
+<tbody>
+    #for (acct <- data)
+        <tr>
+            <td><a href="<%= urlFor("/gainstrack/command/get/", Seq()) %>/<%= escape(acct.accountId) %>">${acct.accountId}</a></td>
+        </tr>
+    #end
+</tbody>
+</table>

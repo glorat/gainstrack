@@ -3,7 +3,8 @@ package controllers
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
-import com.gainstrack.command.GainstrackParser
+import com.gainstrack.command.{AccountCreation, GainstrackParser}
+import com.gainstrack.core.AccountId
 import com.gainstrack.report.{AccountInvestmentReport, GainstrackGenerator, IrrSummary}
 import org.json4s.{CustomSerializer, Formats}
 import org.json4s.JsonAST.JString
@@ -29,7 +30,7 @@ class MainController (implicit val ec :ExecutionContext) extends ScalatraServlet
   val bg = new GainstrackGenerator(orderedCmds)
 
   before() {
-    contentType = formats("json")
+    //contentType = formats("json")
   }
 
   get("/gainstrack/irr/:accountId") {
@@ -49,9 +50,9 @@ class MainController (implicit val ec :ExecutionContext) extends ScalatraServlet
   }
 
   get("/gainstrack/irr/") {
-    val irr = IrrSummary(bg.cmds, LocalDate.now(), bg.acctState, bg.balanceState, bg.txState, bg.priceState)
-
     val urlFor:MainController.UrlFn = (path:String, params:Iterable[(String,Any)]) => url(path,params)(this.request, this.response)
+
+    val irr = IrrSummary(bg.cmds, LocalDate.now(), bg.acctState, bg.balanceState, bg.txState, bg.priceState)
 
     contentType="text/html"
 
@@ -63,17 +64,20 @@ class MainController (implicit val ec :ExecutionContext) extends ScalatraServlet
     //ssp("/foo")
   }
 
-  get("/") {
-    import scala.io.Source
+  get("/gainstrack/command/") {
+    val urlFor:MainController.UrlFn = (path:String, params:Iterable[(String,Any)]) => url(path,params)(this.request, this.response)
 
-    val parser = new GainstrackParser
-    Source.fromFile("/tmp/real.gainstrack").getLines.foreach(parser.parseLine)
+    contentType="text/html"
 
-    val cmds = parser.getCommands
+    val mainAccountIds:Set[String] = bg.cmds.map(_.mainAccounts).reduceLeft(_ ++ _)
+    val mainAccounts:Seq[AccountCreation] = bg.acctState.accounts.filter(a => mainAccountIds.contains(a.accountId)).toSeq.sortBy(_.accountId)
 
-    val orderedCmds = cmds.sorted
-
-    orderedCmds.groupBy(cmd => cmd.getClass.getSimpleName)
+    layoutTemplate("/WEB-INF/views/command.ssp",
+      "short_title"->"UI Account Editor",
+      "data"-> mainAccounts,
+      "urlFor" -> urlFor
+    )
+    //ssp("/foo")
   }
 }
 

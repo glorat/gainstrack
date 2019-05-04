@@ -44,8 +44,7 @@ case class BalanceState(accounts:Set[AccountCreation], balances:Map[AccountId,So
   private def process(e:SecurityPurchase): BalanceState = {
     val baseAcct = accounts.find(x => x.name == e.accountId)
     require(baseAcct.isDefined)
-    val opts = baseAcct.get.options
-    process(e.toTransaction(opts))
+    process(e.toTransaction)
   }
 
   private def process(e:UnitTrustBalance) : BalanceState = {

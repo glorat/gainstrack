@@ -9,6 +9,12 @@ case class BalanceAdjustment(
                               adjAccount:AccountId
                             ) extends AccountCommand {
   private val self = this
+
+  override def mainAccounts: Set[AccountId] = Set(accountId)
+  // FIXME: Unless there is no adjustment
+  override def involvedAccounts: Set[AccountId] = Set(accountId, adjAccount)
+  def description:String = s"Account balance ${balance}"
+
   /*val relatedAccount : AccountId = {
     val parts:Seq[String] = accountId.split(":").updated(0,"Equity").toSeq
     parts.mkString(":")

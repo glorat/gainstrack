@@ -49,7 +49,7 @@ class TransactionBalanceTest extends FlatSpec {
     //  Assets:ETrade:IVV                10 IVV {183.07 USD}
     //  Assets:ETrade:Cash         -1830.70 USD
     val sp = SecurityPurchase("Assets:Broker", LocalDate.parse("2014-02-11"), Balance(10, "IVV"), Balance(183.07, "USD"))
-    val tx = sp.toTransaction(AccountOptions())
+    val tx = sp.toTransaction
     assert(tx.isBalanced)
     assert(tx.filledPostings(0).toString == "Assets:Broker:USD -1830.7 USD")
     println(tx)

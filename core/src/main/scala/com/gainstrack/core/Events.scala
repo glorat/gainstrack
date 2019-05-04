@@ -10,10 +10,17 @@ trait CommodityDB {
 }
 
 trait AccountCommand extends Command with DomainEvent with Ordered[AccountCommand] {
+  // Mandatory fields
   def date : LocalDate
-  //def accountId: AccountId
+  def description: String
 
-  // import scala.math.Ordered.orderingToOrdered
+  // Required for filtering
+  def mainAccounts : Set[AccountId]
+  def involvedAccounts : Set[AccountId]
+
+  // Helper methods
+  def usesAccount(accountId: AccountId) : Boolean = involvedAccounts.contains(accountId)
+  def usesSubAccountOf(parentId: AccountId) : Boolean = involvedAccounts.find(a => isSubAccountOf(a, parentId)).isDefined
 
   override def compare(that: AccountCommand): Int = {
     this.toOrderValue.compare(that.toOrderValue)
@@ -21,17 +28,6 @@ trait AccountCommand extends Command with DomainEvent with Ordered[AccountComman
 
   def toOrderValue:Long = {
     date.toEpochDay
-    /*
-    val typeOrder = this match {
-      case _:AccountCreation => 1  // They come first
-      case _:SecurityPurchase => 2 // These can auto-vivify accounts
-
-      case _ => 10
-    }
-
-    val dateOrder = date.toEpochDay
-    // Type then date
-    (typeOrder*10000000) + dateOrder*/
   }
 
   def withOption(key:String, valueStr:String):AccountCommand = {

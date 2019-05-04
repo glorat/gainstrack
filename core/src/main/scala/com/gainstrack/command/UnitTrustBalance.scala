@@ -20,6 +20,7 @@ case class UnitTrustBalance(
                            security: Balance,
                            price:Balance
                            ) extends AccountCommand {
+
   def value:Balance = price * security.value
 
   require(accountId.startsWith("Assets:"))
@@ -28,6 +29,12 @@ case class UnitTrustBalance(
   val expenseAccountId = accountId.replace("Assets:", "Expenses:")+s":${price.ccy.symbol}"
 
   val securityAccountId = accountId + s":${security.ccy.symbol}"
+
+  def description:String = s"Unit statement: ${security} @${price}"
+  override def mainAccounts: Set[AccountId] = Set(accountId)
+  // FIXME: If no change in units, then accounts are not involved!
+  // Need a command post processing step to update this fact
+  override def involvedAccounts: Set[AccountId] = Set(securityAccountId, incomeAccountId)
 
   def toBeancountCommand(oldBalance:Balance) : BeancountCommand = {
     if (security == oldBalance) {
@@ -53,7 +60,7 @@ case class UnitTrustBalance(
     val newUnits = security-oldBalance
     val unitIncrease : Posting = Posting(securityAccountId, newUnits, price )
     val income:Posting = Posting(incomeAccountId, price * -newUnits.value)
-    Transaction(date, s"Unit statement: ${security} @${price}", Seq(unitIncrease, income), this)
+    Transaction(date, description, Seq(unitIncrease, income), this)
   }
 
   def createRequiredAccounts(baseAcct:AccountCreation) : Seq[AccountCreation] = {

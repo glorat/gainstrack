@@ -1,0 +1,38 @@
+#import(com.gainstrack.report._)
+#import(com.gainstrack.command._)
+#import(com.gainstrack.core._)
+
+<%@ val data: Seq[AccountCommand] %>
+<%@ val account: AccountCreation %>
+<%@ val urlFor: controllers.MainController.UrlFn %>
+
+
+<table class="queryresults sortable">
+<thead>
+    <tr>
+        <th data-sort="string">account</th>
+        <th data-sort="string">date</th>
+        <th data-sort="string">type</th>
+        <th data-sort="string">description</th>
+    </tr>
+</thead>
+<tbody>
+    #for (cmd <- data)
+        <tr>
+            <td><a href="<%= urlFor("/gainstrack/command/get/", Seq()) %>/<%= escape(account.accountId) %>">${account.accountId}</a></td>
+            <td>${cmd.date}</td>
+            #match (cmd)
+            #case (bal:BalanceAdjustment)
+                <td>Balance</td>
+            #case (unit:UnitTrustBalance)
+                <td>Unit</td>
+            #case (tfr:Transfer)
+                <td>Transfer</td>
+            #otherwise
+                <td>${cmd.getClass.getSimpleName}</td>
+            #end
+            <td>${cmd.description}</td>
+        </tr>
+    #end
+</tbody>
+</table>

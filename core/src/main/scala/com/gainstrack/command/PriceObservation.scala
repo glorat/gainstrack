@@ -1,10 +1,15 @@
 package com.gainstrack.command
 
-import com.gainstrack.core.{AccountCommand, AssetId, Balance, BeancountCommand, LocalDate, parseDate}
+import com.gainstrack.core.{AccountCommand, AccountId, AssetId, Balance, BeancountCommand, LocalDate, parseDate}
 
 case class PriceObservation(date:LocalDate, assetId: AssetId, price:Balance)
   extends AccountCommand with BeancountCommand {
   override def origin: AccountCommand = this
+
+  override def mainAccounts: Set[AccountId] = Set()
+  override def involvedAccounts: Set[AccountId] = Set()
+  def description:String = s"${price.ccy.symbol}/${assetId.symbol} = ${price}"
+
   def toBeancount : String = {
      s"${date} price ${assetId.symbol} ${price}"
   }

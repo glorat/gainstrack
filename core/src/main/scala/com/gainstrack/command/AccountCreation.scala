@@ -21,6 +21,10 @@ case class AccountCreation (
   def accountId = key.name
   def name = key.name
 
+  override def description: String = "Account opened"
+  override def mainAccounts: Set[AccountId] = Set(accountId)
+  override def involvedAccounts: Set[AccountId] = Set(accountId)
+
   def parentAccountId:Option[AccountId] = {
     val idx = key.name.lastIndexOf(":")
     if (idx>0) {

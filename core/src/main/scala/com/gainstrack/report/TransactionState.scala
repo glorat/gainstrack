@@ -37,7 +37,7 @@ case class TransactionState(accounts:Set[AccountCreation], balanceState:BalanceS
     var newLines : Seq[String] = Seq()
     val baseAcct = accounts.find(x => x.name == e.accountId).getOrElse(throw new IllegalStateException(s"${e.accountId} is not an open account"))
 
-    ret = ret.copy(cmds = cmds :+ e.toTransaction(baseAcct.options) )
+    ret = ret.copy(cmds = cmds :+ e.toTransaction )
     ret
   }
 
