@@ -1,6 +1,6 @@
-package com.gainstrack.core
+package com.gainstrack.command
 
-import com.gainstrack.command._
+import com.gainstrack.core.AccountCommand
 
 class GainstrackParser {
   private var commands:Seq[AccountCommand] = Seq()

@@ -2,7 +2,7 @@ package com.gainstrack.report
 
 import com.gainstrack.core._
 
-class AccountInvestmentReport(accountId: AccountId, ccy:AssetId, queryDate: LocalDate, bg:BeancountGenerator, priceCollector: PriceCollector) {
+class AccountInvestmentReport(accountId: AccountId, ccy:AssetId, queryDate: LocalDate, bg:GainstrackGenerator, priceState: PriceState) {
   val account = bg.acctState.accountMap(accountId)
 
   val allFlows = new InflowCalculator(bg, Set(Equity,Assets, Liabilities, Income, Expenses),1).calcInflows(accountId)
@@ -27,7 +27,7 @@ class AccountInvestmentReport(accountId: AccountId, ccy:AssetId, queryDate: Loca
   val balance: Balance = allAccounts.foldLeft(initBalance)((total, account) => {
     val b = bg.balanceState.getBalance(account.accountId, queryDate).getOrElse(zeroFraction)
     // FX this into parent ccy
-    val fx = priceCollector.getState.getFX(AssetTuple(account.key.assetId, ccy), queryDate).getOrElse(throw new Exception(s"Missing FX for ${account.key.assetId.symbol}/${ccy.symbol}"))
+    val fx = priceState.getFX(AssetTuple(account.key.assetId, ccy), queryDate).getOrElse(throw new Exception(s"Missing FX for ${account.key.assetId.symbol}/${ccy.symbol}"))
     total + b * fx
   })
 

@@ -1,21 +1,13 @@
-package com.gainstrack.core
+package com.gainstrack.report
 
 import com.gainstrack.command._
+import com.gainstrack.core._
 import net.glorat.cqrs.{AggregateRoot, AggregateRootState, DomainEvent}
 import spire.math.SafeLong
 
 import scala.collection.SortedMap
 
-class BalanceProjector(accounts:Set[AccountCreation]) extends AggregateRoot {
-  override protected var state: AggregateRootState = BalanceState(accounts )
-
-  override def id: GUID = getState.id
-
-  override def getState: BalanceState = state.asInstanceOf[BalanceState]
-
-}
-
-case class BalanceState(id:GUID, accounts:Set[AccountCreation], balances:Map[AccountId,SortedMap[LocalDate,Fraction]]) extends AggregateRootState {
+case class BalanceState(accounts:Set[AccountCreation], balances:Map[AccountId,SortedMap[LocalDate,Fraction]]) extends AggregateRootState {
   type Balances = Map[AccountId,SortedMap[LocalDate,Fraction]]
   type Series = SortedMap[LocalDate,Fraction]
   val interp = TimeSeriesInterpolator.from(SortedMap[LocalDate,Fraction]())
@@ -88,6 +80,6 @@ object BalanceState {
   def apply(accounts : Set[AccountCreation]) : BalanceState = {
     val emptySeries : SortedMap[LocalDate,Fraction] = SortedMap.empty
     val initMap:Map[AccountId,SortedMap[LocalDate,Fraction]] = accounts.map(x => x.name -> emptySeries).toMap
-    BalanceState(java.util.UUID.randomUUID(), accounts, initMap)
+    BalanceState(accounts, initMap)
   }
 }

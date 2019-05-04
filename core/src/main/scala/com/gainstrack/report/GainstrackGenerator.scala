@@ -1,0 +1,49 @@
+package com.gainstrack.report
+
+import com.gainstrack.core._
+import com.gainstrack.command._
+import net.glorat.cqrs.{AggregateRootState, DomainEvent}
+
+case class GainstrackGenerator(cmds:Seq[AccountCommand])  {
+
+  // First pass for accounts
+  val acctState:AccountState =
+    cmds.foldLeft(AccountState()) ((state, ev) => state.handle(ev))
+  // Second pass for balances
+  val balanceState:BalanceState =
+    cmds.foldLeft(BalanceState(acctState.accounts)) ( (state,ev) => state.handle(ev))
+
+  // Third pass for projections
+  val txState:TransactionState =
+    cmds.foldLeft(TransactionState(acctState.accounts, balanceState, Seq())) ((state, ev) => state.handle(ev))
+  lazy val priceState: PriceState =
+    cmds.foldLeft(PriceState()) ((state,ev) => state.handle(ev))
+
+    //     val machine = new PriceCollector
+  //    orderedCmds.foreach(cmd => {
+  //      machine.applyChange(cmd)
+  //    })
+  //    machine
+
+  def toBeancount: String = {
+    val headers:Seq[String] = Seq (
+      "option \"title\" \"Gainstrack\"",
+      "option \"operating_currency\" \"GBP\"",
+      "plugin \"beancount.plugins.implicit_prices\""
+    )
+
+    val lines = headers ++ acctState.accounts.map(_.toBeancount) ++ txState.cmds.map(_.toBeancount)
+
+    lines.mkString("\n")
+  }
+
+  def writeFile(filename:String) = {
+    import java.nio.file.{Paths, Files}
+    import java.nio.charset.StandardCharsets
+
+    val str = this.toBeancount
+    Files.write(Paths.get(filename), str.getBytes(StandardCharsets.UTF_8))
+
+  }
+}
+

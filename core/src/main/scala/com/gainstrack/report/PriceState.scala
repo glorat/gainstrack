@@ -1,29 +1,22 @@
-package com.gainstrack.core
-
-import java.time.Period
+package com.gainstrack.report
 
 import com.gainstrack.command.{SecurityPurchase, Transfer, UnitTrustBalance}
-import net.glorat.cqrs.{AggregateRoot, AggregateRootState, DomainEvent}
+import com.gainstrack.core._
+import net.glorat.cqrs.{AggregateRootState, DomainEvent}
 import spire.math.SafeLong
 
 import scala.collection.SortedMap
-import scala.math.ScalaNumber
-
-class PriceCollector extends AggregateRoot {
-  override protected var state: AggregateRootState = PriceState(java.util.UUID.randomUUID(), Map())
-
-  override def id: GUID = getState.id
-
-  override def getState: PriceState = state.asInstanceOf[PriceState]
-
-}
 
 case class AssetTuple(fx1:AssetId, fx2:AssetId)
 object AssetTuple {
   def apply(fx1:String, fx2:String):AssetTuple = AssetTuple(AssetId(fx1),AssetId(fx2))
 }
 
-case class PriceState(id:GUID, prices:Map[AssetTuple, SortedMap[LocalDate, Fraction]]) extends AggregateRootState {
+object PriceState {
+  def apply() : PriceState = PriceState(Map())
+}
+
+case class PriceState(prices:Map[AssetTuple, SortedMap[LocalDate, Fraction]]) extends AggregateRootState {
   private val implicitPrices = true
 
   private val interp = TimeSeriesInterpolator.from(SortedMap[LocalDate, Fraction]())

@@ -3,7 +3,7 @@ package controllers
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
-import com.gainstrack.core.GainstrackParser
+import com.gainstrack.command.GainstrackParser
 import org.json4s.{CustomSerializer, Formats}
 import org.json4s.JsonAST.JString
 import org.scalatra._

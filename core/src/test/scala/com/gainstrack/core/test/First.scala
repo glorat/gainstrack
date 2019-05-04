@@ -2,9 +2,9 @@ package com.gainstrack.core.test
 
 import java.time.LocalDate
 
-import com.gainstrack.command.{BalanceAdjustment, Transfer}
+import com.gainstrack.command.{BalanceAdjustment, GainstrackParser, Transfer}
 import com.gainstrack.core._
-import com.gainstrack.report.AccountInvestmentReport
+import com.gainstrack.report._
 import org.scalatest.FlatSpec
 
 class First extends FlatSpec {
@@ -52,8 +52,8 @@ class First extends FlatSpec {
   }
 
   // First pass for accounts
-  lazy val acctState:BeancountAccountState =
-    orderedCmds.foldLeft(BeancountAccountState()) ( (state, ev) => state.handle(ev))
+  lazy val acctState:AccountState =
+    orderedCmds.foldLeft(AccountState()) ((state, ev) => state.handle(ev))
 
 
   "cmds" should "process" in {
@@ -65,7 +65,7 @@ class First extends FlatSpec {
     assert (acct.options.expenseAccount == Some("Expenses:Investment:IBUSD:USD"))
   }
 
-  val bg = new BeancountGenerator(orderedCmds)
+  val bg = new GainstrackGenerator(orderedCmds)
 
   val accountMap = bg.acctState.accountMap
 
@@ -81,41 +81,33 @@ class First extends FlatSpec {
 
   }
 
-  lazy val priceCollector : PriceCollector = {
-    val machine = new PriceCollector
-    orderedCmds.foreach(cmd => {
-      machine.applyChange(cmd)
-    })
-    machine
-  }
+  lazy val priceState : PriceState = bg.priceState
 
   {
-    val bp = new BalanceProjector(bg.acctState.accounts)
-    for (elem <- orderedCmds) {
-      bp.applyChange(elem)
-    }
+    val bp = bg.balanceState
+
     val today = parseDate("2019-12-31")
 
 
     "BalanceProjector" should "project balances" in {
 
       // After commissions, should be 172.05
-      assert(bp.getState.balances("Assets:Investment:IBUSD:USD").last._2 == 172.05)
-      assert(bp.getState.balances("Expenses:Investment:IBUSD:USD").last._2 == 18.87)
+      assert(bp.balances("Assets:Investment:IBUSD:USD").last._2 == 172.05)
+      assert(bp.balances("Expenses:Investment:IBUSD:USD").last._2 == 18.87)
     }
 
 
     it should "list balances by account" in {
       val today = parseDate("2019-12-31")
       acctState.accounts.toSeq.sortBy(_.name).foreach(account => {
-        val value = bp.getState.getBalance(account.accountId, today).getOrElse(zeroFraction)
+        val value = bp.getBalance(account.accountId, today).getOrElse(zeroFraction)
         println(s"${account.accountId}: ${value.toDouble} ${account.key.assetId.symbol}")
       })
     }
 
     it should "sum all asset balances to a position set" in {
       val assets = acctState.accounts.filter(_.name.startsWith("Assets:")).foldLeft(PositionSet())((ps,account) => {
-        val value:Fraction = bp.getState.getBalance(account.accountId, today).getOrElse(zeroFraction)
+        val value:Fraction = bp.getBalance(account.accountId, today).getOrElse(zeroFraction)
          ps + Balance(value, account.key.assetId.symbol)
       }).assetBalance
 
@@ -142,16 +134,16 @@ class First extends FlatSpec {
 
 
   "price collector" should "process" in {
-    priceCollector
+    priceState
   }
 
   it should "infer prices from transfers" in {
-    assert(priceCollector.getState.prices.size == 32)
+    assert(priceState.prices.size == 32)
 
-    assert(priceCollector.getState.prices(AssetTuple(AssetId("USD"),AssetId("HKD")))
+    assert(priceState.prices(AssetTuple(AssetId("USD"),AssetId("HKD")))
       == Map(parseDate("2019-01-02")-> 7.866412581540283))
 
-    assert(priceCollector.getState.prices(AssetTuple(AssetId("VTI"),AssetId("USD"))) == Map(
+    assert(priceState.prices(AssetTuple(AssetId("VTI"),AssetId("USD"))) == Map(
       parseDate("2019-01-02") ->127.63,
       parseDate("2019-03-15") -> 144.62,
       parseDate("2019-03-26") -> 143.83)
@@ -159,7 +151,7 @@ class First extends FlatSpec {
   }
 
   it should "provide interpolated prices" in {
-    val fx = priceCollector.getState.getFX(AssetTuple("VTI","USD"), parseDate("2019-02-01"))
+    val fx = priceState.getFX(AssetTuple("VTI","USD"), parseDate("2019-02-01"))
     // Interp between 127 and 144
     assert(fx.get ==  161651.0/1200.0) //134.709166666
   }
@@ -168,7 +160,7 @@ class First extends FlatSpec {
     val accountId = "Assets:Investment:Zurich"
     val queryDate = LocalDate.parse("2019-12-31")
 
-    val accountReport = new AccountInvestmentReport(accountId, AssetId("GBP"), queryDate, bg, priceCollector)
+    val accountReport = new AccountInvestmentReport(accountId, AssetId("GBP"), queryDate, bg, priceState)
 
     assert(accountReport.balance == Balance.parse("348045.34 GBP"))
 

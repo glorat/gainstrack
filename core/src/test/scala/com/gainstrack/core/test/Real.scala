@@ -1,10 +1,8 @@
 package com.gainstrack.core.test
 
-import java.time.LocalDate
-
-import com.gainstrack.command.BalanceAssertion
+import com.gainstrack.command._
 import com.gainstrack.core._
-import com.gainstrack.report.AccountInvestmentReport
+import com.gainstrack.report.{AccountInvestmentReport, GainstrackGenerator, PriceState}
 import org.scalatest.FlatSpec
 
 class Real extends FlatSpec {
@@ -19,16 +17,9 @@ class Real extends FlatSpec {
   val cmds = parser.getCommands
 
   val orderedCmds = cmds.sorted
-  val bg = new BeancountGenerator(orderedCmds)
+  val bg = new GainstrackGenerator(orderedCmds)
 
-  lazy val priceCollector : PriceCollector = {
-    val machine = new PriceCollector
-    orderedCmds.foreach(cmd => {
-      machine.applyChange(cmd)
-    })
-    machine
-  }
-
+  lazy val priceState : PriceState = bg.priceState
 
   "Real case" should "generate beancount" in {
 
@@ -36,7 +27,7 @@ class Real extends FlatSpec {
   }
 
   it should "imply prices" in {
-    priceCollector
+    priceState
   }
 
   it should "pass bean-check" in {
@@ -65,7 +56,7 @@ class Real extends FlatSpec {
     invAccts.foreach(account => {
       val accountId = account.accountId
       val ccy = account.key.assetId
-      val accountReport = new AccountInvestmentReport(accountId, ccy, queryDate, bg, priceCollector)
+      val accountReport = new AccountInvestmentReport(accountId, ccy, queryDate, bg, priceState)
       println(s"${accountId} ${accountReport.balance}")
       accountReport.cashflowTable.sorted.foreach(cf => {
         println(s"   ${cf.date} ${cf.value}")
@@ -76,13 +67,13 @@ class Real extends FlatSpec {
   }
 
   it should "calc sane irrs for my Zurich" in {
-    val rep = new AccountInvestmentReport("Assets:Investment:Zurich", AssetId("GBP"), queryDate, bg, priceCollector)
+    val rep = new AccountInvestmentReport("Assets:Investment:Zurich", AssetId("GBP"), queryDate, bg, priceState)
     assert(rep.cashflowTable.irr < 0.05)
     assert(rep.cashflowTable.irr > 0.04)
   }
 
   it should "calc sane irrs for my PP" in {
-    val rep = new AccountInvestmentReport("Assets:Property:PP", AssetId("GBP"), queryDate, bg, priceCollector)
+    val rep = new AccountInvestmentReport("Assets:Property:PP", AssetId("GBP"), queryDate, bg, priceState)
     assert(rep.cashflowTable.irr < 0.09)
     assert(rep.cashflowTable.irr > 0.03)
   }

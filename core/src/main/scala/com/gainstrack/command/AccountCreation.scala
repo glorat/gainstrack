@@ -1,6 +1,6 @@
-package com.gainstrack.core
+package com.gainstrack.command
 
-import com.gainstrack.command.CommandParser
+import com.gainstrack.core._
 
 case class AccountOptions (
                           expenseAccount:Option[String] = None,

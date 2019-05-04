@@ -2,8 +2,9 @@ package com.gainstrack.core.test
 
 import java.time.{LocalDate, ZonedDateTime}
 
-import com.gainstrack.command.SecurityPurchase
+import com.gainstrack.command._
 import com.gainstrack.core._
+import com.gainstrack.report.GainstrackGenerator
 import org.scalatest.FlatSpec
 
 class TransactionBalanceTest extends FlatSpec {
@@ -61,7 +62,7 @@ class TransactionBalanceTest extends FlatSpec {
     val cmds = parser.getCommands
 
     val orderedCmds = cmds.sorted
-    val bg = new BeancountGenerator(cmds.sorted)
+    val bg = new GainstrackGenerator(cmds.sorted)
 
     bg.writeFile("/tmp/unit.beancount")
 
