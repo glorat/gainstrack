@@ -4,20 +4,25 @@ import com.gainstrack.core._
 import com.gainstrack.command._
 import net.glorat.cqrs.{AggregateRootState, DomainEvent}
 
-case class GainstrackGenerator(cmds:Seq[AccountCommand])  {
+case class GainstrackGenerator(originalCommands:Seq[AccountCommand])  {
 
   // First pass for accounts
   val acctState:AccountState =
-    cmds.foldLeft(AccountState()) ((state, ev) => state.handle(ev))
+    originalCommands.foldLeft(AccountState()) ((state, ev) => state.handle(ev))
+  // Fill in defaulted accounts
+  private val expander =
+    originalCommands.foldLeft(CommandAccountExpander(acctState.accounts)) ((state, ev) => state.handle(ev))
+  val finalCommands = expander.cmds
+
   // Second pass for balances
   val balanceState:BalanceState =
-    cmds.foldLeft(BalanceState(acctState.accounts)) ( (state,ev) => state.handle(ev))
+    finalCommands.foldLeft(BalanceState(acctState.accounts)) ( (state,ev) => state.handle(ev))
 
   // Third pass for projections
   val txState:TransactionState =
-    cmds.foldLeft(TransactionState(acctState.accounts, balanceState, Seq())) ((state, ev) => state.handle(ev))
+    finalCommands.foldLeft(TransactionState(acctState.accounts, balanceState, Seq())) ((state, ev) => state.handle(ev))
   lazy val priceState: PriceState =
-    cmds.foldLeft(PriceState()) ((state,ev) => state.handle(ev))
+    finalCommands.foldLeft(PriceState()) ((state,ev) => state.handle(ev))
 
     //     val machine = new PriceCollector
   //    orderedCmds.foreach(cmd => {

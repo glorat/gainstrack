@@ -52,7 +52,7 @@ class MainController (implicit val ec :ExecutionContext) extends ScalatraServlet
   get("/gainstrack/irr/") {
     val urlFor:MainController.UrlFn = (path:String, params:Iterable[(String,Any)]) => url(path,params)(this.request, this.response)
 
-    val irr = IrrSummary(bg.cmds, LocalDate.now(), bg.acctState, bg.balanceState, bg.txState, bg.priceState)
+    val irr = IrrSummary(bg.finalCommands, LocalDate.now(), bg.acctState, bg.balanceState, bg.txState, bg.priceState)
 
     contentType="text/html"
 
@@ -64,29 +64,4 @@ class MainController (implicit val ec :ExecutionContext) extends ScalatraServlet
     //ssp("/foo")
   }
 
-  get("/gainstrack/command/") {
-    val urlFor:MainController.UrlFn = (path:String, params:Iterable[(String,Any)]) => url(path,params)(this.request, this.response)
-
-    contentType="text/html"
-
-    val mainAccountIds:Set[String] = bg.cmds.map(_.mainAccounts).reduceLeft(_ ++ _)
-    val mainAccounts:Seq[AccountCreation] = bg.acctState.accounts.filter(a => mainAccountIds.contains(a.accountId)).toSeq.sortBy(_.accountId)
-
-    layoutTemplate("/WEB-INF/views/command.ssp",
-      "short_title"->"UI Account Editor",
-      "data"-> mainAccounts,
-      "urlFor" -> urlFor
-    )
-    //ssp("/foo")
-  }
 }
-
-object LocalDateSerializer extends CustomSerializer[LocalDate](format => ({
-  case JString(str) => LocalDate.parse(str)
-}, {
-  case value: LocalDate  => {
-    val formatter = DateTimeFormatter.ofPattern("YYYY-MM-dd")
-    JString(formatter.format(value))
-  }
-}
-))

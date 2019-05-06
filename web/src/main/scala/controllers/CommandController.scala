@@ -36,7 +36,7 @@ class CommandController (implicit val ec :ExecutionContext) extends ScalatraServ
 
     contentType="text/html"
 
-    val mainAccountIds:Set[String] = bg.cmds.map(_.mainAccounts).reduceLeft(_ ++ _)
+    val mainAccountIds:Set[String] = bg.finalCommands.map(_.mainAccounts).reduceLeft(_ ++ _)
     val mainAccounts:Seq[AccountCreation] = bg.acctState.accounts.filter(a => mainAccountIds.contains(a.accountId)).toSeq.sortBy(_.accountId)
 
     layoutTemplate("/WEB-INF/views/command.ssp",
@@ -55,7 +55,9 @@ class CommandController (implicit val ec :ExecutionContext) extends ScalatraServ
 
     val accountId = params("accountId")
     bg.acctState.accountMap.get(accountId).map(account => {
-      val commands = bg.cmds.filter(cmd => cmd.usesAccount(accountId))
+      // Actually want to use originalCommands here but then we can't filter!
+      // Chicken and egg problem... do we need to trace the supply chain?
+      val commands = bg.finalCommands.filter(cmd => cmd.usesAccount(accountId))
 
       contentType="text/html"
 
