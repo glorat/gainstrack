@@ -36,7 +36,8 @@ class Real extends FlatSpec {
   it should "calculate IRR for investment accounts" in {
     val assetClasses = Seq("Bank","ISA","Property", "Investment")
 
-    val test = (acctId:String) => {assetClasses.foldLeft(false)((bool:Boolean,str:AccountId) => bool || acctId.startsWith("Assets:"+str))}
+    // FIXME: Don't check AccountId.name
+    val test = (acctId:AccountId) => {assetClasses.foldLeft(false)((bool:Boolean,str:String) => bool || acctId.isSubAccountOf(AccountId("Assets:"+str)))}
 
     val invs = orderedCmds.filter(cmd => cmd match {
       case ac : AccountCreation => test(ac.accountId)
@@ -60,7 +61,7 @@ class Real extends FlatSpec {
   }
 
   it should "calc sane irrs for my Zurich" in {
-    val accountId = "Assets:Investment:Zurich"
+    val accountId = AccountId("Assets:Investment:Zurich")
     val rep = new AccountInvestmentReport(accountId, AssetId("GBP"), queryDate, bg.acctState, bg.balanceState, bg.txState, priceState)
 
     assert(rep.cashflowTable.irr < 0.05)
@@ -68,7 +69,7 @@ class Real extends FlatSpec {
   }
 
   it should "calc sane irrs for my PP" in {
-    val accountId = "Assets:Property:PP"
+    val accountId = AccountId("Assets:Property:PP")
     val rep = new AccountInvestmentReport(accountId, AssetId("GBP"), queryDate, bg.acctState, bg.balanceState, bg.txState, priceState)
 
     assert(rep.cashflowTable.irr < 0.09)
@@ -76,7 +77,7 @@ class Real extends FlatSpec {
   }
 
   it should "list all txs for an account" in {
-    val accountId = "Assets:Investment:HSBC"
+    val accountId = AccountId("Assets:Investment:HSBC")
     val txs = bg.txState.cmds.filter(bcmd => bcmd match {
       case tx:Transaction => tx.postings.find(p=>isSubAccountOf(p.account, accountId)).isDefined
       case _ => false

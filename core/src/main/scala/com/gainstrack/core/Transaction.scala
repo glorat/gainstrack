@@ -35,11 +35,11 @@ case class Transaction (
       filled.map(_.weight.value).foldLeft(zeroFraction)((a:Fraction,b:Fraction)=>a+b) == 0
   }
 
-  def balanceChange(accountId:String) : Fraction = {
+  def balanceChange(accountId:AccountId) : Fraction = {
     filledPostings.filter(_.account == accountId).foldLeft(zeroFraction)((sum,p)=>sum+p.weight.value)
   }
 
-  def subBalanceChange(accountId:String) : Fraction = {
+  def subBalanceChange(accountId:AccountId) : Fraction = {
     filledPostings.filter(a => isSubAccountOf(a.account, accountId)).foldLeft(zeroFraction)((sum,p)=>sum+p.weight.value)
   }
 

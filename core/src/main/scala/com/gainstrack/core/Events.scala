@@ -50,7 +50,10 @@ trait AccountEvent extends DomainEvent {
 }
 
 
-trait AccountType
+trait AccountType {
+  // A quick and dirty cheat
+  override val toString: String = this.getClass.getSimpleName.dropRight(1)
+}
 case object Assets extends AccountType
 case object Liabilities extends AccountType
 case object Equity extends AccountType
@@ -68,11 +71,6 @@ object AccountType {
     }
   }
 
-  def fromAccountId(str:AccountId):AccountType = {
-    val prefix = str.split(":").headOption
-      .getOrElse(throw new IllegalArgumentException(s"${str} is not in account format") )
-    AccountType(prefix)
-  }
 }
 
 //import AssetType.AssetType
@@ -97,15 +95,11 @@ case class AccountKey(
                        name: AccountId,
                        assetId: AssetId
                      ) {
-  def inferAccountType: String = {
-    name.split(':').head
-  }
-
-  AccountType(inferAccountType)
+  name.accountType // Check it
 }
 
 object AccountKey {
-
+  def apply(name:String, assetId:AssetId):AccountKey = AccountKey(AccountId(name), assetId)
 }
 
 

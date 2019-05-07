@@ -54,11 +54,11 @@ object Transfer extends CommandParser {
   override def parse(str: String): Transfer = {
     str match {
       case FxTransfer(date, srcAcct, tgtAcct, srcValue, tgtValue) =>
-        Transfer(srcAcct, tgtAcct, parseDate(date), srcValue, tgtValue)
+        Transfer(AccountId(srcAcct), AccountId(tgtAcct), parseDate(date), srcValue, tgtValue)
       case SimpleTransfer(date, srcAcct, tgtAcct, value) =>
-        Transfer(srcAcct, tgtAcct, parseDate(date), value, value)
+        Transfer(AccountId(srcAcct), AccountId(tgtAcct), parseDate(date), value, value)
       case Earning(date, tgtAcct, incomeTag, value) =>
-        earning(tgtAcct, incomeTag, parseDate(date), value)
+        earning(AccountId(tgtAcct), incomeTag, parseDate(date), value)
     }
   }
 
@@ -66,6 +66,6 @@ object Transfer extends CommandParser {
     // TODO: Restrict the account types that can be used here
     val srcAcct = s"Income:${incomeTag}:${sourceValue.ccy.symbol}"
     val description = s"$incomeTag Income of $sourceValue"
-    Transfer(srcAcct, assetAccountId, date, sourceValue, sourceValue, description)
+    Transfer(AccountId(srcAcct), assetAccountId, date, sourceValue, sourceValue, description)
   }
 }

@@ -12,10 +12,10 @@ class InflowCalculator(txState:TransactionState, sources:Set[AccountType], multi
         case tx: Transaction => {
           tx.origin match {
             case tfr: Transfer => {
-              if ( isSubAccountOf(tfr.source, accountId) && sources.contains(AccountType.fromAccountId(tfr.dest))) {
+              if ( tfr.source.isSubAccountOf(accountId) && sources.contains(tfr.dest.accountType)) {
                 flow :+ Cashflow(tx.postDate, -(tfr.sourceValue * multiplier))
               }
-              else if (sources.contains(AccountType.fromAccountId(tfr.source)) && isSubAccountOf(tfr.dest, accountId)) {
+              else if (sources.contains(tfr.source.accountType) && tfr.dest.isSubAccountOf(accountId)) {
                 flow :+ Cashflow(tx.postDate, tfr.targetValue * multiplier)
               }
               else {
@@ -23,9 +23,9 @@ class InflowCalculator(txState:TransactionState, sources:Set[AccountType], multi
               }
             }
             case adj: BalanceAdjustment => {
-              if ( isSubAccountOf(adj.accountId, accountId)
-                && !isSubAccountOf(adj.adjAccount, accountId)
-                && sources.contains(AccountType.fromAccountId(adj.adjAccount))
+              if ( adj.accountId.isSubAccountOf(accountId)
+                && ! adj.adjAccount.isSubAccountOf(accountId)
+                && sources.contains(adj.adjAccount.accountType)
               ) {
                 val tfr = tx.filledPostings.find(p => p.account == adj.accountId).get.value.get
                 flow :+ Cashflow(tx.postDate, tfr * multiplier)

@@ -53,7 +53,7 @@ object BalanceAdjustment extends CommandParser {
 
     str match {
       case re(date, acct, balance, adjAcct) => {
-        BalanceAdjustment(parseDate(date), acct, balance, adjAcct)
+        BalanceAdjustment(parseDate(date), AccountId(acct), balance, AccountId(adjAcct))
       }
     }
   }

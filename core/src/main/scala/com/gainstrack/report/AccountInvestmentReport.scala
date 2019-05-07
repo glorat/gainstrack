@@ -21,7 +21,7 @@ class AccountInvestmentReport(accountId: AccountId, ccy:AssetId, queryDate: Loca
   }).getOrElse(Seq())
 
   // Take just the final equity balance as positive
-  val allAccounts = acctState.accounts.filter(a => isSubAccountOf(a.accountId, accountId))
+  val allAccounts = acctState.accounts.filter(a => a.accountId.isSubAccountOf(accountId))
   val initBalance = Balance(zeroFraction, ccy)
 
   val balance: Balance = allAccounts.foldLeft(initBalance)((total, account) => {

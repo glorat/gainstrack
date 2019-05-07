@@ -29,8 +29,8 @@ class First extends FlatSpec {
 
   it should "parse" in {
     val tx2 = Transfer(
-      source = "Assets:HSBCHK",
-      dest = "Assets:Investment:HSBC:USD",
+      source = AccountId("Assets:HSBCHK"),
+      dest = AccountId("Assets:Investment:HSBC:USD"),
       date = LocalDate.parse("2019-01-02"),
       sourceValue = "40000 HKD",
       targetValue = "5084.91 USD"
@@ -42,10 +42,10 @@ class First extends FlatSpec {
   "adj" should "parse" in {
 
     val bohkd = BalanceAdjustment(
-      accountId = "Assets:HSBCHK",
+      accountId = AccountId("Assets:HSBCHK"),
       date = LocalDate.parse("2019-01-01"), // post or enter?
       balance = "138668.37 HKD",
-      adjAccount = "Equity:Opening:HKD"
+      adjAccount = AccountId("Equity:Opening:HKD")
     )
 
     assert(BalanceAdjustment.parse("2019-01-01 adj Assets:HSBCHK 138668.37 HKD Equity:Opening:HKD") == bohkd)
@@ -61,8 +61,8 @@ class First extends FlatSpec {
   }
 
   it should "handle related accounts" in {
-    val acct = acctState.accounts.find(x => x.name == "Assets:Investment:IBUSD").getOrElse(fail("Missing account"))
-    assert (acct.options.expenseAccount == Some("Expenses:Investment:IBUSD:USD"))
+    val acct = acctState.accounts.find(x => x.name == AccountId("Assets:Investment:IBUSD")).getOrElse(fail("Missing account"))
+    assert (acct.options.expenseAccount == Some(AccountId("Expenses:Investment:IBUSD:USD")))
   }
 
   val bg = new GainstrackGenerator(orderedCmds)
@@ -98,7 +98,7 @@ class First extends FlatSpec {
     }
 
     it should "sum all asset balances to a position set" in {
-      val assets = acctState.accounts.filter(_.name.startsWith("Assets:")).foldLeft(PositionSet())((ps,account) => {
+      val assets = acctState.accounts.filter(_.name.accountType == Assets).foldLeft(PositionSet())((ps,account) => {
         val value:Fraction = bp.getBalance(account.accountId, today).getOrElse(zeroFraction)
          ps + Balance(value, account.key.assetId.symbol)
       }).assetBalance
@@ -149,7 +149,7 @@ class First extends FlatSpec {
   }
 
   "IRR Calc" should "compute IRR" in {
-    val accountId = "Assets:Investment:Zurich"
+    val accountId = AccountId("Assets:Investment:Zurich")
     val queryDate = LocalDate.parse("2019-12-31")
 
     val accountReport = new AccountInvestmentReport(accountId, AssetId("GBP"), queryDate, bg.acctState, bg.balanceState, bg.txState, priceState)

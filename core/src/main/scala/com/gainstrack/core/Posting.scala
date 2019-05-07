@@ -1,7 +1,7 @@
 package com.gainstrack.core
 
 case class Posting (
-                     account: String,
+                     account: AccountId,
                      value: Option[Balance],
                      price: Option[Balance], // @ 123 USD
                      cost: Option[Balance]   // {123 USD}
@@ -44,22 +44,22 @@ case class Posting (
 
 }
 object Posting {
-  def apply(account:String):Posting = {
+  def apply(account:AccountId):Posting = {
     // Expects interpolation
     apply(account, None,None,None)
   }
-  def apply(account:String, value:Balance):Posting = {
+  def apply(account:AccountId, value:Balance):Posting = {
     apply(account, Some(value), None, None)
   }
-  def apply(account:String, value:Balance, price:Balance):Posting = {
+  def apply(account:AccountId, value:Balance, price:Balance):Posting = {
     apply(account, Some(value), Some(price), None)
   }
 
-  def withCost(account:String, value:Balance, cost:Balance):Posting = {
+  def withCost(account:AccountId, value:Balance, cost:Balance):Posting = {
     apply(account, Some(value), None, Some(cost))
   }
 
-  def withCostAndPrice(account:String, value:Balance, cost:Balance, price:Balance):Posting = {
+  def withCostAndPrice(account:AccountId, value:Balance, cost:Balance, price:Balance):Posting = {
     apply(account, Some(value), Some(price), Some(cost))
   }
 }

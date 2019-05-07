@@ -6,7 +6,7 @@ import spire.math.SafeLong
 case class Balance(value:Fraction, ccy:AssetId) {
   private val errmsg = "Balance can only combine single currency"
 
-  override def toString: AccountId = s"${value.toDouble} ${ccy.symbol}"
+  override def toString: String = s"${value.toDouble} ${ccy.symbol}"
   def +(rhs: Balance): Balance = {
     require(rhs.ccy == this.ccy, errmsg)
     Balance(value + rhs.value, ccy)

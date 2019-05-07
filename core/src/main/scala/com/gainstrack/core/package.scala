@@ -5,7 +5,6 @@ package object core {
   type LocalDate = java.time.LocalDate
   type ZonedDateTime = java.time.ZonedDateTime
   type GUID = net.glorat.cqrs.GUID
-  type AccountId = String
 
   def MinDate : LocalDate = java.time.LocalDate.MIN
   def now(): ZonedDateTime = java.time.ZonedDateTime.now()
@@ -19,7 +18,8 @@ package object core {
     def compare(x: LocalDate, y: LocalDate): Int = x compareTo y
   }
 
+  @deprecated
   def isSubAccountOf(accountId:AccountId, parentId:AccountId):Boolean = {
-    (accountId == parentId) || (accountId.startsWith(parentId + ":"))
+    accountId.isSubAccountOf(parentId)
   }
 }

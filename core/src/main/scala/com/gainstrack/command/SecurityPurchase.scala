@@ -11,10 +11,10 @@ case class SecurityPurchase(
                            ) extends AccountCommand {
 
   // Auto-gen the account name
-  val cashAccountId = s"${accountId}:${price.ccy.symbol}"
-  val securityAccountId = s"${accountId}:${security.ccy.symbol}"
-  val incomeAcctId = accountId.replace("Assets:", "Income:")+s":${price.ccy.symbol}"
-  val expenseAcctId = accountId.replace("Assets:", "Expenses:")+s":${price.ccy.symbol}"
+  val cashAccountId = accountId.subAccount(price.ccy.symbol)
+  val securityAccountId = accountId.subAccount(security.ccy.symbol)
+  val incomeAcctId = accountId.convertTypeWithSubAccount(Income, price.ccy.symbol)
+  val expenseAcctId = accountId.convertTypeWithSubAccount(Expenses, price.ccy.symbol)
   val requiredAccountIds:Seq[AccountId] = Seq(cashAccountId, securityAccountId, incomeAcctId, expenseAcctId)
 
   override def mainAccounts: Set[AccountId] = Set(accountId)
@@ -72,8 +72,8 @@ object SecurityPurchase extends CommandParser {
   def parse(str:String):SecurityPurchase = {
     str match {
       case PurchaseWithCommision(date, acct, security, cost, commission) =>
-        SecurityPurchase(acct, parseDate(date), Balance.parse(security), cost, Balance.parse(commission))
-      case Purchase(date, acct, security, cost) => SecurityPurchase(acct, parseDate(date), Balance.parse(security), cost)
+        SecurityPurchase(AccountId(acct), parseDate(date), Balance.parse(security), cost, Balance.parse(commission))
+      case Purchase(date, acct, security, cost) => SecurityPurchase(AccountId(acct), parseDate(date), Balance.parse(security), cost)
     }
   }
 

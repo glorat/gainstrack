@@ -9,7 +9,8 @@ object IrrSummary {
   def apply(commands:Seq[AccountCommand], queryDate:LocalDate, acctState: AccountState, balanceState: BalanceState, txState:TransactionState, priceState:PriceState) : IrrSummary = {
     val assetClasses = Seq("Bank","ISA","Property", "Investment")
 
-    val test = (acctId:String) => {assetClasses.foldLeft(false)((bool:Boolean,str:AccountId) => bool || acctId.startsWith("Assets:"+str))}
+    // FIXME: Avoid AccountId string manip
+    val test = (acctId:AccountId) => {assetClasses.foldLeft(false)((bool:Boolean,str:String) => bool || acctId.isSubAccountOf(AccountId("Assets:"+str)))}
 
     val invs = commands.filter(cmd => cmd match {
       case ac : AccountCreation => test(ac.accountId)

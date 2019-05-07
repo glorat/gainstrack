@@ -3,10 +3,10 @@ package com.gainstrack.command
 import com.gainstrack.core._
 
 case class AccountOptions (
-                          expenseAccount:Option[String] = None,
+                          expenseAccount:Option[AccountId] = None,
                           tradingAccount: Boolean = false,
-                          incomeAccount:Option[String] = None,
-                          fundingAccount:Option[String] = None,
+                          incomeAccount:Option[AccountId] = None,
+                          fundingAccount:Option[AccountId] = None,
                           description:String = "",
                           assetNonStdScu:Option[Int] = None,
                           hidden:Boolean = false,
@@ -27,13 +27,7 @@ case class AccountCreation (
   override def involvedAccounts: Set[AccountId] = Set(accountId)
 
   def parentAccountId:Option[AccountId] = {
-    val idx = key.name.lastIndexOf(":")
-    if (idx>0) {
-      Some(key.name.take(idx-1))
-    }
-    else {
-      None
-    }
+    key.name.parentAccountId
   }
 
   def enableTrading(incomeAccountId:AccountId) : AccountCreation = {
@@ -55,9 +49,9 @@ case class AccountCreation (
 
   override def withOption(key:String, valueStr:String) : AccountCreation = {
     key match {
-      case "expenseAccount" => copy(options = options.copy(expenseAccount =  Some(valueStr)))
-      case "incomeAccount" => copy(options = options.copy(incomeAccount =  Some(valueStr)))
-      case "fundingAccount" => copy(options = options.copy(fundingAccount = Some(valueStr)))
+      case "expenseAccount" => copy(options = options.copy(expenseAccount = Some(AccountId(valueStr))))
+      case "incomeAccount" => copy(options = options.copy(incomeAccount = Some(AccountId(valueStr))))
+      case "fundingAccount" => copy(options = options.copy(fundingAccount = Some(AccountId(valueStr))))
       case _ => throw new IllegalArgumentException(s"Unknown account option: ${key}")
     }
   }

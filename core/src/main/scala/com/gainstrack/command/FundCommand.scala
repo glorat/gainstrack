@@ -32,7 +32,7 @@ object FundCommand extends CommandParser {
 
   override def parse(str: String): AccountCommand = {
     str match {
-      case Fund(dateStr, tgtAcct, balanceStr) => FundCommand(parseDate(dateStr), tgtAcct, Balance.parse(balanceStr), None)
+      case Fund(dateStr, tgtAcct, balanceStr) => FundCommand(parseDate(dateStr), AccountId(tgtAcct), Balance.parse(balanceStr), None)
     }
   }
 

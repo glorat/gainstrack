@@ -23,12 +23,11 @@ case class UnitTrustBalance(
 
   def value:Balance = price * security.value
 
-  require(accountId.startsWith("Assets:"))
-  val cashAccountId = accountId + s":${price.ccy.symbol}"
-  val incomeAccountId = accountId.replace("Assets:", "Income:")+s":${price.ccy.symbol}"
-  val expenseAccountId = accountId.replace("Assets:", "Expenses:")+s":${price.ccy.symbol}"
-
-  val securityAccountId = accountId + s":${security.ccy.symbol}"
+  require(accountId.accountType == Assets)
+  val cashAccountId = accountId.subAccount(price.ccy.symbol)
+  val incomeAccountId = accountId.convertTypeWithSubAccount(Income, price.ccy.symbol)
+  val expenseAccountId = accountId.convertTypeWithSubAccount(Expenses, price.ccy.symbol)
+  val securityAccountId = accountId.subAccount(security.ccy.symbol)
 
   def description:String = s"Unit statement: ${security} @${price}"
   override def mainAccounts: Set[AccountId] = Set(accountId)
@@ -90,7 +89,7 @@ object UnitTrustBalance extends CommandParser {
 
   def parse(str:String):UnitTrustBalance = {
     str match {
-      case Statement(date, acct, security, price) => UnitTrustBalance(acct, parseDate(date), Balance.parse(security), price)
+      case Statement(date, acct, security, price) => UnitTrustBalance(AccountId(acct), parseDate(date), Balance.parse(security), price)
     }
   }
 
