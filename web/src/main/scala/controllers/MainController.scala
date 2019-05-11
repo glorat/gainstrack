@@ -20,7 +20,7 @@ object MainController {
   type UrlFn = (String, Iterable[(String,Any)]) => String
 }
 
-class MainController (implicit val ec :ExecutionContext) extends ScalatraServlet with JacksonJsonSupport with ScalateSupport {
+class  MainController (implicit val ec :ExecutionContext) extends ScalatraServlet with JacksonJsonSupport with ScalateSupport {
   protected implicit val jsonFormats: Formats = org.json4s.DefaultFormats + LocalDateSerializer
 
   val parser = new GainstrackParser

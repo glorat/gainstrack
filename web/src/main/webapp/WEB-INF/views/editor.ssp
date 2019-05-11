@@ -1,0 +1,40 @@
+<%@ val urlFor: controllers.MainController.UrlFn %>
+<%@ val source: String %>
+
+<form id="source-editor-form" class="source-form">
+<div class="fieldset">
+    <ul class="dropdown">
+        <li>{{ _('File') }}&nbsp;▾
+            <ul>
+                {% for source_file in ledger.file.list_sources() %}
+                <li {% if source_file == file_path %} class="selected"{% endif %}>
+                <a href="{{ url_for_source(file_path=source_file) }}">{{ source_file }}</a>
+                </li>
+                {% endfor %}
+            </ul>
+        </li>
+        <li>{{ _('Edit') }}&nbsp;▾
+            <ul>
+                <li>
+                    <button data-command="favaFormat" type="button" class="link">{{ _('Align Amounts') }}</button>
+                    <span>
+                        <kbd>Ctrl</kbd>/<kbd>Cmd</kbd>+<kbd>d</kbd>
+                    </span>
+                </li>
+                <li>
+                    <button data-command="favaToggleComment" type="button" class="link">{{ _('Toggle Comment (selection)') }}</button>
+                    <span>
+                        <kbd>Ctrl</kbd>/<kbd>Cmd</kbd>+<kbd>y</kbd>
+                    </span>
+                </li>
+            </ul>
+        </li>
+    </ul>
+    <button id="source-editor-submit" type="button" disabled data-command="favaSave" data-filename="{{ file_path }}" data-progress-content="{{ _('Saving...') }}" title="{{ _('Save') }} (Ctrl/Cmd+s)"(>{{ _('Save') }}</button>
+</div>
+<div class="source-editor-wrapper">
+    <textarea id="source-editor" name="source" autofocus spellcheck="false" data-sha256sum="{{ sha256sum }}">
+        <%= source %>
+    </textarea>
+</div>
+</form>

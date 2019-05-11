@@ -13,6 +13,7 @@ import org.scalatra.json.JacksonJsonSupport
 import org.scalatra.scalate.ScalateSupport
 
 import scala.concurrent.ExecutionContext
+import scala.io.Source
 
 object CommandController {
   type UrlFn = (String, Iterable[(String,Any)]) => String
@@ -23,7 +24,8 @@ class CommandController (implicit val ec :ExecutionContext) extends ScalatraServ
 
   val parser = new GainstrackParser
   val realFile = "real"
-  parser.parseFile(s"/Users/kevin/dev/gainstrack/data/${realFile}.gainstrack")
+  val filename = s"/Users/kevin/dev/gainstrack/data/${realFile}.gainstrack"
+  parser.parseFile(filename)
   val orderedCmds = parser.getCommands
   val bg = new GainstrackGenerator(orderedCmds)
 
@@ -68,6 +70,21 @@ class CommandController (implicit val ec :ExecutionContext) extends ScalatraServ
         "urlFor" -> urlFor
       )
     }).getOrElse(NotFound(s"${accountId} account not found"))
+  }
+
+  get("/editor/") {
+    val urlFor:MainController.UrlFn = (path:String, params:Iterable[(String,Any)]) => url(path,params)(this.request, this.response)
+
+    val source = Source.fromFile(filename).mkString
+
+    contentType="text/html"
+
+    layoutTemplate("/WEB-INF/views/editor.ssp",
+      "short_title"->"UI Account Editor",
+      "data"-> None,
+      "source" -> source,
+      "urlFor" -> urlFor
+    )
   }
 }
 
