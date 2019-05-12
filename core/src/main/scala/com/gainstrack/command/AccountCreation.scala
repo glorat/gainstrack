@@ -8,6 +8,7 @@ case class AccountOptions (
                           incomeAccount:Option[AccountId] = None,
                           fundingAccount:Option[AccountId] = None,
                           description:String = "",
+                          multiAsset:Boolean=false,
                           assetNonStdScu:Option[Int] = None,
                           hidden:Boolean = false,
                           placeholder:Boolean = false
@@ -52,6 +53,7 @@ case class AccountCreation (
       case "expenseAccount" => copy(options = options.copy(expenseAccount = Some(AccountId(valueStr))))
       case "incomeAccount" => copy(options = options.copy(incomeAccount = Some(AccountId(valueStr))))
       case "fundingAccount" => copy(options = options.copy(fundingAccount = Some(AccountId(valueStr))))
+      case "multiAsset" => copy(options = options.copy(multiAsset = valueStr!="false"))
       case _ => throw new IllegalArgumentException(s"Unknown account option: ${key}")
     }
   }

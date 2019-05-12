@@ -55,20 +55,40 @@ class TransactionBalanceTest extends FlatSpec {
     println(tx)
   }
 
-  "unit commands" should "project balance" in {
+  {
     val parser = new GainstrackParser
     import scala.io.Source
     Source.fromResource("unit.gainstrack").getLines.foreach(parser.parseLine)
     val cmds = parser.getCommands
+    val bg = new GainstrackGenerator(cmds)
 
-    val orderedCmds = cmds.sorted
-    val bg = new GainstrackGenerator(cmds.sorted)
+    "unit commands" should "generate beancount" in {
+      import sys.process._
+      val bFile = "/tmp/unit.beancount"
+      bg.writeFile(bFile)
+      val output = s"bean-check ${bFile}" !!
 
-    bg.writeFile("/tmp/unit.beancount")
+      assert(output == "")
+    }
 
-    val end = bg.balanceState.getBalance("Assets:Pension:Barclays:BGIL", parseDate("2019-12-31")).get
-    assert (end == 600)
-    val endIncome = bg.balanceState.getBalance("Income:Pension:Barclays:GBP", parseDate("2019-12-31")).get
-    assert (endIncome == -1500)
+    def assertBalance(accountId:AccountId, dateStr:String, expected:Fraction) = {
+      val bal = bg.balanceState.getBalance(accountId, parseDate(dateStr)).get
+      assert(bal == expected)
+    }
+
+    it should "project balance" in {
+      assertBalance("Assets:Pension:Barclays:BGIL", "2019-12-31", 600)
+      assertBalance("Income:Pension:Barclays:GBP", "2019-12-31", -1500)
+    }
+
+    it should "handle funding" in {
+      assertBalance("Assets:ISA:London:GBP", "2004-10-14", 7000)
+      // TODO: Technically the adjustment happens a day earlier but that's not working here for some reason
+      //assertBalance("Assets:ISA:London:GBP", "2005-10-13", 8000)
+      assertBalance("Assets:ISA:London:GBP", "2005-10-14", 8000)
+
+      assertBalance("Assets:ISA:London:GBP", "2019-12-31", 0)
+
+    }
   }
 }

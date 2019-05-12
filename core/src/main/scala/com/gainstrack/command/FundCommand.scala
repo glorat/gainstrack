@@ -11,17 +11,13 @@ case class FundCommand(date:LocalDate, targetAccountId:AccountId, value:Balance,
   override def involvedAccounts: Set[AccountId] = ???
 
   def toTransfer(accts:Set[AccountCreation]) : Transfer = {
-    // Trading accounts have a specialised receiving cash account. Heuristically check for it
-    //val assetTargetAccount = accts.find(_.accountId == targetAccountId.subAccount(value.ccy.symbol))
-    //val targetAccount = assetTargetAccount.getOrElse(accts.find(_.accountId == targetAccountId).get)
     val targetAccount = accts.find(_.accountId == targetAccountId).get
 
     val sourceAccountId = sourceAccountIdOpt.getOrElse(
       targetAccount.options.fundingAccount.getOrElse(throw new IllegalStateException(s"Cannot fund ${targetAccount} without a fundingAccount option specified in its creation"))
     )
-    // Try to use the asset specific target if available
-    // TODO: Use helper methods for this
-    val targetFundingAccountId = accts.find(_.accountId == targetAccountId.subAccount(value.ccy.symbol)).map(_.accountId).getOrElse(targetAccountId)
+    // Multi-asset accounts have a dedicated sub funding account
+    val targetFundingAccountId = if (targetAccount.options.multiAsset) targetAccountId.subAccount(value.ccy.symbol) else targetAccountId
     Transfer(sourceAccountId, targetFundingAccountId, date, value, value, description)
   }
 }

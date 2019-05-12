@@ -1,5 +1,15 @@
-
+2000-01-01 open Assets:Bank:England GBP
 
 2004-10-14 open Assets:Pension:Barclays GBP
 2004-10-15 unit Assets:Pension:Barclays 500 BGIL @2 GBP
 2019-04-18 unit Assets:Pension:Barclays 600 BGIL @5 GBP
+
+2004-10-14 open Assets:ISA:London GBP
+    fundingAccount: Assets:Bank:England
+    incomeAccount: Income:ISA:London
+    multiAsset: true
+2004-10-14 fund Assets:ISA:London 7000 GBP
+; Cash in ISA makes money
+2005-10-14 adj Assets:ISA:London:GBP 8000 GBP Income:ISA:London:GBP
+; Switch to securities
+2005-10-15 trade Assets:ISA:London 10 FTSE @800 GBP
