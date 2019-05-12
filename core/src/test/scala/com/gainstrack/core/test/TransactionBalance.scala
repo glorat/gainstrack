@@ -71,6 +71,13 @@ class TransactionBalanceTest extends FlatSpec {
       assert(output == "")
     }
 
+    it should "handle multi-asset accounts" in {
+      val base = bg.acctState.find("Assets:ISA:London").get
+      assert(base.options.multiAsset)
+      val sub = bg.acctState.find("Assets:ISA:London:GBP").get
+      assert(sub.options.multiAsset == false)
+    }
+
     def assertBalance(accountId:AccountId, dateStr:String, expected:Fraction) = {
       val bal = bg.balanceState.getBalance(accountId, parseDate(dateStr)).get
       assert(bal == expected)

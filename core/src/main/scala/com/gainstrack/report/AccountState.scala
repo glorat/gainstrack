@@ -90,4 +90,9 @@ case class AccountState(accounts:Set[AccountCreation])
   private def process(e:BalanceAdjustment) = {
     this
   }
+
+  // Query methods
+  def find(accountId:String):Option[AccountCreation] = {
+    accounts.find(_.name == AccountId(accountId))
+  }
 }

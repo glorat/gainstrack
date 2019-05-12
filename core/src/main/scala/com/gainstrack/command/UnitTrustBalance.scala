@@ -64,9 +64,9 @@ case class UnitTrustBalance(
 
   def createRequiredAccounts(baseAcct:AccountCreation) : Seq[AccountCreation] = {
     require(baseAcct.accountId == accountId)
-    val cashAcct = baseAcct.copy(key = AccountKey(cashAccountId, price.ccy))
-    val incomeAcct = baseAcct.copy(key = AccountKey(incomeAccountId, price.ccy))
-    val expenseAcct = baseAcct.copy(key = AccountKey(expenseAccountId, price.ccy))
+    val cashAcct = baseAcct.copy(key = AccountKey(cashAccountId, price.ccy), options = baseAcct.options.copy(multiAsset = false))
+    val incomeAcct = baseAcct.copy(key = AccountKey(incomeAccountId, price.ccy), options = baseAcct.options.copy(multiAsset = false))
+    val expenseAcct = baseAcct.copy(key = AccountKey(expenseAccountId, price.ccy), options = baseAcct.options.copy(multiAsset = false))
 
     Seq(cashAcct, incomeAcct, expenseAcct)
   }
