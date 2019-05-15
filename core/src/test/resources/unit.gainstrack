@@ -13,3 +13,8 @@
 2005-10-14 adj Assets:ISA:London:GBP 8000 GBP Income:ISA:London:GBP
 ; Switch to securities
 2005-10-15 trade Assets:ISA:London 10 FTSE @800 GBP
+
+2005-07-26 open Income:Salary:GBP GBP
+    fundingAccount: Assets:Bank:England
+2005-07-26 earn Salary 25000.00 GBP
+2005-07-26 earn Salary Assets:Bank:England 25000.00 GBP

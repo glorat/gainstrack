@@ -22,6 +22,7 @@ case class AccountState(accounts:Set[AccountCreation])
       case e:PriceObservation => process(e)
       case e:UnitTrustBalance => process(e)
       case e:FundCommand => process(e)
+      case e:EarnCommand => process(e)
     }
   }
 
@@ -38,6 +39,11 @@ case class AccountState(accounts:Set[AccountCreation])
   }
 
   private def process(e:FundCommand):AccountState = {
+    // Assuming that the target fund account is sorted out elsewhere?
+    this
+  }
+
+  private def process(e:EarnCommand):AccountState = {
     // Assuming that the target fund account is sorted out elsewhere?
     this
   }

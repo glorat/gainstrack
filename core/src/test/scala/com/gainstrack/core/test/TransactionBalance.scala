@@ -101,6 +101,10 @@ class TransactionBalanceTest extends FlatSpec {
 
     }
 
+    it should "handle earn and simple earn" in {
+      assertBalance("Income:Salary:GBP", "2005-07-26", -50000)
+    }
+
     it should "project IRR" in {
       val accountId = AccountId("Assets:ISA:London")
       val rep = new AccountInvestmentReport(accountId, AssetId("GBP"), parseDate(queryDateStr), bg.acctState, bg.balanceState, bg.txState, bg.priceState)
