@@ -4,7 +4,7 @@ import java.time.{LocalDate, ZonedDateTime}
 
 import com.gainstrack.command._
 import com.gainstrack.core._
-import com.gainstrack.report.GainstrackGenerator
+import com.gainstrack.report.{AccountInvestmentReport, GainstrackGenerator, IrrSummary}
 import org.scalatest.FlatSpec
 
 class TransactionBalanceTest extends FlatSpec {
@@ -78,10 +78,13 @@ class TransactionBalanceTest extends FlatSpec {
       assert(sub.options.multiAsset == false)
     }
 
+
     def assertBalance(accountId:AccountId, dateStr:String, expected:Fraction) = {
       val bal = bg.balanceState.getBalance(accountId, parseDate(dateStr)).get
       assert(bal == expected)
     }
+
+    val queryDateStr = "2019-12-31"
 
     it should "project balance" in {
       assertBalance("Assets:Pension:Barclays:BGIL", "2019-12-31", 600)
@@ -96,6 +99,21 @@ class TransactionBalanceTest extends FlatSpec {
 
       assertBalance("Assets:ISA:London:GBP", "2019-12-31", 0)
 
+    }
+
+    it should "project IRR" in {
+      val accountId = AccountId("Assets:ISA:London")
+      val rep = new AccountInvestmentReport(accountId, AssetId("GBP"), parseDate(queryDateStr), bg.acctState, bg.balanceState, bg.txState, bg.priceState)
+
+      assert(rep.cashflowTable.irr < 0.009)
+      assert(rep.cashflowTable.irr > 0.008)
+    }
+
+    it should "project IRR summary" in {
+      val summary = IrrSummary(bg.finalCommands, parseDate(queryDateStr), bg.acctState, bg.balanceState, bg.txState, bg.priceState)
+      val rep = summary.accounts(AccountId("Assets:ISA:London"))
+      assert(rep.cashflowTable.irr < 0.009)
+      assert(rep.cashflowTable.irr > 0.008)
     }
   }
 }

@@ -7,15 +7,6 @@ import spire.math.SafeLong
 
 import scala.collection.SortedMap
 
-case class AssetTuple(fx1:AssetId, fx2:AssetId)
-object AssetTuple {
-  def apply(fx1:String, fx2:String):AssetTuple = AssetTuple(AssetId(fx1),AssetId(fx2))
-}
-
-object PriceState {
-  def apply() : PriceState = PriceState(Map())
-}
-
 case class PriceState(prices:Map[AssetTuple, SortedMap[LocalDate, Fraction]]) extends AggregateRootState {
   private val implicitPrices = true
 
@@ -70,4 +61,13 @@ case class PriceState(prices:Map[AssetTuple, SortedMap[LocalDate, Fraction]]) ex
       case _ => this
     }
   }
+}
+
+object PriceState {
+  def apply() : PriceState = PriceState(Map())
+}
+
+case class AssetTuple(fx1:AssetId, fx2:AssetId)
+object AssetTuple {
+  def apply(fx1:String, fx2:String):AssetTuple = AssetTuple(AssetId(fx1),AssetId(fx2))
 }
