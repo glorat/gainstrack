@@ -97,13 +97,26 @@ class TransactionBalanceTest extends FlatSpec {
       //assertBalance("Assets:ISA:London:GBP", "2005-10-13", 8000)
       assertBalance("Assets:ISA:London:GBP", "2005-10-14", 8000)
 
-      assertBalance("Assets:ISA:London:GBP", "2019-12-31", 0)
+      assertBalance("Assets:ISA:London:GBP", "2006-10-15", 0)
 
     }
 
     it should "handle earn and simple earn" in {
       assertBalance("Income:Salary:GBP", "2005-07-26", -50000)
     }
+
+    it should "handle bank asset yield interest" in {
+      assertBalance("Assets:Bank:England",  "2005-07-26", 43000)
+      assertBalance("Assets:Bank:England",  "2005-08-01", 43010)
+    }
+
+    it should "handle ISA interest yield into fundingAccount" in {
+      assertBalance("Assets:Bank:England", "2005-11-01", 43025)
+    }
+    it should "handle dividend yield into trading cash account" in {
+      assertBalance("Assets:ISA:London:GBP", "2006-11-15", 10)
+    }
+
 
     it should "project IRR" in {
       val accountId = AccountId("Assets:ISA:London")

@@ -52,7 +52,13 @@ object Posting {
     apply(account, Some(value), None, None)
   }
   def apply(account:AccountId, value:Balance, price:Balance):Posting = {
-    apply(account, Some(value), Some(price), None)
+    if (price.value == 1 && price.ccy == value.ccy) {
+      apply(account, Some(value), None, None)
+    }
+    else{
+      apply(account, Some(value), Some(price), None)
+    }
+
   }
 
   def withCost(account:AccountId, value:Balance, cost:Balance):Posting = {

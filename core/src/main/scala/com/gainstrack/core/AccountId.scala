@@ -22,7 +22,7 @@ case class AccountId(n:String) extends Ordered[AccountId] {
   }
 
   def convertType(aType:AccountType) : AccountId = {
-    val newName = name.replace(s"$prefix}:", s"$aType:")
+    val newName = name.replace(s"$prefix:", s"$aType:")
     AccountId(newName)
   }
 

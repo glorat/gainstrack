@@ -31,8 +31,8 @@ case class AccountCreation (
     key.name.parentAccountId
   }
 
-  def enableTrading(incomeAccountId:AccountId) : AccountCreation = {
-    copy(options = options.copy(tradingAccount = true, incomeAccount=Some(incomeAccountId)))
+  def enableTrading(incomeAccountId:AccountId, fundingAccountId:AccountId) : AccountCreation = {
+    copy(options = options.copy(tradingAccount = true, incomeAccount=Some(incomeAccountId), fundingAccount=Some(fundingAccountId)))
   }
 
   def toBeancount : String = {

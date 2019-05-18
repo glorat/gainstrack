@@ -23,6 +23,7 @@ case class AccountState(accounts:Set[AccountCreation])
       case e:UnitTrustBalance => process(e)
       case e:FundCommand => process(e)
       case e:EarnCommand => process(e)
+      case e:YieldCommand => process(e)
     }
   }
 
@@ -48,6 +49,15 @@ case class AccountState(accounts:Set[AccountCreation])
     this
   }
 
+  private def process(e:YieldCommand) : AccountState = {
+    val baseAcct = accounts.find(x => x.name == e.assetAccountId).getOrElse(throw new IllegalStateException(s"${e.assetAccountId} is not an open account"))
+    var ret = this
+    if (!accounts.exists(x => x.name == e.incomeAccountId)) {
+      ret = ret.copy(accounts = ret.accounts ++ e.createRequiredAccounts(baseAcct) )
+    }
+    ret
+  }
+
   private def process(e:SecurityPurchase): AccountState = {
 
     var ret = this
@@ -60,7 +70,8 @@ case class AccountState(accounts:Set[AccountCreation])
       val newAccts = e.createRequiredAccounts(baseAcct)
       ret = ret.copy(accounts = ret.accounts ++ newAccts)
 
-      val newOpts = baseAcct.options.copy(incomeAccount = Some(e.incomeAcctId),
+      val newOpts = baseAcct.options.copy(
+        incomeAccount = Some(e.incomeAcctId),
         expenseAccount = Some(e.expenseAcctId))
 
       // Update base account with related accounts
@@ -70,7 +81,7 @@ case class AccountState(accounts:Set[AccountCreation])
     if (!accounts.exists(x => x.name == e.securityAccountId)) {
       // Auto vivify sub-accounts of securities account
       val newAcct = AccountCreation(baseAcct.date, AccountKey(e.securityAccountId, e.security.ccy))
-        .enableTrading(e.incomeAcctId)
+        .enableTrading(e.incomeAcctId, e.accountId)
       ret=ret.copy(accounts = ret.accounts + newAcct)
     }
     ret
@@ -87,7 +98,7 @@ case class AccountState(accounts:Set[AccountCreation])
     if (!accounts.exists(x => x.name == e.securityAccountId)) {
       // Auto vivify sub-accounts of securities account
       val newAcct = AccountCreation(baseAcct.date, AccountKey(e.securityAccountId, e.security.ccy))
-        .enableTrading(e.incomeAccountId)
+        .enableTrading(e.incomeAccountId, e.accountId)
       ret=ret.copy(accounts = ret.accounts + newAcct)
     }
     ret

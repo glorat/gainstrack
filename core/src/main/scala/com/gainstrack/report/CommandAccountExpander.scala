@@ -11,6 +11,7 @@ case class CommandAccountExpander(acctState:Set[AccountCreation], cmds:Seq[Accou
     val newCmd:AccountCommand = e match {
       case fund : FundCommand => fund.toTransfer(acctState)
       case earn: EarnCommand => earn.toTransfer(acctState)
+      case y: YieldCommand => y.toTransfer(acctState)
       case a : AccountCommand => a
     }
     copy(cmds = cmds :+ newCmd)

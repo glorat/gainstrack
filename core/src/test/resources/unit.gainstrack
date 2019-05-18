@@ -11,10 +11,18 @@
 2004-10-14 fund Assets:ISA:London 7000 GBP
 ; Cash in ISA makes money
 2005-10-14 adj Assets:ISA:London:GBP 8000 GBP Income:ISA:London:GBP
+; Earn interest income, paid back to bank account
+2005-10-15 yield Assets:ISA:London 15 GBP
+
 ; Switch to securities
-2005-10-15 trade Assets:ISA:London 10 FTSE @800 GBP
+2006-10-15 trade Assets:ISA:London 10 FTSE @800 GBP
+; Earn a dividend
+2006-11-15 yield Assets:ISA:London:FTSE 10 GBP
 
 2005-07-26 open Income:Salary:GBP GBP
     fundingAccount: Assets:Bank:England
 2005-07-26 earn Salary 25000.00 GBP
 2005-07-26 earn Salary Assets:Bank:England 25000.00 GBP
+
+; Earn some interest
+2005-08-01 yield Assets:Bank:England 10 GBP
