@@ -2,7 +2,7 @@ package com.gainstrack.command
 
 import com.gainstrack.core._
 
-case class YieldCommand(date:LocalDate, assetAccountId:AccountId, value:Balance, targetAccountIdOpt:Option[AccountId] = None) extends AccountCommand {
+case class YieldCommand(date:LocalDate, assetAccountId:AccountId, value:Balance, targetAccountIdOpt:Option[AccountId] = None) extends CommandNeedsAccounts {
   val incomeAccountId = assetAccountId.convertType(Income)
 
   override def description: String = s"${assetAccountId} yield ${value}"
@@ -18,7 +18,7 @@ case class YieldCommand(date:LocalDate, assetAccountId:AccountId, value:Balance,
     Seq(incomeAcct)
   }
 
-  def toTransfer(accts:Set[AccountCreation]) : Transfer = {
+  def toTransfers(accts:Set[AccountCreation]) : Seq[Transfer] = {
     val assetAccount = accts.find(_.accountId == assetAccountId).getOrElse(throw new IllegalStateException(s"Asset account ${assetAccountId} is not defined"))
 
     val targetAccountId = targetAccountIdOpt.getOrElse(
@@ -27,7 +27,7 @@ case class YieldCommand(date:LocalDate, assetAccountId:AccountId, value:Balance,
     val targetAccount = accts.find(_.accountId == targetAccountId).getOrElse(throw new IllegalStateException(s"Target account ${targetAccountId} does not exist"))
     // Multi-asset accounts have a dedicated sub funding account
     val targetIncomeAccountId = if (targetAccount.options.multiAsset) targetAccountId.subAccount(value.ccy.symbol) else targetAccountId
-    Transfer(incomeAccountId, targetIncomeAccountId, date, value, value, description)
+    Seq(Transfer(incomeAccountId, targetIncomeAccountId, date, value, value, description))
   }
 }
 
