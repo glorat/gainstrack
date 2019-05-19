@@ -6,10 +6,10 @@ import net.glorat.cqrs.{AggregateRootState, DomainEvent}
 
 case class CommandAccountExpander(acctState:Set[AccountCreation], cmds:Seq[AccountCommand]=Seq()) extends AggregateRootState {
   def handle(e: DomainEvent): CommandAccountExpander = {
-    val newCmd:Seq[AccountCommand] = e match {
-      case cmd : CommandNeedsAccounts => cmd.toTransfers(acctState)
-      case a : AccountCommand => Seq(a)
+    val newCmd:AccountCommand = e match {
+      case cmd: CommandNeedsAccounts => CommandWithAccounts(cmd, acctState)
+      case a : AccountCommand => a
     }
-    copy(cmds = cmds ++ newCmd)
+    copy(cmds = cmds :+ newCmd)
   }
 }

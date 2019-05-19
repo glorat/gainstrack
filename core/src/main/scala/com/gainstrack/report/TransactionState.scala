@@ -12,6 +12,7 @@ case class TransactionState(accounts:Set[AccountCreation], balanceState:BalanceS
     e match {
       case e:AccountCreation => process(e)
       case e:Transfer => process(e)
+      case e:CommandWithAccounts[_] => e.toTransfers.foldLeft(this)(_.process(_))
       case e:SecurityPurchase =>  process(e)
       case e:BalanceAdjustment => process(e)
       case e:PriceObservation => process(e)

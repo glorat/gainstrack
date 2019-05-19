@@ -6,7 +6,7 @@ trait CommandNeedsAccounts extends AccountCommand {
   def toTransfers(accounts:Set[AccountCreation]) : Seq[Transfer]
 }
 
-case class CommandWithAccounts[T<:CommandNeedsAccounts](underlying:CommandNeedsAccounts, accounts:Set[AccountCreation]) extends AccountCommand {
+case class CommandWithAccounts[T<:CommandNeedsAccounts](underlying:T, accounts:Set[AccountCreation]) extends AccountCommand {
   def date = underlying.date
 
   override def description: String = underlying.description
