@@ -5,9 +5,9 @@ import com.gainstrack.core._
 case class FundCommand(date:LocalDate, targetAccountId:AccountId, value:Balance, sourceAccountIdOpt:Option[AccountId] = None) extends CommandNeedsAccounts {
   override def description: String = s"Fund ${targetAccountId} ${value}"
 
-  // Leave as not implemented because we actually need to sub this out mid generation to a Transfer command
-  override def mainAccounts: Set[AccountId] = ???
+  override def mainAccount: Option[AccountId] = Some(targetAccountId)
 
+  // Leave as not implemented because we actually need to sub this out mid generation to a Transfer command
   override def involvedAccounts: Set[AccountId] = ???
 
   def toTransfers(accts:Set[AccountCreation]) : Seq[Transfer] = {

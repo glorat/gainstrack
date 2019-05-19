@@ -13,8 +13,7 @@ case class CommandWithAccounts[T<:CommandNeedsAccounts](underlying:T, accounts:S
 
   override def involvedAccounts: Set[AccountId] = underlying.toTransfers(accounts).map(_.involvedAccounts).flatten.toSet
 
-  // TODO: This API must change
-  override def mainAccounts: Set[AccountId] = underlying.toTransfers(accounts).map(_.involvedAccounts).flatten.toSet
+  override def mainAccount: Option[AccountId] = underlying.mainAccount
 
   def toTransfers: Seq[Transfer] = underlying.toTransfers(accounts)
 }

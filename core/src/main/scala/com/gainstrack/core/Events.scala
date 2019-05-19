@@ -15,7 +15,7 @@ trait AccountCommand extends Command with DomainEvent with Ordered[AccountComman
   def description: String
 
   // Required for filtering
-  def mainAccounts : Set[AccountId]
+  def mainAccount : Option[AccountId]
   def involvedAccounts : Set[AccountId]
 
   // Helper methods

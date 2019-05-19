@@ -12,7 +12,7 @@ case class Transfer(
                      description:String
                    ) extends AccountCommand {
   def accountId : AccountId = source // Source is where the action was triggered!
-  override def mainAccounts: Set[AccountId] = Set(source, dest)
+  override def mainAccount: Option[AccountId] = Some(source)
   override def involvedAccounts: Set[AccountId] = Set(source, dest)
 
   if (sourceValue.ccy == targetValue.ccy) {

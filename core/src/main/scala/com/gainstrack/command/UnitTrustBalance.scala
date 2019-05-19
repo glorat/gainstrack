@@ -30,7 +30,7 @@ case class UnitTrustBalance(
   val securityAccountId = accountId.subAccount(security.ccy.symbol)
 
   def description:String = s"Unit statement: ${security} @${price}"
-  override def mainAccounts: Set[AccountId] = Set(accountId)
+  override def mainAccount: Option[AccountId] = Some(accountId)
   // FIXME: If no change in units, then accounts are not involved!
   // Need a command post processing step to update this fact
   override def involvedAccounts: Set[AccountId] = Set(securityAccountId, incomeAccountId)

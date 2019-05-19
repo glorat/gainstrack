@@ -7,9 +7,9 @@ case class YieldCommand(date:LocalDate, assetAccountId:AccountId, value:Balance,
 
   override def description: String = s"${assetAccountId} yield ${value}"
 
-  // Leave as not implemented because we actually need to sub this out mid generation to a Transfer command
-  override def mainAccounts: Set[AccountId] = ???
+  override def mainAccount: Option[AccountId] = Some(assetAccountId)
 
+  // Leave as not implemented because we actually need to sub this out mid generation to a Transfer command
   override def involvedAccounts: Set[AccountId] = ???
 
   def createRequiredAccounts(baseAcct:AccountCreation) : Seq[AccountCreation] = {

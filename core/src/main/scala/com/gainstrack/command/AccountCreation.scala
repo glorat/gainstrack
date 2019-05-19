@@ -24,7 +24,7 @@ case class AccountCreation (
   def name = key.name
 
   override def description: String = "Account opened"
-  override def mainAccounts: Set[AccountId] = Set(accountId)
+  override def mainAccount: Option[AccountId] = Some(accountId)
   override def involvedAccounts: Set[AccountId] = Set(accountId)
 
   def parentAccountId:Option[AccountId] = {

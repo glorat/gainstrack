@@ -17,7 +17,7 @@ case class SecurityPurchase(
   val expenseAcctId = accountId.convertTypeWithSubAccount(Expenses, price.ccy.symbol)
   val requiredAccountIds:Seq[AccountId] = Seq(cashAccountId, securityAccountId, incomeAcctId, expenseAcctId)
 
-  override def mainAccounts: Set[AccountId] = Set(accountId)
+  override def mainAccount: Option[AccountId] = Some(accountId)
   override def involvedAccounts: Set[AccountId] = toTransaction.filledPostings.map(p => p.account).toSet
 
   //val expenseAcct = acct.replace("Asset", "Expenses")

@@ -7,9 +7,9 @@ case class EarnCommand(date:LocalDate, incomeTag:String, value:Balance, targetAc
 
   override def description: String = s"Earn ${value} ${incomeTag}"
 
-  // Leave as not implemented because we actually need to sub this out mid generation to a Transfer command
-  override def mainAccounts: Set[AccountId] = ???
+  override def mainAccount: Option[AccountId] = Some(incomeAccountId)
 
+  // Leave as not implemented because we actually need to sub this out mid generation to a Transfer command
   override def involvedAccounts: Set[AccountId] = ???
 
   def toTransfers(accts:Set[AccountCreation]) : Seq[Transfer] = {

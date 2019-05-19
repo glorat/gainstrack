@@ -10,7 +10,7 @@ case class BalanceAdjustment(
                             ) extends AccountCommand {
   private val self = this
 
-  override def mainAccounts: Set[AccountId] = Set(accountId)
+  override def mainAccount: Option[AccountId] = Some(accountId)
   // FIXME: Unless there is no adjustment
   override def involvedAccounts: Set[AccountId] = Set(accountId, adjAccount)
   def description:String = s"Account balance ${balance}"

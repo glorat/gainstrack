@@ -38,7 +38,7 @@ class CommandController (implicit val ec :ExecutionContext) extends ScalatraServ
 
     contentType="text/html"
 
-    val mainAccountIds:Set[AccountId] = bg.finalCommands.map(_.mainAccounts).reduceLeft(_ ++ _)
+    val mainAccountIds:Set[AccountId] = bg.finalCommands.flatMap(_.mainAccount).toSet
     val mainAccounts:Seq[AccountCreation] = bg.acctState.accounts.filter(a => mainAccountIds.contains(a.accountId)).toSeq.sortBy(_.accountId)
 
     layoutTemplate("/WEB-INF/views/command.ssp",
