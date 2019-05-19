@@ -64,8 +64,8 @@ class Real extends FlatSpec {
     val accountId = AccountId("Assets:Investment:Zurich")
     val rep = new AccountInvestmentReport(accountId, AssetId("GBP"), queryDate, bg.acctState, bg.balanceState, bg.txState, priceState)
 
-    assert(rep.cashflowTable.irr < 0.05)
-    assert(rep.cashflowTable.irr > 0.04)
+    assert(rep.cashflowTable.irr < 0.062)
+    assert(rep.cashflowTable.irr > 0.044)
   }
 
   it should "calc sane irrs for my PP" in {

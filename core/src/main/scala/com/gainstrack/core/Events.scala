@@ -19,8 +19,8 @@ trait AccountCommand extends Command with DomainEvent with Ordered[AccountComman
   def involvedAccounts : Set[AccountId]
 
   // Helper methods
-  def usesAccount(accountId: AccountId) : Boolean = involvedAccounts.contains(accountId)
-  def usesSubAccountOf(parentId: AccountId) : Boolean = involvedAccounts.find(a => isSubAccountOf(a, parentId)).isDefined
+  def usesAccount(accountId: AccountId) : Boolean = involvedAccounts.contains(accountId) || mainAccount == Some(accountId)
+  def usesSubAccountOf(parentId: AccountId) : Boolean = involvedAccounts.find(a => a.isSubAccountOf(parentId)).isDefined
 
   override def compare(that: AccountCommand): Int = {
     this.toOrderValue.compare(that.toOrderValue)
