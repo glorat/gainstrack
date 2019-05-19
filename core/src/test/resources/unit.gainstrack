@@ -1,6 +1,12 @@
+2000-01-01 open Equity:Opening:GBP GBP
 2000-01-01 open Assets:Bank:England GBP
 
 2004-10-14 open Assets:Pension:Barclays GBP
+    multiAsset: true
+    automaticReinvestment: true
+    fundingAccount: Equity:Opening:GBP
+
+2004-10-14 fund Assets:Pension:Barclays 1000 GBP
 2004-10-15 unit Assets:Pension:Barclays 500 BGIL @2 GBP
 2019-04-18 unit Assets:Pension:Barclays 600 BGIL @5 GBP
 
@@ -13,7 +19,6 @@
 2005-10-14 adj Assets:ISA:London:GBP 8000 GBP Income:ISA:London:GBP
 ; Earn interest income, paid back to bank account
 2005-10-15 yield Assets:ISA:London 15 GBP
-
 ; Switch to securities
 2006-10-15 trade Assets:ISA:London 10 FTSE @800 GBP
 ; Earn a dividend

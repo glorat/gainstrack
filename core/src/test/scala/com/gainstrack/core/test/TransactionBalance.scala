@@ -88,7 +88,7 @@ class TransactionBalanceTest extends FlatSpec {
 
     it should "project balance" in {
       assertBalance("Assets:Pension:Barclays:BGIL", "2019-12-31", 600)
-      assertBalance("Income:Pension:Barclays:GBP", "2019-12-31", -1500)
+      assertBalance("Income:Pension:Barclays:GBP", "2019-12-31", -500)
     }
 
     it should "handle funding" in {

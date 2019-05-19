@@ -30,7 +30,17 @@ case class Transfer(
     // Multi-asset accounts have a dedicated sub funding account
     val targetFundingAccountId = if (targetAccount.options.multiAsset) dest.subAccount(targetValue.ccy.symbol) else dest
     val tfr = this.copy(dest = targetFundingAccountId)
-    Seq(tfr)
+
+    // Automatic reinvestment accounts don't hold Cash
+    if (targetAccount.key.assetId == targetValue.ccy && targetAccount.options.automaticReinvestment) {
+      require(targetAccount.options.multiAsset)
+      // Add another transfer out of cash into negative income
+      val tfrOut = Transfer(targetFundingAccountId, targetFundingAccountId.convertType(Income), date, targetValue, targetValue, description)
+      Seq(tfr, tfrOut)
+    }
+    else {
+      Seq(tfr)
+    }
   }
 
   def toTransaction : Transaction = {
