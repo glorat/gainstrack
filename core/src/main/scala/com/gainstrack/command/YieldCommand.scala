@@ -25,9 +25,9 @@ case class YieldCommand(date:LocalDate, assetAccountId:AccountId, value:Balance,
       assetAccount.options.fundingAccount.getOrElse(assetAccountId)
     )
     val targetAccount = accts.find(_.accountId == targetAccountId).getOrElse(throw new IllegalStateException(s"Target account ${targetAccountId} does not exist"))
-    // Multi-asset accounts have a dedicated sub funding account
-    val targetIncomeAccountId = if (targetAccount.options.multiAsset) targetAccountId.subAccount(value.ccy.symbol) else targetAccountId
-    Seq(Transfer(incomeAccountId, targetIncomeAccountId, date, value, value, description))
+
+
+    Transfer(incomeAccountId, targetAccountId, date, value, value, description).toTransfers(accts)
   }
 }
 

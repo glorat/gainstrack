@@ -16,9 +16,8 @@ case class FundCommand(date:LocalDate, targetAccountId:AccountId, value:Balance,
     val sourceAccountId = sourceAccountIdOpt.getOrElse(
       targetAccount.options.fundingAccount.getOrElse(throw new IllegalStateException(s"Cannot fund ${targetAccount} without a fundingAccount option specified in its creation"))
     )
-    // Multi-asset accounts have a dedicated sub funding account
-    val targetFundingAccountId = if (targetAccount.options.multiAsset) targetAccountId.subAccount(value.ccy.symbol) else targetAccountId
-    Seq(Transfer(sourceAccountId, targetFundingAccountId, date, value, value, description))
+
+    Transfer(sourceAccountId, targetAccountId, date, value, value, description).toTransfers(accts)
   }
 }
 

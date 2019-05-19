@@ -1,6 +1,6 @@
 package com.gainstrack.report
 
-import com.gainstrack.command.{SecurityPurchase, Transfer, UnitTrustBalance}
+import com.gainstrack.command.{CommandWithAccounts, SecurityPurchase, Transfer, UnitTrustBalance}
 import com.gainstrack.core._
 import net.glorat.cqrs.{AggregateRootState, DomainEvent}
 import spire.math.SafeLong
@@ -56,6 +56,7 @@ case class PriceState(prices:Map[AssetTuple, SortedMap[LocalDate, Fraction]]) ex
   def handle(e: DomainEvent): PriceState = {
     e match {
       case e:Transfer => process(e)
+      case e:CommandWithAccounts[_] => e.toTransfers.foldLeft(this)(_.process(_))
       case e:SecurityPurchase => process(e)
       case e:UnitTrustBalance => process(e)
       case _ => this

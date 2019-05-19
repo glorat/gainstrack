@@ -10,7 +10,7 @@ case class Transfer(
                      sourceValue: Balance,
                      targetValue: Balance,
                      description:String
-                   ) extends AccountCommand {
+                   ) extends CommandNeedsAccounts {
   def accountId : AccountId = source // Source is where the action was triggered!
   override def mainAccount: Option[AccountId] = Some(source)
   override def involvedAccounts: Set[AccountId] = Set(source, dest)
@@ -21,6 +21,16 @@ case class Transfer(
 
   def fxRate:Fraction = {
     targetValue.value/sourceValue.value
+  }
+
+  // FIXME: This is a slightly confusing method to have!!! Fund usages to see the danger
+  override def toTransfers(accounts: Set[AccountCreation]): Seq[Transfer] = {
+    val targetAccount = accounts.find(_.accountId == dest).get
+
+    // Multi-asset accounts have a dedicated sub funding account
+    val targetFundingAccountId = if (targetAccount.options.multiAsset) dest.subAccount(targetValue.ccy.symbol) else dest
+    val tfr = this.copy(dest = targetFundingAccountId)
+    Seq(tfr)
   }
 
   def toTransaction : Transaction = {

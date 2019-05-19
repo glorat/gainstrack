@@ -22,7 +22,7 @@ case class BalanceState(accounts:Set[AccountCreation], balances:Map[AccountId,So
   override def handle(e: DomainEvent): BalanceState = {
     e match {
       case e:AccountCreation => process(e)
-      case e:Transfer => process(e)
+      //case e:Transfer => process(e)
       case e:CommandWithAccounts[_] => e.toTransfers.foldLeft(this)(_.process(_))
       case e:SecurityPurchase =>  process(e)
       case e:BalanceAdjustment => process(e)

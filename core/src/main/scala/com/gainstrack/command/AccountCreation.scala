@@ -9,6 +9,7 @@ case class AccountOptions (
                           fundingAccount:Option[AccountId] = None,
                           description:String = "",
                           multiAsset:Boolean=false,
+                          automaticReinvestment:Boolean=false,
                           assetNonStdScu:Option[Int] = None,
                           hidden:Boolean = false,
                           placeholder:Boolean = false
@@ -46,6 +47,8 @@ case class AccountCreation (
     }
   }
 
+  private def stringToBool(valueStr:String):Boolean = valueStr!="false"
+
   override def toString: String = toBeancount
 
   override def withOption(key:String, valueStr:String) : AccountCreation = {
@@ -53,7 +56,8 @@ case class AccountCreation (
       case "expenseAccount" => copy(options = options.copy(expenseAccount = Some(AccountId(valueStr))))
       case "incomeAccount" => copy(options = options.copy(incomeAccount = Some(AccountId(valueStr))))
       case "fundingAccount" => copy(options = options.copy(fundingAccount = Some(AccountId(valueStr))))
-      case "multiAsset" => copy(options = options.copy(multiAsset = valueStr!="false"))
+      case "multiAsset" => copy(options = options.copy(multiAsset = stringToBool(valueStr) ))
+      case "automaticReinvestment" => copy(options = options.copy(automaticReinvestment = stringToBool(valueStr) ))
       case _ => throw new IllegalArgumentException(s"Unknown account option: ${key}")
     }
   }
