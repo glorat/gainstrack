@@ -25,12 +25,12 @@ object FundCommand extends CommandParser {
 
   import Patterns._
   val prefix: String = "fund"
-  private val Fund =s"${datePattern} ${prefix} ${acctPattern} ${balanceMatch}".r
-
-
+  private val SimpleFund =s"${datePattern} ${prefix} ${acctPattern} ${balanceMatch}".r
+  private val Fund = s"${datePattern} ${prefix} ${acctPattern} ${acctPattern} ${balanceMatch}".r
   override def parse(str: String): AccountCommand = {
     str match {
-      case Fund(dateStr, tgtAcct, balanceStr) => FundCommand(parseDate(dateStr), AccountId(tgtAcct), Balance.parse(balanceStr), None)
+      case SimpleFund(dateStr, tgtAcct, balanceStr) => FundCommand(parseDate(dateStr), AccountId(tgtAcct), Balance.parse(balanceStr), None)
+      case Fund(dateStr, tgtAcct, fundAcct, balanceStr) => FundCommand(parseDate(dateStr), AccountId(tgtAcct), Balance.parse(balanceStr), Some(AccountId(fundAcct)))
     }
   }
 

@@ -33,7 +33,7 @@ case class Transfer(
 
     // Automatic reinvestment accounts don't hold Cash
     if (targetAccount.key.assetId == targetValue.ccy && targetAccount.options.automaticReinvestment) {
-      require(targetAccount.options.multiAsset)
+      require(targetAccount.options.multiAsset, s"${targetAccount.accountId} must be multiAsset to have automaticReinvestment")
       // Add another transfer out of cash into negative income
       val tfrOut = Transfer(targetFundingAccountId, targetFundingAccountId.convertType(Income), date, targetValue, targetValue, description)
       Seq(tfr, tfrOut)

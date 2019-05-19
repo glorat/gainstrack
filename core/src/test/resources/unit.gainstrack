@@ -6,7 +6,8 @@
     automaticReinvestment: true
     fundingAccount: Equity:Opening:GBP
 
-2004-10-14 fund Assets:Pension:Barclays 1000 GBP
+2004-10-14 fund Assets:Pension:Barclays 500 GBP
+2004-10-14 fund Assets:Pension:Barclays Equity:Opening:GBP 500 GBP
 2004-10-15 unit Assets:Pension:Barclays 500 BGIL @2 GBP
 2019-04-18 unit Assets:Pension:Barclays 600 BGIL @5 GBP
 
