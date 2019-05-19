@@ -26,10 +26,11 @@ case class Transfer(
   // FIXME: This is a slightly confusing method to have!!! Fund usages to see the danger
   override def toTransfers(accounts: Set[AccountCreation]): Seq[Transfer] = {
     val targetAccount = accounts.find(_.accountId == dest).get
-
+    val sourceAccount = accounts.find(_.accountId == source).get
     // Multi-asset accounts have a dedicated sub funding account
+    val sourceAccountId = if (sourceAccount.options.multiAsset) source.subAccount(sourceValue.ccy.symbol) else source
     val targetFundingAccountId = if (targetAccount.options.multiAsset) dest.subAccount(targetValue.ccy.symbol) else dest
-    val tfr = this.copy(dest = targetFundingAccountId)
+    val tfr = this.copy(source = sourceAccountId, dest = targetFundingAccountId)
 
     // Automatic reinvestment accounts don't hold Cash
     if (targetAccount.key.assetId == targetValue.ccy && targetAccount.options.automaticReinvestment) {

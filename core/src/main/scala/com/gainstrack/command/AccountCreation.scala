@@ -33,7 +33,7 @@ case class AccountCreation (
   }
 
   def enableTrading(incomeAccountId:AccountId, fundingAccountId:AccountId) : AccountCreation = {
-    copy(options = options.copy(tradingAccount = true, incomeAccount=Some(incomeAccountId), fundingAccount=Some(fundingAccountId)))
+    copy(options = options.copy(tradingAccount = true, multiAsset=false, incomeAccount=Some(incomeAccountId), fundingAccount=Some(fundingAccountId)))
   }
 
   def toBeancount : String = {

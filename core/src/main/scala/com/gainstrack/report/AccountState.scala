@@ -50,7 +50,7 @@ case class AccountState(accounts:Set[AccountCreation])
   }
 
   private def process(e:YieldCommand) : AccountState = {
-    val baseAcct = accounts.find(x => x.name == e.assetAccountId).getOrElse(throw new IllegalStateException(s"${e.assetAccountId} is not an open account"))
+    val baseAcct = accounts.find(x => x.name == e.accountId).getOrElse(throw new IllegalStateException(s"${e.assetAccountId} is not an open account"))
     var ret = this
     if (!accounts.exists(x => x.name == e.incomeAccountId)) {
       ret = ret.copy(accounts = ret.accounts ++ e.createRequiredAccounts(baseAcct) )
@@ -72,7 +72,8 @@ case class AccountState(accounts:Set[AccountCreation])
 
       val newOpts = baseAcct.options.copy(
         incomeAccount = Some(e.incomeAcctId),
-        expenseAccount = Some(e.expenseAcctId))
+        expenseAccount = Some(e.expenseAcctId)/*,
+        fundingAccount = Some(e.accountId)*/)
 
       // Update base account with related accounts
       ret = ret.copy(accounts = ret.accounts - baseAcct + baseAcct.copy(options = newOpts))

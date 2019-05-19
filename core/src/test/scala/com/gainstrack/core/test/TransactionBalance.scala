@@ -72,9 +72,9 @@ class TransactionBalanceTest extends FlatSpec {
     }
 
     it should "handle multi-asset accounts" in {
-      val base = bg.acctState.find("Assets:ISA:London").get
+      val base = bg.acctState.find("Assets:Investment:Stocks").get
       assert(base.options.multiAsset)
-      val sub = bg.acctState.find("Assets:ISA:London:GBP").get
+      val sub = bg.acctState.find("Assets:Investment:Stocks:FTSE").get
       assert(sub.options.multiAsset == false)
     }
 
@@ -92,12 +92,10 @@ class TransactionBalanceTest extends FlatSpec {
     }
 
     it should "handle funding" in {
-      assertBalance("Assets:ISA:London:GBP", "2004-10-14", 7000)
+      assertBalance("Assets:ISA:London", "2004-10-14", 7000)
       // TODO: Technically the adjustment happens a day earlier but that's not working here for some reason
       //assertBalance("Assets:ISA:London:GBP", "2005-10-13", 8000)
-      assertBalance("Assets:ISA:London:GBP", "2005-10-14", 8000)
-
-      assertBalance("Assets:ISA:London:GBP", "2006-10-15", 0)
+      assertBalance("Assets:ISA:London", "2005-10-14", 8000)
 
     }
 
@@ -114,7 +112,7 @@ class TransactionBalanceTest extends FlatSpec {
       assertBalance("Assets:Bank:England", "2005-11-01", 43025)
     }
     it should "handle dividend yield into trading cash account" in {
-      assertBalance("Assets:ISA:London:GBP", "2006-11-15", 10)
+      assertBalance("Assets:Investment:Stocks:GBP", "2006-11-15", 10)
     }
 
 
