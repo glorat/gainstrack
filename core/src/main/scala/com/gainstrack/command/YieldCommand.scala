@@ -5,7 +5,7 @@ import com.gainstrack.core._
 case class YieldCommand(date:LocalDate, accountId:AccountId, asset:Option[AssetId], value:Balance, targetAccountIdOpt:Option[AccountId] = None) extends CommandNeedsAccounts {
   val assetAccountId = asset.map(a => accountId.subAccount(a.symbol)).getOrElse(accountId)
 
-  val incomeAccountId = asset.map(a => accountId.convertTypeWithSubAccount(Income, value.ccy.symbol)).getOrElse(assetAccountId.convertType(Income))
+  val incomeAccountId = asset.map(a => accountId.convertTypeWithSubAccount(Income, a.symbol)).getOrElse(assetAccountId.convertType(Income))
 
   override def description: String = s"${assetAccountId} yield ${value}"
 
@@ -18,9 +18,9 @@ case class YieldCommand(date:LocalDate, accountId:AccountId, asset:Option[AssetI
     require(baseAcct.accountId == accountId)
     val incomeAcct = baseAcct.copy(key = AccountKey(incomeAccountId, value.ccy), options = baseAcct.options.copy(multiAsset = false))
     if (asset.isDefined) {
-      val assetAccount = baseAcct.copy(key = AccountKey(assetAccountId, value.ccy))
+      val assetAccount = baseAcct.copy(key = AccountKey(assetAccountId, asset.get))
         .enableTrading(incomeAccountId, baseAcct.accountId)
-      Seq(incomeAcct, assetAccount )
+      Seq(incomeAcct )
     }
     else {
       Seq(incomeAcct )
@@ -40,7 +40,7 @@ case class YieldCommand(date:LocalDate, accountId:AccountId, asset:Option[AssetI
 
     val targetAccountId = targetAccountIdOpt.getOrElse(
       if (account.options.multiAsset) {
-        assetAccountId // Always the parent
+        accountId // Always the parent
       }
       else {
         // Funding of the parent
