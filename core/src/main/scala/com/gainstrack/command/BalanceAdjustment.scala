@@ -28,11 +28,16 @@ case class BalanceAdjustment(
   // With old balance value, avoid using pad
   def toBeancounts(oldValue:Fraction) : Seq[BeancountCommand] = {
     val newUnits = balance-oldValue
-    val unitIncrease : Posting = Posting(accountId, newUnits )
-    val income:Posting = Posting(adjAccount, -newUnits)
-    val tx = Transaction(date.minusDays(1), s"Adjustment: ${oldValue.toDouble} -> ${balance}", Seq(unitIncrease, income), this)
-    val balcmd = BalanceAssertion(date, accountId, balance, this)
-    Seq[BeancountCommand](tx, balcmd)
+    if (newUnits.value == zeroFraction) {
+      Seq(BalanceAssertion(date, accountId, balance, this))
+    }
+    else {
+      val unitIncrease : Posting = Posting(accountId, newUnits )
+      val income:Posting = Posting(adjAccount, -newUnits)
+      val tx = Transaction(date.minusDays(1), s"Adjustment: ${oldValue.toDouble} -> ${balance}", Seq(unitIncrease, income), this)
+      val balcmd = BalanceAssertion(date, accountId, balance, this)
+      Seq[BeancountCommand](tx, balcmd)
+    }
   }
 }
 
