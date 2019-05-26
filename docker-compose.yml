@@ -12,3 +12,13 @@ services:
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
     ports:
       - "8080:8080"
+  fava:
+    build: ./fava
+    volumes:
+      - /tmp/real.beancount:/real.beancount
+    expose:
+      - "5000"
+    ports:
+      - "5000:5000"
+    environment:
+      - BEANCOUNT_FILE=/real.beancount

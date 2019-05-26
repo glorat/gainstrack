@@ -1,0 +1,25 @@
+{% set all_pages = {
+'balance_sheet':    (_('Balance Sheet'),    'g b'),
+'commodities':      (_('Commodities'),      'g c'),
+'editor':           (_('Editor'),           'g e'),
+'errors':           (_('Errors'),           ''),
+'events':           (_('Events'),           'g E'),
+'help':             (_('Help'),             'g H'),
+'holdings':         (_('Holdings'),         'g h'),
+'import':           (_('Import'),           'g n'),
+'income_statement': (_('Income Statement'), 'g i'),
+'journal':          (_('Journal'),          'g j'),
+'options':          (_('Options'),          'g o'),
+'query':            (_('Query'),            'g q'),
+'statistics':       (_('Statistics'),       'g x'),
+'trial_balance':    (_('Trial Balance'),    'g t'),
+'command':          (_('UI Editor'),        'g g'),
+'command/editor':   (_('Command Editor'),   ''),
+'irr':              (_('IRR'),    ''),
+} %}
+{% set navigation_bar = [
+['income_statement', 'balance_sheet', 'trial_balance', 'journal', 'query'],
+['holdings', 'commodities', 'events', 'statistics'],
+['command', 'command/editor', 'irr'],
+['editor', 'import', 'options', 'help']
+] %}
