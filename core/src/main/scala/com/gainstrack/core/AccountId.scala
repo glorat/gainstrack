@@ -37,6 +37,8 @@ case class AccountId(n:String) extends Ordered[AccountId] {
 
   def compare(that: AccountId): Int = that.name.compareTo(name)
 
+  def toGainstrack:String = name
+
   override def toString: String = name
 
   implicit def asString : String = name

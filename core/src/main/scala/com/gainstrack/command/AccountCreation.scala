@@ -13,7 +13,24 @@ case class AccountOptions (
                           assetNonStdScu:Option[Int] = None,
                           hidden:Boolean = false,
                           placeholder:Boolean = false
-                          )
+                          ) {
+  private def boolStr(name:String, value:Boolean) = {
+    if (value) s"${name}:true\n" else ""
+  }
+  private def acctStr(name:String, value:Option[AccountId]) = {
+    value.map(x => s"${name}: ${x.toGainstrack}\n").getOrElse("")
+  }
+  def toGainstrack:String = {
+    acctStr("expenseAccount", expenseAccount) +
+      boolStr("tradingAccount", tradingAccount) +
+      acctStr("incomeAccount", incomeAccount) +
+      acctStr("fundingAccount", fundingAccount) +
+      boolStr("multiAsset", multiAsset) +
+      boolStr("automaticReinvestment", automaticReinvestment) +
+      boolStr("hidden", hidden) +
+      boolStr("placeholder", placeholder)
+    }
+}
 
 case class AccountCreation (
                            date: LocalDate,
@@ -47,9 +64,13 @@ case class AccountCreation (
     }
   }
 
+  def toGainstrack : String = {
+    s"${date} open ${key.name} ${key.assetId.symbol}\n" + options.toGainstrack
+  }
+
   private def stringToBool(valueStr:String):Boolean = valueStr!="false"
 
-  override def toString: String = toBeancount
+  //override def toString: String = s"${date} open ${key.name} ${key.assetId.symbol}"
 
   override def withOption(key:String, valueStr:String) : AccountCreation = {
     key match {

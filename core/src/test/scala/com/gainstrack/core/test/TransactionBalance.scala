@@ -1,5 +1,6 @@
 package com.gainstrack.core.test
 
+import java.io.{BufferedReader, StringReader}
 import java.time.{LocalDate, ZonedDateTime}
 
 import com.gainstrack.command._
@@ -129,6 +130,18 @@ class TransactionBalanceTest extends FlatSpec {
       val rep = summary.accounts(AccountId("Assets:ISA:London"))
       assert(rep.cashflowTable.irr < 0.009)
       assert(rep.cashflowTable.irr > 0.008)
+    }
+
+    it should "generate original command strings" in {
+      val strs = cmds.map(_.toGainstrack).mkString("\n")
+
+      val secondParser = new GainstrackParser
+
+      strs.split("\n").foreach(s => secondParser.parseLine(s))
+
+      secondParser.getCommands.zip(cmds).map(x => assert(x._1 == x._2))
+
+      assert(secondParser.getCommands.toSeq == cmds.toSeq)
     }
   }
 }

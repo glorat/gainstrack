@@ -26,7 +26,7 @@ case class Transfer(
   // FIXME: This is a slightly confusing method to have!!! Fund usages to see the danger
   override def toTransfers(accounts: Set[AccountCreation]): Seq[Transfer] = {
     val targetAccount = accounts.find(_.accountId == dest).get
-    val sourceAccount = accounts.find(_.accountId == source).get
+    val sourceAccount = accounts.find(_.accountId == source).getOrElse(throw new IllegalStateException(s"${source} source account does not exist"))
     // Multi-asset accounts have a dedicated sub funding account
     val sourceAccountId = if (sourceAccount.options.multiAsset) source.subAccount(sourceValue.ccy.symbol) else source
     val targetFundingAccountId = if (targetAccount.options.multiAsset) dest.subAccount(targetValue.ccy.symbol) else dest
@@ -51,6 +51,10 @@ case class Transfer(
     ), this)
   }
 
+  override def toGainstrack: String = {
+    val baseStr = s"${date} tfr ${source.toGainstrack} ${dest.toGainstrack} ${sourceValue}"
+    baseStr + (if(sourceValue==targetValue) "" else s" ${targetValue}")
+  }
 }
 
 object Transfer extends CommandParser {

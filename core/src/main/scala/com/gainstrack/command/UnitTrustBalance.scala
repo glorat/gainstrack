@@ -70,15 +70,18 @@ case class UnitTrustBalance(
 
     Seq(cashAcct, incomeAcct, expenseAcct)
   }
+
+  def toGainstrack : String = {
+    s"${date} unit ${accountId.toGainstrack} ${security} @${price}"
+  }
 }
 object UnitTrustBalance extends CommandParser {
   import Patterns._
 
   val prefix = "unit"
-  private val balanceRe = raw"(\S+ \S+)"
   private val priceRe = raw"@(\S+ \S+)"
 
-  private val Statement =s"${datePattern} ${prefix} ${acctPattern} ${balanceRe} ${priceRe}".r
+  private val Statement =s"${datePattern} ${prefix} ${acctPattern} ${balanceMatch} ${priceRe}".r
 /*
   def apply(acct: AccountId,
             date:LocalDate,

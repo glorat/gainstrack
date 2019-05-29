@@ -50,6 +50,11 @@ case class SecurityPurchase(
 
     Transaction(date, description, postings, this )
   }
+
+  override def toGainstrack: String = {
+    val baseStr = s"${date} trade ${accountId.toGainstrack} ${security} @${price}"
+    baseStr + (if (commission==zeroFraction) "" else s" C${commission}")
+  }
 }
 
 object SecurityPurchase extends CommandParser {

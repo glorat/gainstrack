@@ -13,13 +13,14 @@ trait AccountCommand extends Command with DomainEvent with Ordered[AccountComman
   // Mandatory fields
   def date : LocalDate
   def description: String
+  def toGainstrack: String
 
   // Required for filtering
   def mainAccount : Option[AccountId]
   def involvedAccounts : Set[AccountId]
 
   // Helper methods
-  def usesAccount(accountId: AccountId) : Boolean = involvedAccounts.contains(accountId) || mainAccount == Some(accountId)
+  def usesAccount(accountId: AccountId) : Boolean = /*involvedAccounts.contains(accountId) ||*/ mainAccount == Some(accountId)
   def usesSubAccountOf(parentId: AccountId) : Boolean = involvedAccounts.find(a => a.isSubAccountOf(parentId)).isDefined
 
   override def compare(that: AccountCommand): Int = {

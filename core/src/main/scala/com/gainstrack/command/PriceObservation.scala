@@ -13,6 +13,10 @@ case class PriceObservation(date:LocalDate, assetId: AssetId, price:Balance)
   def toBeancount : String = {
      s"${date} price ${assetId.symbol} ${price}"
   }
+
+  override def toGainstrack: String = {
+    toBeancount
+  }
 }
 
 object PriceObservation extends CommandParser {

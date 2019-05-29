@@ -16,4 +16,6 @@ case class CommandWithAccounts[T<:CommandNeedsAccounts](underlying:T, accounts:S
   override def mainAccount: Option[AccountId] = underlying.mainAccount
 
   def toTransfers: Seq[Transfer] = underlying.toTransfers(accounts)
+
+  override def toGainstrack: String = ???
 }

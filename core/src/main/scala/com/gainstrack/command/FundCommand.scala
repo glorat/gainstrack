@@ -19,6 +19,15 @@ case class FundCommand(date:LocalDate, targetAccountId:AccountId, value:Balance,
 
     Transfer(sourceAccountId, targetAccountId, date, value, value, description).toTransfers(accts)
   }
+
+  override def toGainstrack: String = {
+    if (sourceAccountIdOpt.isDefined) {
+      s"${date} fund ${targetAccountId.toGainstrack} ${sourceAccountIdOpt.get.toGainstrack} ${value}"
+    }
+    else {
+      s"${date} fund ${targetAccountId.toGainstrack} ${value}"
+    }
+  }
 }
 
 object FundCommand extends CommandParser {

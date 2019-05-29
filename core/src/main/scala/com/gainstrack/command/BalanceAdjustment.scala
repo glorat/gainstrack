@@ -39,6 +39,10 @@ case class BalanceAdjustment(
       Seq[BeancountCommand](tx, balcmd)
     }
   }
+
+  def toGainstrack : String = {
+    s"${date} adj ${accountId.toGainstrack} ${balance} ${adjAccount.toGainstrack}"
+  }
 }
 
 case class BalanceAssertion(date:LocalDate, accountId:AccountId, balance:Balance, origin:BalanceAdjustment)

@@ -52,6 +52,15 @@ case class YieldCommand(date:LocalDate, accountId:AccountId, asset:Option[AssetI
 
     Transfer(incomeAccountId, targetAccountId, date, value, value, description).toTransfers(accts)
   }
+
+  def toGainstrack : String = {
+    if (asset.isDefined) {
+      s"${date} yield ${accountId.toGainstrack} ${asset.get.symbol} ${value}"
+    }
+    else {
+      s"${date} yield ${accountId.toGainstrack} ${value}"
+    }
+  }
 }
 
 object YieldCommand extends CommandParser {

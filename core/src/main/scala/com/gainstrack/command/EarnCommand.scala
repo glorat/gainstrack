@@ -23,6 +23,15 @@ case class EarnCommand(date:LocalDate, incomeTag:String, value:Balance, targetAc
     val targetFundingAccountId = if (targetAccount.options.multiAsset) targetAccountId.subAccount(value.ccy.symbol) else targetAccountId
     Seq(Transfer(incomeAccountId, targetFundingAccountId, date, value, value, description))
   }
+
+  def toGainstrack: String = {
+    if (targetAccountIdOpt.isDefined) {
+      s"${date} earn ${incomeTag} ${targetAccountIdOpt.get.toGainstrack} ${value}"
+    }
+    else {
+      s"${date} earn ${incomeTag} ${value}"
+    }
+  }
 }
 
 object EarnCommand extends CommandParser {
