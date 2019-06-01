@@ -66,7 +66,7 @@ class TransactionBalanceTest extends FlatSpec {
     "unit commands" should "generate beancount" in {
       import sys.process._
       val bFile = "/tmp/unit.beancount"
-      bg.writeFile(bFile)
+      bg.writeBeancountFile(bFile)
       val output = s"bean-check ${bFile}" !!
 
       assert(output == "")
@@ -133,6 +133,7 @@ class TransactionBalanceTest extends FlatSpec {
     }
 
     it should "generate original command strings" in {
+
       val strs = cmds.map(_.toGainstrack).mkString("\n")
 
       val secondParser = new GainstrackParser
@@ -142,6 +143,10 @@ class TransactionBalanceTest extends FlatSpec {
       secondParser.getCommands.zip(cmds).map(x => assert(x._1 == x._2))
 
       assert(secondParser.getCommands.toSeq == cmds.toSeq)
+    }
+
+    it should "generate sensible input file" in {
+      bg.writeGainstrackFile("/tmp/unit.gainstrack")
     }
   }
 }

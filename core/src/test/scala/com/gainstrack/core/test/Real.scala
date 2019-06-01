@@ -16,7 +16,7 @@ class Real extends FlatSpec {
 
   "Real case" should "generate beancount" in {
 
-    bg.writeFile(s"/tmp/${realFile}.beancount")
+    bg.writeBeancountFile(s"/tmp/${realFile}.beancount")
   }
 
   it should "imply prices" in {

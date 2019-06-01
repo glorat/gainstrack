@@ -70,7 +70,7 @@ class First extends FlatSpec {
   val accountMap = bg.acctState.accountMap
 
   it should "generate beancount" in {
-    bg.writeFile("/tmp/gainstrack.beancount")
+    bg.writeBeancountFile("/tmp/gainstrack.beancount")
   }
 
   lazy val priceState : PriceState = bg.priceState
