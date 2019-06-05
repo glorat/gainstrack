@@ -28,6 +28,8 @@
                 <td>Unit</td>
             #case (tfr:Transfer)
                 <td>Transfer</td>
+            #case (wrap:CommandWithAccounts[_])
+                <td>${wrap.underlying.getClass.getSimpleName}</td>
             #otherwise
                 <td>${cmd.getClass.getSimpleName}</td>
             #end

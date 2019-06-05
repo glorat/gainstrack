@@ -57,9 +57,8 @@ class CommandController (implicit val ec :ExecutionContext) extends ScalatraServ
 
     val accountId = params("accountId")
     bg.acctState.accountMap.get(accountId).map(account => {
-      // Actually want to use originalCommands here but then we can't filter!
-      // Chicken and egg problem... do we need to trace the supply chain?
-      val commands = bg.finalCommands.filter(cmd => cmd.usesAccount(accountId))
+
+      val commands = bg.originalCommands.filter(cmd => cmd.hasMainAccount(Some(accountId)))
 
       contentType="text/html"
 

@@ -18,7 +18,7 @@ case class AccountOptions (
     if (value) s"${name}:true\n" else ""
   }
   private def acctStr(name:String, value:Option[AccountId]) = {
-    value.map(x => s"${name}: ${x.toGainstrack}\n").getOrElse("")
+    value.map(x => s"  ${name}: ${x.toGainstrack}\n").getOrElse("")
   }
   def toGainstrack:String = {
     acctStr("expenseAccount", expenseAccount) +
