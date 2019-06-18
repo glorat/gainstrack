@@ -3,9 +3,10 @@ package com.gainstrack.report
 import com.gainstrack.command.{BalanceAdjustment, CommandWithAccounts, Transfer}
 import com.gainstrack.core.{AccountId, AccountType, Cashflow, Transaction, isSubAccountOf}
 
-class InflowCalculator(txState:TransactionState, sources:Set[AccountType], multiplier:Double) {
+class InflowCalculator(txState:TransactionState, multiplier:Double) {
 
   def calcInflows(accountId: AccountId) = {
+    val relatedAccounts = AccountType.all.map(t => accountId.convertType(t))
 
     txState.cmds.foldLeft(Seq[Cashflow]())((flow, cmd) => {
       cmd match {
@@ -13,10 +14,10 @@ class InflowCalculator(txState:TransactionState, sources:Set[AccountType], multi
 
           def processTransfer(tfr: Transfer) = {
 
-            if (tfr.source.isSubAccountOf(accountId) && sources.contains(tfr.dest.accountType)) {
+            if (tfr.source.isSubAccountOf(accountId) && !relatedAccounts.exists(r => tfr.dest.isSubAccountOf(r))) {
               flow :+ Cashflow(tx.postDate, -(tfr.sourceValue * multiplier))
             }
-            else if (sources.contains(tfr.source.accountType) && tfr.dest.isSubAccountOf(accountId)) {
+            else if (!relatedAccounts.exists(r => tfr.source.isSubAccountOf(r)) && tfr.dest.isSubAccountOf(accountId)) {
               flow :+ Cashflow(tx.postDate, tfr.targetValue * multiplier)
             }
             else {
@@ -29,7 +30,7 @@ class InflowCalculator(txState:TransactionState, sources:Set[AccountType], multi
 
             if (adj.accountId.isSubAccountOf(accountId)
               && !adj.adjAccount.isSubAccountOf(accountId)
-              && sources.contains(adj.adjAccount.accountType)
+              && !relatedAccounts.exists(r => adj.adjAccount.isSubAccountOf(r))
             ) {
               val tfr = tx.filledPostings.find(p => p.account == adj.accountId).get.value.get
               flow :+ Cashflow(tx.postDate, tfr * multiplier)

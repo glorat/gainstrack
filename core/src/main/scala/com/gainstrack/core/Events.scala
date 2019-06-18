@@ -62,6 +62,8 @@ case object Equity extends AccountType
 case object Income extends AccountType
 case object Expenses extends AccountType
 object AccountType {
+  val all = Set(Assets, Liabilities, Equity, Income, Expenses)
+
   def apply(str:String) : AccountType = {
     str match {
       case "Assets" => Assets

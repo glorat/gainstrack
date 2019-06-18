@@ -5,17 +5,14 @@ import com.gainstrack.core._
 class AccountInvestmentReport(accountId: AccountId, ccy:AssetId, queryDate: LocalDate, acctState:AccountState, balanceState:BalanceState, txState:TransactionState, priceState: PriceState) {
   val account = acctState.accountMap(accountId)
 
-  val allFlows = new InflowCalculator(txState, Set(Equity,Assets, Liabilities, Income, Expenses),1).calcInflows(accountId)
+  val inflows = new InflowCalculator(txState, -1).calcInflows(accountId)
 
-  // TODO: Get this from accounts
-  // Find all inflows from Asset/Equity/Liabilities. Should be negative
-  val inflows = new InflowCalculator(txState,  Set(Equity, Assets, Liabilities), -1).calcInflows(accountId)
   // Include Income/Expenses relating to the asset
   //val income = new InflowCalculator(txState).calcInflows(accountId.replace("Asset:","Income:"))
   // Where can that income go? Assume to bank accounts etc. for now?
   // TODO: Be careful about income (e.g dividends) that go straight back to investment! (i.e. self asset)
   val income : Seq[Cashflow] = account.options.incomeAccount.map(incomeAccountId => {
-    val incomeFlow = new InflowCalculator(txState, Set(Equity,Assets,Liabilities), -1)
+    val incomeFlow = new InflowCalculator(txState,-1)
       .calcInflows(incomeAccountId)
     incomeFlow
   }).getOrElse(Seq())
