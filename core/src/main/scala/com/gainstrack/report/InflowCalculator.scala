@@ -3,7 +3,7 @@ package com.gainstrack.report
 import com.gainstrack.command.{BalanceAdjustment, CommandWithAccounts, Transfer}
 import com.gainstrack.core.{AccountId, AccountType, Cashflow, Transaction, isSubAccountOf}
 
-class InflowCalculator(txState:TransactionState, multiplier:Double) {
+class InflowCalculator(txState:TransactionState) {
 
   def calcInflows(accountId: AccountId) = {
     val relatedAccounts = AccountType.all.map(t => accountId.convertType(t))
@@ -15,10 +15,10 @@ class InflowCalculator(txState:TransactionState, multiplier:Double) {
           def processTransfer(tfr: Transfer) = {
 
             if (tfr.source.isSubAccountOf(accountId) && !relatedAccounts.exists(r => tfr.dest.isSubAccountOf(r))) {
-              flow :+ Cashflow(tx.postDate, -(tfr.sourceValue * multiplier))
+              flow :+ Cashflow(tx.postDate, tfr.sourceValue)
             }
             else if (!relatedAccounts.exists(r => tfr.source.isSubAccountOf(r)) && tfr.dest.isSubAccountOf(accountId)) {
-              flow :+ Cashflow(tx.postDate, tfr.targetValue * multiplier)
+              flow :+ Cashflow(tx.postDate, -tfr.targetValue)
             }
             else {
               flow // Intra account trade
@@ -33,7 +33,7 @@ class InflowCalculator(txState:TransactionState, multiplier:Double) {
               && !relatedAccounts.exists(r => adj.adjAccount.isSubAccountOf(r))
             ) {
               val tfr = tx.filledPostings.find(p => p.account == adj.accountId).get.value.get
-              flow :+ Cashflow(tx.postDate, tfr * multiplier)
+              flow :+ Cashflow(tx.postDate, -tfr)
             }
             else {
               flow
