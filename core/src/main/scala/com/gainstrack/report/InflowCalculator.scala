@@ -8,17 +8,7 @@ class InflowCalculator( cmds:Seq[BeancountCommand]) {
   def calcInflows(accountId: AccountId) = {
     val relatedAccounts = AccountType.all.map(t => accountId.convertType(t))
 
-    // TODO: This can probably be a property of AccountType
-    def accountTypeMultipler(t:AccountType) : Double = {
-      t match {
-        case Assets => -1.0
-        case Liabilities => 1.0
-        case Income => 1.0
-        case Expenses => -1.0
-        case Equity => -1.0
-      }
-    }
-    val mult = accountTypeMultipler(accountId.accountType)
+    val mult = -1.0
 
     cmds.foldLeft(Seq[Cashflow]())((flow, cmd) => {
       cmd match {
@@ -27,7 +17,7 @@ class InflowCalculator( cmds:Seq[BeancountCommand]) {
           def processTransfer(tfr: Transfer) = {
 
             if (tfr.source.isSubAccountOf(accountId) && !relatedAccounts.exists(r => tfr.dest.isSubAccountOf(r))) {
-              flow :+ Cashflow(tx.postDate, tfr.sourceValue * mult)
+              flow :+ Cashflow(tx.postDate, -tfr.sourceValue * mult)
             }
             else if (!relatedAccounts.exists(r => tfr.source.isSubAccountOf(r)) && tfr.dest.isSubAccountOf(accountId)) {
               flow :+ Cashflow(tx.postDate, tfr.targetValue * mult)
