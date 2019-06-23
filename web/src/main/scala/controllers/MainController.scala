@@ -4,7 +4,7 @@ import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
 import com.gainstrack.command.{AccountCreation, GainstrackParser}
-import com.gainstrack.core.AccountId
+import com.gainstrack.core._
 import com.gainstrack.report.{AccountInvestmentReport, GainstrackGenerator, IrrSummary}
 import org.json4s.{CustomSerializer, Formats}
 import org.json4s.JsonAST.JString
@@ -28,6 +28,7 @@ class  MainController (implicit val ec :ExecutionContext) extends ScalatraServle
   parser.parseFile(s"/Users/kevin/dev/gainstrack/data/${realFile}.gainstrack")
   val orderedCmds = parser.getCommands
   val bg = new GainstrackGenerator(orderedCmds)
+  val defaultFromDate = parseDate("1970-01-01")
 
   before() {
     //contentType = formats("json")
@@ -37,8 +38,9 @@ class  MainController (implicit val ec :ExecutionContext) extends ScalatraServle
     val urlFor:MainController.UrlFn = (path:String, params:Iterable[(String,Any)]) => url(path,params)(this.request, this.response)
 
     val accountId = params("accountId")
+    val fromDate = defaultFromDate
     bg.acctState.accountMap.get(accountId).map(account => {
-      val accountReport = new AccountInvestmentReport(accountId, account.key.assetId, LocalDate.now(), bg.acctState, bg.balanceState, bg.txState, bg.priceState)
+      val accountReport = new AccountInvestmentReport(accountId, account.key.assetId, fromDate,  LocalDate.now(), bg.acctState, bg.balanceState, bg.txState, bg.priceState)
       contentType="text/html"
 
       layoutTemplate("/WEB-INF/views/irrDetail.ssp",
@@ -52,7 +54,15 @@ class  MainController (implicit val ec :ExecutionContext) extends ScalatraServle
   get("/gainstrack/irr/") {
     val urlFor:MainController.UrlFn = (path:String, params:Iterable[(String,Any)]) => url(path,params)(this.request, this.response)
 
-    val irr = IrrSummary(bg.finalCommands, LocalDate.now(), bg.acctState, bg.balanceState, bg.txState, bg.priceState)
+    var fromDate = defaultFromDate
+    var toDate = LocalDate.now
+
+    if (params.contains("time") && params("time").matches(raw"\d{4}")) {
+      fromDate =  LocalDate.of(Integer.parseInt(params("time")),1,1)
+      toDate = fromDate.plusYears(1)
+    }
+
+    val irr = IrrSummary(bg.finalCommands, fromDate, toDate, bg.acctState, bg.balanceState, bg.txState, bg.priceState)
 
     contentType="text/html"
 

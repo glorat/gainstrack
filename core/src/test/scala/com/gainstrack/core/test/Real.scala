@@ -31,6 +31,7 @@ class Real extends FlatSpec {
     assert(output == "")
   }
 
+  val fromDate = parseDate("1980-01-01")
   val queryDate = java.time.LocalDate.now
 
   it should "calculate IRR for investment accounts" in {
@@ -50,7 +51,7 @@ class Real extends FlatSpec {
     invAccts.foreach(account => {
       val accountId = account.accountId
       val ccy = account.key.assetId
-      val accountReport = new AccountInvestmentReport(accountId, ccy, queryDate, bg.acctState, bg.balanceState, bg.txState, priceState)
+      val accountReport = new AccountInvestmentReport(accountId, ccy, fromDate, queryDate, bg.acctState, bg.balanceState, bg.txState, priceState)
       println(s"${accountId} ${accountReport.endBalance}")
       accountReport.cashflowTable.sorted.foreach(cf => {
         println(s"   ${cf.date} ${cf.value}")
@@ -62,7 +63,7 @@ class Real extends FlatSpec {
 
   it should "calc sane irrs for my Zurich" in {
     val accountId = AccountId("Assets:Investment:Zurich")
-    val rep = new AccountInvestmentReport(accountId, AssetId("GBP"), queryDate, bg.acctState, bg.balanceState, bg.txState, priceState)
+    val rep = new AccountInvestmentReport(accountId, AssetId("GBP"), fromDate, queryDate, bg.acctState, bg.balanceState, bg.txState, priceState)
 
     assert(rep.cashflowTable.irr < 0.062)
     assert(rep.cashflowTable.irr > 0.044)
@@ -70,7 +71,7 @@ class Real extends FlatSpec {
 
   it should "calc sane irrs for my PP" in {
     val accountId = AccountId("Assets:Property:PP")
-    val rep = new AccountInvestmentReport(accountId, AssetId("GBP"), queryDate, bg.acctState, bg.balanceState, bg.txState, priceState)
+    val rep = new AccountInvestmentReport(accountId, AssetId("GBP"), fromDate, queryDate, bg.acctState, bg.balanceState, bg.txState, priceState)
 
     assert(rep.cashflowTable.irr < 0.09)
     assert(rep.cashflowTable.irr > 0.03)

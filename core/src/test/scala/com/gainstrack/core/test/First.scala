@@ -151,8 +151,9 @@ class First extends FlatSpec {
   "IRR Calc" should "compute IRR" in {
     val accountId = AccountId("Assets:Investment:Zurich")
     val queryDate = LocalDate.parse("2019-12-31")
+    val fromDate = parseDate("1980-01-01")
 
-    val accountReport = new AccountInvestmentReport(accountId, AssetId("GBP"), queryDate, bg.acctState, bg.balanceState, bg.txState, priceState)
+    val accountReport = new AccountInvestmentReport(accountId, AssetId("GBP"), fromDate, queryDate, bg.acctState, bg.balanceState, bg.txState, priceState)
 
     assert(accountReport.endBalance == Balance.parse("348045.34 GBP"))
 
