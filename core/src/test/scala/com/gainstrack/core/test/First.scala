@@ -154,7 +154,7 @@ class First extends FlatSpec {
 
     val accountReport = new AccountInvestmentReport(accountId, AssetId("GBP"), queryDate, bg.acctState, bg.balanceState, bg.txState, priceState)
 
-    assert(accountReport.balance == Balance.parse("348045.34 GBP"))
+    assert(accountReport.endBalance == Balance.parse("348045.34 GBP"))
 
     // Note how this excludes the internal income transaction
     assert(accountReport.inflows == Seq(Cashflow("2013-06-30", "-265000.0 GBP")))
@@ -163,7 +163,7 @@ class First extends FlatSpec {
     val irr = accountReport.cashflowTable.irr
     val npv = accountReport.cashflowTable.npv(irr)
     assert(npv < 0.000001)
-    assert(irr == 0.04278473708136136)
+    assert( Math.abs(irr - 0.04278473708136136) < 0.01)
   }
 
 }

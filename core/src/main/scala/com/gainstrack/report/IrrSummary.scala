@@ -7,7 +7,7 @@ case class IrrSummary(accounts: Map[AccountId, AccountInvestmentReport])
 object IrrSummary {
 
   def apply(commands:Seq[AccountCommand], queryDate:LocalDate, acctState: AccountState, balanceState: BalanceState, txState:TransactionState, priceState:PriceState) : IrrSummary = {
-    val assetClasses = Seq("Bank","ISA","Property", "Investment", "Pension")
+    val assetClasses = Seq("ISA","Property", "Investment", "Pension")
 
     // FIXME: Avoid AccountId string manip
     val test = (acctId:AccountId) => {assetClasses.foldLeft(false)((bool:Boolean,str:String) => bool || acctId.isSubAccountOf(AccountId("Assets:"+str)))}

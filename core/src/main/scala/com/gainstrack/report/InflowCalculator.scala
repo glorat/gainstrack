@@ -1,24 +1,36 @@
 package com.gainstrack.report
 
 import com.gainstrack.command.{BalanceAdjustment, CommandWithAccounts, Transfer}
-import com.gainstrack.core.{AccountId, AccountType, Cashflow, Transaction, isSubAccountOf}
+import com.gainstrack.core._
 
-class InflowCalculator(txState:TransactionState) {
+class InflowCalculator( cmds:Seq[BeancountCommand]) {
 
   def calcInflows(accountId: AccountId) = {
     val relatedAccounts = AccountType.all.map(t => accountId.convertType(t))
 
-    txState.cmds.foldLeft(Seq[Cashflow]())((flow, cmd) => {
+    // TODO: This can probably be a property of AccountType
+    def accountTypeMultipler(t:AccountType) : Double = {
+      t match {
+        case Assets => -1.0
+        case Liabilities => 1.0
+        case Income => 1.0
+        case Expenses => -1.0
+        case Equity => -1.0
+      }
+    }
+    val mult = accountTypeMultipler(accountId.accountType)
+
+    cmds.foldLeft(Seq[Cashflow]())((flow, cmd) => {
       cmd match {
         case tx: Transaction => {
 
           def processTransfer(tfr: Transfer) = {
 
             if (tfr.source.isSubAccountOf(accountId) && !relatedAccounts.exists(r => tfr.dest.isSubAccountOf(r))) {
-              flow :+ Cashflow(tx.postDate, tfr.sourceValue)
+              flow :+ Cashflow(tx.postDate, tfr.sourceValue * mult)
             }
             else if (!relatedAccounts.exists(r => tfr.source.isSubAccountOf(r)) && tfr.dest.isSubAccountOf(accountId)) {
-              flow :+ Cashflow(tx.postDate, -tfr.targetValue)
+              flow :+ Cashflow(tx.postDate, tfr.targetValue * mult)
             }
             else {
               flow // Intra account trade
@@ -33,7 +45,7 @@ class InflowCalculator(txState:TransactionState) {
               && !relatedAccounts.exists(r => adj.adjAccount.isSubAccountOf(r))
             ) {
               val tfr = tx.filledPostings.find(p => p.account == adj.accountId).get.value.get
-              flow :+ Cashflow(tx.postDate, -tfr)
+              flow :+ Cashflow(tx.postDate, tfr * mult)
             }
             else {
               flow

@@ -51,7 +51,7 @@ class Real extends FlatSpec {
       val accountId = account.accountId
       val ccy = account.key.assetId
       val accountReport = new AccountInvestmentReport(accountId, ccy, queryDate, bg.acctState, bg.balanceState, bg.txState, priceState)
-      println(s"${accountId} ${accountReport.balance}")
+      println(s"${accountId} ${accountReport.endBalance}")
       accountReport.cashflowTable.sorted.foreach(cf => {
         println(s"   ${cf.date} ${cf.value}")
       })

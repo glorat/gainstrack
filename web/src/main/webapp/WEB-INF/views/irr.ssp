@@ -18,7 +18,7 @@
     <% val one = summary.accounts(acctId) %>
     <tr>
         <td><a href="<%= urlFor("gainstrack/irr", Seq()) %>/<%= escape(acctId) %>">${acctId}</a></td>
-        <td class="num">${one.balance}</td>
+        <td class="num">${one.endBalance}</td>
         <td class="num" data-sort-value="${one.cashflows.headOption.map(_.date.toEpochDay).getOrElse(0) }">${one.cashflows.headOption.map(_.date.toString).getOrElse("") }</td>
         <td class="num" data-sort-value="${one.cashflows.lastOption.map(_.date.toEpochDay).getOrElse(0) }">${one.cashflows.lastOption.map(_.date.toString).getOrElse("") }</td>
         <td class="num">${one.cashflowTable.irr*100 }</td>
