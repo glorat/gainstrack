@@ -21,6 +21,14 @@ class BalanceReport(cmds:Seq[BeancountCommand], startDate:LocalDate=MinDate, end
 }
 
 case class BalanceReportState(balances:Map[AccountId, PositionSet]) {
+
+  def totalPosition(accountId:AccountId) : PositionSet = {
+    balances.keys.toSeq.filter(_.isSubAccountOf(accountId)).foldLeft(PositionSet())((ps,account) => {
+      val value = balances(account)
+      ps + value
+    })
+  }
+
   def processTx(tx:Transaction) : BalanceReportState = {
     tx.filledPostings.foldLeft(this)(BalanceReportState.processPosting)
   }
