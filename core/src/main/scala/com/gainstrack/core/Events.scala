@@ -61,6 +61,7 @@ case object Liabilities extends AccountType
 case object Equity extends AccountType
 case object Income extends AccountType
 case object Expenses extends AccountType
+case object AccountRoot extends AccountType
 object AccountType {
   val all = Set(Assets, Liabilities, Equity, Income, Expenses)
 
@@ -71,6 +72,7 @@ object AccountType {
       case "Equity" => Equity
       case "Income" => Income
       case "Expenses" => Expenses
+      case "" => AccountRoot
       case _ => throw new IllegalArgumentException(s"${str} is not an account type")
     }
   }

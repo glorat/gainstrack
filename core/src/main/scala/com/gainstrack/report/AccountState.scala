@@ -6,7 +6,28 @@ import net.glorat.cqrs.{AggregateRootState, DomainEvent}
 
 
 object AccountState {
+  def defaultRoot():AccountCreation = {
+    AccountCreation(MinDate, AccountKey("", AssetId("GBP")), AccountOptions(placeholder = true))
+  }
+
   def apply() : AccountState = AccountState(Set())
+
+
+  private def ensureExists(state:AccountState, accountId:AccountId):AccountState = {
+    if (state.accounts.exists(_.accountId == accountId)) {
+      state
+    }
+    else {
+      val parentId = accountId.parentAccountId.getOrElse(throw new IllegalStateException(s"'${accountId}' is missing parent"))
+      val withParent = ensureExists(state, parentId)
+      // Infinite loop sanity check
+      val parent = withParent.accountMap(parentId)
+      val account = AccountCreation(parent.date, AccountKey(accountId, parent.key.assetId))
+      withParent.copy(withParent.accounts + account)
+    }
+  }
+
+
 }
 case class AccountState(accounts:Set[AccountCreation])
   extends AggregateRootState {
@@ -109,8 +130,16 @@ case class AccountState(accounts:Set[AccountCreation])
     this
   }
 
+  // Finalize method when all is done
+  lazy val withInterpolatedAccounts : AccountState = {
+    // Add a root then ensure all parents exist
+    val withRoot = this.copy(accounts = accounts+AccountState.defaultRoot())
+    accounts.flatMap(_.accountId.parentAccountId).foldLeft(withRoot)(AccountState.ensureExists)
+  }
+
   // Query methods
   def find(accountId:String):Option[AccountCreation] = {
     accounts.find(_.name == AccountId(accountId))
   }
+
 }

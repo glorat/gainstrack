@@ -15,7 +15,7 @@ class First extends FlatSpec {
   val cmds = parser.getCommands
 
   val orderedCmds = cmds.sorted
-
+  val today = parseDate("2019-12-31")
 
   val tx = Transfer.parse("2019-01-02 tfr Assets:HSBCHK Assets:Investment:HSBC:USD 40000 HKD 5084.91 USD")
 
@@ -65,6 +65,13 @@ class First extends FlatSpec {
     assert (acct.options.expenseAccount == Some(AccountId("Expenses:Investment:IBUSD:USD")))
   }
 
+  it should "fill in intermediate accounts" in {
+    val newState = acctState.withInterpolatedAccounts
+    val newAccounts = newState.accounts.&~(acctState.accounts)
+    newAccounts.foreach(a => println(s"${a.toBeancount}"))
+    assert(newAccounts.size == 18)
+  }
+
   val bg = new GainstrackGenerator(orderedCmds)
 
   val accountMap = bg.acctState.accountMap
@@ -77,8 +84,6 @@ class First extends FlatSpec {
 
   {
     val bp = bg.balanceState
-
-    val today = parseDate("2019-12-31")
 
 
     "BalanceProjector" should "project balances" in {
@@ -171,9 +176,26 @@ class First extends FlatSpec {
     val balanceReport = new BalanceReport(bg.txState.cmds)
     val state = balanceReport.getState
     // Values in these assertions match higher up values
-    assert(state.totalPosition("Assets:Investment:IBUSD:USD").assetBalance(AssetId("USD")) == 172.05)
-    assert(state.totalPosition("Expenses:Investment:IBUSD:USD").assetBalance(AssetId("USD")) == 18.87)
-    assert(state.totalPosition("Assets").assetBalance(AssetId("USD")) == -52857.23)
+    val fn:AccountId=>Fraction = state.totalPosition(_).assetBalance(AssetId("USD"))
+    assert(fn("Assets:Investment:IBUSD:USD") == 172.05)
+    assert(fn("Expenses:Investment:IBUSD:USD")== 18.87)
+    assert(fn("Assets") == -52857.23)
 
+  }
+
+  it should "project converted" in {
+    val balanceReport = new BalanceReport(bg.txState.cmds)
+    val state = balanceReport.getState
+    val accounts = bg.acctState.withInterpolatedAccounts
+    // Values in these assertions match higher up values
+    val fn:AccountId=>Fraction = (acctId) => {
+      val ps = state.convertedPosition(acctId, accounts, bg.priceState, today)
+      ps.assetBalance(AssetId("USD"))
+    }
+    assert(fn("Assets:Investment:IBUSD:USD") == 172.05)
+    assert(fn("Expenses:Investment:IBUSD:USD") == 18.87)
+    assert(fn("Assets:Investment:IBUSD") == 34960.13)
+    assert(fn("Assets:Investment") == 6768.23)
+    assert(fn("Assets") == 6768.23)
   }
 }

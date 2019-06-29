@@ -13,11 +13,14 @@ case class AccountId(n:String) extends Ordered[AccountId] {
 
   def parentAccountId:Option[AccountId] = {
     val idx = name.lastIndexOf(":")
-    if (idx>0) {
-      Some(AccountId(name.take(idx-1)))
+    if (name == "") {
+      None
+    }
+    else if (idx>0) {
+      Some(AccountId(name.take(idx)))
     }
     else {
-      None
+      Some(AccountId.root)
     }
   }
 
@@ -47,4 +50,5 @@ case class AccountId(n:String) extends Ordered[AccountId] {
 object AccountId {
   implicit def stringToAccountId(str:String):AccountId = AccountId(str)
 
+  val root = AccountId("")
 }

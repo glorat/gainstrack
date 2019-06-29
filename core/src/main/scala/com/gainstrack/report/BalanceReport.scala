@@ -1,5 +1,6 @@
 package com.gainstrack.report
 
+import com.gainstrack.command.AccountCreation
 import com.gainstrack.core._
 
 class BalanceReport(cmds:Seq[BeancountCommand], startDate:LocalDate=MinDate, endDate:LocalDate=MaxDate) {
@@ -27,6 +28,15 @@ case class BalanceReportState(balances:Map[AccountId, PositionSet]) {
       val value = balances(account)
       ps + value
     })
+  }
+
+  def convertedPosition(accountId:AccountId, acctState:AccountState, priceState: PriceState, date:LocalDate):PositionSet = {
+    val accounts = acctState.withInterpolatedAccounts.accounts
+    val children = accounts.filter(_.accountId.parentAccountId.getOrElse(AccountId(":na:")) == accountId).map(_.accountId)
+    val childBalances = children.foldLeft(PositionSet())(_ + convertedPosition(_, acctState, priceState, date))
+    val positions = childBalances + balances.getOrElse(accountId, PositionSet())
+    val tgtCcy = acctState.accountMap(accountId).key.assetId
+    positions.convertTo(tgtCcy, priceState, date)
   }
 
   def processTx(tx:Transaction) : BalanceReportState = {

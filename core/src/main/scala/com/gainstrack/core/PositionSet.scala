@@ -1,6 +1,20 @@
 package com.gainstrack.core
 
+import com.gainstrack.report.{AssetTuple, PriceState}
+
 case class PositionSet(assetBalance:Map[AssetId, Fraction]) {
+  def convertTo(tgtCcy: AssetId, priceState: PriceState, date:LocalDate): PositionSet = {
+    def convertEntry(ps:PositionSet, entry:(AssetId, Fraction)) = {
+      ps + priceState.getFX(AssetTuple(entry._1, tgtCcy), date)
+        .map(_ * entry._2)
+        .map(Balance(_, tgtCcy))
+        .getOrElse(Balance(entry._2, entry._1)) // Unconverted value if no fx
+    }
+
+    assetBalance.foldLeft(PositionSet())(convertEntry)
+  }
+
+
   def +(rhs: Balance): PositionSet = {
     val newVal = assetBalance.getOrElse(rhs.ccy, zeroFraction) + rhs.value
     copy(assetBalance = assetBalance.updated(rhs.ccy, newVal))
