@@ -7,6 +7,7 @@ package object core {
   type GUID = net.glorat.cqrs.GUID
 
   def MinDate : LocalDate = java.time.LocalDate.MIN
+  def MaxDate : LocalDate = java.time.LocalDate.MAX
   def now(): ZonedDateTime = java.time.ZonedDateTime.now()
   def parseDate(str:String):LocalDate = java.time.LocalDate.parse(str) // TODO: yyyy-mm-dd
   def parseNumber(str:String): Fraction = spire.math.Rational(BigDecimal(str))

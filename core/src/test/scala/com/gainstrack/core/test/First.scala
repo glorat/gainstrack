@@ -167,4 +167,14 @@ class First extends FlatSpec {
     assert( Math.abs(irr - 0.04278473708136136) < 0.01)
   }
 
+  "BalanceReport" should "project balances" in {
+    //assert(bp.balances("Assets:Investment:IBUSD:USD").last._2 == 172.05)
+    //assert(bp.balances("Expenses:Investment:IBUSD:USD").last._2 == 18.87)
+
+    val balanceReport = new BalanceReport(bg.txState.cmds)
+    val state = balanceReport.getState
+    assert(state.balances("Assets:Investment:IBUSD:USD").assetBalance(AssetId("USD")) == 172.05)
+    assert(state.balances("Expenses:Investment:IBUSD:USD").assetBalance(AssetId("USD")) == 18.87)
+
+  }
 }
