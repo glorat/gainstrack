@@ -1,0 +1,24 @@
+#import(com.gainstrack.report._)
+#import(com.gainstrack.core._)
+<%@ val balances: Map[AccountId, PositionSet] %>
+<%@ val urlFor: controllers.MainController.UrlFn %>
+
+
+<table class="queryresults sortable">
+<thead>
+    <tr>
+        <th data-sort="string">account</th>
+        <th data-sort="num">balance</th>
+
+    </tr>
+</thead>
+<tbody>
+    #for (acctId <- balances.keys.toSeq.sorted)
+        <% val ps = balances(acctId) %>
+        <tr>
+            <td><a href="<%= urlFor("gainstrack/balance", Seq()) %>/<%= escape(acctId) %>">${acctId}</a></td>
+            <td class="num">${ps}</td>
+        </tr>
+    #end
+</tbody>
+</table>

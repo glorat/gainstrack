@@ -38,6 +38,10 @@ case class PositionSet(assetBalance:Map[AssetId, Fraction]) {
     copy(assetBalance = newMap)
   }
 
+  override def toString: String = {
+    assetBalance.map(e=>s"${e._2.toDouble.formatted("%.2f")} ${e._1.symbol}").mkString(" ")
+  }
+
 }
 
 object PositionSet {

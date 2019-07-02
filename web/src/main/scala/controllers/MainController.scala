@@ -5,7 +5,7 @@ import java.time.format.DateTimeFormatter
 
 import com.gainstrack.command.{AccountCreation, GainstrackParser}
 import com.gainstrack.core._
-import com.gainstrack.report.{AccountInvestmentReport, GainstrackGenerator, IrrSummary}
+import com.gainstrack.report.{AccountInvestmentReport, BalanceReport, GainstrackGenerator, IrrSummary}
 import org.json4s.{CustomSerializer, Formats}
 import org.json4s.JsonAST.JString
 import org.scalatra._
@@ -72,6 +72,24 @@ class  MainController (implicit val ec :ExecutionContext) extends ScalatraServle
       "urlFor" -> urlFor
     )
     //ssp("/foo")
+  }
+
+  get ("/gainstrack/balances/") {
+    val urlFor:MainController.UrlFn = (path:String, params:Iterable[(String,Any)]) => url(path,params)(this.request, this.response)
+
+    val balanceReport = new BalanceReport(bg.txState.cmds)
+    var toDate = LocalDate.now
+
+    val state = balanceReport.getState
+    val acctState = bg.acctState.withInterpolatedAccounts
+
+    val balances = acctState.accounts.map(acct => acct.accountId -> state.convertedPosition(acct.accountId, acctState, bg.priceState, toDate)).toMap
+
+    layoutTemplate("/WEB-INF/views/balance.ssp",
+      "short_title"->"Balances",
+      "balances" -> balances,
+      "urlFor" -> urlFor
+    )
   }
 
 }
