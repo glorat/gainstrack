@@ -4,6 +4,10 @@ case class AccountId(n:String) extends Ordered[AccountId] {
   private def name = n
   def prefix:String = name.split(":").headOption.get
 
+  def shortName:String = {
+    name.split(':').lastOption.getOrElse(name)
+  }
+
   def accountType:AccountType = {
     AccountType(prefix)
   }

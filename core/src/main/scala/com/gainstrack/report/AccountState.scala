@@ -139,7 +139,15 @@ case class AccountState(accounts:Set[AccountCreation])
 
   // Query methods
   def find(accountId:String):Option[AccountCreation] = {
-    accounts.find(_.name == AccountId(accountId))
+    find(AccountId(accountId))
+  }
+
+  def find(accountId:AccountId):Option[AccountCreation] = {
+    accounts.find(_.name == accountId)
+  }
+
+  def childrenOf(accountId:AccountId):Set[AccountCreation] = {
+    accounts.filter(_.parentAccountId == Some(accountId))
   }
 
 }

@@ -85,10 +85,13 @@ class  MainController (implicit val ec :ExecutionContext) extends ScalatraServle
 
     val balances = acctState.accounts.map(acct => acct.accountId -> state.convertedPosition(acct.accountId, acctState, bg.priceState, toDate)).toMap
 
+    val treeTable = new TreeTable(bg.acctState, balanceReport, urlFor)
+
     layoutTemplate("/WEB-INF/views/balance.ssp",
       "short_title"->"Balances",
       "balances" -> balances,
-      "urlFor" -> urlFor
+      "urlFor" -> urlFor,
+      "treeTable" -> treeTable
     )
   }
 
