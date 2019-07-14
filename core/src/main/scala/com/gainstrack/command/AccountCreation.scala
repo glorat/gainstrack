@@ -53,14 +53,15 @@ case class AccountCreation (
     copy(options = options.copy(tradingAccount = true, multiAsset=false, incomeAccount=Some(incomeAccountId), fundingAccount=Some(fundingAccountId)))
   }
 
-  def toBeancount : String = {
+  def toBeancount : Seq[BeancountLine] = {
     val open = s"${date} open ${key.name} ${key.assetId.symbol}"
     if (options.tradingAccount) {
-      open + "\nplugin \"beancount.plugins.book_conversions\" " +
+      val plugin = "plugin \"beancount.plugins.book_conversions\" " +
         s""""${accountId},${options.incomeAccount.get}""""
+      BeancountLines(Seq(open, plugin), this)
     }
     else {
-      open
+      BeancountLines(open, this)
     }
   }
 

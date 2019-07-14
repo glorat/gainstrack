@@ -1,6 +1,6 @@
 package com.gainstrack.command
 
-import com.gainstrack.core.{AccountCommand, AccountId, AssetId, Balance, BeancountCommand, LocalDate, parseDate}
+import com.gainstrack.core._
 
 case class PriceObservation(date:LocalDate, assetId: AssetId, price:Balance)
   extends AccountCommand with BeancountCommand {
@@ -10,12 +10,12 @@ case class PriceObservation(date:LocalDate, assetId: AssetId, price:Balance)
   override def involvedAccounts: Set[AccountId] = Set()
   def description:String = s"${price.ccy.symbol}/${assetId.symbol} = ${price}"
 
-  def toBeancount : String = {
-     s"${date} price ${assetId.symbol} ${price}"
+  def toBeancount : Seq[BeancountLine] = {
+     BeancountLines(s"${date} price ${assetId.symbol} ${price}", origin)
   }
 
   override def toGainstrack: String = {
-    toBeancount
+    toBeancount.map(_.value).mkString("\n")
   }
 }
 

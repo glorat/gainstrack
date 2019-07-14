@@ -80,6 +80,33 @@ class First extends FlatSpec {
     bg.writeBeancountFile("/tmp/gainstrack.beancount")
   }
 
+  it should "pass bean-check" in {
+    import sys.process._
+    import java.nio.file.{Paths, Files}
+    val bcFile = "/tmp/gainstrack.beancount"
+    var stdout = scala.collection.mutable.MutableList[String]()
+    val logger = ProcessLogger(line => stdout.+=(line), line=>stdout+=line )
+    val exitCode = s"bean-check ${bcFile}" ! logger
+
+    if (exitCode != 0) {
+      val errLines = stdout.filter(_.startsWith(bcFile))
+      val BcParse = (bcFile + raw":([0-9]+):\s+(.*)").r
+      val orig = bg.toBeancount
+      errLines.foreach(line => {
+        line match {
+          case BcParse(lineNumber,message) => {
+            println(orig(parseNumber(lineNumber).toInt-1).origin.toGainstrack)
+            println (message)
+          }
+        }
+
+      })
+
+    }
+
+    assert(exitCode == 0)
+  }
+
   lazy val priceState : PriceState = bg.priceState
 
   {

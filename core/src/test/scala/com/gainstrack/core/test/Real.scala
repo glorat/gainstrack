@@ -15,20 +15,11 @@ class Real extends FlatSpec {
   lazy val priceState : PriceState = bg.priceState
 
   "Real case" should "generate beancount" in {
-
     bg.writeBeancountFile(s"/tmp/${realFile}.beancount")
   }
 
   it should "imply prices" in {
     priceState
-  }
-
-  it should "pass bean-check" in {
-    import sys.process._
-    import java.nio.file.{Paths, Files}
-    val output = s"bean-check /tmp/${realFile}.beancount" !!
-
-    assert(output == "")
   }
 
   val fromDate = parseDate("1980-01-01")

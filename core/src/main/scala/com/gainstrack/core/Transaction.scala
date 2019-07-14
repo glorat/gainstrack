@@ -43,14 +43,13 @@ case class Transaction (
     filledPostings.filter(a => isSubAccountOf(a.account, accountId)).foldLeft(zeroFraction)((sum,p)=>sum+p.weight.value)
   }
 
-  def toBeancount: String = {
-    val sb = new StringBuilder
-    sb.append(postDate.toString).append(" * \"").append(description).append("\"\n")
-    filledPostings.foreach(p => sb.append("  ").append(p).append("\n"))
-    sb.toString()
+  def toBeancount: Seq[BeancountLine] = {
+    val header = s"""${postDate.toString} * "${description}""""
+    val postings = filledPostings.map(p => s"  ${p}")
+    BeancountLines(header +: postings, origin)
   }
 
-  override def toString: String = toBeancount
+  override def toString: String = toBeancount.map(_.value).mkString("\n")
 }
 
 object Transaction {

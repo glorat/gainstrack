@@ -37,14 +37,24 @@ trait AccountCommand extends Command with DomainEvent with Ordered[AccountComman
   }
 }
 
+case class BeancountLine(value:String, origin:AccountCommand)
+object BeancountLines {
+  def apply(values:Seq[String], origin:AccountCommand) : Seq[BeancountLine] = {
+    values.map(BeancountLine(_, origin))
+  }
+  def apply(value:String, origin:AccountCommand):Seq[BeancountLine] = {
+    BeancountLines(Seq(value), origin)
+  }
+}
 trait BeancountCommand {
   def origin: AccountCommand
-  def toBeancount : String
+  def toBeancount : Seq[BeancountLine]
 }
 
 object AccountCommand  {
 
 }
+
 
 trait AccountEvent extends DomainEvent {
   def accountId: AccountId

@@ -45,7 +45,7 @@ case class UnitTrustBalance(
     }
   }
 
-  def toBeancount(oldBalance:Balance) : String = {
+  def toBeancount(oldBalance:Balance) : Seq[BeancountLine] = {
     if (security == oldBalance) {
       // No transaction just emit a price
       PriceObservation(date, security.ccy, price).toBeancount
