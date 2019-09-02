@@ -10,6 +10,7 @@ class ScalatraBootstrap extends LifeCycle {
     implicit val ec :ExecutionContext = ExecutionContext.global
     context.mount(new controllers.MainController(), "/*")
     context.mount(new controllers.CommandController(), "/gainstrack/command/*")
+    context.mount(new controllers.ApiController(), "/gainstrack/api/*")
     //context.mount(new controllers.Ledger, "/ledger/*")
   }
 

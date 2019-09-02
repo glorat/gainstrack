@@ -33,8 +33,6 @@
     <button id="source-editor-submit" type="button" disabled data-command="favaSave" data-filename="{{ file_path }}" data-progress-content="{{ _('Saving...') }}" title="{{ _('Save') }} (Ctrl/Cmd+s)"(>{{ _('Save') }}</button>
 </div>
 <div class="source-editor-wrapper">
-    <textarea id="source-editor" name="source" autofocus spellcheck="false" data-sha256sum="{{ sha256sum }}">
-        <%= source %>
-    </textarea>
+    <textarea id="source-editor" name="source" autofocus spellcheck="false" data-sha256sum="{{ sha256sum }}"><%= source %></textarea>
 </div>
 </form>

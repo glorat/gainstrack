@@ -2,7 +2,7 @@ package com.gainstrack.command
 
 import com.gainstrack.core.AccountCommand
 
-import scala.io.Source
+import scala.io.{BufferedSource, Source}
 
 class GainstrackParser {
   private var commands:Seq[AccountCommand] = Seq()
@@ -57,6 +57,15 @@ class GainstrackParser {
 
   def parseFile(filename:String) : Unit = {
     val src = Source.fromFile(filename)
+    parseBuffer(src)
+  }
+
+  def parseString(str:String) : Unit = {
+    val src = Source.fromString(str)
+    parseBuffer(src)
+  }
+
+  private def parseBuffer(src: Source) = {
     src.getLines.foreach(this.parseLine)
   }
 }
