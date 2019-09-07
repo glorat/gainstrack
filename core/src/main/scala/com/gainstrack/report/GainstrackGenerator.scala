@@ -89,15 +89,17 @@ case class GainstrackGenerator(originalCommands:Seq[AccountCommand])  {
 
   }
 
-  def writeGainstrackFile(filename:String) = {
+  def writeGainstrackFile(filename:String): Unit = {
     import java.nio.file.{Paths, Files}
     import java.nio.charset.StandardCharsets
-
-
-    val str = originalCommands.groupBy(_.mainAccount).values.map(_.map(_.toGainstrack).mkString("\n")).mkString("\n")
-    
+    val str: String = toGainstrack
     Files.write(Paths.get(filename), str.getBytes(StandardCharsets.UTF_8))
 
+  }
+
+  def toGainstrack: String = {
+    val str = originalCommands.groupBy(_.mainAccount).values.map(_.map(_.toGainstrack).mkString("\n")).mkString("\n")
+    str
   }
 }
 

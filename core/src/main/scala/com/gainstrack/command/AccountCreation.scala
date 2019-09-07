@@ -66,7 +66,7 @@ case class AccountCreation (
   }
 
   def toGainstrack : String = {
-    s"${date} open ${key.name} ${key.assetId.symbol}\n" + options.toGainstrack
+    s"\n${date} open ${key.name} ${key.assetId.symbol}\n" + options.toGainstrack
   }
 
   private def stringToBool(valueStr:String):Boolean = valueStr!="false"

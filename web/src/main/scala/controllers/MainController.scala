@@ -23,12 +23,13 @@ object MainController {
 class  MainController (implicit val ec :ExecutionContext) extends ScalatraServlet with JacksonJsonSupport with ScalateSupport {
   protected implicit val jsonFormats: Formats = org.json4s.DefaultFormats + LocalDateSerializer
 
-
+  val bgDefault = {
     val parser = new GainstrackParser
     val realFile = "real"
     parser.parseFile(s"/Users/kevin/dev/gainstrack/data/${realFile}.gainstrack")
     val orderedCmds = parser.getCommands
-    val bgDefault = new GainstrackGenerator(orderedCmds)
+    new GainstrackGenerator(orderedCmds)
+  }
 
 
   val defaultFromDate = parseDate("1970-01-01")

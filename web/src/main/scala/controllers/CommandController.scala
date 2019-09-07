@@ -27,7 +27,7 @@ class CommandController (implicit val ec :ExecutionContext) extends ScalatraServ
   val filename = s"/Users/kevin/dev/gainstrack/data/${realFile}.gainstrack"
   parser.parseFile(filename)
   val orderedCmds = parser.getCommands
-  val bg = new GainstrackGenerator(orderedCmds)
+  val bgDefault = new GainstrackGenerator(orderedCmds)
 
   before() {
     //contentType = formats("json")
@@ -37,6 +37,8 @@ class CommandController (implicit val ec :ExecutionContext) extends ScalatraServ
     val urlFor:MainController.UrlFn = (path:String, params:Iterable[(String,Any)]) => url(path,params)(this.request, this.response)
 
     contentType="text/html"
+
+    val bg = sessionOption.map(_("gainstrack")).getOrElse(bgDefault).asInstanceOf[GainstrackGenerator]
 
     val mainAccountIds:Set[AccountId] = bg.finalCommands.flatMap(_.mainAccount).toSet
     val mainAccounts:Seq[AccountCreation] = bg.acctState.accounts.filter(a => mainAccountIds.contains(a.accountId)).toSeq.sortBy(_.accountId)
@@ -53,6 +55,8 @@ class CommandController (implicit val ec :ExecutionContext) extends ScalatraServ
     val urlFor:MainController.UrlFn = (path:String, params:Iterable[(String,Any)]) => url(path,params)(this.request, this.response)
 
     contentType="text/html"
+
+    val bg = sessionOption.map(_("gainstrack")).getOrElse(bgDefault).asInstanceOf[GainstrackGenerator]
 
 
     val accountId = params("accountId")
@@ -74,7 +78,10 @@ class CommandController (implicit val ec :ExecutionContext) extends ScalatraServ
   get("/editor/") {
     val urlFor:MainController.UrlFn = (path:String, params:Iterable[(String,Any)]) => url(path,params)(this.request, this.response)
 
-    val source = Source.fromFile(filename).mkString
+    val bg = sessionOption.map(_("gainstrack")).getOrElse(bgDefault).asInstanceOf[GainstrackGenerator]
+
+    val source = bg.toGainstrack
+    //val source = Source.fromFile(filename).mkString
 
     contentType="text/html"
 
