@@ -35,8 +35,12 @@ case class BalanceReportState(balances:Map[AccountId, PositionSet]) {
     val children = accounts.filter(_.accountId.parentAccountId.getOrElse(AccountId(":na:")) == accountId).map(_.accountId)
     val childBalances = children.foldLeft(PositionSet())(_ + convertedPosition(_, acctState, priceState, date))
     val positions = childBalances + balances.getOrElse(accountId, PositionSet())
-    val tgtCcy = acctState.accountMap(accountId).key.assetId
-    positions.convertTo(tgtCcy, priceState, date)
+    val converted:PositionSet = acctState.accountMap.get(accountId)
+      .map(_.key.assetId)
+      .map(tgtCcy => { positions.convertTo(tgtCcy, priceState, date)})
+      .map(res => {println (s"${accountId} has ${res}"); res})
+      .getOrElse(positions)
+    converted
   }
 
   def processTx(tx:Transaction) : BalanceReportState = {

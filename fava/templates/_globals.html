@@ -13,14 +13,15 @@
 'query':            (_('Query'),            'g q'),
 'statistics':       (_('Statistics'),       'g x'),
 'trial_balance':    (_('Trial Balance'),    'g t'),
-'balances':          (_('Balances'),        'g g'),
-'command':          (_('UI Editor'),        'g g'),
+'balances':         (_('Balances'),        ''),
+'gt_prices':        (_('Prices'),        ''),
+'command':          (_('UI Editor'),        ''),
 'command/editor':   (_('Command Editor'),   ''),
 'irr':              (_('IRR'),    ''),
 } %}
 {% set navigation_bar = [
 ['income_statement', 'balance_sheet', 'trial_balance', 'journal', 'query'],
 ['holdings', 'commodities', 'events', 'statistics'],
-['balances','command', 'command/editor', 'irr'],
+['balances','gt_prices','command', 'command/editor', 'irr'],
 ['editor', 'import', 'options', 'help']
 ] %}

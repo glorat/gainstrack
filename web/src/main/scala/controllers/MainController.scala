@@ -90,17 +90,31 @@ class  MainController (implicit val ec :ExecutionContext) extends ScalatraServle
 
     val state = balanceReport.getState
     val acctState = bg.acctState.withInterpolatedAccounts
+    val priceState = bg.priceState
 
-    val balances = acctState.accounts.map(acct => acct.accountId -> state.convertedPosition(acct.accountId, acctState, bg.priceState, toDate)).toMap
-
-    val treeTable = new TreeTable(bg.acctState, balanceReport, urlFor)
+    val treeTable = new TreeTable(bg.acctState, priceState, toDate, balanceReport, urlFor)
 
     layoutTemplate("/WEB-INF/views/balance.ssp",
       "short_title"->"Balances",
-      "balances" -> balances,
       "urlFor" -> urlFor,
       "treeTable" -> treeTable
     )
   }
 
+  get ("/gainstrack/gt_prices/") {
+    val urlFor:MainController.UrlFn = (path:String, params:Iterable[(String,Any)]) => url(path,params)(this.request, this.response)
+    val bg = sessionOption.map(_("gainstrack")).getOrElse(bgDefault).asInstanceOf[GainstrackGenerator]
+
+    val balanceReport = new BalanceReport(bg.txState.cmds)
+    var toDate = LocalDate.now
+
+    val state = balanceReport.getState
+    val priceState = bg.priceState
+
+    layoutTemplate("/WEB-INF/views/prices.ssp",
+      "short_title"->"Prices",
+      "priceState" -> priceState,
+      "urlFor" -> urlFor
+    )
+  }
 }

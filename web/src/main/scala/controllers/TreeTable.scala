@@ -7,7 +7,7 @@ import controllers.MainController.UrlFn
 
 import scala.xml.Elem
 
-class TreeTable(acctState:AccountState, balanceReport:BalanceReport, url_for:UrlFn) {
+class TreeTable(acctState:AccountState, priceState:PriceState, date:LocalDate, balanceReport:BalanceReport, url_for:UrlFn) {
 
   import org.fusesource.scalate.RenderContext.capture
 
@@ -38,7 +38,9 @@ class TreeTable(acctState:AccountState, balanceReport:BalanceReport, url_for:Url
     // FIXME: Raw get
     val account: AccountCreation = allAcctState.find(acctId).get
     for (childAccount <- allAcctState.childrenOf(acctId)) yield {
-      val balance: PositionSet = balanceReport.getState.totalPosition(childAccount.name)
+      //val balance: PositionSet = balanceReport.getState.totalPosition(childAccount.name)
+      val balance = balanceReport.getState.convertedPosition(childAccount.accountId, acctState, priceState, date)
+
       val dropTarget = if (allAcctState.childrenOf(childAccount.name).size > 0) " has-children" else ""
       val classStr = s"account-cell depth-$depth droptarget${dropTarget}"
       val pStr = if (balance.assetBalance.size > 0) "has_balance" else ""
