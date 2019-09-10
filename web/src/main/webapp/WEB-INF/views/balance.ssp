@@ -4,4 +4,12 @@
 <%@ val urlFor: controllers.MainController.UrlFn %>
 <%@ val treeTable: controllers.TreeTable%>
 
-${treeTable.foo(AccountId("Assets"))}
+<div class="row">
+<div class="column">
+    ${treeTable.foo(AccountId("Assets"))}
+</div>
+<div class="column">
+    ${treeTable.foo(AccountId("Liabilities"))}
+    ${treeTable.foo(AccountId("Equity"))}
+</div>
+</div>

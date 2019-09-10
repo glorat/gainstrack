@@ -27,7 +27,7 @@ class TreeTable(acctState:AccountState, priceState:PriceState, date:LocalDate, b
           <span class="account-cell">
             <button type="button" class="link expand-all hidden" title="{{ _('Expand all accounts') }}">{{ _('Expand all') }}</button>
           </span>
-          <span class="num">{{ currency }}</span>
+          <span class="other">currency</span>
         </p>
       </li>
       {bar(acctId,0)}
@@ -36,7 +36,8 @@ class TreeTable(acctState:AccountState, priceState:PriceState, date:LocalDate, b
 
   def bar(acctId: AccountId, depth:Int=0):Seq[Elem] = {
     // FIXME: Raw get
-    val account: AccountCreation = allAcctState.find(acctId).get
+    //val account: AccountCreation = allAcctState.find(acctId)
+
     for (childAccount <- allAcctState.childrenOf(acctId)) yield {
       //val balance: PositionSet = balanceReport.getState.totalPosition(childAccount.name)
       val balance = balanceReport.getState.convertedPosition(childAccount.accountId, acctState, priceState, date)
@@ -46,11 +47,11 @@ class TreeTable(acctState:AccountState, priceState:PriceState, date:LocalDate, b
       val pStr = if (balance.assetBalance.size > 0) "has_balance" else ""
       <li class="">
         <p class={pStr}>
-          <span class={classStr} data-account-name={account.name.toString}>
+          <span class={classStr} data-account-name={acctId.toString}>
             {account_name(childAccount.accountId, true)}
           </span>
-          <span class="balance-children">
-            {balance}
+          <span class="num other">
+            {balance.assetBalance.map(e=>s"${e._2.toDouble.formatted("%.2f")} ${e._1.symbol}").map(x => <span>{x}</span><br />)}
           </span>
         </p>
         <ol>
