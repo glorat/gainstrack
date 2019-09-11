@@ -6,10 +6,13 @@
 
 <div class="row">
 <div class="column">
+    <h3>Assets</h3>
     ${treeTable.foo(AccountId("Assets"))}
 </div>
 <div class="column">
+    <h3>Liabilities</h3>
     ${treeTable.foo(AccountId("Liabilities"))}
+    <h3>Equity</h3>
     ${treeTable.foo(AccountId("Equity"))}
 </div>
 </div>

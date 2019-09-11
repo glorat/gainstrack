@@ -21,16 +21,37 @@ class TreeTable(acctState:AccountState, priceState:PriceState, date:LocalDate, b
   }
 
   def foo(acctId: AccountId):Elem = {
+    val balance = balanceReport.getState.convertedPosition(acctId, acctState, priceState, date)
+
+    val dropTarget = " has-children"
+    val depth=0
+    val classStr = s"account-cell depth-$depth droptarget${dropTarget}"
+    val pStr = if (balance.assetBalance.size > 0) "has_balance" else ""
+
     <ol class="tree-table" title="{{ table_hover_text }}">
       <li class="head">
         <p>
           <span class="account-cell">
-            <button type="button" class="link expand-all hidden" title="{{ _('Expand all accounts') }}">{{ _('Expand all') }}</button>
+            <button type="button" class="link expand-all hidden" title="Expand all accounts">Expand all</button>
           </span>
-          <span class="other">currency</span>
+          <span class="other">Value</span>
         </p>
       </li>
-      {bar(acctId,0)}
+      <li class="">
+        <p class={pStr}>
+          <span class={classStr} data-account-name={acctId.toString}>
+            {account_name(acctId, true)}
+          </span>
+          <span class="num other">
+            {balance.assetBalance.map(e=>s"${e._2.toDouble.formatted("%.2f")} ${e._1.symbol}").map(x => <span>{x}</span><br />)}
+          </span>
+        </p>
+        <ol>
+          {bar(acctId,1)}
+        </ol>
+      </li>
+
+
     </ol>
   }
 
