@@ -33,6 +33,7 @@ case class BalanceState(accounts:Set[AccountCreation], balances:Map[AccountId,So
 
   private def process(e:AccountCreation):BalanceState = {
     // Need to minus one in case we trade on the same day as opening!!!
+    // TODO: Order events so creation come in first
     val newBalance = balances(e.accountId).updated(e.date.minusDays(1), zeroFraction)
     copy(balances = balances.updated(e.accountId, newBalance))
   }
@@ -55,6 +56,7 @@ case class BalanceState(accounts:Set[AccountCreation], balances:Map[AccountId,So
   }
 
   private def process(e:BalanceAdjustment): BalanceState = {
+    //e.toBeancounts
     val newBalance = balances(e.accountId).updated(e.date, e.balance.value)
     copy(balances = balances.updated(e.accountId, newBalance))
   }

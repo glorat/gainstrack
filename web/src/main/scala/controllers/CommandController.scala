@@ -6,6 +6,7 @@ import java.time.format.DateTimeFormatter
 import com.gainstrack.command.{AccountCreation, GainstrackParser}
 import com.gainstrack.core._
 import com.gainstrack.report.{AccountInvestmentReport, GainstrackGenerator, IrrSummary}
+import javax.servlet.http.{HttpServletRequest, HttpServletResponse}
 import org.json4s.{CustomSerializer, Formats}
 import org.json4s.JsonAST.JString
 import org.scalatra._
@@ -17,6 +18,7 @@ import scala.io.Source
 
 object CommandController {
   type UrlFn = (String, Iterable[(String,Any)]) => String
+  type BalanceFor = LocalDate => Option[Fraction]
 }
 
 class CommandController (implicit val ec :ExecutionContext) extends ScalatraServlet with JacksonJsonSupport with ScalateSupport {
@@ -29,13 +31,16 @@ class CommandController (implicit val ec :ExecutionContext) extends ScalatraServ
   val orderedCmds = parser.getCommands
   val bgDefault = new GainstrackGenerator(orderedCmds)
 
+  val urlFor:MainController.UrlFn =
+    (path:String, params:Iterable[(String,Any)])
+    => url(path,params, false)(this.request, this.response)
+
+
   before() {
     //contentType = formats("json")
   }
 
   get("/") {
-    val urlFor:MainController.UrlFn = (path:String, params:Iterable[(String,Any)]) => url(path,params)(this.request, this.response)
-
     contentType="text/html"
 
     val bg = sessionOption.map(_("gainstrack")).getOrElse(bgDefault).asInstanceOf[GainstrackGenerator]
@@ -52,8 +57,6 @@ class CommandController (implicit val ec :ExecutionContext) extends ScalatraServ
   }
 
   get("/get/:accountId") {
-    val urlFor:MainController.UrlFn = (path:String, params:Iterable[(String,Any)]) => url(path,params)(this.request, this.response)
-
     contentType="text/html"
 
     val bg = sessionOption.map(_("gainstrack")).getOrElse(bgDefault).asInstanceOf[GainstrackGenerator]
@@ -76,8 +79,6 @@ class CommandController (implicit val ec :ExecutionContext) extends ScalatraServ
   }
 
   get("/editor/") {
-    val urlFor:MainController.UrlFn = (path:String, params:Iterable[(String,Any)]) => url(path,params)(this.request, this.response)
-
     val bg = sessionOption.map(_("gainstrack")).getOrElse(bgDefault).asInstanceOf[GainstrackGenerator]
 
     val source = bg.toGainstrack

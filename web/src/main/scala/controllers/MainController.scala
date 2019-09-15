@@ -34,14 +34,16 @@ class  MainController (implicit val ec :ExecutionContext) extends ScalatraServle
 
   val defaultFromDate = parseDate("1970-01-01")
 
+  val urlFor:MainController.UrlFn =
+    (path:String, params:Iterable[(String,Any)])
+    => url(path,params)(this.request, this.response)
+
 
   before() {
     //contentType = formats("json")
   }
 
   get("/gainstrack/irr/:accountId") {
-    val urlFor:MainController.UrlFn = (path:String, params:Iterable[(String,Any)]) => url(path,params)(this.request, this.response)
-
     val bg = sessionOption.map(_("gainstrack")).getOrElse(bgDefault).asInstanceOf[GainstrackGenerator]
     val accountId = params("accountId")
     val fromDate = defaultFromDate
@@ -58,7 +60,6 @@ class  MainController (implicit val ec :ExecutionContext) extends ScalatraServle
   }
 
   get("/gainstrack/irr/") {
-    val urlFor:MainController.UrlFn = (path:String, params:Iterable[(String,Any)]) => url(path,params)(this.request, this.response)
     val bg = sessionOption.map(_("gainstrack")).getOrElse(bgDefault).asInstanceOf[GainstrackGenerator]
 
     var fromDate = defaultFromDate
@@ -82,10 +83,9 @@ class  MainController (implicit val ec :ExecutionContext) extends ScalatraServle
   }
 
   get ("/gainstrack/balances/") {
-    val urlFor:MainController.UrlFn = (path:String, params:Iterable[(String,Any)]) => url(path,params)(this.request, this.response)
     val bg = sessionOption.map(_("gainstrack")).getOrElse(bgDefault).asInstanceOf[GainstrackGenerator]
 
-    val balanceReport = new BalanceReport(bg.txState.cmds)
+    val balanceReport = BalanceReport(bg.txState.cmds)
     var toDate = LocalDate.now
 
     val state = balanceReport.getState
@@ -102,10 +102,9 @@ class  MainController (implicit val ec :ExecutionContext) extends ScalatraServle
   }
 
   get ("/gainstrack/gt_prices/") {
-    val urlFor:MainController.UrlFn = (path:String, params:Iterable[(String,Any)]) => url(path,params)(this.request, this.response)
-    val bg = sessionOption.map(_("gainstrack")).getOrElse(bgDefault).asInstanceOf[GainstrackGenerator]
+   val bg = sessionOption.map(_("gainstrack")).getOrElse(bgDefault).asInstanceOf[GainstrackGenerator]
 
-    val balanceReport = new BalanceReport(bg.txState.cmds)
+    val balanceReport = BalanceReport(bg.txState.cmds)
     var toDate = LocalDate.now
 
     val state = balanceReport.getState

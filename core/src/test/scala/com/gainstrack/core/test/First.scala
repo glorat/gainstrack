@@ -200,7 +200,7 @@ class First extends FlatSpec {
   }
 
   "BalanceReport" should "project balances" in {
-    val balanceReport = new BalanceReport(bg.txState.cmds)
+    val balanceReport = BalanceReport(bg.txState.cmds)
     val state = balanceReport.getState
     // Values in these assertions match higher up values
     val fn:AccountId=>Fraction = state.totalPosition(_).assetBalance(AssetId("USD"))
@@ -211,7 +211,7 @@ class First extends FlatSpec {
   }
 
   it should "project converted" in {
-    val balanceReport = new BalanceReport(bg.txState.cmds)
+    val balanceReport = BalanceReport(bg.txState.cmds)
     val state = balanceReport.getState
     val accounts = bg.acctState.withInterpolatedAccounts
     // Values in these assertions match higher up values

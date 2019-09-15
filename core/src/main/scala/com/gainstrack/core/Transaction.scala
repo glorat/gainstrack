@@ -8,7 +8,9 @@ case class Transaction (
                          postings: Seq[Posting],
                          /** System time */
                          enterDate: ZonedDateTime,
-                         origin:AccountCommand
+                         origin:AccountCommand,
+                         /** System order */
+                         id: Int
 
                        ) extends BeancountCommand {
   require(postings.length>=2, "A transaction must have at least 2 postings")
@@ -49,14 +51,18 @@ case class Transaction (
     BeancountLines(header +: postings, origin)
   }
 
+  def withId(newId:Int):Transaction = {
+    this.copy(id=newId)
+  }
+
   override def toString: String = toBeancount.map(_.value).mkString("\n")
 }
 
 object Transaction {
   def apply(postDate:LocalDate, description:String, postings:Seq[Posting], origin:AccountCommand) : Transaction = {
-    apply(postDate, description, postings, now(), origin)
+    apply(postDate, description, postings, now(), origin, 0)
   }
   def apply(postDateStr:String, description:String, postings:Seq[Posting], origin:AccountCommand) : Transaction = {
-    apply(parseDate(postDateStr), description, postings, now(), origin)
+    apply(parseDate(postDateStr), description, postings, now(), origin, 0)
   }
 }

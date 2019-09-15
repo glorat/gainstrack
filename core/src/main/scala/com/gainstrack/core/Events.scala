@@ -25,6 +25,7 @@ trait AccountCommand extends Command with DomainEvent with Ordered[AccountComman
   def usesSubAccountOf(parentId: AccountId) : Boolean = involvedAccounts.find(a => a.isSubAccountOf(parentId)).isDefined
 
   override def compare(that: AccountCommand): Int = {
+    // FIXME: Order BalanceAdjustment commands after other commands
     this.toOrderValue.compare(that.toOrderValue)
   }
 
