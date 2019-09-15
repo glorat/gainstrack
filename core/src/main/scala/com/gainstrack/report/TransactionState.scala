@@ -5,7 +5,7 @@ import com.gainstrack.core._
 import net.glorat.cqrs.{AggregateRootState, DomainEvent}
 
 
-case class TransactionState(accounts:Set[AccountCreation], balanceState:BalanceState, cmds:Seq[BeancountCommand])
+case class TransactionState(accounts:Set[AccountCreation], balanceState:BalanceState, cmds:Seq[BeancountCommand], lastId:Int=0)
   extends AggregateRootState {
 
   def handle(e: DomainEvent): TransactionState = {
@@ -29,28 +29,53 @@ case class TransactionState(accounts:Set[AccountCreation], balanceState:BalanceS
   }
 
   private def process(e:Transfer):TransactionState = {
-    copy(cmds = cmds :+ e.toTransaction)
+    this.withNewCmds(Seq(e.toTransaction))
   }
 
   private def process(e:SecurityPurchase): TransactionState = {
-
-    var ret = this
     var newLines : Seq[String] = Seq()
     val baseAcct = accounts.find(x => x.name == e.accountId).getOrElse(throw new IllegalStateException(s"${e.accountId} is not an open account"))
 
-    ret = ret.copy(cmds = cmds :+ e.toTransaction )
-    ret
+    this.withNewCmds(Seq(e.toTransaction))
   }
 
   private def process(e:UnitTrustBalance):TransactionState = {
     val baseAcct = accounts.find(x => x.name == e.accountId).getOrElse(throw new IllegalStateException(s"${e.accountId} is not an open account"))
     // FIXME: Wrong account
     val oldBalance = balanceState.getBalance(e.securityAccountId, e.date.minusDays(1)).getOrElse(zeroFraction)
-    copy(cmds = cmds :+ e.toBeancountCommand(Balance(oldBalance, e.security.ccy)))
+    this.withNewCmds(Seq(e.toBeancountCommand(Balance(oldBalance, e.security.ccy))))
   }
 
   private def process(e:BalanceAdjustment):TransactionState = {
     val oldBalance = balanceState.getBalance(e.accountId, e.date.minusDays(1)).get
-    copy(cmds = cmds ++ e.toBeancounts(oldBalance))
+    this.withNewCmds(e.toBeancounts(oldBalance))
+  }
+
+  private def withNewCmds(newCmds:Seq[BeancountCommand]) : TransactionState = {
+    var accId = lastId
+    val adjCmds:Seq[BeancountCommand] = newCmds.map(_ match {
+      case tx:Transaction => {
+        accId+=1
+        tx.withId(accId)
+      }
+      case x:BeancountCommand => x
+    })
+    copy(cmds = cmds ++ adjCmds, lastId=accId)
+  }
+
+  def allTransactions : Seq[Transaction] = {
+    cmds.filter(_.isInstanceOf[Transaction]).asInstanceOf[Seq[Transaction]]
+  }
+
+  def postingsForAccount(acctId:AccountId) = {
+    allTransactions.flatMap(_.filledPostings.filter(_.account == acctId))
+  }
+
+  def txsForAccount(acctId:AccountId) : Seq[Transaction] = {
+    allTransactions.filter(_.filledPostings.exists(_.account == acctId))
+  }
+
+  def txsUnderAccount(acctId:AccountId) : Seq[Transaction] = {
+    allTransactions.filter(_.filledPostings.exists(_.account.isSubAccountOf(acctId)))
   }
 }

@@ -15,7 +15,7 @@ class TreeTable(acctState:AccountState, priceState:PriceState, date:LocalDate, b
 
   def account_name(account_name: AccountId, last_segment: Boolean = false) = {
 
-    <a href={url_for("account", Map("name" -> account_name.toString))} class="account">
+    <a href={url_for(s"/gainstrack/gt_account/${account_name.toString}", Seq())} class="account">
       {if (last_segment) account_name.shortName else account_name}
     </a>
   }

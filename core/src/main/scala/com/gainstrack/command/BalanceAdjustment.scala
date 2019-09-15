@@ -19,11 +19,12 @@ case class BalanceAdjustment(
     val parts:Seq[String] = accountId.split(":").updated(0,"Equity").toSeq
     parts.mkString(":")
   }*/
+  /*
   def toBeancounts : Seq[String] = {
     val l1 = s"${date.minusDays(1)} pad ${accountId} ${adjAccount}"
     val l2 = s"${date} balance ${accountId} ${balance}"
     Seq(l1,l2)
-  }
+  }*/
 
   // With old balance value, avoid using pad
   def toBeancounts(oldValue:Fraction) : Seq[BeancountCommand] = {

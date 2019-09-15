@@ -3,22 +3,35 @@ package com.gainstrack.report
 import com.gainstrack.command.AccountCreation
 import com.gainstrack.core._
 
-class BalanceReport(cmds:Seq[BeancountCommand], startDate:LocalDate=MinDate, endDate:LocalDate=MaxDate) {
+/**
+  * Generates a projection of the balance of all accounts given a date
+  * @param cmds
+  * @param startDate
+  * @param endDate
+  */
+class BalanceReport(cmds:Seq[BeancountCommand], criteria:Transaction=>Boolean) {
   private var state = BalanceReportState()
   def getState:BalanceReportState = state
 
   cmds.foreach(cmd => {
     cmd match {
-      case tx:Transaction => {
-        if ( (tx.postDate.isAfter(startDate) || tx.postDate.isEqual(startDate))
-        && (tx.postDate.isBefore(endDate))
-        ) {
-          state = state.processTx(tx)
-        }
+      case tx:Transaction if criteria(tx) => {
+        state = state.processTx(tx)
       }
       case _ => state
     }
   })
+}
+
+object BalanceReport {
+  def apply(cmds:Seq[BeancountCommand], startDate:LocalDate=MinDate, endDate:LocalDate=MaxDate) : BalanceReport = {
+    val criteria:Transaction=>Boolean = tx =>  (tx.postDate.isAfter(startDate) || tx.postDate.isEqual(startDate)) && (tx.postDate.isBefore(endDate))
+    new BalanceReport(cmds, criteria)
+  }
+
+  def apply(cmds:Seq[BeancountCommand]) : BalanceReport = {
+    new BalanceReport(cmds, x => true)
+  }
 }
 
 case class BalanceReportState(balances:Map[AccountId, PositionSet]) {
@@ -38,7 +51,7 @@ case class BalanceReportState(balances:Map[AccountId, PositionSet]) {
     val converted:PositionSet = acctState.accountMap.get(accountId)
       .map(_.key.assetId)
       .map(tgtCcy => { positions.convertTo(tgtCcy, priceState, date)})
-      .map(res => {println (s"${accountId} has ${res}"); res})
+      //.map(res => {println (s"${accountId} has ${res}"); res})
       .getOrElse(positions)
     converted
   }
