@@ -11,8 +11,8 @@ case class TransactionState(accounts:Set[AccountCreation], balanceState:BalanceS
   def handle(e: DomainEvent): TransactionState = {
     e match {
       case e:AccountCreation => process(e)
-      case e:Transfer => process(e)
-      case e:CommandWithAccounts[_] => e.toTransfers.foldLeft(this)(_.process(_))
+      case e:Transfer => process(e,e)
+      case e:CommandWithAccounts[_] => e.toTransfers.foldLeft(this)(_.process(_, e.underlying))
       case e:SecurityPurchase =>  process(e)
       case e:BalanceAdjustment => process(e)
       case e:PriceObservation => process(e)
@@ -28,8 +28,8 @@ case class TransactionState(accounts:Set[AccountCreation], balanceState:BalanceS
     this
   }
 
-  private def process(e:Transfer):TransactionState = {
-    this.withNewCmds(Seq(e.toTransaction))
+  private def process(e:Transfer, origin:AccountCommand):TransactionState = {
+    this.withNewCmds(Seq(e.toTransaction.copy(origin=origin)))
   }
 
   private def process(e:SecurityPurchase): TransactionState = {
