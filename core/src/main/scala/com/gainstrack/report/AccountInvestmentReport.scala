@@ -8,16 +8,6 @@ class AccountInvestmentReport(accountId: AccountId, ccy:AssetId, fromDate:LocalD
   val cmds = txState.cmds.filter(cmd => cmd.origin.date.isAfter(fromDate) && cmd.origin.date.isBefore(queryDate) )
   val inflows = new InflowCalculator(cmds).calcInflows(accountId)
 
-  // Include Income/Expenses relating to the asset
-  //val income = new InflowCalculator(txState).calcInflows(accountId.replace("Asset:","Income:"))
-  // Where can that income go? Assume to bank accounts etc. for now?
-  // TODO: Be careful about income (e.g dividends) that go straight back to investment! (i.e. self asset)
-  val income : Seq[Cashflow] = account.options.incomeAccount.map(incomeAccountId => {
-    val incomeFlow = new InflowCalculator(cmds)
-      .calcInflows(incomeAccountId)
-    incomeFlow
-  }).getOrElse(Seq())
-
   // Take just the final equity balance as positive
   val allAccounts = acctState.accounts.filter(a => a.accountId.isSubAccountOf(accountId))
   val initBalance = Balance(zeroFraction, ccy)
@@ -38,7 +28,7 @@ class AccountInvestmentReport(accountId: AccountId, ccy:AssetId, fromDate:LocalD
     total + b * fx
   })
 
-  val cashflows = (Cashflow(fromDate, startBalance) +: inflows) ++ income :+ Cashflow(queryDate, endBalance)
+  val cashflows = (Cashflow(fromDate, startBalance, accountId) +: inflows) :+ Cashflow(queryDate, endBalance, accountId)
   val cashflowTable = CashflowTable(cashflows)
 
 }

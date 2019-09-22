@@ -9,6 +9,7 @@
         <th data-sort="string">account</th>
         <th data-sort="num">date</th>
         <th data-sort="num">value</th>
+        <th data-sort="string">source</th>
     </tr>
 </thead>
 <tbody>
@@ -17,6 +18,7 @@
             <td><a href="<%= urlFor("gainstrack/account", Seq()) %>/<%= escape(detail.account.accountId) %>">${detail.account.accountId}</a></td>
             <td class="num" data-sort-value="${cf.date.toEpochDay}">${cf.date}</td>
             <td class="num" data-sort-value="${cf.value.value}">${cf.value }</td>
+            <td class="string">${cf.source}</td>
         </tr>
     #end
 </tbody>
