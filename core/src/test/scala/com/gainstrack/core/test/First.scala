@@ -190,7 +190,7 @@ class First extends FlatSpec {
     assert(accountReport.endBalance == Balance.parse("348045.34 GBP"))
 
     // Note how this excludes the internal income transaction
-    assert(accountReport.inflows == Seq(Cashflow("2013-06-30", "-265000.0 GBP")))
+    assert(accountReport.inflows == Seq(Cashflow("2013-06-30", "-265000.0 GBP", AccountId("Equity:Opening:GBP"))))
 
     // Do a an NPV=0 solve to find irr
     val irr = accountReport.cashflowTable.irr
