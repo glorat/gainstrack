@@ -82,7 +82,7 @@ class  MainController (implicit val ec :ExecutionContext) extends ScalatraServle
     //ssp("/foo")
   }
 
-  get ("/gainstrack/balances/") {
+  get ("/gainstrack/gt_balance_sheet/") {
     val bg = sessionOption.map(_("gainstrack")).getOrElse(bgDefault).asInstanceOf[GainstrackGenerator]
 
     val balanceReport = BalanceReport(bg.txState.cmds)
@@ -95,7 +95,7 @@ class  MainController (implicit val ec :ExecutionContext) extends ScalatraServle
     val treeTable = new TreeTable(bg.acctState, priceState, toDate, balanceReport, urlFor)
 
     layoutTemplate("/WEB-INF/views/balance.ssp",
-      "short_title"->"Balances",
+      "short_title"->"Balance Sheet",
       "urlFor" -> urlFor,
       "treeTable" -> treeTable
     )
