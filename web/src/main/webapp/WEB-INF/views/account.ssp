@@ -6,21 +6,23 @@
 <%@ val accountId: AccountId %>
 <%@ val urlFor: controllers.MainController.UrlFn %>
 <%@ val balanceFor: controllers.AccountController.BalanceFor %>
+<%@ val deltaFor: controllers.AccountController.BalanceFor %>
+
+<h3><a href="<%= urlFor("/gainstrack/command/get/", Seq()) %>/<%= escape(accountId) %>">${accountId}</a></h3>
 
 <table class="queryresults sortable">
 <thead>
     <tr>
-        <th data-sort="string">account</th>
-        <th data-sort="string">date</th>
-        <th data-sort="string">type</th>
-        <th data-sort="string">description</th>
-        <th data-sort="number">balance</th>
+        <th data-sort="string">Date</th>
+        <th data-sort="string">Type</th>
+        <th data-sort="string">Description</th>
+        <th data-sort="number">Change</th>
+        <th data-sort="number">Balance</th>
     </tr>
 </thead>
 <tbody>
     #for (cmd <- data)
         <tr>
-            <td><a href="<%= urlFor("/gainstrack/command/get/", Seq()) %>/<%= escape(accountId) %>">${accountId}</a></td>
             <td>${cmd.date}</td>
             #match (cmd)
             #case (bal:BalanceAdjustment)
@@ -35,7 +37,8 @@
                 <td>${cmd.getClass.getSimpleName}</td>
             #end
             <td>${cmd.description}</td>
-            <td>${balanceFor(cmd)}</td>
+            <td class="num">${deltaFor(cmd)}</td>
+            <td class="num">${balanceFor(cmd)}</td>
         </tr>
     #end
 </tbody>
