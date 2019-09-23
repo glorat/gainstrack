@@ -24,34 +24,42 @@ class AccountController (implicit val ec :ExecutionContext) extends ScalatraServ
 
 
     //bg.acctState.accountMap.get(accountId).map(account => {
-      val txs = bg.txState.txsUnderAccount(accountId)
-      val commands = txs.map(_.origin).toSet.toSeq.sorted
+    val txs = bg.txState.txsUnderAccount(accountId)
+
+    // In reverse chrono order
+    val commands = txs.map(_.origin).toSet.toSeq.sorted.reverse
 
 
 
-      //val balanceFor: LocalDate => Option[Fraction] = bg.balanceState.getBalance(accountId, _)
-      //val balanceFor: LocalDate => PositionSet = balanceReport.getState.convertedPosition(accountId, bg.acctState, bg.priceState, _)
-      val balanceFor : AccountCommand => PositionSet = {cmd =>
+    val balanceFor : AccountCommand => PositionSet = {cmd =>
 
-        val mytxs = txs.takeWhile(_.origin != cmd) ++ txs.filter(_.origin == cmd)
-/*
- For units report...
+      val mytxs = txs.takeWhile(_.origin != cmd) ++ txs.filter(_.origin == cmd)
+      /*
+       For units report...
 
-        val mypostings = mytxs.flatMap(_.filledPostings).filter(_.account.isSubAccountOf(accountId))
-        val balance = mypostings.foldLeft(PositionSet())(_ + _.value.get)
-        balance*/
-        val balanceReport = BalanceReport(mytxs)
-        balanceReport.getState.convertedPosition(accountId, bg.acctState, bg.priceState, cmd.date)
-      }
+              val mypostings = mytxs.flatMap(_.filledPostings).filter(_.account.isSubAccountOf(accountId))
+              val balance = mypostings.foldLeft(PositionSet())(_ + _.value.get)
+              balance*/
+      val balanceReport = BalanceReport(mytxs)
+      balanceReport.getState.convertedPosition(accountId, bg.acctState, bg.priceState, cmd.date)
+    }
 
-      contentType="text/html"
+    val deltaFor : AccountCommand => PositionSet = {cmd =>
+      val mytxs = txs.filter(_.origin == cmd)
+      val balanceReport = BalanceReport(mytxs)
+      balanceReport.getState.convertedPosition(accountId, bg.acctState, bg.priceState, cmd.date)
+    }
+
+
+    contentType="text/html"
 
       layoutTemplate("/WEB-INF/views/account.ssp",
         "short_title"->"Account",
         "accountId" -> accountId,
         "data"-> commands,
         "urlFor" -> urlFor,
-        "balanceFor" -> balanceFor
+        "balanceFor" -> balanceFor,
+        "deltaFor" -> deltaFor
       )
     //}).getOrElse(NotFound(s"${accountId} account not found"))
   }
