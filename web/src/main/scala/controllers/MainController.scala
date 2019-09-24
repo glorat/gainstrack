@@ -101,6 +101,25 @@ class  MainController (implicit val ec :ExecutionContext) extends ScalatraServle
     )
   }
 
+  get ("/gainstrack/gt_income_statement/") {
+    val bg = sessionOption.map(_("gainstrack")).getOrElse(bgDefault).asInstanceOf[GainstrackGenerator]
+
+    val balanceReport = BalanceReport(bg.txState.cmds)
+    var toDate = LocalDate.now
+
+    val state = balanceReport.getState
+    val acctState = bg.acctState.withInterpolatedAccounts
+    val priceState = bg.priceState
+
+    val treeTable = new TreeTable(bg.acctState, priceState, toDate, balanceReport, urlFor)
+
+    layoutTemplate("/WEB-INF/views/income.ssp",
+      "short_title"->"Income Statement",
+      "urlFor" -> urlFor,
+      "treeTable" -> treeTable
+    )
+  }
+
   get ("/gainstrack/gt_prices/") {
    val bg = sessionOption.map(_("gainstrack")).getOrElse(bgDefault).asInstanceOf[GainstrackGenerator]
 
