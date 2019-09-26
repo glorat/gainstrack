@@ -51,9 +51,9 @@ case class SecurityPurchase(
     Transaction(date, description, postings, this )
   }
 
-  override def toGainstrack: String = {
+  override def toGainstrack: Seq[String] = {
     val baseStr = s"${date} trade ${accountId.toGainstrack} ${security} @${price}"
-    baseStr + (if (commission==zeroFraction) "" else s" C${commission}")
+    Seq(baseStr + (if (commission.value==zeroFraction) "" else s" C${commission}"))
   }
 }
 

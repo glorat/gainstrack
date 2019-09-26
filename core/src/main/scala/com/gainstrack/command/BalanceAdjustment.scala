@@ -35,14 +35,15 @@ case class BalanceAdjustment(
     else {
       val unitIncrease : Posting = Posting(accountId, newUnits )
       val income:Posting = Posting(adjAccount, -newUnits)
+      // Apply padding the day before since the balance assertion happens in the morning of the declared day
       val tx = Transaction(date.minusDays(1), s"Adjustment: ${oldValue.toDouble} -> ${balance}", Seq(unitIncrease, income), this)
       val balcmd = BalanceAssertion(date, accountId, balance, this)
       Seq[BeancountCommand](tx, balcmd)
     }
   }
 
-  def toGainstrack : String = {
-    s"${date} adj ${accountId.toGainstrack} ${balance} ${adjAccount.toGainstrack}"
+  def toGainstrack : Seq[String] = {
+    Seq(s"${date} adj ${accountId.toGainstrack} ${balance} ${adjAccount.toGainstrack}")
   }
 }
 

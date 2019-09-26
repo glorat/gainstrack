@@ -51,9 +51,9 @@ case class Transfer(
     ), this)
   }
 
-  override def toGainstrack: String = {
+  override def toGainstrack: Seq[String] = {
     val baseStr = s"${date} tfr ${source.toGainstrack} ${dest.toGainstrack} ${sourceValue}"
-    baseStr + (if(sourceValue==targetValue) "" else s" ${targetValue}")
+    Seq(baseStr + (if(sourceValue==targetValue) "" else s" ${targetValue}"))
   }
 }
 

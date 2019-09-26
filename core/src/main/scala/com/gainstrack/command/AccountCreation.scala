@@ -15,19 +15,19 @@ case class AccountOptions (
                           placeholder:Boolean = false
                           ) {
   private def boolStr(name:String, value:Boolean) = {
-    if (value) s"${name}:true\n" else ""
+    if (value) Seq(s"${name}:true") else Seq()
   }
   private def acctStr(name:String, value:Option[AccountId]) = {
-    value.map(x => s"  ${name}: ${x.toGainstrack}\n").getOrElse("")
+    value.map(x => Seq(s"  ${name}: ${x.toGainstrack}")).getOrElse(Seq())
   }
-  def toGainstrack:String = {
-    acctStr("expenseAccount", expenseAccount) +
-      boolStr("tradingAccount", tradingAccount) +
-      acctStr("incomeAccount", incomeAccount) +
-      acctStr("fundingAccount", fundingAccount) +
-      boolStr("multiAsset", multiAsset) +
-      boolStr("automaticReinvestment", automaticReinvestment) +
-      boolStr("hidden", hidden) +
+  def toGainstrack:Seq[String] = {
+    acctStr("expenseAccount", expenseAccount) ++
+      boolStr("tradingAccount", tradingAccount) ++
+      acctStr("incomeAccount", incomeAccount) ++
+      acctStr("fundingAccount", fundingAccount) ++
+      boolStr("multiAsset", multiAsset) ++
+      boolStr("automaticReinvestment", automaticReinvestment) ++
+      boolStr("hidden", hidden) ++
       boolStr("placeholder", placeholder)
     }
 }
@@ -65,8 +65,8 @@ case class AccountCreation (
     }
   }
 
-  def toGainstrack : String = {
-    s"\n${date} open ${key.name} ${key.assetId.symbol}\n" + options.toGainstrack
+  def toGainstrack : Seq[String] = {
+    s"${date} open ${key.name} ${key.assetId.symbol}" +: options.toGainstrack
   }
 
   private def stringToBool(valueStr:String):Boolean = valueStr!="false"

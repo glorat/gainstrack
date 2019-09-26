@@ -2,6 +2,7 @@ package com.gainstrack.core
 
 import java.math.RoundingMode
 
+import com.gainstrack.command.BalanceAdjustment
 import net.glorat.cqrs.{Command, DomainEvent}
 import spire.math.{Rational, SafeLong}
 
@@ -13,7 +14,7 @@ trait AccountCommand extends Command with DomainEvent with Ordered[AccountComman
   // Mandatory fields
   def date : LocalDate
   def description: String
-  def toGainstrack: String
+  def toGainstrack: Seq[String]
 
   // Required for filtering
   def mainAccount : Option[AccountId]
@@ -25,12 +26,13 @@ trait AccountCommand extends Command with DomainEvent with Ordered[AccountComman
   def usesSubAccountOf(parentId: AccountId) : Boolean = involvedAccounts.find(a => a.isSubAccountOf(parentId)).isDefined
 
   override def compare(that: AccountCommand): Int = {
-    // FIXME: Order BalanceAdjustment commands after other commands
     this.toOrderValue.compare(that.toOrderValue)
   }
 
   def toOrderValue:Long = {
-    date.toEpochDay
+    // Balance assertions come first because beancount assertion counts in the morning of the day
+    val classValue = if (this.isInstanceOf[BalanceAdjustment]) 0 else 1
+    (date.toEpochDay*10) + classValue
   }
 
   def withOption(key:String, valueStr:String):AccountCommand = {

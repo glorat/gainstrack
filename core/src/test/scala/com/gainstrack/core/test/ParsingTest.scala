@@ -8,5 +8,6 @@ class ParsingTest extends FlatSpec {
     val str = "2010-01-01 trade Assets:Broker 10 IVV @12.3 USD"
     val trade = SecurityPurchase(str)
     //val txs = trade.toTransaction
+    assert(SecurityPurchase(trade.toGainstrack.head) == trade)
   }
 }

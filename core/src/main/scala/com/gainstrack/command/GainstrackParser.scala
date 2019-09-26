@@ -27,7 +27,7 @@ class GainstrackParser {
   private val Metadata = s"\\s*([a-z][A-Za-z0-9_-]+):\\s*(.*)".r
 
 
-  private def tryParseLine(line:String) : Option[AccountCommand] = {
+  private def tryParseLine(line:String) : Unit = {
     lineCount += 1
 
     line match {
@@ -46,7 +46,7 @@ class GainstrackParser {
     }
   }
 
-  def parseLine(line:String) : Option[AccountCommand] = {
+  def parseLine(line:String) : Unit = {
     try {
       tryParseLine(line)
     }

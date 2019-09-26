@@ -14,6 +14,19 @@ class Real extends FlatSpec {
 
   lazy val priceState : PriceState = bg.priceState
 
+  "parser" should "roundtrip" in {
+    val cmds = parser.getCommands
+    cmds.foreach(cmd => {
+      val p = new GainstrackParser
+      val strs = cmd.toGainstrack
+      strs.foreach(p.parseLine(_))
+
+      assert(p.getCommands.length == 1)
+      assert(cmd == p.getCommands.head)
+
+    })
+  }
+
   "Real case" should "generate beancount" in {
     bg.writeBeancountFile(s"/tmp/${realFile}.beancount")
   }
