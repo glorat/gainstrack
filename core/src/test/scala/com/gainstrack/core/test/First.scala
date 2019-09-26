@@ -98,8 +98,13 @@ class First extends FlatSpec {
 
   val accountMap = bg.acctState.accountMap
 
-  it should "generate beancount" in {
+  it should "generate beancount file" in {
     bg.writeBeancountFile("/tmp/gainstrack.beancount")
+  }
+
+  it should "generate sane beancount string" in {
+    val str = bg.toGainstrack
+    assert (str.startsWith("2019-01-01 price GBP 1.2752 USD\n2010-01-01 open Income:Salary:CNY CNY\n  fundingAccount: Assets:HSBCCN"))
   }
 
   it should "pass bean-check" in {
