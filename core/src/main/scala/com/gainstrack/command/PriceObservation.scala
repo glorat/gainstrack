@@ -14,8 +14,8 @@ case class PriceObservation(date:LocalDate, assetId: AssetId, price:Balance)
      BeancountLines(s"${date} price ${assetId.symbol} ${price}", origin)
   }
 
-  override def toGainstrack: String = {
-    toBeancount.map(_.value).mkString("\n")
+  override def toGainstrack: Seq[String] = {
+    toBeancount.map(_.value)
   }
 }
 

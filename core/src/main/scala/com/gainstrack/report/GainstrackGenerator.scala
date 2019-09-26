@@ -36,7 +36,7 @@ case class GainstrackGenerator(originalCommands:Seq[AccountCommand])  {
 
     def description: String = "System generated"
 
-    def toGainstrack: String = ""
+    def toGainstrack: Seq[String] = Seq("")
 
     def mainAccount: Option[AccountId] = None
 
@@ -98,7 +98,9 @@ case class GainstrackGenerator(originalCommands:Seq[AccountCommand])  {
   }
 
   def toGainstrack: String = {
-    val str = originalCommands.groupBy(_.mainAccount).values.map(_.map(_.toGainstrack).mkString("\n")).mkString("\n")
+    val grp = originalCommands.groupBy(_.mainAccount)
+    val accids = grp.keys.toSeq.sorted
+    val str = accids.map(grp(_).flatMap(_.toGainstrack).mkString("\n")).mkString("\n")
     str
   }
 }

@@ -2,7 +2,7 @@ package com.gainstrack.core.test
 
 import java.time.LocalDate
 
-import com.gainstrack.command.{BalanceAdjustment, GainstrackParser, Transfer}
+import com.gainstrack.command.{AccountCreation, BalanceAdjustment, GainstrackParser, Transfer}
 import com.gainstrack.core._
 import com.gainstrack.report._
 import org.scalatest.FlatSpec
@@ -18,6 +18,28 @@ class First extends FlatSpec {
   val today = parseDate("2019-12-31")
 
   val tx = Transfer.parse("2019-01-02 tfr Assets:HSBCHK Assets:Investment:HSBC:USD 40000 HKD 5084.91 USD")
+
+  "parser" should "roundtrip" in {
+    cmds.foreach(cmd => {
+      val p = new GainstrackParser
+      val strs = cmd.toGainstrack
+      strs.foreach(p.parseLine(_))
+
+      assert(p.getCommands.length == 1)
+      assert(cmd == p.getCommands.head)
+
+    })
+  }
+
+  "it" should "roundtrip multiline account opening" in {
+    val lines = Seq("2010-01-01 open Income:Salary:CNY CNY", "  fundingAccount: Assets:HSBCCN")
+    val p = new GainstrackParser
+    lines.foreach(p.parseLine(_))
+    assert(p.getCommands.length == 1)
+    val cmd = p.getCommands.head.asInstanceOf[AccountCreation]
+    assert(cmd.options.fundingAccount == Some(AccountId("Assets:HSBCCN")))
+    assert(cmd.toGainstrack == lines)
+  }
 
   "transfer" should "calc fx rate" in {
     val fx = tx.fxRate

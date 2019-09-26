@@ -71,8 +71,8 @@ case class UnitTrustBalance(
     Seq(cashAcct, incomeAcct, expenseAcct)
   }
 
-  def toGainstrack : String = {
-    s"${date} unit ${accountId.toGainstrack} ${security} @${price}"
+  def toGainstrack : Seq[String] = {
+    Seq(s"${date} unit ${accountId.toGainstrack} ${security} @${price}")
   }
 }
 object UnitTrustBalance extends CommandParser {

@@ -135,7 +135,7 @@ class TransactionBalanceTest extends FlatSpec {
 
     it should "generate original command strings" in {
 
-      val strs = cmds.map(_.toGainstrack).mkString("\n")
+      val strs = cmds.flatMap(_.toGainstrack).mkString("\n")
 
       val secondParser = new GainstrackParser
 

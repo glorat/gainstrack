@@ -24,12 +24,12 @@ case class EarnCommand(date:LocalDate, incomeTag:String, value:Balance, targetAc
     Seq(Transfer(incomeAccountId, targetFundingAccountId, date, value, value, description))
   }
 
-  def toGainstrack: String = {
+  def toGainstrack: Seq[String] = {
     if (targetAccountIdOpt.isDefined) {
-      s"${date} earn ${incomeTag} ${targetAccountIdOpt.get.toGainstrack} ${value}"
+      Seq(s"${date} earn ${incomeTag} ${targetAccountIdOpt.get.toGainstrack} ${value}")
     }
     else {
-      s"${date} earn ${incomeTag} ${value}"
+      Seq(s"${date} earn ${incomeTag} ${value}")
     }
   }
 }
