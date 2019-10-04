@@ -42,7 +42,7 @@ case class AccountId(n:String) extends Ordered[AccountId] {
     AccountId(name + s":$subAccount")
   }
 
-  def compare(that: AccountId): Int = that.name.compareTo(name)
+  def compare(that: AccountId): Int = name.compareTo(that.name)
 
   def toGainstrack:String = name
 
