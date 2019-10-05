@@ -191,10 +191,10 @@ class First extends FlatSpec {
   it should "infer prices from transfers" in {
     assert(priceState.prices.size == 32)
 
-    assert(priceState.prices(AssetTuple(AssetId("USD"),AssetId("HKD")))
+    assert(priceState.prices(AssetPair(AssetId("USD"),AssetId("HKD")))
       == Map(parseDate("2019-01-02")-> 7.866412581540283))
 
-    assert(priceState.prices(AssetTuple(AssetId("VTI"),AssetId("USD"))) == Map(
+    assert(priceState.prices(AssetPair(AssetId("VTI"),AssetId("USD"))) == Map(
       parseDate("2019-01-02") ->127.63,
       parseDate("2019-03-15") -> 144.62,
       parseDate("2019-03-26") -> 143.83)
@@ -202,7 +202,7 @@ class First extends FlatSpec {
   }
 
   it should "provide interpolated prices" in {
-    val fx = priceState.getFX(AssetTuple("VTI","USD"), parseDate("2019-02-01"))
+    val fx = priceState.getFX(AssetPair("VTI","USD"), parseDate("2019-02-01"))
     // Interp between 127 and 144
     assert(fx.get ==  161651.0/1200.0) //134.709166666
   }

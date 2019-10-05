@@ -6,13 +6,26 @@ import net.glorat.cqrs.{AggregateRootState, DomainEvent}
 import spire.math.SafeLong
 
 import scala.collection.SortedMap
+import scala.math.BigDecimal.RoundingMode
 
-case class PriceState(prices:Map[AssetTuple, SortedMap[LocalDate, Fraction]]) extends AggregateRootState {
+
+
+case class PriceState(prices:Map[AssetPair, SortedMap[LocalDate, Fraction]]) extends AggregateRootState {
   private val implicitPrices = true
 
   private val interp = TimeSeriesInterpolator.from(SortedMap[LocalDate, Fraction]())
 
-  def getFX(tuple:AssetTuple, date:LocalDate, maxDenom:Long=1000000):Option[Fraction] = {
+  def toDTO = {
+    val keys = prices.keys.toSeq.sortBy(_.str)
+    keys.map(key => TimeSeries(
+      key.str,
+      keys.map(_ => key.fx2), // All same unit
+      prices(key).keys.map(_.toString).toSeq,
+      prices(key).values.map(_.toDouble.formatted("%.2f")).toSeq
+    ))
+  }
+
+  def getFX(tuple:AssetPair, date:LocalDate, maxDenom:Long=1000000):Option[Fraction] = {
     if (tuple.fx1 == tuple.fx2) {
       Some(1)
     }
@@ -49,8 +62,8 @@ case class PriceState(prices:Map[AssetTuple, SortedMap[LocalDate, Fraction]]) ex
 
   private def withNewPrice(date:LocalDate, price:Balance, tgt:AssetId) : PriceState = {
     require(tgt != price.ccy)
-    val fx1 = AssetTuple(tgt,price.ccy)
-    val fx2 = AssetTuple(price.ccy, tgt)
+    val fx1 = AssetPair(tgt,price.ccy)
+    val fx2 = AssetPair(price.ccy, tgt)
     val newByDate = prices.getOrElse(fx1,SortedMap()).updated(date, price.value)
     val new2ByDate = prices.getOrElse(fx2, SortedMap()).updated(date, 1/price.value)
     copy(prices = prices.updated(fx1, newByDate).updated(fx2, new2ByDate))
@@ -71,7 +84,15 @@ object PriceState {
   def apply() : PriceState = PriceState(Map())
 }
 
-case class AssetTuple(fx1:AssetId, fx2:AssetId)
-object AssetTuple {
-  def apply(fx1:String, fx2:String):AssetTuple = AssetTuple(AssetId(fx1),AssetId(fx2))
+case class AssetPair(str: String) {
+  def fx1 = {
+    str.split("/")(0)
+  }
+  def fx2:String = {
+    str.split("/")(1)
+  }
+}
+object AssetPair {
+  def apply(fx1:String, fx2:String):AssetPair = AssetPair(AssetId(fx1), AssetId(fx2))
+  def apply(fx1:AssetId, fx2: AssetId):AssetPair = AssetPair(fx1.symbol + "/" + fx2.symbol)
 }

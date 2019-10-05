@@ -101,6 +101,7 @@ class  MainController (implicit val ec :ExecutionContext) extends ScalatraServle
     )
   }
 
+
   get ("/gainstrack/gt_income_statement/") {
     val bg = sessionOption.map(_("gainstrack")).getOrElse(bgDefault).asInstanceOf[GainstrackGenerator]
 

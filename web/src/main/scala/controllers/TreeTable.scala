@@ -7,6 +7,28 @@ import controllers.MainController.UrlFn
 
 import scala.xml.Elem
 
+case class TreeTableDTO(name:String, shortName:String, children: Seq[TreeTableNodeDTO], assetBalance:Seq[String])
+case class TreeTableNodeDTO(name:String, shortName:String, children:Seq[TreeTableNodeDTO], assetBalance:Seq[String])
+
+class BalanceTreeTable(acctState:AccountState, priceState:PriceState, date:LocalDate, balanceReport:BalanceReport) {
+  val allAcctState = acctState.withInterpolatedAccounts
+
+
+  def toTreeTable(acctId: AccountId):TreeTableDTO = {
+    val balance = balanceReport.getState.convertedPosition(acctId, acctState, priceState, date)
+
+    // TODO: Sort the sequence alphabetically
+    TreeTableDTO(acctId.toString, acctId.shortName, allAcctState.childrenOf(acctId).toSeq.map(acct => toTreeTableNode(acct.accountId)), balance.assetBalance.map(e=>s"${e._2.toDouble.formatted("%.2f")} ${e._1.symbol}").toSeq)
+  }
+
+  def toTreeTableNode(acctId: AccountId): TreeTableNodeDTO = {
+    val balance = balanceReport.getState.convertedPosition(acctId, acctState, priceState, date)
+    // TODO: Sort the sequence alphabetically
+    TreeTableNodeDTO(acctId.toString, acctId.shortName, allAcctState.childrenOf(acctId).toSeq.map(acct => toTreeTableNode(acct.accountId)), balance.assetBalance.map(e=>s"${e._2.toDouble.formatted("%.2f")} ${e._1.symbol}").toSeq)
+  }
+}
+
+
 class TreeTable(acctState:AccountState, priceState:PriceState, date:LocalDate, balanceReport:BalanceReport, url_for:UrlFn) {
 
   import org.fusesource.scalate.RenderContext.capture
