@@ -3,7 +3,20 @@ package com.gainstrack.report
 import com.gainstrack.command._
 import com.gainstrack.core._
 
-case class IrrSummary(accounts: Map[AccountId, AccountInvestmentReport])
+case class IrrSummary(accounts: Map[AccountId, AccountInvestmentReport]) {
+  def toSummaryDTO = {
+    accounts.keys.toSeq.sorted.map(acctId => {
+      val one = accounts(acctId)
+      IrrSummaryItemDTO(acctId.toString, one.endBalance.toString, one.cashflows.headOption.map(_.date.toString).getOrElse(""),
+        one.cashflows.lastOption.map(_.date.toString).getOrElse(""),
+        one.cashflowTable.irr
+      )
+    })
+  }
+}
+
+case class IrrSummaryItemDTO(accountId: String, balance:String, start:String, end: String, irr:Double)
+
 object IrrSummary {
 
   def apply(commands:Seq[AccountCommand], fromDate:LocalDate, queryDate:LocalDate, acctState: AccountState, balanceState: BalanceState, txState:TransactionState, priceState:PriceState) : IrrSummary = {

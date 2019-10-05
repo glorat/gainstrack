@@ -30,6 +30,15 @@ case class GainstrackGenerator(originalCommands:Seq[AccountCommand])  {
   //      machine.applyChange(cmd)
   //    })
   //    machine
+  def addCommand(cmd:AccountCommand) : GainstrackGenerator = {
+    require(!originalCommands.contains(cmd), "command already exists. Duplicates not allowed")
+    GainstrackGenerator(originalCommands :+ cmd)
+  }
+
+  def removeCommand(cmd:AccountCommand): GainstrackGenerator = {
+    require(originalCommands.contains(cmd), "command being removed doesn't exist")
+    GainstrackGenerator(originalCommands.filterNot(_ == cmd))
+  }
 
   case object GainstrackTemplate extends AccountCommand {
     def date: LocalDate = MinDate
@@ -98,7 +107,7 @@ case class GainstrackGenerator(originalCommands:Seq[AccountCommand])  {
   }
 
   def toGainstrack: String = {
-    val grp = originalCommands.groupBy(_.mainAccount)
+    val grp = originalCommands.groupBy(_.mainAccount.getOrElse(AccountId("")))
     val accids = grp.keys.toSeq.sorted
     val str = accids.map(grp(_).flatMap(_.toGainstrack).mkString("\n")).mkString("\n")
     str

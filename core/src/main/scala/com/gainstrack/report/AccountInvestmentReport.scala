@@ -15,7 +15,7 @@ class AccountInvestmentReport(accountId: AccountId, ccy:AssetId, fromDate:LocalD
   val startBalance: Balance = allAccounts.foldLeft(initBalance)((total, account) => {
     val b = balanceState.getBalance(account.accountId, fromDate).getOrElse(zeroFraction)
     // FX this into parent ccy
-    val fx = priceState.getFX(AssetTuple(account.key.assetId, ccy), fromDate).getOrElse(throw new Exception(s"Missing FX for ${account.key.assetId.symbol}/${ccy.symbol}"))
+    val fx = priceState.getFX(AssetPair(account.key.assetId, ccy), fromDate).getOrElse(throw new Exception(s"Missing FX for ${account.key.assetId.symbol}/${ccy.symbol}"))
     // Make start balance negative as outflow
     // The -0.001 is to workaround some XIRR glitch
     -(total + b * fx)
@@ -24,7 +24,7 @@ class AccountInvestmentReport(accountId: AccountId, ccy:AssetId, fromDate:LocalD
   val endBalance: Balance = allAccounts.foldLeft(initBalance)((total, account) => {
     val b = balanceState.getBalance(account.accountId, queryDate).getOrElse(zeroFraction)
     // FX this into parent ccy
-    val fx = priceState.getFX(AssetTuple(account.key.assetId, ccy), queryDate).getOrElse(throw new Exception(s"Missing FX for ${account.key.assetId.symbol}/${ccy.symbol}"))
+    val fx = priceState.getFX(AssetPair(account.key.assetId, ccy), queryDate).getOrElse(throw new Exception(s"Missing FX for ${account.key.assetId.symbol}/${ccy.symbol}"))
     total + b * fx
   })
 

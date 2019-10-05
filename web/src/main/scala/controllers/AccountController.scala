@@ -50,7 +50,6 @@ class AccountController (implicit val ec :ExecutionContext) extends ScalatraServ
       balanceReport.getState.convertedPosition(accountId, bg.acctState, bg.priceState, cmd.date)
     }
 
-
     contentType="text/html"
 
       layoutTemplate("/WEB-INF/views/account.ssp",

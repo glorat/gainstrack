@@ -95,6 +95,7 @@ object AccountType {
 //import AssetType.AssetType
 
 case class AssetId(symbol: String) {
+  // FIXME: Actually, maybe require it to be ^[A-Z]+$
   require(symbol.toUpperCase == symbol, s"Asset id must be all caps: ${symbol}")
 }
 object AssetId {
