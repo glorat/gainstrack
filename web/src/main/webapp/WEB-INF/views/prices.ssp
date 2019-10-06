@@ -9,7 +9,7 @@
     #if (prices.size > 0)
 
 <div class="left">
-<h3><%= assetTuple.fx1.symbol %>  / <%= assetTuple.fx2.symbol %></h3>
+<h3><%= assetTuple.fx1 %>  / <%= assetTuple.fx2 %></h3>
 <table class="sortable">
     <thead>
         <th data-sort="string" data-sort-default="desc" data-order="asc">Date</th>
@@ -19,7 +19,7 @@
         #for (price <- prices)
         <tr>
             <td><%= price._1%></td>
-            <td class="num"><%= price._2 %> <%= assetTuple.fx2.symbol %></td>
+            <td class="num"><%= price._2 %> <%= assetTuple.fx2 %></td>
         </tr>
         #end
     </tbody>
