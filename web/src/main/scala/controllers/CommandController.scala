@@ -94,13 +94,3 @@ class CommandController (implicit val ec :ExecutionContext) extends ScalatraServ
     )
   }
 }
-
-object LocalDateSerializer extends CustomSerializer[LocalDate](format => ({
-  case JString(str) => LocalDate.parse(str)
-}, {
-  case value: LocalDate  => {
-    val formatter = DateTimeFormatter.ofPattern("YYYY-MM-dd")
-    JString(formatter.format(value))
-  }
-}
-))
