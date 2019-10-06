@@ -2,7 +2,7 @@ package controllers
 
 import java.time.LocalDate
 
-import com.gainstrack.command.GainstrackParser
+import com.gainstrack.command.{AccountCreation, GainstrackParser}
 import com.gainstrack.core.{AccountCommand, AccountId, PositionSet, parseDate}
 import com.gainstrack.report.{AccountInvestmentReport, BalanceReport, GainstrackGenerator, IrrSummary, TimeSeries}
 import org.json4s.{DefaultFormats, Formats, JValue}
@@ -14,7 +14,7 @@ import scala.concurrent.ExecutionContext
 
 
 class ApiController (implicit val ec :ExecutionContext) extends ScalatraServlet with JacksonJsonSupport {
-  protected implicit val jsonFormats: Formats = org.json4s.DefaultFormats + LocalDateSerializer
+  protected implicit val jsonFormats: Formats = org.json4s.DefaultFormats ++ GainstrackJsonSerializers.all
 
   val bgDefault = {
     val parser = new GainstrackParser
@@ -160,6 +160,28 @@ class ApiController (implicit val ec :ExecutionContext) extends ScalatraServlet 
       AccountTxDTO(cmd.date.toString, cmd.getClass.getSimpleName, cmd.description, deltaFor(cmd).toString, balanceFor(cmd).toString)
     })
     AccountTxSummaryDTO(accountId.toString, rows)
+  }
+
+  get ("/command/") {
+    val bg = sessionOption.map(_("gainstrack")).getOrElse(bgDefault).asInstanceOf[GainstrackGenerator]
+
+    val mainAccountIds:Set[AccountId] = bg.finalCommands.flatMap(_.mainAccount).toSet
+    val mainAccounts:Seq[AccountCreation] = bg.acctState.accounts.filter(a => mainAccountIds.contains(a.accountId)).toSeq.sortBy(_.accountId)
+
+    mainAccounts
+  }
+
+  get ("/command/:accountId") {
+
+    val bg = sessionOption.map(_("gainstrack")).getOrElse(bgDefault).asInstanceOf[GainstrackGenerator]
+
+    val accountId = params("accountId")
+    bg.acctState.accountMap.get(accountId).map(account => {
+
+      val commands = bg.originalCommands.filter(cmd => cmd.hasMainAccount(Some(accountId)))
+
+      Map("account" -> account, "commands" -> commands)
+    }).getOrElse(NotFound(s"${accountId} account not found"))
   }
 }
 //case class BalanceSheet(balanceSheet: Map[String,TreeTable])
