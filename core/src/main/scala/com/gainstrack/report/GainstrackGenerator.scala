@@ -32,7 +32,7 @@ case class GainstrackGenerator(originalCommands:Seq[AccountCommand])  {
   //    machine
   def addCommand(cmd:AccountCommand) : GainstrackGenerator = {
     require(!originalCommands.contains(cmd), "command already exists. Duplicates not allowed")
-    GainstrackGenerator(originalCommands :+ cmd)
+    GainstrackGenerator( (originalCommands :+ cmd).sorted)
   }
 
   def removeCommand(cmd:AccountCommand): GainstrackGenerator = {
