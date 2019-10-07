@@ -7,14 +7,14 @@ import com.gainstrack.core._
 import com.gainstrack.report._
 import org.scalatest.FlatSpec
 
+import scala.collection.SortedSet
+
 class First extends FlatSpec {
   val parser = new GainstrackParser
   import scala.io.Source
   Source.fromResource("src.gainstrack").getLines.foreach(parser.parseLine)
 
   val cmds = parser.getCommands
-
-  val orderedCmds = cmds.sorted
   val today = parseDate("2019-12-31")
 
   val tx = Transfer.parse("2019-01-02 tfr Assets:HSBCHK Assets:Investment:HSBC:USD 40000 HKD 5084.91 USD")
@@ -25,7 +25,7 @@ class First extends FlatSpec {
       val strs = cmd.toGainstrack
       strs.foreach(p.parseLine(_))
 
-      assert(p.getCommands.length == 1)
+      assert(p.getCommands.size == 1)
       assert(cmd == p.getCommands.head)
 
     })
@@ -35,7 +35,7 @@ class First extends FlatSpec {
     val lines = Seq("2010-01-01 open Income:Salary:CNY CNY", "  fundingAccount: Assets:HSBCCN")
     val p = new GainstrackParser
     lines.foreach(p.parseLine(_))
-    assert(p.getCommands.length == 1)
+    assert(p.getCommands.size == 1)
     val cmd = p.getCommands.head.asInstanceOf[AccountCreation]
     assert(cmd.options.fundingAccount == Some(AccountId("Assets:HSBCCN")))
     assert(cmd.toGainstrack == lines)
@@ -74,9 +74,7 @@ class First extends FlatSpec {
   }
 
   // First pass for accounts
-  lazy val acctState:AccountState =
-    orderedCmds.foldLeft(AccountState()) ((state, ev) => state.handle(ev))
-
+  lazy val acctState:AccountState = bg.acctState
 
   "cmds" should "process" in {
     acctState
@@ -94,7 +92,7 @@ class First extends FlatSpec {
     assert(newAccounts.size == 18)
   }
 
-  val bg = new GainstrackGenerator(orderedCmds)
+  val bg = GainstrackGenerator(cmds)
 
   val accountMap = bg.acctState.accountMap
 
