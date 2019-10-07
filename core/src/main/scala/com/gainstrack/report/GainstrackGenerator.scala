@@ -33,7 +33,9 @@ case class GainstrackGenerator(originalCommands:SortedSet[AccountCommand])  {
   //    })
   //    machine
   def addCommand(cmd:AccountCommand) : GainstrackGenerator = {
-    require(!originalCommands.contains(cmd), "command already exists. Duplicates not allowed")
+    // Cannot use .contains because that seems to use a ref equals
+    // whereas we want a value object equals
+    require(originalCommands.filter(_ == cmd).size==0, "command already exists. Duplicates not allowed")
     GainstrackGenerator( (originalCommands + cmd))
   }
 
