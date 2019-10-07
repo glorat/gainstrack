@@ -41,6 +41,26 @@ class CommandApiController(implicit val ec :ExecutionContext) extends ScalatraSe
 
   }
 
+  post ("/add") {
+    val bg = sessionOption.map(_("gainstrack")).getOrElse(bgDefault).asInstanceOf[GainstrackGenerator]
+
+    val body = parsedBody.extract[CommandApiRequest]
+    try {
+      val parser = new GainstrackParser
+      parser.parseString(body.str)
+      val bg2 = parser.getCommands.foldLeft(bg)(_.addCommand(_))
+      val realFile = "real"
+      bg2.writeBeancountFile(s"/tmp/${realFile}.beancount")
+      session("gainstrack") = bg2
+
+      CommandApiResponse("ok")
+    }
+    catch {
+      case e:Exception => CommandApiResponse(e.toString)
+    }
+
+  }
+
 }
 case class CommandApiRequest(str:String)
 case class CommandApiResponse(success:String)
