@@ -2,12 +2,17 @@ package com.gainstrack.command
 
 import com.gainstrack.core.AccountCommand
 
+import scala.collection.SortedSet
 import scala.io.{BufferedSource, Source}
 
 class GainstrackParser {
   private var commands:Seq[AccountCommand] = Seq()
   private var lineCount : Int = 0
-  def getCommands : Seq[AccountCommand] = commands.sorted
+  def getCommands : SortedSet[AccountCommand] = {
+    val ret = SortedSet[AccountCommand]() ++ commands
+    require(commands.size == ret.size, "Internal error: two different commands compared equal")
+    ret
+  }
 
   val parsers:Map[String, CommandParser] = Map (
     "open" -> AccountCreation,

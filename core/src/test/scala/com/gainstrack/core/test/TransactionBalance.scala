@@ -8,6 +8,8 @@ import com.gainstrack.core._
 import com.gainstrack.report.{AccountInvestmentReport, GainstrackGenerator, IrrSummary}
 import org.scalatest.FlatSpec
 
+import scala.collection.SortedSet
+
 class TransactionBalanceTest extends FlatSpec {
 
   "Postings" should "have correct weight" in {
@@ -135,7 +137,7 @@ class TransactionBalanceTest extends FlatSpec {
 
     it should "generate original command strings" in {
 
-      val strs = cmds.flatMap(_.toGainstrack).mkString("\n")
+      val strs = cmds.toSeq.flatMap(_.toGainstrack).mkString("\n")
 
       val secondParser = new GainstrackParser
 

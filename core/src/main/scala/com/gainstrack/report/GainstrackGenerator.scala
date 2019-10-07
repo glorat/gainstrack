@@ -4,8 +4,10 @@ import com.gainstrack.core._
 import com.gainstrack.command._
 import net.glorat.cqrs.{AggregateRootState, DomainEvent}
 
+import scala.collection.SortedSet
 
-case class GainstrackGenerator(originalCommands:Seq[AccountCommand])  {
+
+case class GainstrackGenerator(originalCommands:SortedSet[AccountCommand])  {
 
   // First pass for accounts
   val acctState:AccountState =
@@ -32,7 +34,7 @@ case class GainstrackGenerator(originalCommands:Seq[AccountCommand])  {
   //    machine
   def addCommand(cmd:AccountCommand) : GainstrackGenerator = {
     require(!originalCommands.contains(cmd), "command already exists. Duplicates not allowed")
-    GainstrackGenerator( (originalCommands :+ cmd).sorted)
+    GainstrackGenerator( (originalCommands + cmd))
   }
 
   def removeCommand(cmd:AccountCommand): GainstrackGenerator = {

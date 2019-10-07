@@ -5,12 +5,13 @@ import com.gainstrack.core._
 import com.gainstrack.report.{AccountInvestmentReport, GainstrackGenerator, PriceState}
 import org.scalatest.FlatSpec
 
+import scala.collection.SortedSet
+
 class Real extends FlatSpec {
   val parser = new GainstrackParser
   val realFile = "real"
   parser.parseFile(s"data/${realFile}.gainstrack")
-  val orderedCmds = parser.getCommands
-  val bg = new GainstrackGenerator(orderedCmds)
+  val bg = new GainstrackGenerator(parser.getCommands)
 
   lazy val priceState : PriceState = bg.priceState
 
@@ -21,7 +22,7 @@ class Real extends FlatSpec {
       val strs = cmd.toGainstrack
       strs.foreach(p.parseLine(_))
 
-      assert(p.getCommands.length == 1)
+      assert(p.getCommands.size == 1)
       assert(cmd == p.getCommands.head)
 
     })
@@ -44,7 +45,7 @@ class Real extends FlatSpec {
     // FIXME: Don't check AccountId.name
     val test = (acctId:AccountId) => {assetClasses.foldLeft(false)((bool:Boolean,str:String) => bool || acctId.isSubAccountOf(AccountId("Assets:"+str)))}
 
-    val invs = orderedCmds.filter(cmd => cmd match {
+    val invs = parser.getCommands.filter(cmd => cmd match {
       case ac : AccountCreation => test(ac.accountId)
       case _ => false
     })
