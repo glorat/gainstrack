@@ -180,7 +180,11 @@ class ApiController (implicit val ec :ExecutionContext) extends ScalatraServlet 
 
       val commands = bg.originalCommands.filter(cmd => cmd.hasMainAccount(Some(accountId)))
 
-      Map("account" -> account, "commands" -> commands)
+      Map("account" -> account, "commands" -> commands.map(cmd =>
+        Map("data"->cmd,
+          "type" -> cmd.getClass.getSimpleName,
+          "description" -> cmd.description)
+      ))
     }).getOrElse(NotFound(s"${accountId} account not found"))
   }
 }
