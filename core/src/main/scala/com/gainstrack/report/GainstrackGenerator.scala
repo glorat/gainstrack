@@ -111,9 +111,9 @@ case class GainstrackGenerator(originalCommands:SortedSet[AccountCommand])  {
   }
 
   def toGainstrack: String = {
-    val grp = originalCommands.groupBy(_.mainAccount.getOrElse(AccountId("")))
+    val grp = originalCommands.toSeq.groupBy(_.mainAccount.getOrElse(AccountId("")))
     val accids = grp.keys.toSeq.sorted
-    val str = accids.map(grp(_).flatMap(_.toGainstrack).mkString("\n")).mkString("\n")
+    val str = accids.map(grp(_).flatMap(_.toGainstrack).mkString("\n")).mkString("\n\n")
     str
   }
 }
