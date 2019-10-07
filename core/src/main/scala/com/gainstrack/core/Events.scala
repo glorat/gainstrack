@@ -29,8 +29,11 @@ trait AccountCommand extends Command with DomainEvent with Ordered[AccountComman
     val ord = this.toOrderValue.compare(that.toOrderValue)
     if (ord == 0) {
       // Need an arbitrary fallback comparison
-      val ret = this.toGainstrack.mkString("").compareTo(that.toGainstrack.mkString(""))
-      ret
+      //val ret = this.toGainstrack.mkString("").compareTo(that.toGainstrack.mkString(""))
+      //ret
+      // FIXME: There is obviously some bug that is incorrectly relying
+      // FIXME: on existing ordering to be maintained
+      1
     }
     else {
       ord
