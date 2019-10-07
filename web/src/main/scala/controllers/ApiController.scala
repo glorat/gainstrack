@@ -178,7 +178,10 @@ class ApiController (implicit val ec :ExecutionContext) extends ScalatraServlet 
     val accountId = params("accountId")
     bg.acctState.accountMap.get(accountId).map(account => {
 
-      val commands = bg.originalCommands.filter(cmd => cmd.hasMainAccount(Some(accountId)))
+      val commands = bg.originalCommands
+        .filter(cmd => cmd.hasMainAccount(Some(accountId)))
+          .toSeq
+          .reverse
 
       Map("account" -> account, "commands" -> commands.map(cmd =>
         Map("data"->cmd,
