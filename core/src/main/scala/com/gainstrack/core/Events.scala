@@ -26,10 +26,18 @@ trait AccountCommand extends Command with DomainEvent with Ordered[AccountComman
   def usesSubAccountOf(parentId: AccountId) : Boolean = involvedAccounts.find(a => a.isSubAccountOf(parentId)).isDefined
 
   override def compare(that: AccountCommand): Int = {
-    this.toOrderValue.compare(that.toOrderValue)
+    val ord = this.toOrderValue.compare(that.toOrderValue)
+    if (ord == 0) {
+      // Need an arbitrary fallback comparison
+      val ret = this.toGainstrack.mkString("").compareTo(that.toGainstrack.mkString(""))
+      ret
+    }
+    else {
+      ord
+    }
   }
 
-  def toOrderValue:Long = {
+  private def toOrderValue:Long = {
     // Balance assertions come first because beancount assertion counts in the morning of the day
     val classValue = if (this.isInstanceOf[BalanceAdjustment]) 0 else 1
     (date.toEpochDay*10) + classValue
