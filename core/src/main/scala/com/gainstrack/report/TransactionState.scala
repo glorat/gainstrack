@@ -47,8 +47,8 @@ case class TransactionState(accounts:Set[AccountCreation], balanceState:BalanceS
   }
 
   private def process(e:BalanceAdjustment):TransactionState = {
-    val oldBalance = balanceState.getBalance(e.accountId, e.date.minusDays(1)).get
-    this.withNewCmds(e.toBeancounts(oldBalance))
+
+    this.withNewCmds(e.toBeancounts(balanceState, accounts))
   }
 
   private def withNewCmds(newCmds:Seq[BeancountCommand]) : TransactionState = {
