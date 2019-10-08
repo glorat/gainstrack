@@ -184,10 +184,11 @@ class First extends FlatSpec {
 
   "price collector" should "process" in {
     priceState
+    assert(priceState.prices.size == 34)
+
   }
 
   it should "infer prices from transfers" in {
-    assert(priceState.prices.size == 32)
 
     assert(priceState.prices(AssetPair(AssetId("USD"),AssetId("HKD")))
       == Map(parseDate("2019-01-02")-> 7.866412581540283))
@@ -197,6 +198,11 @@ class First extends FlatSpec {
       parseDate("2019-03-15") -> 144.62,
       parseDate("2019-03-26") -> 143.83)
     )
+  }
+
+  it should "include directly observed prices" in {
+    assert(priceState.prices(AssetPair(AssetId("GBP"),AssetId("USD")))
+      == Map(parseDate("2019-01-01")-> 1.2752))
   }
 
   it should "provide interpolated prices" in {
@@ -240,14 +246,15 @@ class First extends FlatSpec {
     val state = balanceReport.getState
     val accounts = bg.acctState.withInterpolatedAccounts
     // Values in these assertions match higher up values
-    val fn:AccountId=>Fraction = (acctId) => {
+    val fn:(AccountId,String)=>Fraction = (acctId,ccyStr) => {
       val ps = state.convertedPosition(acctId, accounts, bg.priceState, today)
-      ps.assetBalance(AssetId("USD"))
+      ps.assetBalance(AssetId(ccyStr))
     }
-    assert(fn("Assets:Investment:IBUSD:USD") == 172.05)
-    assert(fn("Expenses:Investment:IBUSD:USD") == 18.87)
-    assert(fn("Assets:Investment:IBUSD") == 34960.13)
-    assert(fn("Assets:Investment") == 6768.23)
-    assert(fn("Assets") == 6768.23)
+    assert(fn("Assets:Investment:IBUSD:USD", "USD") == 172.05)
+    assert(fn("Expenses:Investment:IBUSD:USD", "USD") == 18.87)
+    assert(fn("Assets:Investment:IBUSD", "USD") == 34960.13)
+    // Until base currency is settable properly, we are getting converted to GBP by default!
+    assert(fn("Assets:Investment", "GBP").round == 485444)
+    assert(fn("Assets", "GBP").round == 674080)
   }
 }

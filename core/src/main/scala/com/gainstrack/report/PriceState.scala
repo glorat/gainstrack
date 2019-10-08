@@ -1,6 +1,6 @@
 package com.gainstrack.report
 
-import com.gainstrack.command.{CommandWithAccounts, SecurityPurchase, Transfer, UnitTrustBalance}
+import com.gainstrack.command._
 import com.gainstrack.core._
 import net.glorat.cqrs.{AggregateRootState, DomainEvent}
 import spire.math.SafeLong
@@ -60,6 +60,10 @@ case class PriceState(prices:Map[AssetPair, SortedMap[LocalDate, Fraction]]) ext
     this.withNewPrice(e.date, e.price, e.security.ccy)
   }
 
+  private def process(e: PriceObservation) : PriceState = {
+    this.withNewPrice(e.date, e.price, e.assetId)
+  }
+
   private def withNewPrice(date:LocalDate, price:Balance, tgt:AssetId) : PriceState = {
     require(tgt != price.ccy)
     val fx1 = AssetPair(tgt,price.ccy)
@@ -75,6 +79,7 @@ case class PriceState(prices:Map[AssetPair, SortedMap[LocalDate, Fraction]]) ext
       case e:CommandWithAccounts[_] => e.toTransfers.foldLeft(this)(_.process(_))
       case e:SecurityPurchase => process(e)
       case e:UnitTrustBalance => process(e)
+      case e:PriceObservation => process(e)
       case _ => this
     }
   }
