@@ -29,9 +29,9 @@ case class SecurityPurchase(
 
   def createRequiredAccounts(baseAcct:AccountCreation) : Seq[AccountCreation] = {
     require(baseAcct.accountId == accountId)
-    val cashAcct = baseAcct.copy(key = AccountKey(cashAccountId, price.ccy), options = baseAcct.options.copy(multiAsset = false))
-    val incomeAcct = baseAcct.copy(key = AccountKey(incomeAcctId, price.ccy), options = baseAcct.options.copy(multiAsset = false))
-    val expenseAcct = baseAcct.copy(key = AccountKey(expenseAcctId, price.ccy), options = baseAcct.options.copy(multiAsset = false))
+    val cashAcct = baseAcct.copy(key = AccountKey(cashAccountId, price.ccy), options = AccountOptions())
+    val incomeAcct = baseAcct.copy(key = AccountKey(incomeAcctId, price.ccy), options = AccountOptions())
+    val expenseAcct = baseAcct.copy(key = AccountKey(expenseAcctId, price.ccy), options = AccountOptions())
 
     Seq(cashAcct, incomeAcct, expenseAcct)
   }
