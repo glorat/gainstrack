@@ -16,11 +16,11 @@ case class YieldCommand(date:LocalDate, accountId:AccountId, asset:Option[AssetI
 
   def createRequiredAccounts(baseAcct:AccountCreation) : Seq[AccountCreation] = {
     require(baseAcct.accountId == accountId)
-    val incomeAcct = baseAcct.copy(key = AccountKey(incomeAccountId, value.ccy), options = baseAcct.options.copy(multiAsset = false))
-    if (asset.isDefined) {
-      val assetAccount = baseAcct.copy(key = AccountKey(assetAccountId, asset.get))
-        .enableTrading(incomeAccountId, baseAcct.accountId)
-      Seq(incomeAcct )
+    val incomeAcct = baseAcct.copy(key = AccountKey(incomeAccountId, value.ccy), options = AccountOptions())
+    if (baseAcct.options.multiAsset) {
+      // Ensure our parent can receive the yield
+      val targetAccount = baseAcct.copy(key = AccountKey(accountId.subAccount(value.ccy.symbol), value.ccy), options = AccountOptions())
+      Seq(incomeAcct, targetAccount)
     }
     else {
       Seq(incomeAcct )
@@ -32,7 +32,8 @@ case class YieldCommand(date:LocalDate, accountId:AccountId, asset:Option[AssetI
     val assetAccount = accts.find(_.accountId == assetAccountId).getOrElse(throw new IllegalStateException(s"Asset account ${assetAccountId} is not defined"))
     if(account.options.multiAsset) {
       require(assetAccountId != accountId, s"MultiAsset account ${accountId} cannot have yields into itself")
-      require(value.ccy == account.key.assetId, s"MultiAsset accounts must yield same ccy (${value.ccy}) as parent")
+      // Note: This assertion is gone because when we transfer to a multi-asset account, it will get distributed to the right subacount
+      //require(value.ccy == account.key.assetId, s"MultiAsset accounts must yield same ccy (${value.ccy}) as parent ${account.key.name}")
     }
     else {
       require(assetAccountId == accountId, s"${accountId} is not a multi-asset account so cannot yield ${asset.get}")
