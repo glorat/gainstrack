@@ -8,18 +8,18 @@
 2019-01-02 tfr Assets:Bank:HSBCHK Assets:Investment:HSBC 40000 HKD 5084.91 USD
 ; Statement says @127.38 instead of supplied 127.63
 2019-01-02 trade Assets:Investment:HSBC 8 VTI @127.3800 USD C18.00 USD
-2019-01-05 adj Assets:Investment:HSBC:USD 4047.87 USD Equity:Opening:USD
+2019-01-05 adj Assets:Investment:HSBC 4047.87 USD Equity:Opening:USD
 ; Where did this come from?
 2019-01-15 tfr Equity:Opening:USD Assets:Investment:HSBC 23.20 USD
 ;2019-03-15 tfr Assets:Bank:HSBCCN Assets:Investment:HSBC 83364.65 CNY 12338.93 USD
 2019-03-15 tfr Assets:Bank:HSBCCN Assets:Investment:HSBC 83364.65 CNY 14312.73 USD
 2019-03-26 tfr Assets:Bank:HSBCCN Assets:Investment:HSBC 200000 CNY 29644.96 USD
-2019-03-05 adj Assets:Investment:HSBC:USD 4071.07 USD Equity:Opening:USD
+2019-03-05 adj Assets:Investment:HSBC 4071.07 USD Equity:Opening:USD
 2019-03-08 trade Assets:Investment:HSBC 13 VCSH @79.0700 USD
 2019-03-15 trade Assets:Investment:HSBC 14 VTI @144.6200 USD
 2019-03-26 trade Assets:Investment:HSBC 30 VTI @143.8300 USD
 2019-03-27 trade Assets:Investment:HSBC 15 BRK-B @200.5800 USD
 2019-03-29 yield Assets:Investment:HSBC VTI 11.88 USD
-2019-03-30 adj Assets:Investment:HSBC:USD 37664.45 USD Equity:Opening:USD
+2019-03-30 adj Assets:Investment:HSBC 37664.45 USD Equity:Opening:USD
 2019-04-08 yield Assets:Investment:HSBC VCSH 1.95 USD
-2019-05-04 adj Assets:Investment:HSBC:USD 2658.10 USD Equity:Opening:USD
+2019-05-04 adj Assets:Investment:HSBC 2658.10 USD Equity:Opening:USD

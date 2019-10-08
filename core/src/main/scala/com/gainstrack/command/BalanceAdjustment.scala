@@ -1,6 +1,7 @@
 package com.gainstrack.command
 
 import com.gainstrack.core._
+import com.gainstrack.report.BalanceState
 
 case class BalanceAdjustment(
                               date: LocalDate, // post or enter?
@@ -27,17 +28,21 @@ case class BalanceAdjustment(
   }*/
 
   // With old balance value, avoid using pad
-  def toBeancounts(oldValue:Fraction) : Seq[BeancountCommand] = {
+  def toBeancounts(balanceState:BalanceState, accts:Set[AccountCreation]) : Seq[BeancountCommand] = {
+    val account = accts.find(_.accountId == accountId).getOrElse(throw new IllegalStateException(s"Account ${accountId} is not defined"))
+    val targetAccountId = if (account.options.multiAsset) accountId.subAccount(balance.ccy.symbol) else accountId
+    val oldValue = balanceState.getBalance(targetAccountId, date.minusDays(1)).get
+
     val newUnits = balance-oldValue
     if (newUnits.value == zeroFraction) {
-      Seq(BalanceAssertion(date, accountId, balance, this))
+      Seq(BalanceAssertion(date, targetAccountId, balance, this))
     }
     else {
-      val unitIncrease : Posting = Posting(accountId, newUnits )
+      val unitIncrease : Posting = Posting(targetAccountId, newUnits )
       val income:Posting = Posting(adjAccount, -newUnits)
       // Apply padding the day before since the balance assertion happens in the morning of the declared day
       val tx = Transaction(date.minusDays(1), s"Adjustment: ${oldValue.toDouble} -> ${balance}", Seq(unitIncrease, income), this)
-      val balcmd = BalanceAssertion(date, accountId, balance, this)
+      val balcmd = BalanceAssertion(date, targetAccountId, balance, this)
       Seq[BeancountCommand](tx, balcmd)
     }
   }
