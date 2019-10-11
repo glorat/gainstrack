@@ -11,6 +11,7 @@
   "dependencies": {
     "axios": "0.18.1",
     "codemirror": "^5.49.0",
+    "element-ui": "^2.12.0",
     "lodash": "^4.17.15",
     "numeral": "^2.0.6",
     "vue": "^2.6.10",
@@ -23,6 +24,9 @@
   "devDependencies": {
     "@types/numeral": "0.0.26",
     "css-loader": "^3.2.0",
+    "file-loader": "^4.2.0",
+    "less-loader": "^5.0.0",
+    "style-loader": "^1.0.0",
     "ts-loader": "^6.2.0",
     "tslint": "^5.1.0",
     "typescript": "~3.6.3",

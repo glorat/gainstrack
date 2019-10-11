@@ -11,6 +11,9 @@ import IrrSummary from './components/views/IrrSummary.vue';
 import MyLayout from './components/views/MyLayout.vue';
 import Prices from './components/views/Prices.vue';
 
+import ElementUI from 'element-ui';
+import 'element-ui/lib/theme-chalk/index.css';
+
 const routes: RouteConfig[] = [
     {path: '/balance_sheet', component: BalanceSheet},
     {path: '/income_statement', component: IncomeStatement},
@@ -29,6 +32,7 @@ const router = new VueRouter({
 });
 
 Vue.use(VueRouter);
+Vue.use(ElementUI);
 
 import numeral from 'numeral';
 Vue.filter('numeral', (value: any, format: string) => numeral(value).format(format));

@@ -41,7 +41,22 @@ module.exports = {
         options: {
           name: '[name].[ext]?[hash]'
         }
-      }
+      },
+      {
+        test: /\.(css|less)$/,
+        use: [{
+          loader: "style-loader" // creates style nodes from JS strings
+        }, {
+          loader: "css-loader" // translates CSS into CommonJS
+        },]
+      },
+      {
+        test: /\.(ttf|eot|woff|woff2)$/,
+        loader: 'file-loader',
+        options: {
+          name: 'fonts/[name].[ext]'
+        }
+      },
     ]
   },
   resolve: {
@@ -55,7 +70,7 @@ module.exports = {
     noInfo: true,
     proxy: {
       '/api' : {
-        target: 'http://localhost:8081',
+        target: 'http://localhost:9050',
         secure: false
       }
     }
