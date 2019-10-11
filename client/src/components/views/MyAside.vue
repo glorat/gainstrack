@@ -20,63 +20,60 @@
 
 <script lang="ts">
     import axios from 'axios';
+    import { Component, Vue } from "vue-property-decorator";
 
-    export default {
-        name: "MyAside",
-        methods: {
-            beforeUpload(file:File) {
-                if (file.name.match(/\.gainstrack$/)) {
-                    console.log(`Trying to upload a ${file.type} of size ${file.size}`);
-                    let reader = new FileReader();
-                    reader.onload = function() {
-                        const text = reader.result;
-                        axios.put('/api/source/', {source : text, filePath: '', entryHash:'', sha256sum:''})
-                            .then(response => console.log('Saved'));
-                    };
-                    reader.onerror = function() {
-                        console.log(reader.result);
-                    };
-                    reader.readAsText(file);
-                }
-                else {
-                    console.log("Can only upload .gainstrack files");
-                }
-                return false;
+    @Component
+    export default class extends Vue {
+        beforeUpload(file: File) {
+            const notify = this.$notify;
+
+            if (file.name.match(/\.gainstrack$/)) {
+                console.log(`Trying to upload a ${file.type} of size ${file.size}`);
+                let reader = new FileReader();
+                reader.onload = function() {
+                    const text = reader.result;
+                    axios.put('/api/source/', {source: text, filePath: '', entryHash: '', sha256sum: ''})
+                        .then(response => notify.success('Reloaded'));
+                };
+                reader.onerror = function() {
+                    notify.error(<string>reader.result)
+                };
+                reader.readAsText(file);
+            } else {
+                notify.warning("Can only upload .gainstrack files");
             }
-        },
-        data: function() {
-            return {
-                menuItems: ['foo', 'bar'],
-                config: {
-                    all_pages: {
-                        'balance_sheet': ['Balance Sheet', 'g b'],
-                        'prices': ['Prices', 'g c'],
-                        'editor': ['Editor', 'g e'],
-                        'errors': ['Errors', ''],
-                        'events': ['Events', 'g E'],
-                        'help': ['Help', 'g H'],
-                        'holdings': ['Holdings', 'g h'],
-                        'import': ['Import', 'g n'],
-                        'income_statement': ['Income Statement', 'g i'],
-                        'journal': ['Journal', 'g j'],
-                        'options': ['Options', 'g o'],
-                        'query': ['Query', 'g q'],
-                        'statistics': ['Statistics', 'g x'],
-                        'trial_balance': ['Trial Balance', 'g t'],
-
-                        'irr':              ['IRR',    ''],
-                        'command': ['Commands', '']
-                    },
-                    navigation_bar: [
-                        ['command'],
-                        ['income_statement', 'balance_sheet', 'trial_balance', 'journal', 'query'],
-                        ['irr'],
-                        ['holdings', 'prices', 'events', 'statistics'],
-                        ['editor', 'import', 'options', 'help']
-                    ]
-                }
-            };
+            return false;
         }
+
+        private menuItems:string[] = ['foo', 'bar'];
+        private config : any = {
+            all_pages: {
+                'balance_sheet': ['Balance Sheet', 'g b'],
+                'prices': ['Prices', 'g c'],
+                'editor': ['Editor', 'g e'],
+                'errors': ['Errors', ''],
+                'events': ['Events', 'g E'],
+                'help': ['Help', 'g H'],
+                'holdings': ['Holdings', 'g h'],
+                'import': ['Import', 'g n'],
+                'income_statement': ['Income Statement', 'g i'],
+                'journal': ['Journal', 'g j'],
+                'options': ['Options', 'g o'],
+                'query': ['Query', 'g q'],
+                'statistics': ['Statistics', 'g x'],
+                'trial_balance': ['Trial Balance', 'g t'],
+
+                'irr':              ['IRR',    ''],
+                'command': ['Commands', '']
+            },
+            navigation_bar: [
+                ['command'],
+                ['income_statement', 'balance_sheet', 'trial_balance', 'journal', 'query'],
+                ['irr'],
+                ['holdings', 'prices', 'events', 'statistics'],
+                ['editor', 'import', 'options', 'help']
+            ]
+        };
     }
 </script>
 

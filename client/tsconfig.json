@@ -4,6 +4,7 @@
         "module": "es2015",
         "moduleResolution": "node",
         "target": "es5",
-        "allowSyntheticDefaultImports": true
+        "allowSyntheticDefaultImports": true,
+        "experimentalDecorators": true
     }
 }
