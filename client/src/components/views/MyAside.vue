@@ -68,10 +68,10 @@
             },
             navigation_bar: [
                 ['command'],
-                ['income_statement', 'balance_sheet', 'trial_balance', 'journal', 'query'],
+                ['balance_sheet', 'income_statement', 'journal'],
                 ['irr'],
-                ['holdings', 'prices', 'events', 'statistics'],
-                ['editor', 'import', 'options', 'help']
+                ['prices', 'statistics'],
+                ['editor']
             ]
         };
     }
@@ -81,5 +81,10 @@
     .myaside .el-upload-dragger {
         width: var(--aside-width);
         height: auto;
+    }
+
+    .myaside .router-link-active {
+        color: var(--color-sidebar-text-hover);
+        background-color: var(--color-sidebar-border);
     }
 </style>
