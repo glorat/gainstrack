@@ -1,8 +1,13 @@
 <template>
     <ol>
-    <li v-for="acct in node.children" v-bind:class="toggled">
+    <li v-for="acct in node.children" v-bind:class="{toggled: acct.toggled}">
         <p v-bind:class="{has_balance: acct.assetBalance.length>0}">
-          <span class="account-cell droptarget" v-bind:class="[classObject, (acct.children && acct.children.length>0 ? 'has-children' : '')]" data-account-name={node.name}>
+          <span
+                  class="account-cell droptarget"
+                  v-bind:class="[classObject, (acct.children && acct.children.length>0 ? 'has-children' : '')]"
+                  data-account-name={node.name}
+                  v-on:click="onToggle(acct)"
+          >
             <router-link v-bind:to="'/account/' + acct.name">{{ acct.shortName }}</router-link>
           </span>
             <span class="num other">
@@ -26,6 +31,11 @@
                 let ret = {};
                 ret['depth-' + this.depth] = true;
                 return ret;
+            }
+        },
+        methods: {
+            onToggle(acct) {
+                this.$set(acct, 'toggled', !acct.toggled);
             }
         }
     }
