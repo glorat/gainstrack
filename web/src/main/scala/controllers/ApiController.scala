@@ -3,7 +3,7 @@ package controllers
 import java.time.LocalDate
 
 import com.gainstrack.command.{AccountCreation, GainstrackParser}
-import com.gainstrack.core.{AccountCommand, AccountId, PositionSet, parseDate}
+import com.gainstrack.core.{AccountCommand, AccountId, PositionSet, Posting, parseDate}
 import com.gainstrack.report.{AccountInvestmentReport, BalanceReport, GainstrackGenerator, IrrSummary, TimeSeries}
 import org.json4s.{DefaultFormats, Formats, JValue}
 import org.scalatra.{NotFound, ScalatraServlet}
@@ -151,13 +151,15 @@ class ApiController (implicit val ec :ExecutionContext) extends ScalatraServlet 
     }
 
     val deltaFor : AccountCommand => PositionSet = {cmd =>
-      val mytxs = txs.filter(_.origin == cmd)
-      val balanceReport = BalanceReport(mytxs)
+      val myTxs = txs.filter(_.origin == cmd)
+      val balanceReport = BalanceReport(myTxs)
       balanceReport.getState.convertedPosition(accountId, bg.acctState, bg.priceState, cmd.date)
     }
 
     val rows = commands.map(cmd => {
-      AccountTxDTO(cmd.date.toString, cmd.getClass.getSimpleName, cmd.description, deltaFor(cmd).toString, balanceFor(cmd).toString)
+      val myTxs = txs.filter(_.origin == cmd)
+      val postings = myTxs.flatMap(_.filledPostings)
+      AccountTxDTO(cmd.date.toString, cmd.getClass.getSimpleName, cmd.description, deltaFor(cmd).toString, balanceFor(cmd).toString, postings)
     })
     AccountTxSummaryDTO(accountId.toString, rows)
   }
@@ -196,4 +198,4 @@ case class ApiSourceRequest(filePath:String, entryHash:String, source:String, sh
 case class ApiSourceResponse(sha256sum:String, success:String)
 
 case class AccountTxSummaryDTO(accountId:String, rows:Seq[AccountTxDTO])
-case class AccountTxDTO(date:String, cmdType:String, description:String, change: String, position:String)
+case class AccountTxDTO(date:String, cmdType:String, description:String, change: String, position:String, postings:Seq[Posting])
