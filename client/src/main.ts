@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import VueRouter, { RouteConfig } from 'vue-router';
+import Vuex from 'vuex';
 import Account from './components/Account.vue';
 import BalanceSheet from './components/views/BalanceSheet.vue';
 import Command from './components/views/Command.vue';
@@ -33,13 +34,18 @@ const router = new VueRouter({
 
 Vue.use(VueRouter);
 Vue.use(ElementUI);
+Vue.use(Vuex);
 
 import numeral from 'numeral';
 Vue.filter('numeral', (value: any, format: string) => numeral(value).format(format));
+
+import createStore from './AppState';
+const store = createStore()
 
 const app = new Vue({
     el: '#app',
     template: '<my-layout></my-layout>',
     router,
+    store,
     components: {MyLayout},
 });
