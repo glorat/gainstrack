@@ -1,6 +1,6 @@
 <template>
     <div>
-        <h3>Investment cashflows for <router-link :to="{name:'account', params:{accountId:detail.accountId}}">{{detail.accountId}}</router-link></h3>
+        <h3>Investment cashflows for <router-link :to="{name:'account', params:{accountId:accountId}}">{{accountId}}</router-link></h3>
         <table class="queryresults sortable">
             <thead>
             <tr>
@@ -13,7 +13,7 @@
             <tbody>
             <tr v-for="(date,index) in detail.dates">
                 <td>
-                    {{ detail.accountId}}
+                    {{ accountId}}
                 </td>
                 <td class="string">{{ date }}</td>
                 <td class="num" v-bind:data-sort-value="detail.values[index]">{{ detail.values[index]}} {{ detail.units[index]}}</td>
