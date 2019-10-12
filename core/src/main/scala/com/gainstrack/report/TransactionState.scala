@@ -10,6 +10,7 @@ case class TransactionState(accounts:Set[AccountCreation], balanceState:BalanceS
 
   def handle(e: DomainEvent): TransactionState = {
     e match {
+      case e:GlobalCommand => this
       case e:AccountCreation => process(e)
       case e:Transfer => process(e,e)
       case e:CommandWithAccounts[_] => e.toTransfers.foldLeft(this)(_.process(_, e.underlying))

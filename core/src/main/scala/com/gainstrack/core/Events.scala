@@ -2,7 +2,7 @@ package com.gainstrack.core
 
 import java.math.RoundingMode
 
-import com.gainstrack.command.BalanceAdjustment
+import com.gainstrack.command.{BalanceAdjustment, GlobalCommand}
 import net.glorat.cqrs.{Command, DomainEvent}
 import spire.math.{Rational, SafeLong}
 
@@ -42,7 +42,10 @@ trait AccountCommand extends Command with DomainEvent with Ordered[AccountComman
 
   private def toOrderValue:Long = {
     // Balance assertions come first because beancount assertion counts in the morning of the day
-    val classValue = if (this.isInstanceOf[BalanceAdjustment]) 0 else 1
+
+    val classValue = if (this.isInstanceOf[BalanceAdjustment]) 1
+      else if (this.isInstanceOf[GlobalCommand]) 0
+      else 2
     (date.toEpochDay*10) + classValue
   }
 

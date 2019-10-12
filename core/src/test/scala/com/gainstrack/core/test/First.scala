@@ -2,7 +2,7 @@ package com.gainstrack.core.test
 
 import java.time.LocalDate
 
-import com.gainstrack.command.{AccountCreation, BalanceAdjustment, GainstrackParser, Transfer}
+import com.gainstrack.command.{AccountCreation, BalanceAdjustment, GainstrackParser, GlobalCommand, Transfer}
 import com.gainstrack.core._
 import com.gainstrack.report._
 import org.scalatest.FlatSpec
@@ -25,8 +25,7 @@ class First extends FlatSpec {
       val strs = cmd.toGainstrack
       strs.foreach(p.parseLine(_))
 
-      assert(p.getCommands.size == 1)
-      assert(cmd == p.getCommands.head)
+      assert(cmd == p.getCommands.last)
 
     })
   }
@@ -35,10 +34,16 @@ class First extends FlatSpec {
     val lines = Seq("2010-01-01 open Income:Salary:CNY CNY", "  fundingAccount: Assets:HSBCCN")
     val p = new GainstrackParser
     lines.foreach(p.parseLine(_))
-    assert(p.getCommands.size == 1)
-    val cmd = p.getCommands.head.asInstanceOf[AccountCreation]
+    assert(p.getCommands.size == 2)
+    val cmd = p.getCommands.toSeq(1).asInstanceOf[AccountCreation]
     assert(cmd.options.fundingAccount == Some(AccountId("Assets:HSBCCN")))
     assert(cmd.toGainstrack == lines)
+  }
+
+  it should "extract global command" in {
+    val cmd = cmds.head
+    assert(cmd.isInstanceOf[GlobalCommand])
+    assert(cmd.asInstanceOf[GlobalCommand].operatingCurrency == AssetId("GBP"))
   }
 
   "transfer" should "calc fx rate" in {
@@ -102,7 +107,7 @@ class First extends FlatSpec {
 
   it should "generate sane beancount string" in {
     val str = bg.toGainstrack
-    assert (str.startsWith("2019-01-01 price GBP 1.2752 USD\n\n2000-01-01 open Assets:Bank:HSBCUK GBP\n\n2000-01-01 open Assets:Bank:Nationwide GBP"))
+    assert (str.startsWith("option \"operating_currency\" \"GBP\"\n2019-01-01 price GBP 1.2752 USD\n\n2000-01-01 open Assets:Bank:HSBCUK GBP\n\n2000-01-01 open Assets:Bank:Nationwide GBP"))
   }
 
   it should "pass bean-check" in {
