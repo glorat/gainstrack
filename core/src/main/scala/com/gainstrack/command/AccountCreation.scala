@@ -20,6 +20,19 @@ case class AccountOptions (
   private def acctStr(name:String, value:Option[AccountId]) = {
     value.map(x => Seq(s"  ${name}: ${x.toGainstrack}")).getOrElse(Seq())
   }
+  private def stringToBool(valueStr:String):Boolean = valueStr!="false"
+
+  def withOption(key:String, valueStr:String) : AccountOptions = {
+    key match {
+      case "expenseAccount" => copy(expenseAccount = Some(AccountId(valueStr)))
+      case "incomeAccount" => copy(incomeAccount = Some(AccountId(valueStr)))
+      case "fundingAccount" => copy(fundingAccount = Some(AccountId(valueStr)))
+      case "multiAsset" => copy(multiAsset = stringToBool(valueStr) )
+      case "automaticReinvestment" => copy(automaticReinvestment = stringToBool(valueStr) )
+      case _ => throw new IllegalArgumentException(s"Unknown account option: ${key}")
+    }
+  }
+
   def toGainstrack:Seq[String] = {
     acctStr("expenseAccount", expenseAccount) ++
       boolStr("tradingAccount", tradingAccount) ++
@@ -74,14 +87,7 @@ case class AccountCreation (
   //override def toString: String = s"${date} open ${key.name} ${key.assetId.symbol}"
 
   override def withOption(key:String, valueStr:String) : AccountCreation = {
-    key match {
-      case "expenseAccount" => copy(options = options.copy(expenseAccount = Some(AccountId(valueStr))))
-      case "incomeAccount" => copy(options = options.copy(incomeAccount = Some(AccountId(valueStr))))
-      case "fundingAccount" => copy(options = options.copy(fundingAccount = Some(AccountId(valueStr))))
-      case "multiAsset" => copy(options = options.copy(multiAsset = stringToBool(valueStr) ))
-      case "automaticReinvestment" => copy(options = options.copy(automaticReinvestment = stringToBool(valueStr) ))
-      case _ => throw new IllegalArgumentException(s"Unknown account option: ${key}")
-    }
+    copy (options = options.withOption(key, valueStr))
   }
 }
 
