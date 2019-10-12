@@ -33,6 +33,8 @@ class GainstrackParser {
   private val AccountCommand =s"${datePattern} ${prefix}.*".r
   private val OptionCommandPattern = s"""^option "${prefix}" "(.*)"""".r
   private val Metadata = s"\\s*([a-z][A-Za-z0-9_-]+):\\s*(.*)".r
+  private val CommentLine = "[;#].*".r
+  private val IgnoreLine = "^\\w*$".r
 
   private def tryParseLine(line:String) : Unit = {
     lineCount += 1
@@ -52,9 +54,11 @@ class GainstrackParser {
       case OptionCommandPattern(key, valueStr) => {
         globalCommand = globalCommand.withOption(key, valueStr)
       }
+      case CommentLine() => ()
+      case IgnoreLine() => ()
       case _ => {
-        //throw new Exception
-        None
+        throw new Exception(s"Unparsable: ${line}")
+        //None
       }
     }
   }
