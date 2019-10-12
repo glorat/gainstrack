@@ -29,14 +29,17 @@
         data () {return {info:{source:"Loading..."}}},
         components: {codemirror},
         mounted () {
+            const notify = this.$notify;
             axios.get('/api/editor/')
                 .then(response => this.info = response.data)
-                .catch(error => console.log(error))
+                .catch(error => notify.error(error))
         },
         methods : {
             editorSave() {
+                const notify = this.$notify;
                 axios.put('/api/source/', {source : this.info.source, filePath: '', entryHash:'', sha256sum:''})
-                    .then(response => console.log('Saved'))
+                    .then(response => notify.success('Saved'))
+                    .catch(error => notify.error(error))
             }
         }
     }

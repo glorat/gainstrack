@@ -31,9 +31,10 @@
             return {info:[]}
         },
         mounted () {
+            const notify = this.$notify;
             axios.get('/api/irr/')
                 .then(response => this.info = response.data)
-                .catch(error => console.log(error))
+                .catch(error => notify.error(error))
         },
     }
 </script>

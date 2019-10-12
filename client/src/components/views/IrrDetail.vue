@@ -34,9 +34,10 @@
             return {detail:[]}
         },
         mounted () {
+            const notify = this.$notify;
             axios.get('/api/irr/' + this.accountId)
                 .then(response => this.detail = response.data)
-                .catch(error => console.log(error))
+                .catch(error => notify.error(error))
         },
     }
 </script>

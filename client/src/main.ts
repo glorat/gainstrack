@@ -16,20 +16,24 @@ import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
 
 const routes: RouteConfig[] = [
-    {path: '/balance_sheet', component: BalanceSheet},
-    {path: '/income_statement', component: IncomeStatement},
-    {path: '/prices', component: Prices},
-    {path: '/editor', component: Editor},
-    {path: '/irr', component: IrrSummary},
+    {path: '/balance_sheet', component: BalanceSheet, meta: {title: 'Balance Sheet'}},
+    {path: '/income_statement', component: IncomeStatement, meta: {title: 'Income Statement'}},
+    {path: '/prices', component: Prices, meta: {title: 'Prices'}},
+    {path: '/editor', component: Editor, meta: {title: 'Editor'}},
+    {path: '/irr', component: IrrSummary, meta: {title: 'IRR'}},
     {path: '/irr/:accountId', component: IrrDetail, name: 'irr_detail', props: true},
     {path: '/account/:accountId', component: Account, name: 'account', props: true},
-    {path: '/command/', component: CommandSummary},
+    {path: '/command/', component: CommandSummary, meta: {title: 'Commands'}},
     {path: '/command/:accountId', component: Command, name: 'command', props: true},
     {path: '/*', component: {template: '<div>Not yet implemented</div>'}},
 ];
 
 const router = new VueRouter({
     routes,
+});
+
+router.afterEach((to, from) => {
+    document.title = (to.meta.title || 'Gainstrack');
 });
 
 Vue.use(VueRouter);
