@@ -6,9 +6,8 @@ import net.glorat.cqrs.{AggregateRootState, DomainEvent}
 
 
 object AccountState {
-  def defaultRoot():AccountCreation = {
-    // FIXME: Make root currency user configurable!!!
-    AccountCreation(MinDate, AccountKey("", AssetId("GBP")), AccountOptions(placeholder = true))
+  def defaultRoot(baseCcy:AssetId):AccountCreation = {
+    AccountCreation(MinDate, AccountKey("", baseCcy), AccountOptions(placeholder = true))
   }
 
   def apply() : AccountState = AccountState(Set())
@@ -30,13 +29,14 @@ object AccountState {
 
 
 }
-case class AccountState(accounts:Set[AccountCreation])
+case class AccountState(accounts:Set[AccountCreation], baseCurrency:AssetId = AssetId("USD"))
   extends AggregateRootState {
 
   lazy val accountMap:Map[AccountId, AccountCreation] = accounts.map(a => a.accountId -> a)(collection.breakOut)
 
   def handle(e: DomainEvent): AccountState = {
     e match {
+      case e:GlobalCommand => process(e)
       case e:AccountCreation => process(e)
       case e:Transfer => process(e)
       case e:SecurityPurchase =>  process(e)
@@ -47,6 +47,10 @@ case class AccountState(accounts:Set[AccountCreation])
       case e:EarnCommand => process(e)
       case e:YieldCommand => process(e)
     }
+  }
+
+  private def process(e:GlobalCommand):AccountState = {
+    this.copy(baseCurrency = e.operatingCurrency)
   }
 
   private def process(e:PriceObservation):AccountState = {
@@ -134,7 +138,7 @@ case class AccountState(accounts:Set[AccountCreation])
   // Finalize method when all is done
   lazy val withInterpolatedAccounts : AccountState = {
     // Add a root then ensure all parents exist
-    val withRoot = this.copy(accounts = accounts+AccountState.defaultRoot())
+    val withRoot = this.copy(accounts = accounts+AccountState.defaultRoot(baseCurrency))
     accounts.flatMap(_.accountId.parentAccountId).foldLeft(withRoot)(AccountState.ensureExists)
   }
 

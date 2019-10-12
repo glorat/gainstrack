@@ -6,11 +6,13 @@ import scala.collection.SortedSet
 import scala.io.{BufferedSource, Source}
 
 class GainstrackParser {
+  // We start with just the global state
+  private var globalCommand = GlobalCommand()
   private var commands:Seq[AccountCommand] = Seq()
   private var lineCount : Int = 0
   def getCommands : SortedSet[AccountCommand] = {
-    val ret = SortedSet[AccountCommand]() ++ commands
-    require(commands.size == ret.size, "Internal error: two different commands compared equal")
+    val ret = SortedSet[AccountCommand]() + globalCommand ++ commands
+    require(commands.size+1 == ret.size, "Internal error: two different commands compared equal")
     ret
   }
 
@@ -29,8 +31,8 @@ class GainstrackParser {
   import com.gainstrack.command.Patterns._
   private val prefix = raw"(\w+)"
   private val AccountCommand =s"${datePattern} ${prefix}.*".r
+  private val OptionCommandPattern = s"""^option "${prefix}" "(.*)"""".r
   private val Metadata = s"\\s*([a-z][A-Za-z0-9_-]+):\\s*(.*)".r
-
 
   private def tryParseLine(line:String) : Unit = {
     lineCount += 1
@@ -47,7 +49,13 @@ class GainstrackParser {
         commands = commands.dropRight(1) :+ newLast
         Some(newLast)
       }
-      case _ => None
+      case OptionCommandPattern(key, valueStr) => {
+        globalCommand = globalCommand.withOption(key, valueStr)
+      }
+      case _ => {
+        //throw new Exception
+        None
+      }
     }
   }
 

@@ -8,6 +8,8 @@ import scala.collection.SortedSet
 
 
 case class GainstrackGenerator(originalCommands:SortedSet[AccountCommand])  {
+  // Global
+  val globalCommand = originalCommands.head.asInstanceOf[GlobalCommand]
 
   // First pass for accounts
   val acctState:AccountState =
@@ -59,7 +61,7 @@ case class GainstrackGenerator(originalCommands:SortedSet[AccountCommand])  {
   def toBeancount: Seq[BeancountLine] = {
     val headers:Seq[BeancountLine] = BeancountLines(Seq (
       "option \"title\" \"Gainstrack\"",
-      "option \"operating_currency\" \"GBP\"",
+      s"""option "operating_currency" "${globalCommand.operatingCurrency.symbol}"""",
       "plugin \"beancount.plugins.implicit_prices\""
     ), GainstrackTemplate)
 

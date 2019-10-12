@@ -22,8 +22,7 @@ class Real extends FlatSpec {
       val strs = cmd.toGainstrack
       strs.foreach(p.parseLine(_))
 
-      assert(p.getCommands.size == 1)
-      assert(cmd == p.getCommands.head)
+      assert(cmd == p.getCommands.last)
 
     })
   }
