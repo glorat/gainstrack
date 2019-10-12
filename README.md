@@ -1,5 +1,3 @@
-
-
 ### Usage Guidelines
 
 The key things to record are
