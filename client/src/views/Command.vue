@@ -29,7 +29,7 @@
 
 <script>
     import axios from 'axios';
-    import CommandEditor from "../CommandEditor";
+    import CommandEditor from "../components/CommandEditor";
     const _ = require('lodash');
 
 
