@@ -14,7 +14,7 @@
 </template>
 
 <script>
-    import AccountCreation from "../../models";
+    import AccountCreation from "../models";
     import axios from 'axios';
 
     export default {

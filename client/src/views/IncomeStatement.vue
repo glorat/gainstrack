@@ -2,24 +2,21 @@
     <div class="row">
         <div class="column">
             <h3>Assets</h3>
-            <tree-table v-bind:node="info['Assets']"></tree-table>
+            <tree-table v-bind:node="info['Income']"></tree-table>
         </div>
         <div class="column">
             <h3>Liabilities</h3>
-            <tree-table v-bind:node="info['Liabilities']"></tree-table>
-            <h3>Equity</h3>
-            <tree-table v-bind:node="info['Equity']"></tree-table>
+            <tree-table v-bind:node="info['Expenses']"></tree-table>
         </div>
     </div>
-
 </template>
 
 <script>
-    import TreeTable from "../TreeTable";
+    import TreeTable from "../components/TreeTable";
     import axios from 'axios';
 
     export default {
-        name: "BalanceSheet",
+        name: "IncomeStatement",
         components: {TreeTable},
         data() {
             return {};

@@ -22,7 +22,7 @@
 
 <script>
     import axios from 'axios';
-    import codemirror from '../CodeMirror.vue';
+    import codemirror from '../components/CodeMirror.vue';
 
     export default {
         name: "Editor",
