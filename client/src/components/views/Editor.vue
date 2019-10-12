@@ -39,6 +39,7 @@
                 const notify = this.$notify;
                 axios.put('/api/source/', {source : this.info.source, filePath: '', entryHash:'', sha256sum:''})
                     .then(response => notify.success('Saved'))
+                    .then(() => this.$store.dispatch('reload'))
                     .catch(error => notify.error(error))
             }
         }

@@ -22,11 +22,15 @@
         name: "BalanceSheet",
         components: {TreeTable},
         data() {
-            return {info : {}};
+            return {};
+        },
+        computed: {
+            info() {
+                return this.$store.state.balances
+            }
         },
         mounted () {
-            axios.get('/api/balance_sheet/')
-                .then(response => this.info = response.data)
+            this.$store.dispatch('balances')
                 .catch(error => console.log(error))
         },
     }

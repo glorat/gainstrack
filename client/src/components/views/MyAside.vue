@@ -26,6 +26,7 @@
     export default class extends Vue {
         beforeUpload(file: File) {
             const notify = this.$notify;
+            const store = this.$store;
 
             if (file.name.match(/\.gainstrack$/)) {
                 console.log(`Trying to upload a ${file.type} of size ${file.size}`);
@@ -33,7 +34,8 @@
                 reader.onload = function() {
                     const text = reader.result;
                     axios.put('/api/source/', {source: text, filePath: '', entryHash: '', sha256sum: ''})
-                        .then(response => notify.success('Reloaded'));
+                        .then(response => notify.success('Reloaded'))
+                        .then(() => store.dispatch('reload'));
                 };
                 reader.onerror = function() {
                     notify.error(<string>reader.result)

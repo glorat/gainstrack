@@ -44,7 +44,9 @@ import numeral from 'numeral';
 Vue.filter('numeral', (value: any, format: string) => numeral(value).format(format));
 
 import createStore from './AppState';
-const store = createStore()
+const store = createStore();
+
+store.dispatch('reload');
 
 const app = new Vue({
     el: '#app',
