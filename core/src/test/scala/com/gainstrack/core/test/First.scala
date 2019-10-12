@@ -211,6 +211,14 @@ class First extends FlatSpec {
     assert(fx.get ==  161651.0/1200.0) //134.709166666
   }
 
+  it should "have a list of all ccys" in {
+    // Two sanity tests that depend on the data
+    assert(priceState.ccys.size == 18)
+    assert(priceState.ccys.contains(AssetId("USD")))
+    // This is the true invariant that should hold
+    assert(priceState.prices.keys.map(_.fx1).toSet == priceState.ccys.map(_.symbol))
+  }
+
   "IRR Calc" should "compute IRR" in {
     val accountId = AccountId("Assets:Investment:Zurich")
     val queryDate = LocalDate.parse("2019-12-31")
