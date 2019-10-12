@@ -7,6 +7,7 @@ import net.glorat.cqrs.{AggregateRootState, DomainEvent}
 
 object AccountState {
   def defaultRoot():AccountCreation = {
+    // FIXME: Make root currency user configurable!!!
     AccountCreation(MinDate, AccountKey("", AssetId("GBP")), AccountOptions(placeholder = true))
   }
 

@@ -3,7 +3,7 @@ package controllers
 import java.time.LocalDate
 
 import com.gainstrack.command.{AccountCreation, GainstrackParser}
-import com.gainstrack.core.{AccountCommand, AccountId, PositionSet, Posting, parseDate}
+import com.gainstrack.core.{AccountCommand, AccountId, AssetId, PositionSet, Posting, parseDate}
 import com.gainstrack.report.{AccountInvestmentReport, BalanceReport, GainstrackGenerator, IrrSummary, TimeSeries}
 import org.json4s.{DefaultFormats, Formats, JValue}
 import org.scalatra.{NotFound, ScalatraServlet}
@@ -69,6 +69,12 @@ class ApiController (implicit val ec :ExecutionContext) extends ScalatraServlet 
     val treeTable = new BalanceTreeTable(bg.acctState, priceState, toDate, balanceReport)
 
     keys.map(key => key -> treeTable.toTreeTable(AccountId(key))).toMap
+  }
+
+  get ("/balances/") {
+    //contentType
+    tables(Seq("Assets","Liabilities","Equity","Income","Expenses"))
+
   }
 
   get ("/balance_sheet/") {
@@ -192,6 +198,13 @@ class ApiController (implicit val ec :ExecutionContext) extends ScalatraServlet 
       ))
     }).getOrElse(NotFound(s"${accountId} account not found"))
   }
+
+  get ("/state/summary/") {
+    val bg = sessionOption.map(_("gainstrack")).getOrElse(bgDefault).asInstanceOf[GainstrackGenerator]
+    val accts = bg.acctState.accounts.map(_.accountId)
+    val ccys = bg.priceState.ccys
+    StateSummaryDTO(accts.toSeq.sorted, ccys.toSeq.sorted)
+  }
 }
 //case class BalanceSheet(balanceSheet: Map[String,TreeTable])
 case class ApiSourceRequest(filePath:String, entryHash:String, source:String, sha256sum: String)
@@ -199,3 +212,5 @@ case class ApiSourceResponse(sha256sum:String, success:String)
 
 case class AccountTxSummaryDTO(accountId:String, rows:Seq[AccountTxDTO])
 case class AccountTxDTO(date:String, cmdType:String, description:String, change: String, position:String, postings:Seq[Posting])
+
+case class StateSummaryDTO(accountIds:Seq[AccountId], ccys:Seq[AssetId])

@@ -19,11 +19,15 @@
         name: "IncomeStatement",
         components: {TreeTable},
         data() {
-            return {info : {}};
+            return {};
+        },
+        computed: {
+            info() {
+                return this.$store.state.balances
+            }
         },
         mounted () {
-            axios.get('/api/income_statement/')
-                .then(response => this.info = response.data)
+            this.$store.dispatch('balances')
                 .catch(error => console.log(error))
         },
     }

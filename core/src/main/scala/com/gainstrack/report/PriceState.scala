@@ -10,7 +10,7 @@ import scala.math.BigDecimal.RoundingMode
 
 
 
-case class PriceState(prices:Map[AssetPair, SortedMap[LocalDate, Fraction]]) extends AggregateRootState {
+case class PriceState(ccys:Set[AssetId], prices:Map[AssetPair, SortedMap[LocalDate, Fraction]]) extends AggregateRootState {
   private val implicitPrices = true
 
   private val interp = TimeSeriesInterpolator.from(SortedMap[LocalDate, Fraction]())
@@ -70,7 +70,8 @@ case class PriceState(prices:Map[AssetPair, SortedMap[LocalDate, Fraction]]) ext
     val fx2 = AssetPair(price.ccy, tgt)
     val newByDate = prices.getOrElse(fx1,SortedMap()).updated(date, price.value)
     val new2ByDate = prices.getOrElse(fx2, SortedMap()).updated(date, 1/price.value)
-    copy(prices = prices.updated(fx1, newByDate).updated(fx2, new2ByDate))
+    val newCcys = this.ccys + price.ccy + tgt
+    copy(ccys = newCcys, prices = prices.updated(fx1, newByDate).updated(fx2, new2ByDate))
   }
 
   def handle(e: DomainEvent): PriceState = {
@@ -86,7 +87,7 @@ case class PriceState(prices:Map[AssetPair, SortedMap[LocalDate, Fraction]]) ext
 }
 
 object PriceState {
-  def apply() : PriceState = PriceState(Map())
+  def apply() : PriceState = PriceState(Set(),Map())
 }
 
 case class AssetPair(str: String) {
