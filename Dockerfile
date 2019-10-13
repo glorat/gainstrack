@@ -3,6 +3,8 @@ WORKDIR /build
 # Cache dependencies first
 COPY project project
 COPY build.sbt .
+COPY core/build.sbt core/build.sbt
+COPY web/build.sbt web/build.sbt
 RUN sbt update
 # Then build
 COPY . .
