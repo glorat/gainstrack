@@ -10,7 +10,7 @@ updateOptions := updateOptions.value.withCachedResolution(true)
 
 lazy val myResolvers = Seq(
   Classpaths.typesafeReleases,
-  Resolver.sonatypeRepo("snapshots"),
+  Resolver.sonatypeRepo("releases"),
   Resolver.sonatypeRepo("public"),
   Resolver.bintrayRepo("cakesolutions", "maven")
 )
