@@ -1,0 +1,145 @@
+option "operating_currency" "USD"
+
+
+;defaccount De Assets:Fixed:Home                           USD
+1970-01-01 open Assets:UTrade:Account USD
+  multiAsset:true
+  fundingAccount: Assets:BestBank:Savings
+1970-01-01 open Assets:AccountsReceivable USD
+
+1970-01-01 open Liabilities:BestBank:Mortgage:Loan USD
+1970-01-01 open Liabilities:Credit-Card:VISA USD
+1970-01-01 open Liabilities:Condo-Management USD
+
+1970-01-01 open Equity:Opening USD
+
+1970-01-01 open Income:Interest:Checking USD
+1970-01-01 open Income:Interest:Savings USD
+1970-01-01 open Income:Dividends USD
+1970-01-01 open Income:Capital-Gains USD
+; BUG - should not have this suffix
+1970-01-01 open Income:Salary:AcmeCo:USD USD
+  fundingAccount: Assets:BestBank:Checking
+
+1970-01-01 open Expenses:Financial:Fees USD
+1970-01-01 open Expenses:Financial:Commissions USD
+1970-01-01 open Expenses:Insurance:Life USD
+1970-01-01 open Expenses:Food:Restaurant USD
+1970-01-01 open Expenses:Food:Grocery USD
+1970-01-01 open Expenses:Food:Alcool USD
+1970-01-01 open Expenses:Communications:Phone USD
+1970-01-01 open Expenses:Communications:Mail USD
+1970-01-01 open Expenses:Transportation:Taxi USD
+1970-01-01 open Expenses:Taxes:US-Federal USD
+1970-01-01 open Expenses:Govt-Services USD
+1970-01-01 open Expenses:Clothes USD
+1970-01-01 open Expenses:Car:Gas USD
+1970-01-01 open Expenses:Sports USD
+1970-01-01 open Expenses:Sports:Gear USD
+1970-01-01 open Expenses:Fun:Movie USD
+;defaccount De Expenses:Fun:Museum
+1970-01-01 open Expenses:Books USD
+;defaccount De Expenses:Travel:Flights
+;defaccount De Expenses:Travel:Accomodation
+;defaccount De Expenses:Toys:Photography
+;defaccount De Expenses:Toys:Computer
+;defaccount De Expenses:Office-Supplies
+1970-01-01 open Expenses:Medical USD
+1970-01-01 open Expenses:Charity USD
+1970-01-01 open Expenses:Home:Monthly:Condo-Fees USD
+1970-01-01 open Expenses:Home:Monthly:Loan-Interest USD
+
+1970-01-01 open Assets:BestBank:Checking USD
+
+;; This directive tells the software to assert that at the given
+;; date, in the given account, a specific amount of the given
+;; commodity was present.
+2008-01-01 adj Assets:BestBank:Checking 1412.24 USD Equity:Opening
+
+
+;; A check deposit, e.g. depositing a government check.
+2008-01-05 tfr Expenses:Taxes:US-Federal Assets:BestBank:Checking 77.76 USD
+
+
+2008-01-10 earn Salary:AcmeCo 2000.00 USD
+2008-01-25 earn Salary:AcmeCo 2000.00 USD
+2008-02-10 earn Salary:AcmeCo 2000.00 USD
+2008-02-25 earn Salary:AcmeCo 2000.00 USD
+
+
+;; Withdrawal from another bank's ATM machine (with fees).
+;; Fees get washed out in expenses later
+2008-01-12 tfr Assets:BestBank:Checking Assets:Cash 300 USD
+2008-01-30 tfr Assets:BestBank:Checking Assets:Cash 800 USD
+2008-02-20 tfr Assets:BestBank:Checking Assets:Cash 500 USD
+2008-02-24 tfr Assets:BestBank:Checking Assets:Cash 500 USD
+
+2008-01-02 tfr Assets:BestBank:Checking Expenses:Insurance:Life 42.69 USD
+
+2008-01-07 tfr Assets:BestBank:Checking Expenses:Sports:Gear 89.00 USD
+
+2008-01-07 tfr Assets:BestBank:Checking Expenses:Financial:Fees 4.00 USD
+
+2008-01-12 yield Assets:BestBank:Checking 0.02 USD
+
+
+
+;; An example of using the A/R account: I bought an electronic
+;; toy for a friend, and I wanted to track the amount that he
+;; should pay back to me. Instead of placing it in expenses, I
+;; made it a receivable, which was cancelled later on where he
+;; paid me back.
+
+2008-03-26 tfr Assets:Cash Assets:AccountsReceivable 431.92 USD
+
+2008-04-02 tfr Assets:AccountsReceivable Assets:Cash 431.92 USD
+
+2008-02-01 adj Assets:BestBank:Checking 661.49 USD Equity:Opening
+
+
+1970-01-01 open Assets:BestBank:Savings USD
+  fundingAccount: Equity:Opening
+
+2008-01-01 adj Assets:BestBank:Savings 12000 USD Equity:Opening
+
+2008-01-03 yield Assets:BestBank:Savings 95.69 USD
+
+;; An entry that indicates a bank transfer from a checking account to a savings account.
+;; There is a choice to locate this entry with the savings or with the checking, it's up to you.
+2008-01-29 tfr Assets:BestBank:Checking Assets:BestBank:Savings 2000.00 USD
+2008-02-03 yield Assets:BestBank:Savings 102.34 USD
+
+2008-02-03 fund Assets:UTrade:Account 10000 USD
+
+
+2008-03-01 adj Assets:BestBank:Savings 2340.19 USD Equity:Opening
+
+
+
+
+
+;;;;;
+
+1970-01-01 open Assets:Cash USD
+;  multiAsset: true
+  fundingAccount: Equity:Opening
+
+;; Amount in wallet at a given time.
+;2007-12-30 fund Assets:Cash 1 USD
+;2007-12-31 adj Assets:Cash 200 CAD Equity:Opening
+;2007-12-31 adj Assets:Cash 300 USD Equity:Opening
+
+
+;;;;
+2008-01-01 adj Assets:UTrade:Account 31273.02 USD Equity:Opening
+2008-01-08 trade Assets:UTrade:Account 30 AAPL @185.40 USD C9.95 USD
+2008-02-02 yield Assets:UTrade:Account AAPL 0.68 USD
+2008-02-28 trade Assets:UTrade:Account -30 AAPL @193.02 USD C9.95 USD
+
+2008-02-10 trade Assets:UTrade:Account 100 EWJ @13.34 USD C9.95 USD
+
+2008-03-01 adj Assets:UTrade:Account:USD 40138.45 USD Equity:Opening
+2008-03-01 adj Assets:UTrade:Account:AAPL 0 AAPL Equity:Opening
+2008-03-01 adj Assets:UTrade:Account:EWJ 100 EWJ Equity:Opening
+
+

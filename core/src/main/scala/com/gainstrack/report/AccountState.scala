@@ -155,4 +155,17 @@ case class AccountState(accounts:Set[AccountCreation], baseCurrency:AssetId = As
     accounts.filter(_.parentAccountId == Some(accountId))
   }
 
+  def withInferredAccount(acctId:AccountId):AccountState = {
+    val parentAccountOpt:Option[AccountCreation] = acctId.parentAccountId.flatMap(parentId => this.accounts.find(_.accountId == parentId))
+    if (parentAccountOpt.isDefined) {
+      val parentAccount = parentAccountOpt.get
+      require(parentAccount.options.multiAsset, s"Attempting to transfer to ${parentAccount.accountId} is not multi-asset so cannot handle ${acctId.shortName}")
+      val newAcct = parentAccount.copy(key = AccountKey(acctId, AssetId(acctId.shortName)), options = AccountOptions())
+      copy(accounts = this.accounts + newAcct)
+    }
+    else {
+      this
+    }
+  }
+
 }

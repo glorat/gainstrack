@@ -33,7 +33,11 @@ case class SecurityPurchase(
     val incomeAcct = baseAcct.copy(key = AccountKey(incomeAcctId, price.ccy), options = AccountOptions())
     val expenseAcct = baseAcct.copy(key = AccountKey(expenseAcctId, price.ccy), options = AccountOptions())
 
-    Seq(cashAcct, incomeAcct, expenseAcct)
+    val expenseAcctBase = baseAcct.copy(key = AccountKey(accountId.convertType(Expenses), baseAcct.key.assetId ),
+      options = AccountOptions(multiAsset = true))
+    val incomeAcctBase = baseAcct.copy(key = AccountKey(accountId.convertType(Income), baseAcct.key.assetId ),
+      options = AccountOptions(multiAsset = true))
+    Seq(cashAcct, incomeAcct, expenseAcct, expenseAcctBase, incomeAcctBase)
   }
 
   def toTransaction : Transaction = {

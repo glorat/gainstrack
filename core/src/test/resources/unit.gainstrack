@@ -1,13 +1,14 @@
-2000-01-01 open Equity:Opening:GBP GBP
+2000-01-01 open Equity:Opening GBP
+  multiAsset: true
 2000-01-01 open Assets:Bank:England GBP
 
 2004-10-14 open Assets:Pension:Barclays GBP
     multiAsset: true
     automaticReinvestment: true
-    fundingAccount: Equity:Opening:GBP
+    fundingAccount: Equity:Opening
 
 2004-10-14 fund Assets:Pension:Barclays 500 GBP
-2004-10-14 fund Assets:Pension:Barclays Equity:Opening:GBP 500 GBP
+2004-10-14 fund Assets:Pension:Barclays Equity:Opening 500 GBP
 2004-10-15 unit Assets:Pension:Barclays 500 BGIL @2 GBP
 2019-04-18 unit Assets:Pension:Barclays 600 BGIL @5 GBP
 2019-04-19 adj Assets:Pension:Barclays 600 BGIL Expenses:Pension:Barclays
