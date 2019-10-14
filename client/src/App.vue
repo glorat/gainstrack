@@ -8,7 +8,7 @@
 
 </style>
 <script>
-  import MyLayout from "@/views/MyLayout";
+  import MyLayout from '@/views/MyLayout';
   export default {
     components: {MyLayout}
   }

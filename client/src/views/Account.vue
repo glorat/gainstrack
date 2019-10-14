@@ -43,20 +43,20 @@
     import axios from 'axios';
 
     export default {
-        name: "Account",
+        name: 'Account',
         props: ['accountId'],
         data() {
             return {
-                info : {accountId:'Loading...', rows:[]},
+                info: {accountId: 'Loading...', rows: []},
             };
         },
-        mounted () {
+        mounted() {
             axios.get('/api/account/' + this.accountId)
                 .then(response => this.info = response.data)
-                .catch(error => console.log(error))
+                .catch(error => this.$notify.error(error))
         },
         methods: {
-            rowClick(row){
+            rowClick(row) {
                 this.$set(row, 'show', !row.show);
             },
         },

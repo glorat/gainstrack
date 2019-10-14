@@ -5,8 +5,8 @@
 </template>
 
 <script>
-    let CodeMirror = require('codemirror/lib/codemirror.js');
-    //require('codemirror/lib/codemirror.css');
+    import CodeMirror from 'codemirror/lib/codemirror.js';
+    import('codemirror/lib/codemirror.css');
     export default {
         name: 'codemirror',
         props: {
@@ -16,7 +16,7 @@
             },
             options: {
                 type: Object,
-                default: function () {
+                default() {
                     return {
                         mode: 'text/javascript',
                         lineNumbers: true,
@@ -25,54 +25,54 @@
                 }
             },
         },
-        data: function () {
+        data() {
             return {
                 skipNextChangeEvent: false
             }
         },
-        ready: function () {
-            var _this = this;
+        ready() {
+            const self = this;
             this.editor = CodeMirror.fromTextArea(this.$el.querySelector('textarea'), this.options);
             this.editor.setValue(this.value);
-            this.editor.on('change', function(cm) {
-                if (_this.skipNextChangeEvent) {
-                    _this.skipNextChangeEvent = false;
+            this.editor.on('change', cm => {
+                if (self.skipNextChangeEvent) {
+                    self.skipNextChangeEvent = false;
                     return
                 }
-                _this.value = cm.getValue();
-                if (!!_this.$emit) {
-                    _this.$emit('change', cm.getValue())
+                self.value = cm.getValue();
+                if (!!self.$emit) {
+                    self.$emit('change', cm.getValue())
                 }
             })
         },
-        mounted: function () {
-            let _this = this;
+        mounted() {
+            const self = this;
             this.editor = CodeMirror.fromTextArea(this.$el.querySelector('textarea'), this.options);
             this.editor.setValue(this.value);
-            this.editor.on('change', function(cm) {
-                if (_this.skipNextChangeEvent) {
-                    _this.skipNextChangeEvent = false;
+            this.editor.on('change', (cm) => {
+                if (self.skipNextChangeEvent) {
+                    self.skipNextChangeEvent = false;
                     return
                 }
-                if (!!_this.$emit) {
-                    _this.$emit('change', cm.getValue());
-                    _this.$emit('input', cm.getValue())
+                if (!!self.$emit) {
+                    self.$emit('change', cm.getValue());
+                    self.$emit('input', cm.getValue())
                 }
             })
         },
         watch: {
-            'value': function (newVal, oldVal) {
-                let editorValue = this.editor.getValue();
+            value(newVal, oldVal) {
+                const editorValue = this.editor.getValue();
                 if (newVal !== editorValue) {
                     this.skipNextChangeEvent = true;
-                    var scrollInfo = this.editor.getScrollInfo();
+                    const scrollInfo = this.editor.getScrollInfo();
                     this.editor.setValue(newVal);
                     this.editor.scrollTo(scrollInfo.left, scrollInfo.top)
                 }
             },
-            'options': function (newOptions, oldVal) {
+            options(newOptions, oldVal) {
                 if (typeof newOptions === 'object') {
-                    for (var optionName in newOptions) {
+                    for (const optionName in newOptions) {
                         if (newOptions.hasOwnProperty(optionName)) {
                             this.editor.setOption(optionName, newOptions[optionName])
                         }
@@ -80,7 +80,7 @@
                 }
             }
         },
-        beforeDestroy: function () {
+        beforeDestroy() {
             if (this.editor) {
                 this.editor.toTextArea()
             }

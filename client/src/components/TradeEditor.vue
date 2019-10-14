@@ -9,12 +9,12 @@
 </template>
 
 <script>
-    import BalanceEditor from "./BalanceEditor.vue";
+    import BalanceEditor from './BalanceEditor.vue';
 
     export default {
-        name: "TradeEditor",
+        name: 'TradeEditor',
         components: {BalanceEditor},
-        props: {cmd:Object},
+        props: {cmd: Object},
         watch: {
             toGainstrack() {
                 const str = this.toGainstrack;
@@ -27,7 +27,7 @@
         },
         computed: {
             toGainstrack() {
-                let baseStr = `${this.cmd.date} trade ${this.cmd.accountId} ${this.cmd.security.value} ${this.cmd.security.ccy} @${this.cmd.price.value} ${this.cmd.price.ccy} C${this.cmd.commission.value} ${this.cmd.commission.ccy}`;
+                const baseStr = `${this.cmd.date} trade ${this.cmd.accountId} ${this.cmd.security.value} ${this.cmd.security.ccy} @${this.cmd.price.value} ${this.cmd.price.ccy} C${this.cmd.commission.value} ${this.cmd.commission.ccy}`;
                 return baseStr
             }
         },

@@ -14,17 +14,18 @@
 </template>
 
 <script>
-    import Transfer from "./Transfer";
-    import TradeEditor from "./TradeEditor";
+    import Transfer from './Transfer';
+    import TradeEditor from './TradeEditor';
+
     export default {
-        name: "CommandEditor",
+        name: 'CommandEditor',
         components: {TradeEditor, Transfer},
         methods: {
-          gainstrackChanged(str) {
-              this.$emit('gainstrack-changed', str);
-          }
+            gainstrackChanged(str) {
+                this.$emit('gainstrack-changed', str);
+            }
         },
-        props: {cmd:Object, type:String},
+        props: {cmd: Object, type: String},
     }
 </script>
 

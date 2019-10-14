@@ -23,11 +23,11 @@
 </template>
 
 <script>
-    import MyAside from "./MyAside";
+    import MyAside from './MyAside';
 
     export default {
-        name: "MyLayout",
-        data: function() {
+        name: 'MyLayout',
+        data() {
             return {page_title: 'TODO Title'};
         },
         components: {MyAside}

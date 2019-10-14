@@ -28,12 +28,12 @@
     import axios from 'axios';
 
     export default {
-        name: "IrrDetail",
+        name: 'IrrDetail',
         props: ['accountId'],
         data() {
-            return {detail:[]}
+            return {detail: []}
         },
-        mounted () {
+        mounted() {
             const notify = this.$notify;
             axios.get('/api/irr/' + this.accountId)
                 .then(response => this.detail = response.data)

@@ -26,11 +26,11 @@
     import axios from 'axios';
 
     export default {
-        name: "IrrSummary",
+        name: 'IrrSummary',
         data() {
-            return {info:[]}
+            return {info: []}
         },
-        mounted () {
+        mounted() {
             const notify = this.$notify;
             axios.get('/api/irr/')
                 .then(response => this.info = response.data)

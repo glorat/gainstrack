@@ -25,19 +25,21 @@
     import codemirror from '../components/CodeMirror.vue';
 
     export default {
-        name: "Editor",
-        data () {return {info:{source:"Loading..."}}},
+        name: 'Editor',
+        data() {
+            return {info: {source: 'Loading...'}}
+        },
         components: {codemirror},
-        mounted () {
+        mounted() {
             const notify = this.$notify;
             axios.get('/api/editor/')
                 .then(response => this.info = response.data)
                 .catch(error => notify.error(error))
         },
-        methods : {
+        methods: {
             editorSave() {
                 const notify = this.$notify;
-                axios.put('/api/source/', {source : this.info.source, filePath: '', entryHash:'', sha256sum:''})
+                axios.put('/api/source/', {source: this.info.source, filePath: '', entryHash: '', sha256sum: ''})
                     .then(response => notify.success('Saved'))
                     .then(() => this.$store.dispatch('reload'))
                     .catch(error => notify.error(error))

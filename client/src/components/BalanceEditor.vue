@@ -6,11 +6,9 @@
 </template>
 
 <script>
-    // let x:Balance = new Balance();
-
     export default {
-        name: "BalanceEditor",
-        props: {value:Object},
+        name: 'BalanceEditor',
+        props: {value: Object},
         methods: {
             onChanged() {
                 this.$emit('input', this.value);

@@ -14,18 +14,18 @@
 </template>
 
 <script>
-    import AccountCreation from "../models";
+    import AccountCreation from '../models';
     import axios from 'axios';
 
     export default {
-        name: "CommandSummary",
+        name: 'CommandSummary',
         data() {
-            return {info: Array<AccountCreation>[]}
+            return {info: Array < AccountCreation > []}
         },
-        mounted () {
+        mounted() {
             axios.get('/api/command/')
                 .then(response => this.info = response.data)
-                .catch(error => console.log(error))
+                .catch(error => this.$notify.error(error))
         },
     }
 </script>

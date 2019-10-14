@@ -15,11 +15,10 @@
 </template>
 
 <script>
-    import TreeTable from "../components/TreeTable";
-    import axios from 'axios';
+    import TreeTable from '../components/TreeTable';
 
     export default {
-        name: "BalanceSheet",
+        name: 'BalanceSheet',
         components: {TreeTable},
         data() {
             return {};
@@ -29,9 +28,9 @@
                 return this.$store.state.balances
             }
         },
-        mounted () {
+        mounted() {
             this.$store.dispatch('balances')
-                .catch(error => console.log(error))
+                .catch(error => this.$notify.error(error))
         },
     }
 </script>
