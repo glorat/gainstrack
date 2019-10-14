@@ -16,3 +16,4 @@ eventstore
 dlcrypto
 dlstore
 data/
+*.swp

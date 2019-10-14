@@ -1,3 +1,4 @@
 .git
 client
 Dockerfile
+*.swp
