@@ -13,17 +13,17 @@
 </template>
 
 <script>
-    import BalanceEditor from "./BalanceEditor.vue";
+    import BalanceEditor from './BalanceEditor.vue';
 
     export default {
-        name: "Transfer",
-        props: {cmd:Object},
+        name: 'Transfer',
+        props: {cmd: Object},
         components: {BalanceEditor},
         methods: {
-          inputChanged() {
-              const str = this.toGainstrack;
-              this.$emit('gainstrack-changed', str);
-          }
+            inputChanged() {
+                const str = this.toGainstrack;
+                this.$emit('gainstrack-changed', str);
+            }
         },
         mounted() {
             const str = this.toGainstrack;
@@ -33,7 +33,7 @@
             toGainstrack() {
                 let baseStr = `${this.cmd.date} tfr ${this.cmd.source} ${this.cmd.dest} ${this.cmd.sourceValue.value} ${this.cmd.sourceValue.ccy}`;
                 if (this.cmd.sourceValue.value !== this.cmd.targetValue.value
-                || this.cmd.sourceValue.ccy !== this.cmd.targetValue.ccy) {
+                    || this.cmd.sourceValue.ccy !== this.cmd.targetValue.ccy) {
                     baseStr += ` ${this.cmd.targetValue.value} ${this.cmd.targetValue.ccy}`;
                 }
                 return baseStr

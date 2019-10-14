@@ -25,15 +25,16 @@
 </template>
 
 <script>
-    import TreeTableNode from "./TreeTableNode";
+    import TreeTableNode from './TreeTableNode';
 
     export default {
-        name: "TreeTable",
-        props: {node:Object},
-        data: function() {
+        name: 'TreeTable',
+        props: {node: Object},
+        data() {
             return {
                 table_hover_text: 'todo hover',
-                depth: 0,/*
+                depth: 0,
+                /*
                 node: {
                     name: 'Assets:Foo',
                     assetBalance: ['100 USD', '50 GBP'],
@@ -53,8 +54,8 @@
             }
         },
         computed: {
-            classObject: function () {
-                let ret = {};
+            classObject() {
+                const ret = {};
                 ret['depth-' + this.depth] = true;
                 ret['has-children'] = this.node.children && this.node.children.length > 0;
                 return ret;

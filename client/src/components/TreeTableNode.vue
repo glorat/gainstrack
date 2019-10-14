@@ -21,14 +21,14 @@
 
 <script>
     export default {
-        name: "TreeTableNode",
+        name: 'TreeTableNode',
         props: ['node', 'depth'],
         data() {
-            return {toggled:false}
+            return {toggled: false}
         },
         computed: {
-            classObject: function () {
-                let ret = {};
+            classObject() {
+                const ret = {};
                 ret['depth-' + this.depth] = true;
                 return ret;
             }

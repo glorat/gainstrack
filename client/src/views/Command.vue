@@ -29,47 +29,43 @@
 
 <script>
     import axios from 'axios';
-    import CommandEditor from "../components/CommandEditor";
-    const _ = require('lodash');
-
+    import CommandEditor from '../components/CommandEditor';
+    import _ from 'lodash';
 
     export default {
-        name: "Command",
-        components: {CommandEditor: CommandEditor},
+        name: 'Command',
+        components: {CommandEditor},
         props: ['accountId'],
         data() {
             return {
-                info : {accountId:'Loading...', rows:[]},
+                info: {accountId: 'Loading...', rows: []},
                 commandStr: '',
                 selectedCommand: undefined,
             };
         },
-        mounted () {
+        mounted() {
             axios.get('/api/command/' + this.accountId)
                 .then(response => this.info = response.data)
-                .catch(error => console.log(error))
+                .catch(error => this.$notify.error(error))
         },
         methods: {
             gainstrackChange(ev) {
-              this.commandStr = ev;
-              console.log(ev);
+                this.commandStr = ev;
             },
             selectCommand(cmd) {
                 this.selectedCommand = _.cloneDeep(cmd);
             },
             testCommand() {
                 const str = this.commandStr;
-                console.log(str);
-                axios.post('/api/post/test', {str:str})
-                    .then(response => console.log(response.data))
-                    .catch(error => console.log(error))
+                axios.post('/api/post/test', {str})
+                    .then(response => this.$notify.success(response.data))
+                    .catch(error => this.$notify.error(error))
             },
             addCommand() {
                 const str = this.commandStr;
-                console.log(str);
-                axios.post('/api/post/add', {str:str})
-                    .then(response => console.log(response.data))
-                    .catch(error => console.log(error))
+                axios.post('/api/post/add', {str})
+                    .then(response => this.$notify.success(response.data))
+                    .catch(error => this.$notify.error(error))
             },
         }
     }

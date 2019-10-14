@@ -24,7 +24,7 @@
     import axios from 'axios';
 
     export default {
-        name: "Prices",
+        name: 'Prices',
         data() {
             return {
                 prices: [/*
@@ -35,14 +35,15 @@
                         values: [0.6,0.7]
                     }*/
                 ],
-            }
+            };
         },
-        mounted () {
+        mounted() {
+            const notify = this.$notify;
             axios.get('/api/prices/')
                 .then(response => this.prices = response.data)
-                .catch(error => console.log(error))
+                .catch(error => notify.error(error));
         },
-    }
+    };
 </script>
 
 <style scoped>

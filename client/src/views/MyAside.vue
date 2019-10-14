@@ -20,35 +20,14 @@
 
 <script lang="ts">
     import axios from 'axios';
-    import { Component, Vue } from "vue-property-decorator";
+    import { Component, Vue } from 'vue-property-decorator';
 
     @Component
     export default class extends Vue {
-        beforeUpload(file: File) {
-            const notify = this.$notify;
-            const store = this.$store;
 
-            if (file.name.match(/\.gainstrack$/)) {
-                console.log(`Trying to upload a ${file.type} of size ${file.size}`);
-                let reader = new FileReader();
-                reader.onload = function() {
-                    const text = reader.result;
-                    axios.put('/api/source/', {source: text, filePath: '', entryHash: '', sha256sum: ''})
-                        .then(response => notify.success('Reloaded'))
-                        .then(() => store.dispatch('reload'));
-                };
-                reader.onerror = function() {
-                    notify.error(<string>reader.result)
-                };
-                reader.readAsText(file);
-            } else {
-                notify.warning("Can only upload .gainstrack files");
-            }
-            return false;
-        }
-
-        private menuItems:string[] = ['foo', 'bar'];
-        private config : any = {
+        private menuItems: string[] = ['foo', 'bar'];
+        /* tslint:disable:object-literal-key-quotes */
+        private config: any = {
             all_pages: {
                 'balance_sheet': ['Balance Sheet', 'g b'],
                 'prices': ['Prices', 'g c'],
@@ -76,6 +55,29 @@
                 ['editor']
             ]
         };
+
+        private beforeUpload(file: File) {
+            const notify = this.$notify;
+            const store = this.$store;
+
+            if (file.name.match(/\.gainstrack$/)) {
+                // console.log(`Trying to upload a ${file.type} of size ${file.size}`);
+                const reader = new FileReader();
+                reader.onload = () => {
+                    const text = reader.result;
+                    axios.put('/api/source/', {source: text, filePath: '', entryHash: '', sha256sum: ''})
+                        .then(response => notify.success('Reloaded'))
+                        .then(() => store.dispatch('reload'));
+                };
+                reader.onerror = () => {
+                    notify.error(reader.result as string)
+                };
+                reader.readAsText(file);
+            } else {
+                notify.warning('Can only upload .gainstrack files');
+            }
+            return false;
+        }
     }
 </script>
 
