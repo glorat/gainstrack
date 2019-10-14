@@ -9,7 +9,6 @@ RUN sbt update
 # Then build
 COPY web web
 COPY core core
-COPY ./* /
 RUN sbt assembly
 
 FROM openjdk:8-jre-alpine
