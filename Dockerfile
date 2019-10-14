@@ -7,10 +7,15 @@ COPY core/build.sbt core/build.sbt
 COPY web/build.sbt web/build.sbt
 RUN sbt update
 # Then build
-COPY . .
+COPY web web
+COPY core core
+COPY ./* /
 RUN sbt assembly
 
 FROM openjdk:8-jre-alpine
+RUN apk add --update python3 python3-dev libxml2-dev libxslt-dev gcc musl-dev g++
+RUN pip3 install fava
+
 RUN mkdir -p /app
 WORKDIR /app
 COPY ./run_jar.sh ./
