@@ -1,0 +1,264 @@
+
+
+
+;; Automated mortgage payments from the savings account.
+2008-01-12 * "MORTGAGE PAYMENT"
+  Assets:BestBank:Savings                                             -464.46 USD
+  Liabilities:BestBank:Mortgage:Loan                                           171.01 USD
+  Expenses:Home:Monthly:Loan-Interest
+
+2008-01-27 * "MORTGAGE PAYMENT"
+  Assets:BestBank:Savings                                             -464.46 USD
+  Liabilities:BestBank:Mortgage:Loan                                           171.01 USD
+  Expenses:Home:Monthly:Loan-Interest
+
+2008-02-12 * "MORTGAGE PAYMENT"
+  Assets:BestBank:Savings                                             -464.46 USD
+  Liabilities:BestBank:Mortgage:Loan                                           171.01 USD
+  Expenses:Home:Monthly:Loan-Interest
+
+2008-02-27 * "MORTGAGE PAYMENT"
+  Assets:BestBank:Savings                                             -464.46 USD
+  Liabilities:BestBank:Mortgage:Loan                                           171.01 USD
+  Expenses:Home:Monthly:Loan-Interest
+
+2008-03-12 * "MORTGAGE PAYMENT"
+  Assets:BestBank:Savings                                             -464.46 USD
+  Liabilities:BestBank:Mortgage:Loan                                           171.01 USD
+  Expenses:Home:Monthly:Loan-Interest
+
+2008-03-27 * "MORTGAGE PAYMENT"
+  Assets:BestBank:Savings                                             -464.46 USD
+  Liabilities:BestBank:Mortgage:Loan                                           171.01 USD
+  Expenses:Home:Monthly:Loan-Interest
+
+
+
+* Liabilities:Credit-Card:VISA
+
+2007-12-31 pad Liabilities:Credit-Card:VISA  Equity:Opening-Balances
+2008-01-01 balance Liabilities:Credit-Card:VISA  -791.34 USD
+
+;; Paying back my credit card.
+2008-01-22 * "Online Banking payment - 5051 - VISA"
+  Assets:BestBank:Checking     -791.34 USD
+  Liabilities:Credit-Card:VISA
+
+
+;; Expenses at restaurants on credit card.
+2008-01-15 * "Cafe Imagination" ""
+  Liabilities:Credit-Card:VISA
+  Expenses:Food:Restaurant              47.00 USD
+
+2008-01-19 * "Soupe Bol" ""
+  Liabilities:Credit-Card:VISA          -21.00 USD
+  Expenses:Food:Restaurant
+
+2008-01-27 * "Scola Pasta" ""
+  Liabilities:Credit-Card:VISA
+  Expenses:Food:Restaurant              51.17 USD
+
+
+;; Cell phone bill via credit crad.
+2008-01-19 * "FIDO" ""
+  Liabilities:Credit-Card:VISA
+  Expenses:Communications:Phone         121.96 USD
+
+
+
+
+
+
+
+
+
+
+
+* Expenses:Insurance:Life
+
+;; Estimate of value of life insurance policy, to account for
+;; total net worth.
+2008-01-01 * "Life insurance policy resale value"
+  Expenses:Insurance:Life     4407.06 USD
+  Equity:Opening-Balances
+
+
+
+
+
+
+
+* Assets:Fixed:Home
+
+;; You could use this account in order to reevaluate your home.
+
+
+
+
+
+
+
+* Expenses:Home:Monthly:Condo-Fees
+
+2007-12-31 pad Liabilities:Condo-Management      Equity:Opening-Balances
+
+2008-01-01 balance Liabilities:Condo-Management      -41.11 USD
+
+2008-01-01 * "Propri-Manage" ""
+  Expenses:Home:Monthly:Condo-Fees        212.61 USD
+  Liabilities:Condo-Management
+
+2008-01-14 * "(998) Propri-Manage" "cheque sent by snail mail"
+  Liabilities:Condo-Management         800.00 USD
+  Assets:BestBank:Checking
+
+2008-02-01 * "Propri-Manage" ""
+  Expenses:Home:Monthly:Condo-Fees        212.61 USD
+  Liabilities:Condo-Management
+
+2008-03-01 * "Propri-Manage" ""
+  Expenses:Home:Monthly:Condo-Fees        212.61 USD
+  Liabilities:Condo-Management
+
+2008-03-10 * "Propri-Manage" "special billing, spring works"
+  Expenses:Home:Monthly:Condo-Fees     61.25 USD
+  Liabilities:Condo-Management
+
+2008-04-01 balance Liabilities:Condo-Management     59.81 USD
+
+
+
+
+
+
+
+* Assets:Cash
+* Expenses:*
+
+
+;; Because I don't track individual cash expenses very tightly,
+;; I still need to distribute the cash that disappeared into
+;; appropriate expense categories. What I like to do is
+;; guesstimate that about 80% of it goes into restaurants, and
+;; 20% into wine bars. What frequency and categories you choose
+;; to use is highly dependent on your lifestyle...
+
+2008-01-02 * "Distribution of cash expenses"
+  Expenses:Food:Restaurant   300.00 USD
+  Expenses:Food:Alcool       100.00 USD
+  Assets:Cash
+
+2008-01-16 * "Distribution of cash expenses"
+  Expenses:Food:Restaurant   300.00 USD
+  Expenses:Food:Alcool       100.00 USD
+  Assets:Cash
+
+2008-02-02 * "Distribution of cash expenses"
+  Expenses:Food:Restaurant   300.00 USD
+  Expenses:Food:Alcool       100.00 USD
+  Assets:Cash
+
+2008-02-16 * "Distribution of cash expenses"
+  Expenses:Food:Restaurant   300.00 USD
+  Expenses:Food:Alcool       100.00 USD
+  Assets:Cash
+
+2008-03-02 * "Distribution of cash expenses"
+  Expenses:Food:Restaurant   300.00 USD
+  Expenses:Food:Alcool       100.00 USD
+  Assets:Cash
+
+2008-03-16 * "Distribution of cash expenses"
+  Expenses:Food:Restaurant   300.00 USD
+  Expenses:Food:Alcool       100.00 USD
+  Assets:Cash
+
+
+
+;;
+;; Some common cash expenses.
+;;
+
+2008-02-18 * "DMV" "Renewal of driver's license."
+  Expenses:Govt-Services     110.00 USD
+  Assets:Cash
+
+2008-01-21 * "WHOLE FOODS" ""
+  Expenses:Food:Grocery    54.03 USD
+  Assets:Cash
+
+2008-01-21 * "USPS" "sent package to mom"
+  Expenses:Communications:Mail      4.43 USD
+  Assets:Cash
+
+2008-02-04 * "taxi home from meeting"
+  Expenses:Transportation:Taxi  12.00 USD
+  Assets:Cash
+
+
+
+;; Short weekend trip to Skii Mountain.
+;;
+;; You can use the pushtag and poptag directives to mark all
+;; transactions between them with a specific tag. Later on you
+;; can filter the postings to a tag by using a cmdline. This
+;; allows you to find out what expenses were incurred during a
+;; specific trip.
+
+pushtag #ski-trip
+
+2008-01-27 * "SUNONO" "fill'er up"
+  Expenses:Car:Gas            40 USD
+  Assets:Cash
+
+2008-01-27 * "SKII" "Lift tickets"
+  Expenses:Sports        120 USD
+  Assets:Cash
+
+2008-01-27 * "Dinner at chalet"
+  Expenses:Food:Restaurant      35.33 USD
+  Assets:Cash
+
+2008-01-28 * "breakfast"
+  Expenses:Food:Restaurant      17.23 USD
+  Assets:Cash
+
+2008-01-28 * "a new hat, it was cold"
+  Expenses:Clothes              40.02 USD
+  Assets:Cash
+
+poptag #ski-trip
+
+
+
+
+2008-03-03 * "ALDO" "new shoes"
+  Expenses:Clothes              121.20 USD
+  Assets:Cash
+
+2008-02-24 * "AMC" "movies with girlfriend"
+  Expenses:Fun:Movie           24 USD
+  Assets:Cash
+
+2008-03-06 * "Barnes & Noble" "books on accounting"
+  Expenses:Books            74.43 USD
+  Assets:Cash      -74.43 USD
+
+2008-02-03 * "ITHURTS MEDICAL CENT" "x-ray for broken bones"
+  Expenses:Medical           312.00 USD
+  Assets:Cash
+
+
+2008-03-02 * "ZEN CENTER" "Donation to Zen center"
+  Expenses:Charity        50 USD
+  Assets:Cash
+
+
+
+
+2008-03-01 balance  Assets:Cash                          200.00 CAD
+2008-03-01 balance  Assets:Cash                          30.96 USD
+
+2008-03-15 price USD  1.0934 CAD
+
+2013-07-03 event "location" "New York City"

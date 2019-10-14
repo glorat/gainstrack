@@ -85,4 +85,10 @@ object BalanceState {
     val initMap:Map[AccountId,SortedMap[LocalDate,Fraction]] = accounts.map(x => x.name -> emptySeries).toMap
     BalanceState(accounts, initMap)
   }
+
+  def mock(accounts: Set[AccountCreation]) : BalanceState = {
+    val mockSeries : SortedMap[LocalDate,Fraction] = SortedMap(MinDate -> 9999)
+    val initMap:Map[AccountId,SortedMap[LocalDate,Fraction]] = accounts.map(x => x.name -> mockSeries).toMap
+    BalanceState(accounts, initMap)
+  }
 }

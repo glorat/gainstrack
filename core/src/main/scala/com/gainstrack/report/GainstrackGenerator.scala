@@ -12,12 +12,14 @@ case class GainstrackGenerator(originalCommands:SortedSet[AccountCommand])  {
   val globalCommand = originalCommands.head.asInstanceOf[GlobalCommand]
 
   // First pass for accounts
-  val acctState:AccountState =
+  private val firstAcctState:AccountState =
     originalCommands.foldLeft(AccountState()) ((state, ev) => state.handle(ev))
+
   // Fill in defaulted accounts
   private val expander =
-    originalCommands.foldLeft(CommandAccountExpander(acctState.accounts)) ((state, ev) => state.handle(ev))
+    originalCommands.foldLeft(CommandAccountExpander(firstAcctState)) ((state, ev) => state.handle(ev))
   val finalCommands = expander.cmds
+  val acctState = firstAcctState.copy(accounts = expander.acctState.accounts)
 
   // Second pass for balances
   val balanceState:BalanceState =
@@ -90,16 +92,16 @@ case class GainstrackGenerator(originalCommands:SortedSet[AccountCommand])  {
       val errLines = stdout.filter(_.startsWith(filename))
       val BcParse = (filename + raw":([0-9]+):\s+(.*)").r
       val orig = bcs
-      errLines.foreach(line => {
+      val res = errLines.flatMap(line => {
         line match {
           case BcParse(lineNumber,message) => {
-            println(orig(parseNumber(lineNumber).toInt-1).origin.toGainstrack)
-            println (message)
+            Some(orig(parseNumber(lineNumber).toInt-1).origin.toGainstrack.mkString("\n") +"\n" + message)
           }
+          case _ => None
         }
 
       })
-      throw new IllegalStateException("There are errors in the inputs")
+      throw new IllegalStateException("There are errors in the inputs\n" + res.mkString("\n"))
     }
 
   }

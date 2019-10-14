@@ -41,10 +41,25 @@ case class BalanceAdjustment(
       val unitIncrease : Posting = Posting(targetAccountId, newUnits )
       val income:Posting = Posting(adjAccount, -newUnits)
       // Apply padding the day before since the balance assertion happens in the morning of the declared day
-      val tx = Transaction(date.minusDays(1), s"Adjustment: ${oldValue.toDouble} -> ${balance}", Seq(unitIncrease, income), this)
+      val description = s"Adjustment: ${oldValue.toDouble} -> ${balance}"
+      val tfr = Transfer(adjAccount, targetAccountId, date.minusDays(1), newUnits, newUnits, description)
+      val tfrExpand = tfr.toTransfers(accts)
+      val txs: Seq[Transaction] = tfrExpand.map(_.toTransaction)
+      //val tx = Transaction(date.minusDays(1), description, Seq(unitIncrease, income), this)
       val balcmd = BalanceAssertion(date, targetAccountId, balance, this)
-      Seq[BeancountCommand](tx, balcmd)
+      txs :+ balcmd
     }
+  }
+
+  def toTransfers(accts:Set[AccountCreation]) : Seq[Transfer] = {
+    val account = accts.find(_.accountId == accountId).getOrElse(throw new IllegalStateException(s"Account ${accountId} is not defined"))
+    val targetAccountId = if (account.options.multiAsset) accountId.subAccount(balance.ccy.symbol) else accountId
+    val newUnits = Balance(9999, balance.ccy.symbol)
+
+    val description = s"Adjustment: TO BE FILLED IN"
+    val tfr = Transfer(adjAccount, targetAccountId, date.minusDays(1), newUnits, newUnits, description)
+    val tfrExpand = tfr.toTransfers(accts)
+    tfrExpand
   }
 
   def toGainstrack : Seq[String] = {

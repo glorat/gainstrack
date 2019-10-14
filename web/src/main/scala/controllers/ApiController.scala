@@ -205,6 +205,12 @@ class ApiController (implicit val ec :ExecutionContext) extends ScalatraServlet 
     val ccys = bg.priceState.ccys
     StateSummaryDTO(accts.toSeq.sorted, ccys.toSeq.sorted)
   }
+/*
+  error {
+    case e: Throwable => {
+
+    }
+  }*/
 }
 //case class BalanceSheet(balanceSheet: Map[String,TreeTable])
 case class ApiSourceRequest(filePath:String, entryHash:String, source:String, sha256sum: String)

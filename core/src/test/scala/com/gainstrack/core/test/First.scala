@@ -93,8 +93,9 @@ class First extends FlatSpec {
   it should "fill in intermediate accounts" in {
     val newState = acctState.withInterpolatedAccounts
     val newAccounts = newState.accounts.&~(acctState.accounts)
+
     newAccounts.foreach(a => println(s"${a.toBeancount}"))
-    assert(newAccounts.size == 18)
+    assert(newAccounts.size == 14)
   }
 
   val bg = GainstrackGenerator(cmds)

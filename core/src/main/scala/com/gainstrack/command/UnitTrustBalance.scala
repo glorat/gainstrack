@@ -68,8 +68,11 @@ case class UnitTrustBalance(
     val cashAcct = baseAcct.copy(key = AccountKey(cashAccountId, price.ccy), options = baseAcct.options.copy(multiAsset = false))
     val incomeAcct = baseAcct.copy(key = AccountKey(incomeAccountId, price.ccy), options = baseAcct.options.copy(multiAsset = false))
     val expenseAcct = baseAcct.copy(key = AccountKey(expenseAccountId, price.ccy), options = baseAcct.options.copy(multiAsset = false))
-
-    Seq(cashAcct, incomeAcct, expenseAcct)
+    val expenseAcctBase = baseAcct.copy(key = AccountKey(accountId.convertType(Expenses), baseAcct.key.assetId ),
+      options = AccountOptions(multiAsset = true))
+    val incomeAcctBase = baseAcct.copy(key = AccountKey(accountId.convertType(Income), baseAcct.key.assetId ),
+      options = AccountOptions(multiAsset = true))
+    Seq(cashAcct, incomeAcct, expenseAcct, expenseAcctBase, incomeAcctBase)
   }
 
   def toGainstrack : Seq[String] = {

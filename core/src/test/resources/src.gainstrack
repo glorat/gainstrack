@@ -5,9 +5,8 @@ option "operating_currency" "GBP"
 2000-01-01 open Assets:Bank:NationwideSavings GBP
 2000-01-01 open Assets:Bank:HSBCUK GBP
 1970-01-01 open Expenses:Investment:Fees:USD USD
-2010-01-01 open Equity:Opening:HKD HKD
-2010-01-01 open Equity:Opening:CNY CNY
-2010-01-01 open Equity:Opening:GBP GBP
+2010-01-01 open Equity:Opening GBP
+  multiAsset: true
 2010-01-01 open Income:Salary:CNY CNY
     fundingAccount: Assets:HSBCCN
 2010-01-01 open Assets:Investment:HSBC USD
@@ -17,24 +16,24 @@ option "operating_currency" "GBP"
 2010-01-01 open Assets:Investment:Zurich GBP
 2010-01-01 open Assets:Investment:OldMutual GBP
     multiAsset: true
-2014-01-04 adj Assets:Bank:Nationwide 25613.71 GBP Equity:Opening:GBP
-;"2018-07-31 adj Assets:Bank:Nationwide 57721.15 GBP Equity:Opening:GBP
+2014-01-04 adj Assets:Bank:Nationwide 25613.71 GBP Equity:Opening
+;"2018-07-31 adj Assets:Bank:Nationwide 57721.15 GBP Equity:Opening
 
-2019-04-01 adj Assets:Bank:Nationwide 134703.49 GBP Equity:Opening:GBP
-2019-04-01 adj Assets:Bank:NationwideSavings 53932.10 GBP Equity:Opening:GBP
-2019-02-14 adj Assets:HSBCHK 33030.33 HKD Equity:Opening:HKD
-2019-01-01 adj Assets:HSBCHK 138668.37 HKD Equity:Opening:HKD
-2019-01-01 adj Assets:HSBCCN 547413.70 CNY Equity:Opening:CNY
+2019-04-01 adj Assets:Bank:Nationwide 134703.49 GBP Equity:Opening
+2019-04-01 adj Assets:Bank:NationwideSavings 53932.10 GBP Equity:Opening
+2019-02-14 adj Assets:HSBCHK 33030.33 HKD Equity:Opening
+2019-01-01 adj Assets:HSBCHK 138668.37 HKD Equity:Opening
+2019-01-01 adj Assets:HSBCCN 547413.70 CNY Equity:Opening
 2018-07-26 earn Salary 25000.00 CNY
 2018-07-26 earn Salary Assets:HSBCCN 25000.00 CNY
 
-2013-07-01 adj Assets:Investment:Zurich:GBP 265000 GBP Equity:Opening:GBP
+2013-07-01 adj Assets:Investment:Zurich:GBP 265000 GBP Equity:Opening
 2019-01-01 adj Assets:Investment:Zurich:GBP 348045.34 GBP Income:Investment:Zurich:GBP
 2019-01-01 trade Assets:Investment:Zurich 30511.46 AMER @5.09 GBP
 2019-01-01 trade Assets:Investment:Zurich 75296 FTSE @2.1 GBP
 2019-01-01 trade Assets:Investment:Zurich 28146.69 TBOND @1.23 GBP
 
-2019-01-01 adj Assets:Investment:OldMutual 80300.28 GBP Equity:Opening:GBP
+2019-01-01 adj Assets:Investment:OldMutual 80300.28 GBP Equity:Opening
 2019-01-01 unit Assets:Investment:OldMutual 2221.2587 QS90 @15.03 GBP
 2019-01-01 unit Assets:Investment:OldMutual 525.5707 OPXC @35.02 GBP
 2019-01-01 trade Assets:Investment:OldMutual 538.2539 OPY7 @32.22 GBP
