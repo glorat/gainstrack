@@ -95,7 +95,7 @@ class First extends FlatSpec {
     val newAccounts = newState.accounts.&~(acctState.accounts)
 
     newAccounts.foreach(a => println(s"${a.toBeancount}"))
-    assert(newAccounts.size == 14)
+    assert(newAccounts.size == 11)
   }
 
   val bg = GainstrackGenerator(cmds)
