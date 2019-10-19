@@ -141,7 +141,7 @@ class ApiController (implicit val ec :ExecutionContext) extends ScalatraServlet 
     val txs = bg.txState.txsUnderAccount(accountId)
 
     // In reverse chrono order
-    val commands = txs.map(_.origin).toSet.toSeq.sorted.reverse
+    val commands = txs.map(_.origin).distinct.reverse
 
     val balanceFor : AccountCommand => PositionSet = {cmd =>
 
