@@ -1,21 +1,27 @@
 package com.gainstrack.core.test
 
+import java.io.File
+import java.nio.file.{Files, Paths}
+
 import com.gainstrack.command._
 import com.gainstrack.core._
 import com.gainstrack.report.{AccountInvestmentReport, GainstrackGenerator, PriceState}
-import org.scalatest.FlatSpec
+import org.scalatest.{BeforeAndAfterEach, FlatSpec, Ignore, Tag}
 
 import scala.collection.SortedSet
 
-class Real extends FlatSpec {
+object RealDataAvailable extends Tag(if (Files.exists(Paths.get( s"data/real.gainstrack"))) "" else classOf[Ignore].getName)
+
+
+class Real extends FlatSpec with BeforeAndAfterEach {
   val parser = new GainstrackParser
   val realFile = "real"
-  parser.parseFile(s"data/${realFile}.gainstrack")
-  val bg = new GainstrackGenerator(parser.getCommands)
 
-  lazy val priceState : PriceState = bg.priceState
+  "parser" should "parseFile" taggedAs RealDataAvailable in {
+    parser.parseFile(s"data/${realFile}.gainstrack")
+  }
 
-  "parser" should "roundtrip" in {
+  it should "roundtrip" taggedAs RealDataAvailable in {
     val cmds = parser.getCommands
     cmds.foreach(cmd => {
       val p = new GainstrackParser
@@ -27,18 +33,22 @@ class Real extends FlatSpec {
     })
   }
 
-  "Real case" should "generate beancount" in {
+  "Real case" should "generate beancount" taggedAs RealDataAvailable in {
+    val bg = new GainstrackGenerator(parser.getCommands)
     bg.writeBeancountFile(s"/tmp/${realFile}.beancount")
   }
 
-  it should "imply prices" in {
+  it should "imply prices" taggedAs RealDataAvailable in {
+    val bg = new GainstrackGenerator(parser.getCommands)
+    lazy val priceState : PriceState = bg.priceState
     priceState
   }
 
   val fromDate = parseDate("1980-01-01")
   val queryDate = java.time.LocalDate.now
 
-  it should "calculate IRR for investment accounts" in {
+  it should "calculate IRR for investment accounts" taggedAs RealDataAvailable in {
+    val bg = new GainstrackGenerator(parser.getCommands)
     val assetClasses = Seq("Bank","ISA","Property", "Investment")
 
     // FIXME: Don't check AccountId.name
@@ -55,7 +65,7 @@ class Real extends FlatSpec {
     invAccts.foreach(account => {
       val accountId = account.accountId
       val ccy = account.key.assetId
-      val accountReport = new AccountInvestmentReport(accountId, ccy, fromDate, queryDate, bg.acctState, bg.balanceState, bg.txState, priceState)
+      val accountReport = new AccountInvestmentReport(accountId, ccy, fromDate, queryDate, bg.acctState, bg.balanceState, bg.txState, bg.priceState)
       println(s"${accountId} ${accountReport.endBalance}")
       accountReport.cashflowTable.sorted.foreach(cf => {
         println(s"   ${cf.date} ${cf.value}")
@@ -65,23 +75,26 @@ class Real extends FlatSpec {
     })
   }
 
-  it should "calc sane irrs for my Zurich" in {
+  it should "calc sane irrs for my Zurich" taggedAs RealDataAvailable in {
+    val bg = new GainstrackGenerator(parser.getCommands)
     val accountId = AccountId("Assets:Investment:Zurich")
-    val rep = new AccountInvestmentReport(accountId, AssetId("GBP"), fromDate, queryDate, bg.acctState, bg.balanceState, bg.txState, priceState)
+    val rep = new AccountInvestmentReport(accountId, AssetId("GBP"), fromDate, queryDate, bg.acctState, bg.balanceState, bg.txState, bg.priceState)
 
     assert(rep.cashflowTable.irr < 0.062)
     assert(rep.cashflowTable.irr > 0.044)
   }
 
-  it should "calc sane irrs for my PP" in {
+  it should "calc sane irrs for my PP" taggedAs RealDataAvailable in {
+    val bg = new GainstrackGenerator(parser.getCommands)
     val accountId = AccountId("Assets:Property:PP")
-    val rep = new AccountInvestmentReport(accountId, AssetId("GBP"), fromDate, queryDate, bg.acctState, bg.balanceState, bg.txState, priceState)
+    val rep = new AccountInvestmentReport(accountId, AssetId("GBP"), fromDate, queryDate, bg.acctState, bg.balanceState, bg.txState, bg.priceState)
 
     assert(rep.cashflowTable.irr < 0.09)
     assert(rep.cashflowTable.irr > 0.03)
   }
 
-  it should "list all txs for an account" in {
+  it should "list all txs for an account" taggedAs RealDataAvailable in {
+    val bg = new GainstrackGenerator(parser.getCommands)
     val accountId = AccountId("Assets:Investment:HSBC")
     val txs = bg.txState.cmds.filter(bcmd => bcmd match {
       case tx:Transaction => tx.postings.find(p=>isSubAccountOf(p.account, accountId)).isDefined
