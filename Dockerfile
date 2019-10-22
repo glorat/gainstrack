@@ -1,4 +1,8 @@
 FROM hseeberger/scala-sbt:8u181_2.12.8_1.2.8 as builder
+# Install fava
+RUN apt-get update && apt-get -y install python3 python3-pip python3-dev libxml2-dev libxslt-dev gcc musl-dev g++ && rm -rf /var/lib/apt/lists/*
+RUN pip3 install fava
+
 WORKDIR /build
 # Cache dependencies first
 COPY project project
@@ -9,7 +13,7 @@ RUN sbt update
 # Then build
 COPY web web
 COPY core core
-RUN sbt assembly
+RUN sbt test assembly
 
 FROM openjdk:8-jre-alpine
 RUN apk add --update python3 python3-dev libxml2-dev libxslt-dev gcc musl-dev g++
