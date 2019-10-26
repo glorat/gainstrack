@@ -170,6 +170,18 @@ class ApiController (implicit val ec :ExecutionContext) extends ScalatraServlet 
     AccountTxSummaryDTO(accountId.toString, rows)
   }
 
+  get ("/journal/") {
+    val bg = sessionOption.map(_("gainstrack")).getOrElse(bgDefault).asInstanceOf[GainstrackGenerator]
+    val txs = bg.txState.allTransactions
+    val commands = txs.map(_.origin).distinct.reverse
+    val rows = commands.map(cmd => {
+      val myTxs = txs.filter(_.origin == cmd)
+      val postings = myTxs.flatMap(_.filledPostings)
+      AccountTxDTO(cmd.date.toString, cmd.getClass.getSimpleName, cmd.description, "", "", postings)
+    })
+    JournalDTO(rows)
+  }
+
   get ("/command/") {
     val bg = sessionOption.map(_("gainstrack")).getOrElse(bgDefault).asInstanceOf[GainstrackGenerator]
 
@@ -218,5 +230,7 @@ case class ApiSourceResponse(sha256sum:String, success:String)
 
 case class AccountTxSummaryDTO(accountId:String, rows:Seq[AccountTxDTO])
 case class AccountTxDTO(date:String, cmdType:String, description:String, change: String, position:String, postings:Seq[Posting])
+
+case class JournalDTO(rows:Seq[AccountTxDTO])
 
 case class StateSummaryDTO(accountIds:Seq[AccountId], ccys:Seq[AssetId])

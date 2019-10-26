@@ -11,6 +11,7 @@ import Editor from './views/Editor.vue';
 import IncomeStatement from './views/IncomeStatement.vue';
 import IrrDetail from './views/IrrDetail.vue';
 import IrrSummary from './views/IrrSummary.vue';
+import Journal from './views/Journal.vue';
 import MyLayout from './views/MyLayout.vue';
 import Prices from './views/Prices.vue';
 
@@ -20,6 +21,7 @@ import 'element-ui/lib/theme-chalk/index.css';
 const routes: RouteConfig[] = [
   {path: '/balance_sheet', component: BalanceSheet, meta: {title: 'Balance Sheet'}},
   {path: '/income_statement', component: IncomeStatement, meta: {title: 'Income Statement'}},
+  {path: '/journal', component: Journal, meta: {title: 'Journal'}},
   {path: '/prices', component: Prices, meta: {title: 'Prices'}},
   {path: '/editor', component: Editor, meta: {title: 'Editor'}},
   {path: '/irr', component: IrrSummary, meta: {title: 'IRR'}},
