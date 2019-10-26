@@ -5,8 +5,8 @@
                 <span class="datecell" data-sort="string">Date</span>
                 <span class="description" data-sort="string">Description</span>
                 <span class="num" data-sort="number"></span>
-                <span class="num" data-sort="number">Change</span>
-                <span class="num" data-sort="number">Balance</span>
+                <span v-if="showBalance" class="num" data-sort="number">Change</span>
+                <span v-if="showBalance" class="num" data-sort="number">Balance</span>
             </p>
         </li>
         <li class="transaction cleared" :class="{'show-postings':row.show}" v-for="row in entries">
@@ -15,8 +15,8 @@
                 <span class="description">{{ row.description }}</span>
                 <span class="indicators" v-on:click="rowClick(row)"><span v-for="i in row.postings"></span></span>
                 <span data-sort="number"></span>
-                <span class="num">{{ row.change }} </span>
-                <span class="num">{{ row.position }}</span>
+                <span v-if="showBalance" class="num">{{ row.change }} </span>
+                <span v-if="showBalance" class="num">{{ row.position }}</span>
             </p>
             <ul class="postings">
                 <li v-for="posting in row.postings">
@@ -35,8 +35,8 @@
 
 <script>
     export default {
-        name: "JournalTable",
-        props: {entries: Object},
+        name: 'JournalTable',
+        props: {entries: Array, showBalance: Boolean},
         methods: {
             rowClick(row) {
                 this.$set(row, 'show', !row.show);
