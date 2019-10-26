@@ -15,6 +15,22 @@ COPY web web
 COPY core core
 RUN sbt test assembly
 
+# Sort out the web client
+FROM node:10-alpine as webbuilder
+RUN apk add --update --no-cache \
+    python \
+    make \
+    g++
+
+# Cache dependencies first
+COPY ./client/package.json package.json
+COPY ./client/package-lock.json package-lock.json
+RUN npm install
+
+# Then build
+COPY ./client/ .
+RUN npm run build
+
 FROM openjdk:8-jre-alpine
 RUN apk add --update python3 python3-dev libxml2-dev libxslt-dev gcc musl-dev g++
 RUN pip3 install fava
@@ -26,5 +42,6 @@ COPY --from=builder /build/web/target/scala-2.12/web-assembly-0.1.jar ./
 ENTRYPOINT ["./run_jar.sh"]
 RUN mkdir -p /app/src/main/webapp
 #COPY --from=builder ./web/src/main/webapp/ ./src/main/webapp/
+COPY --from=webbuilder ./dist/ ./dist/
 RUN mkdir -p /Users/kevin/dev/gainstrack/data/
 COPY core/src/test/resources/src.gainstrack /Users/kevin/dev/gainstrack/data/real.gainstrack
