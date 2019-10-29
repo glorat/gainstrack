@@ -18,7 +18,7 @@ class AccountController (implicit val ec :ExecutionContext) extends ScalatraServ
     contentType="text/html"
 
     val bg = sessionOption.map(_("gainstrack")).getOrElse(bgDefault).asInstanceOf[GainstrackGenerator]
-
+    val conversionStrategy = sessionOption.map(_("conversion").toString).getOrElse("")
 
     val accountId : AccountId = params("accountId")
 
@@ -41,13 +41,13 @@ class AccountController (implicit val ec :ExecutionContext) extends ScalatraServ
               val balance = mypostings.foldLeft(PositionSet())(_ + _.value.get)
               balance*/
       val balanceReport = BalanceReport(mytxs)
-      balanceReport.getState.convertedPosition(accountId, bg.acctState, bg.priceState, cmd.date)
+      balanceReport.getState.convertedPosition(accountId, bg.acctState, bg.priceState, cmd.date, conversionStrategy)
     }
 
     val deltaFor : AccountCommand => PositionSet = {cmd =>
       val mytxs = txs.filter(_.origin == cmd)
       val balanceReport = BalanceReport(mytxs)
-      balanceReport.getState.convertedPosition(accountId, bg.acctState, bg.priceState, cmd.date)
+      balanceReport.getState.convertedPosition(accountId, bg.acctState, bg.priceState, cmd.date, conversionStrategy)
     }
 
     contentType="text/html"

@@ -261,14 +261,27 @@ class First extends FlatSpec {
     val accounts = bg.acctState.withInterpolatedAccounts
     // Values in these assertions match higher up values
     val fn:(AccountId,String)=>Fraction = (acctId,ccyStr) => {
-      val ps = state.convertedPosition(acctId, accounts, bg.priceState, today)
+      val ps = state.convertedPosition(acctId, accounts, bg.priceState, today, "parent")
       ps.assetBalance(AssetId(ccyStr))
     }
     assert(fn("Assets:Investment:IBUSD:USD", "USD") == 172.05)
     assert(fn("Expenses:Investment:IBUSD:USD", "USD") == 18.87)
     assert(fn("Assets:Investment:IBUSD", "USD") == 34960.13)
-    // Until base currency is settable properly, we are getting converted to GBP by default!
+    // GBP is the operating currency
+    assert(bg.acctState.baseCurrency.symbol == "GBP")
     assert(fn("Assets:Investment", "GBP").round == 485444)
     assert(fn("Assets", "GBP").round == 674080)
+
+    val f2:(AccountId,String)=>Fraction = (acctId,ccyStr) => {
+      val ps = state.convertedPosition(acctId, accounts, bg.priceState, today, "GBP")
+      ps.assetBalance(AssetId(ccyStr))
+    }
+    assert(f2("Assets:Investment:IBUSD:USD", "GBP").round == 135)
+    assert(f2("Assets", "GBP").round == 674080)
+    val f3:(AccountId,String)=>Fraction = (acctId,ccyStr) => {
+      val ps = state.convertedPosition(acctId, accounts, bg.priceState, today, "units")
+      ps.assetBalance(AssetId(ccyStr))
+    }
+    assert(f3("Assets:Investment:IBUSD", "USD").round == 172)
   }
 }
