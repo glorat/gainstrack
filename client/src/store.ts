@@ -39,8 +39,12 @@ export default new Vuex.Store({
             });
       }
     },
+    async conversion(context, c) {
+      await axios.post('/api/state/conversion', {conversion: c});
+      return await this.dispatch('reload')
+    },
     reload(context) {
-      return axios.get('/api/state/summary/')
+      return axios.get('/api/state/summary')
           .then(response => context.commit('reloaded', response.data))
           // Since components don't know to retrigger this if already on display, let's get it for them
           .then(() => context.dispatch('balances'));
