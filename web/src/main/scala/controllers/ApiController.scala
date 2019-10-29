@@ -57,8 +57,8 @@ class ApiController (implicit val ec :ExecutionContext) extends ScalatraServlet 
   }
 
   def tables(keys:Seq[String]) = {
-    val bg = sessionOption.map(_("gainstrack")).getOrElse(bgDefault).asInstanceOf[GainstrackGenerator]
-    val conversionStrategy = sessionOption.map(_("conversion").toString).getOrElse("")
+    val bg = session.get("gainstrack").getOrElse(bgDefault).asInstanceOf[GainstrackGenerator]
+    val conversionStrategy = session.get("conversion").map(_.toString).getOrElse("parent")
 
     val balanceReport = BalanceReport(bg.txState.cmds)
     var toDate = LocalDate.now
@@ -90,7 +90,7 @@ class ApiController (implicit val ec :ExecutionContext) extends ScalatraServlet 
   }
 
   get ("/prices/") {
-    val bg = sessionOption.map(_("gainstrack")).getOrElse(bgDefault).asInstanceOf[GainstrackGenerator]
+    val bg = session.get("gainstrack").getOrElse(bgDefault).asInstanceOf[GainstrackGenerator]
     val priceState = bg.priceState
 
     priceState.toDTO
@@ -98,7 +98,7 @@ class ApiController (implicit val ec :ExecutionContext) extends ScalatraServlet 
   }
 
   get("/irr/") {
-    val bg = sessionOption.map(_("gainstrack")).getOrElse(bgDefault).asInstanceOf[GainstrackGenerator]
+    val bg = session.get("gainstrack").getOrElse(bgDefault).asInstanceOf[GainstrackGenerator]
 
     var fromDate = defaultFromDate
     var toDate = LocalDate.now
@@ -114,7 +114,7 @@ class ApiController (implicit val ec :ExecutionContext) extends ScalatraServlet 
   }
 
   get("/irr/:accountId") {
-    val bg = sessionOption.map(_("gainstrack")).getOrElse(bgDefault).asInstanceOf[GainstrackGenerator]
+    val bg = session.get("gainstrack").getOrElse(bgDefault).asInstanceOf[GainstrackGenerator]
     val accountId = params("accountId")
     val fromDate = defaultFromDate
     bg.acctState.accountMap.get(accountId).map(account => {
@@ -125,15 +125,16 @@ class ApiController (implicit val ec :ExecutionContext) extends ScalatraServlet 
   }
 
   get("/editor/") {
-    val bg = sessionOption.map(_("gainstrack")).getOrElse(bgDefault).asInstanceOf[GainstrackGenerator]
+    val bg = session.get("gainstrack").getOrElse(bgDefault).asInstanceOf[GainstrackGenerator]
     val source = bg.toGainstrack
     Map("source" -> source, "short_title" -> "Editor")
   }
 
   get("/account/:accountId") {
 
-    val bg = sessionOption.map(_("gainstrack")).getOrElse(bgDefault).asInstanceOf[GainstrackGenerator]
-    val conversionStrategy = sessionOption.map(_("conversion").toString).getOrElse("")
+    val bg = session.get("gainstrack").getOrElse(bgDefault).asInstanceOf[GainstrackGenerator]
+    val conversionStrategy = session.get("conversion").map(_.toString).getOrElse("parent")
+
 
     val accountId : AccountId = params("accountId")
 
@@ -172,7 +173,7 @@ class ApiController (implicit val ec :ExecutionContext) extends ScalatraServlet 
   }
 
   get ("/journal/") {
-    val bg = sessionOption.map(_("gainstrack")).getOrElse(bgDefault).asInstanceOf[GainstrackGenerator]
+    val bg = session.get("gainstrack").getOrElse(bgDefault).asInstanceOf[GainstrackGenerator]
     val txs = bg.txState.allTransactions
     val commands = txs.map(_.origin).distinct.reverse
     val rows = commands.map(cmd => {
@@ -184,7 +185,7 @@ class ApiController (implicit val ec :ExecutionContext) extends ScalatraServlet 
   }
 
   get ("/command/") {
-    val bg = sessionOption.map(_("gainstrack")).getOrElse(bgDefault).asInstanceOf[GainstrackGenerator]
+    val bg = session.get("gainstrack").getOrElse(bgDefault).asInstanceOf[GainstrackGenerator]
 
     val mainAccountIds:Set[AccountId] = bg.finalCommands.flatMap(_.mainAccount).toSet
     val mainAccounts:Seq[AccountCreation] = bg.acctState.accounts.filter(a => mainAccountIds.contains(a.accountId)).toSeq.sortBy(_.accountId)
@@ -194,7 +195,7 @@ class ApiController (implicit val ec :ExecutionContext) extends ScalatraServlet 
 
   get ("/command/:accountId") {
 
-    val bg = sessionOption.map(_("gainstrack")).getOrElse(bgDefault).asInstanceOf[GainstrackGenerator]
+    val bg = session.get("gainstrack").getOrElse(bgDefault).asInstanceOf[GainstrackGenerator]
 
     val accountId = params("accountId")
     bg.acctState.accountMap.get(accountId).map(account => {
@@ -212,12 +213,22 @@ class ApiController (implicit val ec :ExecutionContext) extends ScalatraServlet 
     }).getOrElse(NotFound(s"${accountId} account not found"))
   }
 
-  get ("/state/summary/") {
-    val bg = sessionOption.map(_("gainstrack")).getOrElse(bgDefault).asInstanceOf[GainstrackGenerator]
+  get ("/state/summary") {
+    val bg = session.get("gainstrack").getOrElse(bgDefault).asInstanceOf[GainstrackGenerator]
     val accts = bg.acctState.accounts.map(_.accountId)
     val ccys = bg.priceState.ccys
-    StateSummaryDTO(accts.toSeq.sorted, ccys.toSeq.sorted)
+    val conversionStrategy = session.get("conversion").map(_.toString).getOrElse("parent")
+
+    StateSummaryDTO(accts.toSeq.sorted, ccys.toSeq.sorted, conversionStrategy)
   }
+
+  post("/state/conversion") {
+    val bg = session.get("gainstrack").getOrElse(bgDefault).asInstanceOf[GainstrackGenerator]
+    session("conversion") = (parsedBody \ "conversion").extract[String]
+    ApiSourceResponse("???", "true")
+  }
+
+
 /*
   error {
     case e: Throwable => {
@@ -234,4 +245,4 @@ case class AccountTxDTO(date:String, cmdType:String, description:String, change:
 
 case class JournalDTO(rows:Seq[AccountTxDTO])
 
-case class StateSummaryDTO(accountIds:Seq[AccountId], ccys:Seq[AssetId])
+case class StateSummaryDTO(accountIds:Seq[AccountId], ccys:Seq[AssetId], conversion:String)
