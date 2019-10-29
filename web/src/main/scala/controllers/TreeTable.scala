@@ -3,7 +3,6 @@ package controllers
 import com.gainstrack.command.AccountCreation
 import com.gainstrack.core._
 import com.gainstrack.report._
-import controllers.MainController.UrlFn
 
 import scala.xml.Elem
 
