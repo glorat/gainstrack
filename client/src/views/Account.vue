@@ -2,6 +2,9 @@
 <div>
 
     <h3><a href="/gainstrack/command/get/">{{ info.accountId }}</a></h3>
+    <div>
+        <conversion-select></conversion-select>
+    </div>
 
     <journal-table :entries="info.rows" show-balance></journal-table>
 </div>
@@ -10,20 +13,36 @@
 <script>
     import axios from 'axios';
     import JournalTable from '@/components/JournalTable';
+    import ConversionSelect from '@/components/ConversionSelect';
 
     export default {
         name: 'Account',
-        components: {JournalTable},
+        components: {ConversionSelect, JournalTable},
         props: ['accountId'],
         data() {
             return {
                 info: {accountId: 'Loading...', rows: []},
             };
         },
+        computed: {
+            conversion() {
+                return this.$store.state.summary.conversion;
+            }
+        },
+        watch: {
+            conversion() {
+                this.refresh();
+            }
+        },
+        methods: {
+          refresh() {
+              axios.get('/api/account/' + this.accountId)
+                  .then(response => this.info = response.data)
+                  .catch(error => this.$notify.error(error))
+          }
+        },
         mounted() {
-            axios.get('/api/account/' + this.accountId)
-                .then(response => this.info = response.data)
-                .catch(error => this.$notify.error(error))
+            this.refresh();
         },
     }
 </script>

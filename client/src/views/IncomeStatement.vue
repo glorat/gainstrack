@@ -1,22 +1,28 @@
 <template>
-    <div class="row">
-        <div class="column">
-            <h3>Assets</h3>
-            <tree-table v-bind:node="info['Income']"></tree-table>
+    <div>
+        <div>
+            <conversion-select></conversion-select>
         </div>
-        <div class="column">
-            <h3>Liabilities</h3>
-            <tree-table v-bind:node="info['Expenses']"></tree-table>
+        <div class="row">
+            <div class="column">
+                <h3>Assets</h3>
+                <tree-table v-bind:node="info['Income']"></tree-table>
+            </div>
+            <div class="column">
+                <h3>Liabilities</h3>
+                <tree-table v-bind:node="info['Expenses']"></tree-table>
+            </div>
         </div>
     </div>
 </template>
 
 <script>
     import TreeTable from '../components/TreeTable';
+    import ConversionSelect from '@/components/ConversionSelect';
 
     export default {
         name: 'IncomeStatement',
-        components: {TreeTable},
+        components: {ConversionSelect, TreeTable},
         data() {
             return {};
         },
