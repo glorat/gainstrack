@@ -58,6 +58,7 @@ class ApiController (implicit val ec :ExecutionContext) extends ScalatraServlet 
 
   def tables(keys:Seq[String]) = {
     val bg = sessionOption.map(_("gainstrack")).getOrElse(bgDefault).asInstanceOf[GainstrackGenerator]
+    val conversionStrategy = sessionOption.map(_("conversion").toString).getOrElse("")
 
     val balanceReport = BalanceReport(bg.txState.cmds)
     var toDate = LocalDate.now
@@ -66,7 +67,7 @@ class ApiController (implicit val ec :ExecutionContext) extends ScalatraServlet 
     val acctState = bg.acctState.withInterpolatedAccounts
     val priceState = bg.priceState
 
-    val treeTable = new BalanceTreeTable(bg.acctState, priceState, toDate, balanceReport)
+    val treeTable = new BalanceTreeTable(bg.acctState, priceState, toDate, balanceReport, conversionStrategy)
 
     keys.map(key => key -> treeTable.toTreeTable(AccountId(key))).toMap
   }
@@ -132,7 +133,7 @@ class ApiController (implicit val ec :ExecutionContext) extends ScalatraServlet 
   get("/account/:accountId") {
 
     val bg = sessionOption.map(_("gainstrack")).getOrElse(bgDefault).asInstanceOf[GainstrackGenerator]
-
+    val conversionStrategy = sessionOption.map(_("conversion").toString).getOrElse("")
 
     val accountId : AccountId = params("accountId")
 
@@ -153,13 +154,13 @@ class ApiController (implicit val ec :ExecutionContext) extends ScalatraServlet 
               val balance = mypostings.foldLeft(PositionSet())(_ + _.value.get)
               balance*/
       val balanceReport = BalanceReport(mytxs)
-      balanceReport.getState.convertedPosition(accountId, bg.acctState, bg.priceState, cmd.date)
+      balanceReport.getState.convertedPosition(accountId, bg.acctState, bg.priceState, cmd.date, conversionStrategy)
     }
 
     val deltaFor : AccountCommand => PositionSet = {cmd =>
       val myTxs = txs.filter(_.origin == cmd)
       val balanceReport = BalanceReport(myTxs)
-      balanceReport.getState.convertedPosition(accountId, bg.acctState, bg.priceState, cmd.date)
+      balanceReport.getState.convertedPosition(accountId, bg.acctState, bg.priceState, cmd.date, conversionStrategy)
     }
 
     val rows = commands.map(cmd => {
