@@ -17,6 +17,17 @@ case class PositionSet(assetBalance:Map[AssetId, Fraction]) {
     assetBalance.foldLeft(PositionSet())(convertEntry)
   }
 
+  def convertToOneOf(tgtCcys: Seq[AssetId], priceState: PriceState, date:LocalDate): PositionSet = {
+    def convertEntry(ps:PositionSet, entry:(AssetId, Fraction)) = {
+      val tgtCcy = tgtCcys.find(tgtCcy => priceState.getFX(AssetPair(entry._1, tgtCcy), date).isDefined).getOrElse(tgtCcys.last)
+      val toAdd = priceState.getFX(AssetPair(entry._1, tgtCcy), date)
+        .map(_ * entry._2)
+        .map(Balance(_, tgtCcy))
+        .getOrElse(Balance(entry._2, entry._1)) // Unconverted value if no fx
+      ps + toAdd
+    }
+    assetBalance.foldLeft(PositionSet())(convertEntry)
+  }
 
   def +(rhs: Balance): PositionSet = {
     val newVal = assetBalance.getOrElse(rhs.ccy, zeroFraction) + rhs.value
