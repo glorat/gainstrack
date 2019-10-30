@@ -30,7 +30,7 @@
 <script>
     import axios from 'axios';
     import CommandEditor from '../components/CommandEditor';
-    import _ from 'lodash';
+    import {cloneDeep} from 'lodash';
 
     export default {
         name: 'Command',
@@ -53,7 +53,7 @@
                 this.commandStr = ev;
             },
             selectCommand(cmd) {
-                this.selectedCommand = _.cloneDeep(cmd);
+                this.selectedCommand = cloneDeep(cmd);
             },
             testCommand() {
                 const str = this.commandStr;
