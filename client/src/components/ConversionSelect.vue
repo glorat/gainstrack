@@ -12,7 +12,7 @@
 <script>
     export default {
         name: 'ConversionSelect',
-        data () {
+        data() {
             return {value: this.$store.state.summary.conversion}
         },
         methods: {

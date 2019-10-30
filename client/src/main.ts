@@ -1,3 +1,4 @@
+import {Notification} from 'element-ui';
 import store from './store';
 import App from './App.vue';
 import Vue from 'vue';
@@ -15,8 +16,8 @@ import Journal from './views/Journal.vue';
 import MyLayout from './views/MyLayout.vue';
 import Prices from './views/Prices.vue';
 
-import ElementUI from 'element-ui';
-import 'element-ui/lib/theme-chalk/index.css';
+import './plugins/element.js';
+Vue.prototype.$notify = Notification;
 
 const routes: RouteConfig[] = [
   {path: '/balance_sheet', component: BalanceSheet, meta: {title: 'Balance Sheet'}},
@@ -41,7 +42,6 @@ router.afterEach((to, from) => {
 });
 
 Vue.use(VueRouter);
-Vue.use(ElementUI);
 Vue.use(Vuex);
 
 import numeral from 'numeral';

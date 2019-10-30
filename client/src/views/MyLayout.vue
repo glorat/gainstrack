@@ -27,6 +27,11 @@
 
     export default {
         name: 'MyLayout',
+        mounted() {
+          this.$router.afterEach((to, from) => {
+              this.page_title = (to.meta.title || 'Gainstrack');
+          });
+        },
         data() {
             return {page_title: 'TODO Title'};
         },
