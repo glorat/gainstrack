@@ -20,9 +20,11 @@
 
 <script lang="ts">
     import axios from 'axios';
+    import {Upload} from 'element-ui';
+
     import { Component, Vue } from 'vue-property-decorator';
 
-    @Component
+    @Component({components: {'el-upload': Upload}})
     export default class extends Vue {
 
         private menuItems: string[] = ['foo', 'bar'];
