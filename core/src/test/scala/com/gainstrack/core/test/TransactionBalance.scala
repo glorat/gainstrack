@@ -83,7 +83,7 @@ class TransactionBalanceTest extends FlatSpec {
 
 
     def assertBalance(accountId:AccountId, dateStr:String, expected:Fraction) = {
-      val bal = bg.balanceState.getBalance(accountId, parseDate(dateStr)).get
+      val bal = bg.balanceState.getAccountValue(accountId, parseDate(dateStr))
       assert(bal == expected)
     }
 

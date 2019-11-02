@@ -147,22 +147,22 @@ class First extends FlatSpec {
     "BalanceProjector" should "project balances" in {
 
       // After commissions, should be 172.05
-      assert(bp.balances("Assets:Investment:IBUSD:USD").last._2 == 172.05)
-      assert(bp.balances("Expenses:Investment:IBUSD:USD").last._2 == 18.87)
+      assert(bp.balances("Assets:Investment:IBUSD:USD").series.last._2 == 172.05)
+      assert(bp.balances("Expenses:Investment:IBUSD:USD").series.last._2 == 18.87)
     }
 
 
     it should "list balances by account" in {
       val today = parseDate("2019-12-31")
       acctState.accounts.toSeq.sortBy(_.name).foreach(account => {
-        val value = bp.getBalance(account.accountId, today).getOrElse(zeroFraction)
+        val value = bp.getAccountValue(account.accountId, today)
         println(s"${account.accountId}: ${value.toDouble} ${account.key.assetId.symbol}")
       })
     }
 
     it should "sum all asset balances to a position set" in {
       val assets = acctState.accounts.filter(_.name.accountType == Assets).foldLeft(PositionSet())((ps,account) => {
-        val value:Fraction = bp.getBalance(account.accountId, today).getOrElse(zeroFraction)
+        val value:Fraction = bp.getAccountValue(account.accountId, today)
          ps + Balance(value, account.key.assetId.symbol)
       }).assetBalance
 
@@ -245,8 +245,7 @@ class First extends FlatSpec {
   }
 
   "BalanceReport" should "project balances" in {
-    val balanceReport = BalanceReport(bg.txState.cmds)
-    val state = balanceReport.getState
+    val state = new DailyBalance(bg.balanceState)
     // Values in these assertions match higher up values
     val fn:AccountId=>Fraction = state.totalPosition(_).assetBalance(AssetId("USD"))
     assert(fn("Assets:Investment:IBUSD:USD") == 172.05)
@@ -257,31 +256,52 @@ class First extends FlatSpec {
 
   it should "project converted" in {
     val balanceReport = BalanceReport(bg.txState.cmds)
-    val state = balanceReport.getState
+    val dailyReport = new DailyBalance(bg.balanceState)
     val accounts = bg.acctState.withInterpolatedAccounts
-    // Values in these assertions match higher up values
-    val fn:(AccountId,String)=>Fraction = (acctId,ccyStr) => {
-      val ps = state.convertedPosition(acctId, accounts, bg.priceState, today, "parent")
-      ps.assetBalance(AssetId(ccyStr))
+
+    val testMe:(String, String, Int)=>Unit = (acctId, ccyStr, expected) => {
+      val ps = dailyReport.convertedPosition(acctId, accounts, bg.priceState, today, "parent")
+      val actual1 = ps.assetBalance(AssetId(ccyStr)).round
+      val ps2 = balanceReport.getState.convertedPosition(acctId, accounts, bg.priceState, today, "parent")
+      val actual2 = ps2.assetBalance(AssetId(ccyStr)).round
+
+      assert(actual1 == expected)
+      assert(actual2 == expected)
     }
-    assert(fn("Assets:Investment:IBUSD:USD", "USD") == 172.05)
-    assert(fn("Expenses:Investment:IBUSD:USD", "USD") == 18.87)
-    assert(fn("Assets:Investment:IBUSD", "USD") == 34960.13)
+
+    testMe("Assets:Investment:IBUSD:USD", "USD", 172)
+    testMe("Expenses:Investment:IBUSD:USD", "USD", 19)
+    testMe("Assets:Investment:IBUSD", "USD", 34960)
+
     // GBP is the operating currency
     assert(bg.acctState.baseCurrency.symbol == "GBP")
-    assert(fn("Assets:Investment", "GBP").round == 485444)
-    assert(fn("Assets", "GBP").round == 674080)
+    testMe("Assets:Investment", "GBP", 485444)
+    testMe("Assets", "GBP", 674080)
 
-    val f2:(AccountId,String)=>Fraction = (acctId,ccyStr) => {
-      val ps = state.convertedPosition(acctId, accounts, bg.priceState, today, "GBP")
-      ps.assetBalance(AssetId(ccyStr))
+    val testMe2:(String, String, Int)=>Unit = (acctId, ccyStr, expected) => {
+      val ps = dailyReport.convertedPosition(acctId, accounts, bg.priceState, today, "GBP")
+      val actual1 = ps.assetBalance(AssetId(ccyStr)).round
+      val ps2 = balanceReport.getState.convertedPosition(acctId, accounts, bg.priceState, today, "GBP")
+      val actual2 = ps2.assetBalance(AssetId(ccyStr)).round
+
+      assert(actual1 == expected)
+      assert(actual2 == expected)
     }
-    assert(f2("Assets:Investment:IBUSD:USD", "GBP").round == 135)
-    assert(f2("Assets", "GBP").round == 674080)
-    val f3:(AccountId,String)=>Fraction = (acctId,ccyStr) => {
-      val ps = state.convertedPosition(acctId, accounts, bg.priceState, today, "units")
-      ps.assetBalance(AssetId(ccyStr))
+
+    testMe2("Assets:Investment:IBUSD:USD", "GBP", 135)
+    testMe2("Assets", "GBP", 674080)
+
+
+    val testMe3:(String, String, Int)=>Unit = (acctId, ccyStr, expected) => {
+      val ps = dailyReport.convertedPosition(acctId, accounts, bg.priceState, today, "units")
+      val actual1 = ps.assetBalance(AssetId(ccyStr)).round
+      val ps2 = balanceReport.getState.convertedPosition(acctId, accounts, bg.priceState, today, "units")
+      val actual2 = ps2.assetBalance(AssetId(ccyStr)).round
+
+      assert(actual1 == expected)
+      assert(actual2 == expected)
     }
-    assert(f3("Assets:Investment:IBUSD", "USD").round == 172)
+
+    testMe3("Assets:Investment:IBUSD", "USD", 172)
   }
 }
