@@ -2,21 +2,41 @@ package com.gainstrack.report
 
 import com.gainstrack.command._
 import com.gainstrack.core._
-import net.glorat.cqrs.{AggregateRoot, AggregateRootState, DomainEvent}
+import net.glorat.cqrs.{AggregateRootState, DomainEvent}
 import spire.math.SafeLong
 
 import scala.collection.SortedMap
 
-case class BalanceState(accounts:Set[AccountCreation], balances:Map[AccountId,SortedMap[LocalDate,Fraction]]) extends AggregateRootState {
+case class BalanceStateSeries(series: SortedMap[LocalDate,Fraction], ccy:AssetId)
+case class BalanceState(accounts:Set[AccountCreation], balances:Map[AccountId,BalanceStateSeries]) extends AggregateRootState {
   type Balances = Map[AccountId,SortedMap[LocalDate,Fraction]]
   type Series = SortedMap[LocalDate,Fraction]
   val interp = TimeSeriesInterpolator.from(SortedMap[LocalDate,Fraction]())
 
-  def getBalance(account:AccountId, date: LocalDate) : Option[Fraction] = {
-    val ret:Option[Fraction] = interp.getValue(balances.getOrElse(account, SortedMap()), date)(TimeSeriesInterpolator.step)
+  def getAccountValueOpt(account:AccountId, date: LocalDate) : Option[Fraction] = {
+    val ret:Option[Fraction] = interp.getValue(balances.get(account).map(_.series).getOrElse(SortedMap()), date)(TimeSeriesInterpolator.step)
       .map(x => x)
         .map(f => f.limitDenominatorTo(SafeLong(1000000)))
     ret
+  }
+
+  def getAccountValue(account:AccountId, date: LocalDate) : Fraction = {
+    getAccountValueOpt(account, date).getOrElse(zeroFraction)
+  }
+
+  def getBalanceOpt(account: AccountId, date: LocalDate): Option[Balance] = {
+    balances.get(account).map(entry => {
+      val ccy = entry.ccy
+      val ret: Fraction = interp.getValue(entry.series, date)(TimeSeriesInterpolator.step)
+        .map(f => f.limitDenominatorTo(SafeLong(1000000)))
+        .getOrElse(zeroFraction)
+      Balance(ret, ccy)
+    })
+  }
+
+  def getBalance(account: AccountId, date: LocalDate): Balance = {
+    val ccy = balances(account).ccy
+    Balance(getBalanceOpt(account, date).map(_.value).getOrElse(zeroFraction), ccy)
   }
 
   override def handle(e: DomainEvent): BalanceState = {
@@ -35,8 +55,9 @@ case class BalanceState(accounts:Set[AccountCreation], balances:Map[AccountId,So
   private def process(e:AccountCreation):BalanceState = {
     // Need to minus one in case we trade on the same day as opening!!!
     // TODO: Order events so creation come in first
-    val newBalance = balances(e.accountId).updated(e.date.minusDays(1), zeroFraction)
-    copy(balances = balances.updated(e.accountId, newBalance))
+    val origEntry = balances(e.accountId)
+    val newSeries = origEntry.series.updated(e.date.minusDays(1), zeroFraction)
+    copy(balances = balances.updated(e.accountId, origEntry.copy(series = newSeries)))
   }
 
   private def process(e:Transfer):BalanceState = {
@@ -51,27 +72,29 @@ case class BalanceState(accounts:Set[AccountCreation], balances:Map[AccountId,So
   }
 
   private def process(e:UnitTrustBalance) : BalanceState = {
-    val oldBalance :Fraction = balances(e.securityAccountId).lastOption.map(_._2).getOrElse(zeroFraction)
+    val oldBalance :Fraction = balances(e.securityAccountId).series.lastOption.map(_._2).getOrElse(zeroFraction)
     val tx = e.toTransaction(Balance(oldBalance, e.security.ccy))
     process(tx)
   }
 
   private def process(e:BalanceAdjustment): BalanceState = {
     //e.toBeancounts
-    val newBalance = balances(e.accountId).updated(e.date, e.balance.value)
-    copy(balances = balances.updated(e.accountId, newBalance))
+    val origEntry = balances(e.accountId)
+    val newSeries = origEntry.series.updated(e.date, e.balance.value)
+    copy(balances = balances.updated(e.accountId, origEntry.copy(series = newSeries)))
   }
 
   private def process(tx:Transaction) : BalanceState = {
-    val newBalances = tx.filledPostings.foldLeft(balances)( (bs:Balances,p:Posting) => {
+    val newBalances = tx.filledPostings.foldLeft(balances)( (bs:Map[AccountId,BalanceStateSeries],p:Posting) => {
       require(bs.isDefinedAt(p.account), s"${p.account} must be populated")
       // To assert this, we need full acct details, not just the keys
       // require(!bs(p.account).isEmpty, s"${p.account} should have initial balance on opening")
-      val latestBalance = bs(p.account).lastOption.getOrElse(MinDate->zeroFraction)._2
+      val origEntry = bs(p.account)
+      val latestBalance = origEntry.series.lastOption.getOrElse(MinDate->zeroFraction)._2
       // TODO: Unit check?
       val newBalance : Fraction=  p.value.get.value + latestBalance
-      val series : Series = bs(p.account).updated(tx.postDate, newBalance)
-      val newbs = bs.updated(p.account, series)
+      val series : Series = origEntry.series.updated(tx.postDate, newBalance)
+      val newbs = bs.updated(p.account, origEntry.copy(series = series))
       newbs
     })
 
@@ -82,13 +105,13 @@ case class BalanceState(accounts:Set[AccountCreation], balances:Map[AccountId,So
 object BalanceState {
   def apply(accounts : Set[AccountCreation]) : BalanceState = {
     val emptySeries : SortedMap[LocalDate,Fraction] = SortedMap.empty
-    val initMap:Map[AccountId,SortedMap[LocalDate,Fraction]] = accounts.map(x => x.name -> emptySeries).toMap
+    val initMap:Map[AccountId,BalanceStateSeries] = accounts.map(x => x.name -> BalanceStateSeries( emptySeries, x.key.assetId)).toMap
     BalanceState(accounts, initMap)
   }
 
   def mock(accounts: Set[AccountCreation]) : BalanceState = {
     val mockSeries : SortedMap[LocalDate,Fraction] = SortedMap(MinDate -> 9999)
-    val initMap:Map[AccountId,SortedMap[LocalDate,Fraction]] = accounts.map(x => x.name -> mockSeries).toMap
+    val initMap:Map[AccountId,BalanceStateSeries] = accounts.map(x => x.name -> BalanceStateSeries( mockSeries, x.key.assetId)).toMap
     BalanceState(accounts, initMap)
   }
 }

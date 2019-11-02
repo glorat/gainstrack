@@ -13,7 +13,7 @@ class AccountInvestmentReport(accountId: AccountId, ccy:AssetId, fromDate:LocalD
   val initBalance = Balance(zeroFraction, ccy)
 
   val startBalance: Balance = allAccounts.foldLeft(initBalance)((total, account) => {
-    val b = balanceState.getBalance(account.accountId, fromDate).getOrElse(zeroFraction)
+    val b = balanceState.getAccountValue(account.accountId, fromDate)
     // FX this into parent ccy
     val fx = priceState.getFX(AssetPair(account.key.assetId, ccy), fromDate).getOrElse(throw new Exception(s"Missing FX for ${account.key.assetId.symbol}/${ccy.symbol}"))
     // Make start balance negative as outflow
@@ -22,7 +22,7 @@ class AccountInvestmentReport(accountId: AccountId, ccy:AssetId, fromDate:LocalD
   })
 
   val endBalance: Balance = allAccounts.foldLeft(initBalance)((total, account) => {
-    val b = balanceState.getBalance(account.accountId, queryDate).getOrElse(zeroFraction)
+    val b = balanceState.getAccountValue(account.accountId, queryDate)
     // FX this into parent ccy
     val fx = priceState.getFX(AssetPair(account.key.assetId, ccy), queryDate).getOrElse(throw new Exception(s"Missing FX for ${account.key.assetId.symbol}/${ccy.symbol}"))
     total + b * fx

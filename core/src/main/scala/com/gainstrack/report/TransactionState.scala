@@ -43,7 +43,7 @@ case class TransactionState(accounts:Set[AccountCreation], balanceState:BalanceS
   private def process(e:UnitTrustBalance):TransactionState = {
     val baseAcct = accounts.find(x => x.name == e.accountId).getOrElse(throw new IllegalStateException(s"${e.accountId} is not an open account"))
     // FIXME: Wrong account
-    val oldBalance = balanceState.getBalance(e.securityAccountId, e.date.minusDays(1)).getOrElse(zeroFraction)
+    val oldBalance = balanceState.getAccountValue(e.securityAccountId, e.date.minusDays(1))
     this.withNewCmds(Seq(e.toBeancountCommand(Balance(oldBalance, e.security.ccy))))
   }
 

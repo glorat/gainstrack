@@ -31,7 +31,7 @@ case class BalanceAdjustment(
   def toBeancounts(balanceState:BalanceState, accts:Set[AccountCreation]) : Seq[BeancountCommand] = {
     val account = accts.find(_.accountId == accountId).getOrElse(throw new IllegalStateException(s"Account ${accountId} is not defined"))
     val targetAccountId = if (account.options.multiAsset) accountId.subAccount(balance.ccy.symbol) else accountId
-    val oldValue = balanceState.getBalance(targetAccountId, date.minusDays(1)).get
+    val oldValue = balanceState.getAccountValue(targetAccountId, date.minusDays(1))
 
     val newUnits = balance-oldValue
     if (newUnits.value == zeroFraction) {

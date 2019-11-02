@@ -4,7 +4,7 @@ import java.time.LocalDate
 
 import com.gainstrack.command.{AccountCreation, GainstrackParser}
 import com.gainstrack.core.{AccountCommand, AccountId, AssetId, PositionSet, Posting, parseDate}
-import com.gainstrack.report.{AccountInvestmentReport, BalanceReport, GainstrackGenerator, IrrSummary, TimeSeries}
+import com.gainstrack.report.{AccountInvestmentReport, BalanceReport, DailyBalance, GainstrackGenerator, IrrSummary, TimeSeries}
 import org.json4s.{DefaultFormats, Formats, JValue}
 import org.scalatra.{NotFound, ScalatraServlet}
 import org.scalatra.json._
@@ -60,10 +60,9 @@ class ApiController (implicit val ec :ExecutionContext) extends ScalatraServlet 
     val bg = session.get("gainstrack").getOrElse(bgDefault).asInstanceOf[GainstrackGenerator]
     val conversionStrategy = session.get("conversion").map(_.toString).getOrElse("parent")
 
-    val balanceReport = BalanceReport(bg.txState.cmds)
     var toDate = LocalDate.now
 
-    val state = balanceReport.getState
+    val balanceReport = DailyBalance(bg.balanceState)
     val acctState = bg.acctState.withInterpolatedAccounts
     val priceState = bg.priceState
 
@@ -147,19 +146,20 @@ class ApiController (implicit val ec :ExecutionContext) extends ScalatraServlet 
 
     val balanceFor : AccountCommand => PositionSet = {cmd =>
 
-      val mytxs = txs.takeWhile(_.origin != cmd) ++ txs.filter(_.origin == cmd)
+      val myTxs = txs.takeWhile(_.origin != cmd) ++ txs.filter(_.origin == cmd)
       /*
        For units report...
 
               val mypostings = mytxs.flatMap(_.filledPostings).filter(_.account.isSubAccountOf(accountId))
               val balance = mypostings.foldLeft(PositionSet())(_ + _.value.get)
               balance*/
-      val balanceReport = BalanceReport(mytxs)
+      val balanceReport = BalanceReport(myTxs)
       balanceReport.getState.convertedPosition(accountId, bg.acctState, bg.priceState, cmd.date, conversionStrategy)
     }
 
     val deltaFor : AccountCommand => PositionSet = {cmd =>
       val myTxs = txs.filter(_.origin == cmd)
+      val state = new DailyBalance(bg.balanceState)
       val balanceReport = BalanceReport(myTxs)
       balanceReport.getState.convertedPosition(accountId, bg.acctState, bg.priceState, cmd.date, conversionStrategy)
     }
