@@ -3,7 +3,7 @@
 
     <h3><a href="/gainstrack/command/get/">{{ accountId }}</a></h3>
     <div>
-        Graph: <account-graph :accountId="accountId"></account-graph>
+        <account-graph :accountId="accountId"></account-graph>
     </div>
     <div>
         <conversion-select></conversion-select>

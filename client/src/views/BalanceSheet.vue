@@ -1,6 +1,9 @@
 <template>
     <div>
         <div>
+            <account-graph accountId="Assets"></account-graph>
+        </div>
+        <div>
             <conversion-select></conversion-select>
         </div>
         <div class="row">
@@ -21,10 +24,11 @@
 <script>
     import TreeTable from '../components/TreeTable';
     import ConversionSelect from '@/components/ConversionSelect';
+    import AccountGraph from '../components/AccountGraph';
 
     export default {
         name: 'BalanceSheet',
-        components: {ConversionSelect, TreeTable},
+        components: {AccountGraph, ConversionSelect, TreeTable},
         data() {
             return {};
         },
