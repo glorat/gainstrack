@@ -3,7 +3,7 @@ package controllers
 import java.time.LocalDate
 
 import com.gainstrack.command.{AccountCreation, GainstrackParser}
-import com.gainstrack.core.{AccountCommand, AccountId, AssetId, PositionSet, Posting, parseDate}
+import com.gainstrack.core._
 import com.gainstrack.report.{AccountInvestmentReport, BalanceReport, DailyBalance, GainstrackGenerator, IrrSummary, TimeSeries}
 import org.json4s.{DefaultFormats, Formats, JValue}
 import org.scalatra.{NotFound, ScalatraServlet}
@@ -170,6 +170,15 @@ class ApiController (implicit val ec :ExecutionContext) extends ScalatraServlet 
       AccountTxDTO(cmd.date.toString, cmd.getClass.getSimpleName, cmd.description, deltaFor(cmd).toString, balanceFor(cmd).toString, postings)
     })
     AccountTxSummaryDTO(accountId.toString, rows)
+  }
+
+  get("/account/:accountId/graph") {
+    val bg = session.get("gainstrack").getOrElse(bgDefault).asInstanceOf[GainstrackGenerator]
+    val conversionStrategy = session.get("conversion").map(_.toString).getOrElse("parent")
+    val accountId : AccountId = params("accountId")
+    val dailyBalance = DailyBalance(bg.balanceState)
+    val startDate = bg.acctState.accounts.map(_.date).min
+    dailyBalance.monthlySeries(accountId, conversionStrategy, startDate, LocalDate.now, bg.acctState, bg.priceState)
   }
 
   get ("/journal/") {

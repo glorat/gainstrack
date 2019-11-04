@@ -1,7 +1,10 @@
 <template>
 <div>
 
-    <h3><a href="/gainstrack/command/get/">{{ info.accountId }}</a></h3>
+    <h3><a href="/gainstrack/command/get/">{{ accountId }}</a></h3>
+    <div>
+        Graph: <account-graph :accountId="accountId"></account-graph>
+    </div>
     <div>
         <conversion-select></conversion-select>
     </div>
@@ -14,10 +17,11 @@
     import axios from 'axios';
     import JournalTable from '@/components/JournalTable';
     import ConversionSelect from '@/components/ConversionSelect';
+    import AccountGraph from '@/components/AccountGraph';
 
     export default {
         name: 'Account',
-        components: {ConversionSelect, JournalTable},
+        components: {AccountGraph, ConversionSelect, JournalTable},
         props: ['accountId'],
         data() {
             return {

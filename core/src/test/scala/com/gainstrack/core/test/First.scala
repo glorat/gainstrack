@@ -1,6 +1,6 @@
 package com.gainstrack.core.test
 
-import java.time.LocalDate
+import java.time.{LocalDate, YearMonth}
 
 import com.gainstrack.command.{AccountCreation, BalanceAdjustment, GainstrackParser, GlobalCommand, Transfer}
 import com.gainstrack.core._
@@ -303,5 +303,29 @@ class First extends FlatSpec {
     }
 
     testMe3("Assets:Investment:IBUSD", "USD", 172)
+  }
+
+  it should "generate daily time series of balances" in {
+    val dailyReport = new DailyBalance(bg.balanceState)
+    val startDate = bg.acctState.accounts.map(_.date).min
+    // Every 30 days
+    val range = startDate.toEpochDay.until(today.toEpochDay, 30).map(LocalDate.ofEpochDay)
+    val acct = AccountId("Assets")
+
+    for (dt <- range) {
+      val x = dailyReport.convertedPosition(acct, bg.acctState, bg.priceState, dt, "GBP")
+    }
+  }
+
+  it should "generate monthly time series of balances" in {
+    val dailyReport = new DailyBalance(bg.balanceState)
+    val start = YearMonth.from(bg.acctState.accounts.map(_.date).min)
+    val it =Iterator.iterate(start)(_.plusMonths(1)).takeWhile(!_.isAfter(YearMonth.now))
+    val dates = for (ym <- it) yield ym.atDay(1)
+    val acct = AccountId("Assets")
+
+    dates.foreach(date => {
+      dailyReport.convertedPosition(acct, bg.acctState, bg.priceState, date, "GBP")
+    })
   }
 }
