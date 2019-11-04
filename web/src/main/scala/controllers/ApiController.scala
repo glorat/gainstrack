@@ -177,8 +177,7 @@ class ApiController (implicit val ec :ExecutionContext) extends ScalatraServlet 
     val conversionStrategy = session.get("conversion").map(_.toString).getOrElse("parent")
     val accountId : AccountId = params("accountId")
     val dailyBalance = DailyBalance(bg.balanceState)
-    val startDate = bg.acctState.accounts.map(_.date).min
-    dailyBalance.monthlySeries(accountId, conversionStrategy, startDate, LocalDate.now, bg.acctState, bg.priceState)
+    dailyBalance.monthlySeries(accountId, conversionStrategy, LocalDate.now, bg.acctState, bg.priceState)
   }
 
   get ("/journal/") {
