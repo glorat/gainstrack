@@ -1,11 +1,35 @@
 package com.gainstrack.report
 
+import java.time.YearMonth
+
 import com.gainstrack.command.AccountCreation
 import com.gainstrack.core._
 
-case class DailyBalance(balanceState: BalanceState, date:LocalDate = MaxDate) {
-  //def balances:Map[AccountId, PositionSet] = balanceState.
-  balanceState.balances.keys
+case class ApexSeries(name: String, data: Seq[Any])
+
+case class ApexXAxis(categories: Seq[LocalDate], title: ApexTitle)
+
+
+case class ApexYAxis(title: ApexTitle)
+
+case class ApexTitle(text: String)
+
+case class ApexOptions(series: Seq[ApexSeries], xaxis: ApexXAxis, yaxis: ApexYAxis)
+
+case class DailyBalance(balanceState: BalanceState, date: LocalDate = MaxDate) {
+
+  def monthlySeries(accountId: AccountId, conversionStrategy: String, startDate: LocalDate, endDate: LocalDate, acctState: AccountState, priceState: PriceState) = {
+    val start = YearMonth.from(acctState.accounts.map(_.date).min)
+    val end = YearMonth.from(endDate).plusMonths(1)
+    val it = Iterator.iterate(start)(_.plusMonths(1)).takeWhile(!_.isAfter(YearMonth.now))
+    val dates = (for (ym <- it) yield ym.atDay(1)).map(x=>x).toVector
+    val values = dates.map(date => this.convertedPosition(accountId, acctState, priceState, date, conversionStrategy))
+    val ccys = values.flatMap(_.assetBalance.keySet).toSet
+    val allSeries = ccys.map(ccy => {ApexSeries(ccy.symbol, values.map(_.assetBalance(ccy)))}).toSeq
+
+    ApexOptions(allSeries, ApexXAxis(dates, ApexTitle("Date")), ApexYAxis(ApexTitle("Value")))
+
+  }
 
   def totalPosition(accountId:AccountId) : PositionSet = {
     val keys = balanceState.balances.keys.toSeq.filter(_.isSubAccountOf(accountId))
