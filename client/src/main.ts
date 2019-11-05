@@ -4,28 +4,28 @@ import App from './App.vue';
 import Vue from 'vue';
 import VueRouter, { RouteConfig } from 'vue-router';
 import Vuex from 'vuex';
-import CommandSummary from './views/CommandSummary.vue';
-import Editor from './views/Editor.vue';
-import IncomeStatement from './views/IncomeStatement.vue';
-import IrrDetail from './views/IrrDetail.vue';
-import Journal from './views/Journal.vue';
-import Prices from './views/Prices.vue';
+import CommandSummary from './pages/CommandSummary.vue';
+import Editor from './pages/Editor.vue';
+import IncomeStatement from './pages/IncomeStatement.vue';
+import IrrDetail from './pages/IrrDetail.vue';
+import Journal from './pages/Journal.vue';
+import Prices from './pages/Prices.vue';
 
 Vue.prototype.$notify = Notification;
 
 const routes: RouteConfig[] = [
-  {path: '/balance_sheet', component: () => import(/* webpackChunkName: "BalanceSheet" */ './views/BalanceSheet.vue'),
+  {path: '/balance_sheet', component: () => import(/* webpackChunkName: "BalanceSheet" */ './pages/BalanceSheet.vue'),
     meta: {title: 'Balance Sheet'}},
   {path: '/income_statement', component: IncomeStatement, meta: {title: 'Income Statement'}},
   {path: '/journal', component: Journal, meta: {title: 'Journal'}},
   {path: '/prices', component: Prices, meta: {title: 'Prices'}},
   {path: '/editor', component: Editor, meta: {title: 'Editor'}},
-  {path: '/irr', component: () => import('./views/IrrSummary.vue'), meta: {title: 'IRR'}},
+  {path: '/irr', component: () => import('./pages/IrrSummary.vue'), meta: {title: 'IRR'}},
   {path: '/irr/:accountId', component: IrrDetail, name: 'irr_detail', props: true},
-  {path: '/account/:accountId', component: () => import(/* webpackChunkName: "Account" */ './views/Account.vue'),
+  {path: '/account/:accountId', component: () => import(/* webpackChunkName: "Account" */ './pages/Account.vue'),
     name: 'account', props: true},
   {path: '/command/', component: CommandSummary, meta: {title: 'Commands'}},
-  {path: '/command/:accountId', component: () => import('./views/Command.vue'), name: 'command', props: true},
+  {path: '/command/:accountId', component: () => import('./pages/Command.vue'), name: 'command', props: true},
   {path: '/*', component: {template: '<div>Not yet implemented</div>'}},
 ];
 
