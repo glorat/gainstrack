@@ -9,17 +9,17 @@
                 <span v-if="showBalance" class="num" data-sort="number">Balance</span>
             </p>
         </li>
-        <li class="transaction cleared" :class="{'show-postings':row.show}" v-for="row in entries">
+        <li class="transaction cleared" :class="{'show-postings':row.show}" v-bind:key="row" v-for="row in entries">
             <p>
                 <span class="datecell">{{ row.date }}</span>
                 <span class="description">{{ row.description }}</span>
-                <span class="indicators" v-on:click="rowClick(row)"><span v-for="i in row.postings"></span></span>
+                <span class="indicators" v-on:click="rowClick(row)"><span v-bind:key="i" v-for="i in row.postings"></span></span>
                 <span data-sort="number"></span>
                 <span v-if="showBalance" class="num">{{ row.change }} </span>
                 <span v-if="showBalance" class="num">{{ row.position }}</span>
             </p>
             <ul class="postings">
-                <li v-for="posting in row.postings">
+                <li v-bind:key="posting" v-for="posting in row.postings">
                     <p>
                         <span class="datecell"></span>
                         <span class="description"><router-link :to="{name:'account', params: { accountId: posting.account }}">{{ posting.account }}</router-link></span>

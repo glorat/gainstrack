@@ -15,9 +15,9 @@
 
 <script>
     import axios from 'axios';
-    import JournalTable from '@/components/JournalTable';
-    import ConversionSelect from '@/components/ConversionSelect';
-    import AccountGraph from '@/components/AccountGraph';
+    import JournalTable from '@/components/JournalTable.vue';
+    import ConversionSelect from '@/components/ConversionSelect.vue';
+    import AccountGraph from '@/components/AccountGraph.vue';
 
     export default {
         name: 'Account',

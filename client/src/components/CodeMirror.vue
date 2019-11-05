@@ -40,7 +40,7 @@
                     return
                 }
                 self.value = cm.getValue();
-                if (!!self.$emit) {
+                if (self.$emit) {
                     self.$emit('change', cm.getValue())
                 }
             })
@@ -54,7 +54,7 @@
                     self.skipNextChangeEvent = false;
                     return
                 }
-                if (!!self.$emit) {
+                if (self.$emit) {
                     self.$emit('change', cm.getValue());
                     self.$emit('input', cm.getValue())
                 }

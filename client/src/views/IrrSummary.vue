@@ -11,7 +11,7 @@
         </tr>
         </thead>
         <tbody>
-        <tr v-for="row in info">
+        <tr v-bind:key="row" v-for="row in info">
             <td><router-link :to="{ name: 'irr_detail', params: { accountId: row.accountId }}">{{ row.accountId }}</router-link></td>
             <td class="num">{{row.endBalance}}</td>
             <td class="num" v-bind:data-sort-value="row.start">{{ row.start }}</td>
