@@ -22,9 +22,9 @@
 </template>
 
 <script>
-    import TreeTable from '../components/TreeTable';
+    import TreeTable from '@/components/TreeTable';
     import ConversionSelect from '@/components/ConversionSelect';
-    import AccountGraph from '../components/AccountGraph';
+    import AccountGraph from '@/components/AccountGraph';
 
     export default {
         name: 'BalanceSheet',

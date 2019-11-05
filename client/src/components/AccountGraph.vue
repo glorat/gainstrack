@@ -38,7 +38,7 @@
                     xaxis: {type: 'datetime'},
                     yaxis: {
                         labels: {
-                            formatter: function (val) {
+                            formatter(val) {
                                 return val.toFixed(0);
                             },
                         },

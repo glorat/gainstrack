@@ -1,8 +1,8 @@
 <template>
     <aside class="myaside">
-    <ul v-for="menuItems in config.navigation_bar" class="navigation">
-        <li v-for="id in menuItems">
-            <router-link v-bind:to="'/' + id">{{ config.all_pages[id][0]  }}</router-link>
+    <ul v-bind:key="menuItems" v-for="menuItems in config.navigationBar" class="navigation">
+        <li v-bind:key="id" v-for="id in menuItems">
+            <router-link v-bind:to="'/' + id">{{ config.allPages[id][0] }}</router-link>
         </li>
     </ul>
         <el-upload
@@ -30,7 +30,7 @@
         private menuItems: string[] = ['foo', 'bar'];
         /* tslint:disable:object-literal-key-quotes */
         private config: any = {
-            all_pages: {
+            allPages: {
                 'balance_sheet': ['Balance Sheet', 'g b'],
                 'prices': ['Prices', 'g c'],
                 'editor': ['Editor', 'g e'],
@@ -49,7 +49,7 @@
                 'irr':              ['IRR',    ''],
                 'command': ['Commands', '']
             },
-            navigation_bar: [
+            navigationBar: [
                 ['command'],
                 ['balance_sheet', 'income_statement', 'journal'],
                 ['irr'],

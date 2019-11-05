@@ -17,7 +17,7 @@
 </template>
 
 <script>
-    import TreeTable from '../components/TreeTable';
+    import TreeTable from '@/components/TreeTable';
     import ConversionSelect from '@/components/ConversionSelect';
 
     export default {
