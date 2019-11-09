@@ -1,5 +1,5 @@
 <template>
-    <ol v-if="node && node.assetBalance" class="tree-table" v-bind:title="table_hover_text">
+    <ol v-if="node && node.assetBalance" class="tree-table">
         <li class="head">
             <p>
           <span class="account-cell">
@@ -14,7 +14,7 @@
                     <router-link v-bind:to="'/account/' + node.name">{{ node.shortName }}</router-link>
                 </span>
                 <span class="num other">
-                    <span v-bind:key="x" v-for="x in node.assetBalance">{{x}}<br /></span>
+                    <span v-for="x in node.assetBalance">{{x}}<br /></span>
                 </span>
             </p>
             <tree-table-node v-bind:node="node" depth="1"></tree-table-node>
