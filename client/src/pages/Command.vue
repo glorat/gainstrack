@@ -16,7 +16,7 @@
         </tr>
         </thead>
         <tbody>
-        <tr v-bind:key="cmd" v-for="cmd in info.commands" v-on:click="selectCommand(cmd)">
+        <tr v-for="cmd in info.commands" v-on:click="selectCommand(cmd)">
             <td>{{ info.account.key.name }}</td>
             <td>{{ cmd.data.date }}</td>
             <td>{{ cmd.type }}</td>

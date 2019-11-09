@@ -1,6 +1,6 @@
 <template>
     <ol>
-    <li v-bind:key="acct" v-for="acct in node.children" v-bind:class="{toggled: acct.toggled}">
+    <li v-bind:key="acct.accountId" v-for="acct in node.children" v-bind:class="{toggled: acct.toggled}">
         <p v-bind:class="{has_balance: acct.assetBalance.length>0}">
           <span
                   class="account-cell droptarget"
@@ -11,7 +11,7 @@
             <router-link v-bind:to="'/account/' + acct.name">{{ acct.shortName }}</router-link>
           </span>
             <span class="num other">
-                    <span v-bind:key="x" v-for="x in acct.assetBalance">{{x}} </span>
+                    <span v-for="x in acct.assetBalance">{{x}} </span>
             </span>
         </p>
         <tree-table-node v-bind:node="acct" v-bind:depth="1+ +depth"></tree-table-node>

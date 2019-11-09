@@ -1,6 +1,6 @@
 <template>
     <aside class="myaside">
-    <ul v-bind:key="menuItems" v-for="menuItems in config.navigationBar" class="navigation">
+    <ul v-for="menuItems in config.navigationBar" class="navigation">
         <li v-bind:key="id" v-for="id in menuItems">
             <router-link v-bind:to="'/' + id">{{ config.allPages[id][0] }}</router-link>
         </li>

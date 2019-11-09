@@ -6,7 +6,7 @@
         </tr>
         </thead>
         <tbody>
-        <tr v-bind:key="acct" v-for="acct in info">
+        <tr v-bind:key="acct.accountId" v-for="acct in info">
             <td><router-link :to="{name:'command', params:{accountId:acct.key.name }}">{{ acct.key.name }}</router-link> </td>
         </tr>
         </tbody>
