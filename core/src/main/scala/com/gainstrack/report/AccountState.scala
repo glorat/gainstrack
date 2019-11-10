@@ -33,6 +33,10 @@ case class AccountState(accounts:Set[AccountCreation], baseCurrency:AssetId = As
   extends AggregateRootState {
 
   lazy val accountMap:Map[AccountId, AccountCreation] = accounts.map(a => a.accountId -> a)(collection.breakOut)
+  lazy val childrenMap: Map[AccountId, Seq[AccountId]] = accounts
+    .map(acct => acct.accountId -> accounts.map(_.accountId)
+      .filter(_.parentAccountId.getOrElse(AccountId(":na:")) == acct.accountId ).toSeq).toMap
+
 
   def handle(e: DomainEvent): AccountState = {
     e match {
