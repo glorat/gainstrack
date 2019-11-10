@@ -52,7 +52,10 @@ case class DailyBalance(balanceState: BalanceState, date: LocalDate = MaxDate) {
   def convertedPosition(accountId:AccountId, origAcctState:AccountState, priceState: PriceState, date:LocalDate, conversionStrategy:String):PositionSet = {
     val acctState = origAcctState.withInterpolatedAccounts
     val accounts = acctState.accounts
-    val children = accounts.filter(_.accountId.parentAccountId.getOrElse(AccountId(":na:")) == accountId).map(_.accountId)
+    // This next line is slow in profiler and needs optimising
+    //val children: Set[AccountId] = accounts.filter(_.accountId.parentAccountId.getOrElse(AccountId(":na:")) == accountId).map(_.accountId)
+    val children = acctState.childrenMap.get(accountId).getOrElse(Seq())
+    // This is slow too but might just be scala collections overhead
     val childBalances = children.foldLeft(PositionSet())(_ + convertedPosition(_, acctState, priceState, date, conversionStrategy))
     val positions = balanceState.getBalanceOpt(accountId, date).map(childBalances + _).getOrElse(childBalances)
 
