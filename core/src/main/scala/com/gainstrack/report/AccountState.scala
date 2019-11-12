@@ -37,6 +37,17 @@ case class AccountState(accounts:Set[AccountCreation], baseCurrency:AssetId = As
     .map(acct => acct.accountId -> accounts.map(_.accountId)
       .filter(_.parentAccountId.getOrElse(AccountId(":na:")) == acct.accountId ).toSeq).toMap
 
+  lazy val assetChainMap: Map[AccountId, Seq[AssetId]] = accounts.map(a => a.accountId -> assetChainFor(a))(collection.breakOut)
+
+  private def assetChainFor(acct: AccountCreation): Seq[AssetId] = {
+    val parentChain = acct.parentAccountId
+      .map(pid => assetChainFor(accountMap(pid)))
+      .getOrElse(Seq(baseCurrency))
+    parentChain match {
+      case h :: _ if h ==acct.key.assetId => parentChain
+      case _ => acct.key.assetId +: parentChain
+    }
+  }
 
   def handle(e: DomainEvent): AccountState = {
     e match {
