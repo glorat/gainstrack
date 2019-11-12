@@ -26,7 +26,7 @@ class CommandApiController(implicit val ec :ExecutionContext) extends ScalatraSe
   protected override def transformRequestBody(body: JValue): JValue = body.camelizeKeys
 
   post ("/test") {
-    val bg = sessionOption.map(_("gainstrack")).getOrElse(bgDefault).asInstanceOf[GainstrackGenerator]
+    val bg = session.get("gainstrack").getOrElse(bgDefault).asInstanceOf[GainstrackGenerator]
 
     val body = parsedBody.extract[CommandApiRequest]
     try {
@@ -42,7 +42,7 @@ class CommandApiController(implicit val ec :ExecutionContext) extends ScalatraSe
   }
 
   post ("/add") {
-    val bg = sessionOption.map(_("gainstrack")).getOrElse(bgDefault).asInstanceOf[GainstrackGenerator]
+    val bg = session.get("gainstrack").getOrElse(bgDefault).asInstanceOf[GainstrackGenerator]
 
     val body = parsedBody.extract[CommandApiRequest]
     try {
