@@ -53,7 +53,7 @@
                 ['command'],
                 ['balance_sheet', 'income_statement', 'journal'],
                 ['irr'],
-                ['prices', 'statistics'],
+                ['prices'],
                 ['editor']
             ]
         };
