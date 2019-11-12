@@ -167,7 +167,7 @@ class ApiController (implicit val ec :ExecutionContext) extends ScalatraServlet 
     val rows = commands.map(cmd => {
       val myTxs = txs.filter(_.origin == cmd)
       val postings = myTxs.flatMap(_.filledPostings)
-      AccountTxDTO(cmd.date.toString, cmd.getClass.getSimpleName, cmd.description, deltaFor(cmd).toString, balanceFor(cmd).toString, postings)
+      AccountTxDTO(cmd.date.toString, cmd.commandString, cmd.description, deltaFor(cmd).toString, balanceFor(cmd).toString, postings)
     })
     AccountTxSummaryDTO(accountId.toString, rows)
   }
@@ -187,7 +187,7 @@ class ApiController (implicit val ec :ExecutionContext) extends ScalatraServlet 
     val rows = commands.map(cmd => {
       val myTxs = txs.filter(_.origin == cmd)
       val postings = myTxs.flatMap(_.filledPostings)
-      AccountTxDTO(cmd.date.toString, cmd.getClass.getSimpleName, cmd.description, "", "", postings)
+      AccountTxDTO(cmd.date.toString, cmd.commandString, cmd.description, "", "", postings)
     })
     JournalDTO(rows)
   }
@@ -215,7 +215,7 @@ class ApiController (implicit val ec :ExecutionContext) extends ScalatraServlet 
 
       Map("account" -> account, "commands" -> commands.map(cmd =>
         Map("data"->cmd,
-          "type" -> cmd.getClass.getSimpleName,
+          "type" -> cmd.commandString,
           "description" -> cmd.description)
       ))
     }).getOrElse(NotFound(s"${accountId} account not found"))

@@ -12,6 +12,7 @@ case class Transfer(
                      description:String
                    ) extends CommandNeedsAccounts {
   def accountId : AccountId = source // Source is where the action was triggered!
+  override def commandString: String = Transfer.prefix
   override def mainAccount: Option[AccountId] = Some(source)
   override def involvedAccounts: Set[AccountId] = Set(source, dest)
 

@@ -7,6 +7,8 @@ case class YieldCommand(date:LocalDate, accountId:AccountId, asset:Option[AssetI
 
   val incomeAccountId = asset.map(a => accountId.convertTypeWithSubAccount(Income, a.symbol)).getOrElse(assetAccountId.convertType(Income))
 
+  override def commandString: String = YieldCommand.prefix
+
   override def description: String = s"${assetAccountId} yield ${value}"
 
   override def mainAccount: Option[AccountId] = Some(accountId)

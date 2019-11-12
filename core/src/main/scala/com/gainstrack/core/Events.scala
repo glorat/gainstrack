@@ -13,6 +13,7 @@ trait CommodityDB {
 trait AccountCommand extends Command with DomainEvent with Ordered[AccountCommand] {
   // Mandatory fields
   def date : LocalDate
+  def commandString: String // The stored short version
   def description: String
   def toGainstrack: Seq[String]
 

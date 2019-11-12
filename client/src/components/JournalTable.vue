@@ -1,47 +1,77 @@
 <template>
-    <ol class="journal show-transaction show-cleared">
-        <li class="head">
-            <p>
-                <span class="datecell" data-sort="string">Date</span>
-                <span class="description" data-sort="string">Description</span>
-                <span class="num" data-sort="number"></span>
-                <span v-if="showBalance" class="num" data-sort="number">Change</span>
-                <span v-if="showBalance" class="num" data-sort="number">Balance</span>
-            </p>
-        </li>
-        <li class="transaction cleared" :class="{'show-postings':row.show}" v-for="row in entries">
-            <p>
-                <span class="datecell">{{ row.date }}</span>
-                <span class="description">{{ row.description }}</span>
-                <span class="indicators" v-on:click="rowClick(row)"><span v-for="i in row.postings"></span></span>
-                <span data-sort="number"></span>
-                <span v-if="showBalance" class="num">{{ row.change }} </span>
-                <span v-if="showBalance" class="num">{{ row.position }}</span>
-            </p>
-            <ul class="postings">
-                <li v-for="posting in row.postings">
-                    <p>
-                        <span class="datecell"></span>
-                        <span class="description"><router-link :to="{name:'account', params: { accountId: posting.account }}">{{ posting.account }}</router-link></span>
-                        <span class="num">{{ posting.value.value}} {{ posting.value.ccy }}</span>
-                        <span class="num"></span>
-                        <span class="num"></span>
-                    </p>
-                </li>
-            </ul>
-        </li>
-    </ol>
+    <div>
+        <form id="entry-filters" class="wide-form">
+            <span class="spacer"></span>
+            <button-toggle v-for="t in entryTypes" :key="t" :name="t" :off-state="offState"></button-toggle>
+
+        </form>
+        <ol class="journal show-transaction show-cleared">
+            <li class="head">
+                <p>
+                    <span class="datecell" data-sort="string">Date</span>
+                    <span class="description" data-sort="string">Description</span>
+                    <span class="num" data-sort="number"></span>
+                    <span v-if="showBalance" class="num" data-sort="number">Change</span>
+                    <span v-if="showBalance" class="num" data-sort="number">Balance</span>
+                </p>
+            </li>
+            <li class="transaction cleared" :class="{'show-postings':row.show}" v-for="row in filteredEntries">
+                <p>
+                    <span class="datecell">{{ row.date }}</span>
+                    <span class="description">{{ row.description }}</span>
+                    <span class="indicators" v-on:click="rowClick(row)"><span v-for="i in row.postings"></span></span>
+                    <span data-sort="number"></span>
+                    <span v-if="showBalance" class="num">{{ row.change }} </span>
+                    <span v-if="showBalance" class="num">{{ row.position }}</span>
+                </p>
+                <ul class="postings">
+                    <li v-for="posting in row.postings">
+                        <p>
+                            <span class="datecell"></span>
+                            <span class="description"><router-link :to="{name:'account', params: { accountId: posting.account }}">{{ posting.account }}</router-link></span>
+                            <span class="num">{{ posting.value.value}} {{ posting.value.ccy }}</span>
+                            <span class="num"></span>
+                            <span class="num"></span>
+                        </p>
+                    </li>
+                </ul>
+            </li>
+        </ol>
+    </div>
 </template>
 
 <script>
+    import ButtonToggle from '@/components/ButtonToggle';
+    import {uniq} from 'lodash';
     export default {
         name: 'JournalTable',
+        components: {ButtonToggle},
         props: {entries: Array, showBalance: Boolean},
+        data() {
+            return {
+                offState: {}
+            };
+        },
         methods: {
             rowClick(row) {
                 this.$set(row, 'show', !row.show);
             },
         },
+        computed: {
+            filteredEntries() {
+                let ret = this.entries;
+                const types = this.entryTypes;
+                types.forEach(t => {
+                    if (this.offState[t]) {
+                        ret = ret.filter(e => e.cmdType !== t)
+                    }
+                });
+                return ret;
+            },
+            entryTypes() {
+                return uniq(this.entries.map(x => x.cmdType));
+            }
+        }
     }
 </script>
 

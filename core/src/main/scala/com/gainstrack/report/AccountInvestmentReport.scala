@@ -16,8 +16,6 @@ class AccountInvestmentReport(accountId: AccountId, ccy:AssetId, fromDate:LocalD
     val b = balanceState.getAccountValue(account.accountId, fromDate)
     // FX this into parent ccy
     val fx = priceState.getFX(AssetPair(account.key.assetId, ccy), fromDate).getOrElse(throw new Exception(s"Missing FX for ${account.key.assetId.symbol}/${ccy.symbol}"))
-    // Make start balance negative as outflow
-    // The -0.001 is to workaround some XIRR glitch
     -(total + b * fx)
   })
 

@@ -14,6 +14,7 @@ case class BalanceAdjustment(
   override def mainAccount: Option[AccountId] = Some(accountId)
   // FIXME: Unless there is no adjustment
   override def involvedAccounts: Set[AccountId] = Set(accountId, adjAccount)
+  override def commandString: String = "adj"
   def description:String = s"Account balance ${balance}"
 
   /*val relatedAccount : AccountId = {
