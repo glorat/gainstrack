@@ -5,6 +5,8 @@ import com.gainstrack.core._
 case class GlobalCommand(operatingCurrency:AssetId = AssetId("USD")) extends AccountCommand {
   override def date: LocalDate = MinDate
 
+  override def commandString: String = ???
+
   override def description: String = "global configuration"
 
   override def toGainstrack: Seq[String] = {

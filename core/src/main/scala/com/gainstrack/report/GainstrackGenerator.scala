@@ -51,6 +51,8 @@ case class GainstrackGenerator(originalCommands:SortedSet[AccountCommand])  {
   case object GainstrackTemplate extends AccountCommand {
     def date: LocalDate = MinDate
 
+    def commandString: String = ???
+
     def description: String = "System generated"
 
     def toGainstrack: Seq[String] = Seq("")

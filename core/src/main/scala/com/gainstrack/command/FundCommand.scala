@@ -7,6 +7,8 @@ case class FundCommand(date:LocalDate, targetAccountId:AccountId, balance:Balanc
 
   override def mainAccount: Option[AccountId] = Some(targetAccountId)
 
+  override def commandString: String = FundCommand.prefix
+
   // Leave as not implemented because we actually need to sub this out mid generation to a Transfer command
   override def involvedAccounts: Set[AccountId] = ???
 

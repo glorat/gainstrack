@@ -21,6 +21,7 @@ case class SecurityPurchase(
   override def involvedAccounts: Set[AccountId] = toTransaction.filledPostings.map(p => p.account).toSet
 
   //val expenseAcct = acct.replace("Asset", "Expenses")
+  override def commandString: String = SecurityPurchase.prefix
 
   def description : String = {
     val buysell = if (security.value>0) "BUY" else "SELL"

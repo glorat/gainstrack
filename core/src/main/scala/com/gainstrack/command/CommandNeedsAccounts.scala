@@ -9,6 +9,8 @@ trait CommandNeedsAccounts extends AccountCommand {
 case class CommandWithAccounts[T<:CommandNeedsAccounts](underlying:T, accounts:Set[AccountCreation]) extends AccountCommand {
   def date = underlying.date
 
+  override def commandString: String = underlying.commandString
+
   override def description: String = underlying.description
 
   override def involvedAccounts: Set[AccountId] = underlying.toTransfers(accounts).map(_.involvedAccounts).flatten.toSet
