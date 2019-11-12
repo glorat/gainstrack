@@ -25,7 +25,8 @@ class GainstrackParser {
     "price" -> PriceObservation,
     "unit" -> UnitTrustBalance,
     "fund" -> FundCommand,
-    "yield" -> YieldCommand
+    "yield" -> YieldCommand,
+    "commodity" -> CommodityCommand
   )
 
   import com.gainstrack.command.Patterns._

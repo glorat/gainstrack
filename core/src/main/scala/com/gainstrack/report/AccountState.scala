@@ -50,6 +50,7 @@ case class AccountState(accounts:Set[AccountCreation], baseCurrency:AssetId = As
       case e:FundCommand => process(e)
       case e:EarnCommand => process(e)
       case e:YieldCommand => process(e)
+      case e:CommodityCommand => this
     }
   }
 

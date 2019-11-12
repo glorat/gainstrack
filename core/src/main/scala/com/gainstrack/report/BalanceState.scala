@@ -41,14 +41,15 @@ case class BalanceState(accounts:Set[AccountCreation], balances:Map[AccountId,Ba
 
   override def handle(e: DomainEvent): BalanceState = {
     e match {
-      case e:GlobalCommand => this
+      case _:GlobalCommand => this
       case e:AccountCreation => process(e)
       //case e:Transfer => process(e)
       case e:CommandWithAccounts[_] => e.toTransfers.foldLeft(this)(_.process(_))
       case e:SecurityPurchase =>  process(e)
       case e:BalanceAdjustment => process(e)
-      case e:PriceObservation => this
+      case _:PriceObservation => this
       case e:UnitTrustBalance => process(e)
+      case _:CommodityCommand => this
     }
   }
 
