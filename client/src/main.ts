@@ -26,7 +26,7 @@ const routes: RouteConfig[] = [
     name: 'account', props: true},
   {path: '/command/', component: CommandSummary, meta: {title: 'Commands'}},
   {path: '/command/:accountId', component: () => import('./pages/Command.vue'), name: 'command', props: true},
-  {path: '/*', component: {template: '<div>Not yet implemented</div>'}},
+  {path: '/*', component: () => import('./pages/Help.vue'), name: 'help'},
 ];
 
 const router = new VueRouter({

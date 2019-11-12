@@ -31,9 +31,10 @@
           this.$router.afterEach((to, from) => {
               this.pageTitle = (to.meta.title || 'Gainstrack');
           });
+          this.pageTitle = this.$router.currentRoute.meta.title;
         },
         data() {
-            return {pageTitle: 'TODO Title'};
+            return {pageTitle: ''};
         },
         components: {MyAside}
     }
