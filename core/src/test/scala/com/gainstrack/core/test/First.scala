@@ -98,6 +98,12 @@ class First extends FlatSpec {
     assert(newAccounts.size == 11)
   }
 
+  it should "generate asset conversion chains" in {
+    val newState = acctState.withInterpolatedAccounts
+    assert(newState.assetChainMap(AccountId("Assets")) == Seq(AssetId("GBP")))
+    assert(newState.assetChainMap(AccountId("Assets:Investment:IBUSD:VWRD")).map(_.symbol) == Seq("VWRD","USD","GBP"))
+  }
+
   val bg = GainstrackGenerator(cmds)
 
   val accountMap = bg.acctState.accountMap
