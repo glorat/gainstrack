@@ -40,3 +40,5 @@
 
 ; Earn some interest
 2005-08-01 yield Assets:Bank:England 10 GBP
+
+1900-01-01 commodity FTSE

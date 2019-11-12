@@ -18,6 +18,7 @@ case class TransactionState(accounts:Set[AccountCreation], balanceState:BalanceS
       case e:BalanceAdjustment => process(e)
       case e:PriceObservation => process(e)
       case e:UnitTrustBalance => process(e)
+      case _:CommodityCommand => this
     }
   }
 
