@@ -270,15 +270,17 @@ class First extends FlatSpec {
     val dailyReport = new DailyBalance(bg.balanceState)
     val accounts = bg.acctState.withInterpolatedAccounts
 
-    val testMe:(String, String, Int)=>Unit = (acctId, ccyStr, expected) => {
-      val ps = dailyReport.convertedPosition(acctId, accounts, bg.priceState, today, "parent")
+    val testMeStrategy:( String)=>(String, String, Int)=>Unit = (strategy) => (acctId, ccyStr, expected) => {
+      val ps = dailyReport.convertedPosition(acctId, accounts, bg.priceState, today, strategy)
       val actual1 = ps.assetBalance(AssetId(ccyStr)).round
-      val ps2 = balanceReport.getState.convertedPosition(acctId, accounts, bg.priceState, today, "parent")
+      val ps2 = balanceReport.getState.convertedPosition(acctId, accounts, bg.priceState, today, strategy)
       val actual2 = ps2.assetBalance(AssetId(ccyStr)).round
 
       assert(actual1 == expected)
       assert(actual2 == expected)
     }
+
+    val testMe:(String, String, Int)=>Unit = testMeStrategy("parent")
 
     testMe("Assets:Investment:IBUSD:USD", "USD", 172)
     testMe("Expenses:Investment:IBUSD:USD", "USD", 19)
@@ -289,31 +291,18 @@ class First extends FlatSpec {
     testMe("Assets:Investment", "GBP", 485444)
     testMe("Assets", "GBP", 674080)
 
-    val testMe2:(String, String, Int)=>Unit = (acctId, ccyStr, expected) => {
-      val ps = dailyReport.convertedPosition(acctId, accounts, bg.priceState, today, "GBP")
-      val actual1 = ps.assetBalance(AssetId(ccyStr)).round
-      val ps2 = balanceReport.getState.convertedPosition(acctId, accounts, bg.priceState, today, "GBP")
-      val actual2 = ps2.assetBalance(AssetId(ccyStr)).round
-
-      assert(actual1 == expected)
-      assert(actual2 == expected)
-    }
+    val testMe2:(String, String, Int)=>Unit = testMeStrategy("GBP")
 
     testMe2("Assets:Investment:IBUSD:USD", "GBP", 135)
     testMe2("Assets", "GBP", 674080)
 
-
-    val testMe3:(String, String, Int)=>Unit = (acctId, ccyStr, expected) => {
-      val ps = dailyReport.convertedPosition(acctId, accounts, bg.priceState, today, "units")
-      val actual1 = ps.assetBalance(AssetId(ccyStr)).round
-      val ps2 = balanceReport.getState.convertedPosition(acctId, accounts, bg.priceState, today, "units")
-      val actual2 = ps2.assetBalance(AssetId(ccyStr)).round
-
-      assert(actual1 == expected)
-      assert(actual2 == expected)
-    }
-
+    val testMe3 = testMeStrategy("units")
     testMe3("Assets:Investment:IBUSD", "USD", 172)
+
+    // This additional test is needed for a non-base ccy conversion
+    val testMe4 = testMeStrategy("USD")
+    testMe4("Assets:Investment:IBUSD", "USD", 34960)
+    testMe4("Assets", "USD", 863785)
   }
 
   it should "generate daily time series of balances" in {
