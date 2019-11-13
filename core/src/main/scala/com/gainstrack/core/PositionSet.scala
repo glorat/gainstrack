@@ -38,7 +38,7 @@ case class PositionSet(assetBalance:Map[AssetId, Fraction]) {
       case h :: _ if (h == tgtCcy) => this
       case h :: Nil => {
         // Wrong tgtCurrency but no more in chain
-        this
+        this.convertTo(tgtCcy, priceState, date)
       }
       case h :: n :: tail => {
         val converted = this.convertTo(n, priceState, date)
