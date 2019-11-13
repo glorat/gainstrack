@@ -33,6 +33,20 @@ case class PositionSet(assetBalance:Map[AssetId, Fraction]) {
     assetBalance.foldLeft(PositionSet())(convertEntry)
   }
 
+  def convertViaChain(tgtCcy: AssetId, ccyChain: Seq[AssetId], priceState: PriceState, date:LocalDate) : PositionSet = {
+    ccyChain match {
+      case h :: _ if (h == tgtCcy) => this
+      case h :: Nil => {
+        // Wrong tgtCurrency but no more in chain
+        this
+      }
+      case h :: n :: tail => {
+        val converted = this.convertTo(n, priceState, date)
+        converted.convertViaChain(tgtCcy, n::tail, priceState, date)
+      }
+    }
+  }
+
   def +(rhs: Balance): PositionSet = {
     val newVal = assetBalance.getOrElse(rhs.ccy, zeroFraction) + rhs.value
     copy(assetBalance = assetBalance.updated(rhs.ccy, newVal))

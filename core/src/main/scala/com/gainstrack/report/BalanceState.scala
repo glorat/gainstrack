@@ -39,6 +39,14 @@ case class BalanceState(accounts:Set[AccountCreation], balances:Map[AccountId,Ba
     Balance(getBalanceOpt(account, date).map(_.value).getOrElse(zeroFraction), ccy)
   }
 
+  def getPosition(account:AccountId, date: LocalDate, tgtCcy:AssetId, ccyChain:Seq[AssetId], priceState:PriceState) : PositionSet = {
+    var balance = getBalanceOpt(account, date).getOrElse(Balance(zeroFraction, ccyChain.head))
+    // Developer assertion. Can be disabled at runtime
+    // require(ccyChain.head == accounts.find(x => x.name == account).get.key.assetId)
+    val pos = PositionSet() +  balance
+    pos.convertViaChain(tgtCcy, ccyChain, priceState, date)
+  }
+
   override def handle(e: DomainEvent): BalanceState = {
     e match {
       case _:GlobalCommand => this

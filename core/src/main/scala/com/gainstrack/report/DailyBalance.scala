@@ -52,30 +52,30 @@ case class DailyBalance(balanceState: BalanceState, date: LocalDate = MaxDate) {
   def convertedPosition(accountId:AccountId, origAcctState:AccountState, priceState: PriceState, date:LocalDate, conversionStrategy:String):PositionSet = {
     val acctState = origAcctState.withInterpolatedAccounts
     val accounts = acctState.accounts
+    val thisCcy = acctState.accountMap.get(accountId).map(_.key.assetId).getOrElse(origAcctState.baseCurrency)
+
     // This next line is slow in profiler and needs optimising
     //val children: Set[AccountId] = accounts.filter(_.accountId.parentAccountId.getOrElse(AccountId(":na:")) == accountId).map(_.accountId)
-    val children = acctState.childrenMap.get(accountId).getOrElse(Seq())
-    // This is slow too but might just be scala collections overhead
-    val childBalances = children.foldLeft(PositionSet())(_ + convertedPosition(_, acctState, priceState, date, conversionStrategy))
-    val positions = balanceState.getBalanceOpt(accountId, date).map(childBalances + _).getOrElse(childBalances)
+    // This is faster but out of date
+    //val children = acctState.childrenMap.get(accountId).getOrElse(Seq())
+    // This needs profiling
+    val children = accounts.map(_.accountId).filter(_.isSubAccountOf(accountId))
 
     // This can be extracted out to a strategy
-    val acctToPositionSet: (AccountCreation => PositionSet) = conversionStrategy match {
-      case "" | "parent" =>  acct =>
-        positions.convertTo(acct.key.assetId, priceState, date)
+    val acctToPositionSet: (AccountId => PositionSet) = conversionStrategy match {
+      case "" | "parent" =>  acct => {
+        balanceState.getPosition(acct, date, thisCcy, acctState.assetChainMap(acct), priceState)
+      }
       case "units" => acct =>
-        positions.convertTo(AssetId("NOVALIDUNIT"), priceState, date)
+        // Tailing the chain means we stay at the leaf currency
+        balanceState.getPosition(acct, date, AssetId("NOVALIDUNIT"), acctState.assetChainMap(acct).tail, priceState)
       case ccy:String => acct =>
-        positions.convertToOneOf(Seq(AssetId(ccy),acct.key.assetId), priceState, date)
+        balanceState.getPosition(acct, date, AssetId(ccy), acctState.assetChainMap(acct), priceState)
     }
 
-    val converted:PositionSet = acctState.accountMap.get(accountId)
-      //.map(acctToTgtCcy)
-      //.map(tgtCcy => { positions.convertTo(tgtCcy, priceState, date)})
-      .map(acctToPositionSet)
-      //.map(res => {println (s"${accountId} has ${res}"); res})
-      .getOrElse(positions)
-    converted
+    val positions = children.foldLeft(PositionSet())(_ + acctToPositionSet(_))
+
+    positions
   }
 
 }
