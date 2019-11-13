@@ -160,10 +160,15 @@ class First extends FlatSpec {
 
     it should "list balances by account" in {
       val today = parseDate("2019-12-31")
+      val chainMap = acctState.assetChainMap
+
       acctState.accounts.toSeq.sortBy(_.name).foreach(account => {
         val value = bp.getAccountValue(account.accountId, today)
-        println(s"${account.accountId}: ${value.toDouble} ${account.key.assetId.symbol}")
-      })
+        val toGbp = bp.getPosition(account.accountId, today, AssetId("GBP"), chainMap(account.accountId), bg.priceState)
+
+        println(s"${account.accountId}: ${value.toDouble} ${account.key.assetId.symbol} ${toGbp}")
+
+              })
     }
 
     it should "sum all asset balances to a position set" in {
