@@ -17,12 +17,12 @@ class BalanceTreeTable(acctState:AccountState, priceState:PriceState, date:Local
     val balance = balanceReport.convertedPosition(acctId, acctState, priceState, date, conversionStrategy)
 
     // TODO: Sort the sequence alphabetically
-    TreeTableDTO(acctId.toString, acctId.shortName, allAcctState.childrenOf(acctId).toSeq.map(acct => toTreeTableNode(acct.accountId)), balance.assetBalance.map(e=>s"${e._2.toDouble.formatted("%.2f")} ${e._1.symbol}").toSeq)
+    TreeTableDTO(acctId.toString, acctId.shortName, allAcctState.childrenOf(acctId).toSeq.sortBy(_.accountId).map(acct => toTreeTableNode(acct.accountId)), balance.assetBalance.map(e=>s"${e._2.toDouble.formatted("%.2f")} ${e._1.symbol}").toSeq)
   }
 
   def toTreeTableNode(acctId: AccountId): TreeTableNodeDTO = {
     val balance = balanceReport.convertedPosition(acctId, acctState, priceState, date, conversionStrategy)
     // TODO: Sort the sequence alphabetically
-    TreeTableNodeDTO(acctId.toString, acctId.shortName, allAcctState.childrenOf(acctId).toSeq.map(acct => toTreeTableNode(acct.accountId)), balance.assetBalance.map(e=>s"${e._2.toDouble.formatted("%.2f")} ${e._1.symbol}").toSeq)
+    TreeTableNodeDTO(acctId.toString, acctId.shortName, allAcctState.childrenOf(acctId).toSeq.sortBy(_.accountId).map(acct => toTreeTableNode(acct.accountId)), balance.assetBalance.map(e=>s"${e._2.toDouble.formatted("%.2f")} ${e._1.symbol}").toSeq)
   }
 }
