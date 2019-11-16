@@ -51,19 +51,16 @@ class GainstrackParser {
           try {
             val newCmd = parsers(prefix).parse(line)
             commands = commands :+ newCmd
-            Some(newCmd)
           }
           catch {
             case m: MatchError => {
               errors = errors :+ ParserMessage(s"${prefix} command cannot be parsed", lineCount, line)
-              throw new IllegalArgumentException(errors.last.message)
             }
           }
 
         }
         else {
           errors = errors :+ ParserMessage(s"${prefix} is an unknown command", lineCount, line)
-          throw new IllegalArgumentException(errors.last.message)
         }
 
 
@@ -74,7 +71,6 @@ class GainstrackParser {
           Some(newLast)
         }).getOrElse({
           errors = errors :+ ParserMessage(s"Cannot apply $key to ${prefix} command", lineCount, line)
-          throw new IllegalStateException(errors.last.message)
         })
 
       }
@@ -85,13 +81,12 @@ class GainstrackParser {
       case IgnoreLine() => ()
       case _ => {
         errors = errors :+ ParserMessage(s"Unparsable: ${line}", lineCount, line)
-        throw new Exception(errors.last.message)
         //None
       }
     }
   }
 
-  def parseLine(line:String) : Unit = {
+  private def parseLine(line:String) : Unit = {
     try {
       tryParseLine(line)
     }
@@ -103,9 +98,19 @@ class GainstrackParser {
     }
   }
 
+  def parseLines(lines:TraversableOnce[String]) : Unit = {
+    try {
+      lines.foreach(tryParseLine)
+      if (this.errors.length > 0) {
+        throw new Exception("There were parsing errors")
+      }
+    }
+  }
+
   def parseFile(filename:String) : Unit = {
     val src = Source.fromFile(filename)
     parseBuffer(src)
+
   }
 
   def parseString(str:String) : Unit = {
@@ -115,6 +120,9 @@ class GainstrackParser {
 
   private def parseBuffer(src: Source) = {
     src.getLines.foreach(this.parseLine)
+    if (this.errors.length > 0) {
+      throw new Exception("There were parsing errors")
+    }
   }
 }
 
