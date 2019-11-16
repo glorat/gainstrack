@@ -61,7 +61,7 @@ class TransactionBalanceTest extends FlatSpec {
   {
     val parser = new GainstrackParser
     import scala.io.Source
-    Source.fromResource("unit.gainstrack").getLines.foreach(parser.parseLine)
+    parser.parseLines(Source.fromResource("unit.gainstrack").getLines)
     val cmds = parser.getCommands
     val bg = new GainstrackGenerator(cmds)
 
@@ -142,7 +142,7 @@ class TransactionBalanceTest extends FlatSpec {
 
       val secondParser = new GainstrackParser
 
-      strs.split("\n").foreach(s => secondParser.parseLine(s))
+      secondParser.parseLines(strs.split("\n"))
 
       secondParser.getCommands.zip(cmds).map(x => assert(x._1 == x._2))
 

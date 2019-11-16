@@ -12,7 +12,7 @@ import scala.collection.SortedSet
 class First extends FlatSpec {
   val parser = new GainstrackParser
   import scala.io.Source
-  Source.fromResource("src.gainstrack").getLines.foreach(parser.parseLine)
+  parser.parseLines(Source.fromResource("src.gainstrack").getLines)
 
   val cmds = parser.getCommands
   val today = parseDate("2019-12-31")
@@ -23,17 +23,21 @@ class First extends FlatSpec {
     cmds.foreach(cmd => {
       val p = new GainstrackParser
       val strs = cmd.toGainstrack
-      strs.foreach(p.parseLine(_))
+      p.parseLines(strs)
 
       assert(cmd == p.getCommands.last)
 
     })
   }
 
-  "it" should "roundtrip multiline account opening" in {
+  it should "set a global operating currency" in {
+    assert(bg.globalCommand.operatingCurrency == AssetId("GBP"))
+  }
+
+  it should "roundtrip multiline account opening" in {
     val lines = Seq("2010-01-01 open Income:Salary:CNY CNY", "  fundingAccount: Assets:HSBCCN")
     val p = new GainstrackParser
-    lines.foreach(p.parseLine(_))
+    p.parseLines(lines)
     assert(p.getCommands.size == 2)
     val cmd = p.getCommands.toSeq(1).asInstanceOf[AccountCreation]
     assert(cmd.options.fundingAccount == Some(AccountId("Assets:HSBCCN")))
