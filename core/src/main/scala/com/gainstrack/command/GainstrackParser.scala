@@ -9,12 +9,15 @@ class GainstrackParser {
   // We start with just the global state
   private var globalCommand = GlobalCommand()
   private var commands:Seq[AccountCommand] = Seq()
+  private var errors:Seq[ParserMessage] = Seq()
   private var lineCount : Int = 0
   def getCommands : SortedSet[AccountCommand] = {
     val ret = SortedSet[AccountCommand]() + globalCommand ++ commands
     require(commands.size+1 == ret.size, "Internal error: two different commands compared equal")
     ret
   }
+
+  def parserErrors:Seq[ParserMessage] = errors
 
   val parsers:Map[String, CommandParser] = Map (
     "open" -> AccountCreation,
@@ -42,15 +45,27 @@ class GainstrackParser {
 
     line match {
       case AccountCommand(dateStr, prefix) => {
-        require(parsers.contains(prefix), s"${prefix} is an unknown command")
-        val newCmd = parsers(prefix).parse(line)
-        commands = commands :+ newCmd
-        Some(newCmd)
+        if (parsers.contains(prefix)) {
+          val newCmd = parsers(prefix).parse(line)
+          commands = commands :+ newCmd
+          Some(newCmd)
+        }
+        else {
+          errors = errors :+ ParserMessage(s"${prefix} is an unknown command", lineCount, line)
+          throw new IllegalArgumentException(errors.last.message)
+        }
+
+
       }
       case Metadata(key, valueStr) => {
-        val newLast = commands.lastOption.getOrElse(throw new IllegalStateException("Options must be given to a command")).withOption(key, valueStr)
-        commands = commands.dropRight(1) :+ newLast
-        Some(newLast)
+        val newLast = commands.lastOption.map(_.withOption(key, valueStr)).map(newLast => {
+          commands = commands.dropRight(1) :+ newLast
+          Some(newLast)
+        }).getOrElse({
+          errors = errors :+ ParserMessage(s"${prefix} is an unknown command", lineCount, line)
+          throw new IllegalStateException(errors.last.message)
+        })
+
       }
       case OptionCommandPattern(key, valueStr) => {
         globalCommand = globalCommand.withOption(key, valueStr)
@@ -58,7 +73,8 @@ class GainstrackParser {
       case CommentLine() => ()
       case IgnoreLine() => ()
       case _ => {
-        throw new Exception(s"Unparsable: ${line}")
+        errors = errors :+ ParserMessage(s"Unparsable: ${line}", lineCount, line)
+        throw new Exception(errors.last.message)
         //None
       }
     }
@@ -69,7 +85,11 @@ class GainstrackParser {
       tryParseLine(line)
     }
     catch {
-      case e:Exception => throw new Exception(s"Parsing failed on line ${lineCount}: ${line}", e)
+
+      case e:Exception => {
+        errors = errors :+ ParserMessage(e.getMessage, lineCount, line)
+        throw new Exception(s"Parsing failed on line ${lineCount}: ${line}", e)
+      }
     }
   }
 
@@ -87,3 +107,5 @@ class GainstrackParser {
     src.getLines.foreach(this.parseLine)
   }
 }
+
+case class ParserMessage(message:String, line:Int, input:String, command:Option[AccountCommand]=None) // + severity?

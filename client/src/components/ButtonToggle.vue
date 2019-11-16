@@ -12,7 +12,7 @@
         methods: {
           onClick() {
               this.$set(this.offState, this.name, !this.offState[this.name]);
-              //this.offState[this.name] = !this.offState[this.name];
+              // this.offState[this.name] = !this.offState[this.name];
           }
         }
     }

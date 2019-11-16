@@ -2,7 +2,7 @@ package controllers
 
 import java.time.LocalDate
 
-import com.gainstrack.command.{AccountCreation, GainstrackParser}
+import com.gainstrack.command.{AccountCreation, GainstrackParser, ParserMessage}
 import com.gainstrack.core._
 import com.gainstrack.report.{AccountInvestmentReport, BalanceReport, DailyBalance, GainstrackGenerator, IrrSummary, TimeSeries}
 import org.json4s.{DefaultFormats, Formats, JValue}
@@ -35,25 +35,27 @@ class ApiController (implicit val ec :ExecutionContext) extends ScalatraServlet 
   protected override def transformRequestBody(body: JValue): JValue = body.camelizeKeys
 
   put("/source/") {
-    val body = parsedBody.extract[ApiSourceRequest]
-
-
     val parser = new GainstrackParser
-    val realFile = "real"
-    parser.parseString(body.source)
-    val orderedCmds = parser.getCommands
-    val bg = new GainstrackGenerator(orderedCmds)
-    bg.writeBeancountFile(s"/tmp/${realFile}.beancount")
-    session("gainstrack") = bg
+    try {
+      val body = parsedBody.extract[ApiSourceRequest]
 
-    //val defaultFromDate = parseDate("1970-01-01")
+      val realFile = "real"
+      parser.parseString(body.source)
+      val orderedCmds = parser.getCommands
+      val bg = new GainstrackGenerator(orderedCmds)
+      bg.writeBeancountFile(s"/tmp/${realFile}.beancount")
+      session("gainstrack") = bg
 
+      //val defaultFromDate = parseDate("1970-01-01")
+      ApiSourceResponse("???", true, Seq())
+    }
+    catch {
+      case e:Exception if parser.parserErrors.size>0 => {
+        ApiSourceResponse("???", false, parser.parserErrors)
+      }
+      case e:Exception => ApiSourceResponse("???", false, Seq(ParserMessage(e.getMessage, 0, "")))
+    }
 
-    ApiSourceResponse("???", "true")
-  }
-
-  get("/test/") {
-    ApiSourceResponse("???", "true")
   }
 
   def tables(keys:Seq[String]) = {
@@ -233,7 +235,7 @@ class ApiController (implicit val ec :ExecutionContext) extends ScalatraServlet 
   post("/state/conversion") {
     val bg = session.get("gainstrack").getOrElse(bgDefault).asInstanceOf[GainstrackGenerator]
     session("conversion") = (parsedBody \ "conversion").extract[String]
-    ApiSourceResponse("???", "true")
+    ApiSourceResponse("???", true, Seq())
   }
 
 
@@ -246,7 +248,7 @@ class ApiController (implicit val ec :ExecutionContext) extends ScalatraServlet 
 }
 //case class BalanceSheet(balanceSheet: Map[String,TreeTable])
 case class ApiSourceRequest(filePath:String, entryHash:String, source:String, sha256sum: String)
-case class ApiSourceResponse(sha256sum:String, success:String)
+case class ApiSourceResponse(sha256sum:String, success:Boolean, errors: Seq[ParserMessage])
 
 case class AccountTxSummaryDTO(accountId:String, rows:Seq[AccountTxDTO])
 case class AccountTxDTO(date:String, cmdType:String, description:String, change: String, position:String, postings:Seq[Posting])

@@ -15,7 +15,7 @@
             </ul>
             <button id="source-editor-submit" type="button" v-on:click="editorSave" data-progress-content="Saving..." title="Save (Ctrl/Cmd+s)">Save</button>
         </div>
-        <codemirror v-model="info.source"></codemirror>
+        <codemirror v-model="info.source" :errors="errors"></codemirror>
 
     </form>
 </template>
@@ -36,12 +36,24 @@
                 .then(response => this.info = response.data)
                 .catch(error => notify.error(error))
         },
+        computed: {
+            errors() {
+                return this.$store.state.parseState.errors;
+            },
+        },
         methods: {
             editorSave() {
                 const notify = this.$notify;
                 axios.put('/api/source/', {source: this.info.source, filePath: '', entryHash: '', sha256sum: ''})
-                    .then(response => notify.success('Saved'))
-                    .then(() => this.$store.dispatch('reload'))
+                    .then(response => {
+                        this.$store.dispatch('parseState', response.data);
+                        if (response.data.errors.length > 0) {
+                            notify.warning('There are errors...')
+                        } else {
+                            notify.success('Saved');
+                            this.$store.dispatch('reload')
+                        }
+                    })
                     .catch(error => notify.error(error.response.data || error))
             }
         }

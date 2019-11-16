@@ -16,7 +16,7 @@ case class BalanceState(accounts:Set[AccountCreation], balances:Map[AccountId,Ba
   def getAccountValueOpt(account:AccountId, date: LocalDate) : Option[Fraction] = {
     val ret:Option[Fraction] = interp.getValue(balances.get(account).map(_.series).getOrElse(SortedMap()), date)(TimeSeriesInterpolator.step)
       .map(x => x)
-        .map(f => f.limitDenominatorTo(SafeLong(1000000)))
+       // .map(f => f.limitDenominatorTo(SafeLong(1000000)))
     ret
   }
 
