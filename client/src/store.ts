@@ -11,8 +11,9 @@ export default new Vuex.Store({
       accountIds: [],
       ccys: [],
     },
-    balances : {} as AccountBalances,
-    parseState: [],
+    balances: {} as AccountBalances,
+    parseState: {errors: []},
+    gainstrackText: '',
   },
   mutations: {
     increment(state) {
@@ -21,6 +22,8 @@ export default new Vuex.Store({
     reloaded(state, data) {
       state.summary = data;
       state.balances = {} as AccountBalances;
+      state.gainstrackText = '';
+      state.parseState = {errors: []};
     },
     balances(state, data: AccountBalances) {
       state.balances = data;
@@ -28,20 +31,36 @@ export default new Vuex.Store({
     },
     parseState(state, data) {
       state.parseState = data;
-    }
+    },
+    gainstrackText(state, data) {
+      state.gainstrackText = data;
+    },
   },
   actions: {
     increment(context) {
       context.commit('increment');
     },
     balances(context) {
-      if (!context.state.balances.Assets ) {
+      if (!context.state.balances.Assets) {
         return axios.get('/api/balances/')
             .then(response => {
               context.commit('balances', response.data);
               return response;
             });
       }
+    },
+    async gainstrackText(context) {
+      if (!context.state.gainstrackText) {
+        return await axios.get('/api/editor/')
+            .then(response => {
+              const source = response.data.source;
+              context.commit('gainstrackText', source);
+              return source;
+            });
+      } else {
+        return context.state.gainstrackText;
+      }
+
     },
     async conversion(context, c) {
       await axios.post('/api/state/conversion', {conversion: c});
