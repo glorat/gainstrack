@@ -1,9 +1,14 @@
 <template>
     <aside class="myaside">
     <ul v-for="menuItems in config.navigationBar" class="navigation">
-        <li v-bind:key="id" v-for="id in menuItems">
-            <router-link v-bind:to="'/' + id">{{ config.allPages[id][0] }}</router-link>
-        </li>
+        <template v-for="id in menuItems">
+            <li>
+                <router-link v-bind:to="'/' + id">{{ config.allPages[id][0] }}</router-link>
+            </li>
+            <li v-if="id=='editor'" :class="errorClass">
+                <router-link active-class="error" v-bind:to="'/errors'">Errors <span class="bubble">{{ errors.length }}</span></router-link>
+            </li>
+        </template>
     </ul>
         <el-upload
                 class=""
@@ -24,7 +29,17 @@
 
     import { Component, Vue } from 'vue-property-decorator';
 
-    @Component({components: {'el-upload': Upload}})
+    @Component({
+        components: {'el-upload': Upload},
+        computed: {
+            errors() {
+                return this.$store.state.parseState.errors;
+            },
+            errorClass() {
+                return this.$store.state.parseState.errors.length > 0 ? 'error' : 'error hidden';
+            }
+        }
+    })
     export default class extends Vue {
 
         private menuItems: string[] = ['foo', 'bar'];

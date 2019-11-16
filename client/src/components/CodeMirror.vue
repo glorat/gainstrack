@@ -50,7 +50,7 @@
                 if (self.$emit) {
                     self.$emit('change', cm.getValue())
                 }
-            })
+            });
         },
         mounted() {
             const self = this;
@@ -65,16 +65,26 @@
                     self.$emit('change', cm.getValue());
                     self.$emit('input', cm.getValue())
                 }
-            })
+            });
         },
         watch: {
             value(newVal, oldVal) {
                 const editorValue = this.editor.getValue();
                 if (newVal !== editorValue) {
                     this.skipNextChangeEvent = true;
-                    const scrollInfo = this.editor.getScrollInfo();
                     this.editor.setValue(newVal);
-                    this.editor.scrollTo(scrollInfo.left, scrollInfo.top)
+                    // Scroll to specific line if specified, otherwise to previous position
+                    if (this.$route.query.line > 0) {
+                        const t = this.editor.charCoords({line: this.$route.query.line, ch: 0}, 'local').top;
+                        const middleHeight = this.editor.getScrollerElement().offsetHeight / 2;
+                        this.editor.scrollTo(null, t - middleHeight - 5);
+
+                        // this.editor.scrollIntoView({line: this.$route.query.line, ch: 0});
+                    } else {
+                        const scrollInfo = this.editor.getScrollInfo();
+                        this.editor.scrollTo(scrollInfo.left, scrollInfo.top)
+                    }
+                    this.applyErrors(this.errors);
                 }
             },
             options(newOptions, oldVal) {
@@ -87,17 +97,21 @@
                 }
             },
             errors(newErrors) {
+                this.applyErrors(newErrors)
+            }
+        },
+        methods: {
+            applyErrors(newErrors) {
                 this.myMarks.forEach(mark => mark.clear());
 
-                this.errors.forEach(err => {
+                newErrors.forEach(err => {
                     const line = err.line;
                     const from = {line: line - 1, ch: 0};
                     const to = {line: line + 0, ch: 0};
                     // .getDoc()
                     this.myMarks.push(this.editor.markText(from, to, {css: 'background-color: yellow'}));
                 })
-
-            }
+            },
         },
         beforeDestroy() {
             if (this.editor) {

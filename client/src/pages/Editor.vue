@@ -13,7 +13,9 @@
                     </ul>
                 </li>
             </ul>
-            <button id="source-editor-submit" type="button" v-on:click="editorSave" data-progress-content="Saving..." title="Save (Ctrl/Cmd+s)">Save</button>
+            <button id="source-editor-submit" type="button" v-on:click="editorReset">Reset</button>
+
+            <button id="source-editor-reset" type="button" v-on:click="editorSave">Save</button>
         </div>
         <codemirror v-model="info.source" :errors="errors"></codemirror>
 
@@ -31,10 +33,7 @@
         },
         components: {codemirror},
         mounted() {
-            const notify = this.$notify;
-            axios.get('/api/editor/')
-                .then(response => this.info = response.data)
-                .catch(error => notify.error(error))
+            this.reload();
         },
         computed: {
             errors() {
@@ -42,7 +41,12 @@
             },
         },
         methods: {
+            editorReset() {
+                this.$store.dispatch('reload')
+                    .then(x => this.reload());
+            },
             editorSave() {
+                this.$store.commit('gainstrackText', this.info.source);
                 const notify = this.$notify;
                 axios.put('/api/source/', {source: this.info.source, filePath: '', entryHash: '', sha256sum: ''})
                     .then(response => {
@@ -52,10 +56,17 @@
                         } else {
                             notify.success('Saved');
                             this.$store.dispatch('reload')
+                                .then(x => this.reload());
                         }
                     })
                     .catch(error => notify.error(error.response.data || error))
-            }
+            },
+            reload() {
+                const notify = this.$notify;
+                this.$store.dispatch('gainstrackText')
+                    .then(source => this.info.source = source)
+                    .catch(error => notify.error(error))
+            },
         }
     }
 </script>

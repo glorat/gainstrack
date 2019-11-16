@@ -40,15 +40,26 @@ class GainstrackParser {
   private val CommentLine = "[;#].*".r
   private val IgnoreLine = "^\\w*$".r
 
-  private def tryParseLine(line:String) : Unit = {
+  private def tryParseLine(fullLine:String) : Unit = {
     lineCount += 1
+
+    val line = fullLine.trim
 
     line match {
       case AccountCommand(dateStr, prefix) => {
         if (parsers.contains(prefix)) {
-          val newCmd = parsers(prefix).parse(line)
-          commands = commands :+ newCmd
-          Some(newCmd)
+          try {
+            val newCmd = parsers(prefix).parse(line)
+            commands = commands :+ newCmd
+            Some(newCmd)
+          }
+          catch {
+            case m: MatchError => {
+              errors = errors :+ ParserMessage(s"${prefix} command cannot be parsed", lineCount, line)
+              throw new IllegalArgumentException(errors.last.message)
+            }
+          }
+
         }
         else {
           errors = errors :+ ParserMessage(s"${prefix} is an unknown command", lineCount, line)
@@ -62,7 +73,7 @@ class GainstrackParser {
           commands = commands.dropRight(1) :+ newLast
           Some(newLast)
         }).getOrElse({
-          errors = errors :+ ParserMessage(s"${prefix} is an unknown command", lineCount, line)
+          errors = errors :+ ParserMessage(s"Cannot apply $key to ${prefix} command", lineCount, line)
           throw new IllegalStateException(errors.last.message)
         })
 
@@ -87,7 +98,6 @@ class GainstrackParser {
     catch {
 
       case e:Exception => {
-        errors = errors :+ ParserMessage(e.getMessage, lineCount, line)
         throw new Exception(s"Parsing failed on line ${lineCount}: ${line}", e)
       }
     }
