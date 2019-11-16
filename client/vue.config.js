@@ -1,6 +1,7 @@
 // vue.config.js
 module.exports = {
     devServer: {
+        host: 'localhost',
         historyApiFallback: true,
         noInfo: true,
         proxy: {
