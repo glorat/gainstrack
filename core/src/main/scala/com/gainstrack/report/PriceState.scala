@@ -37,8 +37,8 @@ case class PriceState(ccys:Set[AssetId], prices:Map[AssetPair, SortedMap[LocalDa
       //println(s"Result: ${ret}")
       // FIXME: This is a very slow function. Need to push the call higher up the stack
       // especially in case when we only need the double for calculations
-      ret.map(f => f.limitDenominatorTo(SafeLong(maxDenom)))
-      //ret
+      //ret.map(f => f.limitDenominatorTo(SafeLong(maxDenom)))
+      ret
     }
   }
 

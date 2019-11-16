@@ -24,10 +24,17 @@
                     }
                 }
             },
+            errors: {
+                type: Array,
+                default() {
+                    return [];
+                }
+            }
         },
         data() {
             return {
-                skipNextChangeEvent: false
+                skipNextChangeEvent: false,
+                myMarks: [],
             }
         },
         ready() {
@@ -78,6 +85,18 @@
                         }
                     }
                 }
+            },
+            errors(newErrors) {
+                this.myMarks.forEach(mark => mark.clear());
+
+                this.errors.forEach(err => {
+                    const line = err.line;
+                    const from = {line: line - 1, ch: 0};
+                    const to = {line: line + 0, ch: 0};
+                    // .getDoc()
+                    this.myMarks.push(this.editor.markText(from, to, {css: 'background-color: yellow'}));
+                })
+
             }
         },
         beforeDestroy() {

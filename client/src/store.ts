@@ -12,6 +12,7 @@ export default new Vuex.Store({
       ccys: [],
     },
     balances : {} as AccountBalances,
+    parseState: [],
   },
   mutations: {
     increment(state) {
@@ -25,6 +26,9 @@ export default new Vuex.Store({
       state.balances = data;
       return data;
     },
+    parseState(state, data) {
+      state.parseState = data;
+    }
   },
   actions: {
     increment(context) {
@@ -49,6 +53,9 @@ export default new Vuex.Store({
           // Since components don't know to retrigger this if already on display, let's get it for them
           .then(() => context.dispatch('balances'));
     },
+    parseState(context, data) {
+      context.commit('parseState', data);
+    }
   },
 });
 
