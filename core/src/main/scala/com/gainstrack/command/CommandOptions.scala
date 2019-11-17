@@ -4,7 +4,7 @@ import com.gainstrack.core.AccountId
 trait CommandOptions {
 
   protected def boolStr(name: String, value: Boolean): Seq[String] = {
-    if (value) Seq(s"${name}:true") else Seq()
+    if (value) Seq(s"  ${name}:true") else Seq()
   }
 
   protected def acctStr(name: String, value: Option[AccountId]): Seq[String] = {

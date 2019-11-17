@@ -36,7 +36,8 @@ class Real extends FlatSpec with BeforeAndAfterEach {
 
   "Real case" should "generate beancount" taggedAs RealDataAvailable in {
     val bg = new GainstrackGenerator(parser.getCommands)
-    bg.writeBeancountFile(s"/tmp/${realFile}.beancount")
+    val res = bg.writeBeancountFile(s"/tmp/${realFile}.beancount", parser.lineFor(_))
+    assert(res.length == 0)
   }
 
   it should "imply prices" taggedAs RealDataAvailable in {

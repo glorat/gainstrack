@@ -76,7 +76,7 @@ case class GainstrackGenerator(originalCommands:SortedSet[AccountCommand])  {
     lines
   }
 
-  def writeBeancountFile(filename:String):Unit = {
+  def writeBeancountFile(filename:String, cmdToLine:AccountCommand=>Int):Seq[ParserMessage] = {
     import java.nio.file.{Paths, Files}
     import java.nio.charset.StandardCharsets
     import sys.process._
@@ -97,13 +97,19 @@ case class GainstrackGenerator(originalCommands:SortedSet[AccountCommand])  {
       val res = errLines.flatMap(line => {
         line match {
           case BcParse(lineNumber,message) => {
-            Some(orig(parseNumber(lineNumber).toInt-1).origin.toGainstrack.mkString("\n") +"\n" + message)
+            val origin = orig(parseNumber(lineNumber).toInt-1).origin
+            Some(ParserMessage(message, cmdToLine(origin), origin.toGainstrack.head, Some(origin)))
+            // Some(origin.toGainstrack.mkString("\n") +"\n" + message)
           }
           case _ => None
         }
 
       })
-      throw new IllegalStateException("There are errors in the inputs\n" + res.mkString("\n"))
+      // throw new IllegalStateException("There are errors in the inputs\n" + res.mkString("\n"))
+      res
+    }
+    else {
+      Seq()
     }
 
   }
