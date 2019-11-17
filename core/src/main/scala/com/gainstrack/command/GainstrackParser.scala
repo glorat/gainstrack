@@ -11,10 +11,15 @@ class GainstrackParser {
   private var commands:Seq[AccountCommand] = Seq()
   private var errors:Seq[ParserMessage] = Seq()
   private var lineCount : Int = 0
+  private var commandToLocation: Map[AccountCommand, Int] = Map()
   def getCommands : SortedSet[AccountCommand] = {
     val ret = SortedSet[AccountCommand]() + globalCommand ++ commands
     require(commands.size+1 == ret.size, "Internal error: two different commands compared equal")
     ret
+  }
+
+  def lineFor(cmd:AccountCommand) : Int = {
+    commandToLocation.get(cmd).getOrElse(0)
   }
 
   def parserErrors:Seq[ParserMessage] = errors
@@ -51,6 +56,7 @@ class GainstrackParser {
           try {
             val newCmd = parsers(prefix).parse(line)
             commands = commands :+ newCmd
+            commandToLocation = commandToLocation + (newCmd -> lineCount)
           }
           catch {
             case m: MatchError => {
@@ -99,11 +105,9 @@ class GainstrackParser {
   }
 
   def parseLines(lines:TraversableOnce[String]) : Unit = {
-    try {
-      lines.foreach(tryParseLine)
-      if (this.errors.length > 0) {
-        throw new Exception("There were parsing errors")
-      }
+    lines.foreach(tryParseLine)
+    if (this.errors.length > 0) {
+      throw new Exception("There were parsing errors")
     }
   }
 

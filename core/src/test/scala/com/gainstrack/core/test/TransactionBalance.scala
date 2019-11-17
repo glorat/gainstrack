@@ -68,7 +68,8 @@ class TransactionBalanceTest extends FlatSpec {
     "unit commands" should "generate beancount" in {
       import sys.process._
       val bFile = "/tmp/unit.beancount"
-      bg.writeBeancountFile(bFile)
+      val res = bg.writeBeancountFile(bFile, parser.lineFor(_))
+      assert(res.length == 0)
       val output = s"bean-check ${bFile}" !!
 
       assert(output == "")

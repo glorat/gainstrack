@@ -43,11 +43,17 @@ class ApiController (implicit val ec :ExecutionContext) extends ScalatraServlet 
       parser.parseString(body.source)
       val orderedCmds = parser.getCommands
       val bg = new GainstrackGenerator(orderedCmds)
-      bg.writeBeancountFile(s"/tmp/${realFile}.beancount")
-      session("gainstrack") = bg
+      val res = bg.writeBeancountFile(s"/tmp/${realFile}.beancount", parser.lineFor(_))
+      if (res.length == 0) {
+        session("gainstrack") = bg
 
-      //val defaultFromDate = parseDate("1970-01-01")
-      ApiSourceResponse("???", true, Seq())
+        //val defaultFromDate = parseDate("1970-01-01")
+        ApiSourceResponse("???", true, Seq())
+      }
+      else {
+        ApiSourceResponse("???", false, res)
+      }
+
     }
     catch {
       case e:Exception if parser.parserErrors.size>0 => {

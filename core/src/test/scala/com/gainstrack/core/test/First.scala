@@ -113,7 +113,8 @@ class First extends FlatSpec {
   val accountMap = bg.acctState.accountMap
 
   it should "generate beancount file" in {
-    bg.writeBeancountFile("/tmp/gainstrack.beancount")
+    val errs = bg.writeBeancountFile("/tmp/gainstrack.beancount", parser.lineFor(_))
+    assert(errs.length == 0)
   }
 
   it should "generate sane beancount string" in {

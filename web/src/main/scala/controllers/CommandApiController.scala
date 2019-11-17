@@ -50,10 +50,17 @@ class CommandApiController(implicit val ec :ExecutionContext) extends ScalatraSe
       parser.parseString(body.str)
       val bg2 = parser.getCommands.foldLeft(bg)(_.addCommand(_))
       val realFile = "real"
-      bg2.writeBeancountFile(s"/tmp/${realFile}.beancount")
-      session("gainstrack") = bg2
+      val res  = bg2.writeBeancountFile(s"/tmp/${realFile}.beancount", parser.lineFor(_))
+      if (res.length == 0) {
+        session("gainstrack") = bg2
 
-      CommandApiResponse("ok")
+        CommandApiResponse("ok")
+      }
+      else {
+        // Giant assumption that adding one command generates only one error message
+        CommandApiResponse(res.head.message)
+      }
+
     }
     catch {
       case e:Exception => CommandApiResponse(e.toString)
