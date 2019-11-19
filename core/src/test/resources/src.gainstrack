@@ -58,7 +58,7 @@ option "operating_currency" "GBP"
 
 2019-01-01 price GBP 1.2752 USD
 
-1900-01-01 commodity VTI
+1900-01-01 commodity VWRD
   tags: equity,global
-1900-01-01 commodity VCSH
+1900-01-01 commodity IUAA
   tags: bond,us

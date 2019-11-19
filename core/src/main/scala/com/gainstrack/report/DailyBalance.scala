@@ -49,6 +49,14 @@ case class DailyBalance(balanceState: BalanceState, date: LocalDate = MaxDate) {
     })
   }
 
+  def positionOfAssets(assets:Set[AssetId], origAcctState:AccountState, priceState: PriceState, date:LocalDate,
+                         conversionStrategy:String = "global") = {
+    origAcctState.withAsset(assets).foldLeft(PositionSet()) ((ps, account) => {
+      val value = this.convertedPosition(account.accountId, origAcctState, priceState, date, conversionStrategy)
+      ps + value
+    })
+  }
+
   def convertedPosition(accountId:AccountId, origAcctState:AccountState, priceState: PriceState, date:LocalDate, conversionStrategy:String):PositionSet = {
     val acctState = origAcctState.withInterpolatedAccounts
     val accounts = acctState.accounts
@@ -69,6 +77,8 @@ case class DailyBalance(balanceState: BalanceState, date: LocalDate = MaxDate) {
       case "units" => acct =>
         // Tailing the chain means we stay at the leaf currency
         balanceState.getPosition(acct, date, AssetId("NOVALIDUNIT"), acctState.assetChainMap(acct).tail, priceState)
+      case "global" => acct =>
+        balanceState.getPosition(acct, date, acctState.baseCurrency, acctState.assetChainMap(acct), priceState)
       case ccy:String => acct =>
         balanceState.getPosition(acct, date, AssetId(ccy), acctState.assetChainMap(acct), priceState)
     }

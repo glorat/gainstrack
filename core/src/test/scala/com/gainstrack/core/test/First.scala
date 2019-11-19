@@ -119,7 +119,7 @@ class First extends FlatSpec {
 
   it should "generate sane beancount string" in {
     val str = bg.toGainstrack
-    assert (str.startsWith("option \"operating_currency\" \"GBP\"\n1900-01-01 commodity VTI\n  tags: equity,global\n1900-01-01 commodity VCSH\n  tags: bond,us\n2019-01-01 price GBP 1.2752 USD\n\n2000-01-01 open Assets:Bank:HSBCUK GBP\n\n2000-01-01 open Assets:Bank:Nationwide GBP"))
+    assert (str.startsWith("option \"operating_currency\" \"GBP\"\n1900-01-01 commodity VWRD\n  tags: equity,global\n1900-01-01 commodity IUAA\n  tags: bond,us\n2019-01-01 price GBP 1.2752 USD\n\n2000-01-01 open Assets:Bank:HSBCUK GBP\n\n2000-01-01 open Assets:Bank:Nationwide GBP"))
   }
 
   it should "pass bean-check" in {
@@ -185,6 +185,7 @@ class First extends FlatSpec {
       assert(assets(AssetId("USD")) == -52857.23)
 
     }
+
         /*
     it should "aggregate a tree of position sets" in {
       // Aggregate assets up the tree...
@@ -308,6 +309,18 @@ class First extends FlatSpec {
     val testMe4 = testMeStrategy("USD")
     testMe4("Assets:Investment:IBUSD", "USD", 34960)
     testMe4("Assets", "USD", 863785)
+  }
+
+
+  it should "show balances by asset tags" in {
+    val balanceReport = BalanceReport(bg.txState.cmds)
+    val dailyReport = new DailyBalance(bg.balanceState)
+
+    val equities = bg.assetState.tagToAssets("equity")
+
+    val equityValue = dailyReport.positionOfAssets(equities, bg.acctState, bg.priceState, today)
+
+    assert(equityValue.getBalance(AssetId("GBP")).value.round == 22211)
   }
 
   it should "generate daily time series of balances" in {

@@ -69,11 +69,6 @@ trait BeancountCommand {
   def toBeancount : Seq[BeancountLine]
 }
 
-object AccountCommand  {
-
-}
-
-
 trait AccountEvent extends DomainEvent {
   def accountId: AccountId
   def date:LocalDate
@@ -118,15 +113,6 @@ case class AssetId(symbol: String) extends Ordered[AssetId] {
 object AssetId {
 
 }
-
-case class Commodity (
-  guid: GUID,
-  namespace: String,
-  mnemonic: String,
-  fullname: String,
-  cusip: String,
-  fraction: Int
-)
 
 case class AccountKey(
                        name: AccountId,
