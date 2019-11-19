@@ -6,9 +6,19 @@ import net.glorat.cqrs.{AggregateRootState, DomainEvent}
 
 
 case class AssetState(
-                       tags: Map[AssetId, Set[String]] = Map(),
+                       assetToTags: Map[AssetId, Set[String]] = Map(),
                        tagToAssets: Map[String, Set[AssetId]] = Map())
   extends AggregateRootState {
+
+  /**
+   * @return Assets that have all the tags
+   */
+  def assetsForTags(tags:Set[String]) : Set[AssetId] = {
+    tags.foldLeft(assetToTags.keySet)( (assets,tag) => {
+      assets.filter(asset => tagToAssets.get(tag).map(_.contains(asset)).getOrElse(false))
+    })
+  }
+
   override def handle(e: DomainEvent): AssetState = {
     e match {
       case c: CommodityCommand => handle(c)
@@ -17,13 +27,13 @@ case class AssetState(
   }
 
   def handle(e:CommodityCommand): AssetState = {
-    require(!tags.contains(e.asset))
-    val newTags = tags.updated(e.asset, e.options.tags)
+    require(!assetToTags.contains(e.asset))
+    val newTags = assetToTags.updated(e.asset, e.options.tags)
 
     val t2a = e.options.tags.foldLeft(tagToAssets)((mp, tag) => {
       mp.updated(tag, tagToAssets.get(tag).getOrElse(Set()) + e.asset)
     })
 
-    this.copy(tags = newTags, tagToAssets = t2a)
+    this.copy(assetToTags = newTags, tagToAssets = t2a)
   }
 }

@@ -5,7 +5,7 @@ import java.nio.file.{Files, Paths}
 
 import com.gainstrack.command._
 import com.gainstrack.core._
-import com.gainstrack.report.{AccountInvestmentReport, GainstrackGenerator, PriceState}
+import com.gainstrack.report.{AccountInvestmentReport, DailyBalance, GainstrackGenerator, PriceState}
 import org.scalatest.{BeforeAndAfterEach, FlatSpec, Ignore, Tag}
 
 import scala.collection.SortedSet
@@ -109,5 +109,27 @@ class Real extends FlatSpec with BeforeAndAfterEach {
     rep.allFlows.foreach(cf => {
       println(s"   ${cf.date} ${cf.value}")
     })*/
+  }
+
+  it should "have a equity/bond AA" taggedAs RealDataAvailable in {
+    val bg = new GainstrackGenerator(parser.getCommands)
+    val dailyReport = new DailyBalance(bg.balanceState)
+    val equities = bg.assetState.assetsForTags(Set("equity"))
+    val equityValue = dailyReport.positionOfAssets(equities, bg.acctState, bg.priceState, queryDate)
+    val equityTotal = equityValue.getBalance(bg.acctState.baseCurrency)
+
+    val bonds = bg.assetState.assetsForTags(Set("bond"))
+    val bondValue = dailyReport.positionOfAssets(bonds, bg.acctState, bg.priceState, queryDate)
+    val bondTotal = bondValue.getBalance(bg.acctState.baseCurrency)
+
+    assert(equityTotal.value.round > 0)
+    assert(bondTotal.value.round > 0)
+    val ratio = equityTotal / (equityTotal+bondTotal)
+
+    assert(ratio.value > 0.5)
+    assert(ratio.value < 0.9)
+    // Should actually be about 0.7
+    println(s"Real AA: ${ratio.toString}")
+
   }
 }
