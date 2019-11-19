@@ -4,7 +4,8 @@ import com.gainstrack.report.{AssetPair, PriceState}
 
 case class PositionSet(assetBalance:Map[AssetId, Fraction]) {
   def getBalance(ccy:AssetId) : Balance = {
-    Balance(assetBalance(ccy), ccy)
+    val f =assetBalance.get(ccy).getOrElse(zeroFraction)
+    Balance(f, ccy)
   }
 
   def convertTo(tgtCcy: AssetId, priceState: PriceState, date:LocalDate): PositionSet = {

@@ -313,14 +313,22 @@ class First extends FlatSpec {
 
 
   it should "show balances by asset tags" in {
-    val balanceReport = BalanceReport(bg.txState.cmds)
     val dailyReport = new DailyBalance(bg.balanceState)
-
-    val equities = bg.assetState.tagToAssets("equity")
+    //val equities = bg.assetState.tagToAssets("equity")
+    val equities = bg.assetState.assetsForTags(Set("equity"))
 
     val equityValue = dailyReport.positionOfAssets(equities, bg.acctState, bg.priceState, today)
 
     assert(equityValue.getBalance(AssetId("GBP")).value.round == 22211)
+  }
+
+  it should "show empty balance for unknown asset tags" in {
+    val dailyReport = new DailyBalance(bg.balanceState)
+    val equities = bg.assetState.assetsForTags(Set("equity", "unknown"))
+
+    val equityValue = dailyReport.positionOfAssets(equities, bg.acctState, bg.priceState, today)
+
+    assert(equityValue.getBalance(AssetId("GBP")).value.round == 0)
   }
 
   it should "generate daily time series of balances" in {
