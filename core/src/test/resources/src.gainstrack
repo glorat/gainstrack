@@ -57,3 +57,8 @@ option "operating_currency" "GBP"
 2019-04-11 trade Assets:Investment:IBUSD 6 BRK-B @206.5300 USD C0.34 USD
 
 2019-01-01 price GBP 1.2752 USD
+
+1900-01-01 commodity VTI
+  tags: equity,global
+1900-01-01 commodity VCSH
+  tags: bond,us
