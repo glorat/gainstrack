@@ -11,7 +11,7 @@
             </tr>
             </thead>
             <tbody>
-            <tr v-bind:key="date" v-for="(date,index) in detail.dates">
+            <tr v-for="(date,index) in detail.dates">
                 <td>
                     {{ accountId}}
                 </td>
