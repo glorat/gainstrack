@@ -17,7 +17,7 @@ trait CommandOptions {
 
   protected def stringToBool(valueStr: String): Boolean = valueStr != "false"
 
-  protected def seqStr(name:String, values: Seq[String]): Seq[String] = {
-    if (values.length>0) Seq(s"  ${name}: ${values.mkString(",")}") else Seq()
+  protected def setStr(name:String, values: Set[String]): Seq[String] = {
+    if (values.size>0) Seq(s"  ${name}: ${values.toSeq.sorted.mkString(",")}") else Seq()
   }
 }
