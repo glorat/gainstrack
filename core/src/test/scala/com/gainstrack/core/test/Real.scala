@@ -99,7 +99,7 @@ class Real extends FlatSpec with BeforeAndAfterEach {
     val bg = new GainstrackGenerator(parser.getCommands)
     val accountId = AccountId("Assets:Investment:HSBC")
     val txs = bg.txState.cmds.filter(bcmd => bcmd match {
-      case tx:Transaction => tx.postings.find(p=>isSubAccountOf(p.account, accountId)).isDefined
+      case tx:Transaction => tx.postings.find(p=>p.account.isSubAccountOf(accountId)).isDefined
       case _ => false
     }).map(_.asInstanceOf[Transaction])
 
