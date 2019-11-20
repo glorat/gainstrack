@@ -27,6 +27,7 @@ const routes: RouteConfig[] = [
     name: 'account', props: true},
   {path: '/command/', component: CommandSummary, meta: {title: 'Commands'}},
   {path: '/command/:accountId', component: () => import('./pages/Command.vue'), name: 'command', props: true},
+  {path: '/aa', component: () => import('./pages/AssetAllocation.vue'), name: 'aa', meta: {title: 'Asset Allocati'}},
   {path: '/*', component: () => import('./pages/Help.vue'), name: 'help'},
 ];
 

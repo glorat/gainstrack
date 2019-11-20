@@ -4,6 +4,8 @@ import com.gainstrack.command.CommodityCommand
 import com.gainstrack.core.AssetId
 import net.glorat.cqrs.{AggregateRootState, DomainEvent}
 
+import scala.collection.SetLike
+
 
 case class AssetState(
                        assetToTags: Map[AssetId, Set[String]] = Map(),

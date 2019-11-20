@@ -62,12 +62,13 @@
                 'trial_balance': ['Trial Balance', 'g t'],
 
                 'irr':              ['IRR',    ''],
+                'aa': ['Asset Allocation', ''],
                 'command': ['Commands', '']
             },
             navigationBar: [
                 ['command'],
                 ['balance_sheet', 'income_statement', 'journal'],
-                ['irr'],
+                ['irr', 'aa'],
                 ['prices'],
                 ['editor']
             ]

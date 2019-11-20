@@ -68,13 +68,8 @@ class ApiController (implicit val ec :ExecutionContext) extends ScalatraServlet 
     val bg = session.get("gainstrack").getOrElse(bgDefault).asInstanceOf[GainstrackGenerator]
     val conversionStrategy = session.get("conversion").map(_.toString).getOrElse("parent")
 
-    var toDate = LocalDate.now
-
-    val balanceReport = DailyBalance(bg.balanceState)
-    val acctState = bg.acctState.withInterpolatedAccounts
-    val priceState = bg.priceState
-
-    val treeTable = new BalanceTreeTable(bg.acctState, priceState, toDate, balanceReport, conversionStrategy)
+    val toDate = LocalDate.now
+    val treeTable = new BalanceTreeTable(bg.acctState, bg.priceState, toDate, bg.dailyBalances, conversionStrategy)
 
     keys.map(key => key -> treeTable.toTreeTable(AccountId(key))).toMap
   }
@@ -244,7 +239,45 @@ class ApiController (implicit val ec :ExecutionContext) extends ScalatraServlet 
     ApiSourceResponse("???", true, Seq())
   }
 
+  get("/aa") {
+    val bg = session.get("gainstrack").getOrElse(bgDefault).asInstanceOf[GainstrackGenerator]
+    val queryDate = LocalDate.now
 
+    val allocations = Seq(Seq("equity"), Seq("bond"))
+    val labels = allocations.map(_.mkString("/"))
+
+    val values = allocations.map(a => {
+      val allocationAssets = bg.assetState.assetsForTags(a.toSet)
+      val allocationValue = bg.dailyBalances.positionOfAssets(allocationAssets, bg.acctState, bg.priceState, queryDate)
+      allocationValue.getBalance(bg.acctState.baseCurrency)
+    })
+    val valueNum = values.map(_.value.toDouble)
+
+    Map(
+      "series" -> valueNum,
+      "labels" -> labels,
+      "ccy" -> bg.acctState.baseCurrency.symbol
+    )
+
+  }
+
+  get ("/aa/table") {
+    val bg = session.get("gainstrack").getOrElse(bgDefault).asInstanceOf[GainstrackGenerator]
+
+    val toDate = LocalDate.now
+    val allocations = Seq(Seq("equity"), Seq("bond"))
+    val tables = allocations.map(alloc => {
+      val allocationAssets = bg.assetState.assetsForTags(alloc.toSet)
+      val name = alloc.mkString("/")
+
+      val filter: (AccountCreation=>Boolean) = acct => allocationAssets.contains(acct.key.assetId)
+      val treeTable = new BalanceTreeTable(bg.acctState, bg.priceState,
+        toDate, bg.dailyBalances,
+        "global", filter)
+      Map("name" -> name, "rows" -> treeTable.toTreeTable(AccountId("Assets")))
+    })
+    tables
+  }
 /*
   error {
     case e: Throwable => {

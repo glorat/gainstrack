@@ -5,19 +5,6 @@ import java.time.{YearMonth, ZoneOffset}
 import com.gainstrack.command.AccountCreation
 import com.gainstrack.core._
 
-case class ApexTimeSeriesEntry(x:String, y:Double)
-
-case class ApexSeries(name: String, data: Seq[Any])
-
-case class ApexXAxis(categories: Seq[LocalDate], title: ApexTitle)
-
-
-case class ApexYAxis(title: ApexTitle)
-
-case class ApexTitle(text: String)
-
-case class ApexOptions(series: Seq[ApexSeries], xaxis: Option[ApexXAxis]=None, yaxis: Option[ApexYAxis]=None)
-
 case class DailyBalance(balanceState: BalanceState, date: LocalDate = MaxDate) {
 
   def monthlySeries(accountId: AccountId, conversionStrategy: String, endDate: LocalDate, acctState: AccountState, priceState: PriceState) = {
@@ -57,7 +44,13 @@ case class DailyBalance(balanceState: BalanceState, date: LocalDate = MaxDate) {
     })
   }
 
-  def convertedPosition(accountId:AccountId, origAcctState:AccountState, priceState: PriceState, date:LocalDate, conversionStrategy:String):PositionSet = {
+  def convertedPosition(accountId:AccountId,
+                        origAcctState:AccountState,
+                        priceState: PriceState,
+                        date:LocalDate,
+                        conversionStrategy:String,
+                        accountFilter:(AccountCreation=>Boolean) = _=>true
+                       ):PositionSet = {
     val acctState = origAcctState.withInterpolatedAccounts
     val accounts = acctState.accounts
     val thisCcy = acctState.accountMap.get(accountId).map(_.key.assetId).getOrElse(origAcctState.baseCurrency)
@@ -67,7 +60,11 @@ case class DailyBalance(balanceState: BalanceState, date: LocalDate = MaxDate) {
     // This is faster but out of date
     //val children = acctState.childrenMap.get(accountId).getOrElse(Seq())
     // This needs profiling
-    val children = accounts.map(_.accountId).filter(_.isSubAccountOf(accountId))
+    val children = accounts
+      //.map(_.accountId)
+      .filter(_.accountId.isSubAccountOf(accountId))
+      .filter(accountFilter)
+      .map(_.accountId)
 
     // This can be extracted out to a strategy
     val acctToPositionSet: (AccountId => PositionSet) = conversionStrategy match {
