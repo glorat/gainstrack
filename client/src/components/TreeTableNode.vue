@@ -1,7 +1,7 @@
 <template>
     <ol>
     <li v-bind:key="acct.accountId" v-for="acct in node.children" v-bind:class="{toggled: acct.toggled}">
-        <p v-bind:class="{has_balance: acct.assetBalance.length>0}">
+        <p v-if="acct.assetBalance.length>0">
           <span
                   class="account-cell droptarget"
                   v-bind:class="[classObject, (acct.children && acct.children.length>0 ? 'has-children' : '')]"

@@ -1,5 +1,5 @@
 <template>
-    <ol v-if="node && node.assetBalance" class="tree-table">
+    <ol v-if="node && node.assetBalance && node.assetBalance.length>0" class="tree-table">
         <li class="head">
             <p>
           <span class="account-cell">
@@ -9,7 +9,7 @@
             </p>
         </li>
         <li class="">
-            <p v-bind:class="{has_balance: node.assetBalance.length>0}">
+            <p v-if="node.assetBalance.length>0">
                 <span class="account-cell droptarget" v-bind:class="classObject" data-account-name={node.name}>
                     <router-link v-bind:to="'/account/' + node.name">{{ node.shortName }}</router-link>
                 </span>
