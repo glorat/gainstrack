@@ -42,7 +42,7 @@ case class Transaction (
   }
 
   def subBalanceChange(accountId:AccountId) : Fraction = {
-    filledPostings.filter(a => isSubAccountOf(a.account, accountId)).foldLeft(zeroFraction)((sum,p)=>sum+p.weight.value)
+    filledPostings.filter(a => a.account.isSubAccountOf(accountId)).foldLeft(zeroFraction)((sum,p)=>sum+p.weight.value)
   }
 
   def toBeancount: Seq[BeancountLine] = {

@@ -1,6 +1,8 @@
 package com.gainstrack
 
 package object core {
+  import scala.language.implicitConversions
+
   type Fraction = spire.math.Rational
   type LocalDate = java.time.LocalDate
   type ZonedDateTime = java.time.ZonedDateTime
@@ -17,10 +19,5 @@ package object core {
 
   implicit val localDateOrdering: Ordering[LocalDate] = new Ordering[LocalDate] {
     def compare(x: LocalDate, y: LocalDate): Int = x compareTo y
-  }
-
-  @deprecated
-  def isSubAccountOf(accountId:AccountId, parentId:AccountId):Boolean = {
-    accountId.isSubAccountOf(parentId)
   }
 }
