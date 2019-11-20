@@ -265,7 +265,7 @@ class ApiController (implicit val ec :ExecutionContext) extends ScalatraServlet 
     val bg = session.get("gainstrack").getOrElse(bgDefault).asInstanceOf[GainstrackGenerator]
 
     val toDate = LocalDate.now
-    val allocations = Seq(Seq("equity"), Seq("bond"))
+    val allocations = Seq(Seq("equity"), Seq("bond"), Seq("blend"))
     val tables = allocations.map(alloc => {
       val allocationAssets = bg.assetState.assetsForTags(alloc.toSet)
       val name = alloc.mkString("/")
