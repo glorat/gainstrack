@@ -1,15 +1,15 @@
 <template>
     <aside class="myaside">
-    <ul v-for="menuItems in config.navigationBar" class="navigation">
-        <template v-for="id in menuItems">
-            <li>
-                <router-link v-bind:to="'/' + id">{{ config.allPages[id][0] }}</router-link>
-            </li>
-            <li v-if="id=='editor'" :class="errorClass">
-                <router-link active-class="error" v-bind:to="'/errors'">Errors <span class="bubble">{{ errors.length }}</span></router-link>
-            </li>
-        </template>
-    </ul>
+        <ul v-for="menuItems in config.navigationBar" class="navigation">
+            <template v-for="id in menuItems">
+                <li>
+                    <router-link v-bind:to="'/' + id">{{ config.allPages[id][0] }}</router-link>
+                </li>
+                <li v-if="id=='editor'" :class="errorClass">
+                    <router-link active-class="error" v-bind:to="'/errors'">Errors <span class="bubble">{{ errors.length }}</span></router-link>
+                </li>
+            </template>
+        </ul>
         <el-upload
                 class=""
                 drag
@@ -19,6 +19,10 @@
             <i class="el-icon-upload"></i>
             <div class="el-upload__text">Drop file here or<br><em>click to upload</em></div>
         </el-upload>
+        <ul class="navigation">
+            <li><a href="/api/export/gainstrack">Save...</a></li>
+            <li><a href="/api/export/beancount">Export to Beancount</a></li>
+        </ul>
     </aside>
 </template>
 
