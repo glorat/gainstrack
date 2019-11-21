@@ -10,6 +10,7 @@ class ScalatraBootstrap extends LifeCycle {
     context.mount(new controllers.ApiController(), "/gainstrack/api/*")
     context.mount(new controllers.CommandApiController(), "/api/post/*")
     context.mount(new controllers.ApiController(), "/api/*")
+    context.mount(new controllers.ExportController(), "/api/export/*")
     //context.mount(new controllers.Ledger, "/ledger/*")
   }
 
