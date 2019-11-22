@@ -89,7 +89,9 @@
                     const text = reader.result;
                     axios.put('/api/source/', {source: text, filePath: '', entryHash: '', sha256sum: ''})
                         .then(response => notify.success('Reloaded'))
-                        .then(() => store.dispatch('reload'));
+                        .then(() => store.dispatch('reload'))
+                        // A bit of a hack to force a refresh of local state in current view
+                        .then(() => this.$router.go(0))
                 };
                 reader.onerror = () => {
                     notify.error(reader.result as string)
