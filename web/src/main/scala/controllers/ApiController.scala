@@ -8,12 +8,15 @@ import com.gainstrack.report.{AccountInvestmentReport, BalanceReport, DailyBalan
 import org.json4s.{DefaultFormats, Formats, JValue}
 import org.scalatra.{NotFound, ScalatraServlet}
 import org.scalatra.json._
+import org.slf4j.LoggerFactory
 
 import scala.concurrent.ExecutionContext
 
 
 
 class ApiController (implicit val ec :ExecutionContext) extends ScalatraServlet with JacksonJsonSupport {
+  val logger =  LoggerFactory.getLogger(getClass)
+
   protected implicit val jsonFormats: Formats = org.json4s.DefaultFormats ++ GainstrackJsonSerializers.all
 
   val bgDefault = {
@@ -24,12 +27,24 @@ class ApiController (implicit val ec :ExecutionContext) extends ScalatraServlet 
     new GainstrackGenerator(orderedCmds)
   }
 
+  private def currentBg = {
+    session.get("gainstrack").getOrElse(bgDefault).asInstanceOf[GainstrackGenerator]
+  }
 
-  val defaultFromDate = parseDate("1970-01-01")
+  private def dateOverride:Option[LocalDate] = {
+    session.get("dateOverride").map(_.asInstanceOf[LocalDate])
+  }
+
+  private def currentDate: LocalDate = {
+    dateOverride.getOrElse(currentBg.latestDate)
+  }
+
+  val defaultFromDate = parseDate("1900-01-01")
 
 
   before() {
     contentType = formats("json")
+    logger.info(request.getPathInfo)
   }
 
   protected override def transformRequestBody(body: JValue): JValue = body.camelizeKeys
@@ -65,10 +80,10 @@ class ApiController (implicit val ec :ExecutionContext) extends ScalatraServlet 
   }
 
   def tables(keys:Seq[String]) = {
-    val bg = session.get("gainstrack").getOrElse(bgDefault).asInstanceOf[GainstrackGenerator]
+    val bg = currentBg
     val conversionStrategy = session.get("conversion").map(_.toString).getOrElse("parent")
 
-    val toDate = LocalDate.now
+    val toDate = currentDate
     val treeTable = new BalanceTreeTable(bg.acctState, bg.priceState, toDate, bg.dailyBalances, conversionStrategy)
 
     keys.map(key => key -> treeTable.toTreeTable(AccountId(key))).toMap
@@ -92,7 +107,8 @@ class ApiController (implicit val ec :ExecutionContext) extends ScalatraServlet 
   }
 
   get ("/prices/") {
-    val bg = session.get("gainstrack").getOrElse(bgDefault).asInstanceOf[GainstrackGenerator]
+    val bg = currentBg
+
     val priceState = bg.priceState
 
     priceState.toDTO
@@ -100,10 +116,10 @@ class ApiController (implicit val ec :ExecutionContext) extends ScalatraServlet 
   }
 
   get("/irr/") {
-    val bg = session.get("gainstrack").getOrElse(bgDefault).asInstanceOf[GainstrackGenerator]
+    val bg = currentBg
 
     var fromDate = defaultFromDate
-    var toDate = LocalDate.now
+    var toDate = currentDate
 
     if (params.contains("time") && params("time").matches(raw"\d{4}")) {
       fromDate =  LocalDate.of(Integer.parseInt(params("time")),1,1)
@@ -116,25 +132,28 @@ class ApiController (implicit val ec :ExecutionContext) extends ScalatraServlet 
   }
 
   get("/irr/:accountId") {
-    val bg = session.get("gainstrack").getOrElse(bgDefault).asInstanceOf[GainstrackGenerator]
+    val bg = currentBg
+
     val accountId = params("accountId")
     val fromDate = defaultFromDate
+    val toDate = currentDate
     bg.acctState.accountMap.get(accountId).map(account => {
-      val accountReport = new AccountInvestmentReport(accountId, account.key.assetId, fromDate,  LocalDate.now(), bg.acctState, bg.balanceState, bg.txState, bg.priceState)
+      val accountReport = new AccountInvestmentReport(accountId, account.key.assetId, fromDate,  toDate, bg.acctState, bg.balanceState, bg.txState, bg.priceState)
       val cfs = accountReport.cashflowTable.sorted
       TimeSeries(accountId, cfs.map(_.value.ccy.symbol), cfs.map(_.date.toString), cfs.map(_.value.value.toDouble.toString), cfs.map(_.source.toString))
     }).getOrElse(NotFound(s"${accountId} account not found"))
   }
 
   get("/editor/") {
-    val bg = session.get("gainstrack").getOrElse(bgDefault).asInstanceOf[GainstrackGenerator]
+    val bg = currentBg
+
     val source = bg.toGainstrack
     Map("source" -> source, "short_title" -> "Editor")
   }
 
   get("/account/:accountId") {
+    val bg = currentBg
 
-    val bg = session.get("gainstrack").getOrElse(bgDefault).asInstanceOf[GainstrackGenerator]
     val conversionStrategy = session.get("conversion").map(_.toString).getOrElse("parent")
 
 
@@ -176,15 +195,18 @@ class ApiController (implicit val ec :ExecutionContext) extends ScalatraServlet 
   }
 
   get("/account/:accountId/graph") {
-    val bg = session.get("gainstrack").getOrElse(bgDefault).asInstanceOf[GainstrackGenerator]
+    val bg = currentBg
+
     val conversionStrategy = session.get("conversion").map(_.toString).getOrElse("parent")
+    val toDate = currentDate
     val accountId : AccountId = params("accountId")
     val dailyBalance = DailyBalance(bg.balanceState)
-    dailyBalance.monthlySeries(accountId, conversionStrategy, LocalDate.now, bg.acctState, bg.priceState)
+    dailyBalance.monthlySeries(accountId, conversionStrategy, toDate, bg.acctState, bg.priceState)
   }
 
   get ("/journal/") {
-    val bg = session.get("gainstrack").getOrElse(bgDefault).asInstanceOf[GainstrackGenerator]
+    val bg = currentBg
+
     val txs = bg.txState.allTransactions
     val commands = txs.map(_.origin).distinct.reverse
     val rows = commands.map(cmd => {
@@ -196,7 +218,7 @@ class ApiController (implicit val ec :ExecutionContext) extends ScalatraServlet 
   }
 
   get ("/command/") {
-    val bg = session.get("gainstrack").getOrElse(bgDefault).asInstanceOf[GainstrackGenerator]
+    val bg = currentBg
 
     val mainAccountIds:Set[AccountId] = bg.finalCommands.flatMap(_.mainAccount).toSet
     val mainAccounts:Seq[AccountCreation] = bg.acctState.accounts.filter(a => mainAccountIds.contains(a.accountId)).toSeq.sortBy(_.accountId)
@@ -205,8 +227,7 @@ class ApiController (implicit val ec :ExecutionContext) extends ScalatraServlet 
   }
 
   get ("/command/:accountId") {
-
-    val bg = session.get("gainstrack").getOrElse(bgDefault).asInstanceOf[GainstrackGenerator]
+    val bg = currentBg
 
     val accountId = params("accountId")
     bg.acctState.accountMap.get(accountId).map(account => {
@@ -225,23 +246,26 @@ class ApiController (implicit val ec :ExecutionContext) extends ScalatraServlet 
   }
 
   get ("/state/summary") {
-    val bg = session.get("gainstrack").getOrElse(bgDefault).asInstanceOf[GainstrackGenerator]
+    val bg = currentBg
+
     val accts = bg.acctState.accounts.map(_.accountId)
     val ccys = bg.priceState.ccys
     val conversionStrategy = session.get("conversion").map(_.toString).getOrElse("parent")
 
-    StateSummaryDTO(accts.toSeq.sorted, ccys.toSeq.sorted, conversionStrategy)
+    StateSummaryDTO(accts.toSeq.sorted, ccys.toSeq.sorted, conversionStrategy,
+      currentDate, dateOverride)
   }
 
   post("/state/conversion") {
-    val bg = session.get("gainstrack").getOrElse(bgDefault).asInstanceOf[GainstrackGenerator]
+    // val bg = session.get("gainstrack").getOrElse(bgDefault).asInstanceOf[GainstrackGenerator]
     session("conversion") = (parsedBody \ "conversion").extract[String]
     ApiSourceResponse("???", true, Seq())
   }
 
   get("/aa") {
-    val bg = session.get("gainstrack").getOrElse(bgDefault).asInstanceOf[GainstrackGenerator]
-    val queryDate = LocalDate.now
+    val bg = currentBg
+
+    val queryDate = currentDate
 
     val allocations = Seq(Seq("equity"), Seq("bond"))
     val labels = allocations.map(_.mkString("/"))
@@ -262,9 +286,9 @@ class ApiController (implicit val ec :ExecutionContext) extends ScalatraServlet 
   }
 
   get ("/aa/table") {
-    val bg = session.get("gainstrack").getOrElse(bgDefault).asInstanceOf[GainstrackGenerator]
+    val bg = currentBg
 
-    val toDate = LocalDate.now
+    val toDate = currentDate
     val allocations = Seq(Seq("equity"), Seq("bond"), Seq("blend"))
     val tables = allocations.map(alloc => {
       val allocationAssets = bg.assetState.assetsForTags(alloc.toSet)
@@ -294,4 +318,4 @@ case class AccountTxDTO(date:String, cmdType:String, description:String, change:
 
 case class JournalDTO(rows:Seq[AccountTxDTO])
 
-case class StateSummaryDTO(accountIds:Seq[AccountId], ccys:Seq[AssetId], conversion:String)
+case class StateSummaryDTO(accountIds:Seq[AccountId], ccys:Seq[AssetId], conversion:String, date: LocalDate, dateOverride:Option[LocalDate])
