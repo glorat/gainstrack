@@ -34,6 +34,7 @@ case class GainstrackGenerator(originalCommands:SortedSet[AccountCommand])  {
     finalCommands.foldLeft(PriceState())((state, ev) => state.handle(ev))
   val assetState: AssetState =
     finalCommands.foldLeft(AssetState())(_.handle(_))
+  val latestDate:LocalDate = finalCommands.maxBy(_.date).date
 
     //     val machine = new PriceCollector
   //    orderedCmds.foreach(cmd => {
