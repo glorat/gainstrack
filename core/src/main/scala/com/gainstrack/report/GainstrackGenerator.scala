@@ -127,10 +127,15 @@ case class GainstrackGenerator(originalCommands:SortedSet[AccountCommand])  {
   }
 
   def toGainstrack: String = {
-    val grp = originalCommands.toSeq.groupBy(_.mainAccount.getOrElse(AccountId("")))
+    val top = originalCommands.filter(_.isInstanceOf[GlobalCommand])
+    val bottom = originalCommands.filter(_.mainAccount.isEmpty)
+
+    val grp = originalCommands.filter(_.mainAccount.isDefined).toSeq.groupBy(_.mainAccount.get)
     val accids = grp.keys.toSeq.sorted
-    val str = accids.map(grp(_).flatMap(_.toGainstrack).mkString("\n")).mkString("\n\n")
-    str
+    val accountStrs = accids.map(grp(_).flatMap(_.toGainstrack).mkString("\n")).mkString("\n\n")
+    val topStrs = top.toSeq.flatMap(_.toGainstrack).mkString("\n")
+    val bottomStrs = bottom.toSeq.flatMap(_.toGainstrack).mkString("\n")
+    s"${topStrs}\n\n${accountStrs}\n\n${bottomStrs}"
   }
 }
 

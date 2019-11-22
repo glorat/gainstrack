@@ -119,7 +119,7 @@ class First extends FlatSpec {
 
   it should "generate sane beancount string" in {
     val str = bg.toGainstrack
-    assert (str.startsWith("option \"operating_currency\" \"GBP\"\n1900-01-01 commodity VWRD\n  tags: equity,global\n1900-01-01 commodity IUAA\n  tags: bond,us\n2019-01-01 price GBP 1.2752 USD\n\n2000-01-01 open Assets:Bank:HSBCUK GBP\n\n2000-01-01 open Assets:Bank:Nationwide GBP"))
+    assert (str.startsWith("option \"operating_currency\" \"GBP\"\n\n2000-01-01 open Assets:Bank:HSBCUK GBP\n\n2000-01-01 open Assets:Bank:Nationwide GBP"))
   }
 
   it should "pass bean-check" in {
