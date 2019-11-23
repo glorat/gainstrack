@@ -342,8 +342,10 @@
   background-color: var(--color-table-header-background);
 }
 
-.tree-table .totals p > span,
-
+.tree-table .totals p > span {
+  color: var(--color-table-header-text);
+  background-color: var(--color-table-header-background);
+}
 /*
  * At resolutions smaller than 768px, hide the aside menu.
  * This means that ipads and larger will show the side menu.
@@ -364,11 +366,6 @@
   h1 {
     padding: 8px;
   }
-
-  .filter-form {
-    flex-wrap: wrap;
-  }
-
   aside {
     top: 0;
     margin-left: calc(-1 * var(--aside-width));
@@ -519,10 +516,6 @@
     display: block;
   }
 
-  .filter-form {
-    display: none;
-  }
-
   aside,
   .aside-button,
   .toggle-chart-container {
@@ -671,61 +664,6 @@ h1:hover .beancount-files {
   display: block;
 }
 
-.filter-form {
-  display: flex;
-  padding-top: 7px;
-  margin: 0;
-  color: var(--color-text);
-}
-
-.filter-form > span {
-  position: relative;
-  margin: 0 4px 6px 0;
-}
-
-.filter-form input {
-  max-width: 18rem;
-  padding: 8px 25px 8px 10px;
-  margin: 0;
-  background-color: var(--color-background);
-  border: 0;
-  outline: none;
-}
-
-.filter-form [type="text"]:focus {
-  color: var(--color-text);
-  background-color: var(--color-background);
-}
-
-.filter-form [type="text"]:placeholder-shown,
-.filter-form [type="text"]::placeholder {
-  color: var(--color-header-tinted);
-  opacity: 1;
-}
-
-.filter-form [type="text"]:focus:placeholder-shown,
-.filter-form [type="text"]:focus::placeholder {
-  color: var(--color-header-tinted);
-}
-
-.filter-form [type="submit"] {
-  display: none;
-}
-
-.filter-form .empty input {
-  background-color: var(--color-header-light);
-}
-
-.filter-form .close {
-  position: absolute;
-  top: 8px;
-  right: 0;
-  display: block;
-}
-
-.filter-form .empty .close {
-  display: none;
-}
 /* stylelint-disable no-descending-specificity */
 
 * {

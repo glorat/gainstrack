@@ -1,6 +1,7 @@
 package controllers
 
 import java.time.LocalDate
+import java.time.format.DateTimeParseException
 
 import com.gainstrack.command.{AccountCreation, GainstrackParser, ParserMessage}
 import com.gainstrack.core._
@@ -253,13 +254,27 @@ class ApiController (implicit val ec :ExecutionContext) extends ScalatraServlet 
     val conversionStrategy = session.get("conversion").map(_.toString).getOrElse("parent")
 
     StateSummaryDTO(accts.toSeq.sorted, ccys.toSeq.sorted, conversionStrategy,
-      currentDate, dateOverride)
+      bg.latestDate, dateOverride)
   }
 
   post("/state/conversion") {
     // val bg = session.get("gainstrack").getOrElse(bgDefault).asInstanceOf[GainstrackGenerator]
     session("conversion") = (parsedBody \ "conversion").extract[String]
     ApiSourceResponse("???", true, Seq())
+  }
+
+  post("/state/dateOverride") {
+    try {
+      val dt:LocalDate = LocalDate.parse((parsedBody \ "dateOverride").extract[String])
+      session("dateOverride") = dt
+      ApiSourceResponse("???", true, Seq())
+    }
+    catch {
+      case e: Exception => {
+        session.remove("dateOverride")
+        ApiSourceResponse("???", true, Seq())
+      }
+    }
   }
 
   get("/aa") {
@@ -318,4 +333,4 @@ case class AccountTxDTO(date:String, cmdType:String, description:String, change:
 
 case class JournalDTO(rows:Seq[AccountTxDTO])
 
-case class StateSummaryDTO(accountIds:Seq[AccountId], ccys:Seq[AssetId], conversion:String, date: LocalDate, dateOverride:Option[LocalDate])
+case class StateSummaryDTO(accountIds:Seq[AccountId], ccys:Seq[AssetId], conversion:String, latestDate: LocalDate, dateOverride:Option[LocalDate])

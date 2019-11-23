@@ -72,6 +72,10 @@ export default new Vuex.Store({
           // Since components don't know to retrigger this if already on display, let's get it for them
           .then(() => context.dispatch('balances'));
     },
+    async dateOverride(context, d) {
+      await axios.post('/api/state/dateOverride', {dateOverride: d});
+      return this.dispatch('reload');
+    },
     parseState(context, data) {
       context.commit('parseState', data);
     }

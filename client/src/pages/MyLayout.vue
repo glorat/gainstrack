@@ -7,8 +7,8 @@
             </svg>
             <h1>
                 Gainstrack <strong class="page-title">{{ pageTitle }}</strong>
-                <button type=button id="reload-page" class="reload-page hidden" data-key="r">&#8635;</button>
             </h1>
+            <filter-form></filter-form>
         </header>
         <button class="aside-button" type="button" id="aside-button">
             <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" height="32px" width="32px" version="1.0" viewBox="0 0 24 24"><circle cx="12" cy="12" r="2"/><circle cx="12" cy="5" r="2"/><circle cx="12" cy="19" r="2"/></svg>
@@ -24,6 +24,7 @@
 
 <script>
     import MyAside from './MyAside';
+    import FilterForm from '../components/FilterForm';
 
     export default {
         name: 'MyLayout',
@@ -36,7 +37,7 @@
         data() {
             return {pageTitle: ''};
         },
-        components: {MyAside}
+        components: {FilterForm, MyAside}
     }
 </script>
 
