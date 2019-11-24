@@ -6,7 +6,11 @@ import com.gainstrack.report._
 
 import scala.xml.Elem
 
-case class TreeTableDTO(name:String, shortName:String, children: Seq[TreeTableDTO], assetBalance:Seq[String])
+case class TreeTableDTO(
+                         name:String,
+                         shortName:String,
+                         children: Seq[TreeTableDTO],
+                         assetBalance:Seq[Map[String,Any]])
 
 
 class BalanceTreeTable(
@@ -26,6 +30,6 @@ class BalanceTreeTable(
     // TODO: Sort the sequence alphabetically
     TreeTableDTO(acctId.toString, acctId.shortName,
       allAcctState.childrenOf(acctId).toSeq.sortBy(_.accountId).map(acct => toTreeTable(acct.accountId)),
-      balance.assetBalance.map(e=>s"${e._2.toDouble.formatted("%.2f")} ${e._1.symbol}").toSeq)
+      balance.toDTO)
   }
 }

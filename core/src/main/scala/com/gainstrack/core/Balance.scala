@@ -4,6 +4,9 @@ import spire.math.SafeLong
 
 
 case class Balance(value:Fraction, ccy:AssetId) {
+
+  def toDTO:Map[String, Any] = Map("ccy" -> ccy.symbol, "value" -> value.toDouble)
+
   private val errmsg = "Balance can only combine single currency"
 
   override def toString: String = s"${value.toDouble} ${ccy.symbol}"

@@ -6,7 +6,7 @@ import java.time.format.DateTimeFormatter
 
 import com.gainstrack.core._
 import org.json4s.CustomSerializer
-import org.json4s.JsonAST.JString
+import org.json4s.JsonAST.{JDouble, JField, JObject, JString}
 
 object GainstrackJsonSerializers {
   def all: Seq[CustomSerializer[_]] =
