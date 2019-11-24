@@ -9,7 +9,7 @@ case class IrrSummary(accounts: Map[AccountId, AccountInvestmentReport]) {
       val one = accounts(acctId)
       IrrSummaryItemDTO(acctId.toString, one.endBalance.toString, one.cashflows.headOption.map(_.date.toString).getOrElse(""),
         one.cashflows.lastOption.map(_.date.toString).getOrElse(""),
-        one.cashflowTable.irr
+        one.irr
       )
     })
   }
@@ -22,7 +22,6 @@ object IrrSummary {
   def apply(commands:Seq[AccountCommand], fromDate:LocalDate, queryDate:LocalDate, acctState: AccountState, balanceState: BalanceState, txState:TransactionState, priceState:PriceState) : IrrSummary = {
     val assetClasses = Seq("ISA","Property", "Investment", "Pension")
 
-    // FIXME: Avoid AccountId string manip
     val test = (acctId:AccountId) => {assetClasses.foldLeft(false)((bool:Boolean,str:String) => bool || acctId.isSubAccountOf(AccountId("Assets:"+str)))}
 
     val invs = commands.filter(cmd => cmd match {

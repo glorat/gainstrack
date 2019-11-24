@@ -255,8 +255,8 @@ class First extends FlatSpec {
     assert(accountReport.inflows == Seq(Cashflow("2013-06-30", "-265000.0 GBP", AccountId("Equity:Opening:GBP"))))
 
     // Do a an NPV=0 solve to find irr
-    val irr = accountReport.cashflowTable.irr
-    val npv = accountReport.cashflowTable.npv(irr)
+    val irr = accountReport.irr
+    val npv = accountReport.npv(irr)
     assert(npv < 0.000001)
     assert( Math.abs(irr - 0.04278473708136136) < 0.01)
   }
