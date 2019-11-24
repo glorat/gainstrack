@@ -40,6 +40,7 @@ case class CashflowTable(cashflows:Seq[Cashflow]) {
   }
 
   def irr : Double = {
+    require(cashflows.exists(_.value.ccy != cashflows.head.value.ccy) == false, "IRR calc requires all cashflows to have same ccy")
     newtonRaphson(r => npv(r), r=>delta(r), 0.01, 0.000001, 25)
   }
 

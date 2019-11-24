@@ -28,5 +28,12 @@ class AccountInvestmentReport(accountId: AccountId, ccy:AssetId, fromDate:LocalD
 
   val cashflows = (Cashflow(fromDate, startBalance, accountId) +: inflows) :+ Cashflow(queryDate, endBalance, accountId)
   val cashflowTable = CashflowTable(cashflows)
-
+  // Normalise the cashflow table to a an appropriate single currency
+  val singleCcyCashflows = cashflows.map(cf => {
+    val converted = (PositionSet() + cf.value).convertViaChain(acctState.baseCurrency, acctState.assetChainMap(accountId), priceState, cf.date)
+    cf.copy(value = converted.getBalance(acctState.baseCurrency))
+  })
+  val singleCcyCashflowTable = CashflowTable(singleCcyCashflows)
+  def irr = singleCcyCashflowTable.irr
+  def npv = singleCcyCashflowTable.npv(_)
 }

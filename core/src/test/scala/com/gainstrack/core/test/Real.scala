@@ -72,7 +72,7 @@ class Real extends FlatSpec with BeforeAndAfterEach {
       accountReport.cashflowTable.sorted.foreach(cf => {
         println(s"   ${cf.date} ${cf.value}")
       })
-      println(f"IRR: ${100*accountReport.cashflowTable.irr}%1.2f%%")
+      println(f"IRR: ${100*accountReport.irr}%1.2f%%")
 
     })
   }
@@ -82,8 +82,8 @@ class Real extends FlatSpec with BeforeAndAfterEach {
     val accountId = AccountId("Assets:Investment:Zurich")
     val rep = new AccountInvestmentReport(accountId, AssetId("GBP"), fromDate, queryDate, bg.acctState, bg.balanceState, bg.txState, bg.priceState)
 
-    assert(rep.cashflowTable.irr < 0.062)
-    assert(rep.cashflowTable.irr > 0.044)
+    assert(rep.irr < 0.062)
+    assert(rep.irr > 0.044)
   }
 
   it should "calc sane irrs for my PP" taggedAs RealDataAvailable in {
@@ -91,8 +91,8 @@ class Real extends FlatSpec with BeforeAndAfterEach {
     val accountId = AccountId("Assets:Property:PP")
     val rep = new AccountInvestmentReport(accountId, AssetId("GBP"), fromDate, queryDate, bg.acctState, bg.balanceState, bg.txState, bg.priceState)
 
-    assert(rep.cashflowTable.irr < 0.09)
-    assert(rep.cashflowTable.irr > 0.03)
+    assert(rep.irr < 0.09)
+    assert(rep.irr > 0.03)
   }
 
   it should "list all txs for an account" taggedAs RealDataAvailable in {
