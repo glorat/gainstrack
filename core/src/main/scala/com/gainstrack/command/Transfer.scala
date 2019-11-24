@@ -47,9 +47,15 @@ case class Transfer(
 
   def toTransaction : Transaction = {
     Transaction(date, description, Seq(
-      Posting(source, -sourceValue, Balance(fxRate,targetValue.ccy)),
-      Posting(dest, targetValue)
+      Posting(source, -sourceValue),
+      Posting(dest, targetValue, Balance(1/fxRate,sourceValue.ccy))
     ), this)
+
+//  def toTransaction : Transaction = {
+//    Transaction(date, description, Seq(
+//      Posting(source, -sourceValue, Balance(fxRate,targetValue.ccy)),
+//      Posting(dest, targetValue)
+//    ), this)
   }
 
   override def toGainstrack: Seq[String] = {
