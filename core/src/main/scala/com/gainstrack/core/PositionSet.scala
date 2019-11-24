@@ -3,6 +3,11 @@ package com.gainstrack.core
 import com.gainstrack.report.{AssetPair, PriceState}
 
 case class PositionSet(assetBalance:Map[AssetId, Fraction]) {
+
+  def toDTO: Seq[Map[String,Any]] = {
+    assetBalance.keys.map(getBalance(_).toDTO).toSeq
+  }
+
   def getBalance(ccy:AssetId) : Balance = {
     val f =assetBalance.get(ccy).getOrElse(zeroFraction)
     Balance(f, ccy)

@@ -14,7 +14,7 @@
                     <router-link v-bind:to="'/account/' + node.name">{{ node.shortName }}</router-link>
                 </span>
                 <span class="num other">
-                    <span v-for="x in node.assetBalance">{{x}}<br /></span>
+                    <span v-for="x in node.assetBalance">{{x.value.toFixed(2)}} {{x.ccy}} <br /></span>
                 </span>
             </p>
             <tree-table-node v-bind:node="node" depth="1"></tree-table-node>
@@ -33,23 +33,6 @@
         data() {
             return {
                 depth: 0,
-                /*
-                node: {
-                    name: 'Assets:Foo',
-                    assetBalance: ['100 USD', '50 GBP'],
-                    children: [
-                        {
-                            name: 'Assets:Foo:Bar',
-                            assetBalance: ['100 USD'],
-                            children: [
-                                {
-                                    name: 'Assets:Foo:Bar:Baz',
-                                    assetBalance: ['100 USD'],
-                                }
-                            ]
-                        }
-                    ]
-                }*/
             }
         },
         computed: {
