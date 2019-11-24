@@ -1,7 +1,6 @@
 <template>
     <form id="filter-form" class="filter-form">
-        <span class="empty"> <!-- class empty? -->
-            <input id="time-filter" class="time-filter" :placeholder="latestDate" size="10" type="text"></input>
+        <span>
             <el-date-picker  type="date" value-format="yyyy-MM-dd" size="small" clearable
                              :placeholder="latestDate" @input="onDateChange" :value="dateOverride"></el-date-picker>
         </span>
@@ -29,7 +28,6 @@
         methods: {
             onDateChange(e) {
                 this.$store.dispatch('dateOverride', e);
-                console.log(e);
             },
         }
     }
