@@ -1,0 +1,8 @@
+1960-01-01 open Equity:Opening USD
+  multiAsset:true
+
+1960-01-01 open Assets:Bank:Cash USD
+  fundingAccount: Equity:Opening
+  multiAsset:true
+
+2019-10-01 adj Assets:Bank:Cash 10 CAD Equity:Opening

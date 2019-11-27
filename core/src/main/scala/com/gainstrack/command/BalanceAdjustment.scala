@@ -54,11 +54,10 @@ case class BalanceAdjustment(
 
   def toTransfers(accts:Set[AccountCreation]) : Seq[Transfer] = {
     val account = accts.find(_.accountId == accountId).getOrElse(throw new IllegalStateException(s"Account ${accountId} is not defined"))
-    val targetAccountId = if (account.options.multiAsset) accountId.subAccount(balance.ccy.symbol) else accountId
     val newUnits = Balance(9999, balance.ccy.symbol)
 
     val description = s"Adjustment: TO BE FILLED IN"
-    val tfr = Transfer(adjAccount, targetAccountId, date.minusDays(1), newUnits, newUnits, description)
+    val tfr = Transfer(adjAccount, accountId, date.minusDays(1), newUnits, newUnits, description)
     val tfrExpand = tfr.toTransfers(accts)
     tfrExpand
   }
