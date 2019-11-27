@@ -8,7 +8,7 @@ import spire.math.SafeLong
 import scala.collection.SortedMap
 
 case class BalanceStateSeries(series: SortedMap[LocalDate,Fraction], ccy:AssetId)
-case class BalanceState(accounts:Set[AccountCreation], balances:Map[AccountId,BalanceStateSeries]) extends AggregateRootState {
+case class BalanceState(acctState:AccountState, balances:Map[AccountId,BalanceStateSeries]) extends AggregateRootState {
   type Balances = Map[AccountId,SortedMap[LocalDate,Fraction]]
   type Series = SortedMap[LocalDate,Fraction]
   val interp = TimeSeriesInterpolator.from(SortedMap[LocalDate,Fraction]())
@@ -75,7 +75,7 @@ case class BalanceState(accounts:Set[AccountCreation], balances:Map[AccountId,Ba
   }
 
   private def process(e:SecurityPurchase): BalanceState = {
-    val baseAcct = accounts.find(x => x.name == e.accountId)
+    val baseAcct = acctState.find(e.accountId)
     require(baseAcct.isDefined)
     process(e.toTransaction)
   }
@@ -88,9 +88,14 @@ case class BalanceState(accounts:Set[AccountCreation], balances:Map[AccountId,Ba
 
   private def process(e:BalanceAdjustment): BalanceState = {
     //e.toBeancounts
-    val origEntry = balances(e.accountId)
+    val tfr = e.toTransfers(acctState.accounts).head
+    val dest = tfr.dest
+
+    // val origEntry = balances(e.accountId) // This doesn't work due to multiAsset support
+    val origEntry = balances(dest)
+
     val newSeries = origEntry.series.updated(e.date, e.balance.value)
-    copy(balances = balances.updated(e.accountId, origEntry.copy(series = newSeries)))
+    copy(balances = balances.updated(dest, origEntry.copy(series = newSeries)))
   }
 
   private def process(tx:Transaction) : BalanceState = {
@@ -112,15 +117,15 @@ case class BalanceState(accounts:Set[AccountCreation], balances:Map[AccountId,Ba
 }
 
 object BalanceState {
-  def apply(accounts : Set[AccountCreation]) : BalanceState = {
+  def apply(acctState : AccountState) : BalanceState = {
     val emptySeries : SortedMap[LocalDate,Fraction] = SortedMap.empty
-    val initMap:Map[AccountId,BalanceStateSeries] = accounts.map(x => x.name -> BalanceStateSeries( emptySeries, x.key.assetId)).toMap
-    BalanceState(accounts, initMap)
+    val initMap:Map[AccountId,BalanceStateSeries] = acctState.accounts.map(x => x.name -> BalanceStateSeries( emptySeries, x.key.assetId)).toMap
+    BalanceState(acctState, initMap)
   }
 
-  def mock(accounts: Set[AccountCreation]) : BalanceState = {
+  def mock(acctState: AccountState) : BalanceState = {
     val mockSeries : SortedMap[LocalDate,Fraction] = SortedMap(MinDate -> 9999)
-    val initMap:Map[AccountId,BalanceStateSeries] = accounts.map(x => x.name -> BalanceStateSeries( mockSeries, x.key.assetId)).toMap
-    BalanceState(accounts, initMap)
+    val initMap:Map[AccountId,BalanceStateSeries] = acctState.accounts.map(x => x.name -> BalanceStateSeries( mockSeries, x.key.assetId)).toMap
+    BalanceState(acctState, initMap)
   }
 }

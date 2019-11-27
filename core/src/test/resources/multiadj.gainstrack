@@ -5,4 +5,5 @@
   fundingAccount: Equity:Opening
   multiAsset:true
 
-2019-10-01 adj Assets:Bank:Cash 10 CAD Equity:Opening
+2017-10-31 adj Assets:Bank:Cash 1500 CAD Equity:Opening
+2019-10-31 adj Assets:Bank:Cash 10000 CAD Equity:Opening

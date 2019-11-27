@@ -23,7 +23,7 @@ case class GainstrackGenerator(originalCommands:SortedSet[AccountCommand])  {
 
   // Second pass for balances
   val balanceState:BalanceState =
-    finalCommands.foldLeft(BalanceState(acctState.accounts)) ( (state,ev) => state.handle(ev))
+    finalCommands.foldLeft(BalanceState(acctState)) ( (state,ev) => state.handle(ev))
 
   // Third pass for projections
   val dailyBalances = new DailyBalance(balanceState)
@@ -44,7 +44,7 @@ case class GainstrackGenerator(originalCommands:SortedSet[AccountCommand])  {
   def addCommand(cmd:AccountCommand) : GainstrackGenerator = {
     // Cannot use .contains because that seems to use a ref equals
     // whereas we want a value object equals
-    require(originalCommands.filter(_ == cmd).size==0, "command already exists. Duplicates not allowed")
+    require(!originalCommands.exists(_ == cmd), "command already exists. Duplicates not allowed")
     GainstrackGenerator( (originalCommands + cmd))
   }
 
