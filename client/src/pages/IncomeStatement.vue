@@ -5,11 +5,11 @@
         </div>
         <div class="row">
             <div class="column">
-                <h3>Assets</h3>
+                <h3>Income</h3>
                 <tree-table v-bind:node="info['Income']"></tree-table>
             </div>
             <div class="column">
-                <h3>Liabilities</h3>
+                <h3>Expenses</h3>
                 <tree-table v-bind:node="info['Expenses']"></tree-table>
             </div>
         </div>
