@@ -6,7 +6,7 @@ import net.glorat.cqrs.{AggregateRootState, DomainEvent}
 
 case class CommandAccountExpander(acctState:AccountState, cmds:Seq[AccountCommand]=Seq()) extends AggregateRootState {
   private val accountSet = acctState.accounts
-  private val mockBalanceState = BalanceState.mock(accountSet)
+  private val mockBalanceState = BalanceState.mock(acctState)
 
   def handle(e: DomainEvent): CommandAccountExpander = {
     val newCmd:AccountCommand = e match {
