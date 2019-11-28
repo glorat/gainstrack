@@ -2,7 +2,7 @@ package com.gainstrack.report
 
 import com.gainstrack.core._
 
-class AccountInvestmentReport(accountId: AccountId, ccy:AssetId, fromDate:LocalDate, queryDate: LocalDate, acctState:AccountState, balanceState:BalanceState, txState:TransactionState, priceState: PriceState) {
+class AccountInvestmentReport(accountId: AccountId, ccy:AssetId, fromDate:LocalDate, queryDate: LocalDate, acctState:AccountState, balanceState:BalanceState, txState:TransactionState, priceState: PriceState, assetChainMap: AssetChainMap) {
   val account = acctState.accountMap(accountId)
 
   val cmds = txState.cmds.filter(cmd => cmd.origin.date.isAfter(fromDate) && cmd.origin.date.isBefore(queryDate) )
@@ -30,7 +30,7 @@ class AccountInvestmentReport(accountId: AccountId, ccy:AssetId, fromDate:LocalD
   val cashflowTable = CashflowTable(cashflows)
   // Normalise the cashflow table to a an appropriate single currency
   val singleCcyCashflows = cashflows.map(cf => {
-    val converted = (PositionSet() + cf.value).convertViaChain(acctState.baseCurrency, acctState.assetChainMap(accountId), priceState, cf.date)
+    val converted = (PositionSet() + cf.value).convertViaChain(acctState.baseCurrency, assetChainMap(accountId), priceState, cf.date)
     cf.copy(value = converted.getBalance(acctState.baseCurrency))
   })
   val singleCcyCashflowTable = CashflowTable(singleCcyCashflows)

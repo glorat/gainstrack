@@ -103,9 +103,9 @@ class First extends FlatSpec {
   }
 
   it should "generate asset conversion chains" in {
-    val newState = acctState.withInterpolatedAccounts
-    assert(newState.assetChainMap(AccountId("Assets")) == Seq(AssetId("GBP")))
-    assert(newState.assetChainMap(AccountId("Assets:Investment:IBUSD:VWRD")).map(_.symbol) == Seq("VWRD","USD","GBP"))
+    val assetChainMap = bg.assetChainMap
+    assert(assetChainMap(AccountId("Assets")) == Seq(AssetId("GBP")))
+    assert(assetChainMap(AccountId("Assets:Investment:IBUSD:VWRD")).map(_.symbol) == Seq("VWRD","USD","GBP"))
   }
 
   val bg = GainstrackGenerator(cmds)
@@ -165,7 +165,7 @@ class First extends FlatSpec {
 
     it should "list balances by account" in {
       val today = parseDate("2019-12-31")
-      val chainMap = acctState.assetChainMap
+      val chainMap = bg.assetChainMap
 
       acctState.accounts.toSeq.sortBy(_.name).foreach(account => {
         val value = bp.getAccountValue(account.accountId, today)
@@ -247,7 +247,7 @@ class First extends FlatSpec {
     val queryDate = LocalDate.parse("2019-12-31")
     val fromDate = parseDate("1980-01-01")
 
-    val accountReport = new AccountInvestmentReport(accountId, AssetId("GBP"), fromDate, queryDate, bg.acctState, bg.balanceState, bg.txState, priceState)
+    val accountReport = new AccountInvestmentReport(accountId, AssetId("GBP"), fromDate, queryDate, bg.acctState, bg.balanceState, bg.txState, priceState, bg.assetChainMap)
 
     assert(accountReport.endBalance == Balance.parse("348045.34 GBP"))
 
@@ -277,7 +277,7 @@ class First extends FlatSpec {
     val accounts = bg.acctState.withInterpolatedAccounts
 
     val testMeStrategy:( String)=>(String, String, Int)=>Unit = (strategy) => (acctId, ccyStr, expected) => {
-      val ps = dailyReport.convertedPosition(acctId, accounts, bg.priceState, today, strategy)
+      val ps = dailyReport.convertedPosition(acctId, accounts, bg.priceState, bg.assetChainMap, today, strategy)
       val actual1 = ps.assetBalance(AssetId(ccyStr)).round
       val ps2 = balanceReport.getState.convertedPosition(acctId, accounts, bg.priceState, today, strategy)
       val actual2 = ps2.assetBalance(AssetId(ccyStr)).round
@@ -317,7 +317,7 @@ class First extends FlatSpec {
     //val equities = bg.assetState.tagToAssets("equity")
     val equities = bg.assetState.assetsForTags(Set("equity"))
 
-    val equityValue = dailyReport.positionOfAssets(equities, bg.acctState, bg.priceState, today)
+    val equityValue = dailyReport.positionOfAssets(equities, bg.acctState, bg.priceState, bg.assetChainMap, today)
 
     assert(equityValue.getBalance(AssetId("GBP")).value.round == 22211)
   }
@@ -326,7 +326,7 @@ class First extends FlatSpec {
     val dailyReport = new DailyBalance(bg.balanceState)
     val equities = bg.assetState.assetsForTags(Set("equity", "unknown"))
 
-    val equityValue = dailyReport.positionOfAssets(equities, bg.acctState, bg.priceState, today)
+    val equityValue = dailyReport.positionOfAssets(equities, bg.acctState, bg.priceState, bg.assetChainMap, today)
 
     assert(equityValue.getBalance(AssetId("GBP")).value.round == 0)
   }
@@ -339,7 +339,7 @@ class First extends FlatSpec {
     val acct = AccountId("Assets")
 
     for (dt <- range) {
-      val x = dailyReport.convertedPosition(acct, bg.acctState, bg.priceState, dt, "GBP")
+      val x = dailyReport.convertedPosition(acct, bg.acctState, bg.priceState, bg.assetChainMap, dt, "GBP")
     }
   }
 
@@ -351,7 +351,7 @@ class First extends FlatSpec {
     val acct = AccountId("Assets")
 
     dates.foreach(date => {
-      dailyReport.convertedPosition(acct, bg.acctState, bg.priceState, date, "GBP")
+      dailyReport.convertedPosition(acct, bg.acctState, bg.priceState, bg.assetChainMap, date, "GBP")
     })
   }
 }

@@ -16,6 +16,7 @@ case class TreeTableDTO(
 class BalanceTreeTable(
                         acctState:AccountState,
                         priceState:PriceState,
+                        assetChainMap: AssetChainMap,
                         date:LocalDate,
                         balanceReport:DailyBalance,
                         conversionStrategy:String,
@@ -25,7 +26,7 @@ class BalanceTreeTable(
 
 
   def toTreeTable(acctId: AccountId):TreeTableDTO = {
-    val balance = balanceReport.convertedPosition(acctId, acctState, priceState, date, conversionStrategy, accountFilter)
+    val balance = balanceReport.convertedPosition(acctId, acctState, priceState, assetChainMap, date, conversionStrategy, accountFilter)
 
     // TODO: Sort the sequence alphabetically
     TreeTableDTO(acctId.toString, acctId.shortName,

@@ -85,7 +85,7 @@ class ApiController (implicit val ec :ExecutionContext) extends ScalatraServlet 
     val conversionStrategy = session.get("conversion").map(_.toString).getOrElse("parent")
 
     val toDate = currentDate
-    val treeTable = new BalanceTreeTable(bg.acctState, bg.priceState, toDate, bg.dailyBalances, conversionStrategy)
+    val treeTable = new BalanceTreeTable(bg.acctState, bg.priceState, bg.assetChainMap, toDate, bg.dailyBalances, conversionStrategy)
 
     keys.map(key => key -> treeTable.toTreeTable(AccountId(key))).toMap
   }
@@ -127,7 +127,7 @@ class ApiController (implicit val ec :ExecutionContext) extends ScalatraServlet 
       toDate = fromDate.plusYears(1)
     }
 
-    val irr = IrrSummary(bg.finalCommands, fromDate, toDate, bg.acctState, bg.balanceState, bg.txState, bg.priceState)
+    val irr = IrrSummary(bg.finalCommands, fromDate, toDate, bg.acctState, bg.balanceState, bg.txState, bg.priceState, bg.assetChainMap)
 
     irr.toSummaryDTO
   }
@@ -139,7 +139,7 @@ class ApiController (implicit val ec :ExecutionContext) extends ScalatraServlet 
     val fromDate = defaultFromDate
     val toDate = currentDate
     bg.acctState.accountMap.get(accountId).map(account => {
-      val accountReport = new AccountInvestmentReport(accountId, account.key.assetId, fromDate,  toDate, bg.acctState, bg.balanceState, bg.txState, bg.priceState)
+      val accountReport = new AccountInvestmentReport(accountId, account.key.assetId, fromDate,  toDate, bg.acctState, bg.balanceState, bg.txState, bg.priceState, bg.assetChainMap)
       val cfs = accountReport.cashflowTable.sorted
       TimeSeries(accountId, cfs.map(_.value.ccy.symbol), cfs.map(_.date.toString), cfs.map(_.value.value.toDouble.toString), cfs.map(_.source.toString))
     }).getOrElse(NotFound(s"${accountId} account not found"))
@@ -202,7 +202,7 @@ class ApiController (implicit val ec :ExecutionContext) extends ScalatraServlet 
     val toDate = currentDate
     val accountId : AccountId = params("accountId")
     val dailyBalance = DailyBalance(bg.balanceState)
-    dailyBalance.monthlySeries(accountId, conversionStrategy, toDate, bg.acctState, bg.priceState)
+    dailyBalance.monthlySeries(accountId, conversionStrategy, toDate, bg.acctState, bg.priceState, bg.assetChainMap)
   }
 
   get ("/journal/") {
@@ -287,7 +287,7 @@ class ApiController (implicit val ec :ExecutionContext) extends ScalatraServlet 
 
     val values = allocations.map(a => {
       val allocationAssets = bg.assetState.assetsForTags(a.toSet)
-      val allocationValue = bg.dailyBalances.positionOfAssets(allocationAssets, bg.acctState, bg.priceState, queryDate)
+      val allocationValue = bg.dailyBalances.positionOfAssets(allocationAssets, bg.acctState, bg.priceState, bg.assetChainMap, queryDate)
       allocationValue.getBalance(bg.acctState.baseCurrency)
     })
     val valueNum = values.map(_.value.toDouble)
@@ -310,7 +310,7 @@ class ApiController (implicit val ec :ExecutionContext) extends ScalatraServlet 
       val name = alloc.mkString("/")
 
       val filter: (AccountCreation=>Boolean) = acct => allocationAssets.contains(acct.key.assetId)
-      val treeTable = new BalanceTreeTable(bg.acctState, bg.priceState,
+      val treeTable = new BalanceTreeTable(bg.acctState, bg.priceState, bg.assetChainMap,
         toDate, bg.dailyBalances,
         "global", filter)
       Map("name" -> name, "rows" -> treeTable.toTreeTable(AccountId("Assets")))
