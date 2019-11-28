@@ -46,16 +46,6 @@ case class UnitTrustBalance(
     }
   }
 
-  def toBeancount(oldBalance:Balance) : Seq[BeancountLine] = {
-    if (security == oldBalance) {
-      // No transaction just emit a price
-      PriceObservation(date, security.ccy, price).toBeancount
-    }
-    else {
-      toTransaction(oldBalance).toBeancount
-    }
-  }
-
   def toTransaction(oldBalance:Balance) : Transaction = {
     val newUnits = security-oldBalance
     val unitIncrease : Posting = Posting(securityAccountId, newUnits, price )

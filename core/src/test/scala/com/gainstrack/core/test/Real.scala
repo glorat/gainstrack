@@ -67,7 +67,7 @@ class Real extends FlatSpec with BeforeAndAfterEach {
     invAccts.foreach(account => {
       val accountId = account.accountId
       val ccy = account.key.assetId
-      val accountReport = new AccountInvestmentReport(accountId, ccy, fromDate, queryDate, bg.acctState, bg.balanceState, bg.txState, bg.priceState)
+      val accountReport = new AccountInvestmentReport(accountId, ccy, fromDate, queryDate, bg.acctState, bg.balanceState, bg.txState, bg.priceState, bg.assetChainMap)
       println(s"${accountId} ${accountReport.endBalance}")
       accountReport.cashflowTable.sorted.foreach(cf => {
         println(s"   ${cf.date} ${cf.value}")
@@ -80,7 +80,7 @@ class Real extends FlatSpec with BeforeAndAfterEach {
   it should "calc sane irrs for my Zurich" taggedAs RealDataAvailable in {
     val bg = new GainstrackGenerator(parser.getCommands)
     val accountId = AccountId("Assets:Investment:Zurich")
-    val rep = new AccountInvestmentReport(accountId, AssetId("GBP"), fromDate, queryDate, bg.acctState, bg.balanceState, bg.txState, bg.priceState)
+    val rep = new AccountInvestmentReport(accountId, AssetId("GBP"), fromDate, queryDate, bg.acctState, bg.balanceState, bg.txState, bg.priceState, bg.assetChainMap)
 
     assert(rep.irr < 0.062)
     assert(rep.irr > 0.044)
@@ -89,7 +89,7 @@ class Real extends FlatSpec with BeforeAndAfterEach {
   it should "calc sane irrs for my PP" taggedAs RealDataAvailable in {
     val bg = new GainstrackGenerator(parser.getCommands)
     val accountId = AccountId("Assets:Property:PP")
-    val rep = new AccountInvestmentReport(accountId, AssetId("GBP"), fromDate, queryDate, bg.acctState, bg.balanceState, bg.txState, bg.priceState)
+    val rep = new AccountInvestmentReport(accountId, AssetId("GBP"), fromDate, queryDate, bg.acctState, bg.balanceState, bg.txState, bg.priceState, bg.assetChainMap)
 
     assert(rep.irr < 0.09)
     assert(rep.irr > 0.03)
@@ -115,11 +115,11 @@ class Real extends FlatSpec with BeforeAndAfterEach {
     val bg = new GainstrackGenerator(parser.getCommands)
     val dailyReport = new DailyBalance(bg.balanceState)
     val equities = bg.assetState.assetsForTags(Set("equity"))
-    val equityValue = dailyReport.positionOfAssets(equities, bg.acctState, bg.priceState, queryDate)
+    val equityValue = dailyReport.positionOfAssets(equities, bg.acctState, bg.priceState, bg.assetChainMap, queryDate)
     val equityTotal = equityValue.getBalance(bg.acctState.baseCurrency)
 
     val bonds = bg.assetState.assetsForTags(Set("bond"))
-    val bondValue = dailyReport.positionOfAssets(bonds, bg.acctState, bg.priceState, queryDate)
+    val bondValue = dailyReport.positionOfAssets(bonds, bg.acctState, bg.priceState, bg.assetChainMap, queryDate)
     val bondTotal = bondValue.getBalance(bg.acctState.baseCurrency)
 
     assert(equityTotal.value.round > 0)

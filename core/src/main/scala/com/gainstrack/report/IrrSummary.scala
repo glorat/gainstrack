@@ -19,7 +19,7 @@ case class IrrSummaryItemDTO(accountId: String, balance:String, start:String, en
 
 object IrrSummary {
 
-  def apply(commands:Seq[AccountCommand], fromDate:LocalDate, queryDate:LocalDate, acctState: AccountState, balanceState: BalanceState, txState:TransactionState, priceState:PriceState) : IrrSummary = {
+  def apply(commands:Seq[AccountCommand], fromDate:LocalDate, queryDate:LocalDate, acctState: AccountState, balanceState: BalanceState, txState:TransactionState, priceState:PriceState, assetChainMap: AssetChainMap) : IrrSummary = {
     val assetClasses = Seq("ISA","Property", "Investment", "Pension")
 
     val test = (acctId:AccountId) => {assetClasses.foldLeft(false)((bool:Boolean,str:String) => bool || acctId.isSubAccountOf(AccountId("Assets:"+str)))}
@@ -34,7 +34,7 @@ object IrrSummary {
     val ret = invAccts.map(account => {
       val accountId = account.accountId
       val ccy = account.key.assetId
-      val accountReport = new AccountInvestmentReport(accountId, ccy, fromDate, queryDate, acctState, balanceState, txState, priceState)
+      val accountReport = new AccountInvestmentReport(accountId, ccy, fromDate, queryDate, acctState, balanceState, txState, priceState, assetChainMap)
       accountId ->accountReport
 
     }).toMap
