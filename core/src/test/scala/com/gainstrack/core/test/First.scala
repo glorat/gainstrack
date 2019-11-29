@@ -278,8 +278,14 @@ class First extends FlatSpec {
 
     val testMeStrategy:( String)=>(String, String, Int)=>Unit = (strategy) => (acctId, ccyStr, expected) => {
       val ps = dailyReport.convertedPosition(acctId, accounts, bg.priceState, bg.assetChainMap, today, strategy)
+      val ps2 = balanceReport.getState.convertedPosition(acctId, accounts, bg.priceState, bg.assetChainMap, today, strategy)
+
+//      if (ps != ps2) {
+      ////        assert(ps == ps2)
+      ////      }
+
+
       val actual1 = ps.assetBalance(AssetId(ccyStr)).round
-      val ps2 = balanceReport.getState.convertedPosition(acctId, accounts, bg.priceState, today, strategy)
       val actual2 = ps2.assetBalance(AssetId(ccyStr)).round
 
       assert(actual1 == expected)
@@ -295,13 +301,11 @@ class First extends FlatSpec {
     // GBP is the operating currency
     assert(bg.acctState.baseCurrency.symbol == "GBP")
     testMe("Assets:Investment", "GBP", 485444)
-    //testMe("Assets", "GBP", 674080)
     testMe("Assets", "GBP", 677373)
 
     val testMe2:(String, String, Int)=>Unit = testMeStrategy("GBP")
 
     testMe2("Assets:Investment:IBUSD:USD", "GBP", 135)
-    //testMe2("Assets", "GBP", 674080) // Depends on conversion path!
     testMe2("Assets", "GBP", 677373)
 
     val testMe3 = testMeStrategy("units")
