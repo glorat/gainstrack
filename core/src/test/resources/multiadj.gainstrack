@@ -1,9 +1,13 @@
 1960-01-01 open Equity:Opening USD
   multiAsset:true
 
-1960-01-01 open Assets:Bank:Cash USD
+1960-01-01 open Assets:Bank USD
   fundingAccount: Equity:Opening
   multiAsset:true
 
-2017-10-31 adj Assets:Bank:Cash 1500 CAD Equity:Opening
-2019-10-31 adj Assets:Bank:Cash 10000 CAD Equity:Opening
+2017-10-31 adj Assets:Bank 1500 CAD Equity:Opening
+2019-10-31 adj Assets:Bank 10000 CAD Equity:Opening
+
+2019-11-11 trade Assets:Bank 1000.0 XIU @10.0 CAD
+
+2019-01-01 price CAD 2 USD

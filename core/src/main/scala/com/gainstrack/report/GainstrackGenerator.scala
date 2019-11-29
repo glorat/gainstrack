@@ -26,7 +26,7 @@ case class GainstrackGenerator(originalCommands:SortedSet[AccountCommand])  {
     finalCommands.foldLeft(BalanceState(acctState)) ( (state,ev) => state.handle(ev))
 
   // Third pass for projections
-  val assetChainMap = AssetChainMap(acctState.withInterpolatedAccounts)
+  val assetChainMap = AssetChainMap(acctState.withInterpolatedAccounts, priceState)
   val dailyBalances = new DailyBalance(balanceState)
 
   val txState:TransactionState =
