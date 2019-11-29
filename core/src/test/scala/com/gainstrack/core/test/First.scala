@@ -295,12 +295,14 @@ class First extends FlatSpec {
     // GBP is the operating currency
     assert(bg.acctState.baseCurrency.symbol == "GBP")
     testMe("Assets:Investment", "GBP", 485444)
-    testMe("Assets", "GBP", 674080)
+    //testMe("Assets", "GBP", 674080)
+    testMe("Assets", "GBP", 677373)
 
     val testMe2:(String, String, Int)=>Unit = testMeStrategy("GBP")
 
     testMe2("Assets:Investment:IBUSD:USD", "GBP", 135)
-    testMe2("Assets", "GBP", 674080)
+    //testMe2("Assets", "GBP", 674080) // Depends on conversion path!
+    testMe2("Assets", "GBP", 677373)
 
     val testMe3 = testMeStrategy("units")
     testMe3("Assets:Investment:IBUSD", "USD", 172)

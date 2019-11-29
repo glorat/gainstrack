@@ -40,6 +40,7 @@ case class PositionSet(assetBalance:Map[AssetId, Fraction]) {
   }
 
   def convertViaChain(tgtCcy: AssetId, ccyChain: Seq[AssetId], priceState: PriceState, date:LocalDate) : PositionSet = {
+    require(ccyChain.headOption.isDefined, s"No ccyChain was passed for $tgtCcy")
     ccyChain match {
       case h :: _ if (h == tgtCcy) => this
       case h :: Nil => {

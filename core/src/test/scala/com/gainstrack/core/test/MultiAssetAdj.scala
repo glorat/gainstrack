@@ -21,7 +21,7 @@ class MultiAssetAdj extends FlatSpec {
   }
 
   it should "handle success adjustments to different levels" in {
-    val acctId = AccountId("Assets:Bank:Cash:CAD")
+    val acctId = AccountId("Assets:Bank:CAD")
     assert (bg.balanceState.getBalance(acctId, parseDate("2010-10-31")).value.round == 0.0)
     assert (bg.balanceState.getBalance(acctId, parseDate("2017-11-01")).value.round == 1500)
     assert (bg.balanceState.getBalance(acctId, parseDate("2019-11-01")).value.round == 10000)
@@ -30,5 +30,9 @@ class MultiAssetAdj extends FlatSpec {
   it should "generate valid beancount" in {
     val res = bg.writeBeancountFile(s"/tmp/multiadj.beancount", parser.lineFor(_))
     assert(res.length == 0)
+  }
+
+  "assetChainMap" should "include cost basis conversion" in {
+    assert(bg.assetChainMap.map(AccountId("Assets:Bank:XIU")).map(_.symbol) == Seq("XIU", "CAD", "USD"))
   }
 }

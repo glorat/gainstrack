@@ -74,7 +74,7 @@ case class DailyBalance(balanceState: BalanceState, date: LocalDate = MaxDate) {
       }
       case "units" => acct =>
         // Tailing the chain means we stay at the leaf currency
-        balanceState.getPosition(acct, date, AssetId("NOVALIDUNIT"), assetChainMap(acct).tail, priceState)
+        balanceState.getPosition(acct, date, AssetId("NOVALIDUNIT"), assetChainMap(acct).takeRight(1), priceState)
       case "global" => acct =>
         balanceState.getPosition(acct, date, acctState.baseCurrency, assetChainMap(acct), priceState)
       case ccy:String => acct =>
