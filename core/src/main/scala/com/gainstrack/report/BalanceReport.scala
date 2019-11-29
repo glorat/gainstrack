@@ -43,30 +43,35 @@ case class BalanceReportState(balances:Map[AccountId, PositionSet]) {
     })
   }
 
-  def convertedPosition(accountId:AccountId, origAcctState:AccountState, priceState: PriceState, date:LocalDate, conversionStrategy:String):PositionSet = {
+  def convertedPosition(accountId:AccountId, origAcctState:AccountState, priceState: PriceState, assetChainMap: AssetChainMap, date:LocalDate, conversionStrategy:String):PositionSet = {
     val acctState = origAcctState.withInterpolatedAccounts
     val accounts = acctState.accounts
-    val children = accounts.filter(_.accountId.parentAccountId.getOrElse(AccountId(":na:")) == accountId).map(_.accountId)
-    val childBalances = children.foldLeft(PositionSet())(_ + convertedPosition(_, acctState, priceState, date, conversionStrategy))
-    val positions = childBalances + balances.getOrElse(accountId, PositionSet())
+//    val children = accounts
+//      .filter(_.accountId.parentAccountId.getOrElse(AccountId(":na:")) == accountId)
+//      .map(_.accountId)
+
+    val children = accounts
+      //.map(_.accountId)
+      .filter(_.accountId.isSubAccountOf(accountId))
+      .map(_.accountId)
+
+   val account = acctState.accountMap(accountId)
 
     // This can be extracted out to a strategy
-    val acctToPositionSet: (AccountCreation => PositionSet) = conversionStrategy match {
-      case "" | "parent" =>  acct =>
-        positions.convertTo(acct.key.assetId, priceState, date)
-      case "units" => acct =>
-        positions.convertTo(AssetId("NOVALIDUNIT"), priceState, date)
-      case ccy:String => acct =>
-        positions.convertToOneOf(Seq(AssetId(ccy),acct.key.assetId), priceState, date)
+    val acctToPositionSet: (AccountId => PositionSet) = acct => {
+      val positions = balances.get(acct).getOrElse(PositionSet() + Balance(zeroFraction, assetChainMap(acct).head))
+      conversionStrategy match {
+        case "" | "parent" =>
+          positions.convertViaChain(account.key.assetId, assetChainMap(acct), priceState, date)
+        case "units" =>
+          positions.convertViaChain(AssetId("NOVALIDUNIT"), assetChainMap(acct).takeRight(1), priceState, date)
+        case ccy: String =>
+          positions.convertViaChain(AssetId(ccy), assetChainMap(acct), priceState, date)
+      }
     }
 
-    val converted:PositionSet = acctState.accountMap.get(accountId)
-      //.map(acctToTgtCcy)
-      //.map(tgtCcy => { positions.convertTo(tgtCcy, priceState, date)})
-      .map(acctToPositionSet)
-      //.map(res => {println (s"${accountId} has ${res}"); res})
-      .getOrElse(positions)
-    converted
+    val res = children.foldLeft(PositionSet())(_ + acctToPositionSet(_))
+    res
   }
 
   def processTx(tx:Transaction) : BalanceReportState = {

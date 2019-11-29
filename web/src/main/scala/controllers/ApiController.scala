@@ -177,14 +177,14 @@ class ApiController (implicit val ec :ExecutionContext) extends ScalatraServlet 
               val balance = mypostings.foldLeft(PositionSet())(_ + _.value.get)
               balance*/
       val balanceReport = BalanceReport(myTxs)
-      balanceReport.getState.convertedPosition(accountId, bg.acctState, bg.priceState, cmd.date, conversionStrategy)
+      balanceReport.getState.convertedPosition(accountId, bg.acctState, bg.priceState, bg.assetChainMap, cmd.date, conversionStrategy)
     }
 
     val deltaFor : AccountCommand => PositionSet = {cmd =>
       val myTxs = txs.filter(_.origin == cmd)
       val state = new DailyBalance(bg.balanceState)
       val balanceReport = BalanceReport(myTxs)
-      balanceReport.getState.convertedPosition(accountId, bg.acctState, bg.priceState, cmd.date, conversionStrategy)
+      balanceReport.getState.convertedPosition(accountId, bg.acctState, bg.priceState, bg.assetChainMap, cmd.date, conversionStrategy)
     }
 
     val rows = commands.map(cmd => {
