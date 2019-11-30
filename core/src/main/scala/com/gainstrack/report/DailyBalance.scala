@@ -49,28 +49,15 @@ case class DailyBalance(balanceState: BalanceState, date: LocalDate = MaxDate) {
                         priceState: PriceState,
                         assetChainMap: AssetChainMap,
                         date:LocalDate,
-                        conversionStrategy:String,
-                        accountFilter:(AccountCreation=>Boolean) = _=>true
+                        conversionStrategy:String
                        ):PositionSet = {
     val acctState = origAcctState.withInterpolatedAccounts
     val accounts = acctState.accounts
     val thisCcy = acctState.accountMap.get(accountId).map(_.key.assetId).getOrElse(origAcctState.baseCurrency)
 
-    // This next line is slow in profiler and needs optimising
-    //val children: Set[AccountId] = accounts.filter(_.accountId.parentAccountId.getOrElse(AccountId(":na:")) == accountId).map(_.accountId)
-    // This is faster but out of date
-    //val children = acctState.childrenMap.get(accountId).getOrElse(Seq())
-    // This needs profiling
-    val children = accounts
-      //.map(_.accountId)
-      .filter(_.accountId.isSubAccountOf(accountId))
-      .filter(accountFilter)
-      .map(_.accountId)
-
     val acctToPosition: (AccountId=>PositionSet) = balanceState.getBalanceOpt(_, date).map(PositionSet() + _).getOrElse(PositionSet())
-    val convert = new BalanceConversion(conversionStrategy, thisCcy, acctToPosition, date)(acctState, priceState, assetChainMap)
-    val positions = children.foldLeft(PositionSet())(_ + convert.convert(_))
-    positions
+    val converter = new BalanceConversion(conversionStrategy, thisCcy, acctToPosition, date)(acctState, priceState, assetChainMap)
+    converter.convertTotal(accountId)
   }
 
 }

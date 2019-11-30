@@ -25,4 +25,17 @@ class BalanceConversion(
     converted
   }
 
+  def convert(accts:Set[AccountId]) : PositionSet = {
+    val positions = accts.foldLeft(PositionSet())(_ + this.convert(_))
+    positions
+  }
+
+  def convertTotal(accountId:AccountId) : PositionSet = {
+    val children = acctState.accounts
+      .filter(_.accountId.isSubAccountOf(accountId))
+      .map(_.accountId)
+
+    convert(children)
+  }
+
 }
