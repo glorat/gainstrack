@@ -67,22 +67,9 @@ case class DailyBalance(balanceState: BalanceState, date: LocalDate = MaxDate) {
       .filter(accountFilter)
       .map(_.accountId)
 
-    // This can be extracted out to a strategy
-    val acctToPositionSet: (AccountId => PositionSet) = conversionStrategy match {
-      case "" | "parent" =>  acct => {
-        balanceState.getPosition(acct, date, thisCcy, assetChainMap(acct), priceState)
-      }
-      case "units" => acct =>
-        // Tailing the chain means we stay at the leaf currency
-        balanceState.getPosition(acct, date, AssetId("NOVALIDUNIT"), assetChainMap(acct).takeRight(1), priceState)
-      case "global" => acct =>
-        balanceState.getPosition(acct, date, acctState.baseCurrency, assetChainMap(acct), priceState)
-      case ccy:String => acct =>
-        balanceState.getPosition(acct, date, AssetId(ccy), assetChainMap(acct), priceState)
-    }
-
-    val positions = children.foldLeft(PositionSet())(_ + acctToPositionSet(_))
-
+    val acctToPosition: (AccountId=>PositionSet) = balanceState.getBalanceOpt(_, date).map(PositionSet() + _).getOrElse(PositionSet())
+    val convert = new BalanceConversion(conversionStrategy, thisCcy, acctToPosition, date)(acctState, priceState, assetChainMap)
+    val positions = children.foldLeft(PositionSet())(_ + convert.convert(_))
     positions
   }
 
