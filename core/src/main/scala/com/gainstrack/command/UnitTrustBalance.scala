@@ -1,6 +1,7 @@
 package com.gainstrack.command
 
 import com.gainstrack.core._
+import com.gainstrack.report.AccountState
 
 /**
   * Unit trusts that continually reinvest your income into units
@@ -36,20 +37,39 @@ case class UnitTrustBalance(
   // Need a command post processing step to update this fact
   override def involvedAccounts: Set[AccountId] = Set(securityAccountId, incomeAccountId)
 
-  def toBeancountCommand(oldBalance:Balance) : BeancountCommand = {
+  def toBeancountCommand(oldBalance:Balance)(acctState:AccountState) : BeancountCommand = {
     if (security == oldBalance) {
       // No transaction just emit a price
       PriceObservation(date, security.ccy, price)
     }
     else {
-      toTransaction(oldBalance)
+      toTransaction(oldBalance, acctState)
     }
   }
 
-  def toTransaction(oldBalance:Balance) : Transaction = {
+  def toTransaction(oldBalance:Balance, acctState: AccountState) : Transaction = {
+    val account = acctState.find(accountId).getOrElse(throw new IllegalStateException(s"${accountId} does not exist for unit command"))
+
     val newUnits = security-oldBalance
     val unitIncrease : Posting = Posting(securityAccountId, newUnits, price )
-    val income:Posting = Posting(incomeAccountId, price * -newUnits.value)
+    val adjAccount = if ( (oldBalance.value.isZero || security.value.isZero) ) {
+      // Trading to/from a zero means we should obtain funding, rather than make money
+      if (account.options.multiAsset && !account.options.automaticReinvestment) {
+        // Fund from self
+        // TODO: Convert below to use a Transfer, rather than self manage here
+        accountId.subAccount(price.ccy.symbol)
+      }
+      else {
+        // which is probably from an asset, rather than income
+        // TODO: account.options.fundingAccount.get
+        incomeAccountId
+      }
+
+    }
+    else {
+      incomeAccountId
+    }
+    val income:Posting = Posting(adjAccount, price * -newUnits.value)
     Transaction(date, description, Seq(unitIncrease, income), this)
   }
 

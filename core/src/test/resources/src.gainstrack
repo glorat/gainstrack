@@ -16,6 +16,7 @@ option "operating_currency" "GBP"
 2010-01-01 open Assets:Investment:Zurich GBP
 2010-01-01 open Assets:Investment:OldMutual GBP
     multiAsset: true
+
 2014-01-04 adj Assets:Bank:Nationwide 25613.71 GBP Equity:Opening
 ;"2018-07-31 adj Assets:Bank:Nationwide 57721.15 GBP Equity:Opening
 

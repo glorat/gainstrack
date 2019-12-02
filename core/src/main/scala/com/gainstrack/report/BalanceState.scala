@@ -82,7 +82,7 @@ case class BalanceState(acctState:AccountState, balances:Map[AccountId,BalanceSt
 
   private def process(e:UnitTrustBalance) : BalanceState = {
     val oldBalance :Fraction = balances(e.securityAccountId).series.lastOption.map(_._2).getOrElse(zeroFraction)
-    val tx = e.toTransaction(Balance(oldBalance, e.security.ccy))
+    val tx = e.toTransaction(Balance(oldBalance, e.security.ccy), acctState)
     process(tx)
   }
 
