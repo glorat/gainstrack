@@ -142,7 +142,10 @@ class ApiController (implicit val ec :ExecutionContext) extends ScalatraServlet 
     bg.acctState.accountMap.get(accountId).map(account => {
       val accountReport = new AccountInvestmentReport(accountId, account.key.assetId, fromDate,  toDate, bg.acctState, bg.balanceState, bg.txState, bg.priceState, bg.assetChainMap)
       val cfs = accountReport.cashflowTable.sorted
-      TimeSeries(accountId, cfs.map(_.value.ccy.symbol), cfs.map(_.date.toString), cfs.map(_.value.value.toDouble.toString), cfs.map(_.source.toString))
+      TimeSeries(accountId, cfs.map(_.value.ccy.symbol), cfs.map(_.date.toString),
+        cfs.map(_.value.value.toDouble.formatted("%.2f")),
+        Some(cfs.map(_.convertedValue.get.value.toDouble.formatted("%.2f"))),
+        cfs.map(_.source.toString))
     }).getOrElse(NotFound(s"${accountId} account not found"))
   }
 

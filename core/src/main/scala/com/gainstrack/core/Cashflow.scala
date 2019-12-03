@@ -2,18 +2,18 @@ package com.gainstrack.core
 
 import java.time.temporal.ChronoUnit
 
-case class Cashflow(date:LocalDate, value:Balance, source:AccountId) {
+case class Cashflow(date:LocalDate, value:Balance, source:AccountId, convertedValue:Option[Balance]=None) {
   def pv(baseDate:LocalDate, discountRate:Double) = {
     val days = ChronoUnit.DAYS.between(baseDate, date)
     val dcf = days/365.0 // Using Act365 for simplicity
-    val cfpv = value.value.toDouble/Math.pow(1+discountRate, dcf)
+    val cfpv = convertedValue.get.value.toDouble/Math.pow(1+discountRate, dcf)
     cfpv
   }
 
   def pv01(baseDate:LocalDate, rate:Double):Double = {
     val days = ChronoUnit.DAYS.between(baseDate, date)
     val dcf = days/365.0 // Using Act365 for simplicity
-    val amount = value.value.toDouble
+    val amount = convertedValue.get.value.toDouble
 
     if (dcf == 0)  0
     else if (-1 < rate)  -dcf * amount / Math.pow(1 + rate, dcf + 1)
@@ -40,7 +40,7 @@ case class CashflowTable(cashflows:Seq[Cashflow]) {
   }
 
   def irr : Double = {
-    require(cashflows.exists(_.value.ccy != cashflows.head.value.ccy) == false, "IRR calc requires all cashflows to have same ccy")
+    require(cashflows.exists(_.convertedValue.get.ccy != cashflows.head.convertedValue.get.ccy) == false, "IRR calc requires all cashflows to have same ccy")
     newtonRaphson(r => npv(r), r=>delta(r), 0.01, 0.000001, 25)
   }
 

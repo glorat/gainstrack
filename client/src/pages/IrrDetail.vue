@@ -7,6 +7,7 @@
                 <th data-sort="string">account</th>
                 <th data-sort="num">date</th>
                 <th data-sort="num">value</th>
+                <th data-sort="num">cvalue</th>
                 <th data-sort="string">source</th>
             </tr>
             </thead>
@@ -17,6 +18,8 @@
                 </td>
                 <td class="string">{{ date }}</td>
                 <td class="num" v-bind:data-sort-value="detail.values[index]">{{ detail.values[index]}} {{ detail.units[index]}}</td>
+                <td class="num" v-bind:data-sort-value="detail.cvalues[index]">{{ detail.cvalues[index]}}</td>
+
                 <td class="string">{{ detail.description[index] }}</td>
             </tr>
             </tbody>

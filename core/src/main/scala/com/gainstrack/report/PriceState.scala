@@ -21,7 +21,8 @@ case class PriceState(ccys:Set[AssetId], prices:Map[AssetPair, SortedMap[LocalDa
       key.str,
       keys.map(_ => key.fx2), // All same unit
       prices(key).keys.map(_.toString).toSeq,
-      prices(key).values.map(_.toDouble.formatted("%.2f")).toSeq
+      prices(key).values.map(_.toDouble.formatted("%.2f")).toSeq,
+      None
     ))
   }
 
