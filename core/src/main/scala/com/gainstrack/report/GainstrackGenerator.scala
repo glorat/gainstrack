@@ -30,7 +30,7 @@ case class GainstrackGenerator(originalCommands:SortedSet[AccountCommand])  {
   val dailyBalances = new DailyBalance(balanceState)
 
   val txState:TransactionState =
-    finalCommands.foldLeft(TransactionState(acctState.accounts, balanceState, Seq())) ((state, ev) => state.handle(ev))
+    finalCommands.foldLeft(TransactionState(acctState, balanceState, Seq())) ((state, ev) => state.handle(ev))
   lazy val priceState: PriceState =
     finalCommands.foldLeft(PriceState())((state, ev) => state.handle(ev))
   val assetState: AssetState =

@@ -1,6 +1,7 @@
 package com.gainstrack.command
 
 import com.gainstrack.core._
+import com.gainstrack.report.AccountState
 
 /**
   * Unit trusts that continually reinvest your income into units
@@ -36,21 +37,53 @@ case class UnitTrustBalance(
   // Need a command post processing step to update this fact
   override def involvedAccounts: Set[AccountId] = Set(securityAccountId, incomeAccountId)
 
-  def toBeancountCommand(oldBalance:Balance) : BeancountCommand = {
+  def toBeancountCommand(oldBalance:Balance)(acctState:AccountState) : BeancountCommand = {
     if (security == oldBalance) {
       // No transaction just emit a price
       PriceObservation(date, security.ccy, price)
     }
     else {
-      toTransaction(oldBalance)
+      toTransaction(oldBalance, acctState).get
     }
   }
 
-  def toTransaction(oldBalance:Balance) : Transaction = {
+  def toTransaction(oldBalance:Balance, acctState: AccountState) : Option[Transaction] = {
+    val account = acctState.find(accountId).getOrElse(throw new IllegalStateException(s"${accountId} does not exist for unit command"))
+
     val newUnits = security-oldBalance
     val unitIncrease : Posting = Posting(securityAccountId, newUnits, price )
-    val income:Posting = Posting(incomeAccountId, price * -newUnits.value)
-    Transaction(date, description, Seq(unitIncrease, income), this)
+    val adjAccount = if ( (oldBalance.value.isZero || security.value.isZero) ) {
+      // Trading to/from a zero means we should obtain funding, rather than make money
+      if (account.options.multiAsset && !account.options.automaticReinvestment) {
+        // Fund from self
+        accountId
+      }
+      else if (account.options.multiAsset && account.options.automaticReinvestment) {
+        // for automaticReinvestment, we pull from income account
+        incomeAccountId
+      }
+      else {
+        // Semantics TBD but let's stick with the safe choice for now
+        // account.options.fundingAccount.getOrElse(incomeAccountId)
+        incomeAccountId
+      }
+
+    }
+    else {
+      incomeAccountId
+    }
+
+    if (newUnits.value.isZero) {
+      None
+    }
+    else {
+      val tfr = Transfer(adjAccount, accountId, date, price * newUnits.value, newUnits, description)
+      Some(tfr.toTransfers(acctState.accounts).head.toTransaction)
+    }
+
+
+    //val income:Posting = Posting(adjAccount, price * -newUnits.value)
+    //Transaction(date, description, Seq(unitIncrease, income), this)
   }
 
   def createRequiredAccounts(baseAcct:AccountCreation) : Seq[AccountCreation] = {

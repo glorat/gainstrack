@@ -300,13 +300,13 @@ class First extends FlatSpec {
 
     // GBP is the operating currency
     assert(bg.acctState.baseCurrency.symbol == "GBP")
-    testMe("Assets:Investment", "GBP", 485444)
-    testMe("Assets", "GBP", 677373)
+    testMe("Assets:Investment", "GBP", 433653)
+    testMe("Assets", "GBP", 625582)
 
     val testMe2:(String, String, Int)=>Unit = testMeStrategy("GBP")
 
     testMe2("Assets:Investment:IBUSD:USD", "GBP", 135)
-    testMe2("Assets", "GBP", 677373)
+    testMe2("Assets", "GBP", 625582)
 
     val testMe3 = testMeStrategy("units")
     testMe3("Assets:Investment:IBUSD", "USD", 172)
@@ -314,7 +314,7 @@ class First extends FlatSpec {
     // This additional test is needed for a non-base ccy conversion
     val testMe4 = testMeStrategy("USD")
     testMe4("Assets:Investment:IBUSD", "USD", 34960)
-    testMe4("Assets", "USD", 863785)
+    testMe4("Assets", "USD", 797742)
   }
 
 
