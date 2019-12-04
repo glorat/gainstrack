@@ -12,6 +12,7 @@ object JettyLauncher { // this is my entry object as specified in sbt project de
     context setContextPath "/"
     context.setResourceBase("src/main/webapp")
     context.addEventListener(new ScalatraListener)
+    context.getSessionHandler.setMaxInactiveInterval(12*60*60) // 12 hour sessions
     context.addServlet(classOf[DefaultServlet], "/")
 
     server.setHandler(context)
