@@ -5,7 +5,7 @@ import com.gainstrack.core._
 import net.glorat.cqrs.{AggregateRootState, DomainEvent}
 
 
-case class TransactionState(accounts:Set[AccountCreation], balanceState:BalanceState, cmds:Seq[BeancountCommand], lastId:Int=0)
+case class TransactionState(acctState:AccountState, balanceState:BalanceState, cmds:Seq[BeancountCommand], lastId:Int=0)
   extends AggregateRootState {
 
   def handle(e: DomainEvent): TransactionState = {
@@ -36,21 +36,21 @@ case class TransactionState(accounts:Set[AccountCreation], balanceState:BalanceS
 
   private def process(e:SecurityPurchase): TransactionState = {
     var newLines : Seq[String] = Seq()
-    val baseAcct = accounts.find(x => x.name == e.accountId).getOrElse(throw new IllegalStateException(s"${e.accountId} is not an open account"))
+    val baseAcct = acctState.find(e.accountId).getOrElse(throw new IllegalStateException(s"${e.accountId} is not an open account"))
 
     this.withNewCmds(Seq(e.toTransaction))
   }
 
   private def process(e:UnitTrustBalance):TransactionState = {
-    val baseAcct = accounts.find(x => x.name == e.accountId).getOrElse(throw new IllegalStateException(s"${e.accountId} is not an open account"))
+    val baseAcct = acctState.find(e.accountId).getOrElse(throw new IllegalStateException(s"${e.accountId} is not an open account"))
     // FIXME: Wrong account
     val oldBalance = balanceState.getAccountValue(e.securityAccountId, e.date.minusDays(1))
-    this.withNewCmds(Seq(e.toBeancountCommand(Balance(oldBalance, e.security.ccy))))
+    this.withNewCmds(Seq(e.toBeancountCommand(Balance(oldBalance, e.security.ccy))(acctState)))
   }
 
   private def process(e:BalanceAdjustment):TransactionState = {
 
-    this.withNewCmds(e.toBeancounts(balanceState, accounts))
+    this.withNewCmds(e.toBeancounts(balanceState, acctState.accounts))
   }
 
   private def withNewCmds(newCmds:Seq[BeancountCommand]) : TransactionState = {
