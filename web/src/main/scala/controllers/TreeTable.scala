@@ -20,13 +20,13 @@ class BalanceTreeTable(
                         date:LocalDate,
                         balanceReport:DailyBalance,
                         conversionStrategy:String,
-                        accountFilter: AccountCreation=>Boolean = _=>true
+                        accountFilter: AccountCreation=>Boolean
                       ) {
   val allAcctState = acctState.withInterpolatedAccounts
 
 
   def toTreeTable(acctId: AccountId):TreeTableDTO = {
-    val balance = balanceReport.convertedPosition(acctId, acctState, priceState, assetChainMap, date, conversionStrategy)
+    val balance = balanceReport.convertedPosition(acctId, acctState, priceState, assetChainMap, date, conversionStrategy, accountFilter)
 
     // TODO: Sort the sequence alphabetically
     TreeTableDTO(acctId.toString, acctId.shortName,

@@ -85,7 +85,8 @@ class ApiController (implicit val ec :ExecutionContext) extends ScalatraServlet 
     val conversionStrategy = session.get("conversion").map(_.toString).getOrElse("parent")
 
     val toDate = currentDate
-    val treeTable = new BalanceTreeTable(bg.acctState, bg.priceState, bg.assetChainMap, toDate, bg.dailyBalances, conversionStrategy)
+    val treeTable = new BalanceTreeTable(bg.acctState, bg.priceState, bg.assetChainMap, toDate, bg.dailyBalances,
+      conversionStrategy, _=>true)
 
     keys.map(key => key -> treeTable.toTreeTable(AccountId(key))).toMap
   }

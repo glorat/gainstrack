@@ -49,8 +49,7 @@ case class BalanceReportState(balances:Map[AccountId, PositionSet]) {
 
     val fn:AccountId=>PositionSet = balances.get(_).getOrElse(PositionSet())
     val balanceConversion = new BalanceConversion(conversionStrategy, account.key.assetId, fn, date)(acctState, priceState, assetChainMap)
-
-    balanceConversion.convertTotal(accountId)
+    balanceConversion.convertTotal(accountId, _=>true)
   }
 
   def processTx(tx:Transaction) : BalanceReportState = {

@@ -30,9 +30,10 @@ class BalanceConversion(
     positions
   }
 
-  def convertTotal(accountId:AccountId) : PositionSet = {
+  def convertTotal(accountId:AccountId, accountFilter:(AccountCreation=>Boolean)) : PositionSet = {
     val children = acctState.accounts
       .filter(_.accountId.isSubAccountOf(accountId))
+      .filter(accountFilter)
       .map(_.accountId)
 
     convert(children)

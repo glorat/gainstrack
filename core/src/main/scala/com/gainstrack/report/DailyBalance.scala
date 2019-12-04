@@ -49,7 +49,8 @@ case class DailyBalance(balanceState: BalanceState, date: LocalDate = MaxDate) {
                         priceState: PriceState,
                         assetChainMap: AssetChainMap,
                         date:LocalDate,
-                        conversionStrategy:String
+                        conversionStrategy:String,
+                        accountFilter: (AccountCreation=>Boolean) = _=>true
                        ):PositionSet = {
     val acctState = origAcctState.withInterpolatedAccounts
     val accounts = acctState.accounts
@@ -57,7 +58,7 @@ case class DailyBalance(balanceState: BalanceState, date: LocalDate = MaxDate) {
 
     val acctToPosition: (AccountId=>PositionSet) = balanceState.getBalanceOpt(_, date).map(PositionSet() + _).getOrElse(PositionSet())
     val converter = new BalanceConversion(conversionStrategy, thisCcy, acctToPosition, date)(acctState, priceState, assetChainMap)
-    converter.convertTotal(accountId)
+    converter.convertTotal(accountId, accountFilter)
   }
 
 }
