@@ -78,7 +78,7 @@ case class UnitTrustBalance(
     }
     else {
       val tfr = Transfer(adjAccount, accountId, date, price * newUnits.value, newUnits, description)
-      Some(tfr.toTransfers(acctState.accounts).head.toTransaction)
+      Some(tfr.toTransfers(acctState.accounts).head.toTransaction.copy(origin = this))
     }
 
 
