@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div v-html="rendered">
         <h2>Welcome to gainstrack</h2>
         <h3>Why gainstrack?</h3>
         <p>
@@ -12,8 +12,28 @@
 </template>
 
 <script>
+    import axios from 'axios';
+    import marked from 'marked';
+
     export default {
-        name: 'Help'
+        name: 'Help',
+        data() {
+            return {
+                content: 'Loading...'
+            }
+        },
+        computed: {
+            rendered() {
+                return marked(this.content)
+            }
+        },
+        mounted() {
+            axios.get('/welcome.md')
+                .then(response => {
+                    this.content = response.data;
+                })
+                .catch(error => this.content = error.message);
+        }
     }
 </script>
 
