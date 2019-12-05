@@ -15,6 +15,7 @@
     "core-js": "^2.6.5",
     "element-ui": "^2.12.0",
     "lodash": "latest",
+    "marked": "^0.7.0",
     "numeral": "^2.0.6",
     "vue": "^2.6.10",
     "vue-apexcharts": "^1.5.1",
