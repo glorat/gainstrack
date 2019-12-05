@@ -1,7 +1,7 @@
 <template>
     <div>
         <div>
-            <account-graph accountId="Assets"></account-graph>
+            <account-graph :key="conversion" accountId="Assets"></account-graph>
         </div>
         <div>
             <conversion-select></conversion-select>
@@ -35,7 +35,10 @@
         computed: {
             info() {
                 return this.$store.state.balances
-            }
+            },
+            conversion() {
+                return this.$store.state.summary.conversion;
+            },
         },
         mounted() {
             this.$store.dispatch('balances')
