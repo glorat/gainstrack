@@ -8,17 +8,17 @@ case class PositionSet(assetBalance:Map[AssetId, Fraction]) {
     assetBalance.keys.map(getBalance(_).toDTO).toSeq
   }
 
-  def getBalance(ccy:AssetId) : Balance = {
+  def getBalance(ccy:AssetId) : Amount = {
     val f =assetBalance.get(ccy).getOrElse(zeroFraction)
-    Balance(f, ccy)
+    Amount(f, ccy)
   }
 
   def convertTo(tgtCcy: AssetId, priceState: PriceState, date:LocalDate): PositionSet = {
     def convertEntry(ps:PositionSet, entry:(AssetId, Fraction)) = {
       val toAdd = priceState.getFX(AssetPair(entry._1, tgtCcy), date)
         .map(_ * entry._2)
-        .map(Balance(_, tgtCcy))
-        .getOrElse(Balance(entry._2, entry._1)) // Unconverted value if no fx
+        .map(Amount(_, tgtCcy))
+        .getOrElse(Amount(entry._2, entry._1)) // Unconverted value if no fx
       /*if (entry._1 != tgtCcy) {
         println(s"Adding ${toAdd} from ${entry._1} to ${tgtCcy.symbol}")
       }*/
@@ -32,8 +32,8 @@ case class PositionSet(assetBalance:Map[AssetId, Fraction]) {
       val tgtCcy = tgtCcys.find(tgtCcy => priceState.getFX(AssetPair(entry._1, tgtCcy), date).isDefined).getOrElse(tgtCcys.last)
       val toAdd = priceState.getFX(AssetPair(entry._1, tgtCcy), date)
         .map(_ * entry._2)
-        .map(Balance(_, tgtCcy))
-        .getOrElse(Balance(entry._2, entry._1)) // Unconverted value if no fx
+        .map(Amount(_, tgtCcy))
+        .getOrElse(Amount(entry._2, entry._1)) // Unconverted value if no fx
       ps + toAdd
     }
     assetBalance.foldLeft(PositionSet())(convertEntry)
@@ -54,13 +54,13 @@ case class PositionSet(assetBalance:Map[AssetId, Fraction]) {
     }
   }
 
-  def +(rhs: Balance): PositionSet = {
-    val newVal = assetBalance.getOrElse(rhs.ccy, zeroFraction) + rhs.value
+  def +(rhs: Amount): PositionSet = {
+    val newVal = assetBalance.getOrElse(rhs.ccy, zeroFraction) + rhs.number
     copy(assetBalance = assetBalance.updated(rhs.ccy, newVal))
   }
 
-  def -(rhs: Balance): PositionSet = {
-    val newVal = assetBalance.getOrElse(rhs.ccy, zeroFraction) - rhs.value
+  def -(rhs: Amount): PositionSet = {
+    val newVal = assetBalance.getOrElse(rhs.ccy, zeroFraction) - rhs.number
     copy(assetBalance = assetBalance.updated(rhs.ccy, newVal))
   }
 

@@ -24,23 +24,23 @@ case class BalanceState(acctState:AccountState, balances:Map[AccountId,BalanceSt
     getAccountValueOpt(account, date).getOrElse(zeroFraction)
   }
 
-  def getBalanceOpt(account: AccountId, date: LocalDate): Option[Balance] = {
+  def getBalanceOpt(account: AccountId, date: LocalDate): Option[Amount] = {
     balances.get(account).map(entry => {
       val ccy = entry.ccy
       val ret: Fraction = interp.getValue(entry.series, date)(TimeSeriesInterpolator.step)
         .map(f => f.limitDenominatorTo(SafeLong(1000000)))
         .getOrElse(zeroFraction)
-      Balance(ret, ccy)
+      Amount(ret, ccy)
     })
   }
 
-  def getBalance(account: AccountId, date: LocalDate): Balance = {
+  def getBalance(account: AccountId, date: LocalDate): Amount = {
     val ccy = balances(account).ccy
-    Balance(getBalanceOpt(account, date).map(_.value).getOrElse(zeroFraction), ccy)
+    Amount(getBalanceOpt(account, date).map(_.number).getOrElse(zeroFraction), ccy)
   }
 
   def getPosition(account:AccountId, date: LocalDate, tgtCcy:AssetId, ccyChain:Seq[AssetId], priceState:PriceState) : PositionSet = {
-    var balance = getBalanceOpt(account, date).getOrElse(Balance(zeroFraction, ccyChain.head))
+    var balance = getBalanceOpt(account, date).getOrElse(Amount(zeroFraction, ccyChain.head))
     // Developer assertion. Can be disabled at runtime
     // require(ccyChain.head == accounts.find(x => x.name == account).get.key.assetId)
     val pos = PositionSet() +  balance
@@ -82,7 +82,7 @@ case class BalanceState(acctState:AccountState, balances:Map[AccountId,BalanceSt
 
   private def process(e:UnitTrustBalance) : BalanceState = {
     val oldBalance :Fraction = balances(e.securityAccountId).series.lastOption.map(_._2).getOrElse(zeroFraction)
-    val tx = e.toTransaction(Balance(oldBalance, e.security.ccy), acctState)
+    val tx = e.toTransaction(Amount(oldBalance, e.security.ccy), acctState)
     tx.map(process(_)).getOrElse(this)
   }
 
@@ -94,7 +94,7 @@ case class BalanceState(acctState:AccountState, balances:Map[AccountId,BalanceSt
     // val origEntry = balances(e.accountId) // This doesn't work due to multiAsset support
     val origEntry = balances(dest)
 
-    val newSeries = origEntry.series.updated(e.date, e.balance.value)
+    val newSeries = origEntry.series.updated(e.date, e.balance.number)
     copy(balances = balances.updated(dest, origEntry.copy(series = newSeries)))
   }
 
@@ -106,7 +106,7 @@ case class BalanceState(acctState:AccountState, balances:Map[AccountId,BalanceSt
       val origEntry = bs(p.account)
       val latestBalance = origEntry.series.lastOption.getOrElse(MinDate->zeroFraction)._2
       // TODO: Unit check?
-      val newBalance : Fraction=  p.value.get.value + latestBalance
+      val newBalance : Fraction=  p.value.get.number + latestBalance
       val series : Series = origEntry.series.updated(tx.postDate, newBalance)
       val newbs = bs.updated(p.account, origEntry.copy(series = series))
       newbs

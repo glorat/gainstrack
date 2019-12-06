@@ -2,7 +2,7 @@ package com.gainstrack.command
 
 import com.gainstrack.core._
 
-case class EarnCommand(date:LocalDate, incomeTag:String, value:Balance, targetAccountIdOpt:Option[AccountId] = None) extends CommandNeedsAccounts {
+case class EarnCommand(date:LocalDate, incomeTag:String, value:Amount, targetAccountIdOpt:Option[AccountId] = None) extends CommandNeedsAccounts {
   val incomeAccountId = AccountId(s"Income:${incomeTag}:${value.ccy.symbol}")
 
   override def commandString: String = EarnCommand.prefix

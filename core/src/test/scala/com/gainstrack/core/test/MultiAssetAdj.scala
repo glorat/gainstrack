@@ -22,9 +22,9 @@ class MultiAssetAdj extends FlatSpec {
 
   it should "handle success adjustments to different levels" in {
     val acctId = AccountId("Assets:Bank:CAD")
-    assert (bg.balanceState.getBalance(acctId, parseDate("2010-10-31")).value.round == 0.0)
-    assert (bg.balanceState.getBalance(acctId, parseDate("2017-11-01")).value.round == 1500)
-    assert (bg.balanceState.getBalance(acctId, parseDate("2019-11-01")).value.round == 10000)
+    assert (bg.balanceState.getBalance(acctId, parseDate("2010-10-31")).number.round == 0.0)
+    assert (bg.balanceState.getBalance(acctId, parseDate("2017-11-01")).number.round == 1500)
+    assert (bg.balanceState.getBalance(acctId, parseDate("2019-11-01")).number.round == 10000)
   }
 
   it should "generate valid beancount" in {

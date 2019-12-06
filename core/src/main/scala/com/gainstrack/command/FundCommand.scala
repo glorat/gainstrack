@@ -2,7 +2,7 @@ package com.gainstrack.command
 
 import com.gainstrack.core._
 
-case class FundCommand(date:LocalDate, targetAccountId:AccountId, balance:Balance, sourceAccountIdOpt:Option[AccountId] = None) extends CommandNeedsAccounts {
+case class FundCommand(date:LocalDate, targetAccountId:AccountId, balance:Amount, sourceAccountIdOpt:Option[AccountId] = None) extends CommandNeedsAccounts {
   override def description: String = s"Fund ${targetAccountId} ${balance}"
 
   override def mainAccount: Option[AccountId] = Some(targetAccountId)
@@ -41,8 +41,8 @@ object FundCommand extends CommandParser {
   private val Fund = s"${datePattern} ${prefix} ${acctPattern} ${acctPattern} ${balanceMatch}".r
   override def parse(str: String): AccountCommand = {
     str match {
-      case SimpleFund(dateStr, tgtAcct, balanceStr) => FundCommand(parseDate(dateStr), AccountId(tgtAcct), Balance.parse(balanceStr), None)
-      case Fund(dateStr, tgtAcct, fundAcct, balanceStr) => FundCommand(parseDate(dateStr), AccountId(tgtAcct), Balance.parse(balanceStr), Some(AccountId(fundAcct)))
+      case SimpleFund(dateStr, tgtAcct, balanceStr) => FundCommand(parseDate(dateStr), AccountId(tgtAcct), Amount.parse(balanceStr), None)
+      case Fund(dateStr, tgtAcct, fundAcct, balanceStr) => FundCommand(parseDate(dateStr), AccountId(tgtAcct), Amount.parse(balanceStr), Some(AccountId(fundAcct)))
     }
   }
 

@@ -7,8 +7,8 @@ case class Transfer(
                      source: AccountId,
                      dest: AccountId,
                      date: LocalDate,
-                     sourceValue: Balance,
-                     targetValue: Balance,
+                     sourceValue: Amount,
+                     targetValue: Amount,
                      description:String
                    ) extends CommandNeedsAccounts {
   def accountId : AccountId = source // Source is where the action was triggered!
@@ -17,11 +17,11 @@ case class Transfer(
   override def involvedAccounts: Set[AccountId] = Set(source, dest)
 
   if (sourceValue.ccy == targetValue.ccy) {
-    require(sourceValue.value == targetValue.value, "Single transfer amount must match (until fees supported")
+    require(sourceValue.number == targetValue.number, "Single transfer amount must match (until fees supported")
   }
 
   def fxRate:Fraction = {
-    targetValue.value/sourceValue.value
+    targetValue.number/sourceValue.number
   }
 
   // FIXME: This is a slightly confusing method to have!!! Fund usages to see the danger
@@ -48,7 +48,7 @@ case class Transfer(
   def toTransaction : Transaction = {
     Transaction(date, description, Seq(
       Posting(source, -sourceValue),
-      Posting(dest, targetValue, Balance(1/fxRate,sourceValue.ccy))
+      Posting(dest, targetValue, Amount(1/fxRate,sourceValue.ccy))
     ), this)
 
 //  def toTransaction : Transaction = {
@@ -72,10 +72,10 @@ object Transfer extends CommandParser {
   private val FxTransfer =s"${datePattern} ${prefix} ${acctPattern} ${acctPattern} ${balanceRe} ${balanceRe}".r
   private val SimpleTransfer = s"${datePattern} ${prefix} ${acctPattern} ${acctPattern} ${balanceRe}".r
 
-  def apply(source:AccountId, dest:AccountId, date:LocalDate, sourceValue:Balance, targetValue:Balance ):Transfer = {
-    require(targetValue.value != zeroFraction)
-    require(sourceValue.value != zeroFraction)
-    val fxRate = targetValue.value/sourceValue.value
+  def apply(source:AccountId, dest:AccountId, date:LocalDate, sourceValue:Amount, targetValue:Amount ):Transfer = {
+    require(targetValue.number != zeroFraction)
+    require(sourceValue.number != zeroFraction)
+    val fxRate = targetValue.number/sourceValue.number
     val fxDescription = if (sourceValue.ccy == targetValue.ccy) "" else s"@${1/fxRate.toDouble}"
     val description:String = s"Transfer ${sourceValue} ${source} -> ${dest}" + fxDescription
     Transfer(source, dest, date, sourceValue, targetValue, description)

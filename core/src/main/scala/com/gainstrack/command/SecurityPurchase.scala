@@ -5,9 +5,9 @@ import com.gainstrack.core._
 case class SecurityPurchase(
                              accountId: AccountId,
                              date:LocalDate,
-                             security:Balance,
-                             price:Balance,
-                             commission:Balance
+                             security:Amount,
+                             price:Amount,
+                             commission:Amount
                            ) extends AccountCommand {
 
   // Auto-gen the account name
@@ -24,7 +24,7 @@ case class SecurityPurchase(
   override def commandString: String = SecurityPurchase.prefix
 
   def description : String = {
-    val buysell = if (security.value>0) "BUY" else "SELL"
+    val buysell = if (security.number>0) "BUY" else "SELL"
     s"${buysell} ${security} @${price}"
   }
 
@@ -42,13 +42,13 @@ case class SecurityPurchase(
   }
 
   def toTransaction : Transaction = {
-    val expense = (-price*security.value - commission)
+    val expense = (-price*security.number - commission)
 
     var postings = Seq(
       Posting(cashAccountId, expense),
       Posting(securityAccountId, security, price)
     )
-    if (commission.value != zeroFraction) {
+    if (commission.number != zeroFraction) {
       // TODO: currency match check?
       postings = postings :+ Posting(expenseAcctId, commission)
     }
@@ -58,7 +58,7 @@ case class SecurityPurchase(
 
   override def toGainstrack: Seq[String] = {
     val baseStr = s"${date} trade ${accountId.toGainstrack} ${security} @${price}"
-    Seq(baseStr + (if (commission.value==zeroFraction) "" else s" C${commission}"))
+    Seq(baseStr + (if (commission.number==zeroFraction) "" else s" C${commission}"))
   }
 }
 
@@ -74,16 +74,16 @@ object SecurityPurchase extends CommandParser {
 
   def apply(acct: AccountId,
             date:LocalDate,
-            security:Balance,
-            cost:Balance) : SecurityPurchase = {
-    apply(acct, date, security, cost, Balance(0, cost.ccy))
+            security:Amount,
+            cost:Amount) : SecurityPurchase = {
+    apply(acct, date, security, cost, Amount(0, cost.ccy))
   }
 
   def parse(str:String):SecurityPurchase = {
     str match {
       case PurchaseWithCommision(date, acct, security, cost, commission) =>
-        SecurityPurchase(AccountId(acct), parseDate(date), Balance.parse(security), cost, Balance.parse(commission))
-      case Purchase(date, acct, security, cost) => SecurityPurchase(AccountId(acct), parseDate(date), Balance.parse(security), cost)
+        SecurityPurchase(AccountId(acct), parseDate(date), Amount.parse(security), cost, Amount.parse(commission))
+      case Purchase(date, acct, security, cost) => SecurityPurchase(AccountId(acct), parseDate(date), Amount.parse(security), cost)
     }
   }
 

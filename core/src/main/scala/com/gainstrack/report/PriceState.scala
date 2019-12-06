@@ -46,7 +46,7 @@ case class PriceState(ccys:Set[AssetId], prices:Map[AssetPair, SortedMap[LocalDa
 
   def process(e: Transfer): PriceState = {
     if (e.sourceValue.ccy != e.targetValue.ccy) {
-      val price = e.sourceValue / e.targetValue.value
+      val price = e.sourceValue / e.targetValue.number
       this.withNewPrice(e.date, price, e.targetValue.ccy)
      }
     else {
@@ -68,12 +68,12 @@ case class PriceState(ccys:Set[AssetId], prices:Map[AssetPair, SortedMap[LocalDa
     this.withNewPrice(e.date, e.price, e.assetId)
   }
 
-  private def withNewPrice(date:LocalDate, price:Balance, tgt:AssetId) : PriceState = {
+  private def withNewPrice(date:LocalDate, price:Amount, tgt:AssetId) : PriceState = {
     require(tgt != price.ccy)
     val fx1 = AssetPair(tgt,price.ccy)
     val fx2 = AssetPair(price.ccy, tgt)
-    val newByDate = prices.getOrElse(fx1,SortedMap()).updated(date, price.value)
-    val new2ByDate = prices.getOrElse(fx2, SortedMap()).updated(date, 1/price.value)
+    val newByDate = prices.getOrElse(fx1,SortedMap()).updated(date, price.number)
+    val new2ByDate = prices.getOrElse(fx2, SortedMap()).updated(date, 1/price.number)
     val newCcys = this.ccys + price.ccy + tgt
     copy(ccys = newCcys, prices = prices.updated(fx1, newByDate).updated(fx2, new2ByDate))
   }

@@ -5,8 +5,8 @@ import org.scalatest.FlatSpec
 
 class TestPositionSet extends FlatSpec {
   val empty = PositionSet()
-  val someUsd = Balance.parse("10 USD")
-  val someGbp = Balance.parse("6 GBP")
+  val someUsd = Amount.parse("10 USD")
+  val someGbp = Amount.parse("6 GBP")
   "PositionSet" should "add balances" in {
     val more = empty+someUsd+someGbp
     val expected: Map[AssetId, Fraction]  = Map(AssetId("GBP")->6, AssetId("USD")->10)

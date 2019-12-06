@@ -1,7 +1,7 @@
 package com.gainstrack.report
 
 import com.gainstrack.command.AccountCreation
-import com.gainstrack.core.{AccountId, AssetId, Balance, LocalDate, PositionSet, zeroFraction}
+import com.gainstrack.core.{AccountId, AssetId, Amount, LocalDate, PositionSet, zeroFraction}
 
 class BalanceConversion(
                          conversionStrategy: String,

@@ -13,23 +13,23 @@ class AccountInvestmentReport(accountId: AccountId, ccy:AssetId, fromDate:LocalD
 
   // Take just the final equity balance as positive
   val allAccounts = acctState.accounts.filter(a => a.accountId.isSubAccountOf(accountId))
-  val initBalance = Balance(zeroFraction, ccy)
+  val initBalance = Amount(zeroFraction, ccy)
 
-  val startBalance: Balance = allAccounts.foldLeft(initBalance)((total, account) => {
+  val startBalance: Amount = allAccounts.foldLeft(initBalance)((total, account) => {
     val b = balanceState.getAccountValue(account.accountId, fromDate)
     // FX this into parent ccy
     val fx = priceState.getFX(AssetPair(account.key.assetId, ccy), firstDate).getOrElse(throw new Exception(s"Missing FX for ${account.key.assetId.symbol}/${ccy.symbol}"))
     -(total + b * fx)
   })
 
-  val endBalance: Balance = allAccounts.foldLeft(initBalance)((total, account) => {
+  val endBalance: Amount = allAccounts.foldLeft(initBalance)((total, account) => {
     val b = balanceState.getAccountValue(account.accountId, queryDate)
     // FX this into parent ccy
     val fx = priceState.getFX(AssetPair(account.key.assetId, ccy), queryDate).getOrElse(throw new Exception(s"Missing FX for ${account.key.assetId.symbol}/${ccy.symbol}"))
     total + b * fx
   })
 
-  private val headCashflows = if (startBalance.value.isZero) inflows else Cashflow(firstDate, startBalance, accountId) +: inflows
+  private val headCashflows = if (startBalance.number.isZero) inflows else Cashflow(firstDate, startBalance, accountId) +: inflows
 
   private val initialCashflows = headCashflows :+ Cashflow(queryDate, endBalance, accountId)
   // Normalise the cashflow table to a an appropriate single currency
