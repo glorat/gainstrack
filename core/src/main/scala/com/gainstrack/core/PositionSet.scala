@@ -15,7 +15,7 @@ case class PositionSet(assetBalance:Map[AssetId, Fraction]) {
 
   def convertTo(tgtCcy: AssetId, priceState: PriceState, date:LocalDate): PositionSet = {
     def convertEntry(ps:PositionSet, entry:(AssetId, Fraction)) = {
-      val toAdd = priceState.getFX(AssetPair(entry._1, tgtCcy), date)
+      val toAdd = priceState.getFX(entry._1, tgtCcy, date)
         .map(_ * entry._2)
         .map(Amount(_, tgtCcy))
         .getOrElse(Amount(entry._2, entry._1)) // Unconverted value if no fx
@@ -29,8 +29,8 @@ case class PositionSet(assetBalance:Map[AssetId, Fraction]) {
 
   def convertToOneOf(tgtCcys: Seq[AssetId], priceState: PriceState, date:LocalDate): PositionSet = {
     def convertEntry(ps:PositionSet, entry:(AssetId, Fraction)) = {
-      val tgtCcy = tgtCcys.find(tgtCcy => priceState.getFX(AssetPair(entry._1, tgtCcy), date).isDefined).getOrElse(tgtCcys.last)
-      val toAdd = priceState.getFX(AssetPair(entry._1, tgtCcy), date)
+      val tgtCcy = tgtCcys.find(tgtCcy => priceState.getFX(entry._1, tgtCcy, date).isDefined).getOrElse(tgtCcys.last)
+      val toAdd = priceState.getFX(entry._1, tgtCcy, date)
         .map(_ * entry._2)
         .map(Amount(_, tgtCcy))
         .getOrElse(Amount(entry._2, entry._1)) // Unconverted value if no fx

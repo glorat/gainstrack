@@ -35,4 +35,27 @@ class MultiAssetAdj extends FlatSpec {
   "assetChainMap" should "include cost basis conversion" in {
     assert(bg.assetChainMap.map(AccountId("Assets:Bank:XIU")).map(_.symbol) == Seq("XIU", "CAD", "USD"))
   }
+
+  "single fx converter" should "match priceCollector" in {
+    val dt = parseDate("2019-01-01")
+    val fx1 = bg.priceState.getFX(AssetId("XIU"), AssetId("CAD"), dt)
+    assert(fx1.get == 10)
+    assert(None == bg.priceState.getFX(AssetId("XIU"), AssetId("USD"), dt))
+
+    val singleFXConversion = SingleFXConversion.generate(bg.acctState.baseCurrency)(bg.priceState, bg.assetChainMap)
+    val x = singleFXConversion.getFX(AssetId("XIU"), AssetId("USD"), dt)
+    assert(x.get == 5)
+    assert(None == singleFXConversion.getFX(AssetId("XIU"), AssetId("CAD"), dt))
+  }
+
+  it should "interpolate" in {
+    val dt = parseDate("2018-01-01")
+
+    val fx1 = bg.priceState.getFX(AssetId("XIU"), AssetId("CAD"), dt)
+    assert(fx1.get == 10)
+
+    val singleFXConversion = SingleFXConversion.generate(bg.acctState.baseCurrency)(bg.priceState, bg.assetChainMap)
+    val x = singleFXConversion.getFX(AssetId("XIU"), AssetId("USD"), dt)
+    assert(x.get == 4)
+  }
 }
