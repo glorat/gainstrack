@@ -10,7 +10,7 @@ import org.scalatest.FlatSpec
 
 import scala.collection.SortedSet
 
-class TransactionBalanceTest extends FlatSpec {
+class TransactionAmountTest extends FlatSpec {
 
   "Postings" should "have correct weight" in {
     /*
@@ -20,17 +20,17 @@ class TransactionBalanceTest extends FlatSpec {
   Account       10 SOME {2.02 USD} @ 2.50 USD   -> 20.20 USD
      */
 //
-    val p1 = Posting("Asset:Account", Balance(10,"USD"))
-    assert(p1.weight == Balance(10, "USD"))
+    val p1 = Posting("Asset:Account", Amount(10,"USD"))
+    assert(p1.weight == Amount(10, "USD"))
     assert(p1.toString == "Asset:Account 10.0 USD")
-    val p2 = Posting("Asset:Account", Balance(10.00, "CAD"), Balance(1.01, "USD"))
-    assert(p2.weight == Balance(10.10, "USD"))
+    val p2 = Posting("Asset:Account", Amount(10.00, "CAD"), Amount(1.01, "USD"))
+    assert(p2.weight == Amount(10.10, "USD"))
     assert(p2.toString == "Asset:Account 10.0 CAD @1.01 USD")
-    val p3 = Posting.withCost("Asset:Account", Balance(10, "SOME"), Balance(2.02, "USD"))
-    assert(p3.weight == Balance(20.20, "USD"))
+    val p3 = Posting.withCost("Asset:Account", Amount(10, "SOME"), Amount(2.02, "USD"))
+    assert(p3.weight == Amount(20.20, "USD"))
     assert(p3.toString == "Asset:Account 10.0 SOME {2.02 USD}")
-    val p4 = Posting.withCostAndPrice("Asset:Account", Balance(10, "SOME"), Balance(2.02, "USD"), Balance(2.50, "USD"))
-    assert(p4.weight == Balance(20.20, "USD"))
+    val p4 = Posting.withCostAndPrice("Asset:Account", Amount(10, "SOME"), Amount(2.02, "USD"), Amount(2.50, "USD"))
+    assert(p4.weight == Amount(20.20, "USD"))
     assert(p4.toString == "Asset:Account 10.0 SOME {2.02 USD} @2.5 USD")
   }
 
@@ -39,19 +39,19 @@ class TransactionBalanceTest extends FlatSpec {
     //  Assets:MyBank:Checking            -400.00 USD
     //  Liabilities:CreditCard
     val tx = Transaction("2012-11-03", "Transfer to pay credit card", Seq(
-      Posting("Assets:MyBank:Checking", Balance(-400.00, "USD")),
+      Posting("Assets:MyBank:Checking", Amount(-400.00, "USD")),
       Posting("Assets:MyBank:Checking")
     ), null)
 
     assert(tx.postings(1).value.isEmpty)
-    assert(tx.filledPostings(1).value.get == Balance(400, "USD"))
+    assert(tx.filledPostings(1).value.get == Amount(400, "USD"))
   }
 
   "Security Purchase" should "balance" in {
     // 2014-02-11 * "Bought shares of S&P 500"
     //  Assets:ETrade:IVV                10 IVV {183.07 USD}
     //  Assets:ETrade:Cash         -1830.70 USD
-    val sp = SecurityPurchase("Assets:Broker", LocalDate.parse("2014-02-11"), Balance(10, "IVV"), Balance(183.07, "USD"))
+    val sp = SecurityPurchase("Assets:Broker", LocalDate.parse("2014-02-11"), Amount(10, "IVV"), Amount(183.07, "USD"))
     val tx = sp.toTransaction
     assert(tx.isBalanced)
     assert(tx.filledPostings(0).toString == "Assets:Broker:USD -1830.7 USD")

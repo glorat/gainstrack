@@ -16,13 +16,13 @@ import com.gainstrack.report.AccountState
   * @param price
   */
 case class UnitTrustBalance(
-                           accountId: AccountId,
-                           date: LocalDate,
-                           security: Balance,
-                           price:Balance
+                             accountId: AccountId,
+                             date: LocalDate,
+                             security: Amount,
+                             price:Amount
                            ) extends AccountCommand {
 
-  def value:Balance = price * security.value
+  def value:Amount = price * security.number
 
   require(accountId.accountType == Assets)
   val cashAccountId = accountId.subAccount(price.ccy.symbol)
@@ -37,7 +37,7 @@ case class UnitTrustBalance(
   // Need a command post processing step to update this fact
   override def involvedAccounts: Set[AccountId] = Set(securityAccountId, incomeAccountId)
 
-  def toBeancountCommand(oldBalance:Balance)(acctState:AccountState) : BeancountCommand = {
+  def toBeancountCommand(oldBalance:Amount)(acctState:AccountState) : BeancountCommand = {
     if (security == oldBalance) {
       // No transaction just emit a price
       PriceObservation(date, security.ccy, price)
@@ -47,12 +47,12 @@ case class UnitTrustBalance(
     }
   }
 
-  def toTransaction(oldBalance:Balance, acctState: AccountState) : Option[Transaction] = {
+  def toTransaction(oldBalance:Amount, acctState: AccountState) : Option[Transaction] = {
     val account = acctState.find(accountId).getOrElse(throw new IllegalStateException(s"${accountId} does not exist for unit command"))
 
     val newUnits = security-oldBalance
     val unitIncrease : Posting = Posting(securityAccountId, newUnits, price )
-    val adjAccount = if ( (oldBalance.value.isZero || security.value.isZero) ) {
+    val adjAccount = if ( (oldBalance.number.isZero || security.number.isZero) ) {
       // Trading to/from a zero means we should obtain funding, rather than make money
       if (account.options.multiAsset && !account.options.automaticReinvestment) {
         // Fund from self
@@ -73,11 +73,11 @@ case class UnitTrustBalance(
       incomeAccountId
     }
 
-    if (newUnits.value.isZero) {
+    if (newUnits.number.isZero) {
       None
     }
     else {
-      val tfr = Transfer(adjAccount, accountId, date, price * newUnits.value, newUnits, description)
+      val tfr = Transfer(adjAccount, accountId, date, price * newUnits.number, newUnits, description)
       Some(tfr.toTransfers(acctState.accounts).head.toTransaction.copy(origin = this))
     }
 
@@ -120,7 +120,7 @@ object UnitTrustBalance extends CommandParser {
 
   def parse(str:String):UnitTrustBalance = {
     str match {
-      case Statement(date, acct, security, price) => UnitTrustBalance(AccountId(acct), parseDate(date), Balance.parse(security), price)
+      case Statement(date, acct, security, price) => UnitTrustBalance(AccountId(acct), parseDate(date), Amount.parse(security), price)
     }
   }
 

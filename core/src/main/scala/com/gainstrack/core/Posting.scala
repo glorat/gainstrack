@@ -2,24 +2,24 @@ package com.gainstrack.core
 
 case class Posting (
                      account: AccountId,
-                     value: Option[Balance],
-                     price: Option[Balance], // @ 123 USD
-                     cost: Option[Balance]   // {123 USD}
+                     value: Option[Amount],
+                     price: Option[Amount], // @ 123 USD
+                     cost: Option[Amount] // {123 USD}
 
                    ) {
-  val weight : Balance = {
+  val weight : Amount = {
     if (cost.isDefined) {
-      cost.get * value.get.value
+      cost.get * value.get.number
     }
     else if (price.isDefined) {
-      price.get * value.get.value
+      price.get * value.get.number
     }
     else if (value.isDefined) {
       value.get
     }
     else {
       // Elided value from tx
-      Balance(0, AssetId("USD"))
+      Amount(0, AssetId("USD"))
     }
   }
 
@@ -48,11 +48,11 @@ object Posting {
     // Expects interpolation
     apply(account, None,None,None)
   }
-  def apply(account:AccountId, value:Balance):Posting = {
+  def apply(account:AccountId, value:Amount):Posting = {
     apply(account, Some(value), None, None)
   }
-  def apply(account:AccountId, value:Balance, price:Balance):Posting = {
-    if (price.value == 1 && price.ccy == value.ccy) {
+  def apply(account:AccountId, value:Amount, price:Amount):Posting = {
+    if (price.number == 1 && price.ccy == value.ccy) {
       apply(account, Some(value), None, None)
     }
     else{
@@ -61,11 +61,11 @@ object Posting {
 
   }
 
-  def withCost(account:AccountId, value:Balance, cost:Balance):Posting = {
+  def withCost(account:AccountId, value:Amount, cost:Amount):Posting = {
     apply(account, Some(value), None, Some(cost))
   }
 
-  def withCostAndPrice(account:AccountId, value:Balance, cost:Balance, price:Balance):Posting = {
+  def withCostAndPrice(account:AccountId, value:Amount, cost:Amount, price:Amount):Posting = {
     apply(account, Some(value), Some(price), Some(cost))
   }
 }

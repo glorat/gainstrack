@@ -2,18 +2,18 @@ package com.gainstrack.core
 
 import java.time.temporal.ChronoUnit
 
-case class Cashflow(date:LocalDate, value:Balance, source:AccountId, convertedValue:Option[Balance]=None) {
+case class Cashflow(date:LocalDate, value:Amount, source:AccountId, convertedValue:Option[Amount]=None) {
   def pv(baseDate:LocalDate, discountRate:Double) = {
     val days = ChronoUnit.DAYS.between(baseDate, date)
     val dcf = days/365.0 // Using Act365 for simplicity
-    val cfpv = convertedValue.get.value.toDouble/Math.pow(1+discountRate, dcf)
+    val cfpv = convertedValue.get.number.toDouble/Math.pow(1+discountRate, dcf)
     cfpv
   }
 
   def pv01(baseDate:LocalDate, rate:Double):Double = {
     val days = ChronoUnit.DAYS.between(baseDate, date)
     val dcf = days/365.0 // Using Act365 for simplicity
-    val amount = convertedValue.get.value.toDouble
+    val amount = convertedValue.get.number.toDouble
 
     if (dcf == 0)  0
     else if (-1 < rate)  -dcf * amount / Math.pow(1 + rate, dcf + 1)
@@ -23,7 +23,7 @@ case class Cashflow(date:LocalDate, value:Balance, source:AccountId, convertedVa
 }
 
 object Cashflow {
-  def apply(dtStr:String, valueStr:String, source:AccountId) :Cashflow = Cashflow(parseDate(dtStr), Balance.parse(valueStr), source)
+  def apply(dtStr:String, valueStr:String, source:AccountId) :Cashflow = Cashflow(parseDate(dtStr), Amount.parse(valueStr), source)
 }
 
 case class CashflowTable(cashflows:Seq[Cashflow]) {

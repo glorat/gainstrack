@@ -2,7 +2,7 @@ package com.gainstrack.command
 
 import com.gainstrack.core._
 
-case class PriceObservation(date:LocalDate, assetId: AssetId, price:Balance)
+case class PriceObservation(date:LocalDate, assetId: AssetId, price:Amount)
   extends AccountCommand with BeancountCommand {
   override def origin: AccountCommand = this
   override def commandString: String = PriceObservation.prefix

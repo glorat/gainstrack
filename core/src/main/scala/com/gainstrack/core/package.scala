@@ -15,7 +15,7 @@ package object core {
   def parseNumber(str:String): Fraction = spire.math.Rational(BigDecimal(str))
   def zeroFraction:Fraction = spire.math.Rational.zero
 
-  implicit def stringToBalance(str:String) = Balance.parse(str)
+  implicit def stringToBalance(str:String) = Amount.parse(str)
 
   implicit val localDateOrdering: Ordering[LocalDate] = new Ordering[LocalDate] {
     def compare(x: LocalDate, y: LocalDate): Int = x compareTo y

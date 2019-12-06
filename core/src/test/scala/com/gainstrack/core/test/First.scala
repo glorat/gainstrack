@@ -179,7 +179,7 @@ class First extends FlatSpec {
     it should "sum all asset balances to a position set" in {
       val assets = acctState.accounts.filter(_.name.accountType == Assets).foldLeft(PositionSet())((ps,account) => {
         val value:Fraction = bp.getAccountValue(account.accountId, today)
-         ps + Balance(value, account.key.assetId.symbol)
+         ps + Amount(value, account.key.assetId.symbol)
       }).assetBalance
 
       assert(assets(AssetId("USD")) == -52857.23)
@@ -249,7 +249,7 @@ class First extends FlatSpec {
 
     val accountReport = new AccountInvestmentReport(accountId, AssetId("GBP"), fromDate, queryDate, bg.acctState, bg.balanceState, bg.txState, priceState, bg.assetChainMap)
 
-    assert(accountReport.endBalance == Balance.parse("348045.34 GBP"))
+    assert(accountReport.endBalance == Amount.parse("348045.34 GBP"))
 
     // Note how this excludes the internal income transaction
     assert(accountReport.inflows == Seq(Cashflow("2013-06-30", "-265000.0 GBP", AccountId("Equity:Opening:GBP"))))
@@ -325,7 +325,7 @@ class First extends FlatSpec {
 
     val equityValue = dailyReport.positionOfAssets(equities, bg.acctState, bg.priceState, bg.assetChainMap, today)
 
-    assert(equityValue.getBalance(AssetId("GBP")).value.round == 22211)
+    assert(equityValue.getBalance(AssetId("GBP")).number.round == 22211)
   }
 
   it should "show empty balance for unknown asset tags" in {
@@ -334,7 +334,7 @@ class First extends FlatSpec {
 
     val equityValue = dailyReport.positionOfAssets(equities, bg.acctState, bg.priceState, bg.assetChainMap, today)
 
-    assert(equityValue.getBalance(AssetId("GBP")).value.round == 0)
+    assert(equityValue.getBalance(AssetId("GBP")).number.round == 0)
   }
 
   it should "generate daily time series of balances" in {

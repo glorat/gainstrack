@@ -122,12 +122,12 @@ class Real extends FlatSpec with BeforeAndAfterEach {
     val bondValue = dailyReport.positionOfAssets(bonds, bg.acctState, bg.priceState, bg.assetChainMap, queryDate)
     val bondTotal = bondValue.getBalance(bg.acctState.baseCurrency)
 
-    assert(equityTotal.value.round > 0)
-    assert(bondTotal.value.round > 0)
+    assert(equityTotal.number.round > 0)
+    assert(bondTotal.number.round > 0)
     val ratio = equityTotal / (equityTotal+bondTotal)
 
-    assert(ratio.value > 0.5)
-    assert(ratio.value < 0.9)
+    assert(ratio.number > 0.5)
+    assert(ratio.number < 0.9)
     // Should actually be about 0.7
     println(s"Real AA: ${ratio.toString}")
 
