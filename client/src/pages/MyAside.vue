@@ -56,6 +56,7 @@
                 'errors': ['Errors', ''],
                 'events': ['Events', 'g E'],
                 'help': ['Help', 'g H'],
+                'faq': ['FAQ', ''],
                 'holdings': ['Holdings', 'g h'],
                 'import': ['Import', 'g n'],
                 'income_statement': ['Income Statement', 'g i'],
@@ -67,14 +68,15 @@
 
                 'irr':              ['IRR',    ''],
                 'aa': ['Asset Allocation', ''],
-                'command': ['Commands', '']
+                'command': ['Commands', ''],
             },
             navigationBar: [
                 ['command'],
                 ['balance_sheet', 'income_statement', 'journal'],
                 ['irr', 'aa'],
                 ['prices'],
-                ['editor']
+                ['editor'],
+                ['help', 'faq']
             ]
         };
 
