@@ -18,14 +18,14 @@ class AccountInvestmentReport(accountId: AccountId, ccy:AssetId, fromDate:LocalD
   val startBalance: Amount = allAccounts.foldLeft(initBalance)((total, account) => {
     val b = balanceState.getAccountValue(account.accountId, fromDate)
     // FX this into parent ccy
-    val fx = priceState.getFX(AssetPair(account.key.assetId, ccy), firstDate).getOrElse(throw new Exception(s"Missing FX for ${account.key.assetId.symbol}/${ccy.symbol}"))
+    val fx = priceState.getFX(account.key.assetId, ccy, firstDate).getOrElse(throw new Exception(s"Missing FX for ${account.key.assetId.symbol}/${ccy.symbol}"))
     -(total + b * fx)
   })
 
   val endBalance: Amount = allAccounts.foldLeft(initBalance)((total, account) => {
     val b = balanceState.getAccountValue(account.accountId, queryDate)
     // FX this into parent ccy
-    val fx = priceState.getFX(AssetPair(account.key.assetId, ccy), queryDate).getOrElse(throw new Exception(s"Missing FX for ${account.key.assetId.symbol}/${ccy.symbol}"))
+    val fx = priceState.getFX(account.key.assetId, ccy, queryDate).getOrElse(throw new Exception(s"Missing FX for ${account.key.assetId.symbol}/${ccy.symbol}"))
     total + b * fx
   })
 

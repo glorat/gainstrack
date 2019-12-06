@@ -9,8 +9,9 @@ import scala.collection.SortedMap
 import scala.math.BigDecimal.RoundingMode
 
 
+case class PriceState(ccys: Set[AssetId], prices: Map[AssetPair, SortedMap[LocalDate, Fraction]])
+  extends AggregateRootState with FXConverter {
 
-case class PriceState(ccys:Set[AssetId], prices:Map[AssetPair, SortedMap[LocalDate, Fraction]]) extends AggregateRootState {
   private val implicitPrices = true
 
   private val interp = TimeSeriesInterpolator.from(SortedMap[LocalDate, Fraction]())
@@ -26,7 +27,11 @@ case class PriceState(ccys:Set[AssetId], prices:Map[AssetPair, SortedMap[LocalDa
     ))
   }
 
-  def getFX(tuple:AssetPair, date:LocalDate, maxDenom:Long=1000000):Option[Fraction] = {
+  def getFX(fx1:AssetId, fx2:AssetId, date:LocalDate, maxDenom:Long=1000000):Option[Fraction] = {
+    getFX(AssetPair(fx1,fx2), date, maxDenom)
+  }
+
+  def getFX(tuple:AssetPair, date:LocalDate, maxDenom:Long):Option[Fraction] = {
     if (tuple.fx1 == tuple.fx2) {
       Some(1)
     }
