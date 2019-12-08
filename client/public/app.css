@@ -665,11 +665,10 @@ h1:hover .beancount-files {
 }
 
 /* stylelint-disable no-descending-specificity */
-
-* {
+/* DISABLING because this is too globally disruptive to library widgets
   box-sizing: border-box;
 }
-
+*/
 html,
 body {
   margin: 0;
