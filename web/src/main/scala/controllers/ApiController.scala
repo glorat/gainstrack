@@ -327,6 +327,13 @@ class ApiController (implicit val ec :ExecutionContext) extends ScalatraServlet 
     val pnl = new PLExplain(currentDate.minusMonths(11), currentDate)(bg.acctState, bg.txState, bg.balanceState, bg.priceState, bg.assetChainMap)
     pnl.toDTO
   }
+
+  post("/pnlexplain") {
+    val body = parsedBody.extract[PNLExplainRequest]
+    val bg = currentBg
+    val pnl = new PLExplain(body.fromDate, body.toDate)(bg.acctState, bg.txState, bg.balanceState, bg.priceState, bg.assetChainMap)
+    pnl.toDTO
+  }
 /*
   error {
     case e: Throwable => {
@@ -344,3 +351,5 @@ case class AccountTxDTO(date:String, cmdType:String, description:String, change:
 case class JournalDTO(rows:Seq[AccountTxDTO])
 
 case class StateSummaryDTO(accountIds:Seq[AccountId], ccys:Seq[AssetId], conversion:String, latestDate: LocalDate, dateOverride:Option[LocalDate])
+
+case class PNLExplainRequest(fromDate: LocalDate, toDate: LocalDate)

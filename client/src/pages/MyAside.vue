@@ -68,12 +68,13 @@
 
                 'irr':              ['IRR',    ''],
                 'aa': ['Asset Allocation', ''],
+                'pnlexplain': ['P&L Explain', ''],
                 'command': ['Commands', ''],
             },
             navigationBar: [
                 ['command'],
                 ['balance_sheet', 'income_statement', 'journal'],
-                ['irr', 'aa'],
+                ['irr', 'aa', 'pnlexplain'],
                 ['prices'],
                 ['editor'],
                 ['help', 'faq']
