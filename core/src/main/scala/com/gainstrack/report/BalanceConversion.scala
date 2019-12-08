@@ -17,8 +17,12 @@ class BalanceConversion(
         positions.convertViaChain(thisCcy, assetChainMap(acct), priceState, date)
       case "units" =>
         positions.convertViaChain(AssetId("NOVALIDUNIT"), assetChainMap(acct).takeRight(1), priceState, date)
-      case "global" =>
-        positions.convertViaChain(acctState.baseCurrency, assetChainMap(acct), priceState, date)
+      case "global" => {
+        val singleFXConversion = SingleFXConversion.generate(acctState.baseCurrency)(priceState, assetChainMap)
+        positions.convertTo(acctState.baseCurrency, singleFXConversion, date)
+        // positions.convertViaChain(acctState.baseCurrency, assetChainMap(acct), priceState, date)
+
+      }
       case ccy: String =>
         positions.convertViaChain(AssetId(ccy), assetChainMap(acct), priceState, date)
     }

@@ -8,7 +8,10 @@ case class SingleFXConversion(data:Map[AssetId, SortedMap[LocalDate, Fraction]],
   private val interp = TimeSeriesInterpolator.from(SortedMap[LocalDate, Fraction]())
 
   override def getFX(fx1:AssetId, fx2:AssetId, date: LocalDate, maxDenom: Long=1000000): Option[Fraction] = {
-    if (fx2 == baseCcy) {
+    if (!data.isDefinedAt(fx1)) {
+      None
+    }
+    else if (fx2 == baseCcy) {
       interp.interpValue(data(fx1), date)
     }
     else {
@@ -27,25 +30,25 @@ object SingleFXConversion {
         None
       }
       else if (priceState.prices.contains(AssetPair(ccy, baseCurrency))) {
-        None
+        Some(ccy -> priceState.prices(AssetPair(ccy, baseCurrency)))
       }
       else {
-        val ccyChain = assetChainMap.findFirst(ccy)
-        require(ccyChain.last == baseCurrency)
-        // FIXME: This needs to consider every pair in the chain
-//        val dates = ccyChain.dropRight(1).map(ccy => {
-//          priceState.prices(AssetPair(ccy, prevCcy)).keys.toSet
-//        }).flatten
-        // FIXME: Since the above is tricky code, just do the last chain step
-        val dates = priceState.prices(AssetPair(ccyChain(0), ccyChain(1))).keys
+        val ccyChainOpt = assetChainMap.findFirst(ccy)
+        ccyChainOpt.map(ccyChain => {
+          require(ccyChain.last == baseCurrency)
+          // FIXME: This needs to consider every pair in the chain
+          //        val dates = ccyChain.dropRight(1).map(ccy => {
+          //          priceState.prices(AssetPair(ccy, prevCcy)).keys.toSet
+          //        }).flatten
+          // FIXME: Since the above is tricky code, just do the last chain step
+          val dates = priceState.prices(AssetPair(ccyChain(0), ccyChain(1))).keys
 
-        val series = dates.foldLeft(SortedMap[LocalDate,Fraction] ())((mp, dt) => {
-          val converted = (PositionSet()+Amount(1, ccy)).convertViaChain(baseCurrency, ccyChain, priceState, dt)
-          mp.updated(dt, converted.getBalance(baseCurrency).number)
+          val series: SortedMap[LocalDate, Fraction] = dates.foldLeft(SortedMap[LocalDate,Fraction] ())((mp, dt) => {
+            val converted = (PositionSet()+Amount(1, ccy)).convertViaChain(baseCurrency, ccyChain, priceState, dt)
+            mp.updated(dt, converted.getBalance(baseCurrency).number)
+          })
+          ccy -> series
         })
-
-        Some(ccy -> series)
-
       }
     }).toMap
 

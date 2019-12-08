@@ -5,9 +5,9 @@ import com.gainstrack.core.{AccountId, AssetId}
 case class AssetChainMap(map:Map[AccountId, Seq[AssetId]]) {
   def apply(acctId:AccountId):Seq[AssetId]  = map.apply(acctId)
 
-  def findFirst(srcCcy:AssetId):Seq[AssetId] = {
+  def findFirst(srcCcy:AssetId):Option[Seq[AssetId]] = {
     val matched = map.find( (kv) => kv._2.head == srcCcy)
-    matched.getOrElse(throw new IllegalArgumentException(s"${srcCcy} is not in the assetChainMap"))._2
+    matched.map(_._2)
   }
 }
 object AssetChainMap {
