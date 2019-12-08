@@ -16,7 +16,7 @@ case class DailyBalance(balanceState: BalanceState, date: LocalDate = MaxDate) {
     val end = YearMonth.from(endDate).plusMonths(1)
     val it = Iterator.iterate(startMonth)(_.plusMonths(1)).takeWhile(!_.isAfter(end))
     val dates = (for (ym <- it) yield ym.atDay(1)).map(x=>x).toVector
-    val values = dates.map(date => this.convertedPosition(accountId, acctState, priceState, assetChainMap, date, conversionStrategy))
+    val values = dates.map(date => this.convertedPosition(accountId, date, conversionStrategy)(origAcctState = acctState, priceState = priceState, assetChainMap = assetChainMap))
     val ccys = values.flatMap(_.assetBalance.keySet).toSet
     val allSeries = ccys.map(ccy => {
       val xy = dates.zip(values.map(_.assetBalance(ccy))).map(x => ApexTimeSeriesEntry(x._1.toString, x._2.toDouble))
@@ -39,19 +39,13 @@ case class DailyBalance(balanceState: BalanceState, date: LocalDate = MaxDate) {
   def positionOfAssets(assets:Set[AssetId], origAcctState:AccountState, priceState: PriceState, assetChainMap: AssetChainMap, date:LocalDate,
                          conversionStrategy:String = "global") = {
     origAcctState.withAsset(assets).foldLeft(PositionSet()) ((ps, account) => {
-      val value = this.convertedPosition(account.accountId, origAcctState, priceState, assetChainMap, date, conversionStrategy)
+      val value = this.convertedPosition(account.accountId, date, conversionStrategy)(origAcctState = origAcctState, priceState = priceState, assetChainMap = assetChainMap)
       ps + value
     })
   }
 
-  def convertedPosition(accountId:AccountId,
-                        origAcctState:AccountState,
-                        priceState: PriceState,
-                        assetChainMap: AssetChainMap,
-                        date:LocalDate,
-                        conversionStrategy:String,
-                        accountFilter: (AccountCreation=>Boolean) = _=>true
-                       ):PositionSet = {
+  def convertedPosition(accountId: AccountId, date: LocalDate, conversionStrategy: String, accountFilter: AccountCreation => Boolean = _ => true)
+                       (implicit origAcctState: AccountState, priceState: PriceState, assetChainMap: AssetChainMap): PositionSet = {
     val acctState = origAcctState.withInterpolatedAccounts
     val accounts = acctState.accounts
     val thisCcy = acctState.accountMap.get(accountId).map(_.key.assetId).getOrElse(origAcctState.baseCurrency)

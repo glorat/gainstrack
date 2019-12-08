@@ -78,6 +78,9 @@ trait AccountEvent extends DomainEvent {
 trait AccountType {
   // A quick and dirty cheat
   override val toString: String = this.getClass.getSimpleName.dropRight(1)
+
+  implicit def accountId = AccountId(this.toString)
+
 }
 case object Assets extends AccountType
 case object Liabilities extends AccountType

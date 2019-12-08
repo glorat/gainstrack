@@ -25,7 +25,7 @@ class BalanceReport(cmds:Seq[BeancountCommand], criteria:Transaction=>Boolean) {
 
 object BalanceReport {
   def apply(cmds:Seq[BeancountCommand], startDate:LocalDate=MinDate, endDate:LocalDate=MaxDate) : BalanceReport = {
-    val criteria:Transaction=>Boolean = tx =>  (tx.postDate.isAfter(startDate) || tx.postDate.isEqual(startDate)) && (tx.postDate.isBefore(endDate))
+    val criteria:Transaction=>Boolean = tx =>  tx.postDate.isAfter(startDate) && ((tx.postDate.isBefore(endDate) || tx.postDate.isEqual(endDate)))
     new BalanceReport(cmds, criteria)
   }
 
@@ -43,7 +43,8 @@ case class BalanceReportState(balances:Map[AccountId, PositionSet]) {
     })
   }
 
-  def convertedPosition(accountId:AccountId, origAcctState:AccountState, priceState: PriceState, assetChainMap: AssetChainMap, date:LocalDate, conversionStrategy:String):PositionSet = {
+  def convertedPosition(accountId: AccountId, date: LocalDate, conversionStrategy: String)
+                       (implicit assetChainMap: AssetChainMap, origAcctState: AccountState, priceState: PriceState):PositionSet = {
     val acctState = origAcctState.withInterpolatedAccounts
     val account = acctState.accountMap(accountId)
 
