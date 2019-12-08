@@ -5,7 +5,7 @@ import java.time.format.DateTimeParseException
 
 import com.gainstrack.command.{AccountCreation, GainstrackParser, ParserMessage}
 import com.gainstrack.core._
-import com.gainstrack.report.{AccountInvestmentReport, BalanceReport, DailyBalance, GainstrackGenerator, IrrSummary, TimeSeries}
+import com.gainstrack.report.{AccountInvestmentReport, BalanceReport, DailyBalance, GainstrackGenerator, IrrSummary, PLExplain, TimeSeries}
 import org.json4s.{DefaultFormats, Formats, JValue}
 import org.scalatra.{NotFound, ScalatraServlet}
 import org.scalatra.json._
@@ -181,14 +181,14 @@ class ApiController (implicit val ec :ExecutionContext) extends ScalatraServlet 
               val balance = mypostings.foldLeft(PositionSet())(_ + _.value.get)
               balance*/
       val balanceReport = BalanceReport(myTxs)
-      balanceReport.getState.convertedPosition(accountId, bg.acctState, bg.priceState, bg.assetChainMap, cmd.date, conversionStrategy)
+      balanceReport.getState.convertedPosition(accountId, cmd.date, conversionStrategy)(bg.assetChainMap, bg.acctState, bg.priceState)
     }
 
     val deltaFor : AccountCommand => PositionSet = {cmd =>
       val myTxs = txs.filter(_.origin == cmd)
       val state = new DailyBalance(bg.balanceState)
       val balanceReport = BalanceReport(myTxs)
-      balanceReport.getState.convertedPosition(accountId, bg.acctState, bg.priceState, bg.assetChainMap, cmd.date, conversionStrategy)
+      balanceReport.getState.convertedPosition(accountId, cmd.date, conversionStrategy)(bg.assetChainMap, bg.acctState, bg.priceState)
     }
 
     val rows = commands.map(cmd => {
@@ -320,6 +320,12 @@ class ApiController (implicit val ec :ExecutionContext) extends ScalatraServlet 
       Map("name" -> name, "rows" -> treeTable.toTreeTable(AccountId("Assets")))
     })
     tables
+  }
+
+  get("/pnlexplain") {
+    val bg = currentBg
+    val pnl = PLExplain.annual(currentDate)(bg.acctState, bg.txState, bg.balanceState, bg.priceState, bg.assetChainMap)
+    pnl.toDTO
   }
 /*
   error {

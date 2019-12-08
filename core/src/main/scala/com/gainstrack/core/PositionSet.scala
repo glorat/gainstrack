@@ -3,6 +3,7 @@ package com.gainstrack.core
 import com.gainstrack.report.{AssetPair, FXConverter, PriceState}
 
 case class PositionSet(assetBalance:Map[AssetId, Fraction]) {
+  def ccys = assetBalance.keys
 
   def toDTO: Seq[Map[String,Any]] = {
     assetBalance.keys.map(getBalance(_).toDTO).toSeq
