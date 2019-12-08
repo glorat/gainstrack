@@ -324,7 +324,7 @@ class ApiController (implicit val ec :ExecutionContext) extends ScalatraServlet 
 
   get("/pnlexplain") {
     val bg = currentBg
-    val pnl = PLExplain.annual(currentDate)(bg.acctState, bg.txState, bg.balanceState, bg.priceState, bg.assetChainMap)
+    val pnl = new PLExplain(currentDate.minusMonths(11), currentDate)(bg.acctState, bg.txState, bg.balanceState, bg.priceState, bg.assetChainMap)
     pnl.toDTO
   }
 /*

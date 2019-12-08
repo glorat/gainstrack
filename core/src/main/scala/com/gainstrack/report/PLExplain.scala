@@ -32,26 +32,27 @@ class PLExplain(fromDate: LocalDate, toDate: LocalDate)
 
   // Activity
   val balanceReport = BalanceReport(transactionState.cmds, fromDate, toDate)
-  // Note that income has reversed sign per accounting norms
+  // Note that income/equity has reversed sign per accounting norms
+  val totalEquity = -balanceReport.getState.convertedPosition(Equity.accountId, toDate, "global").getBalance(baseCcy).number.toDouble
   val totalIncome = -balanceReport.getState.convertedPosition(Income.accountId, toDate, "global").getBalance(baseCcy).number.toDouble
   val totalExpense = balanceReport.getState.convertedPosition(Expenses.accountId, toDate, "global").getBalance(baseCcy).number.toDouble
 
   val newActivityActual = balanceReport.getState.convertedPosition(Assets.accountId, toDate, "global").getBalance(baseCcy).number.toDouble
   - balanceReport.getState.convertedPosition(Income.accountId, fromDate, "global").getBalance(baseCcy).number.toDouble
-  val newActivityPnl = newActivityActual - (totalIncome-totalExpense)
+  val newActivityPnl = newActivityActual - (totalEquity+totalIncome-totalExpense)
 
   // So this is the current hacky methodology
-  require(newActivityActual == newActivityPnl + totalIncome - totalExpense)
+  //require(newActivityActual == newActivityPnl + totalIncome - totalExpense, s"$newActivityActual == $newActivityPnl + $totalIncome - $totalExpense")
   // that will for now, make unexplained next to zero.
   // TODO: Explain newActivityPnl properly
-  val explained = totalDeltaExplain + newActivityPnl + totalIncome - totalExpense
+  val explained = totalDeltaExplain + newActivityPnl + totalEquity + totalIncome - totalExpense
   val unexplained = actualPnl - explained
 
 
   def toDTO = {
     Map("actual" -> actualPnl, "explained" -> explained, "unexplained" -> unexplained,
       "newActivityPnl" -> newActivityPnl,
-      "totalIncome" -> totalIncome, "totalExpense" -> totalExpense, "totalDeltaExplain" -> totalDeltaExplain
+      "totalEquity" -> totalEquity, "totalIncome" -> totalIncome, "totalExpense" -> totalExpense, "totalDeltaExplain" -> totalDeltaExplain
       // , "delta" -> deltaExplain
     )
   }
