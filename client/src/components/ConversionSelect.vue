@@ -2,6 +2,7 @@
     <select name="conversion" id="conversion" v-model="value" v-on:change="conversionChange">
         <!--<option value="at_cost">At Cost</option>
         <option value="at_value">At Market Value</option>-->
+        <option value="global">Base Currency</option>
         <option value="parent">Account Ccy</option>
         <option value="units">Units</option>
         <option value="GBP">Converted to GBP</option>

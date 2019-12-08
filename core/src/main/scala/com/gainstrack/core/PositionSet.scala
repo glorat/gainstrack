@@ -1,6 +1,6 @@
 package com.gainstrack.core
 
-import com.gainstrack.report.{AssetPair, PriceState}
+import com.gainstrack.report.{AssetPair, FXConverter, PriceState}
 
 case class PositionSet(assetBalance:Map[AssetId, Fraction]) {
 
@@ -13,9 +13,9 @@ case class PositionSet(assetBalance:Map[AssetId, Fraction]) {
     Amount(f, ccy)
   }
 
-  def convertTo(tgtCcy: AssetId, priceState: PriceState, date:LocalDate): PositionSet = {
+  def convertTo(tgtCcy: AssetId, fxConverter: FXConverter, date:LocalDate): PositionSet = {
     def convertEntry(ps:PositionSet, entry:(AssetId, Fraction)) = {
-      val toAdd = priceState.getFX(entry._1, tgtCcy, date)
+      val toAdd = fxConverter.getFX(entry._1, tgtCcy, date)
         .map(_ * entry._2)
         .map(Amount(_, tgtCcy))
         .getOrElse(Amount(entry._2, entry._1)) // Unconverted value if no fx
