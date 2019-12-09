@@ -46,11 +46,13 @@ case class BalanceReportState(balances:Map[AccountId, PositionSet]) {
   def convertedPosition(accountId: AccountId, date: LocalDate, conversionStrategy: String)
                        (implicit assetChainMap: AssetChainMap, origAcctState: AccountState, priceState: PriceState):PositionSet = {
     val acctState = origAcctState.withInterpolatedAccounts
-    val account = acctState.accountMap(accountId)
+    val accountOpt = acctState.accountMap.get(accountId)
+    accountOpt.map(account => {
+      val fn:AccountId=>PositionSet = balances.get(_).getOrElse(PositionSet())
+      val balanceConversion = new BalanceConversion(conversionStrategy, account.key.assetId, fn, date)(acctState, priceState, assetChainMap)
+      balanceConversion.convertTotal(accountId, _=>true)
+    }).getOrElse(PositionSet() + Amount(0, acctState.baseCurrency))
 
-    val fn:AccountId=>PositionSet = balances.get(_).getOrElse(PositionSet())
-    val balanceConversion = new BalanceConversion(conversionStrategy, account.key.assetId, fn, date)(acctState, priceState, assetChainMap)
-    balanceConversion.convertTotal(accountId, _=>true)
   }
 
   def processTx(tx:Transaction) : BalanceReportState = {
