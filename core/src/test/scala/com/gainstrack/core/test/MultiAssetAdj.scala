@@ -27,6 +27,42 @@ class MultiAssetAdj extends FlatSpec {
     assert (bg.balanceState.getBalance(acctId, parseDate("2019-11-01")).number.round == 10000)
   }
 
+  it should "generate expected transactions" in {
+    val txs = bg.txState.allTransactions
+    // Adjustments are done the day before to achieve the start of day balance
+    assert(txs(0).postDate == parseDate("2017-10-30"))
+    assert(txs(0).filledPostings == Seq(
+      Posting("Equity:Opening:CAD", Amount(-1500, AssetId("CAD"))),
+      Posting("Assets:Bank:CAD", Amount(1500, AssetId("CAD")))
+    ))
+
+    assert(txs(1).postDate == parseDate("2019-10-30"))
+    assert(txs(1).filledPostings == Seq(
+      Posting("Equity:Opening:CAD", Amount(-8500, AssetId("CAD"))),
+      Posting("Assets:Bank:CAD", Amount(8500, AssetId("CAD")))
+    ))
+
+    assert(txs(2).postDate == parseDate("2019-11-11"))
+    assert(txs(2).filledPostings == Seq(
+      Posting("Assets:Bank:CAD", Amount(-10000, AssetId("CAD"))),
+      Posting("Assets:Bank:XIU", Amount(1000, AssetId("XIU")), Amount(10, AssetId("CAD")))
+    ))
+  }
+
+  it should "generate expected cash balances" in {
+    // On the day of adjustment
+    assert(Amount(10000, AssetId("CAD")) == bg.balanceState.getBalance(AccountId("Assets:Bank:CAD"), parseDate("2019-10-30")))
+    // On the start of day of adjustment (with no further txs)
+    assert(Amount(10000, AssetId("CAD")) == bg.balanceState.getBalance(AccountId("Assets:Bank:CAD"), parseDate("2019-10-31")))
+  }
+
+  it should "generate expected cash balances for same day adj and trade" in {
+    // On the day of adjustment
+    assert(Amount(1001, AssetId("CAD")) == bg.balanceState.getBalance(AccountId("Assets:Bank:CAD"), parseDate("2019-11-30")))
+    // On end of day of adj + spend
+    assert(Amount(1, AssetId("CAD")) == bg.balanceState.getBalance(AccountId("Assets:Bank:CAD"), parseDate("2019-12-01")))
+  }
+
   it should "generate valid beancount" in {
     val res = bg.writeBeancountFile(s"/tmp/multiadj.beancount", parser.lineFor(_))
     assert(res.length == 0)
