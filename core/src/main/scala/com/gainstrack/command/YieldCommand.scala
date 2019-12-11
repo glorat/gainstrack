@@ -9,7 +9,7 @@ case class YieldCommand(date:LocalDate, accountId:AccountId, asset:Option[AssetI
 
   override def commandString: String = YieldCommand.prefix
 
-  override def description: String = s"${assetAccountId} yield ${value}"
+  override def description: String = s"${assetAccountId.shortName} yield ${value}"
 
   override def mainAccount: Option[AccountId] = Some(accountId)
 

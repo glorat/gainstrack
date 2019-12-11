@@ -29,7 +29,7 @@
                         <p>
                             <span class="datecell"></span>
                             <span class="description"><router-link :to="{name:'account', params: { accountId: posting.account }}">{{ posting.account }}</router-link></span>
-                            <span class="num">{{ posting.value.value}} {{ posting.value.ccy }}</span>
+                            <span class="num">{{ posting.value.number}} {{ posting.value.ccy }} {{ posting.price ? `@${posting.price.number}` : ''}}</span>
                             <span class="num"></span>
                             <span class="num"></span>
                         </p>

@@ -51,7 +51,7 @@
     .filter-form {
         display: flex;
         padding-top: 7px;
-        margin: 0;
+        margin: 0 20px;
         color: var(--color-text);
     }
 

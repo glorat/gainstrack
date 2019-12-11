@@ -3,7 +3,7 @@ package com.gainstrack.command
 import com.gainstrack.core._
 
 case class FundCommand(date:LocalDate, targetAccountId:AccountId, balance:Amount, sourceAccountIdOpt:Option[AccountId] = None) extends CommandNeedsAccounts {
-  override def description: String = s"Fund ${targetAccountId} ${balance}"
+  override def description: String = s"Fund ${balance}"
 
   override def mainAccount: Option[AccountId] = Some(targetAccountId)
 
