@@ -21,8 +21,8 @@ option "operating_currency" "GBP"
 2014-01-04 adj Assets:Bank:Nationwide 25613.71 GBP Equity:Opening
 ;"2018-07-31 adj Assets:Bank:Nationwide 57721.15 GBP Equity:Opening
 
-2019-04-01 bal Assets:Bank:Nationwide 134703.49 GBP Equity:Opening
-2019-04-01 bal Assets:Bank:NationwideSavings 53932.10 GBP Equity:Opening
+2019-04-01 adj Assets:Bank:Nationwide 134703.49 GBP Equity:Opening
+2019-04-01 adj Assets:Bank:NationwideSavings 53932.10 GBP Equity:Opening
 2019-02-14 adj Assets:HSBCHK 33030.33 HKD Equity:Opening
 2019-01-01 adj Assets:HSBCHK 138668.37 HKD Equity:Opening
 2019-01-01 adj Assets:HSBCCN 547413.70 CNY Equity:Opening
@@ -62,5 +62,6 @@ option "operating_currency" "GBP"
 
 1900-01-01 commodity VWRD
   tags: equity,global
+  arbitrary: hello world
 1900-01-01 commodity IUAA
   tags: bond,us

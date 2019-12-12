@@ -50,17 +50,31 @@ class MultiAssetAdj extends FlatSpec {
   }
 
   it should "generate expected cash balances" in {
+    val testMe = (amt:Fraction, dt:String) => assert(Amount(amt, AssetId("CAD")) == bg.balanceState.getBalance(AccountId("Assets:Bank:CAD"), parseDate(dt)))
+
     // On the day of adjustment
-    assert(Amount(10000, AssetId("CAD")) == bg.balanceState.getBalance(AccountId("Assets:Bank:CAD"), parseDate("2019-10-30")))
+    testMe(10000, "2019-10-30")
     // On the start of day of adjustment (with no further txs)
-    assert(Amount(10000, AssetId("CAD")) == bg.balanceState.getBalance(AccountId("Assets:Bank:CAD"), parseDate("2019-10-31")))
+    testMe(10000, "2019-10-31")
   }
 
   it should "generate expected cash balances for same day adj and trade" in {
+    val testMe = (amt:Fraction, dt:String) => assert(Amount(amt, AssetId("CAD")) == bg.balanceState.getBalance(AccountId("Assets:Bank:CAD"), parseDate(dt)))
+
     // On the day of adjustment
-    assert(Amount(1001, AssetId("CAD")) == bg.balanceState.getBalance(AccountId("Assets:Bank:CAD"), parseDate("2019-11-30")))
+    testMe(1001, "2019-11-30")
     // On end of day of adj + spend
-    assert(Amount(1, AssetId("CAD")) == bg.balanceState.getBalance(AccountId("Assets:Bank:CAD"), parseDate("2019-12-01")))
+    testMe(1, "2019-12-01")
+  }
+
+  it should "generate expected cash balances for same day trade and bal" in {
+    val testMe = (amt:Fraction, dt:String) => assert(Amount(amt, AssetId("CAD")) == bg.balanceState.getBalance(AccountId("Assets:Bank:CAD"), parseDate(dt)))
+    // Before any activity
+    testMe(1, "2019-12-04")
+    // On end of day of adj + spend, it washes back
+    testMe(1, "2019-12-05")
+    // And stays there
+    testMe(1, "2019-12-06")
   }
 
   it should "generate valid beancount" in {

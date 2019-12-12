@@ -8,7 +8,10 @@ case class SingleFXConversion(data:Map[AssetId, SortedMap[LocalDate, Fraction]],
   private val interp = TimeSeriesInterpolator.from(SortedMap[LocalDate, Fraction]())
 
   override def getFX(fx1:AssetId, fx2:AssetId, date: LocalDate, maxDenom: Long=1000000): Option[Fraction] = {
-    if (!data.isDefinedAt(fx1)) {
+    if (fx1 == fx2) {
+      Some(1.0)
+    }
+    else if (!data.isDefinedAt(fx1)) {
       None
     }
     else if (fx2 == baseCcy) {
@@ -34,8 +37,10 @@ object SingleFXConversion {
       }
       else {
         val ccyChainOpt = assetChainMap.findFirst(ccy)
-        ccyChainOpt.map(ccyChain => {
-          require(ccyChain.last == baseCurrency)
+        ccyChainOpt
+          .filter(_.last == baseCurrency) // If we can't convert, we must drop
+          .map(ccyChain => {
+            require(ccyChain.last == baseCurrency)
           // FIXME: This needs to consider every pair in the chain
           //        val dates = ccyChain.dropRight(1).map(ccy => {
           //          priceState.prices(AssetPair(ccy, prevCcy)).keys.toSet

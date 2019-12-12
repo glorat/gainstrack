@@ -8,6 +8,7 @@ import scala.collection.SetLike
 
 
 case class AssetState(
+                       allAssets: Map[AssetId, CommodityCommand] = Map(),
                        assetToTags: Map[AssetId, Set[String]] = Map(),
                        tagToAssets: Map[String, Set[AssetId]] = Map())
   extends AggregateRootState {
@@ -36,6 +37,6 @@ case class AssetState(
       mp.updated(tag, tagToAssets.get(tag).getOrElse(Set()) + e.asset)
     })
 
-    this.copy(assetToTags = newTags, tagToAssets = t2a)
+    this.copy(assetToTags = newTags, tagToAssets = t2a, allAssets = allAssets.updated(e.asset, e))
   }
 }

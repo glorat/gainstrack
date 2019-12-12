@@ -29,37 +29,34 @@ case class BalanceAdjustment(
   }*/
 
   // With old balance value, avoid using pad
-  def toBeancounts(balanceState:BalanceState, accts:Set[AccountCreation]) : Seq[BeancountCommand] = {
+  def toBeancounts(oldValue: Fraction, accts:Set[AccountCreation]) : Seq[BeancountCommand] = {
     val account = accts.find(_.accountId == accountId).getOrElse(throw new IllegalStateException(s"Account ${accountId} is not defined"))
     val targetAccountId = if (account.options.multiAsset) accountId.subAccount(balance.ccy.symbol) else accountId
-    val oldValue = balanceState.getAccountValue(targetAccountId, date.minusDays(1))
 
     val newUnits = balance-oldValue
+    val balanceAssertion = BalanceAssertion(date, targetAccountId, balance, this)
     if (newUnits.number == zeroFraction) {
-      Seq(BalanceAssertion(date, targetAccountId, balance, this))
+      Seq(balanceAssertion)
     }
     else {
-      val unitIncrease : Posting = Posting(targetAccountId, newUnits )
-      val income:Posting = Posting(adjAccount, -newUnits)
-      // Apply padding the day before since the balance assertion happens in the morning of the declared day
-      val description = s"Adjustment: ${oldValue.toDouble} -> ${balance}"
-      val tfr = Transfer(adjAccount, targetAccountId, date.minusDays(1), newUnits, newUnits, description)
-      val tfrExpand = tfr.toTransfers(accts)
+      val tfrExpand = toTransfers(accts, Amount(oldValue, balance.ccy.symbol))
       val txs: Seq[Transaction] = tfrExpand.map(_.toTransaction)
-      //val tx = Transaction(date.minusDays(1), description, Seq(unitIncrease, income), this)
-      val balcmd = BalanceAssertion(date, targetAccountId, balance, this)
-      txs :+ balcmd
+      txs :+ balanceAssertion
     }
   }
 
-  def toTransfers(accts:Set[AccountCreation]) : Seq[Transfer] = {
+  def toTransfers(accts:Set[AccountCreation], oldValue:Amount) : Seq[Transfer] = {
     val account = accts.find(_.accountId == accountId).getOrElse(throw new IllegalStateException(s"Account ${accountId} is not defined"))
-    val newUnits = Amount(9999, balance.ccy.symbol)
-
-    val description = s"Adjustment: TO BE FILLED IN"
-    val tfr = Transfer(adjAccount, accountId, date.minusDays(1), newUnits, newUnits, description)
-    val tfrExpand = tfr.toTransfers(accts)
-    tfrExpand
+    val newUnits = balance - oldValue
+    if (newUnits.number == zeroFraction) {
+      Seq()
+    }
+    else {
+      val description = s"Adjustment: ${oldValue} -> ${balance}"
+      val tfr = Transfer(adjAccount, accountId, date.minusDays(1), newUnits, newUnits, description)
+      val tfrExpand = tfr.toTransfers(accts)
+      tfrExpand
+    }
   }
 
   def toGainstrack : Seq[String] = {
