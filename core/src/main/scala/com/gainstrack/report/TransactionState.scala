@@ -16,6 +16,7 @@ case class TransactionState(acctState:AccountState, balanceState:BalanceState, c
       case e:CommandWithAccounts[_] => e.toTransfers.foldLeft(this)(_.process(_, e.underlying))
       case e:SecurityPurchase =>  process(e)
       case e:BalanceAdjustment => process(e)
+      case e:BalanceStatement => process(e)
       case e:PriceObservation => process(e)
       case e:UnitTrustBalance => process(e)
       case _:CommodityCommand => this
@@ -49,7 +50,10 @@ case class TransactionState(acctState:AccountState, balanceState:BalanceState, c
   }
 
   private def process(e:BalanceAdjustment):TransactionState = {
+    this.withNewCmds(e.toBeancounts(balanceState, acctState.accounts))
+  }
 
+  private def process(e:BalanceStatement):TransactionState = {
     this.withNewCmds(e.toBeancounts(balanceState, acctState.accounts))
   }
 
