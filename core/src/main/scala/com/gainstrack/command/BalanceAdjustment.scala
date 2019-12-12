@@ -67,7 +67,7 @@ case class BalanceAdjustment(
   }
 }
 
-case class BalanceAssertion(date:LocalDate, accountId:AccountId, balance:Amount, origin:BalanceAdjustment)
+case class BalanceAssertion(date:LocalDate, accountId:AccountId, balance:Amount, origin:AccountCommand)
   extends BeancountCommand {
 
   override def toBeancount: Seq[BeancountLine] = BeancountLines(s"${date} balance ${accountId} ${balance}", origin)

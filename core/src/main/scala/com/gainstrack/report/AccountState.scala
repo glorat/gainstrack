@@ -44,6 +44,7 @@ case class AccountState(accounts:Set[AccountCreation], baseCurrency:AssetId = As
       case e:AccountCreation => process(e)
       case e:Transfer => process(e)
       case e:SecurityPurchase =>  process(e)
+      case e:BalanceStatement => process(e)
       case e:BalanceAdjustment => process(e)
       case e:PriceObservation => process(e)
       case e:UnitTrustBalance => process(e)
@@ -137,6 +138,10 @@ case class AccountState(accounts:Set[AccountCreation], baseCurrency:AssetId = As
   }
 
   private def process(e:BalanceAdjustment) = {
+    this
+  }
+
+  private def process(e:BalanceStatement) = {
     this
   }
 

@@ -30,6 +30,7 @@ class GainstrackParser {
     "tfr" -> Transfer,
     "trade" -> SecurityPurchase,
     "adj" -> BalanceAdjustment,
+    "bal" -> BalanceStatement,
     "price" -> PriceObservation,
     "unit" -> UnitTrustBalance,
     "fund" -> FundCommand,

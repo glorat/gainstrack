@@ -37,6 +37,12 @@ case class CommandAccountExpander(acctState:AccountState, cmds:Seq[AccountComman
            newAcctIds.foldLeft(acctState)(_.withInferredAccount(_))
          }).getOrElse(acctState)*/
        }
+       case bal: BalanceStatement => {
+         val newAcctIds = bal.toTransfers(acctState.accounts)
+           .map(_.toTransaction).flatMap(_.filledPostings).map(_.account)
+           .filter(id => !accountSet.exists(_.accountId == id))
+         newAcctIds.foldLeft(acctState)(_.withInferredAccount(_))
+       }
        case _ => acctState
      }
     copy(cmds = cmds :+ newCmd, acctState = newAcctState)

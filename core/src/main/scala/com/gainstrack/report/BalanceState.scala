@@ -55,6 +55,7 @@ case class BalanceState(acctState:AccountState, balances:Map[AccountId,BalanceSt
       case e:CommandWithAccounts[_] => e.toTransfers.foldLeft(this)(_.process(_))
       case e:SecurityPurchase =>  process(e)
       case e:BalanceAdjustment => process(e)
+      case e:BalanceStatement => process(e)
       case _:PriceObservation => this
       case e:UnitTrustBalance => process(e)
       case _:CommodityCommand => this
@@ -96,6 +97,10 @@ case class BalanceState(acctState:AccountState, balances:Map[AccountId,BalanceSt
 
     val newSeries = origEntry.series.updated(e.date, e.balance.number)
     copy(balances = balances.updated(dest, origEntry.copy(series = newSeries)))
+  }
+
+  private def process(e:BalanceStatement): BalanceState = {
+    process(e.adjustment)
   }
 
   private def process(tx:Transaction) : BalanceState = {
