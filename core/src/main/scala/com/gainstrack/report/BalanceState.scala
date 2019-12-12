@@ -88,15 +88,22 @@ case class BalanceState(acctState:AccountState, balances:Map[AccountId,BalanceSt
   }
 
   private def process(e:BalanceAdjustment): BalanceState = {
-    //e.toBeancounts
-    val tfr = e.toTransfers(acctState.accounts).head
-    val dest = tfr.dest
+    val account = acctState.accounts.find(_.accountId == e.accountId).getOrElse(throw new IllegalStateException(s"Account ${e.accountId} is not defined"))
+    val targetAccountId = if (account.options.multiAsset) e.accountId.subAccount(e.balance.ccy.symbol) else e.accountId
+    // Since we are in date order, we can query state of yesterday already
+    val oldValue = this.getBalance(targetAccountId, e.date.minusDays(1))
 
-    // val origEntry = balances(e.accountId) // This doesn't work due to multiAsset support
-    val origEntry = balances(dest)
+    val tfrs = e.toTransfers(acctState.accounts, oldValue)
+    tfrs.map(_.toTransaction).foldLeft(this)(_.process(_))
 
-    val newSeries = origEntry.series.updated(e.date, e.balance.number)
-    copy(balances = balances.updated(dest, origEntry.copy(series = newSeries)))
+//
+//    val dest = tfr.dest
+//
+//    // val origEntry = balances(e.accountId) // This doesn't work due to multiAsset support
+//    val origEntry = balances(dest)
+//
+//    val newSeries = origEntry.series.updated(e.date, e.balance.number)
+//    copy(balances = balances.updated(dest, origEntry.copy(series = newSeries)))
   }
 
   private def process(e:BalanceStatement): BalanceState = {

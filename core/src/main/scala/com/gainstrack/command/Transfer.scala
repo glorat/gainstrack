@@ -24,13 +24,20 @@ case class Transfer(
     targetValue.number/sourceValue.number
   }
 
+  def targetAccountId(accounts: Set[AccountCreation]): AccountId = {
+    val targetAccount = accounts.find(_.accountId == dest).getOrElse(throw new IllegalStateException(s"${dest} source account does not exist"))
+    val targetFundingAccountId = if (targetAccount.options.multiAsset) dest.subAccount(targetValue.ccy.symbol) else dest
+    targetFundingAccountId
+  }
+
   // FIXME: This is a slightly confusing method to have!!! Fund usages to see the danger
+  // Consider separate Transfer and Transferred classes?
   override def toTransfers(accounts: Set[AccountCreation]): Seq[Transfer] = {
     val targetAccount = accounts.find(_.accountId == dest).getOrElse(throw new IllegalStateException(s"${dest} source account does not exist"))
     val sourceAccount = accounts.find(_.accountId == source).getOrElse(throw new IllegalStateException(s"${source} source account does not exist"))
     // Multi-asset accounts have a dedicated sub funding account
     val sourceAccountId = if (sourceAccount.options.multiAsset) source.subAccount(sourceValue.ccy.symbol) else source
-    val targetFundingAccountId = if (targetAccount.options.multiAsset) dest.subAccount(targetValue.ccy.symbol) else dest
+    val targetFundingAccountId = targetAccountId(accounts)
     val tfr = this.copy(source = sourceAccountId, dest = targetFundingAccountId)
 
     // Automatic reinvestment accounts don't hold Cash

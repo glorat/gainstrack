@@ -50,11 +50,21 @@ case class TransactionState(acctState:AccountState, balanceState:BalanceState, c
   }
 
   private def process(e:BalanceAdjustment):TransactionState = {
-    this.withNewCmds(e.toBeancounts(balanceState, acctState.accounts))
+    val account = acctState.accounts.find(_.accountId == e.accountId).getOrElse(throw new IllegalStateException(s"Account ${e.accountId} is not defined"))
+    val targetAccountId = if (account.options.multiAsset) e.accountId.subAccount(e.balance.ccy.symbol) else e.accountId
+    // Since we are in date order, we can query state of yesterday already
+    val setValue = balanceState.getBalance(targetAccountId, e.date.minusDays(1))
+    require(e.balance == setValue, s"Internal logic fail")
+    // Since per above assertion, balanceState has correct EOD balances including adjustments
+    // to back out the adjustment that happened, oldValue must be based on txs so far
+    val balanceReport:BalanceReport = BalanceReport(cmds)
+    val oldValue = balanceReport.getState.balances.get(targetAccountId).map(_.getBalance(e.balance.ccy)).getOrElse(Amount(zeroFraction, e.balance.ccy))
+
+    this.withNewCmds(e.toBeancounts(oldValue.number, acctState.accounts))
   }
 
   private def process(e:BalanceStatement):TransactionState = {
-    this.withNewCmds(e.toBeancounts(balanceState, acctState.accounts))
+    process (e.adjustment)
   }
 
   private def withNewCmds(newCmds:Seq[BeancountCommand]) : TransactionState = {

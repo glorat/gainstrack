@@ -19,9 +19,9 @@ case class BalanceStatement(
   def description:String = s"Account balance ${balance}"
 
   // With old balance value, avoid using pad
-  def toBeancounts(balanceState:BalanceState, accts:Set[AccountCreation]) : Seq[BeancountCommand] = adjustment.toBeancounts(balanceState, accts)
+  def toBeancounts(oldValue:Fraction, accts:Set[AccountCreation]) : Seq[BeancountCommand] = adjustment.toBeancounts(oldValue, accts)
 
-  def toTransfers(accts:Set[AccountCreation]) : Seq[Transfer] = adjustment.toTransfers(accts)
+  def toTransfers(accts: Set[AccountCreation], oldValue: Amount): Seq[Transfer] = adjustment.toTransfers(accts, oldValue)
 
   def toGainstrack : Seq[String] = {
     Seq(s"${date} bal ${accountId.toGainstrack} ${balance} ${adjAccount.toGainstrack}")
