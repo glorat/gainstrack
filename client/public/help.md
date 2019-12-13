@@ -15,10 +15,13 @@ Generate income from an asset
 ##### earn
 Generate external income
 #### Balance based commands
-##### adj
-Declare a balance in an account of cash
+#### bal
+Declare a balance in an account of cash, applied at end of day
 ##### unit
 Declare a balance in an account of a security where cost basis is maintained
+##### adj (deprecated)
+Declare a balance in an account of cash, applied at start of day
+
 #### Global options
 This commands are typically found at the top of the file
 
