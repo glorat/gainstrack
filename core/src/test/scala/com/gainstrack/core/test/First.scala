@@ -360,4 +360,9 @@ class First extends FlatSpec {
       dailyReport.convertedPosition(acct, date, "GBP")(origAcctState = bg.acctState, priceState = bg.priceState, assetChainMap = bg.assetChainMap)
     })
   }
+
+  "Assets" should "support arbitrary options" in {
+    val asset = bg.assetState.allAssets(AssetId("VWRD"))
+    assert(asset.options.options("arbitrary") == "hello world")
+  }
 }
