@@ -1,6 +1,6 @@
 package controllers
 
-import java.time.LocalDate
+import java.time.{Duration, Instant, LocalDate}
 import java.time.format.DateTimeParseException
 
 import com.gainstrack.command.{AccountCreation, GainstrackParser, ParserMessage}
@@ -17,6 +17,7 @@ import scala.concurrent.ExecutionContext
 
 class ApiController (implicit val ec :ExecutionContext) extends ScalatraServlet with JacksonJsonSupport {
   val logger =  LoggerFactory.getLogger(getClass)
+  var lastStart:Instant = Instant.now
 
   protected implicit val jsonFormats: Formats = org.json4s.DefaultFormats ++ GainstrackJsonSerializers.all
 
@@ -46,6 +47,13 @@ class ApiController (implicit val ec :ExecutionContext) extends ScalatraServlet 
   before() {
     contentType = formats("json")
     logger.info(request.getPathInfo)
+    lastStart = Instant.now
+  }
+
+  after() {
+    val endTime = Instant.now
+    val duration = Duration.between(lastStart, endTime)
+    logger.info(s"${request.getPathInfo} processed in ${duration.toMillis}ms")
   }
 
   protected override def transformRequestBody(body: JValue): JValue = body.camelizeKeys
