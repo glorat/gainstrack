@@ -27,11 +27,11 @@ case class PriceState(ccys: Set[AssetId], prices: Map[AssetPair, SortedMap[Local
     ))
   }
 
-  def getFX(fx1:AssetId, fx2:AssetId, date:LocalDate, maxDenom:Long=1000000):Option[Fraction] = {
-    getFX(AssetPair(fx1,fx2), date, maxDenom)
+  def getFX(fx1:AssetId, fx2:AssetId, date:LocalDate):Option[Double] = {
+    getFX(AssetPair(fx1,fx2), date)
   }
 
-  def getFX(tuple:AssetPair, date:LocalDate, maxDenom:Long):Option[Fraction] = {
+  def getFX(tuple:AssetPair, date:LocalDate):Option[Double] = {
     if (tuple.fx1 == tuple.fx2) {
       Some(1)
     }
@@ -39,11 +39,7 @@ case class PriceState(ccys: Set[AssetId], prices: Map[AssetPair, SortedMap[Local
       val timeSeries = prices.getOrElse(tuple, SortedMap())
       //println(s"Getting fx for ${tuple} has ${timeSeries.size} entries")
 
-      val ret:Option[Fraction] = interp.interpValue(timeSeries, date).map(x => x)
-      //println(s"Result: ${ret}")
-      // FIXME: This is a very slow function. Need to push the call higher up the stack
-      // especially in case when we only need the double for calculations
-      //ret.map(f => f.limitDenominatorTo(SafeLong(maxDenom)))
+      val ret:Option[Double] = interp.interpValue(timeSeries, date).map(x => x)
       ret
     }
   }

@@ -249,7 +249,12 @@ class First extends FlatSpec {
 
     val accountReport = new AccountInvestmentReport(accountId, AssetId("GBP"), fromDate, queryDate, bg.acctState, bg.balanceState, bg.txState, priceState, bg.assetChainMap)
 
-    assert(accountReport.endBalance == Amount.parse("348045.34 GBP"))
+    // Because we are doing FX with linear interpolation, rounding errors will happen
+    // The conversions here will make this equal
+    assert(accountReport.endBalance.number == 348045.34)
+    // But this will be out be a nominal amount
+    //assert(accountReport.endBalance == Amount.parse("348045.34 GBP"))
+    assert(accountReport.endBalance.number.limitDenominatorTo(1000000) == Amount.parse("348045.34 GBP").number)
 
     // Note how this excludes the internal income transaction
     assert(accountReport.inflows == Seq(Cashflow("2013-06-30", "-265000.0 GBP", AccountId("Equity:Opening:GBP"))))

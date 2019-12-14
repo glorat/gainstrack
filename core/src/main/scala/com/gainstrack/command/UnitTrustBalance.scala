@@ -76,6 +76,10 @@ case class UnitTrustBalance(
     if (newUnits.number.isZero) {
       None
     }
+    else if (newUnits.number.abs < 0.0000001) {
+      // Rounding must have happened that is bad
+      throw new IllegalStateException("BUG: Internal FX handling gone wrong in UnitTrustBalance")
+    }
     else {
       val tfr = Transfer(adjAccount, accountId, date, price * newUnits.number, newUnits, description)
       Some(tfr.toTransfers(acctState.accounts).head.toTransaction.copy(origin = this))

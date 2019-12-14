@@ -44,7 +44,6 @@ case class TransactionState(acctState:AccountState, balanceState:BalanceState, c
 
   private def process(e:UnitTrustBalance):TransactionState = {
     val baseAcct = acctState.find(e.accountId).getOrElse(throw new IllegalStateException(s"${e.accountId} is not an open account"))
-    // FIXME: Wrong account
     val oldBalance = balanceState.getAccountValue(e.securityAccountId, e.date.minusDays(1))
     this.withNewCmds(Seq(e.toBeancountCommand(Amount(oldBalance, e.security.ccy))(acctState)))
   }
@@ -54,7 +53,7 @@ case class TransactionState(acctState:AccountState, balanceState:BalanceState, c
     val targetAccountId = if (account.options.multiAsset) e.accountId.subAccount(e.balance.ccy.symbol) else e.accountId
     // Since we are in date order, we can query state of yesterday already
     val setValue = balanceState.getBalance(targetAccountId, e.date.minusDays(1))
-    require(e.balance == setValue, s"Internal logic fail")
+    require(e.balance == setValue, s"TransactionState Internal logic fail ${e.balance.number} != ${setValue.number}")
     // Since per above assertion, balanceState has correct EOD balances including adjustments
     // to back out the adjustment that happened, oldValue must be based on txs so far
     val balanceReport:BalanceReport = BalanceReport(cmds)
