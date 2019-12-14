@@ -63,7 +63,7 @@ object AccountType {
 //import AssetType.AssetType
 
 case class AssetId(symbol: String) extends Ordered[AssetId] {
-  // FIXME: Actually, maybe require it to be ^[A-Z]+$
+  // FIXME: Actually, maybe require it to be ^[A-Z\.]+$
   require(symbol.toUpperCase == symbol, s"Asset id must be all caps: ${symbol}")
 
   override def compare(that: AssetId): Int = symbol.compare(that.symbol)
