@@ -282,8 +282,8 @@ class First extends FlatSpec {
     val accounts = bg.acctState.withInterpolatedAccounts
 
     val testMeStrategy:( String)=>(String, String, Int)=>Unit = (strategy) => (acctId, ccyStr, expected) => {
-      val ps = dailyReport.convertedPosition(acctId, today, strategy)(origAcctState = accounts, priceState = bg.priceState, assetChainMap = bg.assetChainMap)
-      val ps2 = balanceReport.getState.convertedPosition(acctId, today, strategy)(bg.assetChainMap, accounts, bg.priceState)
+      val ps = dailyReport.convertedPosition(acctId, today, strategy)(origAcctState = accounts, priceState = bg.priceState, assetChainMap = bg.assetChainMap, bg.singleFXConversion)
+      val ps2 = balanceReport.getState.convertedPosition(acctId, today, strategy)(bg.assetChainMap, accounts, bg.priceState, bg.singleFXConversion)
 
 //      if (ps != ps2) {
       ////        assert(ps == ps2)
@@ -327,7 +327,7 @@ class First extends FlatSpec {
     val dailyReport = new DailyBalance(bg.balanceState)
     //val equities = bg.assetState.tagToAssets("equity")
     val equities = bg.assetState.assetsForTags(Set("equity"))
-
+    implicit val singleFXConversion = bg.singleFXConversion
     val equityValue = dailyReport.positionOfAssets(equities, bg.acctState, bg.priceState, bg.assetChainMap, today)
 
     assert(equityValue.getBalance(AssetId("GBP")).number.round == 22211)
@@ -336,7 +336,7 @@ class First extends FlatSpec {
   it should "show empty balance for unknown asset tags" in {
     val dailyReport = new DailyBalance(bg.balanceState)
     val equities = bg.assetState.assetsForTags(Set("equity", "unknown"))
-
+    implicit val singleFXConversion = bg.singleFXConversion
     val equityValue = dailyReport.positionOfAssets(equities, bg.acctState, bg.priceState, bg.assetChainMap, today)
 
     assert(equityValue.getBalance(AssetId("GBP")).number.round == 0)
@@ -350,7 +350,7 @@ class First extends FlatSpec {
     val acct = AccountId("Assets")
 
     for (dt <- range) {
-      val x = dailyReport.convertedPosition(acct, dt, "GBP")(origAcctState = bg.acctState, priceState = bg.priceState, assetChainMap = bg.assetChainMap)
+      val x = dailyReport.convertedPosition(acct, dt, "GBP")(origAcctState = bg.acctState, priceState = bg.priceState, assetChainMap = bg.assetChainMap, bg.singleFXConversion)
     }
   }
 
@@ -362,7 +362,7 @@ class First extends FlatSpec {
     val acct = AccountId("Assets")
 
     dates.foreach(date => {
-      dailyReport.convertedPosition(acct, date, "GBP")(origAcctState = bg.acctState, priceState = bg.priceState, assetChainMap = bg.assetChainMap)
+      dailyReport.convertedPosition(acct, date, "GBP")(origAcctState = bg.acctState, priceState = bg.priceState, assetChainMap = bg.assetChainMap, bg.singleFXConversion)
     })
   }
 

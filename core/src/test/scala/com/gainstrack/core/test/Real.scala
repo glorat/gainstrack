@@ -113,6 +113,7 @@ class Real extends FlatSpec with BeforeAndAfterEach {
 
   it should "have a equity/bond AA" taggedAs RealDataAvailable in {
     val bg = new GainstrackGenerator(parser.getCommands)
+    implicit val singleFXConversion = bg.singleFXConversion
     val dailyReport = new DailyBalance(bg.balanceState)
     val equities = bg.assetState.assetsForTags(Set("equity"))
     val equityValue = dailyReport.positionOfAssets(equities, bg.acctState, bg.priceState, bg.assetChainMap, queryDate)

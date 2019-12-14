@@ -3,7 +3,7 @@ package com.gainstrack.report
 import com.gainstrack.core._
 
 class PLExplain(fromDate: LocalDate, toDate: LocalDate)
-               (implicit accountState: AccountState, transactionState: TransactionState, balanceState: BalanceState, priceState: PriceState, assetChainMap: AssetChainMap) {
+               (implicit accountState: AccountState, transactionState: TransactionState, balanceState: BalanceState, priceState: PriceState, assetChainMap: AssetChainMap, singleFXConversion: SingleFXConversion) {
 
   // FIXME: Deduct liabilities
 
@@ -61,7 +61,7 @@ class PLExplain(fromDate: LocalDate, toDate: LocalDate)
 
 object PLExplain {
   def annual(toDate: LocalDate)
-            (implicit accountState: AccountState, transactionState: TransactionState, balanceState: BalanceState, priceState: PriceState, assetChainMap: AssetChainMap): PLExplain = {
+            (implicit accountState: AccountState, transactionState: TransactionState, balanceState: BalanceState, priceState: PriceState, assetChainMap: AssetChainMap, singleFXConversion: SingleFXConversion): PLExplain = {
     val fromDate = toDate.minusYears(1)
     new PLExplain(fromDate, toDate)
   }
