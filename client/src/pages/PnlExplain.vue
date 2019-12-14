@@ -15,7 +15,7 @@
             </el-date-picker>
             <button @click="submit" :disabled="selectedRange==null">Go</button>
         </div>
-        <div class="block" v-if="explainData.actual">
+        <div class="block" v-if="explains.length>0">
             P&L Explanation
 <!--            Map("actual" -> actualPnl, "explained" -> explained, "unexplained" -> unexplained,-->
 <!--            "newActivityPnl" -> newActivityPnl,-->
@@ -25,36 +25,48 @@
             <table class="sortable">
                 <tbody>
                 <tr>
+                    <td>Tenor</td>
+                    <td class="description" v-for="explainData in explains">{{ explainData.tenor}}</td>
+                </tr>
+                <tr>
+                    <td>From Date</td>
+                    <td class="datecell" v-for="explainData in explains">{{ explainData.fromDate}}</td>
+                </tr>
+                <tr>
+                    <td>To Date</td>
+                    <td class="datecell" v-for="explainData in explains">{{ explainData.toDate}}</td>
+                </tr>
+                <tr>
                     <td>Price Appreciation Profit</td>
-                    <td class="num">{{ explainData.totalDeltaExplain.toFixed(2) }}</td>
+                    <td class="num" v-for="explainData in explains">{{ explainData.totalDeltaExplain.toFixed(2) }}</td>
                 </tr>
                 <tr>
                     <td>Income</td>
-                    <td class="num">{{ explainData.totalIncome.toFixed(2) }}</td>
+                    <td class="num" v-for="explainData in explains">{{ explainData.totalIncome.toFixed(2) }}</td>
                 </tr>
                 <tr>
                     <td>Expenses</td>
-                    <td class="num">{{ explainData.totalExpense.toFixed(2) }}</td>
+                    <td class="num" v-for="explainData in explains">{{ explainData.totalExpense.toFixed(2) }}</td>
                 </tr>
                 <tr>
                     <td>Equity</td>
-                    <td class="num">{{ explainData.totalEquity.toFixed(2) }}</td>
+                    <td class="num" v-for="explainData in explains">{{ explainData.totalEquity.toFixed(2) }}</td>
                 </tr>
                 <tr>
                     <td>New Activity Profit</td>
-                    <td class="num">{{ explainData.newActivityPnl.toFixed(2) }}</td>
+                    <td class="num" v-for="explainData in explains">{{ explainData.newActivityPnl.toFixed(2) }}</td>
                 </tr>
                 <tr>
                     <td>Explained P&L</td>
-                    <td class="num">{{ explainData.explained.toFixed(2) }}</td>
+                    <td class="num" v-for="explainData in explains">{{ explainData.explained.toFixed(2) }}</td>
                 </tr>
                 <tr>
                     <td>Actual P&L</td>
-                    <td class="num">{{ explainData.actual.toFixed(2) }}</td>
+                    <td class="num" v-for="explainData in explains">{{ explainData.actual.toFixed(2) }}</td>
                 </tr>
                 <tr>
                     <td>Unexplained P&L</td>
-                    <td class="num">{{ explainData.unexplained.toFixed(2) }}</td>
+                    <td class="num" v-for="explainData in explains">{{ explainData.unexplained.toFixed(2) }}</td>
                 </tr>
                 </tbody>
             </table>
@@ -78,6 +90,13 @@
                 return this.$store.state.summary.latestDate;
             },
         },
+        mounted() {
+            axios.get('/api/pnlexplain')
+                .then(response => {
+                    this.explains = response.data;
+                })
+                .catch(error => notify.error(error));
+        },
         methods: {
             submit() {
                 const args = {
@@ -90,7 +109,7 @@
 
                 axios.post('/api/pnlexplain', args)
                     .then(response => {
-                        self.explainData = response.data;
+                        self.explains = response.data;
                     })
                     .catch(error => notify.error(error));
 
@@ -99,7 +118,7 @@
         data() {
             const self = this;
             return {
-                explainData: {},
+                explains: [],
                 pickerOptions: {
                     shortcuts: [{
                         text: 'Last week',

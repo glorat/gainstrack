@@ -330,15 +330,28 @@ class ApiController (implicit val ec :ExecutionContext) extends ScalatraServlet 
 
   get("/pnlexplain") {
     val bg = currentBg
-    val pnl = new PLExplain(currentDate.minusMonths(11), currentDate)(bg.acctState, bg.txState, bg.balanceState, bg.priceState, bg.assetChainMap, bg.singleFXConversion)
-    pnl.toDTO
+    val dates = Seq(
+      currentDate.minusDays(1),
+      currentDate.minusWeeks(1),
+      currentDate.minusMonths(1),
+      currentDate.minusMonths(3),
+      currentDate.minusYears(1),
+      currentDate.withDayOfYear(1))
+    val descs = Seq("1d", "1w", "1m", "3m", "1y", "YTD")
+
+    val pnls = dates.zip(descs).map(
+      dtdesc => new PLExplain(dtdesc._1, currentDate)(bg.acctState, bg.txState, bg.balanceState, bg.priceState, bg.assetChainMap, bg.singleFXConversion)
+        .toDTO
+        .updated("tenor", dtdesc._2)
+    )
+    pnls
   }
 
   post("/pnlexplain") {
     val body = parsedBody.extract[PNLExplainRequest]
     val bg = currentBg
     val pnl = new PLExplain(body.fromDate, body.toDate)(bg.acctState, bg.txState, bg.balanceState, bg.priceState, bg.assetChainMap, bg.singleFXConversion)
-    pnl.toDTO
+    Seq(pnl.toDTO)
   }
 /*
   error {

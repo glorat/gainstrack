@@ -279,11 +279,10 @@ class First extends FlatSpec {
   it should "project converted" in {
     val balanceReport = BalanceReport(bg.txState.cmds)
     val dailyReport = new DailyBalance(bg.balanceState)
-    val accounts = bg.acctState.withInterpolatedAccounts
 
     val testMeStrategy:( String)=>(String, String, Int)=>Unit = (strategy) => (acctId, ccyStr, expected) => {
-      val ps = dailyReport.convertedPosition(acctId, today, strategy)(origAcctState = accounts, priceState = bg.priceState, assetChainMap = bg.assetChainMap, bg.singleFXConversion)
-      val ps2 = balanceReport.getState.convertedPosition(acctId, today, strategy)(bg.assetChainMap, accounts, bg.priceState, bg.singleFXConversion)
+      val ps = dailyReport.convertedPosition(acctId, today, strategy)(bg.acctState, priceState = bg.priceState, assetChainMap = bg.assetChainMap, bg.singleFXConversion)
+      val ps2 = balanceReport.getState.convertedPosition(acctId, today, strategy)(bg.assetChainMap, bg.acctState, bg.priceState, bg.singleFXConversion)
 
 //      if (ps != ps2) {
       ////        assert(ps == ps2)
@@ -350,7 +349,7 @@ class First extends FlatSpec {
     val acct = AccountId("Assets")
 
     for (dt <- range) {
-      val x = dailyReport.convertedPosition(acct, dt, "GBP")(origAcctState = bg.acctState, priceState = bg.priceState, assetChainMap = bg.assetChainMap, bg.singleFXConversion)
+      val x = dailyReport.convertedPosition(acct, dt, "GBP")(bg.acctState, priceState = bg.priceState, assetChainMap = bg.assetChainMap, bg.singleFXConversion)
     }
   }
 
@@ -362,7 +361,7 @@ class First extends FlatSpec {
     val acct = AccountId("Assets")
 
     dates.foreach(date => {
-      dailyReport.convertedPosition(acct, date, "GBP")(origAcctState = bg.acctState, priceState = bg.priceState, assetChainMap = bg.assetChainMap, bg.singleFXConversion)
+      dailyReport.convertedPosition(acct, date, "GBP")(bg.acctState, priceState = bg.priceState, assetChainMap = bg.assetChainMap, bg.singleFXConversion)
     })
   }
 
