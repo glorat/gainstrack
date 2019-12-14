@@ -22,23 +22,23 @@ case class GainstrackGenerator(originalCommands:SortedSet[AccountCommand])  {
   private val expander =
     originalCommands.foldLeft(CommandAccountExpander(firstAcctState)) ((state, ev) => state.handle(ev))
   val finalCommands = expander.cmds
-  val acctState = firstAcctState.copy(accounts = expander.acctState.accounts)
+  implicit val acctState = firstAcctState.copy(accounts = expander.acctState.accounts)
 
   // Second pass for balances
-  val balanceState:BalanceState =
+  implicit val balanceState:BalanceState =
     finalCommands.foldLeft(BalanceState(acctState)) ( (state,ev) => state.handle(ev))
 
   // Third pass for projections
-  val assetChainMap = AssetChainMap(acctState.withInterpolatedAccounts, priceState)
-  val dailyBalances = new DailyBalance(balanceState)
+  implicit val assetChainMap = AssetChainMap(acctState.withInterpolatedAccounts, priceState)
+  implicit val dailyBalances = new DailyBalance(balanceState)
 
-  val txState:TransactionState =
+  implicit val txState:TransactionState =
     finalCommands.foldLeft(TransactionState(acctState, balanceState, Seq())) ((state, ev) => state.handle(ev))
-  lazy val priceState: PriceState =
+  implicit lazy val priceState: PriceState =
     finalCommands.foldLeft(PriceState())((state, ev) => state.handle(ev))
-  val assetState: AssetState =
+  implicit val assetState: AssetState =
     finalCommands.foldLeft(AssetState())(_.handle(_))
-  val singleFXConversion = SingleFXConversion.generate(acctState.baseCurrency)(priceState, assetChainMap)
+  implicit val singleFXConversion = SingleFXConversion.generate(acctState.baseCurrency)(priceState, assetChainMap)
   val latestDate:LocalDate = finalCommands.maxBy(_.date).date
 
   val endTime = Instant.now

@@ -50,7 +50,8 @@ class PLExplain(fromDate: LocalDate, toDate: LocalDate)
 
 
   def toDTO = {
-    Map("actual" -> actualPnl, "explained" -> explained, "unexplained" -> unexplained,
+    Map("fromDate" -> fromDate, "toDate" -> toDate,
+      "actual" -> actualPnl, "explained" -> explained, "unexplained" -> unexplained,
       "newActivityPnl" -> newActivityPnl,
       "totalEquity" -> totalEquity, "totalIncome" -> totalIncome, "totalExpense" -> totalExpense, "totalDeltaExplain" -> totalDeltaExplain
       // , "delta" -> deltaExplain
