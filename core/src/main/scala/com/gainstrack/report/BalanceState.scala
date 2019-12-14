@@ -14,7 +14,8 @@ case class BalanceState(acctState:AccountState, balances:Map[AccountId,BalanceSt
   val interp = TimeSeriesInterpolator.from(SortedMap[LocalDate,Fraction]())
 
   def getAccountValueOpt(account:AccountId, date: LocalDate) : Option[Fraction] = {
-    val ret:Option[Fraction] = interp.getValue(balances.get(account).map(_.series).getOrElse(SortedMap()), date)(TimeSeriesInterpolator.step)
+    val series = balances.get(account).map(_.series).getOrElse(SortedMap())
+    val ret:Option[Fraction] = interp.getValue(series, date)(TimeSeriesInterpolator.step)
       .map(x => x)
        // .map(f => f.limitDenominatorTo(SafeLong(1000000)))
     ret
@@ -28,7 +29,9 @@ case class BalanceState(acctState:AccountState, balances:Map[AccountId,BalanceSt
     balances.get(account).map(entry => {
       val ccy = entry.ccy
       val ret: Fraction = interp.getValue(entry.series, date)(TimeSeriesInterpolator.step)
-        .map(f => f.limitDenominatorTo(SafeLong(1000000)))
+        // Danger of reverting back to Fractional from a Double FX conversion here
+        //.map(f => spire.math.Rational.apply(f).limitDenominatorTo(1000000) )
+        .map(_.limitDenominatorTo(1000000))
         .getOrElse(zeroFraction)
       Amount(ret, ccy)
     })

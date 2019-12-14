@@ -7,7 +7,7 @@ import scala.collection.SortedMap
 case class SingleFXConversion(data:Map[AssetId, SortedMap[LocalDate, Fraction]], baseCcy:AssetId) extends FXConverter {
   private val interp = TimeSeriesInterpolator.from(SortedMap[LocalDate, Fraction]())
 
-  override def getFX(fx1:AssetId, fx2:AssetId, date: LocalDate, maxDenom: Long=1000000): Option[Fraction] = {
+  override def getFX(fx1:AssetId, fx2:AssetId, date: LocalDate): Option[Double] = {
     if (fx1 == fx2) {
       Some(1.0)
     }

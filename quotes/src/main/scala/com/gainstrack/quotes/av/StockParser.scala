@@ -33,7 +33,7 @@ object StockParser {
     // and historics are a mix of USD and GBp (pence)
     if (amount.number / refPrice > 10) {
       val gbp = amount.number / 100
-      val usd = priceState.getFX(AssetId("GBP"), AssetId("USD"), date).getOrElse(zeroFraction) * gbp  // FIXME: Look up GBP/USD for the day
+      val usd = priceState.getFX(AssetId("GBP"), AssetId("USD"), date).getOrElse(0.0) * gbp
       Amount(usd, AssetId("USD"))
 
     }

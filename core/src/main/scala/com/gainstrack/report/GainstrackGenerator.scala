@@ -1,5 +1,7 @@
 package com.gainstrack.report
 
+import java.time.{Duration, Instant}
+
 import com.gainstrack.core._
 import com.gainstrack.command._
 import net.glorat.cqrs.{AggregateRootState, DomainEvent}
@@ -8,6 +10,7 @@ import scala.collection.SortedSet
 
 
 case class GainstrackGenerator(originalCommands:SortedSet[AccountCommand])  {
+  val startTime = Instant.now
   // Global
   val globalCommand = originalCommands.head.asInstanceOf[GlobalCommand]
 
@@ -36,6 +39,10 @@ case class GainstrackGenerator(originalCommands:SortedSet[AccountCommand])  {
   val assetState: AssetState =
     finalCommands.foldLeft(AssetState())(_.handle(_))
   val latestDate:LocalDate = finalCommands.maxBy(_.date).date
+
+  val endTime = Instant.now
+
+  def generationDuration: Duration = Duration.between(startTime, endTime)
 
     //     val machine = new PriceCollector
   //    orderedCmds.foreach(cmd => {
