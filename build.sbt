@@ -26,7 +26,8 @@ lazy val dlstore_deps =
 
 lazy val common_deps = Seq(
   "org.scalatest" %% "scalatest" % "3.0.4" % "test",
-  "net.cakesolutions" %% "scala-kafka-client-testkit" % "1.0.0" % "test"
+  "net.cakesolutions" %% "scala-kafka-client-testkit" % "1.0.0" % "test",
+  "org.json4s"   %% "json4s-jackson" % "3.5.0"
 )
 
 lazy val dlsuite_deps = dlstore_deps ++ common_deps
@@ -59,6 +60,10 @@ lazy val web = project
 
 lazy val core = project
   .dependsOn(dlstore)
+  .settings(commonSettings: _*)
+
+lazy val quotes = project
+  .dependsOn(core)
   .settings(commonSettings: _*)
 
 lazy val root = (project in file("."))
