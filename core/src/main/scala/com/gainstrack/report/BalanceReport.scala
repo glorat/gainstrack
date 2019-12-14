@@ -44,12 +44,12 @@ case class BalanceReportState(balances:Map[AccountId, PositionSet]) {
   }
 
   def convertedPosition(accountId: AccountId, date: LocalDate, conversionStrategy: String)
-                       (implicit assetChainMap: AssetChainMap, origAcctState: AccountState, priceState: PriceState):PositionSet = {
+                       (implicit assetChainMap: AssetChainMap, origAcctState: AccountState, priceState: PriceState, singleFXConversion: SingleFXConversion):PositionSet = {
     val acctState = origAcctState.withInterpolatedAccounts
     val accountOpt = acctState.accountMap.get(accountId)
     accountOpt.map(account => {
       val fn:AccountId=>PositionSet = balances.get(_).getOrElse(PositionSet())
-      val balanceConversion = new BalanceConversion(conversionStrategy, account.key.assetId, fn, date)(acctState, priceState, assetChainMap)
+      val balanceConversion = new BalanceConversion(conversionStrategy, account.key.assetId, fn, date)
       balanceConversion.convertTotal(accountId, _=>true)
     }).getOrElse(PositionSet() + Amount(0, acctState.baseCurrency))
 

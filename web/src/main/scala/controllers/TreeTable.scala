@@ -13,20 +13,13 @@ case class TreeTableDTO(
                          assetBalance:Seq[Map[String,Any]])
 
 
-class BalanceTreeTable(
-                        acctState:AccountState,
-                        priceState:PriceState,
-                        assetChainMap: AssetChainMap,
-                        date:LocalDate,
-                        balanceReport:DailyBalance,
-                        conversionStrategy:String,
-                        accountFilter: AccountCreation=>Boolean
-                      ) {
+class BalanceTreeTable(date: LocalDate, conversionStrategy: String, accountFilter: AccountCreation => Boolean)
+                      (implicit acctState: AccountState, priceState: PriceState, assetChainMap: AssetChainMap, balanceReport: DailyBalance, singleFXConversion: SingleFXConversion) {
   val allAcctState = acctState.withInterpolatedAccounts
 
 
   def toTreeTable(acctId: AccountId):TreeTableDTO = {
-    val balance = balanceReport.convertedPosition(acctId, date, conversionStrategy, accountFilter)(acctState, priceState, assetChainMap)
+    val balance = balanceReport.convertedPosition(acctId, date, conversionStrategy, accountFilter)
 
     // TODO: Sort the sequence alphabetically
     TreeTableDTO(acctId.toString, acctId.shortName,

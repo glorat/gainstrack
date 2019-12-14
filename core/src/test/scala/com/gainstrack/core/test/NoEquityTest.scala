@@ -25,13 +25,13 @@ class NoEquityTest extends FlatSpec {
     //bg.dailyBalances.convertedPosition(Equity.accountId, MaxDate, "global")(bg.acctState, bg.priceState, bg.assetChainMap)
     val balanceReport = BalanceReport(bg.txState.cmds, MinDate, MaxDate)
     // Note that income/equity has reversed sign per accounting norms
-    val totalEquity = balanceReport.getState.convertedPosition(Equity.accountId, MinDate, "global")( bg.assetChainMap, bg.acctState, bg.priceState).getBalance(bg.acctState.baseCurrency).number.toDouble
+    val totalEquity = balanceReport.getState.convertedPosition(Equity.accountId, MinDate, "global")( bg.assetChainMap, bg.acctState, bg.priceState, bg.singleFXConversion).getBalance(bg.acctState.baseCurrency).number.toDouble
     assert(totalEquity == 0)
 
   }
 
   it should "generate pnl explain" in {
-    val exp = new PLExplain(MinDate, MaxDate)(bg.acctState, bg.txState, bg.balanceState, bg.priceState, bg.assetChainMap)
+    val exp = new PLExplain(MinDate, MaxDate)(bg.acctState, bg.txState, bg.balanceState, bg.priceState, bg.assetChainMap, bg.singleFXConversion)
     exp.actualPnl
   }
 }

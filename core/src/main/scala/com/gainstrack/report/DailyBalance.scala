@@ -7,7 +7,7 @@ import com.gainstrack.core._
 
 case class DailyBalance(balanceState: BalanceState, date: LocalDate = MaxDate) {
 
-  def monthlySeries(accountId: AccountId, conversionStrategy: String, endDate: LocalDate, acctState: AccountState, priceState: PriceState, assetChainMap: AssetChainMap) = {
+  def monthlySeries(accountId: AccountId, conversionStrategy: String, endDate: LocalDate, acctState: AccountState, priceState: PriceState, assetChainMap: AssetChainMap, singleFXConversion: SingleFXConversion) = {
     val startDate = acctState.accounts
       .filter(a => accountId == a.accountId || a.accountId.isSubAccountOf(accountId))
       .map(_.date)
@@ -16,7 +16,7 @@ case class DailyBalance(balanceState: BalanceState, date: LocalDate = MaxDate) {
     val end = YearMonth.from(endDate).plusMonths(1)
     val it = Iterator.iterate(startMonth)(_.plusMonths(1)).takeWhile(!_.isAfter(end))
     val dates = (for (ym <- it) yield ym.atDay(1)).map(x=>x).toVector
-    val values = dates.map(date => this.convertedPosition(accountId, date, conversionStrategy)(origAcctState = acctState, priceState = priceState, assetChainMap = assetChainMap))
+    val values = dates.map(date => this.convertedPosition(accountId, date, conversionStrategy)(origAcctState = acctState, priceState = priceState, assetChainMap = assetChainMap, singleFXConversion))
     val ccys = values.flatMap(_.assetBalance.keySet).toSet
     val allSeries = ccys.map(ccy => {
       val xy = dates.zip(values.map(_.assetBalance(ccy))).map(x => ApexTimeSeriesEntry(x._1.toString, x._2.toDouble))
@@ -37,21 +37,21 @@ case class DailyBalance(balanceState: BalanceState, date: LocalDate = MaxDate) {
   }
 
   def positionOfAssets(assets:Set[AssetId], origAcctState:AccountState, priceState: PriceState, assetChainMap: AssetChainMap, date:LocalDate,
-                         conversionStrategy:String = "global") = {
+                         conversionStrategy:String = "global")(implicit singleFXConversion: SingleFXConversion) = {
     origAcctState.withAsset(assets).foldLeft(PositionSet()) ((ps, account) => {
-      val value = this.convertedPosition(account.accountId, date, conversionStrategy)(origAcctState = origAcctState, priceState = priceState, assetChainMap = assetChainMap)
+      val value = this.convertedPosition(account.accountId, date, conversionStrategy)(origAcctState, priceState ,  assetChainMap, singleFXConversion)
       ps + value
     })
   }
 
   def convertedPosition(accountId: AccountId, date: LocalDate, conversionStrategy: String, accountFilter: AccountCreation => Boolean = _ => true)
-                       (implicit origAcctState: AccountState, priceState: PriceState, assetChainMap: AssetChainMap): PositionSet = {
+                       (implicit origAcctState: AccountState, priceState: PriceState, assetChainMap: AssetChainMap, singleFXConversion: SingleFXConversion): PositionSet = {
     val acctState = origAcctState.withInterpolatedAccounts
     val accounts = acctState.accounts
     val thisCcy = acctState.accountMap.get(accountId).map(_.key.assetId).getOrElse(origAcctState.baseCurrency)
 
     val acctToPosition: (AccountId=>PositionSet) = balanceState.getBalanceOpt(_, date).map(PositionSet() + _).getOrElse(PositionSet())
-    val converter = new BalanceConversion(conversionStrategy, thisCcy, acctToPosition, date)(acctState, priceState, assetChainMap)
+    val converter = new BalanceConversion(conversionStrategy, thisCcy, acctToPosition, date)
     converter.convertTotal(accountId, accountFilter)
   }
 
