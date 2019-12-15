@@ -47,7 +47,7 @@ object StockParser {
 }
 
 case class StockParseResult(series:SortedMap[LocalDate, Fraction], liveQuote:Fraction) {
-  def fixupLSE(priceState: FXConverter) : StockParseResult = {
+  def fixupLSE(actualCcy:AssetId, priceState: FXConverter) : StockParseResult = {
     // LSE ETFs on alpha-vantage are declared as being in in USD
     // and historics are a mix of USD and GBp (pence)
     require(!liveQuote.isZero)
@@ -59,13 +59,14 @@ case class StockParseResult(series:SortedMap[LocalDate, Fraction], liveQuote:Fra
       val amount = kv._2
       val date = kv._1
       val corrected = if (amount / refPrice > 10) {
-        val gbp = amount / 100
-        val usd = priceState.getFX(AssetId("GBP"), AssetId("USD"), date).getOrElse(0.0) * gbp
+        val gbp = amount / 100 // GBP/GBp
+        val usd = priceState.getFX(AssetId("GBP"), actualCcy, date).getOrElse(0.0) * gbp
         usd
       }
       else {
         kv._2
       }
+      refPrice = corrected
       builder += (date -> corrected)
     })
 

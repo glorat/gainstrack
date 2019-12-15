@@ -36,8 +36,11 @@ case class PriceState(ccys: Set[AssetId], prices: Map[AssetPair, SortedMap[Local
       Some(1)
     }
     else {
+      // NOTE: Try to get it both ways in case during manual construction, we only populated one sided series
+      // In "normal" operation via the events, both sides get populated so the reverse check is redundant
+      // However, this one the fly conversion of the whole series is very slow
+      // val timeSeries = prices.getOrElse(tuple, prices.get(tuple.reverse).map(_.mapValues(_.inverse)).getOrElse(SortedMap()))
       val timeSeries = prices.getOrElse(tuple, SortedMap())
-      //println(s"Getting fx for ${tuple} has ${timeSeries.size} entries")
 
       val ret:Option[Double] = interp.interpValue(timeSeries, date).map(x => x)
       ret
@@ -107,6 +110,7 @@ case class AssetPair(str: String) {
   def fx2:String = {
     str.split("/")(1)
   }
+  def reverse:AssetPair = AssetPair(fx2, fx1)
 }
 object AssetPair {
   def apply(fx1:String, fx2:String):AssetPair = AssetPair(AssetId(fx1), AssetId(fx2))
