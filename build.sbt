@@ -53,6 +53,7 @@ lazy val commonSettings = Seq(
 
 lazy val web = project
   .dependsOn(core % "compile->compile;test->test")
+  .dependsOn(quotes)
   .settings(commonSettings: _*)
   .settings(
     mainClass in assembly := Some("JettyLauncher"),

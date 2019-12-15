@@ -27,7 +27,7 @@ object Main {
     println(s"Duration: ${duration.toMillis/1000.0}s")
   }
 
-  private def doTheWork = {
+  def doTheWork:DbState = {
     val isoCcys = Seq("GBP", "HKD")
     val ccySeries = isoCcys.map(fxCcy => {
       val res = StockParser.parseSymbol(fxCcy)
