@@ -27,18 +27,17 @@ object Main {
   private def doTheWork = {
     val isoCcys = Seq("GBP", "HKD")
     val allSeries: Map[AssetPair, SortedMap[LocalDate, Fraction]] = isoCcys.map(fxCcy => {
-      val series: SortedMap[LocalDate, Fraction] = StockParser.parseSymbol(fxCcy, AssetId("USD"))(PriceState())
+      val res = StockParser.parseSymbol(fxCcy)
+      val series: SortedMap[LocalDate, Fraction] = res.series
       AssetPair(fxCcy, "USD") -> series
     }).toMap
     val priceState = PriceState(isoCcys.map(AssetId(_)).toSet, allSeries)
 
     val symbol = "VWRD.LON"
-    val ccy = AssetId(symbol)
+    val res = StockParser.parseSymbol(symbol)
+      .fixupLSE(priceState)
 
-    val baseCcy = StockParser.parseCurrency(symbol)
-    val prices = StockParser.parseSymbol(symbol, baseCcy)(priceState)
-    // FIXME: baseCcy is wrong in some cases - it gets fixed up
-    val newState = priceState.withUpdatedSeries(AssetPair(AssetId(symbol), baseCcy), prices)
+    val newState = priceState.withUpdatedSeries(AssetPair(symbol, "USD"), res.series)
     newState
   }
 }
