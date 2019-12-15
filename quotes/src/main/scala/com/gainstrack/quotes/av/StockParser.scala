@@ -9,6 +9,18 @@ import scala.collection.SortedMap
 
 object StockParser {
 
+  def parseIntradayRefQuote(symbol:String):Option[Fraction] = {
+
+    try {
+      val intraday = parseSymbol(s"intraday.$symbol")
+      Some(intraday.liveQuote)
+    }
+    catch {
+      case _:Exception => None
+    }
+
+  }
+
   def parseSymbol(symbol:String):StockParseResult = {
     val assetId = AssetId(symbol)
     val src = scala.io.Source.fromFile(s"db/${symbol}.csv")
@@ -19,7 +31,7 @@ object StockParser {
     val closeIndex = headers.indexOf("close")
     require(closeIndex>=0, s"close column not found for $symbol")
     val refPriceStr = it1.next().split(",").map(_.trim).apply(closeIndex)
-    val liveQuote = parseNumber(refPriceStr)
+    val liveQuote = parseIntradayRefQuote(symbol).getOrElse(parseNumber(refPriceStr))
     require(!liveQuote.isZero, s"close for ${symbol} zero in ${refPriceStr} for line")
     val buildMap = SortedMap.newBuilder[LocalDate, Fraction]
 
@@ -47,7 +59,7 @@ object StockParser {
 }
 
 case class StockParseResult(series:SortedMap[LocalDate, Fraction], liveQuote:Fraction) {
-  def fixupLSE(actualCcy:AssetId, priceState: FXConverter) : StockParseResult = {
+  def fixupLSE(lseCcy:String, actualCcy:AssetId, priceState: FXConverter) : StockParseResult = {
     // LSE ETFs on alpha-vantage are declared as being in in USD
     // and historics are a mix of USD and GBp (pence)
     require(!liveQuote.isZero)
@@ -58,14 +70,32 @@ case class StockParseResult(series:SortedMap[LocalDate, Fraction], liveQuote:Fra
     series.foreach(kv => {
       val amount = kv._2
       val date = kv._1
-      val corrected = if (amount / refPrice > 10) {
-        val gbp = amount / 100 // GBP/GBp
-        val usd = priceState.getFX(AssetId("GBP"), actualCcy, date).getOrElse(0.0) * gbp
-        usd
+      val corrected:Fraction = lseCcy match {
+        case "LSEUSD" => {
+          if (amount / refPrice > 10) {
+            val gbp = amount / 100 // GBP/GBX
+            val usd = priceState.getFX(AssetId("GBP"), actualCcy, date).getOrElse(0.0) * gbp
+            usd
+          }
+          else {
+            amount
+          }
+        }
+        case "LSEGBP" => {
+          if (amount / refPrice > 10) {
+            amount / 100 // GBP/GBX
+          }
+          else {
+            amount
+          }
+        }
+        case "GBX" => {
+          val gbp = amount / 100
+          gbp
+        }
+        case _ => amount
       }
-      else {
-        kv._2
-      }
+
       refPrice = corrected
       builder += (date -> corrected)
     })

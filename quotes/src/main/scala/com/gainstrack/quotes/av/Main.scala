@@ -15,13 +15,13 @@ object Main {
 
     val startTime = Instant.now
     val res: DbState = doTheWork
-    val baseCcySymbol = "GBP"
+    val baseCcySymbol = "USD"
     val singleFXConversion = res.singleFxConverter(AssetId(baseCcySymbol))
     val endTime = Instant.now
     val duration = Duration.between(startTime, endTime)
 
-    res.priceState.prices(AssetPair("VWRD.LON","USD")).foreach(kv => {
-      val toBase = singleFXConversion.getFX("VWRD.LON",baseCcySymbol,kv._1).get.formatted("%.2f")
+    res.priceState.prices(AssetPair("VWRL.LON","GBP")).foreach(kv => {
+      val toBase = singleFXConversion.getFX("VWRL.LON",baseCcySymbol,kv._1).get.formatted("%.2f")
       println(s"${kv._1} ${kv._2.toDouble.formatted("%.2f")} $toBase")
     })
     println(s"Duration: ${duration.toMillis/1000.0}s")
@@ -38,17 +38,30 @@ object Main {
     val allSeries = (ccySeries ++ inverseSeries).toMap
     val priceState = PriceState(isoCcys.map(AssetId(_)).toSet, allSeries)
 
-    val lseUsdStocks = Seq("VWRD.LON", "AGGG.LON")
-    val finalState = lseUsdStocks.foldLeft(priceState)((pState,symbol) => {
+    val allConfigs:Seq[QuoteConfig] = Seq(
+      Tuple3("VWRD.LON", "USD", "LSEUSD"),
+      Tuple3("VDEV.LON", "USD", "LSEUSD"),
+      Tuple3("AGGG.LON", "USD", "LSEUSD"),
+      Tuple3("TIP5.LON", "USD", "LSEUSD"),
+      Tuple3("VWRL.LON", "GBP", "LSEGBP"),
+      Tuple3("VMID.LON", "GBP", "LSEGBP"),
+      Tuple3("STAN.LON", "GBP", "GBX"),
+      Tuple3("2888.HKG", "HKD", "HKD"),
+      Tuple3("GOOG", "USD", "USD"),
+    ).map(QuoteConfig.tupled)
 
-      val res = StockParser.parseSymbol(symbol)
-        .fixupLSE(AssetId("USD"), priceState)
+    val finalState = allConfigs.foldLeft(priceState)((pState,cfg) => {
+      val res = StockParser.parseSymbol(cfg.symbol)
+        .fixupLSE(cfg.domainCcy, AssetId(cfg.actualCcy), priceState)
 
-      pState.withUpdatedSeries(AssetPair(symbol, "USD"), res.series)
+      pState.withUpdatedSeries(AssetPair(cfg.symbol,cfg.actualCcy), res.series)
     })
+
     DbState(finalState)
   }
 }
+
+case class QuoteConfig(symbol:String, actualCcy:String, domainCcy:String)
 
 case class DbState(priceState: PriceState) {
   private def inferredChain(baseCurrency:AssetId) : AssetChainMap = {
