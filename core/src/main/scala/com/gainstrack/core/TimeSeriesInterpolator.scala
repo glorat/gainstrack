@@ -2,6 +2,8 @@ package com.gainstrack.core
 
 import java.time.temporal.ChronoUnit
 
+import spire.math.Fractional
+
 import scala.collection.SortedMap
 
 
@@ -55,17 +57,25 @@ object TimeSeriesInterpolator {
 
 
   type Interpolator[FROM,N] = ((InterpolationOption[FROM], LocalDate) => Option[N])
-  val linear: Interpolator[Fraction, Double] = (nearest, date) => {
+  val linear: Interpolator[Fraction, Double] = linearGeneric
+
+  val linearDouble: Interpolator[Double,Double] =linearGeneric
+
+  def linearGeneric[N:Fractional]: Interpolator[N,Double] = (nearest, date) => {
+    import spire.implicits._
+
     val ret: Option[Double] = nearest match {
-      case _: Empty[Fraction] => None
-      case e: Exact[Fraction] => Some(e.value.toDouble)
-      case e: ExtrapolateLow[Fraction] => Some(e.value.toDouble)
-      case e: ExtrapolateHigh[Fraction] => Some(e.value.toDouble)
-      case e: Interpolate[Fraction] => {
+      case _: Empty[N] => None
+      case e: Exact[N] => {
+        Some(e.value.toDouble())
+      }
+      case e: ExtrapolateLow[N] => Some(e.value.toDouble)
+      case e: ExtrapolateHigh[N] => Some(e.value.toDouble)
+      case e: Interpolate[N] => {
         // Linear interpolation
-        val all: Double = ChronoUnit.DAYS.between(e.before._1, e.after._1)
-        val n: Double = ChronoUnit.DAYS.between(e.before._1, date)
-        val ratio: Double = n / all
+        val all: N = Fractional[N].fromLong(ChronoUnit.DAYS.between(e.before._1, e.after._1))
+        val n: N = Fractional[N].fromLong(ChronoUnit.DAYS.between(e.before._1, date))
+        val ratio: Double = (n / all).toDouble
         val diff: Double = (e.after._2 - e.before._2).toDouble
         val ret: Double = (diff * ratio) + e.before._2.toDouble
         Some(ret)
@@ -75,25 +85,6 @@ object TimeSeriesInterpolator {
     ret
   }
 
-  val linearDouble: Interpolator[Double,Double] = (nearest, date) => {
-    val ret: Option[Double] = nearest match {
-      case _: Empty[Double] => None
-      case e: Exact[Double] => Some(e.value.toDouble)
-      case e: ExtrapolateLow[Double] => Some(e.value.toDouble)
-      case e: ExtrapolateHigh[Double] => Some(e.value.toDouble)
-      case e: Interpolate[Double] => {
-        // Linear interpolation
-        val all: Double = ChronoUnit.DAYS.between(e.before._1, e.after._1)
-        val n: Double = ChronoUnit.DAYS.between(e.before._1, date)
-        val ratio: Double = n / all
-        val diff: Double = (e.after._2 - e.before._2).toDouble
-        val ret: Double = (diff * ratio) + e.before._2.toDouble
-        Some(ret)
-      }
-      case _ => None
-    }
-    ret
-  }
 
   val step : Interpolator[Fraction, Fraction] = (nearest,date) => {
     nearest match {
