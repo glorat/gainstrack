@@ -14,7 +14,7 @@ case class PriceState(ccys: Set[AssetId], prices: Map[AssetPair, SortedMap[Local
 
   private val implicitPrices = true
 
-  private val interp = TimeSeriesInterpolator.from(SortedMap[LocalDate, Fraction]())
+  private val interp = new TimeSeriesInterpolator
 
   def toDTO = {
     val keys = prices.keys.toSeq.sortBy(_.str)
@@ -75,8 +75,13 @@ case class PriceState(ccys: Set[AssetId], prices: Map[AssetPair, SortedMap[Local
     val fx2 = AssetPair(price.ccy, tgt)
     val newByDate = prices.getOrElse(fx1,SortedMap()).updated(date, price.number)
     val new2ByDate = prices.getOrElse(fx2, SortedMap()).updated(date, 1/price.number)
-    val newCcys = this.ccys + price.ccy + tgt
-    copy(ccys = newCcys, prices = prices.updated(fx1, newByDate).updated(fx2, new2ByDate))
+
+    this.withUpdatedSeries(fx1, newByDate)
+        .withUpdatedSeries(fx2, new2ByDate)
+  }
+
+  def withUpdatedSeries(assetId:AssetPair, series: SortedMap[LocalDate, Fraction]) = {
+    this.copy(ccys = ccys + AssetId(assetId.fx1) + AssetId(assetId.fx1),  prices = prices.updated(assetId, series))
   }
 
   def handle(e: DomainEvent): PriceState = {

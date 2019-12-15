@@ -2,11 +2,13 @@ package com.gainstrack.quotes.av
 
 import com.gainstrack.command.PriceObservation
 import com.gainstrack.core._
-import com.gainstrack.report.PriceState
+import com.gainstrack.report.{FXConverter, PriceState, SingleFXConversion}
+import spire.math.Rational
+
+import scala.collection.SortedMap
 
 object StockParser {
-  def parseSymbol(symbol:String, baseCcy:AssetId)(origPriceState: PriceState = PriceState()):PriceState = {
-    var priceState = origPriceState
+  def parseSymbol(symbol:String, baseCcy:AssetId)(origQuotes: FXConverter):SortedMap[LocalDate, Fraction] = {
     val assetId = AssetId(symbol)
     val src = scala.io.Source.fromFile(s"db/${symbol}.csv")
     val it1 = src.getLines()
@@ -15,22 +17,30 @@ object StockParser {
     require(dateIndex>=0, s"timestamp column not found for $symbol")
     val closeIndex = headers.indexOf("close")
     require(closeIndex>=0, s"close column not found for $symbol")
-    var refPrice = parseNumber(it1.next().split(",").map(_.trim).apply(closeIndex))
+    val refPriceStr = it1.next().split(",").map(_.trim).apply(closeIndex)
+    var refPrice = parseNumber(refPriceStr)
+    require(!refPrice.isZero, s"close for ${symbol} zero in ${refPriceStr} for line")
+    val buildMap = SortedMap.newBuilder[LocalDate, Fraction]
+
     for (line<-src.getLines().drop(2)) {
       val parts = line.split(",").map(_.trim)
       val date = parseDate(parts(dateIndex))
       val value = parseNumber(parts(closeIndex))
       val amount = Amount(value, baseCcy)
-      val corrected = fixupAmount(amount, refPrice, date, priceState)
-      priceState = priceState.handle(PriceObservation(date, assetId, corrected))
-      refPrice = corrected.number
+      val corrected = fixupAmount(amount, refPrice, date, origQuotes)
+      if (!corrected.number.isZero) {refPrice = corrected.number}
+      buildMap+=(date -> corrected.number)
     }
-    priceState
+    val map:SortedMap[LocalDate, Fraction] = buildMap.result()
+    map
   }
 
-  private def fixupAmount(amount: Amount, refPrice:Fraction, date:LocalDate, priceState: PriceState) : Amount = {
+  private def fixupAmount(amount: Amount, refPrice:Fraction, date:LocalDate, priceState: FXConverter) : Amount = {
     // LSE ETFs on alpha-vantage are declared as being in in USD
     // and historics are a mix of USD and GBp (pence)
+    if (refPrice.isZero){
+      ???
+    }
     if (amount.number / refPrice > 10) {
       val gbp = amount.number / 100
       val usd = priceState.getFX(AssetId("GBP"), AssetId("USD"), date).getOrElse(0.0) * gbp

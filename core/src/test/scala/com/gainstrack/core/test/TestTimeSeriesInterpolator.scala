@@ -10,10 +10,10 @@ class TestTimeSeriesInterpolator extends FlatSpec {
     parseDate("2019-01-01") -> parseNumber("1"),
     parseDate("2019-12-31") -> parseNumber("365")
   )
-  val interp = TimeSeriesInterpolator.from(data)
+  val interp = new TimeSeriesInterpolator
 
   {
-    implicit val linear = TimeSeriesInterpolator.linear
+    implicit val linear = TimeSeriesInterpolator.linear[Fraction]
     "TimeSeriesTest" should "extrapolate before start" in {
       assert(interp.interpValue(data, parseDate("2018-01-01")) == Some(1))
     }

@@ -16,7 +16,7 @@ class TimeSeriesInterpolator {
     interpolator(nearest, date)
   }
 
-  def interpValue(timeSeries:SortedMap[LocalDate,Fraction], date:LocalDate) : Option[Double] = {
+  def interpValue[N:Fractional](timeSeries:SortedMap[LocalDate,N], date:LocalDate) : Option[Double] = {
     getValue(timeSeries, date)(linear)
   }
 
@@ -57,11 +57,8 @@ object TimeSeriesInterpolator {
 
 
   type Interpolator[FROM,N] = ((InterpolationOption[FROM], LocalDate) => Option[N])
-  val linear: Interpolator[Fraction, Double] = linearGeneric
 
-  val linearDouble: Interpolator[Double,Double] =linearGeneric
-
-  def linearGeneric[N:Fractional]: Interpolator[N,Double] = (nearest, date) => {
+  def linear[N:Fractional]: Interpolator[N,Double] = (nearest, date) => {
     import spire.implicits._
 
     val ret: Option[Double] = nearest match {
@@ -97,8 +94,4 @@ object TimeSeriesInterpolator {
     }
   }
 
-
-  def from(timeSeries:SortedMap[LocalDate,Fraction]) :TimeSeriesInterpolator = {
-    new TimeSeriesInterpolator
-  }
 }
