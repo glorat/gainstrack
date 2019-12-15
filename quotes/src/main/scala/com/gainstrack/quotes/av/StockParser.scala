@@ -8,7 +8,8 @@ import spire.math.Rational
 import scala.collection.SortedMap
 
 object StockParser {
-  def parseSymbol(symbol:String, baseCcy:AssetId)(origQuotes: FXConverter):SortedMap[LocalDate, Fraction] = {
+
+  def parseSymbol(symbol:String):StockParseResult = {
     val assetId = AssetId(symbol)
     val src = scala.io.Source.fromFile(s"db/${symbol}.csv")
     val it1 = src.getLines()
@@ -18,39 +19,18 @@ object StockParser {
     val closeIndex = headers.indexOf("close")
     require(closeIndex>=0, s"close column not found for $symbol")
     val refPriceStr = it1.next().split(",").map(_.trim).apply(closeIndex)
-    var refPrice = parseNumber(refPriceStr)
-    require(!refPrice.isZero, s"close for ${symbol} zero in ${refPriceStr} for line")
+    val liveQuote = parseNumber(refPriceStr)
+    require(!liveQuote.isZero, s"close for ${symbol} zero in ${refPriceStr} for line")
     val buildMap = SortedMap.newBuilder[LocalDate, Fraction]
 
     for (line<-src.getLines().drop(2)) {
       val parts = line.split(",").map(_.trim)
       val date = parseDate(parts(dateIndex))
       val value = parseNumber(parts(closeIndex))
-      val amount = Amount(value, baseCcy)
-      val corrected = fixupAmount(amount, refPrice, date, origQuotes)
-      if (!corrected.number.isZero) {refPrice = corrected.number}
-      buildMap+=(date -> corrected.number)
+      buildMap+=(date -> value)
     }
     val map:SortedMap[LocalDate, Fraction] = buildMap.result()
-    map
-  }
-
-  private def fixupAmount(amount: Amount, refPrice:Fraction, date:LocalDate, priceState: FXConverter) : Amount = {
-    // LSE ETFs on alpha-vantage are declared as being in in USD
-    // and historics are a mix of USD and GBp (pence)
-    if (refPrice.isZero){
-      ???
-    }
-    if (amount.number / refPrice > 10) {
-      val gbp = amount.number / 100
-      val usd = priceState.getFX(AssetId("GBP"), AssetId("USD"), date).getOrElse(0.0) * gbp
-      Amount(usd, AssetId("USD"))
-
-    }
-    else {
-      // Fix the currency
-      Amount(amount.number, AssetId("USD"))
-    }
+    StockParseResult(series = map, liveQuote = liveQuote)
   }
 
   def parseCurrency(symbol: String):AssetId = {
@@ -63,5 +43,32 @@ object StockParser {
     val details = elem.extract[Map[String,String]]
     val currencyKey = details.keys.find(_.matches(".*currency.*"))
     AssetId(details(currencyKey.get))
+  }
+}
+
+case class StockParseResult(series:SortedMap[LocalDate, Fraction], liveQuote:Fraction) {
+  def fixupLSE(priceState: FXConverter) : StockParseResult = {
+    // LSE ETFs on alpha-vantage are declared as being in in USD
+    // and historics are a mix of USD and GBp (pence)
+    require(!liveQuote.isZero)
+
+    val builder = SortedMap.newBuilder[LocalDate, Fraction]
+    var refPrice = liveQuote
+
+    series.foreach(kv => {
+      val amount = kv._2
+      val date = kv._1
+      val corrected = if (amount / refPrice > 10) {
+        val gbp = amount / 100
+        val usd = priceState.getFX(AssetId("GBP"), AssetId("USD"), date).getOrElse(0.0) * gbp
+        usd
+      }
+      else {
+        kv._2
+      }
+      builder += (date -> corrected)
+    })
+
+    this.copy(series = builder.result())
   }
 }
