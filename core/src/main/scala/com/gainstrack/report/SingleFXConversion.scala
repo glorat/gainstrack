@@ -15,7 +15,7 @@ case class SingleFXConversion(data:Map[AssetId, SortedMap[LocalDate, Double]], b
       None
     }
     else if (fx2 == baseCcy) {
-      interp.getValue(data(fx1), date)(TimeSeriesInterpolator.linearDouble)
+      interp.getValue(data(fx1), date)(TimeSeriesInterpolator.linear)
     }
     else {
       // s"SingleFXConversion can only convert to base currency ${baseCcy}"

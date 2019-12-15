@@ -11,7 +11,7 @@ case class BalanceStateSeries(series: SortedMap[LocalDate,Fraction], ccy:AssetId
 case class BalanceState(acctState:AccountState, balances:Map[AccountId,BalanceStateSeries]) extends AggregateRootState {
   type Balances = Map[AccountId,SortedMap[LocalDate,Fraction]]
   type Series = SortedMap[LocalDate,Fraction]
-  val interp = TimeSeriesInterpolator.from(SortedMap[LocalDate,Fraction]())
+  val interp = new TimeSeriesInterpolator
 
   def getAccountValueOpt(account:AccountId, date: LocalDate) : Option[Fraction] = {
     val series = balances.get(account).map(_.series).getOrElse(SortedMap())
