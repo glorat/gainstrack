@@ -37,7 +37,7 @@
                     <td class="datecell" v-for="explainData in explains">{{ explainData.toDate}}</td>
                 </tr>
                 <tr>
-                    <td>Price Appreciation Profit</td>
+                    <td>Markets Profit</td>
                     <td class="num" v-for="explainData in explains">{{ explainData.totalDeltaExplain.toFixed(2) }}</td>
                 </tr>
                 <tr>
@@ -91,7 +91,7 @@
             },
         },
         mounted() {
-            axios.get('/api/pnlexplain')
+            axios.get('/api/pnlexplain/monthly')
                 .then(response => {
                     this.explains = response.data;
                 })

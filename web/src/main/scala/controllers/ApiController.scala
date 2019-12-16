@@ -347,6 +347,21 @@ class ApiController (implicit val ec :ExecutionContext) extends ScalatraServlet 
     pnls
   }
 
+  get("/pnlexplain/monthly") {
+    val bg = currentBg
+    val endDates = currentDate +: Range(0,11).map(n => currentDate.minusMonths(n).withDayOfMonth(1))
+    val startDates = endDates.map(_.minusDays(1).withDayOfMonth(1))
+    import java.time.format.DateTimeFormatter
+    val monthFmt = DateTimeFormatter.ofPattern("MMM")
+    val descs = startDates.map(_.format(monthFmt))
+
+    for (i<-0 to 11) yield {
+      new PLExplain(startDates(i), endDates(i))(bg.acctState, bg.txState, bg.balanceState, bg.priceState, bg.assetChainMap, bg.singleFXConversion)
+        .toDTO
+        .updated("tenor", descs(i))
+    }
+  }
+
   post("/pnlexplain") {
     val body = parsedBody.extract[PNLExplainRequest]
     val bg = currentBg
