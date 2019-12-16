@@ -5,6 +5,7 @@ import java.time.format.DateTimeParseException
 
 import com.gainstrack.command.{AccountCreation, GainstrackParser, ParserMessage}
 import com.gainstrack.core._
+import com.gainstrack.quotes.av.Main
 import com.gainstrack.report.{AccountInvestmentReport, BalanceReport, DailyBalance, GainstrackGenerator, IrrSummary, PLExplain, TimeSeries}
 import org.json4s.{DefaultFormats, Formats, JValue}
 import org.scalatra.{NotFound, ScalatraServlet}
@@ -330,6 +331,9 @@ class ApiController (implicit val ec :ExecutionContext) extends ScalatraServlet 
 
   get("/pnlexplain") {
     val bg = currentBg
+
+    val fxConvert = ServerQuoteSource.db.singleFxConverter(bg.acctState.baseCurrency)
+
     val dates = Seq(
       currentDate.minusDays(1),
       currentDate.minusWeeks(1),
@@ -349,6 +353,10 @@ class ApiController (implicit val ec :ExecutionContext) extends ScalatraServlet 
 
   get("/pnlexplain/monthly") {
     val bg = currentBg
+
+    // val fxConvert = ServerQuoteSource.db.singleFxConverter(bg.acctState.baseCurrency)
+
+
     val endDates = currentDate +: Range(0,11).map(n => currentDate.minusMonths(n).withDayOfMonth(1))
     val startDates = endDates.map(_.minusDays(1).withDayOfMonth(1))
     import java.time.format.DateTimeFormatter
@@ -375,6 +383,11 @@ class ApiController (implicit val ec :ExecutionContext) extends ScalatraServlet 
     }
   }*/
 }
+
+object ServerQuoteSource {
+  val db = Main.doTheWork
+}
+
 //case class BalanceSheet(balanceSheet: Map[String,TreeTable])
 case class ApiSourceRequest(filePath:String, entryHash:String, source:String, sha256sum: String)
 case class ApiSourceResponse(sha256sum:String, success:Boolean, errors: Seq[ParserMessage])

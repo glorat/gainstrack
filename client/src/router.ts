@@ -35,6 +35,8 @@ const routes: RouteConfig[] = [
         meta: {title: 'Asset Allocation'}
     },
     {path: '/pnlexplain', component: () => import('./pages/PnlExplain.vue'), meta: {title: ' P&L Explain'}},
+    {path: '/pnlexplain/:fromDate/:toDate', component: () => import('./pages/PnlExplainDetail.vue'),
+        name: 'pnldetail', meta: {title: ' P&L Explain'}, props: true},
     {path: '/help', component: () => import('./pages/Markdown.vue'), props: {page: 'help.md'}},
     {path: '/faq', component: () => import('./pages/Markdown.vue'), props: {page: 'faq.md'}},
     {path: '/*', component: () => import('./pages/Markdown.vue'), props: {page: 'welcome.md'}},
