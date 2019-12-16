@@ -26,7 +26,7 @@
                 <tbody>
                 <tr>
                     <td>Tenor</td>
-                    <td class="description" v-for="explainData in explains">{{ explainData.tenor}}</td>
+                    <td class="description" v-for="explainData in explains"><span @click="onColumnClick(explainData)">{{ explainData.tenor}}</span></td>
                 </tr>
                 <tr>
                     <td>From Date</td>
@@ -40,6 +40,10 @@
                     <td>Markets Profit</td>
                     <td class="num" v-for="explainData in explains">{{ explainData.totalDeltaExplain.toFixed(2) }}</td>
                 </tr>
+<!--                <tr v-for="(ccy, ccyIndex) in explains[0].delta">-->
+<!--                    <td>{{ ccy.assetId }}</td>-->
+<!--                    <td class="num" v-for="explainData in explains">{{ explainData.delta[ccyIndex].explain.toFixed(2) }}</td>-->
+<!--                </tr>-->
                 <tr>
                     <td>Income</td>
                     <td class="num" v-for="explainData in explains">{{ explainData.totalIncome.toFixed(2) }}</td>
@@ -98,6 +102,9 @@
                 .catch(error => notify.error(error));
         },
         methods: {
+            onColumnClick(explain) {
+                this.$router.push({name: 'pnldetail', params: {fromDate: explain.fromDate, toDate: explain.toDate}});
+            },
             submit() {
                 const args = {
                     fromDate: this.selectedRange[0].toISOString().split('T')[0],

@@ -16,13 +16,13 @@ class PLExplain(fromDate: LocalDate, toDate: LocalDate)
   // Explain P&L due to price changes
   val networthStart = dailyReport.convertedPosition(Assets.accountId, fromDate, "units")
   val ccyExplain = networthStart.ccys
-  private val priceDelta:Iterable[DeltaExplain] = {
+  private val priceDelta: Iterable[DeltaExplain] = {
     ccyExplain.flatMap(ccy => {
-      priceState.getFX(ccy, baseCcy, fromDate)
+      singleFXConversion.getFX(ccy, baseCcy, fromDate)
         .map(fx => DeltaExplain(ccy, fromDate, toDate, fx.toDouble))
     })
       .flatMap(exp => {
-        priceState.getFX(exp.assetId, baseCcy, toDate).map(fx2 => {
+        singleFXConversion.getFX(exp.assetId, baseCcy, toDate).map(fx2 => {
           exp.copy(newPrice = fx2.toDouble)
         })
       })
