@@ -38,19 +38,7 @@ object Main {
     val allSeries = (ccySeries ++ inverseSeries).toMap
     val priceState = PriceState(isoCcys.map(AssetId(_)).toSet, allSeries)
 
-    val allConfigs:Seq[QuoteConfig] = Seq(
-      Tuple3("VWRD.LON", "USD", "LSEUSD"),
-      Tuple3("VDEV.LON", "USD", "LSEUSD"),
-      Tuple3("AGGG.LON", "USD", "LSEUSD"),
-      Tuple3("TIP5.LON", "USD", "LSEUSD"),
-      Tuple3("VWRL.LON", "GBP", "LSEGBP"),
-      Tuple3("VMID.LON", "GBP", "LSEGBP"),
-      Tuple3("STAN.LON", "GBP", "GBX"),
-      Tuple3("2888.HKG", "HKD", "HKD"),
-      Tuple3("GOOG", "USD", "USD"),
-    ).map(QuoteConfig.tupled)
-
-    val finalState = allConfigs.foldLeft(priceState)((pState,cfg) => {
+    val finalState = QuoteConfig.allConfigs.foldLeft(priceState)((pState,cfg) => {
       val res = StockParser.parseSymbol(cfg.symbol)
         .fixupLSE(cfg.domainCcy, AssetId(cfg.actualCcy), priceState)
 
@@ -61,7 +49,7 @@ object Main {
   }
 }
 
-case class QuoteConfig(symbol:String, actualCcy:String, domainCcy:String)
+
 
 case class DbState(priceState: PriceState) {
   private def inferredChain(baseCurrency:AssetId) : AssetChainMap = {

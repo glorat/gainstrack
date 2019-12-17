@@ -12,7 +12,7 @@ object StockParser {
   def parseIntradayRefQuote(symbol:String):Option[Fraction] = {
 
     try {
-      val intraday = parseSymbol(s"intraday.$symbol")
+      val intraday = parseSymbol(s"intraday.$symbol.csv")
       Some(intraday.liveQuote)
     }
     catch {
