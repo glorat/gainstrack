@@ -6,7 +6,7 @@ import java.time.format.DateTimeParseException
 import com.gainstrack.command.{AccountCreation, GainstrackParser, ParserMessage}
 import com.gainstrack.core._
 import com.gainstrack.quotes.av.Main
-import com.gainstrack.report.{AccountInvestmentReport, BalanceReport, DailyBalance, GainstrackGenerator, IrrSummary, PLExplain, TimeSeries}
+import com.gainstrack.report.{AccountInvestmentReport, BalanceReport, DailyBalance, FXChain, FXProxy, GainstrackGenerator, IrrSummary, PLExplain, TimeSeries}
 import org.json4s.{DefaultFormats, Formats, JValue}
 import org.scalatra.{NotFound, ScalatraServlet}
 import org.scalatra.json._
@@ -332,8 +332,10 @@ class ApiController (implicit val ec :ExecutionContext) extends ScalatraServlet 
   get("/pnlexplain") {
     val bg = currentBg
 
-    val fxConvert = ServerQuoteSource.db.singleFxConverter(bg.acctState.baseCurrency)
-
+    val fxConvert = new FXChain(
+      new FXProxy(bg.fxMapper, ServerQuoteSource.db.singleFxConverter(bg.acctState.baseCurrency)),
+      bg.singleFXConversion
+    )
     val dates = Seq(
       currentDate.minusDays(1),
       currentDate.minusWeeks(1),
@@ -344,7 +346,7 @@ class ApiController (implicit val ec :ExecutionContext) extends ScalatraServlet 
     val descs = Seq("1d", "1w", "1m", "3m", "1y", "YTD")
 
     val pnls = dates.zip(descs).map(
-      dtdesc => new PLExplain(dtdesc._1, currentDate)(bg.acctState, bg.txState, bg.balanceState, bg.priceState, bg.assetChainMap, bg.singleFXConversion)
+      dtdesc => new PLExplain(dtdesc._1, currentDate)(bg.acctState, bg.txState, bg.balanceState, bg.priceState, bg.assetChainMap, fxConvert)
         .toDTO
         .updated("tenor", dtdesc._2)
     )
@@ -354,8 +356,10 @@ class ApiController (implicit val ec :ExecutionContext) extends ScalatraServlet 
   get("/pnlexplain/monthly") {
     val bg = currentBg
 
-    // val fxConvert = ServerQuoteSource.db.singleFxConverter(bg.acctState.baseCurrency)
-
+    val fxConvert = new FXChain(
+      new FXProxy(bg.fxMapper, ServerQuoteSource.db.singleFxConverter(bg.acctState.baseCurrency)),
+      bg.singleFXConversion
+    )
 
     val endDates = currentDate +: Range(0,11).map(n => currentDate.minusMonths(n).withDayOfMonth(1))
     val startDates = endDates.map(_.minusDays(1).withDayOfMonth(1))
@@ -364,7 +368,7 @@ class ApiController (implicit val ec :ExecutionContext) extends ScalatraServlet 
     val descs = startDates.map(_.format(monthFmt))
 
     for (i<-0 to 11) yield {
-      new PLExplain(startDates(i), endDates(i))(bg.acctState, bg.txState, bg.balanceState, bg.priceState, bg.assetChainMap, bg.singleFXConversion)
+      new PLExplain(startDates(i), endDates(i))(bg.acctState, bg.txState, bg.balanceState, bg.priceState, bg.assetChainMap, fxConvert)
         .toDTO
         .updated("tenor", descs(i))
     }
@@ -373,7 +377,11 @@ class ApiController (implicit val ec :ExecutionContext) extends ScalatraServlet 
   post("/pnlexplain") {
     val body = parsedBody.extract[PNLExplainRequest]
     val bg = currentBg
-    val pnl = new PLExplain(body.fromDate, body.toDate)(bg.acctState, bg.txState, bg.balanceState, bg.priceState, bg.assetChainMap, bg.singleFXConversion)
+    val fxConvert = new FXChain(
+      new FXProxy(bg.fxMapper, ServerQuoteSource.db.singleFxConverter(bg.acctState.baseCurrency)),
+      bg.singleFXConversion
+    )
+    val pnl = new PLExplain(body.fromDate, body.toDate)(bg.acctState, bg.txState, bg.balanceState, bg.priceState, bg.assetChainMap, fxConvert)
     Seq(pnl.toDTO)
   }
 /*

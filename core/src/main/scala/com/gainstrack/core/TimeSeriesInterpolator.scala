@@ -28,13 +28,14 @@ class TimeSeriesInterpolator {
       Exact(timeSeries(date))
     }
     else {
-      val idx:Int = timeSeries.toIndexedSeq.indexWhere(x => x._1.isAfter(date) )
+      val series = timeSeries.toIndexedSeq
+      val idx:Int = series.indexWhere(x => x._1.isAfter(date) )
       if (idx < 0) {
         // Then all dates are before
-        ExtrapolateHigh(timeSeries.last._2)
+        ExtrapolateHigh(series.last._2)
       }
       else {
-        val split = timeSeries.splitAt(idx)
+        val split = series.splitAt(idx)
         if (split._1.isEmpty) {
           ExtrapolateLow(split._2.head._2)
         }

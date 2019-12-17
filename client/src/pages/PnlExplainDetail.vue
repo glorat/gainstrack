@@ -23,12 +23,16 @@
             <tr>
                 <td>Markets Profit</td>
                 <td class="num">{{ explainData.totalDeltaExplain.toFixed(2) }}</td>
+                <td class="description">From FX</td>
+                <td class="description">To FX</td>
+                <td class="description">Position</td>
             </tr>
-            <tr v-for="(ccy, ccyIndex) in explainData.delta">
+            <tr v-for="(ccy, ccyIndex) in deltas">
                 <td>{{ ccy.assetId }}</td>
                 <td class="num">{{ ccy.explain.toFixed(2) }}</td>
                 <td class="num">{{ ccy.oldPrice.toFixed(2)}}</td>
                 <td class="num">{{ ccy.newPrice.toFixed(2)}}</td>
+                <td class="num">{{ ccy.amount.toFixed(2)}}</td>
             </tr>
             <tr>
                 <td>Income</td>
@@ -70,7 +74,12 @@
         name: 'PnlExplainDetail',
         props: ['fromDate', 'toDate'],
         computed: {
-            explainData() {return this.explains[0]}
+            explainData() {
+                return this.explains[0]
+            },
+            deltas() {
+                return this.explainData.delta.sort((a, b) => Math.abs(b.explain) - Math.abs(a.explain));
+            },
         },
         mounted() {
             const notify = this.$notify;

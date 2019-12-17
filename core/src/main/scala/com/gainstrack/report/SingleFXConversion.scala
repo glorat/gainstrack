@@ -4,7 +4,7 @@ import com.gainstrack.core._
 
 import scala.collection.SortedMap
 
-case class SingleFXConversion(data:Map[AssetId, SortedMap[LocalDate, Double]], baseCcy:AssetId) extends FXConverter {
+case class SingleFXConversion(data:Map[AssetId, SortedMap[LocalDate, Double]], baseCcy:AssetId) extends SingleFXConverter {
   private val interp = new TimeSeriesInterpolator
 
   override def getFX(fx1:AssetId, fx2:AssetId, date: LocalDate): Option[Double] = {
@@ -60,3 +60,5 @@ object SingleFXConversion {
     SingleFXConversion(bar, baseCurrency)
   }
 }
+
+trait SingleFXConverter extends FXConverter

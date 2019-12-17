@@ -369,4 +369,8 @@ class First extends FlatSpec {
     val asset = bg.assetState.allAssets(AssetId("VWRD"))
     assert(asset.options.options("arbitrary") == "hello world")
   }
+
+  it should "map to tickers" in  {
+    assert(bg.fxMapper(AssetId("VWRD")) == AssetId("VWRD.LON") )
+  }
 }

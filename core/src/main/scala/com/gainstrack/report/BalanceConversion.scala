@@ -8,7 +8,7 @@ class BalanceConversion(
                          thisCcy: AssetId,
                          acctToPosition: (AccountId => PositionSet),
                          date: LocalDate
-                       ) (implicit acctState:AccountState, priceState: PriceState, assetChainMap: AssetChainMap, singleFXConversion: SingleFXConversion) {
+                       ) (implicit acctState:AccountState, priceState: PriceState, assetChainMap: AssetChainMap, singleFXConversion: SingleFXConverter) {
 
   val convert: (AccountId => PositionSet) = acct => {
     val positions: PositionSet = acctToPosition(acct)

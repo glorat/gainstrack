@@ -2,26 +2,42 @@ package com.gainstrack.quotes.av
 
 import com.gainstrack.command.PriceObservation
 import com.gainstrack.core._
-import com.gainstrack.report.{FXConverter, PriceState, SingleFXConversion}
+import com.gainstrack.report.{AssetPair, FXConverter, PriceState, SingleFXConversion}
 import spire.math.Rational
 
 import scala.collection.SortedMap
 
 object StockParser {
 
-  def parseIntradayRefQuote(symbol:String):Option[Fraction] = {
+  def parseIntradayRefQuote(config: QuoteConfig): Option[Fraction] = {
+    val symbol = config.symbol
 
     try {
-      val intraday = parseSymbol(s"intraday.$symbol.csv")
+      val intraday = parseSymbol(config.copy(symbol = s"intraday.$symbol"))
       Some(intraday.liveQuote)
     }
     catch {
-      case _:Exception => None
+      case _: Exception => None
     }
 
   }
 
-  def parseSymbol(symbol:String):StockParseResult = {
+  def tryParseSymbol(cfg: QuoteConfig): Option[StockParseResult] = {
+    try {
+      val res = StockParser.parseSymbol(cfg)
+      Some(res)
+    }
+    catch {
+      case e: Exception => {
+        println(e.toString)
+        None
+      }
+    }
+  }
+
+  def parseSymbol(config: QuoteConfig):StockParseResult = {
+    val symbol = config.symbol
+
     val assetId = AssetId(symbol)
     val src = scala.io.Source.fromFile(s"db/${symbol}.csv")
     val it1 = src.getLines()
@@ -31,7 +47,7 @@ object StockParser {
     val closeIndex = headers.indexOf("close")
     require(closeIndex>=0, s"close column not found for $symbol")
     val refPriceStr = it1.next().split(",").map(_.trim).apply(closeIndex)
-    val liveQuote = parseIntradayRefQuote(symbol).getOrElse(parseNumber(refPriceStr))
+    val liveQuote = parseIntradayRefQuote(config).getOrElse(parseNumber(refPriceStr))
     require(!liveQuote.isZero, s"close for ${symbol} zero in ${refPriceStr} for line")
     val buildMap = SortedMap.newBuilder[LocalDate, Fraction]
 
@@ -42,7 +58,7 @@ object StockParser {
       buildMap+=(date -> value)
     }
     val map:SortedMap[LocalDate, Fraction] = buildMap.result()
-    StockParseResult(series = map, liveQuote = liveQuote)
+    StockParseResult(series = map, liveQuote = liveQuote, config = config)
   }
 
   def parseCurrency(symbol: String):AssetId = {
@@ -58,7 +74,7 @@ object StockParser {
   }
 }
 
-case class StockParseResult(series:SortedMap[LocalDate, Fraction], liveQuote:Fraction) {
+case class StockParseResult(series:SortedMap[LocalDate, Fraction], liveQuote:Fraction, config: QuoteConfig) {
   def fixupLSE(lseCcy:String, actualCcy:AssetId, priceState: FXConverter) : StockParseResult = {
     // LSE ETFs on alpha-vantage are declared as being in in USD
     // and historics are a mix of USD and GBp (pence)

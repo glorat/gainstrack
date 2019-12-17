@@ -25,7 +25,7 @@ object SyncUp {
       val cmdDaily = s"""wget -O $outFile https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=$symbol&outputsize=full&datatype=csv&apikey=$apikey"""
       goGetIt(outFile, cmdDaily, forceDownload)
       val outFileIntraday = s"db/intraday.$symbol.csv"
-      val cmdIntraday = s"""wget -O $outFileIntraday https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol=$symbol&interval=60min&datatype=json&apikey=$apikey"""
+      val cmdIntraday = s"""wget -O $outFileIntraday https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol=$symbol&interval=60min&datatype=csv&apikey=$apikey"""
       goGetIt(outFileIntraday, cmdIntraday, forceDownload)
     })
   }
