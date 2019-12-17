@@ -28,21 +28,23 @@ object Main {
   }
 
   def doTheWork:DbState = {
-    val isoCcys = Seq("GBP", "HKD")
-    val ccySeries = isoCcys.map(fxCcy => {
-      val res = StockParser.parseSymbol(fxCcy)
-      val series: SortedMap[LocalDate, Fraction] = res.series
-      AssetPair(fxCcy, "USD") -> series
+    val isoCcys = QuoteConfig.allCcys
+    val ccySeries = isoCcys.flatMap(fxCcy => {
+      StockParser.tryParseSymbol(QuoteConfig(fxCcy, "USD", "USD") ).map(res =>{
+        val series: SortedMap[LocalDate, Fraction] = res.series
+        AssetPair(fxCcy, "USD") -> series
+      })
     })
     val inverseSeries = ccySeries.map(kv => kv._1.reverse -> kv._2.mapValues(_.inverse))
     val allSeries = (ccySeries ++ inverseSeries).toMap
     val priceState = PriceState(isoCcys.map(AssetId(_)).toSet, allSeries)
 
-    val finalState = QuoteConfig.allConfigs.foldLeft(priceState)((pState,cfg) => {
-      val res = StockParser.parseSymbol(cfg.symbol)
-        .fixupLSE(cfg.domainCcy, AssetId(cfg.actualCcy), priceState)
+    val reses = QuoteConfig.allConfigs.flatMap(cfg => StockParser.tryParseSymbol(cfg))
 
-      pState.withUpdatedSeries(AssetPair(cfg.symbol,cfg.actualCcy), res.series)
+    val finalState = reses.foldLeft(priceState)((pState, res) => {
+      val cfg = res.config
+      val fixed = res.fixupLSE(cfg.domainCcy, AssetId(cfg.actualCcy), priceState)
+      pState.withUpdatedSeries(AssetPair(cfg.symbol, cfg.actualCcy), fixed.series)
     })
 
     DbState(finalState)

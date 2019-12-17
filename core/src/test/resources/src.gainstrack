@@ -63,5 +63,8 @@ option "operating_currency" "GBP"
 1900-01-01 commodity VWRD
   tags: equity,global
   arbitrary: hello world
+  ticker: VWRD.LON
 1900-01-01 commodity IUAA
   tags: bond,us
+  ticker: IUAA.LON
+

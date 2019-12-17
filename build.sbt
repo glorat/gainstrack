@@ -52,8 +52,7 @@ lazy val commonSettings = Seq(
 )
 
 lazy val web = project
-  .dependsOn(core % "compile->compile;test->test")
-  .dependsOn(quotes)
+  .dependsOn(quotes % "compile->compile;test->test")
   .settings(commonSettings: _*)
   .settings(
     mainClass in assembly := Some("JettyLauncher"),
@@ -64,7 +63,7 @@ lazy val core = project
   .settings(commonSettings: _*)
 
 lazy val quotes = project
-  .dependsOn(core)
+  .dependsOn(core % "compile->compile;test->test")
   .settings(commonSettings: _*)
 
 lazy val root = (project in file("."))
