@@ -1,6 +1,6 @@
 package com.gainstrack.core
 
-import com.gainstrack.report.{AssetPair, FXConverter, PriceState}
+import com.gainstrack.report.{AssetPair, FXConverter}
 
 case class PositionSet(assetBalance:Map[AssetId, Fraction]) {
   def ccys = assetBalance.keys
@@ -28,7 +28,7 @@ case class PositionSet(assetBalance:Map[AssetId, Fraction]) {
     assetBalance.foldLeft(PositionSet())(convertEntry)
   }
 
-  def convertToOneOf(tgtCcys: Seq[AssetId], priceState: PriceState, date:LocalDate): PositionSet = {
+  def convertToOneOf(tgtCcys: Seq[AssetId], priceState: FXConverter, date:LocalDate): PositionSet = {
     def convertEntry(ps:PositionSet, entry:(AssetId, Fraction)) = {
       val tgtCcy = tgtCcys.find(tgtCcy => priceState.getFX(entry._1, tgtCcy, date).isDefined).getOrElse(tgtCcys.last)
       val toAdd = priceState.getFX(entry._1, tgtCcy, date)
@@ -40,7 +40,7 @@ case class PositionSet(assetBalance:Map[AssetId, Fraction]) {
     assetBalance.foldLeft(PositionSet())(convertEntry)
   }
 
-  def convertViaChain(tgtCcy: AssetId, ccyChain: Seq[AssetId], priceState: PriceState, date:LocalDate) : PositionSet = {
+  def convertViaChain(tgtCcy: AssetId, ccyChain: Seq[AssetId], priceState: FXConverter, date:LocalDate) : PositionSet = {
     require(ccyChain.headOption.isDefined, s"No ccyChain was passed for $tgtCcy")
     ccyChain match {
       case h :: _ if (h == tgtCcy) => this

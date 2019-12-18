@@ -88,11 +88,11 @@ class MultiAssetAdj extends FlatSpec {
 
   "single fx converter" should "match priceCollector" in {
     val dt = parseDate("2019-01-01")
-    val fx1 = bg.priceState.getFX(AssetId("XIU"), AssetId("CAD"), dt)
+    val fx1 = bg.priceFXConverter.getFX(AssetId("XIU"), AssetId("CAD"), dt)
     assert(fx1.get == 10)
-    assert(None == bg.priceState.getFX(AssetId("XIU"), AssetId("USD"), dt))
+    assert(None == bg.priceFXConverter.getFX(AssetId("XIU"), AssetId("USD"), dt))
 
-    val singleFXConversion = SingleFXConversion.generate(bg.acctState.baseCurrency)(bg.priceState, bg.assetChainMap)
+    val singleFXConversion = SingleFXConversion.generate(bg.acctState.baseCurrency)(bg.priceFXConverter, bg.assetChainMap)
     val x = singleFXConversion.getFX(AssetId("XIU"), AssetId("USD"), dt)
     assert(x.get == 5)
     assert(None == singleFXConversion.getFX(AssetId("XIU"), AssetId("CAD"), dt))
@@ -101,10 +101,10 @@ class MultiAssetAdj extends FlatSpec {
   it should "interpolate" in {
     val dt = parseDate("2018-01-01")
 
-    val fx1 = bg.priceState.getFX(AssetId("XIU"), AssetId("CAD"), dt)
+    val fx1 = bg.priceFXConverter.getFX(AssetId("XIU"), AssetId("CAD"), dt)
     assert(fx1.get == 10)
 
-    val singleFXConversion = SingleFXConversion.generate(bg.acctState.baseCurrency)(bg.priceState, bg.assetChainMap)
+    val singleFXConversion = SingleFXConversion.generate(bg.acctState.baseCurrency)(bg.priceFXConverter, bg.assetChainMap)
     val x = singleFXConversion.getFX(AssetId("XIU"), AssetId("USD"), dt)
     assert(x.get == 4)
   }

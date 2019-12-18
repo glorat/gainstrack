@@ -7,7 +7,7 @@ import com.gainstrack.core._
 
 case class DailyBalance(balanceState: BalanceState, date: LocalDate = MaxDate) {
 
-  def monthlySeries(accountId: AccountId, conversionStrategy: String, endDate: LocalDate, acctState: AccountState, priceState: PriceState, assetChainMap: AssetChainMap, singleFXConversion: SingleFXConverter) = {
+  def monthlySeries(accountId: AccountId, conversionStrategy: String, endDate: LocalDate, acctState: AccountState, priceState: PriceFXConverter, assetChainMap: AssetChainMap, singleFXConversion: SingleFXConverter) = {
     val startDate = acctState.accounts
       .filter(a => accountId == a.accountId || a.accountId.isSubAccountOf(accountId))
       .map(_.date)
@@ -36,7 +36,7 @@ case class DailyBalance(balanceState: BalanceState, date: LocalDate = MaxDate) {
     })
   }
 
-  def positionOfAssets(assets:Set[AssetId], origAcctState:AccountState, priceState: PriceState, assetChainMap: AssetChainMap, date:LocalDate,
+  def positionOfAssets(assets:Set[AssetId], origAcctState:AccountState, priceState: PriceFXConverter, assetChainMap: AssetChainMap, date:LocalDate,
                          conversionStrategy:String = "global")(implicit singleFXConversion: SingleFXConverter) = {
     origAcctState.withAsset(assets).foldLeft(PositionSet()) ((ps, account) => {
       val value = this.convertedPosition(account.accountId, date, conversionStrategy)(origAcctState, priceState ,  assetChainMap, singleFXConversion)
@@ -45,7 +45,7 @@ case class DailyBalance(balanceState: BalanceState, date: LocalDate = MaxDate) {
   }
 
   def convertedPosition(accountId: AccountId, date: LocalDate, conversionStrategy: String, accountFilter: AccountCreation => Boolean = _ => true)
-                       (implicit acctState: AccountState, priceState: PriceState, assetChainMap: AssetChainMap, singleFXConversion: SingleFXConverter): PositionSet = {
+                       (implicit acctState: AccountState, priceState: PriceFXConverter, assetChainMap: AssetChainMap, singleFXConversion: SingleFXConverter): PositionSet = {
     val interpolatedAccountState = acctState.withInterpolatedAccounts
     val accounts = interpolatedAccountState.accounts
     val thisCcy = interpolatedAccountState.accountMap.get(accountId).map(_.key.assetId).getOrElse(acctState.baseCurrency)

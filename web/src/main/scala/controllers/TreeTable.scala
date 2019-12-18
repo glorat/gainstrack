@@ -14,7 +14,7 @@ case class TreeTableDTO(
 
 
 class BalanceTreeTable(date: LocalDate, conversionStrategy: String, accountFilter: AccountCreation => Boolean)
-                      (implicit acctState: AccountState, priceState: PriceState, assetChainMap: AssetChainMap, balanceReport: DailyBalance, singleFXConversion: SingleFXConverter) {
+                      (implicit acctState: AccountState, priceState: PriceFXConverter, assetChainMap: AssetChainMap, balanceReport: DailyBalance, singleFXConversion: SingleFXConverter) {
   val allAcctState = acctState.withInterpolatedAccounts
 
 

@@ -44,7 +44,7 @@ case class BalanceState(acctState:AccountState, balances:Map[AccountId,BalanceSt
     Amount(getBalanceOpt(account, date).map(_.number).getOrElse(zeroFraction), ccy)
   }
 
-  def getPosition(account:AccountId, date: LocalDate, tgtCcy:AssetId, ccyChain:Seq[AssetId], priceState:PriceState) : PositionSet = {
+  def getPosition(account:AccountId, date: LocalDate, tgtCcy:AssetId, ccyChain:Seq[AssetId], priceState:PriceFXConverter) : PositionSet = {
     var balance = getBalanceOpt(account, date).getOrElse(Amount(zeroFraction, ccyChain.head))
     // Developer assertion. Can be disabled at runtime
     // require(ccyChain.head == accounts.find(x => x.name == account).get.key.assetId)

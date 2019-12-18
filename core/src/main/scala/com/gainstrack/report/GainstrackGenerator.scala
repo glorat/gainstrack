@@ -38,7 +38,8 @@ case class GainstrackGenerator(originalCommands:SortedSet[AccountCommand])  {
     finalCommands.foldLeft(PriceState())((state, ev) => state.handle(ev))
   implicit val assetState: AssetState =
     finalCommands.foldLeft(AssetState())(_.handle(_))
-  implicit val singleFXConversion = SingleFXConversion.generate(acctState.baseCurrency)(priceState, assetChainMap)
+  implicit val priceFXConverter = priceState.priceFxConverter
+  implicit val singleFXConversion = SingleFXConversion.generate(acctState.baseCurrency)(priceFXConverter, assetChainMap)
   val fxMapper = new FXMapperGenerator(assetState).fxMapper
   val latestDate:LocalDate = finalCommands.maxBy(_.date).date
 

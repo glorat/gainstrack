@@ -94,7 +94,7 @@ class ApiController (implicit val ec :ExecutionContext) extends ScalatraServlet 
     val conversionStrategy = session.get("conversion").map(_.toString).getOrElse("parent")
 
     val toDate = currentDate
-    val treeTable = new BalanceTreeTable(toDate, conversionStrategy, _=>true)(bg.acctState, bg.priceState, bg.assetChainMap, bg.dailyBalances, bg.singleFXConversion)
+    val treeTable = new BalanceTreeTable(toDate, conversionStrategy, _=>true)(bg.acctState, bg.priceFXConverter, bg.assetChainMap, bg.dailyBalances, bg.singleFXConversion)
 
     keys.map(key => key -> treeTable.toTreeTable(AccountId(key))).toMap
   }
@@ -136,7 +136,7 @@ class ApiController (implicit val ec :ExecutionContext) extends ScalatraServlet 
       toDate = fromDate.plusYears(1)
     }
 
-    val irr = IrrSummary(bg.finalCommands, fromDate, toDate, bg.acctState, bg.balanceState, bg.txState, bg.priceState, bg.assetChainMap)
+    val irr = IrrSummary(bg.finalCommands, fromDate, toDate, bg.acctState, bg.balanceState, bg.txState, bg.priceFXConverter, bg.assetChainMap)
 
     irr.toSummaryDTO
   }
@@ -148,7 +148,7 @@ class ApiController (implicit val ec :ExecutionContext) extends ScalatraServlet 
     val fromDate = defaultFromDate
     val toDate = currentDate
     bg.acctState.accountMap.get(accountId).map(account => {
-      val accountReport = new AccountInvestmentReport(accountId, account.key.assetId, fromDate,  toDate, bg.acctState, bg.balanceState, bg.txState, bg.priceState, bg.assetChainMap)
+      val accountReport = new AccountInvestmentReport(accountId, account.key.assetId, fromDate,  toDate, bg.acctState, bg.balanceState, bg.txState, bg.priceFXConverter, bg.assetChainMap)
       val cfs = accountReport.cashflowTable.sorted
       TimeSeries(accountId, cfs.map(_.value.ccy.symbol), cfs.map(_.date.toString),
         cfs.map(_.value.number.toDouble.formatted("%.2f")),
@@ -189,14 +189,14 @@ class ApiController (implicit val ec :ExecutionContext) extends ScalatraServlet 
               val balance = mypostings.foldLeft(PositionSet())(_ + _.value.get)
               balance*/
       val balanceReport = BalanceReport(myTxs)
-      balanceReport.getState.convertedPosition(accountId, cmd.date, conversionStrategy)(bg.assetChainMap, bg.acctState, bg.priceState, bg.singleFXConversion)
+      balanceReport.getState.convertedPosition(accountId, cmd.date, conversionStrategy)(bg.assetChainMap, bg.acctState, bg.priceFXConverter, bg.singleFXConversion)
     }
 
     val deltaFor : AccountCommand => PositionSet = {cmd =>
       val myTxs = txs.filter(_.origin == cmd)
       val state = new DailyBalance(bg.balanceState)
       val balanceReport = BalanceReport(myTxs)
-      balanceReport.getState.convertedPosition(accountId, cmd.date, conversionStrategy)(bg.assetChainMap, bg.acctState, bg.priceState, bg.singleFXConversion)
+      balanceReport.getState.convertedPosition(accountId, cmd.date, conversionStrategy)(bg.assetChainMap, bg.acctState, bg.priceFXConverter, bg.singleFXConversion)
     }
 
     val rows = commands.map(cmd => {
@@ -214,7 +214,7 @@ class ApiController (implicit val ec :ExecutionContext) extends ScalatraServlet 
     val toDate = currentDate
     val accountId : AccountId = params("accountId")
     val dailyBalance = DailyBalance(bg.balanceState)
-    dailyBalance.monthlySeries(accountId, conversionStrategy, toDate, bg.acctState, bg.priceState, bg.assetChainMap, bg.singleFXConversion)
+    dailyBalance.monthlySeries(accountId, conversionStrategy, toDate, bg.acctState, bg.priceFXConverter, bg.assetChainMap, bg.singleFXConversion)
   }
 
   get ("/journal/") {
@@ -300,7 +300,7 @@ class ApiController (implicit val ec :ExecutionContext) extends ScalatraServlet 
 
     val values = allocations.map(a => {
       val allocationAssets = bg.assetState.assetsForTags(a.toSet)
-      val allocationValue = bg.dailyBalances.positionOfAssets(allocationAssets, bg.acctState, bg.priceState, bg.assetChainMap, queryDate)
+      val allocationValue = bg.dailyBalances.positionOfAssets(allocationAssets, bg.acctState, bg.priceFXConverter, bg.assetChainMap, queryDate)
       allocationValue.getBalance(bg.acctState.baseCurrency)
     })
     val valueNum = values.map(_.number.toDouble)
@@ -323,7 +323,7 @@ class ApiController (implicit val ec :ExecutionContext) extends ScalatraServlet 
       val name = alloc.mkString("/")
 
       val filter: (AccountCreation=>Boolean) = acct => allocationAssets.contains(acct.key.assetId)
-      val treeTable = new BalanceTreeTable(toDate, "global", filter)(bg.acctState, bg.priceState, bg.assetChainMap, bg.dailyBalances, bg.singleFXConversion)
+      val treeTable = new BalanceTreeTable(toDate, "global", filter)(bg.acctState, bg.priceFXConverter, bg.assetChainMap, bg.dailyBalances, bg.singleFXConversion)
       Map("name" -> name, "rows" -> treeTable.toTreeTable(AccountId("Assets")))
     })
     tables
@@ -346,7 +346,7 @@ class ApiController (implicit val ec :ExecutionContext) extends ScalatraServlet 
     val descs = Seq("1d", "1w", "1m", "3m", "1y", "YTD")
 
     val pnls = dates.zip(descs).map(
-      dtdesc => new PLExplain(dtdesc._1, currentDate)(bg.acctState, bg.txState, bg.balanceState, bg.priceState, bg.assetChainMap, fxConvert)
+      dtdesc => new PLExplain(dtdesc._1, currentDate)(bg.acctState, bg.txState, bg.balanceState, bg.priceFXConverter, bg.assetChainMap, fxConvert)
         .toDTO
         .updated("tenor", dtdesc._2)
     )
@@ -368,7 +368,7 @@ class ApiController (implicit val ec :ExecutionContext) extends ScalatraServlet 
     val descs = startDates.map(_.format(monthFmt))
 
     for (i<-0 to 11) yield {
-      new PLExplain(startDates(i), endDates(i))(bg.acctState, bg.txState, bg.balanceState, bg.priceState, bg.assetChainMap, fxConvert)
+      new PLExplain(startDates(i), endDates(i))(bg.acctState, bg.txState, bg.balanceState, bg.priceFXConverter, bg.assetChainMap, fxConvert)
         .toDTO
         .updated("tenor", descs(i))
     }
@@ -381,7 +381,7 @@ class ApiController (implicit val ec :ExecutionContext) extends ScalatraServlet 
       new FXProxy(bg.fxMapper, ServerQuoteSource.db.singleFxConverter(bg.acctState.baseCurrency)),
       bg.singleFXConversion
     )
-    val pnl = new PLExplain(body.fromDate, body.toDate)(bg.acctState, bg.txState, bg.balanceState, bg.priceState, bg.assetChainMap, fxConvert)
+    val pnl = new PLExplain(body.fromDate, body.toDate)(bg.acctState, bg.txState, bg.balanceState, bg.priceFXConverter, bg.assetChainMap, fxConvert)
     Seq(pnl.toDTO)
   }
 /*

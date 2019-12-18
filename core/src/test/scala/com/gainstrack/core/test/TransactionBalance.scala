@@ -124,14 +124,14 @@ class TransactionAmountTest extends FlatSpec {
 
     it should "project IRR" in {
       val accountId = AccountId("Assets:ISA:London")
-      val rep = new AccountInvestmentReport(accountId, AssetId("GBP"), fromDate, parseDate(queryDateStr), bg.acctState, bg.balanceState, bg.txState, bg.priceState, bg.assetChainMap)
+      val rep = new AccountInvestmentReport(accountId, AssetId("GBP"), fromDate, parseDate(queryDateStr), bg.acctState, bg.balanceState, bg.txState, bg.priceFXConverter, bg.assetChainMap)
 
       assert(rep.irr < 0.009)
       assert(rep.irr > 0.008)
     }
 
     it should "project IRR summary" in {
-      val summary = IrrSummary(bg.finalCommands, fromDate, parseDate(queryDateStr), bg.acctState, bg.balanceState, bg.txState, bg.priceState, bg.assetChainMap)
+      val summary = IrrSummary(bg.finalCommands, fromDate, parseDate(queryDateStr), bg.acctState, bg.balanceState, bg.txState, bg.priceFXConverter, bg.assetChainMap)
       val rep = summary.accounts(AccountId("Assets:ISA:London"))
       assert(rep.irr < 0.009)
       assert(rep.irr > 0.008)

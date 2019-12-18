@@ -10,15 +10,17 @@ import scala.math.BigDecimal.RoundingMode
 
 
 case class PriceState(ccys: Set[AssetId], prices: Map[AssetPair, SortedMap[LocalDate, Fraction]])
-  extends AggregateRootState with FXConverter {
+  extends AggregateRootState {
 
   private val implicitPrices = true
 
-  private val interp = new TimeSeriesInterpolator
+  def priceFxConverter : PriceFXConverter = {
+    val fastPrices = prices.mapValues(series => SortedColumnMap.from(series.mapValues(_.toDouble)))
 
-  private lazy val priceFastMap: Map[AssetPair, SortedColumnMap[LocalDate, Fraction]] = {
-    prices.mapValues(SortedColumnMap.from(_))
+    new PriceFXConverter(ccys, fastPrices)
   }
+
+
 
   def toDTO = {
     val keys = prices.keys.toSeq.sortBy(_.str)
@@ -29,24 +31,6 @@ case class PriceState(ccys: Set[AssetId], prices: Map[AssetPair, SortedMap[Local
       prices(key).values.map(_.toDouble.formatted("%.2f")).toSeq,
       None
     ))
-  }
-
-  def getFX(fx1:AssetId, fx2:AssetId, date:LocalDate):Option[Double] = {
-    getFX(AssetPair(fx1,fx2), date)
-  }
-
-  def getFX(tuple:AssetPair, date:LocalDate):Option[Double] = {
-    if (tuple.fx1 == tuple.fx2) {
-      Some(1)
-    }
-    else {
-      // This is going to be an unfortunate conversion. Hopefully we don't use this too often???
-      // If so, pull this to constructor or lazy val
-      val timeSeries:SortedColumnMap[LocalDate, Fraction] = priceFastMap.getOrElse(tuple, SortedColumnMap())
-
-      val ret:Option[Double] = interp.interpValue(timeSeries, date).map(x => x)
-      ret
-    }
   }
 
 
@@ -99,6 +83,26 @@ case class PriceState(ccys: Set[AssetId], prices: Map[AssetPair, SortedMap[Local
       case _ => this
     }
   }
+}
+
+class PriceFXConverter(val ccys: Set[AssetId], val prices: Map[AssetPair, SortedColumnMap[LocalDate, Double]]) extends FXConverter {
+  private val interp = new TimeSeriesInterpolator
+
+  def getFX(fx1:AssetId, fx2:AssetId, date:LocalDate):Option[Double] = {
+    getFX(AssetPair(fx1,fx2), date)
+  }
+
+  def getFX(tuple:AssetPair, date:LocalDate):Option[Double] = {
+    if (tuple.fx1 == tuple.fx2) {
+      Some(1)
+    }
+    else {
+      val timeSeries:SortedColumnMap[LocalDate, Double] = prices.getOrElse(tuple, SortedColumnMap())
+      val ret:Option[Double] = interp.interpValue(timeSeries, date).map(x => x)
+      ret
+    }
+  }
+
 }
 
 object PriceState {
