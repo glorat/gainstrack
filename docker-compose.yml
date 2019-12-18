@@ -1,24 +1,22 @@
-version: '3'
+version: '3.7'
 services:
   web:
     build: .
     ports:
-      - "8081:8081"
+      - "9050:9050"
     expose:
-      - "8081"
-  nginx:
-    image: "nginx"
+      - "9050"
     volumes:
-      - ./nginx/nginx-docker.conf:/etc/nginx/nginx.conf:ro
-    ports:
-      - "8080:8080"
-  fava:
-    build: ./fava
-    volumes:
-      - /tmp/real.beancount:/real.beancount
-    expose:
-      - "5000"
-    ports:
-      - "5000:5000"
-    environment:
-      - BEANCOUNT_FILE=/real.beancount
+      - type: volume
+        source: gainstrack
+        target: /app/db
+
+#  nginx:
+#    image: "nginx"
+#    volumes:
+#      - ./nginx/nginx-docker.conf:/etc/nginx/nginx.conf:ro
+#    ports:
+#      - "8080:8080"
+volumes:
+  gainstrack:
+    external: true
