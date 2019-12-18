@@ -1,5 +1,7 @@
 package com.gainstrack.report
 
+import java.time.{Duration, Instant}
+
 import com.gainstrack.core._
 
 import scala.collection.SortedMap
@@ -25,7 +27,25 @@ case class SingleFXConversion(data:Map[AssetId, SortedColumnMap[LocalDate, Doubl
 }
 
 object SingleFXConversion {
-  def generate(baseCurrency:AssetId)(priceState: PriceState, assetChainMap: AssetChainMap) : SingleFXConversion = {
+
+  import org.slf4j.Logger
+  import org.slf4j.LoggerFactory
+
+  val logger: Logger = LoggerFactory.getLogger(classOf[SingleFXConversion])
+
+  def generate(baseCurrency:AssetId)(priceState: PriceFXConverter, assetChainMap: AssetChainMap) : SingleFXConversion = {
+    val before = Instant.now
+    val ret = generateFoo(baseCurrency)(priceState, assetChainMap)
+    val after = Instant.now
+
+    logger.info(s"SingleFXConversion took ${Duration.between(before,after).toMillis} ms")
+    ret
+  }
+  def generateFoo(baseCurrency:AssetId)(priceState: PriceFXConverter, assetChainMap: AssetChainMap) : SingleFXConversion = {
+    val before = Instant.now
+    val during = Instant.now
+    logger.info(s"Priming took ${Duration.between(before,during).toMillis} ms")
+
     val ccys = priceState.ccys
 
     val bar:Map[AssetId, SortedColumnMap[LocalDate, Double]] = ccys.flatMap(ccy => {
@@ -33,7 +53,8 @@ object SingleFXConversion {
         None
       }
       else if (priceState.prices.contains(AssetPair(ccy, baseCurrency))) {
-        Some(ccy -> SortedColumnMap.from(priceState.prices(AssetPair(ccy, baseCurrency)).mapValues(_.toDouble) ))
+        val series = priceState.prices(AssetPair(ccy, baseCurrency))
+        Some(ccy -> SortedColumnMap(series.ks, series.vs.map(_.toDouble)))
       }
       else {
         val ccyChainOpt = assetChainMap.findFirst(ccy)
@@ -46,7 +67,7 @@ object SingleFXConversion {
             //          priceState.prices(AssetPair(ccy, prevCcy)).keys.toSet
             //        }).flatten
             // FIXME: Since the above is tricky code, just do the last chain step
-            val dates = priceState.prices(AssetPair(ccyChain(0), ccyChain(1))).keys.toIndexedSeq
+            val dates = priceState.prices(AssetPair(ccyChain(0), ccyChain(1))).ks
             val values = dates.map( dt => {
               val converted = (PositionSet() + Amount(1, ccy)).convertViaChain(baseCurrency, ccyChain, priceState, dt)
               converted.getBalance(baseCurrency).number.toDouble

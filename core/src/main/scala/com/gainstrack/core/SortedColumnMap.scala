@@ -22,7 +22,17 @@ object SortedColumnMap {
 
   def apply[K,V]():SortedColumnMap[K,V] = SortedColumnMap(IndexedSeq(), IndexedSeq())
 
-  def from[K,V](map: SortedMap[K,V])(implicit kOrder:Ordering[K]) : SortedColumnMap[K,V] = {
-    SortedColumnMap(map.keys.toIndexedSeq, map.values.toIndexedSeq)
+  def from[K:ClassTag,V:ClassTag](map: SortedMap[K,V])(implicit kOrder:Ordering[K]) : SortedColumnMap[K,V] = {
+    val n = map.size
+    val ks = new Array[K](n)
+    val vs = new Array[V](n)
+    var i=0
+    map.foreach(kv => {
+      ks(i) = kv._1
+      vs(i) = kv._2
+      i += 1
+    })
+
+    SortedColumnMap(ks, vs)
   }
 }

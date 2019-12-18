@@ -44,7 +44,7 @@ case class BalanceReportState(balances:Map[AccountId, PositionSet]) {
   }
 
   def convertedPosition(accountId: AccountId, date: LocalDate, conversionStrategy: String)
-                       (implicit assetChainMap: AssetChainMap, origAcctState: AccountState, priceState: PriceState, singleFXConversion: SingleFXConverter):PositionSet = {
+                       (implicit assetChainMap: AssetChainMap, origAcctState: AccountState, priceState: PriceFXConverter, singleFXConversion: SingleFXConverter):PositionSet = {
     val acctState = origAcctState.withInterpolatedAccounts
     val accountOpt = acctState.accountMap.get(accountId)
     accountOpt.map(account => {

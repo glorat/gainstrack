@@ -150,6 +150,7 @@ class First extends FlatSpec {
   }
 
   lazy val priceState : PriceState = bg.priceState
+  lazy val priceFXConverter : PriceFXConverter = bg.priceFXConverter
 
   {
     val bp = bg.balanceState
@@ -169,7 +170,7 @@ class First extends FlatSpec {
 
       acctState.accounts.toSeq.sortBy(_.name).foreach(account => {
         val value = bp.getAccountValue(account.accountId, today)
-        val toGbp = bp.getPosition(account.accountId, today, AssetId("GBP"), chainMap(account.accountId), bg.priceState)
+        val toGbp = bp.getPosition(account.accountId, today, AssetId("GBP"), chainMap(account.accountId), bg.priceFXConverter)
 
         println(s"${account.accountId}: ${value.toDouble} ${account.key.assetId.symbol} ${toGbp}")
 
@@ -229,17 +230,17 @@ class First extends FlatSpec {
   }
 
   it should "provide interpolated prices" in {
-    val fx = priceState.getFX(AssetId("VTI"),AssetId("USD"), parseDate("2019-02-01"))
+    val fx = priceFXConverter.getFX(AssetId("VTI"),AssetId("USD"), parseDate("2019-02-01"))
     // Interp between 127 and 144
     assert(fx.get ==  161651.0/1200.0) //134.709166666
   }
 
   it should "have a list of all ccys" in {
     // Two sanity tests that depend on the data
-    assert(priceState.ccys.size == 18)
-    assert(priceState.ccys.contains(AssetId("USD")))
+    assert(priceFXConverter.ccys.size == 18)
+    assert(priceFXConverter.ccys.contains(AssetId("USD")))
     // This is the true invariant that should hold
-    assert(priceState.prices.keys.map(_.fx1).toSet == priceState.ccys.map(_.symbol))
+    assert(priceFXConverter.prices.keys.map(_.fx1).toSet == priceState.ccys.map(_.symbol))
   }
 
   "IRR Calc" should "compute IRR" in {
@@ -247,7 +248,7 @@ class First extends FlatSpec {
     val queryDate = LocalDate.parse("2019-12-31")
     val fromDate = parseDate("1980-01-01")
 
-    val accountReport = new AccountInvestmentReport(accountId, AssetId("GBP"), fromDate, queryDate, bg.acctState, bg.balanceState, bg.txState, priceState, bg.assetChainMap)
+    val accountReport = new AccountInvestmentReport(accountId, AssetId("GBP"), fromDate, queryDate, bg.acctState, bg.balanceState, bg.txState, priceFXConverter, bg.assetChainMap)
 
     // Because we are doing FX with linear interpolation, rounding errors will happen
     // The conversions here will make this equal
@@ -281,8 +282,8 @@ class First extends FlatSpec {
     val dailyReport = new DailyBalance(bg.balanceState)
 
     val testMeStrategy:( String)=>(String, String, Int)=>Unit = (strategy) => (acctId, ccyStr, expected) => {
-      val ps = dailyReport.convertedPosition(acctId, today, strategy)(bg.acctState, priceState = bg.priceState, assetChainMap = bg.assetChainMap, bg.singleFXConversion)
-      val ps2 = balanceReport.getState.convertedPosition(acctId, today, strategy)(bg.assetChainMap, bg.acctState, bg.priceState, bg.singleFXConversion)
+      val ps = dailyReport.convertedPosition(acctId, today, strategy)(bg.acctState, priceState = bg.priceFXConverter, assetChainMap = bg.assetChainMap, bg.singleFXConversion)
+      val ps2 = balanceReport.getState.convertedPosition(acctId, today, strategy)(bg.assetChainMap, bg.acctState, bg.priceFXConverter, bg.singleFXConversion)
 
 //      if (ps != ps2) {
       ////        assert(ps == ps2)
@@ -327,7 +328,7 @@ class First extends FlatSpec {
     //val equities = bg.assetState.tagToAssets("equity")
     val equities = bg.assetState.assetsForTags(Set("equity"))
     implicit val singleFXConversion = bg.singleFXConversion
-    val equityValue = dailyReport.positionOfAssets(equities, bg.acctState, bg.priceState, bg.assetChainMap, today)
+    val equityValue = dailyReport.positionOfAssets(equities, bg.acctState, bg.priceFXConverter, bg.assetChainMap, today)
 
     assert(equityValue.getBalance(AssetId("GBP")).number.round == 22211)
   }
@@ -336,7 +337,7 @@ class First extends FlatSpec {
     val dailyReport = new DailyBalance(bg.balanceState)
     val equities = bg.assetState.assetsForTags(Set("equity", "unknown"))
     implicit val singleFXConversion = bg.singleFXConversion
-    val equityValue = dailyReport.positionOfAssets(equities, bg.acctState, bg.priceState, bg.assetChainMap, today)
+    val equityValue = dailyReport.positionOfAssets(equities, bg.acctState, bg.priceFXConverter, bg.assetChainMap, today)
 
     assert(equityValue.getBalance(AssetId("GBP")).number.round == 0)
   }
@@ -349,7 +350,7 @@ class First extends FlatSpec {
     val acct = AccountId("Assets")
 
     for (dt <- range) {
-      val x = dailyReport.convertedPosition(acct, dt, "GBP")(bg.acctState, priceState = bg.priceState, assetChainMap = bg.assetChainMap, bg.singleFXConversion)
+      val x = dailyReport.convertedPosition(acct, dt, "GBP")(bg.acctState, priceState = bg.priceFXConverter, assetChainMap = bg.assetChainMap, bg.singleFXConversion)
     }
   }
 
@@ -361,7 +362,7 @@ class First extends FlatSpec {
     val acct = AccountId("Assets")
 
     dates.foreach(date => {
-      dailyReport.convertedPosition(acct, date, "GBP")(bg.acctState, priceState = bg.priceState, assetChainMap = bg.assetChainMap, bg.singleFXConversion)
+      dailyReport.convertedPosition(acct, date, "GBP")(bg.acctState, priceState = bg.priceFXConverter, assetChainMap = bg.assetChainMap, bg.singleFXConversion)
     })
   }
 
