@@ -12,6 +12,7 @@ COPY web/build.sbt web/build.sbt
 RUN sbt update
 # Then build
 COPY web web
+COPY quotes quotes
 COPY core core
 RUN sbt test assembly
 
