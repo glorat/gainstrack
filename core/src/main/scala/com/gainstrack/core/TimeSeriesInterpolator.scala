@@ -4,44 +4,50 @@ import java.time.temporal.ChronoUnit
 
 import spire.math.Fractional
 
-import scala.collection.SortedMap
+import scala.collection.{GenMap, SortedMap}
 
 
 class TimeSeriesInterpolator {
   import TimeSeriesInterpolator._
 
 
-  def getValue[FROM,N](timeSeries:SortedMap[LocalDate,FROM], date:LocalDate)(implicit interpolator:Interpolator[FROM,N]) : Option[N] = {
+//  @deprecated("Pass SortedColumnMap for performance")
+//  def getValue[FROM,N](timeSeries:SortedMap[LocalDate,FROM], date:LocalDate)(implicit interpolator:Interpolator[FROM,N]) : Option[N] = {
+//    getValue(SortedColumnMap.from(timeSeries),date)
+//  }
+
+  def getValue[FROM,N](timeSeries:SortedColumnMap[LocalDate, FROM], date:LocalDate)(implicit interpolator:Interpolator[FROM,N]) : Option[N] = {
     val nearest = getNearest(timeSeries,date)
     interpolator(nearest, date)
   }
 
-  def interpValue[N:Fractional](timeSeries:SortedMap[LocalDate,N], date:LocalDate) : Option[Double] = {
+  def interpValue[N:Fractional](timeSeries:SortedColumnMap[LocalDate, N], date:LocalDate) : Option[Double] = {
     getValue(timeSeries, date)(linear)
   }
 
-  def getNearest[N](timeSeries:SortedMap[LocalDate,N], date:LocalDate) : InterpolationOption[N] = {
+//  @deprecated("Pass SortedColumnMap for performance")
+//  def interpValue[N:Fractional](timeSeries:SortedMap[LocalDate,N], date:LocalDate) : Option[Double] = {
+//    getValue(timeSeries, date)(linear)
+//  }
+
+  def getNearest[N](timeSeries:SortedColumnMap[LocalDate,N], date:LocalDate) : InterpolationOption[N] = {
     if (timeSeries.isEmpty) {
       Empty()
     }
-    else if (timeSeries.contains(date)) {
-      Exact(timeSeries(date))
-    }
     else {
-      val series = timeSeries.toIndexedSeq
-      val idx:Int = series.indexWhere(x => x._1.isAfter(date) )
+      val idx = timeSeries.iota(date)
       if (idx < 0) {
         // Then all dates are before
-        ExtrapolateHigh(series.last._2)
+        ExtrapolateHigh(timeSeries.vs.last)
+      }
+      else if (timeSeries.ks(idx) == date) {
+        Exact(timeSeries.vs(idx))
+      }
+      else if (idx == 0) {
+        ExtrapolateLow(timeSeries.vs(0))
       }
       else {
-        val split = series.splitAt(idx)
-        if (split._1.isEmpty) {
-          ExtrapolateLow(split._2.head._2)
-        }
-        else {
-          Interpolate(split._1.last, split._2.head)
-        }
+        Interpolate(timeSeries.ks(idx-1)->timeSeries.vs(idx-1), timeSeries.ks(idx)->timeSeries.vs(idx))
       }
 
     }

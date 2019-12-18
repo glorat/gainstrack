@@ -6,10 +6,10 @@ import org.scalatest.FlatSpec
 import scala.collection.SortedMap
 
 class TestTimeSeriesInterpolator extends FlatSpec {
-  val data:SortedMap[LocalDate, Fraction] = SortedMap(
+  val data = SortedColumnMap.from(SortedMap(
     parseDate("2019-01-01") -> parseNumber("1"),
     parseDate("2019-12-31") -> parseNumber("365")
-  )
+  ))
   val interp = new TimeSeriesInterpolator
 
   {

@@ -16,6 +16,10 @@ case class PriceState(ccys: Set[AssetId], prices: Map[AssetPair, SortedMap[Local
 
   private val interp = new TimeSeriesInterpolator
 
+  private lazy val priceFastMap: Map[AssetPair, SortedColumnMap[LocalDate, Fraction]] = {
+    prices.mapValues(SortedColumnMap.from(_))
+  }
+
   def toDTO = {
     val keys = prices.keys.toSeq.sortBy(_.str)
     keys.map(key => TimeSeries(
@@ -36,11 +40,9 @@ case class PriceState(ccys: Set[AssetId], prices: Map[AssetPair, SortedMap[Local
       Some(1)
     }
     else {
-      // NOTE: Try to get it both ways in case during manual construction, we only populated one sided series
-      // In "normal" operation via the events, both sides get populated so the reverse check is redundant
-      // However, this one the fly conversion of the whole series is very slow
-      // val timeSeries = prices.getOrElse(tuple, prices.get(tuple.reverse).map(_.mapValues(_.inverse)).getOrElse(SortedMap()))
-      val timeSeries = prices.getOrElse(tuple, SortedMap())
+      // This is going to be an unfortunate conversion. Hopefully we don't use this too often???
+      // If so, pull this to constructor or lazy val
+      val timeSeries:SortedColumnMap[LocalDate, Fraction] = priceFastMap.getOrElse(tuple, SortedColumnMap())
 
       val ret:Option[Double] = interp.interpValue(timeSeries, date).map(x => x)
       ret

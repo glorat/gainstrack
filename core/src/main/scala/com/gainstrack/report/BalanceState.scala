@@ -13,8 +13,10 @@ case class BalanceState(acctState:AccountState, balances:Map[AccountId,BalanceSt
   type Series = SortedMap[LocalDate,Fraction]
   val interp = new TimeSeriesInterpolator
 
+  lazy val balanceSeries = balances.mapValues(s => SortedColumnMap.from(s.series))
+
   def getAccountValueOpt(account:AccountId, date: LocalDate) : Option[Fraction] = {
-    val series = balances.get(account).map(_.series).getOrElse(SortedMap())
+    val series = balanceSeries.get(account).getOrElse(SortedColumnMap())
     val ret:Option[Fraction] = interp.getValue(series, date)(TimeSeriesInterpolator.step)
       .map(x => x)
        // .map(f => f.limitDenominatorTo(SafeLong(1000000)))
@@ -26,9 +28,9 @@ case class BalanceState(acctState:AccountState, balances:Map[AccountId,BalanceSt
   }
 
   def getBalanceOpt(account: AccountId, date: LocalDate): Option[Amount] = {
-    balances.get(account).map(entry => {
-      val ccy = entry.ccy
-      val ret: Fraction = interp.getValue(entry.series, date)(TimeSeriesInterpolator.step)
+    balanceSeries.get(account).map(entry => {
+      val ccy = balances(account).ccy
+      val ret: Fraction = interp.getValue(entry, date)(TimeSeriesInterpolator.step)
         // Danger of reverting back to Fractional from a Double FX conversion here
         //.map(f => spire.math.Rational.apply(f).limitDenominatorTo(1000000) )
         .map(_.limitDenominatorTo(1000000))
