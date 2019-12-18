@@ -4,7 +4,7 @@ import com.gainstrack.core._
 
 import scala.collection.SortedMap
 
-case class SingleFXConversion(data:Map[AssetId, SortedMap[LocalDate, Double]], baseCcy:AssetId) extends SingleFXConverter {
+case class SingleFXConversion(data:Map[AssetId, SortedColumnMap[LocalDate, Double]], baseCcy:AssetId) extends SingleFXConverter {
   private val interp = new TimeSeriesInterpolator
 
   override def getFX(fx1:AssetId, fx2:AssetId, date: LocalDate): Option[Double] = {
@@ -28,12 +28,12 @@ object SingleFXConversion {
   def generate(baseCurrency:AssetId)(priceState: PriceState, assetChainMap: AssetChainMap) : SingleFXConversion = {
     val ccys = priceState.ccys
 
-    val bar:Map[AssetId, SortedMap[LocalDate, Double]] = ccys.flatMap(ccy => {
+    val bar:Map[AssetId, SortedColumnMap[LocalDate, Double]] = ccys.flatMap(ccy => {
       if (baseCurrency == ccy) {
         None
       }
       else if (priceState.prices.contains(AssetPair(ccy, baseCurrency))) {
-        Some(ccy -> priceState.prices(AssetPair(ccy, baseCurrency)).mapValues(_.toDouble) )
+        Some(ccy -> SortedColumnMap.from(priceState.prices(AssetPair(ccy, baseCurrency)).mapValues(_.toDouble) ))
       }
       else {
         val ccyChainOpt = assetChainMap.findFirst(ccy)
@@ -41,19 +41,18 @@ object SingleFXConversion {
           .filter(_.last == baseCurrency) // If we can't convert, we must drop
           .map(ccyChain => {
             require(ccyChain.last == baseCurrency)
-          // FIXME: This needs to consider every pair in the chain
-          //        val dates = ccyChain.dropRight(1).map(ccy => {
-          //          priceState.prices(AssetPair(ccy, prevCcy)).keys.toSet
-          //        }).flatten
-          // FIXME: Since the above is tricky code, just do the last chain step
-          val dates = priceState.prices(AssetPair(ccyChain(0), ccyChain(1))).keys
-
-          val series: SortedMap[LocalDate, Double] = dates.foldLeft(SortedMap[LocalDate,Double] ())((mp, dt) => {
-            val converted = (PositionSet()+Amount(1, ccy)).convertViaChain(baseCurrency, ccyChain, priceState, dt)
-            mp.updated(dt, converted.getBalance(baseCurrency).number.toDouble)
+            // FIXME: This needs to consider every pair in the chain
+            //        val dates = ccyChain.dropRight(1).map(ccy => {
+            //          priceState.prices(AssetPair(ccy, prevCcy)).keys.toSet
+            //        }).flatten
+            // FIXME: Since the above is tricky code, just do the last chain step
+            val dates = priceState.prices(AssetPair(ccyChain(0), ccyChain(1))).keys.toIndexedSeq
+            val values = dates.map( dt => {
+              val converted = (PositionSet() + Amount(1, ccy)).convertViaChain(baseCurrency, ccyChain, priceState, dt)
+              converted.getBalance(baseCurrency).number.toDouble
+            })
+            ccy -> SortedColumnMap(dates, values)
           })
-          ccy -> series
-        })
       }
     }).toMap
 
