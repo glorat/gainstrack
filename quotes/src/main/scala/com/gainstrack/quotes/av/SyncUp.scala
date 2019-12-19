@@ -11,7 +11,7 @@ object SyncUp {
 
     def allCcys = QuoteConfig.allCcys
     allCcys.foreach(ccy => {
-      val outFile = s"db/$ccy.csv"
+      val outFile = s"db/av/$ccy.csv"
 
       val cmd = s"""wget -O $outFile https://www.alphavantage.co/query?function=FX_DAILY&from_symbol=$ccy&to_symbol=USD&outputsize=full&datatype=csv&apikey=$apikey"""
 
@@ -21,10 +21,10 @@ object SyncUp {
 
     QuoteConfig.allConfigs.foreach(cfg => {
       val symbol = cfg.symbol
-      val outFile = s"db/$symbol.csv"
+      val outFile = s"db/av/$symbol.csv"
       val cmdDaily = s"""wget -O $outFile https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=$symbol&outputsize=full&datatype=csv&apikey=$apikey"""
       goGetIt(outFile, cmdDaily, forceDownload)
-      val outFileIntraday = s"db/intraday.$symbol.csv"
+      val outFileIntraday = s"db/av/intraday.$symbol.csv"
       val cmdIntraday = s"""wget -O $outFileIntraday https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol=$symbol&interval=60min&datatype=csv&apikey=$apikey"""
       goGetIt(outFileIntraday, cmdIntraday, forceDownload)
     })

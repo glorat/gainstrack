@@ -52,7 +52,7 @@ object StockParser {
     val symbol = config.symbol
 
     val assetId = AssetId(symbol)
-    val src = scala.io.Source.fromFile(s"db/${symbol}.csv")
+    val src = scala.io.Source.fromFile(s"db/av/${symbol}.csv")
     val it1 = src.getLines()
     val headers = it1.next().split(",").map(_.trim)
     val dateIndex = headers.indexOf("timestamp")
@@ -74,17 +74,6 @@ object StockParser {
     StockParseResult[N](series = map, liveQuote = liveQuote, config = config)
   }
 
-  def parseCurrency(symbol: String):AssetId = {
-    import org.json4s._
-    import org.json4s.native.JsonMethods._
-    implicit val formats = DefaultFormats
-
-    val json = parse(scala.io.Source.fromFile(s"db/${symbol}.json").reader())
-    val elem = (json \ "bestMatches")(0)
-    val details = elem.extract[Map[String,String]]
-    val currencyKey = details.keys.find(_.matches(".*currency.*"))
-    AssetId(details(currencyKey.get))
-  }
 }
 
 case class StockParseResult[N:Fractional](series:SortedMap[LocalDate, N], liveQuote:N, config: QuoteConfig) {
@@ -99,9 +88,12 @@ case class StockParseResult[N:Fractional](series:SortedMap[LocalDate, N], liveQu
     var refPrice = liveQuote
 
     val minGbpUsdDouble = priceState.data(AssetId("GBP")).vs.min
+    // This 1.1 assumes that daily LSEGBP movement does not exceed 10%. A tricky point...
+    // TODO: A better way might be to use a reference symbol that is correct (e.g VWRD or VT)
     require(minGbpUsdDouble > 1.1, "GBP and USD are so close cannot distinguish feeds with mixed GBP and USD in them")
     val minGbpUsd = Fractional[N].fromDouble(minGbpUsdDouble)
 
+    // Have to reverse because refPrice/liveQuote is today so we work backwards
     series.toSeq.reverse.foreach(kv => {
       val amount = kv._2
       val date = kv._1
@@ -121,13 +113,15 @@ case class StockParseResult[N:Fractional](series:SortedMap[LocalDate, N], liveQu
           // Can be a mixture of GBP/GBX/USD
           // Need a 3 way discriminator!!!
           if (amount / refPrice > 10) {
-            amount / 100 // GBP/GBX
+            amount / 100 // GBX -> GBP
           }
           else if ( (amount/refPrice) > minGbpUsd) {
+            // USD -> GBP
             val usd = priceState.getFX(AssetId("USD"), AssetId("GBP"), date).getOrElse(0.0) * amount
             usd
           }
           else {
+            // GBP
             amount
           }
         }
