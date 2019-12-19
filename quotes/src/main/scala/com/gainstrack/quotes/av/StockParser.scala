@@ -4,16 +4,29 @@ import com.gainstrack.command.PriceObservation
 import com.gainstrack.core._
 import com.gainstrack.report.{AssetPair, FXConverter, PriceState, SingleFXConversion}
 import spire.math.Rational
+import spire.implicits._
+import spire.math.Fractional
 
 import scala.collection.SortedMap
 
 object StockParser {
 
-  def parseIntradayRefQuote(config: QuoteConfig): Option[Fraction] = {
+  trait FractionalParser[N] {
+    def parse(s:String): N
+  }
+  implicit object FractionParser extends FractionalParser[Fraction] {
+    def parse(s:String):Fraction = parseNumber(s)
+  }
+
+  implicit object DoubleParser extends FractionalParser[Double] {
+    def parse(s:String) = s.toDouble
+  }
+
+  def parseIntradayRefQuote[N:Fractional](config: QuoteConfig)(implicit fractionalParser: FractionalParser[N]): Option[N] = {
     val symbol = config.symbol
 
     try {
-      val intraday = parseSymbol(config.copy(symbol = s"intraday.$symbol"))
+      val intraday = parseSymbol[N](config.copy(symbol = s"intraday.$symbol"))
       Some(intraday.liveQuote)
     }
     catch {
@@ -22,9 +35,9 @@ object StockParser {
 
   }
 
-  def tryParseSymbol(cfg: QuoteConfig): Option[StockParseResult] = {
+  def tryParseSymbol[N:Fractional](cfg: QuoteConfig)(implicit fractionalParser: FractionalParser[N]): Option[StockParseResult[N]] = {
     try {
-      val res = StockParser.parseSymbol(cfg)
+      val res = StockParser.parseSymbol[N](cfg)
       Some(res)
     }
     catch {
@@ -35,7 +48,7 @@ object StockParser {
     }
   }
 
-  def parseSymbol(config: QuoteConfig):StockParseResult = {
+  def parseSymbol[N:Fractional](config: QuoteConfig)(implicit fractionalParser: FractionalParser[N]):StockParseResult[N] = {
     val symbol = config.symbol
 
     val assetId = AssetId(symbol)
@@ -47,18 +60,18 @@ object StockParser {
     val closeIndex = headers.indexOf("close")
     require(closeIndex>=0, s"close column not found for $symbol")
     val refPriceStr = it1.next().split(",").map(_.trim).apply(closeIndex)
-    val liveQuote = parseIntradayRefQuote(config).getOrElse(parseNumber(refPriceStr))
+    val liveQuote:N = parseIntradayRefQuote[N](config).getOrElse(fractionalParser.parse(refPriceStr))
     require(!liveQuote.isZero, s"close for ${symbol} zero in ${refPriceStr} for line")
-    val buildMap = SortedMap.newBuilder[LocalDate, Fraction]
+    val buildMap = SortedMap.newBuilder[LocalDate, N]
 
     for (line<-src.getLines().drop(2)) {
       val parts = line.split(",").map(_.trim)
       val date = parseDate(parts(dateIndex))
-      val value = parseNumber(parts(closeIndex))
+      val value = fractionalParser.parse(parts(closeIndex))
       buildMap+=(date -> value)
     }
-    val map:SortedMap[LocalDate, Fraction] = buildMap.result()
-    StockParseResult(series = map, liveQuote = liveQuote, config = config)
+    val map:SortedMap[LocalDate, N] = buildMap.result()
+    StockParseResult[N](series = map, liveQuote = liveQuote, config = config)
   }
 
   def parseCurrency(symbol: String):AssetId = {
@@ -74,19 +87,21 @@ object StockParser {
   }
 }
 
-case class StockParseResult(series:SortedMap[LocalDate, Fraction], liveQuote:Fraction, config: QuoteConfig) {
-  def fixupLSE(lseCcy:String, actualCcy:AssetId, priceState: FXConverter) : StockParseResult = {
+case class StockParseResult[N:Fractional](series:SortedMap[LocalDate, N], liveQuote:N, config: QuoteConfig) {
+  def fixupLSE(lseCcy:String, actualCcy:AssetId, priceState: FXConverter) : StockParseResult[N] = {
+
+
     // LSE ETFs on alpha-vantage are declared as being in in USD
     // and historics are a mix of USD and GBp (pence)
-    require(!liveQuote.isZero)
+    // FIXME: require(!liveQuote.isZero)
 
-    val builder = SortedMap.newBuilder[LocalDate, Fraction]
+    val builder = SortedMap.newBuilder[LocalDate, N]
     var refPrice = liveQuote
 
     series.foreach(kv => {
       val amount = kv._2
       val date = kv._1
-      val corrected:Fraction = lseCcy match {
+      val corrected:N = lseCcy match {
         case "LSEUSD" => {
           if (amount / refPrice > 10) {
             val gbp = amount / 100 // GBP/GBX
