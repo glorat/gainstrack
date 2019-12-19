@@ -3,12 +3,13 @@ package com.gainstrack.quotes.av
 import java.time.{Duration, Instant}
 
 import com.gainstrack.core._
-import com.gainstrack.report.{AssetChainMap, AssetPair, PriceFXConverter, PriceState, SingleFXConversion}
+import com.gainstrack.report.{AssetChainMap, AssetPair, FXConverter, PriceFXConverter, PriceState, SingleFXConversion}
 
 import scala.collection.SortedMap
 
 object Main {
   def main(args: Array[String]): Unit = {
+    import spire.implicits._
 
     // Prime it first so we can measure
     doTheWork
@@ -29,40 +30,36 @@ object Main {
 
   def doTheWork:DbState = {
     val isoCcys = QuoteConfig.allCcys
-    val ccySeries = isoCcys.flatMap(fxCcy => {
-      StockParser.tryParseSymbol(QuoteConfig(fxCcy, "USD", "USD") ).map(res =>{
-        val series: SortedMap[LocalDate, Fraction] = res.series
-        AssetPair(fxCcy, "USD") -> series
+    val data:Map[AssetId, SortedColumnMap[LocalDate, Double]] = isoCcys.flatMap(fxCcy => {
+      StockParser.tryParseSymbol[Double](QuoteConfig(fxCcy, "USD", "USD") ).map(res =>{
+        val series: SortedMap[LocalDate, Double] = res.series
+        val fast = SortedColumnMap.from(series)
+        AssetId(fxCcy) -> fast
       })
-    })
-    val inverseSeries = ccySeries.map(kv => kv._1.reverse -> kv._2.mapValues(_.inverse))
-    val allSeries = (ccySeries ++ inverseSeries).toMap
-    val priceState = PriceState(isoCcys.map(AssetId(_)).toSet, allSeries)
-    val priceFXConverter = priceState.priceFxConverter
+    }).toMap
 
-    val reses = QuoteConfig.allConfigs.flatMap(cfg => StockParser.tryParseSymbol(cfg))
 
-    val finalState = reses.foldLeft(priceState)((pState, res) => {
+    val priceFXConverter = SingleFXConversion(data, AssetId("USD"))
+
+    val reses = QuoteConfig.allConfigs.flatMap(cfg => StockParser.tryParseSymbol[Double](cfg))
+
+    val finalState = reses.foldLeft(data)((dataSoFar, res) => {
       val cfg = res.config
       val fixed = res.fixupLSE(cfg.domainCcy, AssetId(cfg.actualCcy), priceFXConverter)
-      pState.withUpdatedSeries(AssetPair(cfg.symbol, cfg.actualCcy), fixed.series)
+      val usdSeries = fixed.series.map(kv => kv._1 -> kv._2 * priceFXConverter.getFX(cfg.actualCcy, "USD", kv._1).get)
+      val fastUsd = SortedColumnMap.from(usdSeries)
+      dataSoFar.updated( AssetId(cfg.symbol), fastUsd)
     })
 
-    DbState(priceState.priceFxConverter)
+    DbState(SingleFXConversion(finalState, AssetId("USD")))
   }
 }
 
 
 
-case class DbState(priceFXConverter: PriceFXConverter) {
-  private def inferredChain(baseCurrency:AssetId) : AssetChainMap = {
-    val pairs = priceFXConverter.prices.keys
-    val inferredChain = pairs.map(pair => AccountId("Assets:Dummy").subAccount(pair.fx1) -> Seq(pair.fx1, pair.fx2, baseCurrency.symbol).map(AssetId(_)))
-    AssetChainMap(inferredChain.toMap)
-  }
+case class DbState(priceFXConverter: SingleFXConversion) {
 
   def singleFxConverter(baseCurrency:AssetId): SingleFXConversion = {
-    val chain = inferredChain(baseCurrency)
-    SingleFXConversion.generate(baseCurrency)(priceFXConverter, chain)
+    priceFXConverter
   }
 }

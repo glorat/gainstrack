@@ -20,8 +20,9 @@ case class SingleFXConversion(data:Map[AssetId, SortedColumnMap[LocalDate, Doubl
       interp.getValue(data(fx1), date)(TimeSeriesInterpolator.linear)
     }
     else {
-      // s"SingleFXConversion can only convert to base currency ${baseCcy}"
-      None
+      getFX(fx1,baseCcy,date).flatMap(fx1based => getFX(fx2,baseCcy,date).map(fx2based=>{
+        fx1based / fx2based
+      }))
     }
   }
 }
