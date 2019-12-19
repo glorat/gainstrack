@@ -110,16 +110,7 @@
                     fromDate: this.selectedRange[0].toISOString().split('T')[0],
                     toDate: this.selectedRange[1].toISOString().split('T')[0]
                 };
-
-                const self = this;
-                const notify = this.$notify;
-
-                axios.post('/api/pnlexplain', args)
-                    .then(response => {
-                        self.explains = response.data;
-                    })
-                    .catch(error => notify.error(error));
-
+                this.$router.push({name: 'pnldetail', params: args});
             }
         },
         data() {
@@ -161,6 +152,7 @@
                             const start = new Date();
                             start.setTime(end.getTime());
                             start.setMonth(0);
+                            start.setDate(1);
                             picker.$emit('pick', [start, end]);
                         }
                     }]
