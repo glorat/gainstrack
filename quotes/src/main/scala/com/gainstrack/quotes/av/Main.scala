@@ -9,8 +9,6 @@ import scala.collection.SortedMap
 
 object Main {
   def main(args: Array[String]): Unit = {
-    import spire.implicits._
-
     // Prime it first so we can measure
     doTheWork
 
@@ -21,10 +19,13 @@ object Main {
     val endTime = Instant.now
     val duration = Duration.between(startTime, endTime)
 
-//    res.priceFXConverter.prices(AssetPair("VWRL.LON","GBP")).foreach(kv => {
-//      val toBase = singleFXConversion.getFX("VWRL.LON",baseCcySymbol,kv._1).get.formatted("%.2f")
-//      println(s"${kv._1} ${kv._2.toDouble.formatted("%.2f")} $toBase")
-//    })
+    val series = singleFXConversion.data(AssetId("VWRL.LON"))
+    series.ks.zipWithIndex.foreach{
+      case(dt, i) => {
+        println(s"""$dt ${series.vs(i).formatted("%.2f")}""")
+      }
+    }
+
     println(s"Duration: ${duration.toMillis/1000.0}s")
   }
 
@@ -41,7 +42,11 @@ object Main {
 
     val priceFXConverter = SingleFXConversion(data, AssetId("USD"))
 
-    val reses = QuoteConfig.allConfigs.flatMap(cfg => StockParser.tryParseSymbol[Double](cfg))
+    val reses = QuoteConfig
+      .allConfigs
+      .filter(_.symbol == "VWRL.LON") // Uncomment here for debugging
+      .flatMap(cfg => StockParser.tryParseSymbol[Double](cfg))
+
 
     val finalState = reses.foldLeft(data)((dataSoFar, res) => {
       val cfg = res.config
