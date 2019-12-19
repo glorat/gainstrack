@@ -13,11 +13,10 @@ case class SingleFXConversion(data:Map[AssetId, SortedColumnMap[LocalDate, Doubl
     if (fx1 == fx2) {
       Some(1.0)
     }
-    else if (!data.isDefinedAt(fx1)) {
-      None
-    }
     else if (fx2 == baseCcy) {
-      interp.getValue(data(fx1), date)(TimeSeriesInterpolator.linear)
+      data.get(fx1).flatMap ( series =>
+        interp.getValue(series, date)(TimeSeriesInterpolator.linear)
+      )
     }
     else {
       getFX(fx1,baseCcy,date).flatMap(fx1based => getFX(fx2,baseCcy,date).map(fx2based=>{

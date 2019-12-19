@@ -88,7 +88,7 @@ object StockParser {
 }
 
 case class StockParseResult[N:Fractional](series:SortedMap[LocalDate, N], liveQuote:N, config: QuoteConfig) {
-  def fixupLSE(lseCcy:String, actualCcy:AssetId, priceState: FXConverter) : StockParseResult[N] = {
+  def fixupLSE(lseCcy:String, actualCcy:AssetId, priceState: SingleFXConversion) : StockParseResult[N] = {
 
 
     // LSE ETFs on alpha-vantage are declared as being in in USD
@@ -98,11 +98,16 @@ case class StockParseResult[N:Fractional](series:SortedMap[LocalDate, N], liveQu
     val builder = SortedMap.newBuilder[LocalDate, N]
     var refPrice = liveQuote
 
-    series.foreach(kv => {
+    val minGbpUsdDouble = priceState.data(AssetId("GBP")).vs.min
+    require(minGbpUsdDouble > 1.1, "GBP and USD are so close cannot distinguish feeds with mixed GBP and USD in them")
+    val minGbpUsd = Fractional[N].fromDouble(minGbpUsdDouble)
+
+    series.toSeq.reverse.foreach(kv => {
       val amount = kv._2
       val date = kv._1
       val corrected:N = lseCcy match {
         case "LSEUSD" => {
+          // Can be GBX or USD
           if (amount / refPrice > 10) {
             val gbp = amount / 100 // GBP/GBX
             val usd = priceState.getFX(AssetId("GBP"), actualCcy, date).getOrElse(0.0) * gbp
@@ -113,8 +118,14 @@ case class StockParseResult[N:Fractional](series:SortedMap[LocalDate, N], liveQu
           }
         }
         case "LSEGBP" => {
+          // Can be a mixture of GBP/GBX/USD
+          // Need a 3 way discriminator!!!
           if (amount / refPrice > 10) {
             amount / 100 // GBP/GBX
+          }
+          else if ( (amount/refPrice) > minGbpUsd) {
+            val usd = priceState.getFX(AssetId("USD"), AssetId("GBP"), date).getOrElse(0.0) * amount
+            usd
           }
           else {
             amount
