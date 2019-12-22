@@ -1,6 +1,6 @@
 <template>
     <span>
-        <input type="text" v-model="value.value" v-on:input="onChanged()">
+        <input type="text" v-model="value.number" v-on:input="onChanged()">
         <input type="text" v-model="value.ccy" v-on:input="onChanged()">
     </span>
 </template>

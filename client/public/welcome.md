@@ -8,3 +8,11 @@ Gainstrack is the app to help you get in personal control of your finances with 
 - Set up your accounts in the Editor or offline in a .gainstrack file
 - Save your accounts locally in your computer
 - Upload to the server to generate reports
+
+### Release notes
+TODO: Pull this in from source control releases
+### Errata
+#### Dec'19
+- P&L Explain may pull in real historic quotes from external data sources but other reports do not. 
+#### Dec'19
+- Liabilities are not supported in reports yet

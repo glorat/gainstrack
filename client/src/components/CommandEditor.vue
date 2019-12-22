@@ -1,8 +1,8 @@
 <template>
-    <div v-if="type === 'Transfer'">
+    <div v-if="type === 'tfr'">
         <transfer :cmd="cmd" v-on:gainstrack-changed="gainstrackChanged($event)"></transfer>
     </div>
-    <div v-else-if="type === 'SecurityPurchase'">
+    <div v-else-if="type === 'unit'">
         <trade-editor :cmd="cmd" v-on:gainstrack-changed="gainstrackChanged($event)"></trade-editor>
     </div>
     <div v-else-if="type === 'C'">
