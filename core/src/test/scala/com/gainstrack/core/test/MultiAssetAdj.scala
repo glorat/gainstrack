@@ -95,7 +95,8 @@ class MultiAssetAdj extends FlatSpec {
     val singleFXConversion = SingleFXConversion.generate(bg.acctState.baseCurrency)(bg.priceFXConverter, bg.assetChainMap)
     val x = singleFXConversion.getFX(AssetId("XIU"), AssetId("USD"), dt)
     assert(x.get == 5)
-    assert(None == singleFXConversion.getFX(AssetId("XIU"), AssetId("CAD"), dt))
+    // This now works by converting via the base currency (USD)
+    assert(Some(10.0) == singleFXConversion.getFX(AssetId("XIU"), AssetId("CAD"), dt))
   }
 
   it should "interpolate" in {
