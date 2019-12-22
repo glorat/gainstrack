@@ -31,10 +31,10 @@
         },
         computed: {
             toGainstrack() {
-                let baseStr = `${this.cmd.date} tfr ${this.cmd.source} ${this.cmd.dest} ${this.cmd.sourceValue.value} ${this.cmd.sourceValue.ccy}`;
-                if (this.cmd.sourceValue.value !== this.cmd.targetValue.value
+                let baseStr = `${this.cmd.date} tfr ${this.cmd.source} ${this.cmd.dest} ${this.cmd.sourceValue.number} ${this.cmd.sourceValue.ccy}`;
+                if (this.cmd.sourceValue.number !== this.cmd.targetValue.number
                     || this.cmd.sourceValue.ccy !== this.cmd.targetValue.ccy) {
-                    baseStr += ` ${this.cmd.targetValue.value} ${this.cmd.targetValue.ccy}`;
+                    baseStr += ` ${this.cmd.targetValue.number} ${this.cmd.targetValue.ccy}`;
                 }
                 return baseStr
             }
