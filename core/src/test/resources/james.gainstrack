@@ -1,0 +1,27 @@
+option "operating_currency" "GBP"
+#setting up a chart of accounts
+#balance sheet accounts
+2019-01-01 open Equity:Opening GBP
+    multiAsset: true
+2019-01-01 open Assets:Bank:HSBCGBP GBP
+2019-01-01 open Assets:Bank:HSBCUSD USD
+2019-01-01 open Assets:Equities:GBPStock GBP
+2019-01-01 open Assets:Equities:USDStock USD
+#income statement accounts
+2019-01-01 open Expenses:Testaccount1:GBP GBP
+    multiAsset: true
+2019-01-01 open Expenses:Testaccount1:Testaccount1detail:GBP GBP
+    multiAsset: true
+#creates an opening balance (using tfr as seems closest to traditional double entry and no date issues. Declare cr first)
+2019-01-01 tfr Equity:Opening Assets:Bank:HSBCGBP 50000.0 GBP
+2019-01-01 tfr Equity:Opening Assets:Bank:HSBCUSD 100000.0 USD
+2019-01-01 tfr Equity:Opening Assets:Equities:GBPStock 10000 GBP
+2019-01-01 tfr Equity:Opening Assets:Equities:USDStock 25000 USD
+#forex rates on opening
+2019-01-01 price USD 0.5 GBP
+#net assets on 1 Jan 19 should be GBP122,250
+#forex rate on closing
+2019-11-30 price USD 1 GBP
+# net assets 30 Nov 19 should be GBP 185k, gain on forex of GBP62,750. Gainstrack is revaluing the opening position as well so no gain recognised.
+#2019-02-01 tfr Assets:Bank:HSBCGBP Expenses:Testaccount1:GBP 10000 GBP
+#2019-02-01 tfr Assets:Bank:HSBCGBP Expenses:Testaccount1:Testaccount1detail:GBP 2000 GBP
