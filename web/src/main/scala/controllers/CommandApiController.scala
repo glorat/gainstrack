@@ -3,7 +3,7 @@ package controllers
 import com.gainstrack.command.GainstrackParser
 import com.gainstrack.report.GainstrackGenerator
 import org.json4s.{Formats, JValue}
-import org.scalatra.ScalatraServlet
+import org.scalatra.{InternalServerError, ScalatraServlet}
 import org.scalatra.json.JacksonJsonSupport
 
 import scala.concurrent.ExecutionContext
@@ -36,7 +36,7 @@ class CommandApiController(implicit val ec :ExecutionContext) extends ScalatraSe
       CommandApiResponse("ok")
     }
     catch {
-      case e:Exception => CommandApiResponse(e.toString)
+      case e:Exception => InternalServerError(e.toString)
     }
 
   }
@@ -63,7 +63,7 @@ class CommandApiController(implicit val ec :ExecutionContext) extends ScalatraSe
 
     }
     catch {
-      case e:Exception => CommandApiResponse(e.toString)
+      case e:Exception => InternalServerError(e.toString)
     }
 
   }

@@ -17,10 +17,7 @@
         </thead>
         <tbody>
         <tr v-for="cmd in info.commands" v-on:click="selectCommand(cmd)">
-            <td>{{ info.account.key.name }}</td>
-            <td>{{ cmd.data.date }}</td>
-            <td>{{ cmd.type }}</td>
-            <td>{{cmd.description}}</td>
+            <td colspan="4"><command-editor :cmd="cmd.data" :type="cmd.type"></command-editor></td>
         </tr>
         </tbody>
     </table>
@@ -59,13 +56,13 @@
                 const str = this.commandStr;
                 axios.post('/api/post/test', {str})
                     .then(response => this.$notify.success(response.data))
-                    .catch(error => this.$notify.error(error))
+                    .catch(error => this.$notify.error(error.response.data))
             },
             addCommand() {
                 const str = this.commandStr;
                 axios.post('/api/post/add', {str})
                     .then(response => this.$notify.success(response.data))
-                    .catch(error => this.$notify.error(error))
+                    .catch(error => this.$notify.error(error.response.data))
             },
         }
     }

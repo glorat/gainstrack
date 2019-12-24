@@ -10,24 +10,15 @@
 
 <script>
     import BalanceEditor from './BalanceEditor.vue';
+    import {CommandEditorMixin} from '../mixins/CommandEditorMixin';
 
     export default {
         name: 'TradeEditor',
         components: {BalanceEditor},
-        props: {cmd: Object},
-        watch: {
-            toGainstrack() {
-                const str = this.toGainstrack;
-                this.$emit('gainstrack-changed', str);
-            }
-        },
-        mounted() {
-            const str = this.toGainstrack;
-            this.$emit('gainstrack-changed', str);
-        },
+        mixins: [CommandEditorMixin],
         computed: {
             toGainstrack() {
-                const baseStr = `${this.cmd.date} trade ${this.cmd.accountId} ${this.cmd.security.value} ${this.cmd.security.ccy} @${this.cmd.price.value} ${this.cmd.price.ccy} C${this.cmd.commission.value} ${this.cmd.commission.ccy}`;
+                const baseStr = `${this.cmd.date} trade ${this.cmd.accountId} ${this.cmd.security.number} ${this.cmd.security.ccy} @${this.cmd.price.number} ${this.cmd.price.ccy} C${this.cmd.commission.number} ${this.cmd.commission.ccy}`;
                 return baseStr
             }
         },
