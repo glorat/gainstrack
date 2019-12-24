@@ -7,14 +7,14 @@ import scala.io.{BufferedSource, Source}
 
 class GainstrackParser {
   // We start with just the global state
-  private var globalCommand = GlobalCommand()
+  private var globalCommand:Option[GlobalCommand] = None
   private var commands:Seq[AccountCommand] = Seq()
   private var errors:Seq[ParserMessage] = Seq()
   private var lineCount : Int = 0
   private var commandToLocation: Map[AccountCommand, Int] = Map()
   def getCommands : SortedSet[AccountCommand] = {
-    val ret = SortedSet[AccountCommand]() + globalCommand ++ commands
-    require(commands.size+1 == ret.size, "Internal error: two different commands compared equal")
+    val ret = SortedSet[AccountCommand]() ++ globalCommand ++ commands
+    require(commands.size+globalCommand.size == ret.size, "Internal error: two different commands compared equal")
     ret
   }
 
@@ -82,7 +82,7 @@ class GainstrackParser {
 
       }
       case OptionCommandPattern(key, valueStr) => {
-        globalCommand = globalCommand.withOption(key, valueStr)
+        globalCommand = Some(globalCommand.getOrElse(GlobalCommand()).withOption(key, valueStr))
       }
       case CommentLine() => ()
       case IgnoreLine() => ()
