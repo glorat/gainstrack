@@ -38,8 +38,8 @@ class First extends FlatSpec {
     val lines = Seq("2010-01-01 open Income:Salary:CNY CNY", "  fundingAccount: Assets:HSBCCN")
     val p = new GainstrackParser
     p.parseLines(lines)
-    assert(p.getCommands.size == 2)
-    val cmd = p.getCommands.toSeq(1).asInstanceOf[AccountCreation]
+    assert(p.getCommands.size == 1)
+    val cmd = p.getCommands.toSeq(0).asInstanceOf[AccountCreation]
     assert(cmd.options.fundingAccount == Some(AccountId("Assets:HSBCCN")))
     assert(cmd.toGainstrack == lines)
   }
