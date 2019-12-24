@@ -2,10 +2,10 @@ package com.gainstrack.command
 
 import com.gainstrack.core._
 
-case class FundCommand(date:LocalDate, targetAccountId:AccountId, balance:Amount, sourceAccountIdOpt:Option[AccountId] = None) extends CommandNeedsAccounts {
+case class FundCommand(date:LocalDate, accountId:AccountId, balance:Amount, sourceAccountIdOpt:Option[AccountId] = None) extends CommandNeedsAccounts {
   override def description: String = s"Fund ${balance}"
 
-  override def mainAccount: Option[AccountId] = Some(targetAccountId)
+  override def mainAccount: Option[AccountId] = Some(accountId)
 
   override def commandString: String = FundCommand.prefix
 
@@ -13,21 +13,21 @@ case class FundCommand(date:LocalDate, targetAccountId:AccountId, balance:Amount
   override def involvedAccounts: Set[AccountId] = ???
 
   def toTransfers(accts:Set[AccountCreation]) : Seq[Transfer] = {
-    val targetAccount = accts.find(_.accountId == targetAccountId).get
+    val targetAccount = accts.find(_.accountId == accountId).get
 
     val sourceAccountId = sourceAccountIdOpt.getOrElse(
       targetAccount.options.fundingAccount.getOrElse(throw new IllegalStateException(s"Cannot fund ${targetAccount} without a fundingAccount option specified in its creation"))
     )
 
-    Transfer(sourceAccountId, targetAccountId, date, balance, balance, description).toTransfers(accts)
+    Transfer(sourceAccountId, accountId, date, balance, balance, description).toTransfers(accts)
   }
 
   override def toGainstrack: Seq[String] = {
     val s = if (sourceAccountIdOpt.isDefined) {
-      s"${date} fund ${targetAccountId.toGainstrack} ${sourceAccountIdOpt.get.toGainstrack} ${balance}"
+      s"${date} fund ${accountId.toGainstrack} ${sourceAccountIdOpt.get.toGainstrack} ${balance}"
     }
     else {
-      s"${date} fund ${targetAccountId.toGainstrack} ${balance}"
+      s"${date} fund ${accountId.toGainstrack} ${balance}"
     }
     Seq(s)
   }

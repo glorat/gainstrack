@@ -15,7 +15,7 @@ case class BalanceStatement(
 
   override def mainAccount: Option[AccountId] = Some(accountId)
   override def involvedAccounts: Set[AccountId] = adjustment.involvedAccounts
-  override def commandString: String = "adj"
+  override def commandString: String = BalanceStatement.prefix
   def description:String = s"Account balance ${balance}"
 
   // With old balance value, avoid using pad

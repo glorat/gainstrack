@@ -1,13 +1,15 @@
 <template>
     <span>
-        <input type="text" v-model="value.number" v-on:input="onChanged()">
-        <input type="text" v-model="value.ccy" v-on:input="onChanged()">
+        <input type="text" v-model="value.number" size="10" v-on:input="onChanged()">
+        <asset-id v-model="value.ccy" v-on:input="onChanged()"></asset-id>
     </span>
 </template>
 
 <script>
+    import AssetId from './AssetId';
     export default {
         name: 'BalanceEditor',
+        components: {AssetId},
         props: {value: Object},
         methods: {
             onChanged() {

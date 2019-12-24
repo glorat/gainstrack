@@ -14,21 +14,13 @@
 
 <script>
     import BalanceEditor from './BalanceEditor.vue';
+    import {CommandEditorMixin} from '../mixins/CommandEditorMixin';
 
     export default {
         name: 'Transfer',
         props: {cmd: Object},
         components: {BalanceEditor},
-        methods: {
-            inputChanged() {
-                const str = this.toGainstrack;
-                this.$emit('gainstrack-changed', str);
-            }
-        },
-        mounted() {
-            const str = this.toGainstrack;
-            this.$emit('gainstrack-changed', str);
-        },
+        mixins: [CommandEditorMixin],
         computed: {
             toGainstrack() {
                 let baseStr = `${this.cmd.date} tfr ${this.cmd.source} ${this.cmd.dest} ${this.cmd.sourceValue.number} ${this.cmd.sourceValue.ccy}`;

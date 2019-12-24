@@ -16,7 +16,8 @@
             <button @click="submit" :disabled="selectedRange==null">Go</button>
         </div>
         <div class="block" v-if="explains.length>0">
-            P&L Explanation
+            P&L Explanat
+            ion
 <!--            Map("actual" -> actualPnl, "explained" -> explained, "unexplained" -> unexplained,-->
 <!--            "newActivityPnl" -> newActivityPnl,-->
 <!--            "totalEquity" -> totalEquity, "totalIncome" -> totalIncome, "totalExpense" -> totalExpense, "totalDeltaExplain" -> totalDeltaExplain-->
