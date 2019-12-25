@@ -4,7 +4,7 @@
         <command-editor ref="newCmd" v-if="selectedCommand" :cmd="selectedCommand.data" :type="selectedCommand.type" v-on:gainstrack-changed="gainstrackChange($event)"></command-editor>
         <button type="button" v-on:click="testCommand">Test</button>
         <button type="button" v-on:click="addCommand">Add</button>
-        <p>Command:<pre>{{ this.commandStr }}</pre></p>
+        <div>Command:<pre>{{ this.commandStr }}</pre></div>
     </form>
     <table class="queryresults sortable">
         <thead>
@@ -17,7 +17,11 @@
         </thead>
         <tbody>
         <tr v-for="cmd in info.commands" v-on:click="selectCommand(cmd)">
-            <td colspan="4"><command-editor :cmd="cmd.data" :type="cmd.type"></command-editor></td>
+<!--            <td colspan="4"><command-editor :cmd="cmd.data" :type="cmd.type"></command-editor></td>-->
+            <td>{{ info.account.key.name }}</td>
+            <td>{{ cmd.data.date }}</td>
+            <td>{{ cmd.type }}</td>
+            <td>{{cmd.description}}</td>
         </tr>
         </tbody>
     </table>
@@ -55,7 +59,7 @@
             testCommand() {
                 const str = this.commandStr;
                 axios.post('/api/post/test', {str})
-                    .then(response => this.$notify.success(response.data))
+                    .then(response => this.$notify.success(response.data.success))
                     .catch(error => this.$notify.error(error.response.data))
             },
             addCommand() {

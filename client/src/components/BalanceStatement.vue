@@ -4,7 +4,7 @@
         Balance:
         <input type="text" name="account" v-model="cmd.accountId" v-on:input="inputChanged()">
         amount
-        <balance-editor v-model="cmd.balance" v-on:input="inputChanged()"></balance-editor>
+        <balance-editor v-model="cmd.balance"></balance-editor>
     </div>
 </template>
 
