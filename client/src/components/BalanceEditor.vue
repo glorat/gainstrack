@@ -12,7 +12,7 @@
         components: {AssetId},
         props: {value: Object},
         methods: {
-            onChanged() {
+            onChanged($event) {
                 this.$emit('input', this.value);
             }
         }
