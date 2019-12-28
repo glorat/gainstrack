@@ -77,7 +77,7 @@ class GainstrackParser {
           commands = commands.dropRight(1) :+ newLast
           Some(newLast)
         }).getOrElse({
-          errors = errors :+ ParserMessage(s"Cannot apply $key to ${prefix} command", lineCount, line)
+          errors = errors :+ ParserMessage(s"Cannot apply $key to ${commands.lastOption.map(_.toGainstrack).getOrElse("unknown")} command", lineCount, line)
         })
 
       }
@@ -100,7 +100,9 @@ class GainstrackParser {
     catch {
 
       case e:Exception => {
-        throw new Exception(s"Parsing failed on line ${lineCount}: ${line}", e)
+        val msg = s"Parsing failed on line ${lineCount}: ${line}: ${e.getMessage}"
+        errors = errors :+ ParserMessage(msg,lineCount, line)
+        throw new Exception(msg, e)
       }
     }
   }

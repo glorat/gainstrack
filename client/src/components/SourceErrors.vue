@@ -8,11 +8,11 @@
             </tr>
             </thead>
             <tbody>
-            <tr v-for="error in errors" >
+            <tr v-for="error in errors" @click="onRowClick(error)">
                 <td class="num">
-                    <a class="source" href="">{{ error.line }}</a>
+                    <span class="source">{{ error.line }}</span>
                 </td>
-                <td @click="onRowClick(error)">{{ error.message }}</td>
+                <td >{{ error.message }}</td>
             </tr>
             </tbody>
         </table>
