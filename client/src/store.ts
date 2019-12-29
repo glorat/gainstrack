@@ -86,6 +86,12 @@ export default new Vuex.Store({
             return summary;
 
         },
+        async logout(context, data: object) {
+            const summary = await axios.post('/api/authn/logout', data);
+            await context.commit('reloaded', summary.data);
+            return summary;
+
+        },
         parseState(context, data) {
             context.commit('parseState', data);
         }
