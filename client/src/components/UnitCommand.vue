@@ -11,7 +11,7 @@
     import {CommandEditorMixin} from '../mixins/CommandEditorMixin';
 
     export default {
-        name: "UnitCommand",
+        name: 'UnitCommand',
         mixins: [CommandEditorMixin],
         components: {BalanceEditor},
         computed: {

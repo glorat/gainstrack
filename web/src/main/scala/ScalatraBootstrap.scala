@@ -13,6 +13,7 @@ class ScalatraBootstrap extends LifeCycle {
     context.mount(new controllers.CommandApiController(), "/api/post/*")
     context.mount(new controllers.ApiController(), "/api/*")
     context.mount(new controllers.ExportController(), "/api/export/*")
+    context.mount(new controllers.AuthnController(), "/api/authn/*")
     logger.info("ScalatraBootstrap init complete")
   }
 
