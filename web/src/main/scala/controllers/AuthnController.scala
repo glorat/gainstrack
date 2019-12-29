@@ -29,4 +29,9 @@ class AuthnController(implicit val ec: ExecutionContext)
       ret.copy(authentication = ret.authentication.copy(error = "Login failed"))
     })
   }
+
+  post("/logout") {
+    scentry.logout
+    getSummary
+  }
 }
