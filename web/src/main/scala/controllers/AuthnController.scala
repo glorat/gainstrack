@@ -21,6 +21,10 @@ class AuthnController(implicit val ec: ExecutionContext)
     scentry.authenticate().map(user => {
       val msg = s"Login occurred for ${user.username}"
       logger.info(msg)
+      // If we have a file, then flush session to pick up file
+      if (bgFromFile.isDefined) {
+        session.remove("gainstrack")
+      }
       getSummary
 
     }).getOrElse({

@@ -18,12 +18,35 @@ trait GainstrackSupport {
 
   private val logger =  LoggerFactory.getLogger(getClass)
 
-  private val bgDefault = {
+  private val UserDataDir = "db/userdata" // Need to mkpath somewhere?
+
+  private def bgDefault = {
     val parser = new GainstrackParser
     val realFile = "real"
     parser.parseFile(s"/Users/kevin/dev/gainstrack/data/${realFile}.gainstrack")
     val orderedCmds = parser.getCommands
     new GainstrackGenerator(orderedCmds)
+  }
+
+  private def userFile:String = {
+    s"$UserDataDir/${user.id}.txt"
+  }
+
+  protected def bgFromFile = {
+    try {
+      val parser = new GainstrackParser
+      parser.parseFile(userFile)
+      logger.info(s"Loading bgFromFile $userFile")
+      Some(GainstrackGenerator(parser.getCommands))
+    }
+    catch {
+      case e:Exception => {
+        logger.error(s"Failed to bgFromFile $userFile")
+        logger.error(e.toString)
+        None
+      }
+    }
+
   }
 
   protected def dateOverride:Option[LocalDate] = {
@@ -32,17 +55,26 @@ trait GainstrackSupport {
 
   def getGainstrack = {
     if (isAuthenticated) {
-      logger.warn("TODO: Authenticated, so should OrElse load data from db")
-      session.get("gainstrack").getOrElse(bgDefault).asInstanceOf[GainstrackGenerator]
+      session.get("gainstrack").map(_.asInstanceOf[GainstrackGenerator])
+        .orElse(bgFromFile)
+        .getOrElse(bgDefault)
     }
     else {
       session.get("gainstrack").getOrElse(bgDefault).asInstanceOf[GainstrackGenerator]
     }
   }
 
-  def updateGainstrack(bg2:GainstrackGenerator) = {
+  def saveGainstrack(bg:GainstrackGenerator) = {
+    if (isAuthenticated) {
+      val file = s"$UserDataDir/${user.id}.txt"
+      bg.writeGainstrackFile(file)
+      logger.info("")
 
-    ???
+    }
+    else {
+      logger.error("Attempt to saveGainstrack while no logged in ignored")
+    }
+
   }
 
   def getSummary: StateSummaryDTO = {
