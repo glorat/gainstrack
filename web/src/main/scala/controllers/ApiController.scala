@@ -7,6 +7,7 @@ import com.gainstrack.command.{AccountCreation, GainstrackParser, ParserMessage}
 import com.gainstrack.core._
 import com.gainstrack.quotes.av.Main
 import com.gainstrack.report.{AccountInvestmentReport, BalanceReport, DailyBalance, FXChain, FXProxy, GainstrackGenerator, IrrSummary, PLExplain, TimeSeries}
+import com.gainstrack.web.{AuthenticationSupport, BalanceTreeTable, GainstrackJsonSerializers, GainstrackSupport, StateSummaryDTO}
 import org.json4s.{DefaultFormats, Formats, JValue}
 import org.scalatra.{NotFound, ScalatraServlet}
 import org.scalatra.json._
@@ -16,30 +17,19 @@ import scala.concurrent.ExecutionContext
 
 
 
-class ApiController (implicit val ec :ExecutionContext) extends ScalatraServlet with JacksonJsonSupport {
+class ApiController (implicit val ec :ExecutionContext)
+  extends ScalatraServlet
+    with JacksonJsonSupport
+    with AuthenticationSupport
+    with GainstrackSupport {
   val logger =  LoggerFactory.getLogger(getClass)
+  logger.info("ApiController constructed")
   var lastStart:Instant = Instant.now
 
   protected implicit val jsonFormats: Formats = org.json4s.DefaultFormats ++ GainstrackJsonSerializers.all
 
-  val bgDefault = {
-    val parser = new GainstrackParser
-    val realFile = "real"
-    parser.parseFile(s"/Users/kevin/dev/gainstrack/data/${realFile}.gainstrack")
-    val orderedCmds = parser.getCommands
-    new GainstrackGenerator(orderedCmds)
-  }
-
-  private def currentBg = {
-    session.get("gainstrack").getOrElse(bgDefault).asInstanceOf[GainstrackGenerator]
-  }
-
-  private def dateOverride:Option[LocalDate] = {
-    session.get("dateOverride").map(_.asInstanceOf[LocalDate])
-  }
-
   private def currentDate: LocalDate = {
-    dateOverride.getOrElse(currentBg.latestDate)
+    dateOverride.getOrElse(getGainstrack.latestDate)
   }
 
   val defaultFromDate = parseDate("1900-01-01")
@@ -49,6 +39,7 @@ class ApiController (implicit val ec :ExecutionContext) extends ScalatraServlet 
     contentType = formats("json")
     logger.info(request.getPathInfo)
     lastStart = Instant.now
+    scentry.authenticate()
   }
 
   after() {
@@ -90,7 +81,7 @@ class ApiController (implicit val ec :ExecutionContext) extends ScalatraServlet 
   }
 
   def tables(keys:Seq[String]) = {
-    val bg = currentBg
+    val bg = getGainstrack
     val conversionStrategy = session.get("conversion").map(_.toString).getOrElse("parent")
 
     val toDate = currentDate
@@ -117,7 +108,7 @@ class ApiController (implicit val ec :ExecutionContext) extends ScalatraServlet 
   }
 
   get ("/prices/") {
-    val bg = currentBg
+    val bg = getGainstrack
 
     val priceState = bg.priceState
 
@@ -126,7 +117,7 @@ class ApiController (implicit val ec :ExecutionContext) extends ScalatraServlet 
   }
 
   get("/irr/") {
-    val bg = currentBg
+    val bg = getGainstrack
 
     var fromDate = defaultFromDate
     var toDate = currentDate
@@ -142,7 +133,7 @@ class ApiController (implicit val ec :ExecutionContext) extends ScalatraServlet 
   }
 
   get("/irr/:accountId") {
-    val bg = currentBg
+    val bg = getGainstrack
 
     val accountId = params("accountId")
     val fromDate = defaultFromDate
@@ -158,14 +149,14 @@ class ApiController (implicit val ec :ExecutionContext) extends ScalatraServlet 
   }
 
   get("/editor/") {
-    val bg = currentBg
+    val bg = getGainstrack
 
     val source = bg.toGainstrack
     Map("source" -> source, "short_title" -> "Editor")
   }
 
   get("/account/:accountId") {
-    val bg = currentBg
+    val bg = getGainstrack
 
     val conversionStrategy = session.get("conversion").map(_.toString).getOrElse("parent")
 
@@ -208,7 +199,7 @@ class ApiController (implicit val ec :ExecutionContext) extends ScalatraServlet 
   }
 
   get("/account/:accountId/graph") {
-    val bg = currentBg
+    val bg = getGainstrack
 
     val conversionStrategy = session.get("conversion").map(_.toString).getOrElse("parent")
     val toDate = currentDate
@@ -218,7 +209,7 @@ class ApiController (implicit val ec :ExecutionContext) extends ScalatraServlet 
   }
 
   get ("/journal/") {
-    val bg = currentBg
+    val bg = getGainstrack
 
     val txs = bg.txState.allTransactions
     val commands = txs.map(_.origin).distinct.reverse
@@ -231,7 +222,7 @@ class ApiController (implicit val ec :ExecutionContext) extends ScalatraServlet 
   }
 
   get ("/command/") {
-    val bg = currentBg
+    val bg = getGainstrack
 
     val mainAccountIds:Set[AccountId] = bg.finalCommands.flatMap(_.mainAccount).toSet
     val mainAccounts:Seq[AccountCreation] = bg.acctState.accounts.filter(a => mainAccountIds.contains(a.accountId)).toSeq.sortBy(_.accountId)
@@ -240,7 +231,7 @@ class ApiController (implicit val ec :ExecutionContext) extends ScalatraServlet 
   }
 
   get ("/command/:accountId") {
-    val bg = currentBg
+    val bg = getGainstrack
 
     val accountId = params("accountId")
     bg.acctState.accountMap.get(accountId).map(account => {
@@ -259,14 +250,7 @@ class ApiController (implicit val ec :ExecutionContext) extends ScalatraServlet 
   }
 
   get ("/state/summary") {
-    val bg = currentBg
-
-    val accts = bg.acctState.accounts.map(_.accountId)
-    val ccys = bg.priceState.ccys
-    val conversionStrategy = session.get("conversion").map(_.toString).getOrElse("parent")
-
-    StateSummaryDTO(accts.toSeq.sorted, ccys.toSeq.sorted, conversionStrategy,
-      bg.latestDate, dateOverride)
+    this.getSummary
   }
 
   post("/state/conversion") {
@@ -290,7 +274,7 @@ class ApiController (implicit val ec :ExecutionContext) extends ScalatraServlet 
   }
 
   get("/aa") {
-    val bg = currentBg
+    val bg = getGainstrack
     implicit val singleFXConversion = bg.singleFXConversion
 
     val queryDate = currentDate
@@ -314,7 +298,7 @@ class ApiController (implicit val ec :ExecutionContext) extends ScalatraServlet 
   }
 
   get ("/aa/table") {
-    val bg = currentBg
+    val bg = getGainstrack
 
     val toDate = currentDate
     val allocations = Seq(Seq("equity"), Seq("bond"), Seq("blend"))
@@ -330,7 +314,7 @@ class ApiController (implicit val ec :ExecutionContext) extends ScalatraServlet 
   }
 
   get("/pnlexplain") {
-    val bg = currentBg
+    val bg = getGainstrack
 
     val fxConvert = new FXChain(
       new FXProxy(bg.fxMapper, ServerQuoteSource.db.singleFxConverter(bg.acctState.baseCurrency)),
@@ -354,7 +338,7 @@ class ApiController (implicit val ec :ExecutionContext) extends ScalatraServlet 
   }
 
   get("/pnlexplain/monthly") {
-    val bg = currentBg
+    val bg = getGainstrack
 
     val fxConvert = new FXChain(
       new FXProxy(bg.fxMapper, ServerQuoteSource.db.singleFxConverter(bg.acctState.baseCurrency)),
@@ -376,7 +360,7 @@ class ApiController (implicit val ec :ExecutionContext) extends ScalatraServlet 
 
   post("/pnlexplain") {
     val body = parsedBody.extract[PNLExplainRequest]
-    val bg = currentBg
+    val bg = getGainstrack
     val fxConvert = new FXChain(
       new FXProxy(bg.fxMapper, ServerQuoteSource.db.singleFxConverter(bg.acctState.baseCurrency)),
       bg.singleFXConversion
@@ -405,6 +389,6 @@ case class AccountTxDTO(date:String, cmdType:String, description:String, change:
 
 case class JournalDTO(rows:Seq[AccountTxDTO])
 
-case class StateSummaryDTO(accountIds:Seq[AccountId], ccys:Seq[AssetId], conversion:String, latestDate: LocalDate, dateOverride:Option[LocalDate])
+
 
 case class PNLExplainRequest(fromDate: LocalDate, toDate: LocalDate)

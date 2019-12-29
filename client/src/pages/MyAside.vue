@@ -17,24 +17,28 @@
                 :before-upload="beforeUpload"
                 >
             <i class="el-icon-upload"></i>
-            <div class="el-upload__text">Drop file here or<br><em>click to upload</em></div>
+            <div class="el-upload__text">Drop Gainstrack here or<br><em>click to upload</em></div>
         </el-upload>
         <ul class="navigation">
-            <li><a href="/api/export/gainstrack">Save...</a></li>
-            <li><a href="/api/export/beancount">Export to Beancount</a></li>
+            <li><a href="/api/export/gainstrack">Export Gainstrack...</a></li>
+            <li><a href="/api/export/beancount">Export Beancount...</a></li>
         </ul>
+        <div>
+            <login-form></login-form>
+        </div>
     </aside>
 </template>
 
 
 <script lang="ts">
+    import LoginForm from '@/components/LoginForm.vue';
     import axios from 'axios';
     import {Upload} from 'element-ui';
 
     import { Component, Vue } from 'vue-property-decorator';
 
     @Component({
-        components: {'el-upload': Upload},
+        components: {LoginForm, 'el-upload': Upload},
         computed: {
             errors() {
                 return this.$store.state.parseState.errors;

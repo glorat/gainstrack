@@ -2,21 +2,23 @@ package controllers
 
 import com.gainstrack.command.GainstrackParser
 import com.gainstrack.report.GainstrackGenerator
+import com.gainstrack.web.{AuthenticationSupport, GainstrackJsonSerializers, GainstrackSupport}
+import org.json4s.Formats
 import org.scalatra.ScalatraServlet
+import org.scalatra.json.JacksonJsonSupport
 
 import scala.concurrent.ExecutionContext
 
-class ExportController (implicit val ec :ExecutionContext) extends ScalatraServlet {
-  val bgDefault = {
-    val parser = new GainstrackParser
-    val realFile = "real"
-    parser.parseFile(s"/Users/kevin/dev/gainstrack/data/${realFile}.gainstrack")
-    val orderedCmds = parser.getCommands
-    GainstrackGenerator(orderedCmds)
-  }
+class ExportController(implicit val ec: ExecutionContext)
+  extends ScalatraServlet
+    with AuthenticationSupport
+    with JacksonJsonSupport
+    with GainstrackSupport {
+
+  protected implicit val jsonFormats: Formats = org.json4s.DefaultFormats ++ GainstrackJsonSerializers.all
 
   get("/gainstrack") {
-    val bg = session.get("gainstrack").getOrElse(bgDefault).asInstanceOf[GainstrackGenerator]
+    val bg = getGainstrack
     val source = bg.toGainstrack
 
     contentType = "application/text"
@@ -25,7 +27,7 @@ class ExportController (implicit val ec :ExecutionContext) extends ScalatraServl
   }
 
   get("/beancount") {
-    val bg = session.get("gainstrack").getOrElse(bgDefault).asInstanceOf[GainstrackGenerator]
+    val bg = getGainstrack
     val source = bg.toBeancount.map(_.value).mkString("\n")
 
     contentType = "application/text"

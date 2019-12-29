@@ -1,10 +1,8 @@
-package controllers
+package com.gainstrack.web
 
 import com.gainstrack.command.AccountCreation
 import com.gainstrack.core._
 import com.gainstrack.report._
-
-import scala.xml.Elem
 
 case class TreeTableDTO(
                          name:String,

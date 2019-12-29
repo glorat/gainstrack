@@ -10,6 +10,7 @@ export default new Vuex.Store({
         summary: {
             accountIds: [],
             ccys: [],
+            authentication: {}
         },
         balances: {} as AccountBalances,
         parseState: {errors: []},
@@ -66,15 +67,24 @@ export default new Vuex.Store({
             await axios.post('/api/state/conversion', {conversion: c});
             return await this.dispatch('reload');
         },
-        reload(context) {
-            return axios.get('/api/state/summary')
-                .then(response => context.commit('reloaded', response.data))
-                // Since components don't know to retrigger this if already on display, let's get it for them
-                .then(() => context.dispatch('balances'));
+        async reload(context) {
+            const response = await axios.get('/api/state/summary');
+            await context.commit('reloaded', response.data);
+            // Since components don't know to retrigger this if already on display, let's get it for them
+            await context.dispatch('balances');
+            return response;
         },
         async dateOverride(context, d: string) {
             await axios.post('/api/state/dateOverride', {dateOverride: d});
             return this.dispatch('reload');
+        },
+        async login(context, data: object) {
+            const summary = await axios.post('/api/authn/login', data);
+            await context.commit('reloaded', summary.data);
+            // Get stuff in background
+            context.dispatch('balances');
+            return summary;
+
         },
         parseState(context, data) {
             context.commit('parseState', data);
