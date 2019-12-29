@@ -44,5 +44,6 @@ ENTRYPOINT ["./run_jar.sh"]
 RUN mkdir -p /app/src/main/webapp
 #COPY --from=builder ./web/src/main/webapp/ ./src/main/webapp/
 COPY --from=webbuilder ./dist/ ./dist/
+RUN mkdir -p db/userdata
 RUN mkdir -p /Users/kevin/dev/gainstrack/data/
 COPY core/src/test/resources/src.gainstrack /Users/kevin/dev/gainstrack/data/real.gainstrack

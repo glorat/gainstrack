@@ -38,14 +38,10 @@ object SingleFXConversion {
     val ret = generateFoo(baseCurrency)(priceState, assetChainMap)
     val after = Instant.now
 
-    logger.info(s"SingleFXConversion took ${Duration.between(before,after).toMillis} ms")
+    logger.debug(s"SingleFXConversion took ${Duration.between(before,after).toMillis} ms")
     ret
   }
   def generateFoo(baseCurrency:AssetId)(priceState: PriceFXConverter, assetChainMap: AssetChainMap) : SingleFXConversion = {
-    val before = Instant.now
-    val during = Instant.now
-    logger.info(s"Priming took ${Duration.between(before,during).toMillis} ms")
-
     val ccys = priceState.ccys
 
     val bar:Map[AssetId, SortedColumnMap[LocalDate, Double]] = ccys.flatMap(ccy => {

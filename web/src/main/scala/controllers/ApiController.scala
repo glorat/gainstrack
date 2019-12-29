@@ -62,6 +62,9 @@ class ApiController (implicit val ec :ExecutionContext)
       val res = bg.writeBeancountFile(s"/tmp/${realFile}.beancount", parser.lineFor(_))
       if (res.length == 0) {
         session("gainstrack") = bg
+        if (isAuthenticated) {
+          saveGainstrack(bg)
+        }
 
         //val defaultFromDate = parseDate("1970-01-01")
         ApiSourceResponse("???", true, Seq())
