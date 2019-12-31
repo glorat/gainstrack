@@ -11,6 +11,7 @@
                     range-separator="To"
                     start-placeholder="Start date"
                     end-placeholder="End date"
+                    value-format="yyyy-MM-dd"
                     :picker-options="pickerOptions">
             </el-date-picker>
             <button @click="submit" :disabled="selectedRange==null">Go</button>
@@ -116,8 +117,8 @@
             },
             submit() {
                 const args = {
-                    fromDate: this.selectedRange[0].toISOString().split('T')[0],
-                    toDate: this.selectedRange[1].toISOString().split('T')[0]
+                    fromDate: this.selectedRange[0],
+                    toDate: this.selectedRange[1]
                 };
                 this.$router.push({name: 'pnldetail', params: args});
             }
