@@ -95,10 +95,19 @@
                 reader.onload = () => {
                     const text = reader.result;
                     axios.put('/api/source/', {source: text, filePath: '', entryHash: '', sha256sum: ''})
-                        .then(response => notify.success('Reloaded'))
-                        .then(() => store.dispatch('reload'))
-                        // A bit of a hack to force a refresh of local state in current view
-                        .then(() => this.$router.go(0))
+                        .then(response => {
+                            this.$store.dispatch('parseState', response.data);
+                            if (response.data.errors.length > 0) {
+                                notify.warning('There are errors...');
+                                this.$router.push({name: 'errors'});
+                            } else {
+                                notify.success('Saved');
+                                this.$store.dispatch('reload');
+                                this.$store.dispatch('gainstrackText'); // Clear editor
+                                // A bit of a hack to force a refresh of local state in current view
+                                this.$router.go(0);
+                            }
+                        })
                 };
                 reader.onerror = () => {
                     notify.error(reader.result as string)

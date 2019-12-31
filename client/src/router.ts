@@ -19,7 +19,7 @@ const routes: RouteConfig[] = [
     {path: '/journal', component: Journal, meta: {title: 'Journal'}},
     {path: '/prices', component: Prices, meta: {title: 'Prices'}},
     {path: '/editor', component: Editor, meta: {title: 'Editor'}},
-    {path: '/errors', component: () => import('./components/SourceErrors.vue'), meta: {title: 'Editor'}},
+    {path: '/errors', name: 'errors', component: () => import('./components/SourceErrors.vue'), meta: {title: 'Editor'}},
     {path: '/irr', component: () => import('./pages/IrrSummary.vue'), meta: {title: 'IRR'}},
     {path: '/irr/:accountId', component: IrrDetail, name: 'irr_detail', props: true},
     {
