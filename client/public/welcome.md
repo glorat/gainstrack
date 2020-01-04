@@ -10,9 +10,22 @@ Gainstrack is the app to help you get in personal control of your finances with 
 - Upload to the server to generate reports
 
 ### Release notes
-TODO: Pull this in from source control releases
+#### v0.3.0
+4 January
+- FIX: Error reporting on uploaded files
+- FIX: Date selector off-by one error on P&L Explain
+- Experimental authentication support
+#### v0.2.0
+14 December
+- Addition of bal command for EOD balance adjustment/assertions, plus numerous edge case fixes for bal/adj generally
+- Improvements to base currency conversion in reports such as P&L Explain and IRR
+- P&L explain automatically reports over a range of typical time periods - very cool
+
 ### Errata
+#### Jan'20
+- The login facility is for experimental purposes only, not for general use
 #### Dec'19
 - P&L Explain may pull in real historic quotes from external data sources but other reports do not. 
-#### Dec'19
+- Income/Expenses/Liabilities are counterintuitively affected by future market prices, rather than retaining their original cost basis
+#### Nov'19
 - Liabilities are not supported in reports yet
