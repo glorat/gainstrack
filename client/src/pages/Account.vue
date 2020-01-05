@@ -39,15 +39,21 @@
             }
         },
         methods: {
-          refresh() {
-              axios.get('/api/account/' + this.accountId)
+          refresh(path) {
+              axios.get('/api/account/' + path)
                   .then(response => this.info = response.data)
                   .catch(error => this.$notify.error(error))
           }
         },
         mounted() {
-            this.refresh();
+            this.refresh(this.accountId);
         },
+        beforeRouteUpdate(to, from, next) {
+            // react to route changes...
+            // don't forget to call next()
+            this.refresh(to.params.accountId);
+            next();
+        }
     }
 </script>
 
