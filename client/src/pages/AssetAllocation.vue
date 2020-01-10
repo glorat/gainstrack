@@ -1,6 +1,7 @@
 <template>
     <div>
         <apexchart type="donut" :options="options" :series="series" height="250px"></apexchart>
+        <vue-plotly :data="data" :layout="layout" :options="options" auto-resize></vue-plotly>
 
         <div class="row">
             <div class="column" v-for="table in tables">
@@ -15,27 +16,46 @@
 </template>
 
 <script>
-    import VueApexCharts from 'vue-apexcharts';
+
+    import VuePlotly from '../components/Plotly'
     import axios from 'axios';
     import TreeTable from '../components/TreeTable';
 
     export default {
         name: 'AssetAllocation',
-        components: {TreeTable, apexchart: VueApexCharts},
+        components: {TreeTable, VuePlotly},
         data() {
             return {
-                options: {
-                    chart: {
-                        id: 'vuechart-aa-graph',
-                        type: 'donut',
+                // plotly
+                // data: [{x: [1, 2, 3, 4, 5], y: [2, 4, 6, 8, 9]}],
+                data: [{
+                    type: "sunburst",
+                    labels: ["Loading"],
+                    parents: [""],
+                    values: [0],
+                    // labels: ["Eve", "Cain", "Seth", "Enos", "Noam", "Abel", "Awan", "Enoch", "Azura"],
+                    // parents: ["", "Eve", "Eve", "Seth", "Seth", "Eve", "Eve", "Awan", "Eve" ],
+                    // values:  [10, 14, 12, 10, 2, 6, 6, 4, 4],
+                    // outsidetextfont: {size: 20, color: "#377eb8"},
+                    // leaf: {opacity: 0.4},
+                    // marker: {line: {width: 2}},
+                }],
+                layout: {
+                    autosize: true,
+                    // showlegend: true,
+                    // xaxis: {nticks: 20},
+                    // yaxis: {zeroline: true, hoverformat: ',.0f'},
+                    height: 250,
+                    margin: {
+                        l: 30,
+                        r: 30,
+                        b: 30,
+                        t: 30,
+                        pad: 0
                     },
-                    title: {
-                        text: ''
-                    },
-                    labels: ['one', 'two'],
                 },
-                series: [100, 200],
-                ccy: 'USD',
+                options:{},
+                // table
                 tables: [],
             }
         },
@@ -45,11 +65,24 @@
             axios.get('/api/aa')
                 .then(response => {
                     const data = response.data;
-                    self.series = data.series;
-                    self.options = {...self.options, ...{
-                            labels: data.labels
-                        }};
-                    self.ccy = data.ccy;
+
+                    const plotlys = [{
+                        type: 'pie',
+                        labels: data.labels,
+                        parents: data.labels.map(x => ''),
+                        values: data.series,
+                        hole: 0.6,
+                        name: data.ccy,
+                        // textinfo: "label+percent",
+                        // labels: ["Eve", "Cain", "Seth", "Enos", "Noam", "Abel", "Awan", "Enoch", "Azura"],
+                        // parents: ["", "Eve", "Eve", "Seth", "Seth", "Eve", "Eve", "Awan", "Eve" ],
+                        // values:  [10, 14, 12, 10, 2, 6, 6, 4, 4],
+                        // outsidetextfont: {size: 20, color: "#377eb8"},
+                        // leaf: {opacity: 0.4},
+                        // marker: {line: {width: 2}},
+                    }];
+                    self.data = plotlys;
+
                 })
                 .catch(error => notify.error(error));
             axios.get('/api/aa/table')

@@ -1,12 +1,10 @@
 <template>
-    <div>
-        <apexchart type="line" :options="options" :series="series" height="250px"></apexchart>
-    </div>
+    <vue-plotly :data="data" :layout="layout" :options="options" auto-resize></vue-plotly>
 </template>
 
 <script>
-    import VueApexCharts from 'vue-apexcharts';
     import axios from 'axios';
+    import VuePlotly from './Plotly'
 
     const expMovingAverage = (array, range) => {
         const k = 2 / (range + 1);
@@ -22,49 +20,34 @@
         return emaArray;
     };
 
+    function unpack(rows, key) {
+        return rows.map(function(row) { return row[key]; });
+    }
+
     export default {
         name: 'AccountGraph',
-        components: {apexchart: VueApexCharts},
+        components: {VuePlotly},
         props: ['accountId'],
         data() {
             return {
-                options: {
-                    chart: {
-                        id: 'vuechart-account-graph',
-                        type: 'area',
-                        stacked: false,
-                        zoom: {
-                            type: 'x',
-                            enabled: true,
-                            autoScaleYaxis: true
-                        },
-                        toolbar: {
-                            autoSelected: 'zoom'
-                        }
-                    },
-                    dataLabels: {
-                        enabled: false
-                    },
-                    title: {
-                        text: ''
-                    },
-                    xaxis: {type: 'datetime'},
-                    yaxis: {
-                        labels: {
-                            formatter(val) {
-                                return val.toFixed(0);
-                            },
-                        },
-                        min(y) {
-                            return y > 0 ? 0 : y;
-                        },
-                        forceNiceScale: true,
+                // plotly
+                // data: [{x: [1, 2, 3, 4, 5], y: [2, 4, 6, 8, 9]}],
+                data: [],
+                layout: {
+                    autosize: true,
+                    showlegend: true,
+                    xaxis: {nticks: 20},
+                    yaxis: {zeroline: true, hoverformat: ',.0f'},
+                    height: 250,
+                    margin: {
+                        l: 30,
+                        r: 30,
+                        b: 30,
+                        t: 30,
+                        pad: 0
                     },
                 },
-                series: [{
-                    name: 'series-1',
-                    data: []
-                }]
+                options:{},
             }
         },
         mounted() {
@@ -73,12 +56,20 @@
             axios.get('/api/account/' + this.accountId + '/graph')
                 .then(response => {
                     const series = response.data.series;
+                    let plotlys = [];
+
                     const smoothSeries = series.map(s => {
                         const smoothData = expMovingAverage(s.data, 12);
-                        s.data = smoothData;
+                        const plotly = {
+                            type: "scatter",
+                            name: s.name,
+                            x: unpack(smoothData, 'x'),
+                            y:unpack(smoothData, 'y')};
+                        plotlys.push(plotly);
                         return s;
                     });
-                    self.series = smoothSeries;
+
+                    self.data = plotlys;
                 })
                 .catch(error => notify.error(error))
         },
