@@ -1,6 +1,5 @@
 <template>
     <div>
-        <apexchart type="donut" :options="options" :series="series" height="250px"></apexchart>
         <vue-plotly :data="data" :layout="layout" :options="options" auto-resize></vue-plotly>
 
         <div class="row">
