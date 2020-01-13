@@ -10,8 +10,10 @@
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "test:unit": "vue-cli-service test:unit",
-    "lint": "vue-cli-service lint",
-    "build-report": "vue-cli-service build --report"
+    "vue-cli-lint": "vue-cli-service lint",
+    "build-report": "vue-cli-service build --report",
+    "lint": "eslint --ext .js,.ts,.vue --ignore-path .gitignore ./",
+    "test": "echo \"No test specified\" && exit 0"
   },
   "dependencies": {
     "@auth0/auth0-spa-js": "^1.6.4",
