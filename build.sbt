@@ -26,7 +26,6 @@ lazy val dlstore_deps =
 
 lazy val common_deps = Seq(
   "org.scalatest" %% "scalatest" % "3.0.4" % "test",
-  "net.cakesolutions" %% "scala-kafka-client-testkit" % "1.0.0" % "test",
   "org.json4s"   %% "json4s-jackson" % "3.5.0"
 )
 
