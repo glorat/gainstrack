@@ -19,7 +19,8 @@
                 <p>
                     <span class="datecell">{{ row.date }}</span>
                     <span class="description">{{ row.description }}</span>
-                    <span class="indicators" v-on:click="rowClick(row)"><span v-for="i in row.postings"></span></span>
+                  <!-- eslint-disable-next-line vue/no-unused-vars -->
+                    <span class="indicators" v-on:click="rowClick(row)"><span v-for="i in row.postings"></span><!-- {{i}} --></span>
                     <span data-sort="number"></span>
                     <span v-if="showBalance" class="num">{{ row.change }} </span>
                     <span v-if="showBalance" class="num">{{ row.position }}</span>

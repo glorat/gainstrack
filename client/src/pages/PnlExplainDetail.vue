@@ -27,7 +27,7 @@
                 <td class="description">To FX</td>
                 <td class="description">Position</td>
             </tr>
-            <tr v-for="(ccy, ccyIndex) in deltas">
+            <tr v-for="ccy in deltas">
                 <td>{{ ccy.assetId }}</td>
                 <td class="num">{{ ccy.explain.toFixed(2) }}</td>
                 <td class="num">{{ ccy.oldPrice.toFixed(2)}}</td>
@@ -78,7 +78,8 @@
                 return this.explains[0]
             },
             deltas() {
-                return this.explainData.delta.sort((a, b) => Math.abs(b.explain) - Math.abs(a.explain));
+                // Use of concat to sort a copy
+                return this.explainData.delta.concat().sort((a, b) => Math.abs(b.explain) - Math.abs(a.explain));
             },
         },
         mounted() {

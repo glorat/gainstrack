@@ -4,25 +4,35 @@ import Vuex from 'vuex';
 
 Vue.use(Vuex);
 
-export default new Vuex.Store({
-    state: {
-        count: 0,
-        summary: {
-            accountIds: [],
-            ccys: [],
-            authentication: {}
-        },
-        balances: {} as AccountBalances,
-        parseState: {errors: []},
-        gainstrackText: '',
+interface MyState {
+    count: number,
+    summary: object,
+    balances: AccountBalances,
+    parseState: object,
+    gainstrackText: string
+}
+
+const initState: MyState = {
+    count: 0,
+    summary: {
+        accountIds: [],
+        ccys: [],
+        authentication: {}
     },
+    balances: {},
+    parseState: {errors: []},
+    gainstrackText: '',
+}
+
+export default new Vuex.Store({
+    state: initState,
     mutations: {
         increment(state) {
             state.count++;
         },
         reloaded(state, data) {
             state.summary = data;
-            state.balances = {} as AccountBalances;
+            state.balances = {};
             state.gainstrackText = '';
             state.parseState = {errors: []};
         },

@@ -1,7 +1,8 @@
 <template>
     <div>
 
-    <div v-for="series in prices" v-if="prices.length>0" class="left">
+    <div v-for="series in prices" class="left">
+      <template v-if="prices.length>0">
         <h3>{{ series.name }}</h3>
         <table class="sortable">
             <thead>
@@ -15,6 +16,7 @@
             </tr>
             </tbody>
         </table>
+      </template>
     </div>
 
     </div>

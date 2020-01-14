@@ -7,13 +7,12 @@
 </template>
 
 <script>
-    import BalanceEditor from './BalanceEditor';
     import {CommandEditorMixin} from '../mixins/CommandEditorMixin';
 
     export default {
         name: 'UnitCommand',
         mixins: [CommandEditorMixin],
-        components: {BalanceEditor},
+        components: {},
         computed: {
             toGainstrack() {
                 return `${this.cmd.date} unit ${this.cmd.accountId} TODO`;

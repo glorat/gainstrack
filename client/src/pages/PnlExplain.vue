@@ -105,6 +105,7 @@
             },
         },
         mounted() {
+            const notify = this.$notify;
             axios.get('/api/pnlexplain/monthly')
                 .then(response => {
                     this.explains = response.data;
