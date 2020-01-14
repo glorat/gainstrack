@@ -50,7 +50,12 @@
     export default {
         props: {
             autoResize: Boolean,
-            watchShallow: false,
+            watchShallow: {
+              type:Boolean,
+              default: function() {
+                return false
+              }
+            },
             options: {
                 type: Object
             },

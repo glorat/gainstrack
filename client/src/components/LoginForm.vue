@@ -1,9 +1,9 @@
 <template>
     <div>
         <form @submit.prevent="login()" v-if="!authentication.username">
-            <input type="text" name="username" placeholder="Username" v-model="username" pattern="\w*" title="Only lowercase"></input>
-            <input type="password" name="password" v-model="password"></input>
-            <input type="submit" name="login" value="Login" :disabled="loading"></input>
+            <input type="text" name="username" placeholder="Username" v-model="username" pattern="\w*" title="Only lowercase">
+            <input type="password" name="password" v-model="password">
+            <input type="submit" name="login" value="Login" :disabled="loading">
         </form>
         <div v-if="authentication.username">
             Logged in as <em>{{authentication.username}}</em>

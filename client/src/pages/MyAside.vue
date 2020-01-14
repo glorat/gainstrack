@@ -6,7 +6,8 @@
                     <router-link v-bind:to="'/' + id">{{ config.allPages[id][0] }}</router-link>
                 </li>
                 <li v-if="id=='editor'" :class="errorClass">
-                    <router-link active-class="error" v-bind:to="'/errors'">Errors <span class="bubble">{{ errors.length }}</span></router-link>
+                  <router-link active-class="error" v-bind:to="'/errors'">Errors <span class="bubble">{{errors.length}}</span>
+                  </router-link>
                 </li>
             </template>
         </ul>
