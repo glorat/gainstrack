@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "allowJs": true,
     "target": "esnext",
     "module": "esnext",
     "strict": true,
@@ -12,6 +13,7 @@
     "sourceMap": true,
     "baseUrl": ".",
     "types": [
+      "quasar",
       "webpack-env",
       "mocha",
       "chai"

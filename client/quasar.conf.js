@@ -95,6 +95,10 @@ module.exports = function (ctx) {
             formatter: require('eslint').CLIEngine.getFormatter('stylish')
           }
         })
+        cfg.resolve.alias = {
+          ...cfg.resolve.alias,
+          '@': require('path').resolve(__dirname, './src'),
+        }
       }
     },
 

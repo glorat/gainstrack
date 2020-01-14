@@ -71,6 +71,10 @@ module.exports = {
     // Correct typescript linting until at least 2.0.0 major release
     // See https://github.com/typescript-eslint/typescript-eslint/issues/501
     // See https://github.com/typescript-eslint/typescript-eslint/issues/493
-    '@typescript-eslint/explicit-function-return-type': 'off'
+    '@typescript-eslint/explicit-function-return-type': 'off',
+    '@typescript-eslint/indent': 'off',
+
+    // My custom
+    'vue/require-v-for-key': 'off'
   }
 }
