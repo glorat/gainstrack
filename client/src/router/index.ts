@@ -12,7 +12,7 @@ Vue.use(Router);
 const routes: RouteConfig[] = [
     {
         path: '/balance_sheet',
-        component: () => import(/* webpackChunkName: "BalanceSheet" */ './pages/BalanceSheet.vue'),
+        component: () => import(/* webpackChunkName: "BalanceSheet" */ '../pages/BalanceSheet.vue'),
         meta: {title: 'Balance Sheet'}
     },
     {path: '/income_statement', component: IncomeStatement, meta: {title: 'Income Statement'}},
@@ -22,29 +22,29 @@ const routes: RouteConfig[] = [
     {
         path: '/errors',
         name: 'errors',
-        component: () => import('./components/SourceErrors.vue'),
+        component: () => import('../components/SourceErrors.vue'),
         meta: {title: 'Editor'}
     },
-    {path: '/irr', component: () => import('./pages/IrrSummary.vue'), meta: {title: 'IRR'}},
+    {path: '/irr', component: () => import('../pages/IrrSummary.vue'), meta: {title: 'IRR'}},
     {path: '/irr/:accountId', component: IrrDetail, name: 'irr_detail', props: true},
     {
-        path: '/account/:accountId', component: () => import(/* webpackChunkName: "Account" */ './pages/Account.vue'),
+        path: '/account/:accountId', component: () => import(/* webpackChunkName: "Account" */ '../pages/Account.vue'),
         name: 'account', props: true
     },
     {path: '/command/', component: CommandSummary, meta: {title: 'Commands'}},
-    {path: '/command/:accountId', component: () => import('./pages/Command.vue'), name: 'command', props: true},
+    {path: '/command/:accountId', component: () => import('../pages/Command.vue'), name: 'command', props: true},
     {
         path: '/aa',
-        component: () => import('./pages/AssetAllocation.vue'),
+        component: () => import('../pages/AssetAllocation.vue'),
         name: 'aa',
         meta: {title: 'Asset Allocation'}
     },
-    {path: '/pnlexplain', component: () => import('./pages/PnlExplain.vue'), meta: {title: ' P&L Explain'}},
-    {path: '/pnlexplain/:fromDate/:toDate', component: () => import('./pages/PnlExplainDetail.vue'),
+    {path: '/pnlexplain', component: () => import('../pages/PnlExplain.vue'), meta: {title: ' P&L Explain'}},
+    {path: '/pnlexplain/:fromDate/:toDate', component: () => import('../pages/PnlExplainDetail.vue'),
         name: 'pnldetail', meta: {title: ' P&L Explain'}, props: true},
-    {path: '/help', component: () => import('./pages/Markdown.vue'), props: {page: 'help.md'}},
-    {path: '/faq', component: () => import('./pages/Markdown.vue'), props: {page: 'faq.md'}},
-    {path: '/*', component: () => import('./pages/Markdown.vue'), props: {page: 'welcome.md'}},
+    {path: '/help', component: () => import('../pages/Markdown.vue'), props: {page: 'help.md'}},
+    {path: '/faq', component: () => import('../pages/Markdown.vue'), props: {page: 'faq.md'}},
+    {path: '/*', component: () => import('../pages/Markdown.vue'), props: {page: 'welcome.md'}},
 ];
 
 const router = new Router({
