@@ -24,6 +24,10 @@ case class CommodityCommand(date: LocalDate, asset:AssetId, options:CommodityOpt
   override def withOption(key: String, valueStr: String): AccountCommand = {
     copy (options = options.withOption(key, valueStr))
   }
+
+  override def toDTO: AccountCommandDTO = {
+    AccountCommandDTO(accountId = AccountId.root, date = date, asset = Some(asset))
+  }
 }
 
 object CommodityCommand extends CommandParser {

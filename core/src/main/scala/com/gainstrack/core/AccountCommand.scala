@@ -9,6 +9,7 @@ trait AccountCommand extends Command with DomainEvent with Ordered[AccountComman
   def commandString: String // The stored short version
   def description: String
   def toGainstrack: Seq[String]
+  def toDTO: AccountCommandDTO
 
   // Required for filtering
   def mainAccount : Option[AccountId]

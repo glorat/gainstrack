@@ -65,9 +65,17 @@ case class Transfer(
 //    ), this)
   }
 
+  def price : Amount = {
+    Amount(fxRate, sourceValue.ccy)
+  }
+
   override def toGainstrack: Seq[String] = {
     val baseStr = s"${date} tfr ${source.toGainstrack} ${dest.toGainstrack} ${sourceValue}"
     Seq(baseStr + (if(sourceValue==targetValue) "" else s" ${targetValue}"))
+  }
+
+  override def toDTO: AccountCommandDTO = {
+    AccountCommandDTO(accountId = accountId, date = date, change = Some(sourceValue), price = Some(price), otherAccount = Some(dest))
   }
 }
 

@@ -34,6 +34,10 @@ case class EarnCommand(date:LocalDate, incomeTag:String, value:Amount, targetAcc
       Seq(s"${date} earn ${incomeTag} ${value}")
     }
   }
+
+  override def toDTO: AccountCommandDTO = {
+    AccountCommandDTO(accountId = incomeAccountId, date = date, change = Some(value), otherAccount = targetAccountIdOpt)
+  }
 }
 
 object EarnCommand extends CommandParser {

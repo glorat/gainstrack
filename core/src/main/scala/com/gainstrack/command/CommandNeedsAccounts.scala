@@ -20,4 +20,6 @@ case class CommandWithAccounts[T<:CommandNeedsAccounts](underlying:T, accounts:S
   def toTransfers: Seq[Transfer] = underlying.toTransfers(accounts)
 
   override def toGainstrack: Seq[String] = ???
+
+  override def toDTO: AccountCommandDTO = underlying.toDTO
 }

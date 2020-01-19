@@ -31,6 +31,10 @@ case class FundCommand(date:LocalDate, accountId:AccountId, balance:Amount, sour
     }
     Seq(s)
   }
+
+  override def toDTO: AccountCommandDTO = {
+    AccountCommandDTO(accountId = accountId, date = date, balance = Some(balance), otherAccount = sourceAccountIdOpt)
+  }
 }
 
 object FundCommand extends CommandParser {

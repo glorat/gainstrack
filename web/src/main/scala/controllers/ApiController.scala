@@ -245,7 +245,7 @@ class ApiController (implicit val ec :ExecutionContext)
           .reverse
 
       Map("account" -> account, "commands" -> commands.map(cmd =>
-        Map("data"->cmd,
+        Map("data"->cmd.toDTO,
           "type" -> cmd.commandString,
           "description" -> cmd.description)
       ))

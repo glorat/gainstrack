@@ -79,6 +79,8 @@ case class GainstrackGenerator(originalCommands:SortedSet[AccountCommand])  {
     def mainAccount: Option[AccountId] = None
 
     def involvedAccounts: Set[AccountId] = Set()
+
+    def toDTO: AccountCommandDTO = ???
   }
 
   def toBeancount: Seq[BeancountLine] = {

@@ -60,6 +60,11 @@ case class SecurityPurchase(
     val baseStr = s"${date} trade ${accountId.toGainstrack} ${security} @${price}"
     Seq(baseStr + (if (commission.number==zeroFraction) "" else s" C${commission}"))
   }
+
+  override def toDTO: AccountCommandDTO = {
+    // TODO: Commission
+    AccountCommandDTO(accountId = accountId, date = date, change = Some(security), price = Some(price), commission = Some(commission))
+  }
 }
 
 object SecurityPurchase extends CommandParser {
