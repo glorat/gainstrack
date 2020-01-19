@@ -29,35 +29,28 @@ object Main {
     println(s"Duration: ${duration.toMillis/1000.0}s")
   }
 
+
   def doTheWork:DbState = {
     val isoCcys = QuoteConfig.allCcys
-    val data:Map[AssetId, SortedColumnMap[LocalDate, Double]] = isoCcys.flatMap(fxCcy => {
-      StockParser.tryParseSymbol[Double](QuoteConfig(fxCcy, "USD", "USD") ).map(res =>{
-        val series: SortedMap[LocalDate, Double] = res.series
-        val fast = SortedColumnMap.from(series)
-        AssetId(fxCcy) -> fast
-      })
+    val data:Map[AssetId, SortedColumnMap[LocalDate, Double]] = isoCcys.map(fxCcy => {
+      val fast = SortedColumnMap.from(QuoteStore.readQuotes(fxCcy))
+      AssetId(fxCcy) -> fast
     }).toMap
-
 
     val priceFXConverter = SingleFXConversion(data, AssetId("USD"))
 
-    val reses = QuoteConfig
+    val finalState = QuoteConfig
       .allConfigs
-      .filter(_.symbol == "VWRL.LON") // Uncomment here for debugging
-      .flatMap(cfg => StockParser.tryParseSymbol[Double](cfg))
-
-
-    val finalState = reses.foldLeft(data)((dataSoFar, res) => {
-      val cfg = res.config
-      val fixed = res.fixupLSE(cfg.domainCcy, AssetId(cfg.actualCcy), priceFXConverter)
-      val usdSeries = fixed.series.map(kv => kv._1 -> kv._2 * priceFXConverter.getFX(cfg.actualCcy, "USD", kv._1).get)
-      val fastUsd = SortedColumnMap.from(usdSeries)
-      dataSoFar.updated( AssetId(cfg.symbol), fastUsd)
-    })
+      .foldLeft(data)((dataSoFar, cfg) => {
+        val series = QuoteStore.readQuotes(cfg.symbol)
+        val usdSeries = series.map(kv => kv._1 -> kv._2 * priceFXConverter.getFX(cfg.actualCcy, "USD", kv._1).get)
+        val fastUsd = SortedColumnMap.from(usdSeries)
+        dataSoFar.updated(AssetId(cfg.symbol), fastUsd)
+      })
 
     DbState(SingleFXConversion(finalState, AssetId("USD")))
   }
+
 }
 
 

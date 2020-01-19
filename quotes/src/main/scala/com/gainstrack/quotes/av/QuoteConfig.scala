@@ -7,7 +7,11 @@ object QuoteConfig {
     Tuple3("VWRD.LON", "USD", "LSEUSD"),
     Tuple3("VDEV.LON", "USD", "LSEUSD"),
     Tuple3("VDEM.LON", "USD", "LSEUSD"),
+    Tuple3("VFEA.LON", "USD", "LSEUSD"),
+    Tuple3("VHVE.LON", "USD", "LSEUSD"),
+    Tuple3("IBTA.LON", "USD", "LSEUSD"),
     Tuple3("AGGG.LON", "USD", "LSEUSD"),
+    Tuple3("AGBP.LON", "GBP", "LSEGBP"),
     Tuple3("TIP5.LON", "USD", "LSEUSD"),
     Tuple3("VWRL.LON", "GBP", "LSEGBP"),
     Tuple3("VMID.LON", "GBP", "LSEGBP"),
@@ -23,4 +27,5 @@ object QuoteConfig {
 
   // A shortcut implementation for now. One day, let's get a list of ISOs
   def allCcys = allConfigs.map(_.actualCcy).distinct.filter(_ != "USD")
+
 }

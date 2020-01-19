@@ -2,10 +2,8 @@ package com.gainstrack.report
 
 import com.gainstrack.core._
 
-class AccountInvestmentReport(accountId: AccountId, ccy:AssetId, fromDate:LocalDate, queryDate: LocalDate, acctState:AccountState, balanceState:BalanceState, txState:TransactionState, priceStateConverter: PriceFXConverter, assetChainMap: AssetChainMap) {
+class AccountInvestmentReport(accountId: AccountId, ccy:AssetId, fromDate:LocalDate, queryDate: LocalDate, acctState:AccountState, balanceState:BalanceState, txState:TransactionState, singleFXConversion: FXConverter, assetChainMap: AssetChainMap) {
   val account = acctState.accountMap(accountId)
-
-  val singleFXConversion = SingleFXConversion.generate(ccy)(priceStateConverter, assetChainMap)
 
   val cmds = txState.cmds.filter(cmd => cmd.origin.date.isAfter(fromDate) && cmd.origin.date.isBefore(queryDate) )
   val inflows = new InflowCalculator(cmds).calcInflows(accountId)
@@ -17,7 +15,7 @@ class AccountInvestmentReport(accountId: AccountId, ccy:AssetId, fromDate:LocalD
   val initBalance = Amount(zeroFraction, ccy)
 
   val startBalance: Amount = allAccounts.foldLeft(initBalance)((total, account) => {
-    val b = balanceState.getAccountValue(account.accountId, fromDate)
+    val b = balanceState.getAccountValue(account.accountId, firstDate)
     // FX this into parent ccy
     val fx = singleFXConversion.getFX(account.key.assetId, ccy, firstDate).getOrElse(throw new Exception(s"Missing FX for ${account.key.assetId.symbol}/${ccy.symbol}"))
     -(total + b * fx)
@@ -37,7 +35,7 @@ class AccountInvestmentReport(accountId: AccountId, ccy:AssetId, fromDate:LocalD
   val cashflows = initialCashflows.map(cf => {
 
     // FIXME: Use singleFXConversion
-    val converted = (PositionSet() + cf.value).convertViaChain(acctState.baseCurrency, assetChainMap(cf.source), priceStateConverter, cf.date)
+    val converted = (PositionSet() + cf.value).convertViaChain(acctState.baseCurrency, assetChainMap(cf.source), singleFXConversion, cf.date)
     cf.copy(convertedValue = Some(converted.getBalance(acctState.baseCurrency)))
   })
   val cashflowTable = CashflowTable(cashflows)

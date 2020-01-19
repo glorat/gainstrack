@@ -9,7 +9,7 @@ import spire.math.Fractional
 
 import scala.collection.SortedMap
 
-object StockParser {
+object AVStockParser {
 
   trait FractionalParser[N] {
     def parse(s:String): N
@@ -37,7 +37,7 @@ object StockParser {
 
   def tryParseSymbol[N:Fractional](cfg: QuoteConfig)(implicit fractionalParser: FractionalParser[N]): Option[StockParseResult[N]] = {
     try {
-      val res = StockParser.parseSymbol[N](cfg)
+      val res = AVStockParser.parseSymbol[N](cfg)
       Some(res)
     }
     catch {

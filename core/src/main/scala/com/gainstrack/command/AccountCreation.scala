@@ -38,6 +38,10 @@ case class AccountCreation (
     }
   }
 
+  override def toDTO: AccountCommandDTO = {
+    AccountCommandDTO(accountId = accountId, date = date)
+  }
+
   def toGainstrack : Seq[String] = {
     s"${date} open ${key.name} ${key.assetId.symbol}" +: options.toGainstrack
   }

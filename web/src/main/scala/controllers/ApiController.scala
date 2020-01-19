@@ -6,7 +6,7 @@ import java.time.format.DateTimeParseException
 import com.gainstrack.command.{AccountCreation, GainstrackParser, ParserMessage}
 import com.gainstrack.core._
 import com.gainstrack.quotes.av.Main
-import com.gainstrack.report.{AccountInvestmentReport, BalanceReport, DailyBalance, FXChain, FXProxy, GainstrackGenerator, IrrSummary, PLExplain, TimeSeries}
+import com.gainstrack.report.{AccountInvestmentReport, BalanceReport, DailyBalance, FXChain, FXProxy, GainstrackGenerator, IrrSummary, PLExplain, PLExplainDTO, TimeSeries}
 import com.gainstrack.web.{AuthenticationSupport, BalanceTreeTable, GainstrackJsonSerializers, GainstrackSupport, StateSummaryDTO}
 import org.json4s.{DefaultFormats, Formats, JValue}
 import org.scalatra.{NotFound, ScalatraServlet}
@@ -130,7 +130,13 @@ class ApiController (implicit val ec :ExecutionContext)
       toDate = fromDate.plusYears(1)
     }
 
-    val irr = IrrSummary(bg.finalCommands, fromDate, toDate, bg.acctState, bg.balanceState, bg.txState, bg.priceFXConverter, bg.assetChainMap)
+    val fxConvert = new FXChain(
+      new FXProxy(bg.fxMapper, ServerQuoteSource.db.singleFxConverter(bg.acctState.baseCurrency)),
+      bg.singleFXConversion
+    )
+    // val fxConvert = bg.priceFXConverter
+
+    val irr = IrrSummary(bg.finalCommands, fromDate, toDate, bg.acctState, bg.balanceState, bg.txState, fxConvert, bg.assetChainMap)
 
     irr.toSummaryDTO
   }
@@ -138,11 +144,18 @@ class ApiController (implicit val ec :ExecutionContext)
   get("/irr/:accountId") {
     val bg = getGainstrack
 
+    val fxConvert = new FXChain(
+      new FXProxy(bg.fxMapper, ServerQuoteSource.db.singleFxConverter(bg.acctState.baseCurrency)),
+      bg.singleFXConversion
+    )
+//     val fxConvert = bg.priceFXConverter
+
+
     val accountId = params("accountId")
     val fromDate = defaultFromDate
     val toDate = currentDate
     bg.acctState.accountMap.get(accountId).map(account => {
-      val accountReport = new AccountInvestmentReport(accountId, account.key.assetId, fromDate,  toDate, bg.acctState, bg.balanceState, bg.txState, bg.priceFXConverter, bg.assetChainMap)
+      val accountReport = new AccountInvestmentReport(accountId, account.key.assetId, fromDate,  toDate, bg.acctState, bg.balanceState, bg.txState, fxConvert, bg.assetChainMap)
       val cfs = accountReport.cashflowTable.sorted
       TimeSeries(accountId, cfs.map(_.value.ccy.symbol), cfs.map(_.date.toString),
         cfs.map(_.value.number.toDouble.formatted("%.2f")),
@@ -245,7 +258,7 @@ class ApiController (implicit val ec :ExecutionContext)
           .reverse
 
       Map("account" -> account, "commands" -> commands.map(cmd =>
-        Map("data"->cmd,
+        Map("data"->cmd.toDTO,
           "type" -> cmd.commandString,
           "description" -> cmd.description)
       ))
@@ -335,7 +348,7 @@ class ApiController (implicit val ec :ExecutionContext)
     val pnls = dates.zip(descs).map(
       dtdesc => new PLExplain(dtdesc._1, currentDate)(bg.acctState, bg.txState, bg.balanceState, bg.priceFXConverter, bg.assetChainMap, fxConvert)
         .toDTO
-        .updated("tenor", dtdesc._2)
+        .withLabel(dtdesc._2)
     )
     pnls
   }
@@ -348,17 +361,20 @@ class ApiController (implicit val ec :ExecutionContext)
       bg.singleFXConversion
     )
 
-    val endDates = currentDate +: Range(0,11).map(n => currentDate.minusMonths(n).withDayOfMonth(1))
+    val endDates = currentDate +: Range(0,11).map(n => currentDate.minusMonths(n).withDayOfMonth(1).minusDays(1))
     val startDates = endDates.map(_.minusDays(1).withDayOfMonth(1))
     import java.time.format.DateTimeFormatter
     val monthFmt = DateTimeFormatter.ofPattern("MMM")
     val descs = startDates.map(_.format(monthFmt))
 
-    for (i<-0 to 11) yield {
+    val exps = for (i<-0 to 11) yield {
       new PLExplain(startDates(i), endDates(i))(bg.acctState, bg.txState, bg.balanceState, bg.priceFXConverter, bg.assetChainMap, fxConvert)
         .toDTO
-        .updated("tenor", descs(i))
+        .withLabel(descs(i))
     }
+    val total = PLExplainDTO.total(exps)
+    val avg = total.divide(exps.size).withLabel("avg")
+    avg +: total +: exps
   }
 
   post("/pnlexplain") {

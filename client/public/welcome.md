@@ -25,7 +25,7 @@ Gainstrack is the app to help you get in personal control of your finances with 
 #### Jan'20
 - The login facility is for experimental purposes only, not for general use
 #### Dec'19
-- P&L Explain may pull in real historic quotes from external data sources but other reports do not. 
+- P&L Explain may pull in real historic quotes from external data sources but other reports do not.
 - Income/Expenses/Liabilities are counterintuitively affected by future market prices, rather than retaining their original cost basis
 #### Nov'19
 - Liabilities are not supported in reports yet

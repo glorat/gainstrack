@@ -2,6 +2,7 @@ package com.gainstrack.report
 
 import com.gainstrack.command.AccountCreation
 import com.gainstrack.core._
+import jdk.internal.dynalink.linker.MethodTypeConversionStrategy
 
 /**
   * Generates a projection of the balance of all accounts given a date
@@ -24,6 +25,8 @@ class BalanceReport(cmds:Seq[BeancountCommand], criteria:Transaction=>Boolean) {
 }
 
 object BalanceReport {
+  // FIXME: Document clearly that this is inclusive of endDate so caller needs to be careful of double counting
+  // and other off by one bugs
   def apply(cmds:Seq[BeancountCommand], startDate:LocalDate=MinDate, endDate:LocalDate=MaxDate) : BalanceReport = {
     val criteria:Transaction=>Boolean = tx =>  tx.postDate.isAfter(startDate) && ((tx.postDate.isBefore(endDate) || tx.postDate.isEqual(endDate)))
     new BalanceReport(cmds, criteria)
@@ -44,7 +47,8 @@ case class BalanceReportState(balances:Map[AccountId, PositionSet]) {
   }
 
   def convertedPosition(accountId: AccountId, date: LocalDate, conversionStrategy: String)
-                       (implicit assetChainMap: AssetChainMap, origAcctState: AccountState, priceState: PriceFXConverter, singleFXConversion: SingleFXConverter):PositionSet = {
+                       (implicit assetChainMap: AssetChainMap, origAcctState: AccountState, priceState: PriceFXConverter, singleFXConversion: SingleFXConverter)
+  : PositionSet = {
     val acctState = origAcctState.withInterpolatedAccounts
     val accountOpt = acctState.accountMap.get(accountId)
     accountOpt.map(account => {
@@ -53,6 +57,24 @@ case class BalanceReportState(balances:Map[AccountId, PositionSet]) {
       balanceConversion.convertTotal(accountId, _=>true)
     }).getOrElse(PositionSet() + Amount(0, acctState.baseCurrency))
 
+  }
+
+  def childPositions(accountId: AccountId, date:LocalDate, conversionStrategy: String)
+                    (implicit assetChainMap: AssetChainMap, origAcctState: AccountState, priceState: PriceFXConverter, singleFXConversion: SingleFXConverter)
+  : Map[AccountId, PositionSet] = {
+
+    val acctState = origAcctState.withInterpolatedAccounts
+    val accountOpt = acctState.accountMap.get(accountId)
+    accountOpt.map(account => {
+      val fn:AccountId=>PositionSet = balances.get(_).getOrElse(PositionSet())
+      val balanceConversion = new BalanceConversion(conversionStrategy, account.key.assetId, fn, date)
+
+      val children = acctState.accounts
+        .filter(_.accountId.isSubAccountOf(accountId))
+        .map(_.accountId)
+
+      children.map(childAccountId => childAccountId -> balanceConversion.convert(childAccountId)).toMap
+    }).getOrElse(Map())
   }
 
   def processTx(tx:Transaction) : BalanceReportState = {

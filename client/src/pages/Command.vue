@@ -12,6 +12,12 @@
             <th data-sort="string">account</th>
             <th data-sort="string">date</th>
             <th data-sort="string">type</th>
+            <th>asset</th>
+            <th>change</th>
+            <th>price</th>
+            <th>commission</th>
+            <th>balance</th>
+            <th>other account</th>
             <th data-sort="string">description</th>
         </tr>
         </thead>
@@ -21,6 +27,12 @@
             <td>{{ info.account.key.name }}</td>
             <td>{{ cmd.data.date }}</td>
             <td>{{ cmd.type }}</td>
+            <td>{{ cmd.data.asset }}</td>
+            <td class="num">{{ cmd.data.change | amount }}</td>
+            <td class="num">{{ cmd.data.price | amount }}</td>
+            <td class="num">{{ cmd.data.commission | amount }}</td>
+            <td class="num">{{ cmd.data.balance | amount }}</td>
+            <td>{{ cmd.data.otherAccount }}</td>
             <td>{{cmd.description}}</td>
         </tr>
         </tbody>
@@ -68,6 +80,16 @@
                     .then(response => this.$notify.success(response.data))
                     .catch(error => this.$notify.error(error.response.data))
             },
+        },
+        filters: {
+            amount(value) {
+                if (!value) {
+                    return ''
+                } else {
+                    return `${value.number} ${value.ccy}`
+                }
+
+            }
         }
     }
 </script>

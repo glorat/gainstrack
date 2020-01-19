@@ -106,6 +106,10 @@ case class UnitTrustBalance(
   def toGainstrack : Seq[String] = {
     Seq(s"${date} unit ${accountId.toGainstrack} ${security} @${price}")
   }
+
+  override def toDTO: AccountCommandDTO = {
+    AccountCommandDTO(accountId = accountId, date = date, balance = Some(security), price = Some(price))
+  }
 }
 object UnitTrustBalance extends CommandParser {
   import Patterns._
