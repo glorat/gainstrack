@@ -2,14 +2,29 @@ package com.gainstrack.quotes.av
 
 import java.nio.file.{Files, Paths}
 
+import com.gainstrack.core._
+import com.gainstrack.report.SingleFXConversion
+
+import scala.collection.SortedMap
+
 object SyncUp {
   val apikey = scala.io.Source.fromFile("db/apikey.txt").getLines().next()
 
   def main(args: Array[String]): Unit = {
 
+    Files.createDirectories(Paths.get("db/av"))
+    Files.createDirectories(Paths.get("db/quotes"))
+
     val forceDownload = false
 
+    downloadFromAlphaVantage(forceDownload)
+
+    normaliseTheQuotes
+  }
+
+  private def downloadFromAlphaVantage(forceDownload: Boolean) = {
     def allCcys = QuoteConfig.allCcys
+
     allCcys.foreach(ccy => {
       val outFile = s"db/av/$ccy.csv"
 
@@ -48,5 +63,45 @@ object SyncUp {
       scala.io.Source.fromFile(outFile).getLines().foreach(println(_))
       Files.delete(path)
     }
+  }
+
+
+  // Read quotes from sources like av and put it into standard form
+  def normaliseTheQuotes = {
+    val isoCcys = QuoteConfig.allCcys
+    // First sort out all the ISO currencies
+    val data:Map[AssetId, SortedColumnMap[LocalDate, Double]] = isoCcys.flatMap(fxCcy => {
+      AVStockParser.tryParseSymbol[Double](QuoteConfig(fxCcy, "USD", "USD") ).map(res =>{
+        val series: SortedMap[LocalDate, Double] = res.series
+        mergeQuotes(fxCcy, series)
+        // Convert to FX conversion format
+        val fast = SortedColumnMap.from(series)
+        AssetId(fxCcy) -> fast
+      })
+    }).toMap
+
+    // We need a converter in order to fixup borked quotes
+    val priceFXConverter = SingleFXConversion(data, AssetId("USD"))
+
+    val reses = QuoteConfig
+      .allConfigs
+      // .filter(_.symbol == "VWRL.LON") // Uncomment here for debugging
+      .flatMap(cfg => AVStockParser.tryParseSymbol[Double](cfg))
+      .foreach(res => {
+        val cfg = res.config
+        val fixed = res.fixupLSE(cfg.domainCcy, AssetId(cfg.actualCcy), priceFXConverter)
+        mergeQuotes(cfg.symbol, fixed.series)
+      })
+
+  }
+
+  private def mergeQuotes(symbol:String, series: SortedMap[LocalDate, Double]) = {
+    // Write to file
+    // TODO: Merge with existing fie rather than overwrite
+    import java.io._
+    val pw = new PrintWriter(new File(s"db/quotes/${symbol}.csv" ))
+    series.foreach(x => pw.println(s"${x._1},${x._2}"))
+    pw.close
+
   }
 }
