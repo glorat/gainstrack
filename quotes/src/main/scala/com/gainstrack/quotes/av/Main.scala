@@ -29,22 +29,11 @@ object Main {
     println(s"Duration: ${duration.toMillis/1000.0}s")
   }
 
-  private def readQuotes(symbol: String): SortedMap[LocalDate, Double] = {
-    val src = scala.io.Source.fromFile(s"db/quotes/${symbol}.csv")
-    val lines = src.getLines()
-    val builder = SortedMap.newBuilder[LocalDate, Double]
-    lines.foreach(line => {
-      val bits = line.split(",").map(_.trim)
-      builder += (parseDate(bits(0)) -> bits(1).toDouble)
-    })
-
-    builder.result()
-  }
 
   def doTheWork:DbState = {
     val isoCcys = QuoteConfig.allCcys
     val data:Map[AssetId, SortedColumnMap[LocalDate, Double]] = isoCcys.map(fxCcy => {
-      val fast = SortedColumnMap.from(readQuotes(fxCcy))
+      val fast = SortedColumnMap.from(QuoteStore.readQuotes(fxCcy))
       AssetId(fxCcy) -> fast
     }).toMap
 
@@ -53,7 +42,7 @@ object Main {
     val finalState = QuoteConfig
       .allConfigs
       .foldLeft(data)((dataSoFar, cfg) => {
-        val series = readQuotes(cfg.symbol)
+        val series = QuoteStore.readQuotes(cfg.symbol)
         val usdSeries = series.map(kv => kv._1 -> kv._2 * priceFXConverter.getFX(cfg.actualCcy, "USD", kv._1).get)
         val fastUsd = SortedColumnMap.from(usdSeries)
         dataSoFar.updated(AssetId(cfg.symbol), fastUsd)

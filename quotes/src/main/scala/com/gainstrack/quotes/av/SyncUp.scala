@@ -4,10 +4,13 @@ import java.nio.file.{Files, Paths}
 
 import com.gainstrack.core._
 import com.gainstrack.report.SingleFXConversion
+import org.slf4j.LoggerFactory
 
 import scala.collection.SortedMap
 
 object SyncUp {
+  val logger =  LoggerFactory.getLogger(getClass)
+
   val apikey = scala.io.Source.fromFile("db/apikey.txt").getLines().next()
 
   def main(args: Array[String]): Unit = {
@@ -55,7 +58,7 @@ object SyncUp {
       val result = cmd !!
     }
     else {
-      println(s"Skipping $outFile")
+      logger.warn(s"Skipping $outFile")
     }
 
     val size = java.nio.file.Files.size(path)
@@ -73,7 +76,7 @@ object SyncUp {
     val data:Map[AssetId, SortedColumnMap[LocalDate, Double]] = isoCcys.flatMap(fxCcy => {
       AVStockParser.tryParseSymbol[Double](QuoteConfig(fxCcy, "USD", "USD") ).map(res =>{
         val series: SortedMap[LocalDate, Double] = res.series
-        mergeQuotes(fxCcy, series)
+        QuoteStore.mergeQuotes(fxCcy, series)
         // Convert to FX conversion format
         val fast = SortedColumnMap.from(series)
         AssetId(fxCcy) -> fast
@@ -85,23 +88,13 @@ object SyncUp {
 
     val reses = QuoteConfig
       .allConfigs
-      // .filter(_.symbol == "VWRL.LON") // Uncomment here for debugging
+      // .filter(_.symbol == "XIU.TRT") // Uncomment here for debugging
       .flatMap(cfg => AVStockParser.tryParseSymbol[Double](cfg))
       .foreach(res => {
         val cfg = res.config
         val fixed = res.fixupLSE(cfg.domainCcy, AssetId(cfg.actualCcy), priceFXConverter)
-        mergeQuotes(cfg.symbol, fixed.series)
+        QuoteStore.mergeQuotes(cfg.symbol, fixed.series)
       })
-
-  }
-
-  private def mergeQuotes(symbol:String, series: SortedMap[LocalDate, Double]) = {
-    // Write to file
-    // TODO: Merge with existing fie rather than overwrite
-    import java.io._
-    val pw = new PrintWriter(new File(s"db/quotes/${symbol}.csv" ))
-    series.foreach(x => pw.println(s"${x._1},${x._2}"))
-    pw.close
 
   }
 }
