@@ -12,6 +12,8 @@ object SyncUp {
   val logger =  LoggerFactory.getLogger(getClass)
 
   val apikey = scala.io.Source.fromFile("db/apikey.txt").getLines().next()
+  val throttleRequests = true
+
 
   def main(args: Array[String]): Unit = {
 
@@ -56,11 +58,17 @@ object SyncUp {
     if (!exists || forceDownload) {
       println(cmd)
       val result = cmd !!
+
+      if (throttleRequests) {
+        // Free access limits to 5 request per second
+        Thread.sleep(12000)
+      }
     }
     else {
       logger.warn(s"Skipping $outFile")
     }
 
+    // Quick and dirty heuristic corruption check (e.g. throttle limit hit)
     val size = java.nio.file.Files.size(path)
     if (size < 1000) {
       scala.io.Source.fromFile(outFile).getLines().foreach(println(_))

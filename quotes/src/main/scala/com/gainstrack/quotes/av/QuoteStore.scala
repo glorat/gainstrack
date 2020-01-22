@@ -39,6 +39,7 @@ object QuoteStore {
         logger.info(s"${symbol} ${x._1} updated to ${x._2}")
         // Value exists and is different
         toUpdate = toUpdate.updated(x._1, x._2)
+        // TODO: Also centrally log all historic changes for audit
       }
     })
 
