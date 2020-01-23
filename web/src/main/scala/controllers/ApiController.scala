@@ -130,7 +130,13 @@ class ApiController (implicit val ec :ExecutionContext)
       toDate = fromDate.plusYears(1)
     }
 
-    val irr = IrrSummary(bg.finalCommands, fromDate, toDate, bg.acctState, bg.balanceState, bg.txState, bg.priceFXConverter, bg.assetChainMap)
+    val fxConvert = new FXChain(
+      new FXProxy(bg.fxMapper, ServerQuoteSource.db.singleFxConverter(bg.acctState.baseCurrency)),
+      bg.singleFXConversion
+    )
+    // val fxConvert = bg.priceFXConverter
+
+    val irr = IrrSummary(bg.finalCommands, fromDate, toDate, bg.acctState, bg.balanceState, bg.txState, fxConvert, bg.assetChainMap)
 
     irr.toSummaryDTO
   }
@@ -138,11 +144,18 @@ class ApiController (implicit val ec :ExecutionContext)
   get("/irr/:accountId") {
     val bg = getGainstrack
 
+    val fxConvert = new FXChain(
+      new FXProxy(bg.fxMapper, ServerQuoteSource.db.singleFxConverter(bg.acctState.baseCurrency)),
+      bg.singleFXConversion
+    )
+//     val fxConvert = bg.priceFXConverter
+
+
     val accountId = params("accountId")
     val fromDate = defaultFromDate
     val toDate = currentDate
     bg.acctState.accountMap.get(accountId).map(account => {
-      val accountReport = new AccountInvestmentReport(accountId, account.key.assetId, fromDate,  toDate, bg.acctState, bg.balanceState, bg.txState, bg.priceFXConverter, bg.assetChainMap)
+      val accountReport = new AccountInvestmentReport(accountId, account.key.assetId, fromDate,  toDate, bg.acctState, bg.balanceState, bg.txState, fxConvert, bg.assetChainMap)
       val cfs = accountReport.cashflowTable.sorted
       TimeSeries(accountId, cfs.map(_.value.ccy.symbol), cfs.map(_.date.toString),
         cfs.map(_.value.number.toDouble.formatted("%.2f")),

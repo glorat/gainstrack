@@ -11,6 +11,7 @@ object QuoteConfig {
     Tuple3("VHVE.LON", "USD", "LSEUSD"),
     Tuple3("IBTA.LON", "USD", "LSEUSD"),
     Tuple3("AGGG.LON", "USD", "LSEUSD"),
+    Tuple3("AGBP.LON", "GBP", "LSEGBP"),
     Tuple3("TIP5.LON", "USD", "LSEUSD"),
     Tuple3("VWRL.LON", "GBP", "LSEGBP"),
     Tuple3("VMID.LON", "GBP", "LSEGBP"),

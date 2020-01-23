@@ -3,6 +3,12 @@
 TBD
 
 ### Text commands
+
+| Command      | Arguments | |
+| ----------- | ----------- | --- |
+| bal      | accountId       | amount |
+| Paragraph   | Text        | |
+
 #### Transaction based commands
 ##### tfr
 Transfer assets between two accounts
