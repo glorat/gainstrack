@@ -50,6 +50,11 @@
                 <td>New Activity Profit</td>
                 <td class="num">{{ explainData.newActivityPnl.toFixed(2) }}</td>
             </tr>
+            <tr v-for="exp in explainData.newActivityByAccount">
+                <td>{{ exp.accountId }}</td>
+                <td class="num">{{ exp.explain.toFixed(2) }}</td>
+
+            </tr>
             <tr>
                 <td>Explained P&L</td>
                 <td class="num">{{ explainData.explained.toFixed(2) }}</td>

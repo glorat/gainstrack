@@ -38,6 +38,10 @@
                     <td class="datecell" v-for="explainData in explains">{{ explainData.toDate}}</td>
                 </tr>
                 <tr>
+                    <td>Networth</td>
+                    <td class="num" v-for="explainData in explains"><template v-if="explainData.toNetworth">{{ explainData.toNetworth.toFixed(2) }}</template></td>
+                </tr>
+                <tr>
                     <td>
                         <el-tooltip class="item" effect="dark" content="P&L from positions as of from-date due to market price movements (excludes P&L from market movements of new trades done within the period)" placement="top-start">
                             <i class="el-icon-info"></i>
