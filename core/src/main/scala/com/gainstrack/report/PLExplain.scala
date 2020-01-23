@@ -50,14 +50,60 @@ class PLExplain(fromDate: LocalDate, toDate: LocalDate)
 
 
   def toDTO = {
-    Map("fromDate" -> fromDate, "toDate" -> toDate,
-      "actual" -> actualPnl, "explained" -> explained, "unexplained" -> unexplained,
-      "newActivityPnl" -> newActivityPnl,
-      "totalEquity" -> totalEquity, "totalIncome" -> totalIncome, "totalExpense" -> totalExpense, "totalDeltaExplain" -> totalDeltaExplain,
-      "delta" -> deltaExplain
-    )
+//    Map("fromDate" -> fromDate, "toDate" -> toDate,
+//      "actual" -> actualPnl, "explained" -> explained, "unexplained" -> unexplained,
+//      "newActivityPnl" -> newActivityPnl,
+//      "totalEquity" -> totalEquity, "totalIncome" -> totalIncome, "totalExpense" -> totalExpense, "totalDeltaExplain" -> totalDeltaExplain,
+//      "delta" -> deltaExplain
+//    )
+    PLExplainDTO(Some(fromDate), Some(toDate), actualPnl, explained, unexplained, newActivityPnl,
+      totalEquity, totalIncome, totalExpense, totalDeltaExplain,
+      deltaExplain.toSeq)
   }
 
+}
+
+case class PLExplainDTO(fromDate:Option[LocalDate], toDate:Option[LocalDate],
+                        actual:Double, explained:Double, unexplained:Double,
+                        newActivityPnl: Double,
+                        totalEquity: Double, totalIncome:Double, totalExpense:Double, totalDeltaExplain:Double,
+                        delta: Seq[DeltaExplain],
+                        tenor: String = "") {
+  def withLabel(label:String) : PLExplainDTO = {
+    copy(tenor = label)
+  }
+
+  def divide(n:Double): PLExplainDTO = {
+    this.copy(
+      actual = actual / n,
+      explained = explained / n,
+      unexplained = unexplained / n,
+      newActivityPnl = newActivityPnl / n,
+      totalEquity = totalEquity / n,
+      totalIncome = totalIncome / n,
+      totalExpense = totalExpense / n,
+      totalDeltaExplain = totalDeltaExplain / n,
+      delta = Seq()
+    )
+  }
+}
+
+object PLExplainDTO {
+
+  def total(exps: Iterable[PLExplainDTO]) : PLExplainDTO = {
+    PLExplainDTO(
+      fromDate = None, toDate = None,
+      actual = exps.map(_.actual).sum,
+      explained = exps.map(_.explained).sum,
+      unexplained = exps.map(_.unexplained).sum,
+      newActivityPnl = exps.map(_.newActivityPnl).sum,
+      totalEquity = exps.map(_.totalEquity).sum,
+      totalIncome = exps.map(_.totalIncome).sum,
+      totalExpense = exps.map(_.totalExpense).sum,
+      totalDeltaExplain = exps.map(_.totalDeltaExplain).sum,
+      delta = Seq(),
+      tenor = "total")
+  }
 }
 
 object PLExplain {
@@ -66,6 +112,7 @@ object PLExplain {
     val fromDate = toDate.minusYears(1)
     new PLExplain(fromDate, toDate)
   }
+
 }
 
 case class DeltaExplain(assetId:AssetId,
@@ -83,3 +130,4 @@ case class DeltaExplain(assetId:AssetId,
 //      .copy(newValue= fxConverter.getFX(assetId, baseCcy, toDate).map(_.toDouble).getOrElse(0))
 //  }
 }
+

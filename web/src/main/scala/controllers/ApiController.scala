@@ -6,7 +6,7 @@ import java.time.format.DateTimeParseException
 import com.gainstrack.command.{AccountCreation, GainstrackParser, ParserMessage}
 import com.gainstrack.core._
 import com.gainstrack.quotes.av.Main
-import com.gainstrack.report.{AccountInvestmentReport, BalanceReport, DailyBalance, FXChain, FXProxy, GainstrackGenerator, IrrSummary, PLExplain, TimeSeries}
+import com.gainstrack.report.{AccountInvestmentReport, BalanceReport, DailyBalance, FXChain, FXProxy, GainstrackGenerator, IrrSummary, PLExplain, PLExplainDTO, TimeSeries}
 import com.gainstrack.web.{AuthenticationSupport, BalanceTreeTable, GainstrackJsonSerializers, GainstrackSupport, StateSummaryDTO}
 import org.json4s.{DefaultFormats, Formats, JValue}
 import org.scalatra.{NotFound, ScalatraServlet}
@@ -335,7 +335,7 @@ class ApiController (implicit val ec :ExecutionContext)
     val pnls = dates.zip(descs).map(
       dtdesc => new PLExplain(dtdesc._1, currentDate)(bg.acctState, bg.txState, bg.balanceState, bg.priceFXConverter, bg.assetChainMap, fxConvert)
         .toDTO
-        .updated("tenor", dtdesc._2)
+        .withLabel(dtdesc._2)
     )
     pnls
   }
@@ -354,11 +354,14 @@ class ApiController (implicit val ec :ExecutionContext)
     val monthFmt = DateTimeFormatter.ofPattern("MMM")
     val descs = startDates.map(_.format(monthFmt))
 
-    for (i<-0 to 11) yield {
+    val exps = for (i<-0 to 11) yield {
       new PLExplain(startDates(i), endDates(i))(bg.acctState, bg.txState, bg.balanceState, bg.priceFXConverter, bg.assetChainMap, fxConvert)
         .toDTO
-        .updated("tenor", descs(i))
+        .withLabel(descs(i))
     }
+    val total = PLExplainDTO.total(exps)
+    val avg = total.divide(exps.size).withLabel("avg")
+    avg +: total +: exps
   }
 
   post("/pnlexplain") {

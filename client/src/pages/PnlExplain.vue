@@ -17,8 +17,7 @@
             <button @click="submit" :disabled="selectedRange==null">Go</button>
         </div>
         <div class="block" v-if="explains.length>0">
-            P&L Explanat
-            ion
+            P&L Explanation
 <!--            Map("actual" -> actualPnl, "explained" -> explained, "unexplained" -> unexplained,-->
 <!--            "newActivityPnl" -> newActivityPnl,-->
 <!--            "totalEquity" -> totalEquity, "totalIncome" -> totalIncome, "totalExpense" -> totalExpense, "totalDeltaExplain" -> totalDeltaExplain-->
@@ -114,7 +113,9 @@
         },
         methods: {
             onColumnClick(explain) {
-                this.$router.push({name: 'pnldetail', params: {fromDate: explain.fromDate, toDate: explain.toDate}});
+                if (explain.fromDate && explain.toDate) {
+                    this.$router.push({name: 'pnldetail', params: {fromDate: explain.fromDate, toDate: explain.toDate}});
+                }
             },
             submit() {
                 const args = {
