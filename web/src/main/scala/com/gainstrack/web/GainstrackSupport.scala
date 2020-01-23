@@ -1,6 +1,6 @@
 package com.gainstrack.web
 
-import java.time.LocalDate
+import java.time.{Duration, Instant, LocalDate}
 
 import com.gainstrack.command.GainstrackParser
 import com.gainstrack.report.GainstrackGenerator
@@ -21,11 +21,19 @@ trait GainstrackSupport {
   private val UserDataDir = "db/userdata" // Need to mkpath somewhere?
 
   private def bgDefault = {
+    var start:Instant = Instant.now
+
     val parser = new GainstrackParser
     val realFile = "real"
     parser.parseFile(s"/Users/kevin/dev/gainstrack/data/${realFile}.gainstrack")
     val orderedCmds = parser.getCommands
-    new GainstrackGenerator(orderedCmds)
+    val ret = GainstrackGenerator(orderedCmds)
+
+    val endTime = Instant.now
+    val duration = Duration.between(start, endTime)
+    logger.info(s"bgDefault processed in ${duration.toMillis}ms")
+
+    ret
   }
 
   private def userFile:String = {
@@ -54,7 +62,7 @@ trait GainstrackSupport {
   }
 
   def getGainstrack = {
-    if (isAuthenticated) {
+    val gt = if (isAuthenticated) {
       session.get("gainstrack").map(_.asInstanceOf[GainstrackGenerator])
         .orElse(bgFromFile)
         .getOrElse(bgDefault)
@@ -62,6 +70,9 @@ trait GainstrackSupport {
     else {
       session.get("gainstrack").getOrElse(bgDefault).asInstanceOf[GainstrackGenerator]
     }
+    // Use session from now on
+    session("gainstrack") = gt
+    gt
   }
 
   def saveGainstrack(bg:GainstrackGenerator) = {
