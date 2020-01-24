@@ -3,7 +3,7 @@
 </template>
 <script>
     // Full bundle
-    //import Plotly from 'plotly.js'
+    // import Plotly from 'plotly.js'
     // Partial bundle from full plotly.js
     // import Plotly from 'plotly.js/lib/index-basic'
     // Compiled partial bundle from plotly.js-basic-dist
@@ -51,10 +51,10 @@
         props: {
             autoResize: Boolean,
             watchShallow: {
-              type:Boolean,
-              default: function() {
-                return false
-              }
+                type: Boolean,
+                default() {
+                    return false
+                }
             },
             options: {
                 type: Object
@@ -122,8 +122,8 @@
             },
             ...methods,
             toImage(options) {
-                let el = this.$refs.container
-                let opts = defaults(options, {
+                const el = this.$refs.container
+                const opts = defaults(options, {
                     format: 'png',
                     width: el.clientWidth,
                     height: el.clientHeight
@@ -132,8 +132,8 @@
                 return Plotly.toImage(this.$refs.container, opts)
             },
             downloadImage(options) {
-                let el = this.$refs.container
-                let opts = defaults(options, {
+                const el = this.$refs.container
+                const opts = defaults(options, {
                     format: 'png',
                     width: el.clientWidth,
                     height: el.clientHeight,
@@ -146,14 +146,22 @@
                 return Plotly.plot(this.$refs.container, this.data, this.internalLayout, this.getOptions())
             },
             getOptions() {
-                let el = this.$refs.container
+                const el = this.$refs.container
                 let opts = this.options
 
                 // if width/height is not specified for toImageButton, default to el.clientWidth/clientHeight
-                if (!opts) opts = {}
-                if (!opts.toImageButtonOptions) opts.toImageButtonOptions = {}
-                if (!opts.toImageButtonOptions.width) opts.toImageButtonOptions.width = el.clientWidth
-                if (!opts.toImageButtonOptions.height) opts.toImageButtonOptions.height = el.clientHeight
+                if (!opts) {
+                    opts = {}
+                }
+                if (!opts.toImageButtonOptions) {
+                    opts.toImageButtonOptions = {}
+                }
+                if (!opts.toImageButtonOptions.width) {
+                    opts.toImageButtonOptions.width = el.clientWidth
+                }
+                if (!opts.toImageButtonOptions.height) {
+                    opts.toImageButtonOptions.height = el.clientHeight
+                }
                 return opts
             },
             newPlot() {
