@@ -7,12 +7,14 @@
         <table class="sortable">
             <thead>
             <th data-sort="string" data-sort-default="desc" data-order="asc">Date</th>
-            <th data-sort="num">Price</th>
+            <th data-sort="num">Trade Price</th>
+            <th data-sort="num" v-if="series.cvalues[0]">Market Price</th>
             </thead>
             <tbody>
             <tr v-for="(date, index) in series.dates">
                 <td>{{ date }}</td>
                 <td class="num">{{ series.values[index] }} {{ series.units[index] }}</td>
+                <td class="num" v-if="series.cvalues[0]">{{ series.cvalues[index] }} {{ series.units[index] }}</td>
             </tr>
             </tbody>
         </table>

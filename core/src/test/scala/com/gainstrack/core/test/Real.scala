@@ -82,8 +82,8 @@ class Real extends FlatSpec with BeforeAndAfterEach {
     val accountId = AccountId("Assets:Investment:Zurich")
     val rep = new AccountInvestmentReport(accountId, AssetId("GBP"), fromDate, queryDate, bg.acctState, bg.balanceState, bg.txState, bg.priceFXConverter, bg.assetChainMap)
 
-    assert(rep.irr < 0.062)
-    assert(rep.irr > 0.044)
+    assert(rep.irr < 0.068)
+    assert(rep.irr > 0.05)
   }
 
   it should "calc sane irrs for my PP" taggedAs RealDataAvailable in {
