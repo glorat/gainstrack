@@ -21,7 +21,9 @@
     };
 
     function unpack(rows, key) {
-        return rows.map(function(row) { return row[key]; });
+        return rows.map(row => {
+            return row[key];
+        });
     }
 
     export default {
@@ -47,7 +49,9 @@
                         pad: 0
                     },
                 },
-                options:{},
+                options: {
+                    displaylogo: false
+                },
             }
         },
         mounted() {
@@ -56,15 +60,16 @@
             axios.get('/api/account/' + this.accountId + '/graph')
                 .then(response => {
                     const series = response.data.series;
-                    let plotlys = [];
+                    const plotlys = [];
 
                     const smoothSeries = series.map(s => {
                         const smoothData = expMovingAverage(s.data, 12);
                         const plotly = {
-                            type: "scatter",
+                            type: 'scatter',
                             name: s.name,
                             x: unpack(smoothData, 'x'),
-                            y:unpack(smoothData, 'y')};
+                            y: unpack(smoothData, 'y')
+                        };
                         plotlys.push(plotly);
                         return s;
                     });
