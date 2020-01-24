@@ -28,9 +28,9 @@
                 // plotly
                 // data: [{x: [1, 2, 3, 4, 5], y: [2, 4, 6, 8, 9]}],
                 data: [{
-                    type: "sunburst",
-                    labels: ["Loading"],
-                    parents: [""],
+                    type: 'sunburst',
+                    labels: ['Loading'],
+                    parents: [''],
                     values: [0],
                     // labels: ["Eve", "Cain", "Seth", "Enos", "Noam", "Abel", "Awan", "Enoch", "Azura"],
                     // parents: ["", "Eve", "Eve", "Seth", "Seth", "Eve", "Eve", "Awan", "Eve" ],
@@ -53,7 +53,9 @@
                         pad: 0
                     },
                 },
-                options:{},
+                options: {
+                    displaylogo: false
+                },
                 // table
                 tables: [],
             }
