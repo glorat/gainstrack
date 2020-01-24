@@ -115,7 +115,9 @@ class ApiController (implicit val ec :ExecutionContext)
 
     val priceState = bg.priceState
 
-    priceState.toDTO
+    val fxConvert = new FXProxy(bg.fxMapper, ServerQuoteSource.db.singleFxConverter(bg.acctState.baseCurrency))
+
+    priceState.toDTOWithQuotes(fxConvert)
 
   }
 

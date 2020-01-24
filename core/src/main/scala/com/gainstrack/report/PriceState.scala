@@ -22,15 +22,33 @@ case class PriceState(ccys: Set[AssetId], prices: Map[AssetPair, SortedMap[Local
 
 
 
-  def toDTO = {
+  def toDTO: Seq[TimeSeries] = {
     val keys = prices.keys.toSeq.sortBy(_.str)
     keys.map(key => TimeSeries(
       key.str,
-      keys.map(_ => key.fx2), // All same unit
+      prices(key).map(_ => key.fx2).toSeq, // All same unit
       prices(key).keys.map(_.toString).toSeq,
       prices(key).values.map(_.toDouble.formatted("%.2f")).toSeq,
       None
     ))
+  }
+
+  def toDTOWithQuotes(fxConverter: FXConverter): Seq[TimeSeries] = {
+    val keys = prices.keys.toSeq.sortBy(_.str)
+    keys.map(key => {
+      val dts = prices(key).keys.toSeq
+      if (key.str == "GBP/USD") {
+        val xxx = 1
+      }
+
+      TimeSeries(
+        key.str,
+        prices(key).map(_ => key.fx2).toSeq, // All same unit
+        dts.map(_.toString),
+        dts.map(dt => prices(key).apply(dt).toDouble.formatted("%.2f")),
+        Some(dts.map(dt => fxConverter.getFX(key.fx1, key.fx2, dt).map(_.formatted("%.2f")).getOrElse("")))
+      )
+    })
   }
 
 
