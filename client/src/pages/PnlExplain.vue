@@ -17,7 +17,7 @@
             <button @click="submit" :disabled="selectedRange==null">Go</button>
         </div>
         <div class="block" v-if="explains.length>0">
-            P&L Explanation
+            <h3>P&L Explanation</h3>
 <!--            Map("actual" -> actualPnl, "explained" -> explained, "unexplained" -> unexplained,-->
 <!--            "newActivityPnl" -> newActivityPnl,-->
 <!--            "totalEquity" -> totalEquity, "totalIncome" -> totalIncome, "totalExpense" -> totalExpense, "totalDeltaExplain" -> totalDeltaExplain-->
@@ -26,7 +26,7 @@
             <table class="sortable">
                 <tbody>
                 <tr>
-                    <td>Tenor</td>
+                    <td></td>
                     <td class="description" v-for="explainData in explains"><span @click="onColumnClick(explainData)">{{ explainData.tenor}}</span></td>
                 </tr>
                 <tr>
@@ -38,8 +38,24 @@
                     <td class="datecell" v-for="explainData in explains">{{ explainData.toDate}}</td>
                 </tr>
                 <tr>
-                    <td>Networth</td>
-                    <td class="num" v-for="explainData in explains"><template v-if="explainData.toNetworth">{{ explainData.toNetworth.toFixed(2) }}</template></td>
+                    <td>Opening Networth</td>
+                    <td class="num" v-for="explainData in explains"><template v-if="explainData.toNetworth">{{ explainData.toNetworth - explainData.actual | amount }}</template></td>
+                </tr>
+                <tr>
+                    <td>Change In Networth</td>
+                    <td class="num change" v-for="explainData in explains">{{ explainData.actual | amount}}</td>
+                </tr>
+                <tr>
+                    <td class="total">Networth</td>
+                    <td class="num total" v-for="explainData in explains"><template v-if="explainData.toNetworth">{{ explainData.toNetworth.toFixed(2) }}</template></td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td class="subtitle">Change In Networth</td>
+                    <td></td>
                 </tr>
                 <tr>
                     <td>
@@ -74,17 +90,14 @@
                     <td class="num" v-for="explainData in explains">{{ explainData.newActivityPnl.toFixed(2) }}</td>
                 </tr>
                 <tr>
-                    <td>Explained P&L</td>
-                    <td class="num" v-for="explainData in explains">{{ explainData.explained.toFixed(2) }}</td>
-                </tr>
-                <tr>
-                    <td>Actual P&L</td>
-                    <td class="num" v-for="explainData in explains">{{ explainData.actual.toFixed(2) }}</td>
-                </tr>
-                <tr>
                     <td>Unexplained P&L</td>
                     <td class="num" v-for="explainData in explains">{{ explainData.unexplained.toFixed(2) }}</td>
                 </tr>
+                <tr>
+                    <td class="total">Total</td>
+                    <td class="total num change" v-for="explainData in explains">{{ explainData.actual.toFixed(2) }}</td>
+                </tr>
+
                 </tbody>
             </table>
         </div>
@@ -128,6 +141,9 @@
                 };
                 this.$router.push({name: 'pnldetail', params: args});
             }
+        },
+        filters: {
+            amount: (value) => value.toFixed(2)
         },
         data() {
             const self = this;
@@ -181,5 +197,32 @@
 </script>
 
 <style scoped>
+    .subtotal {
+        border-top-color: black;
+        border-top-width: 2px;
+        border-top-style: solid;
+    }
 
+    .total {
+        border-top-color: black;
+        border-top-width: 2px;
+        border-top-style: solid;
+
+        border-bottom-color: black;
+        border-bottom-width: medium;
+        border-bottom-style: double;
+    }
+
+    .subtitle {
+        font-weight: bold;
+    }
+
+    .change {
+        color: maroon;
+    }
+
+    /*Make empty tr rows take space*/
+    td:empty::after{
+        content: "\00a0";
+    }
 </style>
