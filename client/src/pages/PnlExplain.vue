@@ -27,7 +27,9 @@
                 <tbody>
                 <tr>
                     <td></td>
-                    <td class="description" v-for="explainData in explains"><span @click="onColumnClick(explainData)">{{ explainData.tenor}}</span></td>
+                    <td class="description" v-for="explainData in explains">
+                        <el-link
+                            v-if="explainData.fromDate" @click.prevent="onColumnClick(explainData)"icon="el-icon-data-analysis">{{ explainData.tenor}}</el-link><span v-else>{{ explainData.tenor}}</span></td>
                 </tr>
                 <tr>
                     <td>From Date</td>
@@ -106,7 +108,7 @@
 
 <script>
     import axios from 'axios';
-    import {DatePicker, Tooltip} from 'element-ui';
+    import {DatePicker, Tooltip, Link} from 'element-ui';
     import lang from 'element-ui/lib/locale/lang/en'
     import locale from 'element-ui/lib/locale'
 
@@ -114,7 +116,11 @@
 
     export default {
         name: 'PnlExplain',
-        components: {'el-date-picker': DatePicker, 'el-tooltip': Tooltip},
+        components: {
+            'el-date-picker': DatePicker,
+            'el-tooltip': Tooltip,
+            'el-link': Link
+        },
         computed: {
             latestDate() {
                 return this.$store.state.summary.latestDate;
