@@ -10,6 +10,8 @@ import Router, {RouteConfig} from 'vue-router';
 Vue.use(Router);
 
 const routes: RouteConfig[] = [
+    {path: '/add', component: () => import('../pages/Add.vue'), meta: {title: 'Add Record'}},
+    {path: '/add/cmd', name: 'addcmd', component: () => import('../pages/AddCmd.vue'), meta: {title: 'Add Record'}},
     {
         path: '/balance_sheet',
         component: () => import(/* webpackChunkName: "BalanceSheet" */ '../pages/BalanceSheet.vue'),
