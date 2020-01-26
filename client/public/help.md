@@ -4,10 +4,7 @@ TBD
 
 ### Text commands
 
-| Command      | Arguments | |
-| ----------- | ----------- | --- |
-| bal      | accountId       | amount |
-| Paragraph   | Text        | |
+TODO
 
 #### Transaction based commands
 ##### tfr

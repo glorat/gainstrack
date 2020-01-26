@@ -1,5 +1,11 @@
 <template>
     <aside class="myaside">
+        <ul class="navigation">
+            <li>
+                <router-link v-bind:to="'/add'"><span class="el-icon-circle-plus-outline"></span> {{ config.allPages['add'][0] }}</router-link>
+            </li>
+        </ul>
+
         <ul v-for="menuItems in config.navigationBar" class="navigation">
             <template v-for="id in menuItems">
                 <li>
@@ -75,6 +81,7 @@
                 'aa': ['Asset Allocation', ''],
                 'pnlexplain': ['P&L Explain', ''],
                 'command': ['Commands', ''],
+                'add': ['Add Record', ''],
             },
             navigationBar: [
                 ['command'],
