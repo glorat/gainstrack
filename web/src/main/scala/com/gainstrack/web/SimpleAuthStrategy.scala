@@ -23,7 +23,7 @@ class SimpleAuthStrategy(protected override val app: ScalatraBase)
    */
   override def isValid(implicit request: HttpServletRequest) = {
     val valid = username.isDefined && password.isDefined
-    logger.info("UserPasswordStrategy: determining isValid: " + valid.toString())
+    logger.debug("UserPasswordStrategy: determining isValid: " + valid.toString())
     valid
   }
 

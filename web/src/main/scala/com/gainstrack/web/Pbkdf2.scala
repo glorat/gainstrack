@@ -2,7 +2,8 @@ package com.gainstrack.web
 
 import javax.crypto.SecretKeyFactory
 import javax.crypto.spec.PBEKeySpec
-object Pbkdf2 {
+object
+Pbkdf2 {
 
   def encode(password: String, salt: String) : String = {
     toHex(getEncryptedPassword(password, salt))

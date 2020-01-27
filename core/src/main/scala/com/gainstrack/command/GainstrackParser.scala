@@ -2,7 +2,8 @@ package com.gainstrack.command
 
 import com.gainstrack.core.AccountCommand
 
-import scala.collection.SortedSet
+import scala.collection.immutable.SortedSet
+
 import scala.io.{BufferedSource, Source}
 
 class GainstrackParser {
