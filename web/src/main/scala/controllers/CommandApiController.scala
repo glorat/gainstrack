@@ -1,6 +1,6 @@
 package controllers
 
-import com.gainstrack.command.GainstrackParser
+import com.gainstrack.command.{GainstrackParser, ParserMessage}
 import com.gainstrack.report.GainstrackGenerator
 import com.gainstrack.web.{AuthenticationSupport, GainstrackJsonSerializers, GainstrackSupport}
 import org.json4s.{Formats, JValue}
@@ -63,6 +63,40 @@ class CommandApiController(implicit val ec: ExecutionContext)
     }
     catch {
       case e:Exception => InternalServerError(e.toString)
+    }
+
+  }
+
+
+  put("/source") {
+    val parser = new GainstrackParser
+    try {
+      val body = parsedBody.extract[ApiSourceRequest]
+
+      val realFile = "real"
+      parser.parseString(body.source)
+      val orderedCmds = parser.getCommands
+      val bg = new GainstrackGenerator(orderedCmds)
+      val res = bg.writeBeancountFile(s"/tmp/${realFile}.beancount", parser.lineFor(_))
+      if (res.length == 0) {
+        session("gainstrack") = bg
+        if (isAuthenticated) {
+          saveGainstrack(bg)
+        }
+
+        //val defaultFromDate = parseDate("1970-01-01")
+        ApiSourceResponse("???", true, Seq())
+      }
+      else {
+        ApiSourceResponse("???", false, res)
+      }
+
+    }
+    catch {
+      case e:Exception if parser.parserErrors.size>0 => {
+        ApiSourceResponse("???", false, parser.parserErrors)
+      }
+      case e:Exception => ApiSourceResponse("???", false, Seq(ParserMessage(e.getMessage, 0, "")))
     }
 
   }
