@@ -46,17 +46,19 @@ class SimpleAuthStrategy(protected override val app: ScalatraBase)
   }
 }
 
-case class GUser(username: String, hash:String) {
-  def id = s"$username-$hash"
+case class GUser(username: String, hash:Hash) {
+  def id = s"$username-${hash.toHex}"
+  // This is effectively an MD5 of the PBKDF2WithHmacSHA256
+  def uuid = java.util.UUID.nameUUIDFromBytes(hash.toArray)
 
   require(username.matches("^[a-z]+$"))
-  require(hash.matches("^[0-9a-f]+$"))
+  require(hash.toHex.matches("^[0-9a-f]+$"))
   // TODO: require hash is a hex string
 }
 
 object GUser {
   def apply(str:String):GUser = {
     val bits = str.split(raw"\-")
-    GUser(bits(0), bits(1))
+    GUser(bits(0), Hash.fromHex(bits(1)))
   }
 }

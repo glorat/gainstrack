@@ -9,7 +9,7 @@ import net.glorat.cqrs.{AggregateRootState, DomainEvent}
 import scala.collection.SortedSet
 
 
-case class GainstrackGenerator(originalCommands:SortedSet[AccountCommand])  {
+case class GainstrackGenerator(originalCommands:Seq[AccountCommand])  {
   val startTime = Instant.now
   // Global
   val globalCommand = originalCommands.head match {
@@ -59,7 +59,7 @@ case class GainstrackGenerator(originalCommands:SortedSet[AccountCommand])  {
     // Cannot use .contains because that seems to use a ref equals
     // whereas we want a value object equals
     require(!originalCommands.exists(_ == cmd), "command already exists. Duplicates not allowed")
-    GainstrackGenerator( (originalCommands + cmd))
+    GainstrackGenerator( originalCommands :+ cmd)
   }
 
   def removeCommand(cmd:AccountCommand): GainstrackGenerator = {

@@ -23,7 +23,8 @@ class GainstrackEntity extends AggregateRoot {
     val parser = new GainstrackParser
     parser.parseString(cmdStr)
     val cmds = parser.getCommands
-    require(cmds -- getState.cmds == cmds, "Command already exists, no duplicates allowed")
+    val nodupes = cmds.forall(!getState.cmds.contains(_))
+    require(nodupes, "Command already exists, no duplicates allowed")
     val delta = GainstrackEntityDelta(adds = Some(cmds.map(_.toGainstrack)))
 
     // TODO: Perform validation on new state
@@ -45,14 +46,20 @@ class GainstrackEntity extends AggregateRoot {
   }
 
   private def source(parser: GainstrackParser):Unit = {
-    val origCmds = getState.cmds
     val cmds = parser.getCommands
-    val adds = cmds -- origCmds
-    val removes = origCmds -- cmds
-    val delta = GainstrackEntityDelta(
-      adds = Some(adds.map(_.toGainstrack)),
-      removes = Some(removes.map(_.toGainstrack)))
-    applyChange(delta)
+    source(cmds)
+  }
+
+  def source(cmds: Seq[AccountCommand]): Unit = {
+    val origCmds = getState.cmds
+    val adds = cmds.filter(!origCmds.contains(_)).map(_.toGainstrack)
+    val removes = origCmds.filter(!cmds.contains(_)).map(_.toGainstrack)
+    val delta:GainstrackEntityDelta = GainstrackEntityDelta()
+      .withAdds(adds)
+      .withRemoves(removes)
+    if (!delta.isEmpty) {
+      applyChange(delta)
+    }
   }
 }
 
@@ -89,8 +96,39 @@ case class GainstrackEntityState(id: GUID, cmdStrs: Set[Seq[String]]) extends Ag
   }
 }
 
+object GainstrackEntity {
+  def defaultBase(id: GUID): GainstrackEntity = {
+    import scala.io.Source
+
+    val res = AccountKey.getClass.getResourceAsStream("base.gainstrack")
+    val ret = new GainstrackEntity(id)
+    ret.source(Source.fromInputStream(res))
+    ret
+  }
+}
+
 case class GainstrackEntityDelta(
                                 id: Option[GUID] = None,
-                                adds: Option[Set[Seq[String]]] = None,
-                                removes: Option[Set[Seq[String]]] = None
-                                ) extends DomainEvent
+                                adds: Option[Seq[Seq[String]]] = None,
+                                removes: Option[Seq[Seq[String]]] = None
+                                ) extends DomainEvent {
+  def isEmpty = this == GainstrackEntityDelta()
+
+  def withAdds(as: Seq[Seq[String]]) : GainstrackEntityDelta = {
+    if (as.length>0) {
+      copy(adds = Some(as))
+    }
+    else {
+      copy(adds = None)
+    }
+  }
+
+  def withRemoves(as: Seq[Seq[String]]) : GainstrackEntityDelta = {
+    if (as.length>0) {
+      copy(removes = Some(as))
+    }
+    else {
+      copy(removes = None)
+    }
+  }
+}

@@ -1,6 +1,6 @@
 package com.gainstrack.lifecycle
 
-import java.io.{FileOutputStream, PrintWriter}
+import java.io.{FileOutputStream, IOException, PrintWriter}
 
 import net.glorat.cqrs._
 
@@ -41,25 +41,39 @@ class GainstrackRepository(basePath:Path) extends Repository {
     Future.successful()
   }
 
-  override def getById[T <: AggregateRoot](id: GUID, tmpl: T)(implicit evidence$1: ClassTag[T]): T = {
+  // TODO: This is to be deprecated because the getOrElse is not safe
+  def getById[T <: AggregateRoot](id: GUID, tmpl: T)(implicit evidence$1: ClassTag[T]): T = {
+    getByIdOpt(id, tmpl).getOrElse(tmpl)
+  }
+
+
+  def getByIdOpt[T <: AggregateRoot](id: GUID, tmpl: T)(implicit evidence$1: ClassTag[T]): Option[T] = {
     import scala.collection.JavaConverters._
 
     val filename = basePath.resolve(id.toString)
-    val lines = Files.readAllLines(filename).asScala
-    var revision = 1
-    val cevs = lines.map(line => {
-      val cev = read[MyCommittedEvent](line)
-      if (id == cev.streamId) {
-        if (revision == cev.streamRevision) {
-          tmpl.loadFromHistory(Seq(cev.event), cev.streamRevision)
-          revision += 1
+    try {
+      val lines = Files.readAllLines(filename).asScala
+      var revision = 1
+      val cevs = lines.map(line => {
+        val cev = read[MyCommittedEvent](line)
+        if (id == cev.streamId) {
+          if (revision == cev.streamRevision) {
+            tmpl.loadFromHistory(Seq(cev.event), cev.streamRevision)
+            revision += 1
+          }
+          else {
+            logger.error(s"${id} has invalid CE at revision ${cev.streamRevision} is ignored")
+          }
         }
-        else {
-          logger.warn(s"${id} has invalid CE at revision ${cev.streamRevision} is ignored")
-        }
+      })
+      Some(tmpl)
+    }
+    catch {
+      case e: IOException => {
+        logger.warn(s"getById(${id}) failed because ${e.getMessage}")
+        None
       }
-    })
-    tmpl
+    }
   }
 
   // Use for admin only

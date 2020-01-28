@@ -5,8 +5,8 @@ import javax.crypto.spec.PBEKeySpec
 object
 Pbkdf2 {
 
-  def encode(password: String, salt: String) : String = {
-    toHex(getEncryptedPassword(password, salt))
+  def encode(password: String, salt: String) : Hash = {
+    Hash(getEncryptedPassword(password, salt))
   }
 
   private def getEncryptedPassword(password: String, salt: String, iterations: Int = 4096, derivedKeyLength: Int = 32): Array[Byte] = {
@@ -16,9 +16,4 @@ Pbkdf2 {
     f.generateSecret(spec).getEncoded
   }
 
-  private def toHex(bytes: Array[Byte]) = {
-    import java.math.BigInteger
-    val bi = new BigInteger(1, bytes)
-    String.format("%0" + (bytes.length << 1) + "x", bi)
-  }
 }
