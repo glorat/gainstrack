@@ -24,7 +24,7 @@ class GainstrackEntity extends AggregateRoot {
     parser.parseString(cmdStr)
     val cmds = parser.getCommands
     require(cmds -- getState.cmds == cmds, "Command already exists, no duplicates allowed")
-    val delta = GainstrackEntityDelta(adds = cmds.map(_.toGainstrack))
+    val delta = GainstrackEntityDelta(adds = Some(cmds.map(_.toGainstrack)))
 
     // TODO: Perform validation on new state
     // val newState = state.handle(delta)
@@ -50,8 +50,8 @@ class GainstrackEntity extends AggregateRoot {
     val adds = cmds -- origCmds
     val removes = origCmds -- cmds
     val delta = GainstrackEntityDelta(
-      adds = adds.map(_.toGainstrack),
-      removes = removes.map(_.toGainstrack))
+      adds = Some(adds.map(_.toGainstrack)),
+      removes = Some(removes.map(_.toGainstrack)))
     applyChange(delta)
   }
 }
@@ -81,9 +81,9 @@ case class GainstrackEntityState(id: GUID, cmdStrs: Set[Seq[String]]) extends Ag
   }
 
   def handle(e: GainstrackEntityDelta): GainstrackEntityState = {
-
-    val removed = e.removes.foldLeft(this)(_.removeCommand(_))
-    val added = e.adds.foldLeft(removed)( _.addCommand(_))
+    // Tricky but concise functional logic
+    val removed = e.removes.map(_.foldLeft(this)(_.removeCommand(_))).getOrElse(this)
+    val added = e.adds.map(_.foldLeft(removed)( _.addCommand(_))).getOrElse(removed)
     // Apply if exists - should only be the first event
     e.id.map(id => added.copy(id = id)).getOrElse(added)
   }
@@ -91,6 +91,6 @@ case class GainstrackEntityState(id: GUID, cmdStrs: Set[Seq[String]]) extends Ag
 
 case class GainstrackEntityDelta(
                                 id: Option[GUID] = None,
-                                adds: Set[Seq[String]] = Set(),
-                                removes: Set[Seq[String]] = Set()
+                                adds: Option[Set[Seq[String]]] = None,
+                                removes: Option[Set[Seq[String]]] = None
                                 ) extends DomainEvent
