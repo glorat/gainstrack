@@ -11,7 +11,7 @@
 <script>
     import BalanceEditor from './BalanceEditor.vue';
     import {CommandEditorMixin} from '../mixins/CommandEditorMixin';
-    import {cloneDeep} from "lodash";
+    import {cloneDeep} from 'lodash';
 
     export default {
         name: 'BalanceStatement',

@@ -40,10 +40,7 @@ class FirstStored extends FlatSpec with BeforeAndAfterAll {
 
   it should "combine base with anything" in {
 
-    val e2 = new GainstrackEntity(id2)
-    val res = AccountKey.getClass.getResourceAsStream("base.gainstrack")
-
-    e2.source(Source.fromInputStream(res))
+    val e2 = GainstrackEntity.defaultBase(id2)
     assert(e2.getState.cmdStrs.size == 3)
     e2.source(Source.fromResource("src.gainstrack"))
 

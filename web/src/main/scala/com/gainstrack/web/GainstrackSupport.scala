@@ -4,7 +4,7 @@ import java.nio.file.{Files, Paths}
 import java.time.{Duration, Instant, LocalDate}
 
 import com.gainstrack.command.GainstrackParser
-import com.gainstrack.lifecycle.GainstrackRepository
+import com.gainstrack.lifecycle.{GainstrackEntity, GainstrackRepository}
 import com.gainstrack.report.GainstrackGenerator
 import javax.servlet.http.HttpServletRequest
 import org.scalatra.ScalatraBase
@@ -25,14 +25,11 @@ trait GainstrackSupport {
   private val repo = new GainstrackRepository(Paths.get(UserDataDir))
 
   private def bgDefault = {
-    var start:Instant = Instant.now
+    val start:Instant = Instant.now
 
-    val parser = new GainstrackParser
-    val realFile = "real"
-    parser.parseFile(s"/Users/kevin/dev/gainstrack/data/${realFile}.gainstrack")
-    val orderedCmds = parser.getCommands
+    val ent = GainstrackEntity.defaultBase(java.util.UUID.randomUUID())
+    val orderedCmds = ent.getState.cmds
     val ret = GainstrackGenerator(orderedCmds)
-
     val endTime = Instant.now
     val duration = Duration.between(start, endTime)
     logger.info(s"bgDefault processed in ${duration.toMillis}ms")
@@ -40,20 +37,18 @@ trait GainstrackSupport {
     ret
   }
 
-  private def userFile:String = {
-    s"$UserDataDir/${user.id}.txt"
-  }
-
   protected def bgFromFile = {
     try {
-      val parser = new GainstrackParser
-      parser.parseFile(userFile)
-      logger.info(s"Loading bgFromFile $userFile")
-      Some(GainstrackGenerator(parser.getCommands))
+      logger.info(s"Loading bgFromFile for ${user.username} - ${user.uuid}")
+
+      val id = user.uuid
+      val ent = repo.getByIdOpt(id, new GainstrackEntity()).getOrElse(GainstrackEntity.defaultBase(id))
+      val cmds = ent.getState.cmds
+      Some(GainstrackGenerator(cmds))
     }
     catch {
       case e:Exception => {
-        logger.error(s"Failed to bgFromFile $userFile")
+        logger.error(s"Failed to bgFromFile ${user.username} - ${user.uuid}")
         logger.error(e.toString)
         None
       }
@@ -81,9 +76,13 @@ trait GainstrackSupport {
 
   def saveGainstrack(bg:GainstrackGenerator) = {
     if (isAuthenticated) {
-      val file = s"$UserDataDir/${user.id}.txt"
-      bg.writeGainstrackFile(file)
-      logger.info("")
+      val id = user.uuid
+      val ent = repo.getByIdOpt(id, new GainstrackEntity()).getOrElse(GainstrackEntity.defaultBase(id))
+
+      ent.source(bg.originalCommands)
+      repo.save(ent, ent.getRevision)
+//      val file = s"$UserDataDir/${user.id}.txt"
+//      bg.writeGainstrackFile(file)
 
     }
     else {

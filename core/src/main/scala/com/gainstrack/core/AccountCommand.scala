@@ -3,7 +3,9 @@ package com.gainstrack.core
 import com.gainstrack.command.{BalanceAdjustment, BalanceStatement, GlobalCommand}
 import net.glorat.cqrs.{Command, DomainEvent}
 
-trait AccountCommand extends Command with DomainEvent with Ordered[AccountCommand] {
+trait AccountCommand extends Command with DomainEvent  {
+  // with Ordered[AccountCommand]
+
   // Mandatory fields
   def date : LocalDate
   def commandString: String // The stored short version
@@ -20,7 +22,8 @@ trait AccountCommand extends Command with DomainEvent with Ordered[AccountComman
   def usesAccount(accountId: AccountId) : Boolean = involvedAccounts.contains(accountId) ||  mainAccount == Some(accountId)
   def usesSubAccountOf(parentId: AccountId) : Boolean = involvedAccounts.find(a => a.isSubAccountOf(parentId)).isDefined
 
-  override def compare(that: AccountCommand): Int = {
+
+  def compare(that: AccountCommand): Int = {
     val ord = this.toOrderValue.compare(that.toOrderValue)
     if (ord == 0) {
       // Need an arbitrary fallback comparison
@@ -35,7 +38,7 @@ trait AccountCommand extends Command with DomainEvent with Ordered[AccountComman
     }
   }
 
-  private def toOrderValue:Long = {
+  def toOrderValue:Long = {
     // Balance assertions come first because beancount assertion counts in the morning of the day
     val classValue = this match {
       case _: BalanceAdjustment => 1

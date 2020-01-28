@@ -13,10 +13,15 @@ class GainstrackParser {
   private var errors:Seq[ParserMessage] = Seq()
   private var lineCount : Int = 0
   private var commandToLocation: Map[AccountCommand, Int] = Map()
-  def getCommands : SortedSet[AccountCommand] = {
-    val ret = SortedSet[AccountCommand]() ++ globalCommand ++ commands
-    require(commands.size+globalCommand.size == ret.size, "Internal error: two different commands compared equal")
-    ret
+  def getCommands : Seq[AccountCommand] = {
+    val ret = Seq[AccountCommand]() ++ globalCommand ++ commands
+    val sorted = ret.zipWithIndex.sortBy(x => {
+      // Rely on orderValue first, and line number otherwise
+      x._1.toOrderValue*10000 + x._2
+    }).map(_._1)
+    // TODO: Check for dupes?
+
+    sorted
   }
 
   def lineFor(cmd:AccountCommand) : Int = {
