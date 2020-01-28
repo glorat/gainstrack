@@ -11,8 +11,11 @@ import java.util.UUID
 
 import org.json4s._
 import org.json4s.jackson.Serialization.{read, write}
+import org.slf4j.LoggerFactory
 
 class GainstrackRepository(basePath:Path) extends Repository {
+  val logger =  LoggerFactory.getLogger(getClass)
+
   protected implicit val jsonFormats: Formats = org.json4s.DefaultFormats + UUIDSerializer
 
   require(Files.isDirectory(basePath), s"$basePath must exist as directory")
@@ -43,10 +46,17 @@ class GainstrackRepository(basePath:Path) extends Repository {
 
     val filename = basePath.resolve(id.toString)
     val lines = Files.readAllLines(filename).asScala
+    var revision = 1
     val cevs = lines.map(line => {
       val cev = read[MyCommittedEvent](line)
       if (id == cev.streamId) {
-        tmpl.loadFromHistory(Seq(cev.event), cev.streamRevision)
+        if (revision == cev.streamRevision) {
+          tmpl.loadFromHistory(Seq(cev.event), cev.streamRevision)
+          revision += 1
+        }
+        else {
+          logger.warn(s"${id} has invalid CE at revision ${cev.streamRevision} is ignored")
+        }
       }
     })
     tmpl

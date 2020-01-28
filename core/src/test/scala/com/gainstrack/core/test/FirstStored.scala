@@ -14,6 +14,7 @@ class FirstStored extends FlatSpec with BeforeAndAfterAll {
 
   val id = java.util.UUID.nameUUIDFromBytes("first stored test case".getBytes)
   val id2 = java.util.UUID.nameUUIDFromBytes("by a different route".getBytes)
+  val idbad = java.util.UUID.nameUUIDFromBytes("corrupted file".getBytes)
 
   val e = new GainstrackEntity(id)
 
@@ -24,6 +25,7 @@ class FirstStored extends FlatSpec with BeforeAndAfterAll {
     Files.createDirectories(Paths.get("db/quotes"))
 
     repo.purge(id)
+    repo.purge(id2)
   }
 
   "GainstrackEntity" should "source" in {
@@ -52,11 +54,18 @@ class FirstStored extends FlatSpec with BeforeAndAfterAll {
 
   it should "load from repo" in {
     val e1 = repo.getById(id, new GainstrackEntity())
-    val e2 = repo.getById(id, new GainstrackEntity())
+    val e2 = repo.getById(id2, new GainstrackEntity())
 
     assertSameEntity(e1, e2)
+  }
 
+  it should "ignore corrupted entries" in {
+    val e = new GainstrackEntity(idbad)
+    e.addCommand("2000-01-01 open Assets:Foo GBP")
+    repo.save(e, 100) // Wrong expected version!
 
+    val e2 = repo.getById(idbad, new GainstrackEntity())
+    assert(e2.getState.cmdStrs.isEmpty)
   }
 
   def assertSameEntity(e1: GainstrackEntity, e2:GainstrackEntity) = {

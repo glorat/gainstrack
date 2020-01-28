@@ -1,8 +1,10 @@
 package com.gainstrack.web
 
+import java.nio.file.{Files, Paths}
 import java.time.{Duration, Instant, LocalDate}
 
 import com.gainstrack.command.GainstrackParser
+import com.gainstrack.lifecycle.GainstrackRepository
 import com.gainstrack.report.GainstrackGenerator
 import javax.servlet.http.HttpServletRequest
 import org.scalatra.ScalatraBase
@@ -18,7 +20,9 @@ trait GainstrackSupport {
 
   private val logger =  LoggerFactory.getLogger(getClass)
 
-  private val UserDataDir = "db/userdata" // Need to mkpath somewhere?
+  private val UserDataDir = "db/userdata"
+
+  private val repo = new GainstrackRepository(Paths.get(UserDataDir))
 
   private def bgDefault = {
     var start:Instant = Instant.now
