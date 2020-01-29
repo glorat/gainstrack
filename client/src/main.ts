@@ -5,10 +5,10 @@ import App from './App.vue';
 import Vue from 'vue';
 
 // Import the plugin here
-import { Auth0Plugin } from './auth';
+import {Auth0Plugin} from './auth';
 
 Vue.use(Auth0Plugin, {
-  domain: process.env.VUE_APP_AUTH0_ID + ".auth0.com",
+  domain: process.env.VUE_APP_AUTH0_ID + '.auth0.com',
   clientId: process.env.VUE_APP_AUTH0_CLIENT,
   audience: process.env.VUE_APP_AUTH0_AUDIENCE,
   // @ts-ignore
