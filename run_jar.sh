@@ -1,2 +1,2 @@
 #!/usr/bin/env sh
-java $* -jar web-assembly-0.1.jar
+java $* -XX:+PrintFlagsFinal -Xmx400m -jar web-assembly-0.1.jar
