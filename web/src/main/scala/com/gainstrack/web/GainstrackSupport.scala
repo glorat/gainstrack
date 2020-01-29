@@ -22,6 +22,8 @@ trait GainstrackSupport {
 
   private val UserDataDir = "db/userdata"
 
+  Files.createDirectories(Paths.get(UserDataDir))
+
   private val repo = new GainstrackRepository(Paths.get(UserDataDir))
 
   private def bgDefault = {
