@@ -26,7 +26,7 @@ lazy val dlstore_deps =
 
 lazy val common_deps = Seq(
   "org.scalatest" %% "scalatest" % "3.0.4" % "test",
-  "org.json4s"   %% "json4s-jackson" % "3.5.0"
+  "org.json4s"   %% "json4s-jackson" % "3.6.7",
 )
 
 lazy val dlsuite_deps = dlstore_deps ++ common_deps
@@ -47,7 +47,15 @@ lazy val useLocalDlcrypto = file("dlcrypto/build.sbt").exists()
 lazy val commonSettings = Seq(
   libraryDependencies ++= dlsuite_deps,
   resolvers ++= myResolvers,
-  test in assembly := {}
+  test in assembly := {},
+  assemblyMergeStrategy in assembly := {
+    case "module-info.class" => MergeStrategy.discard // Jackson libraries
+    case x => {
+      val oldStrategy = (assemblyMergeStrategy in assembly).value
+      oldStrategy(x)
+    }
+
+  }
 )
 
 lazy val web = project
