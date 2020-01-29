@@ -12,8 +12,10 @@ class Auth0Strategy (protected override val app: ScalatraBase)
 
   val logger = LoggerFactory.getLogger(getClass)
 
-  val audience = "http://localhost:8080"
-  val auth0id = "dev-q-172al0"
+  // TODO: Would be good to externalise this to env files like in nodejs
+  val audience = if (app.isDevelopmentMode) "http://localhost:8080" else "https://poc.gainstrack.com"
+  val auth0id = if (app.isDevelopmentMode) "dev-q-172al0" else "gainstrack"
+
   val validator = new Auth0JWTVerifier(auth0id, audience)
 
 
@@ -25,7 +27,6 @@ class Auth0Strategy (protected override val app: ScalatraBase)
       logger.error(s"TODO: Handle bearer token ${token}")
       try {
         val jwt = validator.validate(token)
-
         Some(GUser(jwt.getSubject))
       }
       catch {
