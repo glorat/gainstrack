@@ -18,6 +18,10 @@ class SimpleAuthStrategy(protected override val app: ScalatraBase)
   private val username = bodyOpt.flatMap(body => (body \ "username").extractOpt[String]).map(_.toLowerCase)
   private val password = bodyOpt.flatMap(body => (body \ "password").extractOpt[String])
 
+  private val ACCOUNTS:Map[String,String] = Map(
+    "glorat" -> "35c665c1f20c57b1cc8401de5ff8a194134428c8cdd44b53d09b9bb13ca12be6"
+  )
+
   /***
    * Determine whether the strategy should be run for the current request.
    */
@@ -31,9 +35,16 @@ class SimpleAuthStrategy(protected override val app: ScalatraBase)
   def authenticate()(implicit request: HttpServletRequest, response: HttpServletResponse): Option[GUser] = {
     try {
       logger.info("Attempting authentication")
-
       val hash = Pbkdf2.encode(password.get, username.get)
-      Some(GUser(username.get, hash))
+      logger.info(s"Login attempt for ${username.get} ${hash.toHex}")
+      ACCOUNTS.get(username.get).flatMap(pwd => {
+        if (pwd == hash.toHex) {
+          Some(GUser(username.get))
+        }
+        else {
+          None
+        }
+      })
     }
     catch {
       case e:IllegalArgumentException => None
@@ -46,19 +57,11 @@ class SimpleAuthStrategy(protected override val app: ScalatraBase)
   }
 }
 
-case class GUser(username: String, hash:Hash) {
-  def id = s"$username-${hash.toHex}"
+case class GUser(username: String) {
+  def id = s"$username}"
   // This is effectively an MD5 of the PBKDF2WithHmacSHA256
-  def uuid = java.util.UUID.nameUUIDFromBytes(hash.toArray)
-
-  require(username.matches("^[a-z]+$"))
-  require(hash.toHex.matches("^[0-9a-f]+$"))
-  // TODO: require hash is a hex string
+  def uuid = java.util.UUID.nameUUIDFromBytes(id.getBytes("UTF-8"))
 }
 
 object GUser {
-  def apply(str:String):GUser = {
-    val bits = str.split(raw"\-")
-    GUser(bits(0), Hash.fromHex(bits(1)))
-  }
 }
