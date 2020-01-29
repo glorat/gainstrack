@@ -1,14 +1,25 @@
-import Vue from "vue";
-import createAuth0Client from "@auth0/auth0-spa-js";
+import Auth0Client from '@auth0/auth0-spa-js/dist/typings/Auth0Client';
+import Vue from 'vue';
+import createAuth0Client from '@auth0/auth0-spa-js';
+import {PluginFunction, PluginObject} from 'vue/types/plugin';
 
 /** Define a default action to perform after authentication */
-const DEFAULT_REDIRECT_CALLBACK = () =>
+const DEFAULT_REDIRECT_CALLBACK: any = () =>
   window.history.replaceState({}, document.title, window.location.pathname);
 
-let instance;
+let instance: Vue | null;
 
 /** Returns the current instance of the SDK */
 export const getInstance = () => instance;
+
+interface MyData {
+  loading: boolean,
+  isAuthenticated: boolean,
+  user: object,
+  auth0Client: Auth0Client,
+  popupOpen: boolean,
+  error: null|string,
+}
 
 /** Creates an instance of the Auth0 SDK. If one has already been created, it returns that instance */
 export const useAuth0 = ({
@@ -16,15 +27,16 @@ export const useAuth0 = ({
   redirectUri = window.location.origin,
   ...options
 }) => {
-  if (instance) return instance;
+  if (instance) {return instance};
 
   // The 'instance' is simply a Vue object
   instance = new Vue({
-    data() {
+    data(): MyData {
       return {
         loading: true,
         isAuthenticated: false,
         user: {},
+        // @ts-ignore
         auth0Client: null,
         popupOpen: false,
         error: null
@@ -32,13 +44,14 @@ export const useAuth0 = ({
     },
     methods: {
       /** Authenticates the user using a popup window */
-      async loginWithPopup(o) {
+      async loginWithPopup(o?: PopupLoginOptions) {
         this.popupOpen = true;
 
         try {
           await this.auth0Client.loginWithPopup(o);
         } catch (e) {
           // eslint-disable-next-line
+          // tslint:disable-next-line:no-console
           console.error(e);
         } finally {
           this.popupOpen = false;
@@ -61,24 +74,24 @@ export const useAuth0 = ({
         }
       },
       /** Authenticates the user using the redirect method */
-      loginWithRedirect(o) {
+      loginWithRedirect(o?: RedirectLoginOptions) {
         return this.auth0Client.loginWithRedirect(o);
       },
       /** Returns all the claims present in the ID token */
-      getIdTokenClaims(o) {
+      getIdTokenClaims(o?: getIdTokenClaimsOptions) {
         return this.auth0Client.getIdTokenClaims(o);
       },
       /** Returns the access token. If the token is invalid or missing, a new one is retrieved */
-      getTokenSilently(o) {
+      getTokenSilently(o?: GetTokenSilentlyOptions) {
         return this.auth0Client.getTokenSilently(o);
       },
       /** Gets the access token using a popup window */
 
-      getTokenWithPopup(o) {
+      getTokenWithPopup(o?: GetTokenWithPopupOptions) {
         return this.auth0Client.getTokenWithPopup(o);
       },
       /** Logs the user out and removes their session on the authorization server */
-      logout(o) {
+      logout(o?: LogoutOptions) {
         return this.auth0Client.logout(o);
       }
     },
@@ -95,8 +108,8 @@ export const useAuth0 = ({
       try {
         // If the user is returning to the app after authentication..
         if (
-          window.location.search.includes("code=") &&
-          window.location.search.includes("state=")
+          window.location.search.includes('code=') &&
+          window.location.search.includes('state=')
         ) {
           // handle the redirect and retrieve tokens
           const { appState } = await this.auth0Client.handleRedirectCallback();
@@ -121,7 +134,7 @@ export const useAuth0 = ({
 
 // Create a simple Vue plugin to expose the wrapper object throughout the application
 export const Auth0Plugin = {
-  install(Vue, options) {
-    Vue.prototype.$auth = useAuth0(options);
+  install(vue: any, options: object) {
+    vue.prototype.$auth = useAuth0(options);
   }
 };
