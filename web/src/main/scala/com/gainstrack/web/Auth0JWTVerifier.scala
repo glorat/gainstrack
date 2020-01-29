@@ -43,7 +43,7 @@ class Auth0SavedJwkProvider(issuer: String) extends UrlJwkProvider(issuer) {
 
   protected val KEYS = Map(
     "https://dev-q-172al0.auth0.com/" -> DEVELOPMENT,
-    "https://poc.gainstrack.com/" -> PRODUCTION
+    "https://gainstrack.auth0.com/" -> PRODUCTION
   )
   require(KEYS.contains(issuer), s"${issuer} not saved in SavedJwkProvider")
 

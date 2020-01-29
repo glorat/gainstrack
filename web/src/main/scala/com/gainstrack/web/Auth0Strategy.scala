@@ -16,6 +16,7 @@ class Auth0Strategy (protected override val app: ScalatraBase)
   val audience = if (app.isDevelopmentMode) "http://localhost:8080" else "https://poc.gainstrack.com"
   val auth0id = if (app.isDevelopmentMode) "dev-q-172al0" else "gainstrack"
 
+  logger.info(s"Auth0 audience ${audience} id ${auth0id} is dev ${app.isDevelopmentMode}")
   val validator = new Auth0JWTVerifier(auth0id, audience)
 
 
