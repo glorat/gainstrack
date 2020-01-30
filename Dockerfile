@@ -1,4 +1,4 @@
-FROM hseeberger/scala-sbt:8u181_2.12.8_1.2.8 as builder
+FROM hseeberger/scala-sbt:8u242_1.3.7_2.12.10 as builder
 # Install fava
 RUN apt-get update && apt-get -y install python3 python3-pip python3-dev libxml2-dev libxslt-dev gcc musl-dev g++ && rm -rf /var/lib/apt/lists/*
 RUN pip3 install fava
@@ -32,8 +32,8 @@ RUN npm install
 COPY ./client/ .
 RUN npm run build
 
-FROM openjdk:8-jre-alpine
-RUN apk add --update python3 python3-dev libxml2-dev libxslt-dev gcc musl-dev g++
+FROM openjdk:11-jre-slim
+RUN apt-get update && apt-get -y install python3 python3-pip python3-dev libxml2-dev libxslt-dev gcc musl-dev g++ && rm -rf /var/lib/apt/lists/*
 RUN pip3 install fava
 
 RUN mkdir -p /app
