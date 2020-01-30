@@ -37,7 +37,7 @@ class ApiController (implicit val ec :ExecutionContext)
 
   before() {
     contentType = formats("json")
-    logger.info(request.getPathInfo)
+    logger.info(s"${request.getServerName}:${request.getServerPort}${request.getPathInfo}")
     lastStart = Instant.now
     scentry.authenticate()
   }

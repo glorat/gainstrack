@@ -9,8 +9,8 @@ import com.auth0.jwt.algorithms.Algorithm
 import com.auth0.jwt.interfaces.DecodedJWT
 import com.fasterxml.jackson.databind.ObjectMapper
 
-class Auth0JWTVerifier(auth0id:String, audience: String) {
-  val issuer = s"https://${auth0id}.auth0.com/"
+class Auth0JWTVerifier(config: Auth0Config) {
+  val issuer = s"https://${config.domain}/"
 
   // val provider = new UrlJwkProvider(issuer)
   val provider = new Auth0SavedJwkProvider(issuer)
@@ -27,7 +27,7 @@ class Auth0JWTVerifier(auth0id:String, audience: String) {
     val algorithm = Algorithm.RSA256(publicKey, null)
     val verifier = JWT.require(algorithm)
       .withIssuer(issuer)
-      .withAudience(audience)
+      .withAudience(config.audience)
       .build
 
     val jwt = verifier.verify(token)
