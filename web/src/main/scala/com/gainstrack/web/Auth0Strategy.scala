@@ -7,17 +7,27 @@ import org.scalatra.ScalatraBase
 import org.scalatra.auth.ScentryStrategy
 import org.slf4j.LoggerFactory
 
+case class Auth0Config(domain: String, audience: String, client_id: String)
+
+object Auth0Config {
+  def apply(): Auth0Config = {
+    val domain = sys.env.get("AUTH0_DOMAIN").getOrElse("dev-q-172al0.auth0.com")
+    val audience = sys.env.get("AUTH0_AUDIENCE").getOrElse("http://localhost:8080")
+    val client_id = sys.env.get("AUTH0_CLIENT").getOrElse("UuT7elqE26W3gsAXmcuDjeVisyoGcBoV")
+    Auth0Config(domain, audience, client_id)
+  }
+
+}
 class Auth0Strategy (protected override val app: ScalatraBase)
                     (implicit request: HttpServletRequest, response: HttpServletResponse, jsonFormats: Formats) extends ScentryStrategy[GUser] {
 
   val logger = LoggerFactory.getLogger(getClass)
 
   // TODO: Would be good to externalise this to env files like in nodejs
-  val audience = if (app.isDevelopmentMode) "http://localhost:8080" else "https://poc.gainstrack.com"
-  val auth0id = if (app.isDevelopmentMode) "dev-q-172al0" else "gainstrack"
+  val cfg = Auth0Config()
 
-  logger.info(s"Auth0 audience ${audience} id ${auth0id} is dev ${app.isDevelopmentMode}")
-  val validator = new Auth0JWTVerifier(auth0id, audience)
+  logger.info(s"Auth0 audience ${cfg.audience} domaind ${cfg.domain} is dev ${app.isDevelopmentMode}")
+  val validator = new Auth0JWTVerifier(cfg)
 
 
   override def authenticate()(implicit request: HttpServletRequest, response: HttpServletResponse): Option[GUser] = {

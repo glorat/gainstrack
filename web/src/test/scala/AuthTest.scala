@@ -8,7 +8,7 @@ import com.auth0.jwt.exceptions.TokenExpiredException
 import com.auth0.jwt.{JWT, JWTDecoder, JWTVerifier}
 import com.auth0.jwt.impl.JWTParser
 import com.auth0.jwt.interfaces.{Clock, DecodedJWT}
-import com.gainstrack.web.Auth0JWTVerifier
+import com.gainstrack.web.{Auth0Config, Auth0JWTVerifier}
 import org.scalatest.FlatSpec
 
 class AuthTest extends FlatSpec {
@@ -67,7 +67,7 @@ class AuthTest extends FlatSpec {
   }
 
   "com.gainstrack.web.Auth0JWTVerifier" should "detect expired" in {
-    val validator = new Auth0JWTVerifier(auth0id, audience)
+    val validator = new Auth0JWTVerifier(Auth0Config())
     assertThrows[TokenExpiredException] {
       val jwt = validator.validate(token)
     }
