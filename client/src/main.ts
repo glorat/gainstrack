@@ -7,6 +7,14 @@ import Vue from 'vue';
 // Import the plugin here
 import {Auth0Plugin} from './auth';
 
+import * as Sentry from '@sentry/browser';
+import * as Integrations from '@sentry/integrations';
+
+Sentry.init({
+  dsn: 'https://842809e35b06430997c7e8d9ad5ac592@sentry.io/2041653',
+  integrations: [new Integrations.Vue({Vue, attachProps: true})],
+});
+
 Vue.use(Auth0Plugin, {
   domain: process.env.VUE_APP_AUTH0_ID + '.auth0.com',
   clientId: process.env.VUE_APP_AUTH0_CLIENT,
