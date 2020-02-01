@@ -5,11 +5,22 @@ Do you know your networth? Is your wealth spread across multiple accounts in mul
 Gainstrack is the app to help you get in personal control of your finances with a dashboard to see your wealth in one place
 
 ### Getting started
+For anonymous users
 - Set up your accounts in the Editor or offline in a .gainstrack file
 - Save your accounts locally in your computer
 - Upload to the server to generate reports
 
+For online use
+- Login/Sign-up
+- Use the editors to supply your information
+- Export locally if desired
+
 ### Release notes
+#### v0.4.0
+1 February
+- Much improved P&L Explain reporting
+- Switched graphs to plotly.js library
+- Login support to save your data server side
 #### v0.3.0
 4 January
 - FIX: Error reporting on uploaded files
@@ -22,8 +33,8 @@ Gainstrack is the app to help you get in personal control of your finances with 
 - P&L explain automatically reports over a range of typical time periods - very cool
 
 ### Errata
-#### Jan'20
-- The login facility is for experimental purposes only, not for general use
+#### Feb'20
+- The login facility is still work in progress but can be tried
 #### Dec'19
 - P&L Explain may pull in real historic quotes from external data sources but other reports do not.
 - Income/Expenses/Liabilities are counterintuitively affected by future market prices, rather than retaining their original cost basis
