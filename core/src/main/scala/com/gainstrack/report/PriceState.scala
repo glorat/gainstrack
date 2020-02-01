@@ -116,7 +116,7 @@ class PriceFXConverter(val ccys: Set[AssetId], val prices: Map[AssetPair, Sorted
     }
     else {
       val timeSeries:SortedColumnMap[LocalDate, Double] = prices.getOrElse(tuple, SortedColumnMap())
-      val ret:Option[Double] = interp.interpValue(timeSeries, date).map(x => x)
+      val ret:Option[Double] = interp.interpValueDouble(timeSeries, date).map(x => x)
       ret
     }
   }

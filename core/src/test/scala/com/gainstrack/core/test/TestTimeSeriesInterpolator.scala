@@ -13,20 +13,20 @@ class TestTimeSeriesInterpolator extends FlatSpec {
   val interp = new TimeSeriesInterpolator
 
   {
-    implicit val linear = TimeSeriesInterpolator.linear[Fraction]
+    // implicit val linear = TimeSeriesInterpolator.linearFraction
     "TimeSeriesTest" should "extrapolate before start" in {
-      assert(interp.interpValue(data, parseDate("2018-01-01")) == Some(1))
+      assert(interp.interpValueFraction(data, parseDate("2018-01-01")) == Some(1))
     }
     it should "extrapolate after end" in {
-      assert(interp.interpValue(data, parseDate("2020-01-01")) == Some(365))
+      assert(interp.interpValueFraction(data, parseDate("2020-01-01")) == Some(365))
     }
     it should "return exact values" in {
-      assert(interp.interpValue(data, parseDate("2019-01-01")) == Some(1))
-      assert(interp.interpValue(data, parseDate("2019-12-31")) == Some(365))
+      assert(interp.interpValueFraction(data, parseDate("2019-01-01")) == Some(1))
+      assert(interp.interpValueFraction(data, parseDate("2019-12-31")) == Some(365))
     }
     it should "linearly interpolate in between" in  {
-      assert(interp.interpValue(data, parseDate("2019-01-02")) == Some(2))
-      assert(interp.interpValue(data, parseDate("2019-12-30")) == Some(364))
+      assert(interp.interpValueFraction(data, parseDate("2019-01-02")) == Some(2))
+      assert(interp.interpValueFraction(data, parseDate("2019-12-30")) == Some(364))
     }
   }
 

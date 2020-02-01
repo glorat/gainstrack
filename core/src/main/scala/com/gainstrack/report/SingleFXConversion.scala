@@ -15,7 +15,7 @@ case class SingleFXConversion(data:Map[AssetId, SortedColumnMap[LocalDate, Doubl
     }
     else if (fx2 == baseCcy) {
       data.get(fx1).flatMap ( series =>
-        interp.getValue(series, date)(TimeSeriesInterpolator.linear)
+        interp.getValue(series, date)(TimeSeriesInterpolator.linearDouble)
       )
     }
     else {
