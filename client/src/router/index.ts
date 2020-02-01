@@ -27,6 +27,11 @@ const routes: RouteConfig[] = [
         component: () => import('../components/SourceErrors.vue'),
         meta: {title: 'Editor'}
     },
+    {
+        path: '/port',
+        component: () => import('../pages/Port.vue'),
+        meta: {title: 'Import/Export'},
+    },
     {path: '/irr', component: () => import('../pages/IrrSummary.vue'), meta: {title: 'IRR'}},
     {path: '/irr/:accountId', component: IrrDetail, name: 'irr_detail', props: true},
     {

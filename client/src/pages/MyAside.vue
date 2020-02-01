@@ -17,19 +17,6 @@
                 </li>
             </template>
         </ul>
-        <el-upload
-                class=""
-                drag
-                action="/api/postssss/"
-                :before-upload="beforeUpload"
-                >
-            <i class="el-icon-upload"></i>
-            <div class="el-upload__text">Drop Gainstrack here or<br><em>click to upload</em></div>
-        </el-upload>
-        <ul class="navigation">
-            <li><a href="/api/export/gainstrack">Export Gainstrack...</a></li>
-            <li><a href="/api/export/beancount">Export Beancount...</a></li>
-        </ul>
         <div>
             <login-form></login-form>
         </div>
@@ -68,6 +55,7 @@
                 'balance_sheet': ['Balance Sheet', 'g b'],
                 'prices': ['Prices', 'g c'],
                 'editor': ['Editor', 'g e'],
+                'port': ['Import/Export', ''],
                 'errors': ['Errors', ''],
                 'events': ['Events', 'g E'],
                 'help': ['Help', 'g H'],
@@ -80,7 +68,6 @@
                 'query': ['Query', 'g q'],
                 'statistics': ['Statistics', 'g x'],
                 'trial_balance': ['Trial Balance', 'g t'],
-
                 'irr':              ['IRR',    ''],
                 'aa': ['Asset Allocation', ''],
                 'pnlexplain': ['P&L Explain', ''],
@@ -92,44 +79,11 @@
                 ['balance_sheet', 'income_statement', 'journal'],
                 ['irr', 'aa', 'pnlexplain'],
                 ['prices'],
-                ['editor'],
+                ['port', 'editor'],
                 ['help', 'faq']
             ]
         };
 
-        private beforeUpload(file: File) {
-            const notify = this.$notify;
-            const store = this.$store;
-
-            if (file.name.match(/\.gainstrack$/)) {
-                // console.log(`Trying to upload a ${file.type} of size ${file.size}`);
-                const reader = new FileReader();
-                reader.onload = () => {
-                    const text = reader.result;
-                    axios.put('/api/source/', {source: text, filePath: '', entryHash: '', sha256sum: ''})
-                        .then(response => {
-                            this.$store.dispatch('parseState', response.data);
-                            if (response.data.errors.length > 0) {
-                                notify.warning('There are errors...');
-                                this.$router.push({name: 'errors'});
-                            } else {
-                                notify.success('Saved');
-                                this.$store.dispatch('reload');
-                                this.$store.dispatch('gainstrackText'); // Clear editor
-                                // A bit of a hack to force a refresh of local state in current view
-                                this.$router.go(0);
-                            }
-                        })
-                };
-                reader.onerror = () => {
-                    notify.error(reader.result as string)
-                };
-                reader.readAsText(file);
-            } else {
-                notify.warning('Can only upload .gainstrack files');
-            }
-            return false;
-        }
     }
 </script>
 
