@@ -34,6 +34,6 @@ object JettyLauncher { // this is my entry object as specified in sbt project de
     import com.gainstrack.core._
     val interp = new TimeSeriesInterpolator
     val timeSeries2: SortedColumnMap[LocalDate, Double] = SortedColumnMap()
-    interp.interpValue(timeSeries2, today())
+    interp.interpValueDouble(timeSeries2, today())
   }
 }
