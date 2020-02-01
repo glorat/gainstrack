@@ -76,8 +76,10 @@ object TimeSeriesInterpolator {
       case e: ExtrapolateHigh[N] => Some(e.value.toDouble)
       case e: Interpolate[N] => {
         // Linear interpolation
-        val all: N = Fractional[N].fromLong(ChronoUnit.DAYS.between(e.before._1, e.after._1))
-        val n: N = Fractional[N].fromLong(ChronoUnit.DAYS.between(e.before._1, date))
+//        val all: N = Fractional[N].fromLong(ChronoUnit.DAYS.between(e.before._1, e.after._1))
+//        val n: N = Fractional[N].fromLong(ChronoUnit.DAYS.between(e.before._1, date))
+        val all: Fraction = ChronoUnit.DAYS.between(e.before._1, e.after._1)
+        val n: Fraction = ChronoUnit.DAYS.between(e.before._1, date)
         val ratio: Double = (n / all).toDouble
         val diff: Double = (e.after._2 - e.before._2).toDouble
         val ret: Double = (diff * ratio) + e.before._2.toDouble
@@ -101,8 +103,10 @@ object TimeSeriesInterpolator {
       case e: ExtrapolateHigh[N] => Some(e.value.toDouble)
       case e: Interpolate[N] => {
         // Linear interpolation
-        val all: N = Fractional[N].fromLong(ChronoUnit.DAYS.between(e.before._1, e.after._1))
-        val n: N = Fractional[N].fromLong(ChronoUnit.DAYS.between(e.before._1, date))
+        //val all: N = Fractional[N].fromLong(ChronoUnit.DAYS.between(e.before._1, e.after._1))
+        //val n: N = Fractional[N].fromLong(ChronoUnit.DAYS.between(e.before._1, date))
+        val all:Double = ChronoUnit.DAYS.between(e.before._1, e.after._1)
+        val n: Double = ChronoUnit.DAYS.between(e.before._1, date)
         val ratio: Double = (n / all).toDouble
         val diff: Double = (e.after._2 - e.before._2).toDouble
         val ret: Double = (diff * ratio) + e.before._2.toDouble
