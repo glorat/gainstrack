@@ -69,11 +69,11 @@ object SyncUp {
     }
 
     // Quick and dirty heuristic corruption check (e.g. throttle limit hit)
-    val size = java.nio.file.Files.size(path)
-    if (size < 1000) {
-      scala.io.Source.fromFile(outFile).getLines().foreach(println(_))
-      Files.delete(path)
-    }
+//    val size = java.nio.file.Files.size(path)
+//    if (size < 500) {
+//      scala.io.Source.fromFile(outFile).getLines().foreach(println(_))
+//      Files.delete(path)
+//    }
   }
 
 
@@ -82,7 +82,7 @@ object SyncUp {
     val isoCcys = QuoteConfig.allCcys
     // First sort out all the ISO currencies
     val data:Map[AssetId, SortedColumnMap[LocalDate, Double]] = isoCcys.flatMap(fxCcy => {
-      AVStockParser.tryParseSymbol[Double](QuoteConfig(fxCcy, "USD", "USD") ).map(res =>{
+      AVStockParser.tryParseSymbol(QuoteConfig(fxCcy, "USD", "USD") ).map(res =>{
         val series: SortedMap[LocalDate, Double] = res.series
         QuoteStore.mergeQuotes(fxCcy, series)
         // Convert to FX conversion format
@@ -97,7 +97,7 @@ object SyncUp {
     val reses = QuoteConfig
       .allConfigs
       // .filter(_.symbol == "XIU.TRT") // Uncomment here for debugging
-      .flatMap(cfg => AVStockParser.tryParseSymbol[Double](cfg))
+      .flatMap(cfg => AVStockParser.tryParseSymbol(cfg))
       .foreach(res => {
         val cfg = res.config
         val fixed = res.fixupLSE(cfg.domainCcy, AssetId(cfg.actualCcy), priceFXConverter)

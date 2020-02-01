@@ -3,30 +3,30 @@ package com.gainstrack.quotes.av
 import com.gainstrack.command.PriceObservation
 import com.gainstrack.core._
 import com.gainstrack.report.{AssetPair, FXConverter, PriceState, SingleFXConversion}
-import spire.math.Rational
-import spire.implicits._
-import spire.math.Fractional
 
 import scala.collection.SortedMap
 
 object AVStockParser {
+  type N = Double
 
-  trait FractionalParser[N] {
+  val x = 123
+
+  trait FractionalParser {
     def parse(s:String): N
   }
-  implicit object FractionParser extends FractionalParser[Fraction] {
-    def parse(s:String):Fraction = parseNumber(s)
-  }
+//  implicit object FractionParser extends FractionalParser[Fraction] {
+//    def parse(s:String):Fraction = parseNumber(s)
+//  }
 
-  implicit object DoubleParser extends FractionalParser[Double] {
+  implicit object DoubleParser extends FractionalParser {
     def parse(s:String) = s.toDouble
   }
 
-  def parseIntradayRefQuote[N:Fractional](config: QuoteConfig)(implicit fractionalParser: FractionalParser[N]): Option[N] = {
+  def parseIntradayRefQuote(config: QuoteConfig)(implicit fractionalParser:FractionalParser): Option[N] = {
     val symbol = config.symbol
 
     try {
-      val intraday = parseSymbol[N](config.copy(symbol = s"intraday.$symbol"))
+      val intraday = parseSymbol(config.copy(symbol = s"intraday.$symbol"))
       Some(intraday.liveQuote)
     }
     catch {
@@ -35,9 +35,9 @@ object AVStockParser {
 
   }
 
-  def tryParseSymbol[N:Fractional](cfg: QuoteConfig)(implicit fractionalParser: FractionalParser[N]): Option[StockParseResult[N]] = {
+  def tryParseSymbol(cfg: QuoteConfig)(implicit fractionalParser: FractionalParser): Option[StockParseResult] = {
     try {
-      val res = AVStockParser.parseSymbol[N](cfg)
+      val res = AVStockParser.parseSymbol(cfg)
       Some(res)
     }
     catch {
@@ -48,7 +48,7 @@ object AVStockParser {
     }
   }
 
-  def parseSymbol[N:Fractional](config: QuoteConfig)(implicit fractionalParser: FractionalParser[N]):StockParseResult[N] = {
+  def parseSymbol(config: QuoteConfig)(implicit fractionalParser: FractionalParser):StockParseResult = {
     val symbol = config.symbol
 
     val assetId = AssetId(symbol)
@@ -60,8 +60,8 @@ object AVStockParser {
     val closeIndex = headers.indexOf("close")
     require(closeIndex>=0, s"close column not found for $symbol")
     val refPriceStr = it1.next().split(",").map(_.trim).apply(closeIndex)
-    val liveQuote:N = parseIntradayRefQuote[N](config).getOrElse(fractionalParser.parse(refPriceStr))
-    require(!liveQuote.isZero, s"close for ${symbol} zero in ${refPriceStr} for line")
+    val liveQuote:N = parseIntradayRefQuote(config).getOrElse(fractionalParser.parse(refPriceStr))
+    require(liveQuote != 0.0 , s"close for ${symbol} zero in ${refPriceStr} for line")
     val buildMap = SortedMap.newBuilder[LocalDate, N]
 
     for (line<-src.getLines().drop(2)) {
@@ -71,13 +71,15 @@ object AVStockParser {
       buildMap+=(date -> value)
     }
     val map:SortedMap[LocalDate, N] = buildMap.result()
-    StockParseResult[N](series = map, liveQuote = liveQuote, config = config)
+    StockParseResult(series = map, liveQuote = liveQuote, config = config)
   }
 
 }
 
-case class StockParseResult[N:Fractional](series:SortedMap[LocalDate, N], liveQuote:N, config: QuoteConfig) {
-  def fixupLSE(lseCcy:String, actualCcy:AssetId, priceState: SingleFXConversion) : StockParseResult[N] = {
+case class StockParseResult(series:SortedMap[LocalDate, Double], liveQuote:Double, config: QuoteConfig) {
+  type N = Double
+
+  def fixupLSE(lseCcy:String, actualCcy:AssetId, priceState: SingleFXConversion) : StockParseResult = {
 
 
     // LSE ETFs on alpha-vantage are declared as being in in USD
@@ -91,7 +93,7 @@ case class StockParseResult[N:Fractional](series:SortedMap[LocalDate, N], liveQu
     // This 1.1 assumes that daily LSEGBP movement does not exceed 10%. A tricky point...
     // TODO: A better way might be to use a reference symbol that is correct (e.g VWRD or VT)
     require(minGbpUsdDouble > 1.1, "GBP and USD are so close cannot distinguish feeds with mixed GBP and USD in them")
-    val minGbpUsd = Fractional[N].fromDouble(minGbpUsdDouble)
+    val minGbpUsd = minGbpUsdDouble
 
     // Have to reverse because refPrice/liveQuote is today so we work backwards
     series.toSeq.reverse.foreach(kv => {
