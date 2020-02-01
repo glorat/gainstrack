@@ -33,6 +33,7 @@
         <div>
             <login-form></login-form>
         </div>
+        <div>Ver: {{ version }}</div>
     </aside>
 </template>
 
@@ -47,6 +48,9 @@
     @Component({
         components: {LoginForm, 'el-upload': Upload},
         computed: {
+            version() {
+                return process.env.VUE_APP_VERSION;
+            },
             errors() {
                 return this.$store.state.parseState.errors;
             },
