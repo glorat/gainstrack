@@ -4,12 +4,11 @@ import com.gainstrack.command.GainstrackParser
 import com.gainstrack.core._
 import net.glorat.cqrs._
 
-import scala.collection.SortedSet
 import scala.io.BufferedSource
 
 class GainstrackEntity extends AggregateRoot {
 
-  override protected var state : AggregateRootState = GainstrackEntityState(id = java.util.UUID.randomUUID(), cmdStrs=Set())
+  override protected var state : AggregateRootState = GainstrackEntityState(id = java.util.UUID.randomUUID(), cmdStrs=Seq())
   def getState : GainstrackEntityState = state.asInstanceOf[GainstrackEntityState]
 
   def id = getState.id
@@ -63,7 +62,7 @@ class GainstrackEntity extends AggregateRoot {
   }
 }
 
-case class GainstrackEntityState(id: GUID, cmdStrs: Set[Seq[String]]) extends AggregateRootState {
+case class GainstrackEntityState(id: GUID, cmdStrs: Seq[Seq[String]]) extends AggregateRootState {
   new GainstrackParser
   def cmds = {
     val parser = new GainstrackParser
@@ -72,7 +71,7 @@ case class GainstrackEntityState(id: GUID, cmdStrs: Set[Seq[String]]) extends Ag
   }
 
   private def addCommand(cmd:Seq[String]) : GainstrackEntityState = {
-    copy( cmdStrs = (cmdStrs + cmd))
+    copy( cmdStrs = (cmdStrs :+ cmd))
   }
 
   private def removeCommand(cmd:Seq[String]): GainstrackEntityState = {

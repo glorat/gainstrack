@@ -34,7 +34,6 @@ class FirstStored extends FlatSpec with BeforeAndAfterAll {
   }
 
   it should "save to repo" in {
-
     repo.save(e, 0)
   }
 
@@ -67,11 +66,11 @@ class FirstStored extends FlatSpec with BeforeAndAfterAll {
 
   def assertSameEntity(e1: GainstrackEntity, e2:GainstrackEntity) = {
 
-    val gone = e1.getState.cmdStrs -- e2.getState.cmdStrs
-    assert(gone == Set())
-
-    val extras = e2.getState.cmdStrs -- e1.getState.cmdStrs
-    assert(extras == Set())
+//    val gone = e1.getState.cmdStrs -- e2.getState.cmdStrs
+//    assert(gone == Set())
+//
+//    val extras = e2.getState.cmdStrs -- e1.getState.cmdStrs
+//    assert(extras == Set())
 
     assert(e1.getState.cmdStrs == e2.getState.cmdStrs)
 
