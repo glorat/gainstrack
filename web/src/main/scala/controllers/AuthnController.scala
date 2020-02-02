@@ -22,8 +22,9 @@ class AuthnController(implicit val ec: ExecutionContext)
       val msg = s"Login occurred for ${user.username} ${user.uuid}"
       logger.info(msg)
       // If we have a file, then flush session to pick up file
-      if (bgFromFile.isDefined) {
-        session.remove("gainstrack")
+      val gtOpt = bgFromFile
+      if (gtOpt.isDefined) {
+        session("gainstrack") = gtOpt.get
       }
       getSummary
 
