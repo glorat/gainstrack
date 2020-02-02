@@ -5,6 +5,7 @@ import java.nio.file.{Files, Paths}
 
 import com.gainstrack.command._
 import com.gainstrack.core._
+import com.gainstrack.lifecycle.{GainstrackEntity, GainstrackRepository}
 import com.gainstrack.report.{AccountInvestmentReport, DailyBalance, GainstrackGenerator, PriceState}
 import org.scalatest.{BeforeAndAfterEach, FlatSpec, Ignore, Tag}
 
@@ -19,6 +20,21 @@ class Real extends FlatSpec with BeforeAndAfterEach {
 
   "parser" should "parseFile" taggedAs RealDataAvailable in {
     parser.parseFile(s"data/${realFile}.gainstrack")
+
+
+
+  }
+
+  it should "match gainstrack entity" taggedAs RealDataAvailable in {
+    val uuid = java.util.UUID.fromString("fec320db-f125-35f3-a0d2-e66ca7e4ce95")
+    val repo = new GainstrackRepository(Paths.get("db/userdata"))
+    val entOpt = repo.getByIdOpt(uuid, new GainstrackEntity())
+    entOpt.map(ent => {
+      val p2 = new GainstrackParser
+      p2.parseLines(ent.getState.cmdStrs.flatten)
+      val cmd2 = p2.getCommands
+      assert(parser.getCommands == cmd2)
+    })
   }
 
   it should "roundtrip" taggedAs RealDataAvailable in {

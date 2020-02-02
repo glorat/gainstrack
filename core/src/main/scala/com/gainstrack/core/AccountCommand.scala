@@ -1,6 +1,6 @@
 package com.gainstrack.core
 
-import com.gainstrack.command.{BalanceAdjustment, BalanceStatement, GlobalCommand}
+import com.gainstrack.command.{AccountCreation, BalanceAdjustment, BalanceStatement, GlobalCommand, UnitTrustBalance}
 import net.glorat.cqrs.{Command, DomainEvent}
 
 trait AccountCommand extends Command with DomainEvent  {
@@ -39,12 +39,17 @@ trait AccountCommand extends Command with DomainEvent  {
   }
 
   def toOrderValue:Long = {
-    // Balance assertions come first because beancount assertion counts in the morning of the day
+    // Balance assertions come first because implementation based on beancount which
+    // checks assertion counts in the morning of the day
     val classValue = this match {
-      case _: BalanceAdjustment => 1
       case _: GlobalCommand => 0
-      case _: BalanceStatement => 1
-      case _ => 2
+      case _: AccountCreation => 1
+      case _: BalanceAdjustment => 2
+      case _: BalanceStatement => 2
+        // These ones should come after because they are also balances
+      case _: UnitTrustBalance => 4
+        // All else in the middle
+      case _ => 3
     }
 
     val theDate = this match {
