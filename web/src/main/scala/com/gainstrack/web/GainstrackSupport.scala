@@ -79,6 +79,7 @@ trait GainstrackSupport {
   def saveGainstrack(bg:GainstrackGenerator) = {
     if (isAuthenticated) {
       val id = user.uuid
+      logger.info(s"Saving updates to ${user.username} ${id}")
       val ent = repo.getByIdOpt(id, new GainstrackEntity()).getOrElse(GainstrackEntity.defaultBase(id))
 
       ent.source(bg.originalCommands)

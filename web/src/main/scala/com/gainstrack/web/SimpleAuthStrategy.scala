@@ -58,7 +58,7 @@ class SimpleAuthStrategy(protected override val app: ScalatraBase)
 }
 
 case class GUser(username: String) {
-  def id = s"$username}"
+  def id = s"$username"
   // This is effectively an MD5 of the PBKDF2WithHmacSHA256
   def uuid = java.util.UUID.nameUUIDFromBytes(id.getBytes("UTF-8"))
 }
