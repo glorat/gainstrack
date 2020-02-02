@@ -34,7 +34,9 @@ trait GainstrackSupport {
     val ret = GainstrackGenerator(orderedCmds)
     val endTime = Instant.now
     val duration = Duration.between(start, endTime)
-    logger.info(s"bgDefault processed in ${duration.toMillis}ms")
+    logger.info(s"bgDefault generation in ${ret.generationDuration.toMillis}ms")
+    logger.info(s"bgDefault total in ${duration.toMillis}ms")
+
 
     ret
   }
@@ -42,10 +44,16 @@ trait GainstrackSupport {
   protected def bgFromFile = {
     try {
       logger.info(s"Loading bgFromFile for ${user.username} - ${user.uuid}")
+      val start:Instant = Instant.now
 
       val id = user.uuid
       val ent = repo.getByIdOpt(id, new GainstrackEntity()).getOrElse(GainstrackEntity.defaultBase(id))
       val cmds = ent.getState.cmds
+      val ret = GainstrackGenerator(cmds)
+      val endTime = Instant.now
+      val duration = Duration.between(start, endTime)
+      logger.info(s"bgFromFile generation in ${ret.generationDuration.toMillis}ms")
+      logger.info(s"bgFromFile total in ${duration.toMillis}ms")
       Some(GainstrackGenerator(cmds))
     }
     catch {
