@@ -10,6 +10,15 @@ import org.slf4j.LoggerFactory
 case class Auth0Config(domain: String, audience: String, client_id: String)
 
 object Auth0Config {
+  val logger = LoggerFactory.getLogger(getClass)
+
+  val cfg = Auth0Config()
+
+  logger.info(s"Auth0 validation for audience ${cfg.audience} domain ${cfg.domain}")
+
+  val validator = new Auth0JWTVerifier(cfg)
+
+
   def apply(): Auth0Config = {
     val domain = sys.env.get("AUTH0_DOMAIN").getOrElse("dev-q-172al0.auth0.com")
     val audience = sys.env.get("AUTH0_AUDIENCE").getOrElse("http://localhost:8080")
@@ -23,21 +32,15 @@ class Auth0Strategy (protected override val app: ScalatraBase)
 
   val logger = LoggerFactory.getLogger(getClass)
 
-  // TODO: Would be good to externalise this to env files like in nodejs
-  val cfg = Auth0Config()
-
-  logger.info(s"Auth0 audience ${cfg.audience} domaind ${cfg.domain} is dev ${app.isDevelopmentMode}")
-  val validator = new Auth0JWTVerifier(cfg)
-
-
   override def authenticate()(implicit request: HttpServletRequest, response: HttpServletResponse): Option[GUser] = {
 
     val header = request.getHeader("Authorization")
     if (header != null && header.startsWith("Bearer")) {
       val token = header.drop("Bearer ".length)
-      logger.error(s"TODO: Handle bearer token ${token}")
+      logger.info(s"Handle bearer token ${token}")
       try {
-        val jwt = validator.validate(token)
+        val jwt = Auth0Config.validator.validate(token)
+        logger.info(s"Validated bearer token for ${jwt.getSubject}")
         Some(GUser(jwt.getSubject))
       }
       catch {
