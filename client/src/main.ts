@@ -24,13 +24,13 @@ Vue.use(Auth0Plugin, {
   clientId: process.env.VUE_APP_AUTH0_CLIENT,
   audience: process.env.VUE_APP_AUTH0_AUDIENCE,
   // @ts-ignore
-  onRedirectCallback: appState => {
-    router.push(
-        appState && appState.targetUrl
-            ? appState.targetUrl
-            : window.location.pathname
-    );
-  }
+  // onRedirectCallback: appState => {
+  //   router.push(
+  //       appState && appState.targetUrl
+  //           ? appState.targetUrl
+  //           : window.location.pathname
+  //   );
+  // }
 });
 
 
