@@ -12,6 +12,8 @@ import * as Integrations from '@sentry/integrations';
 
 Sentry.init({
   dsn: 'https://842809e35b06430997c7e8d9ad5ac592@sentry.io/2041653',
+  environment: process.env.NODE_ENV,
+  release: 'gainstrack@' + process.env.VUE_APP_VERSION,
   integrations: [new Integrations.Vue({
     Vue,
     attachProps: true,
