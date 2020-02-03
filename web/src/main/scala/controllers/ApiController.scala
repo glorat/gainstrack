@@ -389,6 +389,10 @@ class ApiController (implicit val ec :ExecutionContext)
     val pnl = new PLExplain(body.fromDate, body.toDate)(bg.acctState, bg.txState, bg.balanceState, bg.priceFXConverter, bg.assetChainMap, fxConvert)
     Seq(pnl.toDTO)
   }
+
+  get("/history") {
+    getHistory
+  }
 /*
   error {
     case e: Throwable => {

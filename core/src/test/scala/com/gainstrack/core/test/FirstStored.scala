@@ -41,7 +41,7 @@ class FirstStored extends FlatSpec with BeforeAndAfterAll {
   it should "have events" in {
     val cevs = repo.getAllCommits(id)
     assert (cevs.size == 2)
-    assert(cevs(0) == MyCommittedEvent(GainstrackEntityDelta(Some(id)), id, 1))
+    assert(cevs(0).event.id == Some(id) )
   }
 
   it should "combine base with anything" in {

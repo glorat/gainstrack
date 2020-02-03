@@ -5,13 +5,14 @@ import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
 import com.gainstrack.core._
+import com.gainstrack.lifecycle.{InstantSerializer, UUIDSerializer}
 import org.json4s.CustomSerializer
 import org.json4s.JsonAST.JString
 
 object GainstrackJsonSerializers {
   def all: Seq[CustomSerializer[_]] =
     Seq(LocalDateSerializer, AssetIdSerializer,
-      AccountIdSerializer, FractionSerializer)
+      AccountIdSerializer, FractionSerializer, UUIDSerializer, InstantSerializer)
 }
 
 object AssetIdSerializer extends CustomSerializer[AssetId] (_ => ({

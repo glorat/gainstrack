@@ -32,6 +32,11 @@ const routes: RouteConfig[] = [
         component: () => import('../pages/Port.vue'),
         meta: {title: 'Import/Export'},
     },
+    {
+        path: '/history',
+        component: () => import('../pages/History.vue'),
+        meta: {title: 'History'},
+    },
     {path: '/irr', component: () => import('../pages/IrrSummary.vue'), meta: {title: 'IRR'}},
     {path: '/irr/:accountId', component: IrrDetail, name: 'irr_detail', props: true},
     {
