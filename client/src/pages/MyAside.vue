@@ -56,6 +56,7 @@
                 'prices': ['Prices', 'g c'],
                 'editor': ['Editor', 'g e'],
                 'port': ['Import/Export', ''],
+                'history': ['History', ''],
                 'errors': ['Errors', ''],
                 'events': ['Events', 'g E'],
                 'help': ['Help', 'g H'],
@@ -79,7 +80,7 @@
                 ['balance_sheet', 'income_statement', 'journal'],
                 ['irr', 'aa', 'pnlexplain'],
                 ['prices'],
-                ['port', 'editor'],
+                ['port', 'editor', 'history'],
                 ['help', 'faq']
             ]
         };

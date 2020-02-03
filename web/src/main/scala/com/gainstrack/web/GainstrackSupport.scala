@@ -4,7 +4,7 @@ import java.nio.file.{Files, Paths}
 import java.time.{Duration, Instant, LocalDate}
 
 import com.gainstrack.command.GainstrackParser
-import com.gainstrack.lifecycle.{GainstrackEntity, GainstrackRepository}
+import com.gainstrack.lifecycle.{GainstrackEntity, GainstrackRepository, MyCommittedEvent}
 import com.gainstrack.report.GainstrackGenerator
 import javax.servlet.http.HttpServletRequest
 import org.scalatra.ScalatraBase
@@ -82,6 +82,16 @@ trait GainstrackSupport {
     // Use session from now on
     session("gainstrack") = gt
     gt
+  }
+
+  def getHistory:Seq[MyCommittedEvent] = {
+    if (isAuthenticated) {
+      // Reverse so we have most recent first
+      repo.getAllCommits(user.uuid).reverse
+    }
+    else {
+      Seq()
+    }
   }
 
   def saveGainstrack(bg:GainstrackGenerator) = {

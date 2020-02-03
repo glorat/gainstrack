@@ -7,6 +7,7 @@ import net.glorat.cqrs._
 import scala.concurrent.Future
 import scala.reflect.ClassTag
 import java.nio.file.{Files, OpenOption, Path, Paths, StandardOpenOption}
+import java.time.Instant
 import java.util.UUID
 
 import org.json4s._
@@ -16,7 +17,7 @@ import org.slf4j.LoggerFactory
 class GainstrackRepository(basePath:Path) extends Repository {
   val logger =  LoggerFactory.getLogger(getClass)
 
-  protected implicit val jsonFormats: Formats = org.json4s.DefaultFormats + UUIDSerializer
+  protected implicit val jsonFormats: Formats = org.json4s.DefaultFormats + UUIDSerializer + InstantSerializer
 
   require(Files.isDirectory(basePath), s"$basePath must exist as directory")
 
@@ -25,7 +26,7 @@ class GainstrackRepository(basePath:Path) extends Repository {
     var i = expectedVersion
     val cevs = evs.map(ev => {
       i += 1
-      MyCommittedEvent(ev.asInstanceOf[GainstrackEntityDelta], aggregate.id, i)
+      MyCommittedEvent(ev.asInstanceOf[GainstrackEntityDelta], aggregate.id, i, Instant.now())
     })
 
     val path = basePath.resolve(aggregate.id.toString)
@@ -129,6 +130,16 @@ object UUIDSerializer extends CustomSerializer[UUID](format => ({
 }
 ))
 
+object InstantSerializer extends CustomSerializer[Instant](format => ({
+  case JLong(dbl) => Instant.ofEpochMilli(dbl)
+  case JInt(num) => Instant.ofEpochMilli(num.toLong)
+}, {
+  case value: Instant => {
+    JInt(value.toEpochMilli)
+  }
+}))
 
 // Dodge the whole JSON polymorphism problem by using a specific CE class
-case class MyCommittedEvent(event:GainstrackEntityDelta, streamId: GUID, streamRevision:Int)
+// Normal practice is to wrap event in an envelope to have, for example
+// type discriminator and timestamps
+case class MyCommittedEvent(event:GainstrackEntityDelta, streamId: GUID, streamRevision:Int, repoTimestamp: Instant = Instant.MIN)
