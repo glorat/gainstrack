@@ -33,6 +33,8 @@ class Real extends FlatSpec with BeforeAndAfterEach {
       val p2 = new GainstrackParser
       p2.parseLines(ent.getState.cmdStrs.flatten)
       val cmd2 = p2.getCommands
+      assert(parser.getCommands.length == cmd2.length)
+      parser.getCommands.zip(cmd2).foreach(x => assert(x._1 == x._2))
       assert(parser.getCommands == cmd2)
     })
   }

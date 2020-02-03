@@ -76,6 +76,32 @@ class GainstrackRepository(basePath:Path) extends Repository {
     }
   }
 
+  def getAllCommits(id: GUID) : Seq[MyCommittedEvent] = {
+    import scala.collection.JavaConverters._
+    val filename = basePath.resolve(id.toString)
+    val lines = Files.readAllLines(filename).asScala
+    var revision = 1
+    val cevs = lines.toSeq.map(line => {
+      val cev = read[MyCommittedEvent](line)
+      cev
+    }).filter(cev=> {
+      if (id == cev.streamId) {
+        if (revision == cev.streamRevision) {
+          revision += 1
+          true
+        }
+        else {
+          logger.error(s"${id} has invalid CE at revision ${cev.streamRevision} is ignored")
+          false
+        }
+      }
+      else {
+        false
+      }
+    })
+    cevs
+  }
+
   // Use for admin only
   def purge(id: GUID) = {
     val filename = basePath.resolve(id.toString)
