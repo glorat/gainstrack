@@ -4,7 +4,7 @@ import java.io.BufferedReader
 import java.nio.file.{Files, Paths}
 
 import com.gainstrack.core.AccountKey
-import com.gainstrack.lifecycle.{GainstrackEntity, GainstrackRepository}
+import com.gainstrack.lifecycle.{GainstrackEntity, GainstrackEntityDelta, GainstrackRepository, MyCommittedEvent}
 import com.gainstrack.report.GainstrackGenerator
 import org.scalatest.{BeforeAndAfterAll, FlatSpec}
 
@@ -26,6 +26,7 @@ class FirstStored extends FlatSpec with BeforeAndAfterAll {
 
     repo.purge(id)
     repo.purge(id2)
+    repo.purge(idbad)
   }
 
   "GainstrackEntity" should "source" in {
@@ -35,6 +36,12 @@ class FirstStored extends FlatSpec with BeforeAndAfterAll {
 
   it should "save to repo" in {
     repo.save(e, 0)
+  }
+
+  it should "have events" in {
+    val cevs = repo.getAllCommits(id)
+    assert (cevs.size == 2)
+    assert(cevs(0) == MyCommittedEvent(GainstrackEntityDelta(Some(id)), id, 1))
   }
 
   it should "combine base with anything" in {
@@ -55,6 +62,11 @@ class FirstStored extends FlatSpec with BeforeAndAfterAll {
     assertSameEntity(e1, e2)
   }
 
+  it should "have more events than before" in {
+    val cevs = repo.getAllCommits(id2)
+    assert (cevs.size == 3)
+  }
+
   it should "ignore corrupted entries" in {
     val e = new GainstrackEntity(idbad)
     e.addCommand("2000-01-01 open Assets:Foo GBP")
@@ -62,6 +74,9 @@ class FirstStored extends FlatSpec with BeforeAndAfterAll {
 
     val e2 = repo.getById(idbad, new GainstrackEntity())
     assert(e2.getState.cmdStrs.isEmpty)
+
+    val cevs = repo.getAllCommits(idbad)
+    assert (cevs.size == 0)
   }
 
   def assertSameEntity(e1: GainstrackEntity, e2:GainstrackEntity) = {
