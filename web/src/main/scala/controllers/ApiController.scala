@@ -7,7 +7,7 @@ import com.gainstrack.command.{AccountCreation, GainstrackParser, ParserMessage}
 import com.gainstrack.core._
 import com.gainstrack.quotes.av.Main
 import com.gainstrack.report.{AccountInvestmentReport, BalanceReport, DailyBalance, FXChain, FXProxy, GainstrackGenerator, IrrSummary, PLExplain, PLExplainDTO, TimeSeries}
-import com.gainstrack.web.{AuthenticationSupport, BalanceTreeTable, GainstrackJsonSerializers, GainstrackSupport, StateSummaryDTO}
+import com.gainstrack.web.{AuthenticationSupport, BalanceTreeTable, GainstrackJsonSerializers, GainstrackSupport, StateSummaryDTO, TimingSupport}
 import org.json4s.{DefaultFormats, Formats, JValue}
 import org.scalatra.{NotFound, ScalatraServlet}
 import org.scalatra.json._
@@ -21,10 +21,10 @@ class ApiController (implicit val ec :ExecutionContext)
   extends ScalatraServlet
     with JacksonJsonSupport
     with AuthenticationSupport
-    with GainstrackSupport {
+    with GainstrackSupport
+    with TimingSupport {
   val logger =  LoggerFactory.getLogger(getClass)
   logger.info("ApiController constructed")
-  var lastStart:Instant = Instant.now
 
   protected implicit val jsonFormats: Formats = org.json4s.DefaultFormats ++ GainstrackJsonSerializers.all
 
@@ -37,15 +37,7 @@ class ApiController (implicit val ec :ExecutionContext)
 
   before() {
     contentType = formats("json")
-    logger.info(s"${request.getServerName}:${request.getServerPort}${request.getPathInfo}")
-    lastStart = Instant.now
     scentry.authenticate()
-  }
-
-  after() {
-    val endTime = Instant.now
-    val duration = Duration.between(lastStart, endTime)
-    logger.info(s"${request.getPathInfo} processed in ${duration.toMillis}ms")
   }
 
   protected override def transformRequestBody(body: JValue): JValue = body.camelizeKeys
