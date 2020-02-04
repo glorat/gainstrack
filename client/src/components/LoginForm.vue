@@ -78,7 +78,10 @@
                 this.loading = true;
                 const summary = await this.$store.dispatch('loginWithToken', token)
                     .then(response => response.data)
-                    .catch(error => notify.error(error.response.data))
+                    .catch(error => {
+                        notify.error(`Auth token rejected by server: ${error.response.data}`);
+                        this.$store.dispatch('logout');
+                    })
                     .finally(() => this.loading = false);
                 if (summary.authentication.error) {
                     notify.warning(summary.authentication.error);
