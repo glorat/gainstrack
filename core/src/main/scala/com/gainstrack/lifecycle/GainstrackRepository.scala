@@ -21,6 +21,17 @@ class GainstrackRepository(basePath:Path) extends Repository {
 
   require(Files.isDirectory(basePath), s"$basePath must exist as directory")
 
+  protected def filenameForId(id: GUID)  = {
+    basePath.resolve(id.toString)
+  }
+
+  protected def readLinesForId(id: GUID):Seq[String] = {
+    import scala.collection.JavaConverters._
+    val filename = filenameForId(id)
+    val lines = Files.readAllLines(filename).asScala
+    lines
+  }
+
   override def save(aggregate: AggregateRoot, expectedVersion: Int): Future[Unit] = {
     val evs = aggregate.getUncommittedChanges
     var i = expectedVersion
@@ -29,7 +40,7 @@ class GainstrackRepository(basePath:Path) extends Repository {
       MyCommittedEvent(ev.asInstanceOf[GainstrackEntityDelta], aggregate.id, i, Instant.now())
     })
 
-    val path = basePath.resolve(aggregate.id.toString)
+    val path = filenameForId(aggregate.id)
 
     using(new PrintWriter(Files.newOutputStream(path, StandardOpenOption.CREATE, StandardOpenOption.APPEND))) { w =>
       cevs.foreach(cev => {
@@ -49,11 +60,8 @@ class GainstrackRepository(basePath:Path) extends Repository {
 
 
   def getByIdOpt[T <: AggregateRoot](id: GUID, tmpl: T)(implicit evidence$1: ClassTag[T]): Option[T] = {
-    import scala.collection.JavaConverters._
-
-    val filename = basePath.resolve(id.toString)
     try {
-      val lines = Files.readAllLines(filename).asScala
+      val lines = readLinesForId(id)
       var revision = 1
       val cevs = lines.map(line => {
         val cev = read[MyCommittedEvent](line)
@@ -78,9 +86,7 @@ class GainstrackRepository(basePath:Path) extends Repository {
   }
 
   def getAllCommits(id: GUID) : Seq[MyCommittedEvent] = {
-    import scala.collection.JavaConverters._
-    val filename = basePath.resolve(id.toString)
-    val lines = Files.readAllLines(filename).asScala
+    val lines = readLinesForId(id)
     var revision = 1
     val cevs = lines.toSeq.map(line => {
       val cev = read[MyCommittedEvent](line)
@@ -142,4 +148,4 @@ object InstantSerializer extends CustomSerializer[Instant](format => ({
 // Dodge the whole JSON polymorphism problem by using a specific CE class
 // Normal practice is to wrap event in an envelope to have, for example
 // type discriminator and timestamps
-case class MyCommittedEvent(event:GainstrackEntityDelta, streamId: GUID, streamRevision:Int, repoTimestamp: Instant = Instant.MIN)
+case class MyCommittedEvent(event:GainstrackEntityDelta, streamId: GUID, streamRevision:Int, repoTimestamp: Instant = Instant.parse("1900-01-01T00:00:00Z"))
