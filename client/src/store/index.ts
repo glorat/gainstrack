@@ -98,9 +98,11 @@ export default new Vuex.Store({
         async loginWithToken(context, token: string) {
             const config = { headers: {
                 Authorization: `Bearer ${token}`    // send the access token through the 'Authorization' header
-            }}
+            }};
 
-            const summary = await axios.post('/api/authn/login', {}, config);
+            axios.defaults.headers.common = config.headers;
+
+            const summary = await axios.post('/api/authn/login', {});
             await context.commit('reloaded', summary.data);
             // Get stuff in background
             context.dispatch('balances');
