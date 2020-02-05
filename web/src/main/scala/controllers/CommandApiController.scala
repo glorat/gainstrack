@@ -51,8 +51,7 @@ class CommandApiController(implicit val ec: ExecutionContext)
       val realFile = "real"
       val res  = bg2.writeBeancountFile(s"/tmp/${realFile}.beancount", parser.lineFor(_))
       if (res.length == 0) {
-        session("gainstrack") = bg2
-
+        saveGainstrack(bg2)
         CommandApiResponse("ok")
       }
       else {

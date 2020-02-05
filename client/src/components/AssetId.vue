@@ -36,7 +36,7 @@
                 this.$emit('input', ev.target.value);
             },
             onSelectChanged(ev) {
-                this.$emit('input', ev);
+                this.$emit('input', ev.toUpperCase());
             }
         }
     }

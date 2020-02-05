@@ -102,7 +102,9 @@ trait GainstrackSupport {
 
       ent.source(bg.originalCommands)
       repo.save(ent, ent.getRevision)
-//      val file = s"$UserDataDir/${user.id}.txt"
+      session("gainstrack") = bg
+
+      //      val file = s"$UserDataDir/${user.id}.txt"
 //      bg.writeGainstrackFile(file)
 
     }
@@ -119,7 +121,7 @@ trait GainstrackSupport {
     val ccys = bg.priceState.ccys
     val conversionStrategy = session.get("conversion").map(_.toString).getOrElse("parent")
     val authnSummary = getAuthentication
-    StateSummaryDTO(accts.toSeq.sorted, ccys.toSeq.sorted, conversionStrategy,
+    StateSummaryDTO(accts.toSeq.sorted, bg.acctState.accounts.toSeq, ccys.toSeq.sorted, conversionStrategy,
       bg.latestDate, dateOverride, authnSummary)
   }
 

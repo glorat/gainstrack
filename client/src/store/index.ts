@@ -16,13 +16,14 @@ const initState: MyState = {
     count: 0,
     summary: {
         accountIds: [],
+        accounts: [],
         ccys: [],
         authentication: {}
     },
     balances: {},
     parseState: {errors: []},
     gainstrackText: '',
-}
+};
 
 export default new Vuex.Store({
     state: initState,
