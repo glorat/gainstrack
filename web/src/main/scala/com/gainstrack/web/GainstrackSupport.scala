@@ -118,13 +118,17 @@ trait GainstrackSupport {
     val accts = bg.acctState.accounts.map(_.accountId)
     val ccys = bg.priceState.ccys
     val conversionStrategy = session.get("conversion").map(_.toString).getOrElse("parent")
-    val authnSummary = if (isAuthenticated) {
+    val authnSummary = getAuthentication
+    StateSummaryDTO(accts.toSeq.sorted, ccys.toSeq.sorted, conversionStrategy,
+      bg.latestDate, dateOverride, authnSummary)
+  }
+
+  def getAuthentication: AuthnSummary = {
+    if (isAuthenticated) {
       AuthnSummary(Some(user.username))
     }
     else {
       AuthnSummary()
     }
-    StateSummaryDTO(accts.toSeq.sorted, ccys.toSeq.sorted, conversionStrategy,
-      bg.latestDate, dateOverride, authnSummary)
   }
 }
