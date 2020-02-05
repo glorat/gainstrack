@@ -37,6 +37,9 @@ class Auth0Strategy (protected override val app: ScalatraBase)
     val header = request.getHeader("Authorization")
     if (header != null && header.startsWith("Bearer")) {
       val token = header.drop("Bearer ".length)
+      // FIXME: The next line is a security hole... showing a token that is usable for up to 24hrs
+      // Admins that can see the logs will be able to impersonate
+      // Restrict this to dev only once we are done testing
       logger.info(s"Handle bearer token ${token}")
       try {
         val jwt = Auth0Config.validator.validate(token)
