@@ -1,50 +1,48 @@
 <template>
-    <div class="root">
-        Here
-        <SlickList lockAxis="y" v-model="items">
-            <SlickItem v-for="(item, index) in items" :index="index" :key="index">
-                {{ item }}
-            </SlickItem>
-        </SlickList>
-        There
-    </div>
+    <el-select
+            :value="value"
+            v-on:input="onSelectChanged($event)"
+            filterable
+            size="mini"
+            placeholder="Account">
+        <el-option
+                v-for="item in options"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value">
+        </el-option>
+    </el-select>
 </template>
 
 <script>
-    import { ContainerMixin, ElementMixin } from 'vue-slicksort';
-    import { SlickList, SlickItem } from 'vue-slicksort';
-
-    const SortableList = {
-        mixins: [ContainerMixin],
-        template: `
-            <ul class="list">
-                <slot/>
-            </ul>`
-    };
-
-    const SortableItem = {
-        mixins: [ElementMixin],
-        props: ['item'],
-        template: `<li class="list-item">{{item}}</li>`
-    };
+    import {Select, Option} from 'element-ui';
 
     export default {
         name: 'AccountSelector',
-        components: {
-            SortableItem,
-            SortableList,
-            SlickList,
-            SlickItem
-        },
+        components: {'el-select': Select, 'el-option': Option},
+        props: {value: String, accountList: Array},
         data() {
             return {
-                items: this.$store.state.summary.accountIds
+                // items: this.$store.state.summary.accountIds
             }
         },
         computed: {
             accounts() {
-                return this.$store.state.summary.accountIds;
+                return this.accountList || this.$store.state.summary.accountIds;
             },
+            options() {
+                return this.accounts.map(acctId => {
+                    return {value: acctId, label: acctId};
+                });
+            }
+        },
+        methods: {
+            onChanged(ev) {
+                this.$emit('input', ev.target.value);
+            },
+            onSelectChanged(ev) {
+                this.$emit('input', ev);
+            }
         }
     }
 </script>
