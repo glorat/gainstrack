@@ -2,6 +2,7 @@
     <div>
         <div v-if="!$auth.loading">
             <button v-if="!$auth.isAuthenticated" @click="auth0login">Sign Up/Log in</button>
+            <button v-if="false" @click="auth0validate">Test</button>
         </div>
         <hr>
         <form @submit.prevent="login()" v-if="!authentication.username">
@@ -73,19 +74,24 @@
                 this.$auth.loginWithRedirect();
             },
             async auth0validate() {
-                const token = await this.$auth.getTokenSilently();
                 const notify = this.$notify;
-                this.loading = true;
-                const summary = await this.$store.dispatch('loginWithToken', token)
-                    .then(response => response.data)
-                    .catch(error => {
-                        notify.error(`Auth token rejected by server: ${error.response.data}`);
-                        this.$store.dispatch('logout');
-                    })
-                    .finally(() => this.loading = false);
-                if (summary.authentication.error) {
-                    notify.warning(summary.authentication.error);
+                try {
+                    const token = await this.$auth.getTokenSilently();
+                    this.loading = true;
+                    const summary = await this.$store.dispatch('loginWithToken', token)
+                        .then(response => response.data)
+                        .catch(error => {
+                            notify.error(`Auth token rejected by server: ${error.response.data}`);
+                            this.$store.dispatch('logout');
+                        })
+                        .finally(() => this.loading = false);
+                    if (summary.authentication.error) {
+                        notify.warning(summary.authentication.error);
+                    }
+                } catch (e) {
+                    notify.warning(`Not authenticated: ${e.error_description}`)
                 }
+
             }
         }
     }
