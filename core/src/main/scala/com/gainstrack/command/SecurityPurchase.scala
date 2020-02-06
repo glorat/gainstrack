@@ -9,6 +9,8 @@ case class SecurityPurchase(
                              price:Amount,
                              commission:Amount
                            ) extends AccountCommand {
+  // Only asset accounts. Liabilities is possible but a bit of a stretch
+  require(accountId.accountType == Assets)
 
   // Auto-gen the account name
   val cashAccountId = accountId.subAccount(price.ccy.symbol)
@@ -30,14 +32,16 @@ case class SecurityPurchase(
 
   def createRequiredAccounts(baseAcct:AccountCreation) : Seq[AccountCreation] = {
     require(baseAcct.accountId == accountId)
-    val cashAcct = baseAcct.copy(key = AccountKey(cashAccountId, price.ccy), options = AccountOptions())
-    val incomeAcct = baseAcct.copy(key = AccountKey(incomeAcctId, price.ccy), options = AccountOptions())
-    val expenseAcct = baseAcct.copy(key = AccountKey(expenseAcctId, price.ccy), options = AccountOptions())
+    require(baseAcct.options.multiAsset)
 
-    val expenseAcctBase = baseAcct.copy(key = AccountKey(accountId.convertType(Expenses), baseAcct.key.assetId ),
-      options = AccountOptions(multiAsset = true))
-    val incomeAcctBase = baseAcct.copy(key = AccountKey(accountId.convertType(Income), baseAcct.key.assetId ),
-      options = AccountOptions(multiAsset = true))
+    val expenseCcy = if (commission.number.isZero) baseAcct.key.assetId else commission.ccy;
+    val cashAcct = baseAcct.subAccount(price.ccy)
+    val incomeAcct = baseAcct.relatedSubAccount(Income, price.ccy)
+    val expenseAcct = baseAcct.relatedSubAccount(Expenses, expenseCcy)
+
+    val expenseAcctBase = baseAcct.defaultExpenseAccount
+    val incomeAcctBase = baseAcct.defaultIncomeAccount
+
     Seq(cashAcct, incomeAcct, expenseAcct, expenseAcctBase, incomeAcctBase)
   }
 

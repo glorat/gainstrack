@@ -1,20 +1,31 @@
 <template>
     <div>
-        <el-date-picker
-                v-model="c.date"
-                type="date"
-                value-format="yyyy-MM-dd"
-                size="mini"
-                :clearable="false"
-        >
-        </el-date-picker>
-        <account-selector v-model="c.accountId" :account-list="tradeableAccounts"></account-selector>
-        Purchase
-        <balance-editor v-model="c.change"></balance-editor>
-        Price
-        @<balance-editor v-model="c.price"></balance-editor>
-        Commission
-        c<balance-editor v-model="c.commission"></balance-editor>
+        <div>
+            <el-date-picker
+                    v-model="c.date"
+                    type="date"
+                    value-format="yyyy-MM-dd"
+                    size="mini"
+                    :clearable="false"
+            >
+            </el-date-picker>
+        </div>
+        <div>
+            <account-selector v-model="c.accountId" :account-list="tradeableAccounts"></account-selector>
+        </div>
+        <div>
+            Purchase
+            <balance-editor v-model="c.change"></balance-editor>
+        </div>
+        <div>
+            Price
+            <balance-editor v-model="c.price"></balance-editor>
+        </div>
+        <div>
+            Commission
+            <balance-editor v-model="c.commission"></balance-editor>
+        </div>
+
     </div>
 </template>
 
@@ -53,8 +64,8 @@
             },
             tradeableAccounts() {
                 const all = this.$store.state.summary.accounts;
-                const scope = all.filter(x => x.key.name.startsWith('Asset') && x.options.multiAsset);
-                return scope.map(x => x.key.name).sort();
+                const scope = all.filter(x => x.accountId.startsWith('Asset') && x.options.multiAsset);
+                return scope.map(x => x.accountId).sort();
             },
             toGainstrack() {
                 if (this.isValid) {
