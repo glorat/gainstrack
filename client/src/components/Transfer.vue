@@ -1,34 +1,110 @@
 <template>
     <div>
-        <input type="text" name="date" v-model="cmd.date" v-on:input="inputChanged()">
-        Transfer:
-        <input type="text" name="source" v-model="cmd.source" v-on:input="inputChanged()">
-        amount
-        <balance-editor v-model="cmd.sourceValue" v-on:input="inputChanged()"></balance-editor>
-        to
-        <input type="text" name="dest" v-model="cmd.dest" v-on:input="inputChanged()">
-        value
-        <balance-editor v-model="cmd.targetValue" v-on:input="inputChanged()"></balance-editor>
+        <div>
+            <el-date-picker
+                    v-model="c.date"
+                    type="date"
+                    value-format="yyyy-MM-dd"
+                    size="mini"
+                    :clearable="false"
+            >
+            </el-date-picker>
+        </div>
+        <div>
+            Transfer:
+            <account-selector v-model="c.accountId" v-on:input="accountIdChanged"></account-selector>
+        </div>
+        <div>
+            amount
+            <balance-editor v-model="c.change" v-on:input="inputChanged()"></balance-editor>
+        </div>
+        <div>
+            To
+            <account-selector v-model="c.otherAccount" v-on:input="otherAccountIdChanged" :account-list="transferableAccounts"></account-selector>
+        </div>
+        <div>
+            value
+            <balance-editor v-model="targetChange" v-on:input="inputChanged()"></balance-editor>
+        </div>
+
+
     </div>
 </template>
 
 <script>
     import BalanceEditor from './BalanceEditor.vue';
     import {CommandEditorMixin} from '../mixins/CommandEditorMixin';
+    import {DatePicker, Input, Option, Select, Switch} from 'element-ui';
+    import AccountSelector from './AccountSelector';
 
     export default {
         name: 'Transfer',
         props: {cmd: Object},
-        components: {BalanceEditor},
+        components: {
+            BalanceEditor,
+            AccountSelector,
+            'el-date-picker': DatePicker,
+            'el-select': Select,
+            'el-option': Option,
+            'el-switch': Switch,
+            'el-input': Input,
+        },
         mixins: [CommandEditorMixin],
-        computed: {
-            toGainstrack() {
-                let baseStr = `${this.cmd.date} tfr ${this.cmd.source} ${this.cmd.dest} ${this.cmd.sourceValue.number} ${this.cmd.sourceValue.ccy}`;
-                if (this.cmd.sourceValue.number !== this.cmd.targetValue.number
-                    || this.cmd.sourceValue.ccy !== this.cmd.targetValue.ccy) {
-                    baseStr += ` ${this.cmd.targetValue.number} ${this.cmd.targetValue.ccy}`;
+        data() {
+            let c = {};
+            if (this.cmd) {
+                c = {...this.cmd}
+            }
+            c.date = c.date || new Date().toISOString().slice(0, 10);
+            c.change = c.change || {number: 0, ccy: ''};
+            c.price = c.price || {number: 0, ccy: ''};
+            c.otherAccount = c.otherAccount || '';
+            c.commission = c.commission || {number: 0, ccy: ''};
+            c.accountId = c.accountId || '';
+            return {c, targetChange: {number: 0, ccy: ''}};
+        },
+        methods: {
+            accountIdChanged() {
+                const all = this.$store.state.summary.accounts;
+                const acct = all.find(x => x.accountId === this.c.accountId);
+                if (acct) {
+                    this.c.change.ccy = acct.ccy;
                 }
-                return baseStr
+            },
+            otherAccountIdChanged() {
+                const all = this.$store.state.summary.accounts;
+                const acct = all.find(x => x.accountId === this.c.otherAccount);
+                if (acct) {
+                    this.targetChange.ccy = acct.ccy;
+                }
+            }
+        },
+        computed: {
+            transferableAccounts() {
+                const all = this.$store.state.summary.accounts;
+                // FIXME: We don't transfer to non-main accounts but this isn't flagged up anywhere yet
+                // const scope = all.filter(x => x.accountId.startsWith('Asset') && x.options.multiAsset);
+                return all.map(x => x.accountId).sort();
+            },
+            isValid() {
+                const c = this.c;
+                return c.accountId
+                    && c.otherAccount
+                    && c.change.number
+                    && this.targetChange.number
+                    && c.change.ccy
+                    && this.targetChange.ccy;
+            },
+            toGainstrack() {
+                if (this.isValid) {
+                    const c = this.c;
+                    let baseStr = `${c.date} tfr ${c.source} ${c.otherAccount} ${c.change.number} ${c.change.ccy}`;
+                    if (c.change.number !== this.targetChange.number
+                        || c.change.ccy !== this.targetChange.ccy) {
+                        baseStr += ` ${this.targetChange.number} ${this.targetChange.ccy}`;
+                    }
+                    return baseStr;
+                }
             }
         }
     }
