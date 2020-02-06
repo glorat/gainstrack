@@ -30,6 +30,7 @@ option "operating_currency" "GBP"
 2019-04-11 tfr Assets:Investment:HSBC:USD Assets:Investment:IBUSD:USD 34975.0 USD
 
 2019-04-01 open Assets:Investment:IBUSD USD
+  multiAsset:true
 2019-04-11 trade Assets:Investment:IBUSD 100.0 VWRD @85.79 USD C4.76 USD
 2019-04-11 trade Assets:Investment:IBUSD 230.0 VWRD @85.83 USD C10.84 USD
 2019-04-11 trade Assets:Investment:IBUSD 1000.0 IUAA @5.225 USD C2.93 USD

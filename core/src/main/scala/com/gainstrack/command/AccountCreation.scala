@@ -26,6 +26,28 @@ case class AccountCreation (
     copy(options = options.copy(tradingAccount = true, multiAsset=false, incomeAccount=Some(incomeAccountId), fundingAccount=Some(fundingAccountId)))
   }
 
+  def defaultExpenseAccount: AccountCreation = {
+    this.copy(key = AccountKey(accountId.convertType(Expenses), this.key.assetId),
+      options = AccountOptions(multiAsset = true))
+  }
+
+  def defaultIncomeAccount: AccountCreation = {
+    this.copy(key = AccountKey(accountId.convertType(Income), this.key.assetId),
+      options = AccountOptions(multiAsset = true))
+  }
+
+  def subAccount(assetId: AssetId): AccountCreation = {
+    require(this.options.multiAsset)
+    val accountId = this.accountId.subAccount(assetId.symbol)
+    this.copy(key = AccountKey(accountId, assetId), options = AccountOptions())
+  }
+
+  def relatedSubAccount(accountType: AccountType, assetId: AssetId) : AccountCreation = {
+    require(this.options.multiAsset)
+    val accountId = this.accountId.convertTypeWithSubAccount(accountType, assetId.symbol)
+    this.copy(key = AccountKey(accountId, assetId), options = AccountOptions())
+  }
+
   def toBeancount : Seq[BeancountLine] = {
     val open = s"${date} open ${key.name} ${key.assetId.symbol}"
     if (options.tradingAccount) {
@@ -39,14 +61,23 @@ case class AccountCreation (
   }
 
   override def toDTO: AccountCommandDTO = {
-    AccountCommandDTO(accountId = accountId, date = date)
+    AccountCommandDTO(accountId = accountId, date = date, balance = Some(Amount(0, key.assetId)), options = Some(options))
+  }
+
+  def toAccountDTO: Map[String, Object] = {
+    Map(
+      "date" -> date,
+      "accountId" -> key.name,
+      "ccy" -> key.assetId,
+      "options" -> options
+    )
   }
 
   def toGainstrack : Seq[String] = {
     s"${date} open ${key.name} ${key.assetId.symbol}" +: options.toGainstrack
   }
 
-  private def stringToBool(valueStr:String):Boolean = valueStr!="false"
+  private def stringToBool(valueStr: String): Boolean = valueStr != "false"
 
   //override def toString: String = s"${date} open ${key.name} ${key.assetId.symbol}"
 

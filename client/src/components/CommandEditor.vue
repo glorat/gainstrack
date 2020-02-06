@@ -14,6 +14,9 @@
     <div v-else-if="type === 'fund'">
         <fund-command :cmd="cmd" v-on:input="inputChanged()" v-on:gainstrack-changed="gainstrackChanged($event)"></fund-command>
     </div>
+    <div v-else-if="type === 'open'">
+        <account-creation :cmd="cmd" v-on:input="inputChanged()" v-on:gainstrack-changed="gainstrackChanged($event)"></account-creation>
+    </div>
     <div v-else-if="type === 'C'">
         C
     </div>
@@ -28,10 +31,11 @@
     import BalanceStatement from './BalanceStatement';
     import FundCommand from './FundCommand';
     import UnitCommand from './UnitCommand';
+    import AccountCreation from './AccountCreation';
 
     export default {
         name: 'CommandEditor',
-        components: {UnitCommand, FundCommand, BalanceStatement, TradeEditor, Transfer},
+        components: {UnitCommand, FundCommand, BalanceStatement, TradeEditor, Transfer, AccountCreation},
         methods: {
             gainstrackChanged(str) {
                 this.$emit('gainstrack-changed', str);

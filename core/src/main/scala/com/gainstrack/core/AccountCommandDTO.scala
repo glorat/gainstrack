@@ -8,7 +8,8 @@ case class AccountCommandDTO(
                             balance: Option[Amount] = None,
                             price: Option[Amount] = None,
                             otherAccount: Option[AccountId] = None,
-                            commission: Option[Amount] = None
+                            commission: Option[Amount] = None,
+                            options: Option[Object] = None,
                             ) {
 
 }

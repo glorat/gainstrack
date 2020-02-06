@@ -7,7 +7,7 @@ import com.gainstrack.core.{AccountId, AssetId}
 
 case class StateSummaryDTO(
                             accountIds:Seq[AccountId],
-                            accounts:Seq[AccountCreation],
+                            accounts:Seq[Object],
                             ccys:Seq[AssetId],
                             conversion:String,
                             latestDate: LocalDate,
