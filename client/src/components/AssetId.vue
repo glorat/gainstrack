@@ -6,7 +6,7 @@
             allow-create
             default-first-option
             size="mini"
-            placeholder="Asset">
+            placeholder="">
         <el-option
                 v-for="item in options"
                 :key="item.value"
