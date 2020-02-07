@@ -12,7 +12,7 @@
         </div>
         <div>
             Fund:
-            <account-selector v-model="c.accountId" v-on:input="accountIdChanged"></account-selector>
+            <account-selector v-model="c.accountId" v-on:input="accountIdChanged" :account-list="fundableAccounts"></account-selector>
         </div>
         <div>
             Amount
@@ -58,8 +58,15 @@
         },
         methods: {
             accountIdChanged() {
+                // const all = this.$store.state.summary.accounts;
+                // const acct = all.find(x => x.accountId === this.c.accountId);
+                // if (acct) {
+                //     this.c.change.ccy = acct.ccy;
+                // }
+            },
+            otherAccountChanged() {
                 const all = this.$store.state.summary.accounts;
-                const acct = all.find(x => x.accountId === this.c.accountId);
+                const acct = all.find(x => x.accountId === this.c.otherAccount);
                 if (acct) {
                     this.c.change.ccy = acct.ccy;
                 }
@@ -70,6 +77,12 @@
                 const all = this.$store.state.summary.accounts;
                 const acct = all.find(x => x.accountId === this.c.accountId);
                 return acct;
+            },
+            fundableAccounts() {
+                const all = this.$store.state.summary.accounts;
+                const acctMatch = /^(Assets|Liabilities)/;
+                const scope = all.filter(x => acctMatch.test(x.accountId) && !x.options.generatedAccount);
+                return scope.map(x => x.accountId).sort();
             },
             defaultFundingAccount() {
                 const acct = this.mainAccount;
