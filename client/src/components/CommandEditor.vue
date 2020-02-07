@@ -21,7 +21,7 @@
         C
     </div>
     <div v-else>
-        Widget of type {{ type }} has payload {{cmd}}
+        Editor for {{type}} is under construction
     </div>
 </template>
 
