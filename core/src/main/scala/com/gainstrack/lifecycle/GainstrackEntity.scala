@@ -51,7 +51,7 @@ class GainstrackEntity extends AggregateRoot {
 
   def source(cmds: Seq[AccountCommand]): Unit = {
     val origCmds = getState.cmds
-    val adds = cmds.filter(!origCmds.contains(_)).map(_.toGainstrack)
+    val adds = cmds.filter(!origCmds.contains(_)).map(_.toGainstrack).filter(!_.isEmpty)
     val removes = origCmds.filter(!cmds.contains(_)).map(_.toGainstrack)
     val delta:GainstrackEntityDelta = GainstrackEntityDelta()
       .withAdds(adds)
