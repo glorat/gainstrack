@@ -47,7 +47,7 @@ class FirstStored extends FlatSpec with BeforeAndAfterAll {
   it should "combine base with anything" in {
 
     val e2 = GainstrackEntity.defaultBase(id2)
-    assert(e2.getState.cmdStrs.size == 3)
+    assert(e2.getState.cmdStrs.size == 2) // Global is empty
     e2.source(Source.fromResource("src.gainstrack"))
 
     assertSameEntity(e, e2)
