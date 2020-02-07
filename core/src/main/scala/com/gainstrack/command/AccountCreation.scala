@@ -28,24 +28,24 @@ case class AccountCreation (
 
   def defaultExpenseAccount: AccountCreation = {
     this.copy(key = AccountKey(accountId.convertType(Expenses), this.key.assetId),
-      options = AccountOptions(multiAsset = true))
+      options = AccountOptions(multiAsset = true, generatedAccount = true))
   }
 
   def defaultIncomeAccount: AccountCreation = {
     this.copy(key = AccountKey(accountId.convertType(Income), this.key.assetId),
-      options = AccountOptions(multiAsset = true))
+      options = AccountOptions(multiAsset = true, generatedAccount = true))
   }
 
   def subAccount(assetId: AssetId): AccountCreation = {
     require(this.options.multiAsset)
     val accountId = this.accountId.subAccount(assetId.symbol)
-    this.copy(key = AccountKey(accountId, assetId), options = AccountOptions())
+    this.copy(key = AccountKey(accountId, assetId), options = AccountOptions(generatedAccount = true))
   }
 
   def relatedSubAccount(accountType: AccountType, assetId: AssetId) : AccountCreation = {
     require(this.options.multiAsset)
     val accountId = this.accountId.convertTypeWithSubAccount(accountType, assetId.symbol)
-    this.copy(key = AccountKey(accountId, assetId), options = AccountOptions())
+    this.copy(key = AccountKey(accountId, assetId), options = AccountOptions(generatedAccount = true))
   }
 
   def toBeancount : Seq[BeancountLine] = {

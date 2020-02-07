@@ -93,13 +93,13 @@ case class UnitTrustBalance(
   def createRequiredAccounts(baseAcct:AccountCreation) : Seq[AccountCreation] = {
     require(baseAcct.accountId == accountId)
     require(baseAcct.options.multiAsset, s"Base account for unit trust ${baseAcct.accountId} is not multi-asset")
-    val cashAcct = baseAcct.copy(key = AccountKey(cashAccountId, price.ccy), options = baseAcct.options.copy(multiAsset = false))
-    val incomeAcct = baseAcct.copy(key = AccountKey(incomeAccountId, price.ccy), options = baseAcct.options.copy(multiAsset = false))
-    val expenseAcct = baseAcct.copy(key = AccountKey(expenseAccountId, price.ccy), options = baseAcct.options.copy(multiAsset = false))
+    val cashAcct = baseAcct.copy(key = AccountKey(cashAccountId, price.ccy), options = baseAcct.options.copy(multiAsset = false, generatedAccount = true))
+    val incomeAcct = baseAcct.copy(key = AccountKey(incomeAccountId, price.ccy), options = baseAcct.options.copy(multiAsset = false, generatedAccount = true))
+    val expenseAcct = baseAcct.copy(key = AccountKey(expenseAccountId, price.ccy), options = baseAcct.options.copy(multiAsset = false, generatedAccount = true))
     val expenseAcctBase = baseAcct.copy(key = AccountKey(accountId.convertType(Expenses), baseAcct.key.assetId ),
-      options = AccountOptions(multiAsset = true))
+      options = AccountOptions(multiAsset = true, generatedAccount = true))
     val incomeAcctBase = baseAcct.copy(key = AccountKey(accountId.convertType(Income), baseAcct.key.assetId ),
-      options = AccountOptions(multiAsset = true))
+      options = AccountOptions(multiAsset = true, generatedAccount = true))
     Seq(cashAcct, incomeAcct, expenseAcct, expenseAcctBase, incomeAcctBase)
   }
 

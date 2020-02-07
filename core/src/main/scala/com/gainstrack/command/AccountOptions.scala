@@ -10,6 +10,7 @@ case class AccountOptions (
                           description:String = "",
                           multiAsset:Boolean=false,
                           automaticReinvestment:Boolean=false,
+                          generatedAccount:Boolean = false,
                           assetNonStdScu:Option[Int] = None,
                           hidden:Boolean = false,
                           placeholder:Boolean = false

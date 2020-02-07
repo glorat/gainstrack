@@ -7,7 +7,7 @@ import net.glorat.cqrs.{AggregateRootState, DomainEvent}
 
 object AccountState {
   def defaultRoot(baseCcy:AssetId):AccountCreation = {
-    AccountCreation(MinDate, AccountKey("", baseCcy), AccountOptions(placeholder = true))
+    AccountCreation(MinDate, AccountKey("", baseCcy), AccountOptions(placeholder = true, generatedAccount = true))
   }
 
   def apply() : AccountState = AccountState(Set())
@@ -113,8 +113,7 @@ case class AccountState(accounts:Set[AccountCreation], baseCurrency:AssetId = As
     }
     if (!accounts.exists(x => x.name == e.securityAccountId)) {
       // Auto vivify sub-accounts of securities account
-      val newAcct = AccountCreation(baseAcct.date, AccountKey(e.securityAccountId, e.security.ccy))
-        .enableTrading(e.incomeAcctId, e.accountId)
+      val newAcct = baseAcct.subAccount(e.security.ccy)
       ret=ret.copy(accounts = ret.accounts + newAcct)
     }
     ret
@@ -130,8 +129,7 @@ case class AccountState(accounts:Set[AccountCreation], baseCurrency:AssetId = As
     }
     if (!accounts.exists(x => x.name == e.securityAccountId)) {
       // Auto vivify sub-accounts of securities account
-      val newAcct = AccountCreation(baseAcct.date, AccountKey(e.securityAccountId, e.security.ccy))
-        .enableTrading(e.incomeAccountId, e.accountId)
+      val newAcct = baseAcct.subAccount(e.security.ccy)
       ret=ret.copy(accounts = ret.accounts + newAcct)
     }
     ret
@@ -170,7 +168,7 @@ case class AccountState(accounts:Set[AccountCreation], baseCurrency:AssetId = As
     if (parentAccountOpt.isDefined) {
       val parentAccount = parentAccountOpt.get
       require(parentAccount.options.multiAsset, s"Attempting to transfer to ${parentAccount.accountId} is not multi-asset so cannot handle ${acctId.shortName}")
-      val newAcct = parentAccount.copy(key = AccountKey(acctId, AssetId(acctId.shortName)), options = AccountOptions())
+      val newAcct = parentAccount.subAccount(AssetId(acctId.shortName))
       copy(accounts = this.accounts + newAcct)
     }
     else {
