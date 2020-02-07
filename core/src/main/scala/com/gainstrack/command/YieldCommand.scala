@@ -18,10 +18,10 @@ case class YieldCommand(date:LocalDate, accountId:AccountId, asset:Option[AssetI
 
   def createRequiredAccounts(baseAcct:AccountCreation) : Seq[AccountCreation] = {
     require(baseAcct.accountId == accountId)
-    val incomeAcct = baseAcct.copy(key = AccountKey(incomeAccountId, value.ccy), options = AccountOptions())
+    val incomeAcct = baseAcct.copy(key = AccountKey(incomeAccountId, value.ccy), options = AccountOptions(generatedAccount = true))
     if (baseAcct.options.multiAsset) {
       // Ensure our parent can receive the yield
-      val targetAccount = baseAcct.copy(key = AccountKey(accountId.subAccount(value.ccy.symbol), value.ccy), options = AccountOptions())
+      val targetAccount = baseAcct.copy(key = AccountKey(accountId.subAccount(value.ccy.symbol), value.ccy), options = AccountOptions(generatedAccount = true))
       Seq(incomeAcct, targetAccount)
     }
     else {
