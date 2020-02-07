@@ -75,9 +75,9 @@
                 const acct = this.mainAccount;
                 if (acct) {
                     return acct.options.fundingAccount;
-                    // this.c.change.ccy = acct.ccy;
+                } else {
+                    return 'Equity:Opening';
                 }
-                // TODO: Consider else Equity:Opening
             },
             isValid() {
                 const c = this.c;

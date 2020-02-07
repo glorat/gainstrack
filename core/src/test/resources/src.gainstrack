@@ -3,7 +3,7 @@ option "operating_currency" "GBP"
 2000-01-01 open Assets:Bank:HSBCUK GBP
 
 2000-01-01 open Assets:Bank:Nationwide GBP
-2014-01-04 adj Assets:Bank:Nationwide 25613.71 GBP Equity:Opening
+2014-01-04 fund Assets:Bank:Nationwide 25613.71 GBP
 2019-04-01 adj Assets:Bank:Nationwide 134703.49 GBP Equity:Opening
 2019-04-11 tfr Assets:Bank:Nationwide Assets:Bank:HSBCUK 19000.0 GBP
 

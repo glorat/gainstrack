@@ -16,7 +16,7 @@ case class FundCommand(date:LocalDate, accountId:AccountId, balance:Amount, sour
     val targetAccount = accts.find(_.accountId == accountId).get
 
     val sourceAccountId = sourceAccountIdOpt.getOrElse(
-      targetAccount.options.fundingAccount.getOrElse(throw new IllegalStateException(s"Cannot fund ${targetAccount} without a fundingAccount option specified in its creation"))
+      targetAccount.options.fundingAccount.getOrElse(FundCommand.DEFAULT_FUND_ACCOUNT)
     )
 
     Transfer(sourceAccountId, accountId, date, balance, balance, description).toTransfers(accts)
@@ -38,6 +38,7 @@ case class FundCommand(date:LocalDate, accountId:AccountId, balance:Amount, sour
 }
 
 object FundCommand extends CommandParser {
+  val DEFAULT_FUND_ACCOUNT = AccountId("Equity:Opening")
 
   import Patterns._
   val prefix: String = "fund"
