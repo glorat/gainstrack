@@ -21,7 +21,7 @@ case class CommodityOptions (
     key match {
       case "name" => Some(name)
       case "tags" => ???
-      case "ticker" => Some(ticker)
+      case "ticker" => if (ticker.isEmpty) None else Some(ticker)
       case x => options.get(x)
     }
   }
