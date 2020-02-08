@@ -1,3 +1,4 @@
+import com.gainstrack.quotes.av.SyncUp
 import org.eclipse.jetty.server.Server
 import org.eclipse.jetty.servlet.{DefaultServlet, ServletContextHandler}
 import org.eclipse.jetty.webapp.WebAppContext
@@ -19,6 +20,8 @@ object JettyLauncher { // this is my entry object as specified in sbt project de
 
     server.setHandler(context)
 
+    scheduleAVDownload
+
     server.start
     server.join
   }
@@ -35,5 +38,22 @@ object JettyLauncher { // this is my entry object as specified in sbt project de
     val interp = new TimeSeriesInterpolator
     val timeSeries2: SortedColumnMap[LocalDate, Double] = SortedColumnMap()
     interp.interpValueDouble(timeSeries2, today())
+  }
+
+  private def scheduleAVDownload() = {
+    import java.util.concurrent.Executors
+    import java.util.concurrent.TimeUnit._
+
+    val scheduler = Executors.newScheduledThreadPool(1)
+
+    val quoteSyncThread = new Runnable() {
+      override def run(): Unit = {
+        SyncUp.main(Seq().toArray)
+      }
+    }
+
+    val sixHours = 6*60*60
+    val beeperHandle = scheduler.scheduleAtFixedRate(quoteSyncThread, 10, sixHours, SECONDS)
+
   }
 }

@@ -1,6 +1,8 @@
 package com.gainstrack.quotes.av
 
+import java.nio.file.attribute.FileTime
 import java.nio.file.{Files, Paths}
+import java.time.{Duration, Instant}
 
 import com.gainstrack.core._
 import com.gainstrack.report.SingleFXConversion
@@ -55,7 +57,9 @@ object SyncUp {
 
     val path = Paths.get(outFile)
     val exists = Files.exists(path)
-    if (!exists || forceDownload) {
+    val now = Instant.now
+    val lastModified:Instant = if (exists) Files.getLastModifiedTime(path).toInstant else now.plus(Duration.ofDays(100))
+    if (!exists || lastModified.plus(Duration.ofHours(12)).isBefore(Instant.now)) {
       println(cmd)
       val result = cmd !!
 
