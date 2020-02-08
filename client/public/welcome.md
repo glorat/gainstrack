@@ -15,7 +15,21 @@ For online use
 - Use the editors to supply your information
 - Export locally if desired
 
+### Errata
+#### Feb'20
+- The login facility is still work in progress but can be tried. Your data will be saved fine but page refreshes and session timeouts are handled poorly
+#### Dec'19
+- P&L Explain may pull in real historic quotes from external data sources but other reports do not.
+- Income/Expenses/Liabilities are counterintuitively affected by future market prices, rather than retaining their original cost basis
+#### Nov'19
+- Liabilities are not supported in reports yet
+
+
 ### Release notes
+#### v0.5.0
+8 February
+- Rudimentary UI for updating your data without the text entry
+
 #### v0.4.0
 1 February
 - Much improved P&L Explain reporting
@@ -32,11 +46,3 @@ For online use
 - Improvements to base currency conversion in reports such as P&L Explain and IRR
 - P&L explain automatically reports over a range of typical time periods - very cool
 
-### Errata
-#### Feb'20
-- The login facility is still work in progress but can be tried
-#### Dec'19
-- P&L Explain may pull in real historic quotes from external data sources but other reports do not.
-- Income/Expenses/Liabilities are counterintuitively affected by future market prices, rather than retaining their original cost basis
-#### Nov'19
-- Liabilities are not supported in reports yet
