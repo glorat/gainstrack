@@ -11,10 +11,10 @@
             <td>
                 {{ asset.asset }}</td>
             <td>
-                <el-input type="text" v-model="asset.options.ticker"></el-input>
+                <el-input type="text" v-model="asset.options.ticker" v-on:input="assetTouched(asset)"></el-input>
             </td>
             <td>
-                <el-input type="text" v-model="asset.options.proxy"></el-input>
+                <el-input type="text" v-model="asset.options.proxy" v-on:input="assetTouched(asset)"></el-input>
             </td>
             <td width="250px">
                 <el-select size="mini" v-model="asset.options.tags" v-on:input="assetTouched(asset)" multiple
@@ -85,7 +85,6 @@
             },
             assetSave(asset) {
                 const str = this.toGainstrack(asset);
-                alert(str);
                 axios.post('/api/post/asset', {str})
                     .then(response => {
                         this.$notify.success(response.data);
