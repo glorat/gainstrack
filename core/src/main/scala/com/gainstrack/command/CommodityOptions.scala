@@ -17,6 +17,15 @@ case class CommodityOptions (
       ("tags" -> tags.toSeq)
   }
 
+  def get(key: String): Option[String] = {
+    key match {
+      case "name" => Some(name)
+      case "tags" => ???
+      case "ticker" => Some(ticker)
+      case x => options.get(x)
+    }
+  }
+
   def withOption(key: String, valueStr: String): CommodityOptions = {
     key match {
       case "name" => copy(name = valueStr)
