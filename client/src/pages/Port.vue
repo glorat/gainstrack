@@ -40,7 +40,7 @@
                     const reader = new FileReader();
                     reader.onload = () => {
                         const text = reader.result;
-                        axios.put('/api/source/', {source: text, filePath: '', entryHash: '', sha256sum: ''})
+                        axios.post('/api/post/source', {source: text, filePath: '', entryHash: '', sha256sum: ''})
                             .then(response => {
                                 store.dispatch('parseState', response.data);
                                 if (response.data.errors.length > 0) {
