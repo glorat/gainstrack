@@ -1,11 +1,8 @@
 package com.gainstrack.report
 
-import com.gainstrack.command.CommodityCommand
+import com.gainstrack.command.{AccountCreation, CommandNeedsAccounts, CommodityCommand, SecurityPurchase, UnitTrustBalance}
 import com.gainstrack.core.AssetId
 import net.glorat.cqrs.{AggregateRootState, DomainEvent}
-
-import scala.collection.SetLike
-
 
 case class AssetState(
                        allAssets: Map[AssetId, CommodityCommand] = Map(),
@@ -29,7 +26,32 @@ case class AssetState(
   override def handle(e: DomainEvent): AssetState = {
     e match {
       case c: CommodityCommand => handle(c)
+      case c: AccountCreation => handle(c)
+      case c: SecurityPurchase => handle(c)
+      case c: UnitTrustBalance => handle(c)
       case _ => this
+    }
+  }
+
+  def handle(e:AccountCreation): AssetState = {
+    handleDefault(e.key.assetId)
+  }
+
+  def handle(e:SecurityPurchase): AssetState = {
+    handleDefault(e.security.ccy)
+  }
+
+  def handle(e:UnitTrustBalance): AssetState = {
+    handleDefault(e.security.ccy)
+  }
+
+  private def handleDefault(assetId: AssetId): AssetState = {
+    if (allAssets.contains(assetId)) {
+      this // Already have something, do not overwrite
+    }
+    else {
+      // Put in a placeholder
+      this.copy(allAssets = allAssets.updated(assetId, CommodityCommand(assetId)))
     }
   }
 

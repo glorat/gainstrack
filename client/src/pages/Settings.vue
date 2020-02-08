@@ -1,10 +1,6 @@
 <template>
     <div>
         <div>
-            <h4>Reporting currency</h4>
-            TODO
-        </div>
-        <div>
             <h4>Asset configuration</h4>
             <assets-editor></assets-editor>
         </div>
@@ -16,7 +12,9 @@
     import AssetsEditor from '../components/AssetsEditor';
     export default {
         name: 'Settings',
-        components: {AssetsEditor, AssetId}
+        components: {AssetsEditor, AssetId},
+        computed: {
+        }
     }
 </script>
 
