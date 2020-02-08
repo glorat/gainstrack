@@ -43,7 +43,7 @@ case class GainstrackGenerator(originalCommands:Seq[AccountCommand])  {
     finalCommands.foldLeft(AssetState())(_.handle(_))
   implicit val priceFXConverter = priceState.priceFxConverter
   implicit val singleFXConversion = SingleFXConversion.generate(acctState.baseCurrency)(priceFXConverter, assetChainMap)
-  val fxMapper = new FXMapperGenerator(assetState).fxMapper
+  val fxMapper: Map[AssetId, AssetId] = new FXMapperGenerator(assetState).fxMapper
   val latestDate:LocalDate = finalCommands.maxBy(_.date).date
 
   val endTime = Instant.now
@@ -65,6 +65,23 @@ case class GainstrackGenerator(originalCommands:Seq[AccountCommand])  {
   def removeCommand(cmd:AccountCommand): GainstrackGenerator = {
     require(originalCommands.contains(cmd), "command being removed doesn't exist")
     GainstrackGenerator(originalCommands.filterNot(_ == cmd))
+  }
+
+  /** Replaces any existing CommodityCommand referring to the asset with this */
+  def addAssetCommand(cmd: CommodityCommand): GainstrackGenerator = {
+    val assetId = cmd.asset
+    // Remove existing matching commodities
+    val part1 = originalCommands.filter(_ match {
+      case c: CommodityCommand if c.asset == assetId => false
+      case _ => true
+    })
+    // Add it
+    val part2 = part1 :+ cmd
+    // TODO: Should sorting be applied here just in case?
+    // Normally parser would ensure sorted commands, although here, unsorted
+    // CommodityCommand obviously doesn't matter
+    GainstrackGenerator(part2)
+
   }
 
   case object GainstrackTemplate extends AccountCommand {

@@ -1,7 +1,8 @@
 package com.gainstrack.lifecycle
 
-import com.gainstrack.command.GainstrackParser
+import com.gainstrack.command.{CommodityCommand, GainstrackParser}
 import com.gainstrack.core._
+import com.gainstrack.report.GainstrackGenerator
 import net.glorat.cqrs._
 
 import scala.io.BufferedSource
@@ -63,12 +64,14 @@ class GainstrackEntity extends AggregateRoot {
 }
 
 case class GainstrackEntityState(id: GUID, cmdStrs: Seq[Seq[String]]) extends AggregateRootState {
-  new GainstrackParser
-  def cmds = {
-    val parser = new GainstrackParser
+  private val parser = new GainstrackParser
+
+  lazy val cmds: Seq[AccountCommand] = {
     parser.parseLines(cmdStrs.toSeq.flatten)
     parser.getCommands
   }
+
+  lazy val sourceMap : AccountCommand=>Int = parser.lineFor(_)
 
   private def addCommand(cmd:Seq[String]) : GainstrackEntityState = {
     copy( cmdStrs = (cmdStrs :+ cmd))

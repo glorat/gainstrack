@@ -54,6 +54,7 @@
             allPages: {
                 'balance_sheet': ['Balance Sheet', 'g b'],
                 'prices': ['Prices', 'g c'],
+                'settings': ['Settings', ''],
                 'editor': ['Editor', 'g e'],
                 'port': ['Import/Export', ''],
                 'history': ['History', ''],
@@ -79,7 +80,7 @@
                 ['command'],
                 ['balance_sheet', 'income_statement', 'journal'],
                 ['irr', 'aa', 'pnlexplain'],
-                ['prices'],
+                ['prices', 'settings'],
                 ['port', 'editor', 'history'],
                 ['help', 'faq']
             ]

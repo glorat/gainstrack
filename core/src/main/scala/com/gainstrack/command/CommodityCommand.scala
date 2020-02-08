@@ -26,13 +26,14 @@ case class CommodityCommand(date: LocalDate, asset:AssetId, options:CommodityOpt
   }
 
   override def toDTO: AccountCommandDTO = {
-    AccountCommandDTO(accountId = AccountId.root, date = date, asset = Some(asset))
+    AccountCommandDTO(accountId = AccountId.root, date = date, asset = Some(asset), options = Some(options.toDTO))
   }
 }
 
 object CommodityCommand extends CommandParser {
   import Patterns._
   val prefix: String = "commodity"
+  val DEFAULT_DATE = parseDate("1900-01-01")
 
   private val Comm = s"${datePattern} ${prefix} $assetPattern".r
 
@@ -41,5 +42,9 @@ object CommodityCommand extends CommandParser {
       case Comm(date, asset) =>
         CommodityCommand(parseDate(date), AssetId(asset), CommodityOptions())
     }
+  }
+
+  def apply(asset:AssetId) : CommodityCommand = {
+    CommodityCommand(DEFAULT_DATE, asset, CommodityOptions())
   }
 }

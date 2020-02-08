@@ -48,7 +48,7 @@
             editorSave() {
                 this.$store.commit('gainstrackText', this.info.source);
                 const notify = this.$notify;
-                axios.put('/api/source/', {source: this.info.source, filePath: '', entryHash: '', sha256sum: ''})
+                axios.post('/api/post/source', {source: this.info.source, filePath: '', entryHash: '', sha256sum: ''})
                     .then(response => {
                         this.$store.dispatch('parseState', response.data);
                         if (response.data.errors.length > 0) {

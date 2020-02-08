@@ -42,39 +42,6 @@ class ApiController (implicit val ec :ExecutionContext)
 
   protected override def transformRequestBody(body: JValue): JValue = body.camelizeKeys
 
-  put("/source/") {
-    val parser = new GainstrackParser
-    try {
-      val body = parsedBody.extract[ApiSourceRequest]
-
-      val realFile = "real"
-      parser.parseString(body.source)
-      val orderedCmds = parser.getCommands
-      val bg = new GainstrackGenerator(orderedCmds)
-      val res = bg.writeBeancountFile(s"/tmp/${realFile}.beancount", parser.lineFor(_))
-      if (res.length == 0) {
-        session("gainstrack") = bg
-        if (isAuthenticated) {
-          saveGainstrack(bg)
-        }
-
-        //val defaultFromDate = parseDate("1970-01-01")
-        ApiSourceResponse("???", true, Seq())
-      }
-      else {
-        ApiSourceResponse("???", false, res)
-      }
-
-    }
-    catch {
-      case e:Exception if parser.parserErrors.size>0 => {
-        ApiSourceResponse("???", false, parser.parserErrors)
-      }
-      case e:Exception => ApiSourceResponse("???", false, Seq(ParserMessage(e.getMessage, 0, "")))
-    }
-
-  }
-
   def tables(keys:Seq[String]) = {
     val bg = getGainstrack
     val conversionStrategy = session.get("conversion").map(_.toString).getOrElse("parent")
@@ -111,6 +78,11 @@ class ApiController (implicit val ec :ExecutionContext)
 
     priceState.toDTOWithQuotes(fxConvert)
 
+  }
+
+  get ("/assets") {
+    val bg = getGainstrack
+    bg.assetState.toDTO.sortBy(_.asset.map(_.symbol).getOrElse(""))
   }
 
   get("/irr/") {

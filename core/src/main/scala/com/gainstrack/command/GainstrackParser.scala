@@ -13,20 +13,17 @@ class GainstrackParser {
   private var errors:Seq[ParserMessage] = Seq()
   private var lineCount : Int = 0
   private var commandToLocation: Map[AccountCommand, Int] = Map()
+
   def getCommands : Seq[AccountCommand] = {
     val ret = Seq[AccountCommand]() ++ globalCommand ++ commands
-    val sorted = ret.zipWithIndex.sortBy(x => {
-      // Rely on orderValue first, and line number otherwise
-      x._1.toOrderValue*10000 + x._2
-    }).map(_._1)
-    // TODO: Check for dupes?
-
-    sorted
+    AccountCommand.sorted(ret)
   }
 
   def lineFor(cmd:AccountCommand) : Int = {
     commandToLocation.get(cmd).getOrElse(0)
   }
+
+  def sourceMap: AccountCommand => Int = this.lineFor(_)
 
   def parserErrors:Seq[ParserMessage] = errors
 
@@ -46,7 +43,7 @@ class GainstrackParser {
 
   import com.gainstrack.command.Patterns._
   private val prefix = raw"(\w+)"
-  private val AccountCommand =s"${datePattern} ${prefix}.*".r
+  private val AccountCommandPattern =s"${datePattern} ${prefix}.*".r
   private val OptionCommandPattern = s"""^option "${prefix}" "(.*)"""".r
   private val Metadata = s"\\s*([a-z][A-Za-z0-9_-]+):\\s*(.*)".r
   private val CommentLine = "[;#].*".r
@@ -58,7 +55,7 @@ class GainstrackParser {
     val line = fullLine.trim
 
     line match {
-      case AccountCommand(dateStr, prefix) => {
+      case AccountCommandPattern(dateStr, prefix) => {
         if (parsers.contains(prefix)) {
           try {
             val newCmd = parsers(prefix).parse(line)

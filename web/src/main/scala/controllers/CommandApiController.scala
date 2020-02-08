@@ -1,6 +1,6 @@
 package controllers
 
-import com.gainstrack.command.{GainstrackParser, ParserMessage}
+import com.gainstrack.command.{CommodityCommand, GainstrackParser, ParserMessage}
 import com.gainstrack.report.GainstrackGenerator
 import com.gainstrack.web.{AuthenticationSupport, GainstrackJsonSerializers, GainstrackSupport}
 import org.json4s.{Formats, JValue}
@@ -30,6 +30,7 @@ class CommandApiController(implicit val ec: ExecutionContext)
       val parser = new GainstrackParser
       parser.parseString(body.str)
       val bg2 = parser.getCommands.map(bg.addCommand)
+      // TODO: How about see if it actually generates??
       CommandApiResponse("ok")
     }
     catch {
@@ -40,34 +41,47 @@ class CommandApiController(implicit val ec: ExecutionContext)
 
   post ("/add") {
     val bg = getGainstrack
-
+    val parser = new GainstrackParser
     val body = parsedBody.extract[CommandApiRequest]
     try {
-      val parser = new GainstrackParser
       parser.parseString(body.str)
       val bg2 = parser.getCommands.foldLeft(bg)(_.addCommand(_))
-      // updateGainstrack(bg2)
-
-      val realFile = "real"
-      val res  = bg2.writeBeancountFile(s"/tmp/${realFile}.beancount", parser.lineFor(_))
-      if (res.length == 0) {
-        saveGainstrack(bg2)
-        CommandApiResponse("ok")
-      }
-      else {
-        // Giant assumption that adding one command generates only one error message
-        CommandApiResponse(res.head.message)
-      }
+      saveGainstrack(bg2)
+      CommandApiResponse("ok")
 
     }
     catch {
-      case e:Exception => InternalServerError(e.toString)
+      case e:Exception if parser.parserErrors.size>0 => {
+        ApiSourceResponse("???", false, parser.parserErrors)
+      }
+      case e:Exception => ApiSourceResponse("???", false, Seq(ParserMessage(e.getMessage, 0, "")))
+
     }
 
   }
 
+  post("/asset") {
+    val bg = getGainstrack
+    val parser = new GainstrackParser
+    val body = parsedBody.extract[CommandApiRequest]
+    try {
+      parser.parseString(body.str)
+      val cmds = parser.getCommands.collect {case c:CommodityCommand => c}
+      val bg2 = cmds.foldLeft(bg)(_.addAssetCommand(_))
+      saveGainstrack(bg2)
+      CommandApiResponse("ok")
+    }
+    catch {
+      case e:Exception if parser.parserErrors.size>0 => {
+        ApiSourceResponse("???", false, parser.parserErrors)
+      }
+      case e:Exception => ApiSourceResponse("???", false, Seq(ParserMessage(e.getMessage, 0, "")))
 
-  put("/source") {
+    }
+
+  }
+
+  post("/source") {
     val parser = new GainstrackParser
     try {
       val body = parsedBody.extract[ApiSourceRequest]
@@ -76,20 +90,8 @@ class CommandApiController(implicit val ec: ExecutionContext)
       parser.parseString(body.source)
       val orderedCmds = parser.getCommands
       val bg = new GainstrackGenerator(orderedCmds)
-      val res = bg.writeBeancountFile(s"/tmp/${realFile}.beancount", parser.lineFor(_))
-      if (res.length == 0) {
-        session("gainstrack") = bg
-        if (isAuthenticated) {
-          saveGainstrack(bg)
-        }
-
-        //val defaultFromDate = parseDate("1970-01-01")
-        ApiSourceResponse("???", true, Seq())
-      }
-      else {
-        ApiSourceResponse("???", false, res)
-      }
-
+      saveGainstrack(bg, Some(parser))
+      ApiSourceResponse("???", true, Seq())
     }
     catch {
       case e:Exception if parser.parserErrors.size>0 => {
