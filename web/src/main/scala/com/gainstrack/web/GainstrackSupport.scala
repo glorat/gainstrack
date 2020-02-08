@@ -94,22 +94,33 @@ trait GainstrackSupport {
     }
   }
 
-  def saveGainstrack(bg:GainstrackGenerator) = {
+  def saveGainstrack(bg:GainstrackGenerator, parser:Option[GainstrackParser] = None) = {
     if (isAuthenticated) {
       val id = user.uuid
       logger.info(s"Saving updates to ${user.username} ${id}")
       val ent = repo.getByIdOpt(id, new GainstrackEntity()).getOrElse(GainstrackEntity.defaultBase(id))
-
       ent.source(bg.originalCommands)
-      repo.save(ent, ent.getRevision)
-      session("gainstrack") = bg
 
-      //      val file = s"$UserDataDir/${user.id}.txt"
-//      bg.writeGainstrackFile(file)
-
+      // Perform final validations
+      val res = bg.writeBeancountFile(s"/tmp/${id}.beancount", parser.map(_.sourceMap).getOrElse(ent.getState.sourceMap))
+      if (res.length == 0) {
+        repo.save(ent, ent.getRevision)
+        session("gainstrack") = bg
+      }
+      else {
+        throw new Exception("Unable to save gainstrack due to errors")
+      }
     }
     else {
-      logger.error("Attempt to saveGainstrack while no logged in ignored")
+      // Perform final validations
+      val res = bg.writeBeancountFile(s"/tmp/anonymous.beancount", parser.map(_.sourceMap).getOrElse(_ => 0))
+      if (res.length == 0) {
+        session("gainstrack") = bg
+      }
+      else {
+        throw new Exception("Unable to save gainstrack due to errors")
+      }
+      logger.info("Anonymous saveGainstrack - in-memory only")
     }
 
   }

@@ -29,6 +29,6 @@ case class GlobalCommand(operatingCurrency:AssetId = AssetId("USD")) extends Acc
   }
 
   override def toDTO: AccountCommandDTO = {
-    AccountCommandDTO(accountId = AccountId.root, date = date)
+    AccountCommandDTO(accountId = AccountId.root, date = date, options = Some(this))
   }
 }

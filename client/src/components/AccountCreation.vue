@@ -50,7 +50,7 @@
     import AssetId from './AssetId';
 
     export default {
-        name: "AccountCreation",
+        name: 'AccountCreation',
         components: {
             AccountSelector,
             BalanceEditor,
@@ -63,9 +63,9 @@
         },
         mixins: [CommandEditorMixin],
         data() {
-            let c = {};
+            const c = {};
             if (this.cmd) {
-                throw "cmd prop not actually supported"
+                throw new Error('cmd prop not actually supported');
             }
             c.date = c.date || new Date().toISOString().slice(0, 10);
             c.ccy = ''; // Default to base currency

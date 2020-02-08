@@ -63,3 +63,12 @@ trait AccountCommand extends Command with DomainEvent  {
     throw new IllegalArgumentException(s"Option ${key} is not supported by ${this.getClass.getName}")
   }
 }
+
+object AccountCommand {
+  def sorted(cmds: Seq[AccountCommand]) : Seq[AccountCommand] = {
+    cmds.zipWithIndex.sortBy(x => {
+      // Rely on orderValue first, and line number otherwise
+      x._1.toOrderValue*10000 + x._2
+    }).map(_._1)
+  }
+}

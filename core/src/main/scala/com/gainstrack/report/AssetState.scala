@@ -13,6 +13,10 @@ case class AssetState(
                        tagToAssets: Map[String, Set[AssetId]] = Map())
   extends AggregateRootState {
 
+  def toDTO = {
+    allAssets.values.map(_.toDTO).toSeq
+  }
+
   /**
    * @return Assets that have all the tags
    */

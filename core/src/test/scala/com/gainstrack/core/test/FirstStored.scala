@@ -3,7 +3,8 @@ package com.gainstrack.core.test
 import java.io.BufferedReader
 import java.nio.file.{Files, Paths}
 
-import com.gainstrack.core.AccountKey
+import com.gainstrack.command.{CommodityCommand, CommodityOptions}
+import com.gainstrack.core._
 import com.gainstrack.lifecycle.{GainstrackEntity, GainstrackEntityDelta, GainstrackRepository, MyCommittedEvent}
 import com.gainstrack.report.GainstrackGenerator
 import org.scalatest.{BeforeAndAfterAll, FlatSpec}
@@ -78,6 +79,39 @@ class FirstStored extends FlatSpec with BeforeAndAfterAll {
     val cevs = repo.getAllCommits(idbad)
     assert (cevs.size == 0)
   }
+
+  it should "handle added CommodityCommand" in {
+    assert (repo.getAllCommits(id2).size == 3)
+
+    val e2 = repo.getById(id2, new GainstrackEntity())
+    val bg = new GainstrackGenerator(e2.getState.cmds)
+    val cmd = CommodityCommand(parseDate("1900-01-01"), AssetId("GOOG"), CommodityOptions())
+    val bg2 = bg.addAssetCommand(cmd)
+
+    assert(bg2.assetState.allAssets(AssetId("GOOG")).options.ticker == "")
+
+    e2.source(bg2.originalCommands)
+    repo.save(e2, e2.getRevision)
+
+    assert (repo.getAllCommits(id2).size == 4)
+  }
+
+  it should "handle replaced CommodityCommand" in {
+    assert (repo.getAllCommits(id2).size == 4)
+
+    val e2 = repo.getById(id2, new GainstrackEntity())
+    val bg = new GainstrackGenerator(e2.getState.cmds)
+    val cmd = CommodityCommand(parseDate("1900-01-01"), AssetId("GOOG"), CommodityOptions(ticker = "GOOG.NY"))
+    val bg2 = bg.addAssetCommand(cmd)
+    e2.source(bg2.originalCommands)
+
+    assert(bg2.assetState.allAssets(AssetId("GOOG")).options.ticker == "GOOG.NY")
+
+    repo.save(e2, e2.getRevision)
+
+    assert (repo.getAllCommits(id2).size == 5)
+  }
+
 
   def assertSameEntity(e1: GainstrackEntity, e2:GainstrackEntity) = {
 
