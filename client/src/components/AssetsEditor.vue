@@ -10,17 +10,24 @@
         <tr v-for="asset in assets" :key="asset.asset">
             <td>
                 {{ asset.asset }}</td>
-            <td><el-input type="text" v-model="asset.options.ticker"></el-input></td>
-            <td><el-input type="text" v-model="asset.options.proxy"></el-input></td>
-            <td>  <el-select v-model="asset.options.tags" v-on:input="assetTouched(asset)" multiple allow-create
-                             filterable default-first-option placeholder="Select">
-                <el-option
-                        v-for="item in allTags"
-                        :key="item"
-                        :label="item"
-                        :value="item">
-                </el-option>
-            </el-select></td>
+            <td>
+                <el-input type="text" v-model="asset.options.ticker"></el-input>
+            </td>
+            <td>
+                <el-input type="text" v-model="asset.options.proxy"></el-input>
+            </td>
+            <td width="250px">
+                <el-select size="mini" v-model="asset.options.tags" v-on:input="assetTouched(asset)" multiple
+                           allow-create
+                           filterable default-first-option placeholder="Select">
+                    <el-option
+                            v-for="item in allTags"
+                            :key="item"
+                            :label="item"
+                            :value="item">
+                    </el-option>
+                </el-select>
+            </td>
             <td>
                 <el-button type="info" size="mini" icon="el-icon-refresh" circle @click="assetReset(asset)" :disabled="!asset.dirty"></el-button>
                 <el-button type="success" size="mini" icon="el-icon-check" circle @click="assetSave(asset)" :disabled="!asset.dirty"></el-button>
@@ -105,5 +112,7 @@
 </script>
 
 <style scoped>
-
+    .el-select {
+        display: block;
+    }
 </style>
