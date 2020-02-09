@@ -4,9 +4,15 @@ import Vuex from 'vuex';
 
 Vue.use(Vuex);
 
+interface QuoteConfig {
+    avSymbol: string,
+    actualCcy: string,
+}
+
 interface MyState {
     count: number,
     summary: object,
+    quoteConfig: QuoteConfig[],
     balances: AccountBalances,
     parseState: object,
     gainstrackText: string
@@ -20,6 +26,7 @@ const initState: MyState = {
         ccys: [],
         authentication: {}
     },
+    quoteConfig: [],
     balances: {},
     parseState: {errors: []},
     gainstrackText: '',
@@ -36,6 +43,9 @@ export default new Vuex.Store({
             state.balances = {};
             state.gainstrackText = '';
             state.parseState = {errors: []};
+        },
+        reloadedQuotesConfig(state, data) {
+            state.quoteConfig = data;
         },
         balances(state, data: AccountBalances) {
             state.balances = data;
@@ -79,8 +89,11 @@ export default new Vuex.Store({
             return await this.dispatch('reload');
         },
         async reload(context) {
+            // TODO: These next two can run in parallel
             const response = await axios.get('/api/state/summary');
             await context.commit('reloaded', response.data);
+            const quotesConfig = await axios.get('/api/quotes/config');
+            await context.commit('reloadedQuotesConfig', quotesConfig.data)
             // Since components don't know to retrigger this if already on display, let's get it for them
             await context.dispatch('balances');
             return response;
