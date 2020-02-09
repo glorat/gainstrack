@@ -5,7 +5,7 @@ import java.time.format.DateTimeParseException
 
 import com.gainstrack.command.{AccountCreation, GainstrackParser, ParserMessage}
 import com.gainstrack.core._
-import com.gainstrack.quotes.av.Main
+import com.gainstrack.quotes.av.{Main, QuoteConfig}
 import com.gainstrack.report.{AccountInvestmentReport, BalanceReport, DailyBalance, FXChain, FXProxy, GainstrackGenerator, IrrSummary, PLExplain, PLExplainDTO, TimeSeries}
 import com.gainstrack.web.{AuthenticationSupport, BalanceTreeTable, GainstrackJsonSerializers, GainstrackSupport, StateSummaryDTO, TimingSupport}
 import org.json4s.{DefaultFormats, Formats, JValue}
@@ -357,6 +357,7 @@ class ApiController (implicit val ec :ExecutionContext)
   get("/history") {
     getHistory
   }
+
 /*
   error {
     case e: Throwable => {

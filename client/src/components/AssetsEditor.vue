@@ -11,10 +11,12 @@
             <td>
                 {{ asset.asset }}</td>
             <td>
-                <el-input type="text" v-model="asset.options.ticker" v-on:input="assetTouched(asset)"></el-input>
+                <el-autocomplete type="text" v-model="asset.options.ticker" v-on:input="assetTouched(asset)"
+                          :fetch-suggestions="tickerSearch"></el-autocomplete>
             </td>
             <td>
-                <el-input type="text" v-model="asset.options.proxy" v-on:input="assetTouched(asset)"></el-input>
+                <el-autocomplete type="text" v-model="asset.options.proxy" v-on:input="assetTouched(asset)"
+                                 :fetch-suggestions="tickerSearch"></el-autocomplete>
             </td>
             <td width="250px">
                 <el-select size="mini" v-model="asset.options.tags" v-on:input="assetTouched(asset)" multiple
@@ -40,7 +42,7 @@
 <script>
     import axios from 'axios';
     import {flatten, uniq, cloneDeep} from 'lodash';
-    import {Option, Select, Button, Input} from 'element-ui';
+    import {Option, Select, Button, Input, Autocomplete} from 'element-ui';
 
     export default {
         name: 'AssetsEditor',
@@ -49,6 +51,7 @@
             'el-option': Option,
             'el-button': Button,
             'el-input': Input,
+            'el-autocomplete': Autocomplete,
         },
         data() {
             return {
@@ -71,6 +74,16 @@
                 const idx = this.assets.indexOf(asset);
                 Object.assign(this.assets[idx], cloneDeep(orig));
                 this.$set(this.assets[idx], 'dirty', false);
+            },
+            tickerSearch(queryString, cb) {
+                let cfgs = this.$store.state.quoteConfig;
+                if (queryString) {
+                    cfgs = cfgs.filter(x => x.avSymbol.indexOf(queryString.toUpperCase()) > -1)
+                }
+                const elems = cfgs.map(cfg => { return {
+                    value: cfg.avSymbol
+                }});
+                cb(elems);
             },
             toGainstrack(asset) {
                 let str = `1900-01-01 commodity ${asset.asset}`;

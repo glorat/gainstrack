@@ -28,4 +28,5 @@ object QuoteConfig {
   // A shortcut implementation for now. One day, let's get a list of ISOs
   def allCcys = allConfigs.map(_.actualCcy).distinct.filter(_ != "USD")
 
+  val allConfigsWithCcy = allConfigs ++ allCcys.map(ccy => QuoteConfig(ccy, "USD", ccy))
 }
