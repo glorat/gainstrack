@@ -1,12 +1,18 @@
 package com.gainstrack.quotes.av
 
+import java.nio.file.{Files, Paths}
+
 import com.gainstrack.command.PriceObservation
 import com.gainstrack.core._
+import com.gainstrack.quotes.av.SyncUp.getClass
 import com.gainstrack.report.{AssetPair, FXConverter, PriceState, SingleFXConversion}
+import org.slf4j.LoggerFactory
 
 import scala.collection.SortedMap
 
 object AVStockParser {
+  val logger =  LoggerFactory.getLogger(getClass)
+
   type N = Double
 
   val x = 123
@@ -23,14 +29,18 @@ object AVStockParser {
   }
 
   def parseIntradayRefQuote(config: QuoteConfig)(implicit fractionalParser:FractionalParser): Option[N] = {
-    val symbol = config.symbol
+    val symbol = config.avSymbol
 
     try {
-      val intraday = parseSymbol(config.copy(symbol = s"intraday.$symbol"))
+      val intraday = parseSymbol(config.copy(avSymbol = s"intraday.$symbol"))
       Some(intraday.liveQuote)
     }
     catch {
-      case _: Exception => None
+      case e: IllegalArgumentException => None
+      case e: Exception => {
+        logger.error(s"Intraday ${symbol} failed with ${e.toString}")
+        None
+      }
     }
 
   }
@@ -42,37 +52,41 @@ object AVStockParser {
     }
     catch {
       case e: Exception => {
-        println(e.toString)
+        logger.error(s"Symbol ${cfg.avSymbol} failed with ${e.toString}")
         None
       }
     }
   }
 
   def parseSymbol(config: QuoteConfig)(implicit fractionalParser: FractionalParser):StockParseResult = {
-    val symbol = config.symbol
+    val symbol = config.avSymbol
+    val path = Paths.get(s"db/av/${symbol}.csv")
+    if (!Files.exists(path))
+      throw new IllegalArgumentException(s"${symbol} intraday file does not exist")
 
-    val assetId = AssetId(symbol)
     val src = scala.io.Source.fromFile(s"db/av/${symbol}.csv")
     val it1 = src.getLines()
     val headers = it1.next().split(",").map(_.trim)
     val dateIndex = headers.indexOf("timestamp")
-    require(dateIndex>=0, s"timestamp column not found for $symbol")
+    require(dateIndex >= 0, s"timestamp column not found for $symbol")
     val closeIndex = headers.indexOf("close")
-    require(closeIndex>=0, s"close column not found for $symbol")
+    require(closeIndex >= 0, s"close column not found for $symbol")
     val refPriceStr = it1.next().split(",").map(_.trim).apply(closeIndex)
-    val liveQuote:N = parseIntradayRefQuote(config).getOrElse(fractionalParser.parse(refPriceStr))
-    require(liveQuote != 0.0 , s"close for ${symbol} zero in ${refPriceStr} for line")
+    val liveQuote: N = parseIntradayRefQuote(config).getOrElse(fractionalParser.parse(refPriceStr))
+    require(liveQuote != 0.0, s"close for ${symbol} zero in ${refPriceStr} for line")
     val buildMap = SortedMap.newBuilder[LocalDate, N]
 
-    for (line<-src.getLines().drop(2)) {
+    for (line <- src.getLines().drop(2)) {
       val parts = line.split(",").map(_.trim)
-      val date = parseDate(parts(dateIndex))
+      val date = parseDate(parts(dateIndex).take(10))
       val value = fractionalParser.parse(parts(closeIndex))
-      buildMap+=(date -> value)
+      buildMap += (date -> value)
     }
-    val map:SortedMap[LocalDate, N] = buildMap.result()
+    val map: SortedMap[LocalDate, N] = buildMap.result()
     StockParseResult(series = map, liveQuote = liveQuote, config = config)
   }
+
+
 
 }
 
