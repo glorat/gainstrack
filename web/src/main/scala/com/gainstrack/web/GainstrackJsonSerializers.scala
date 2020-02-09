@@ -46,8 +46,7 @@ object LocalDateSerializer extends CustomSerializer[LocalDate](format => ({
   case JString(str) => LocalDate.parse(str)
 }, {
   case value: LocalDate  => {
-    val formatter = DateTimeFormatter.ofPattern("YYYY-MM-dd")
-    JString(formatter.format(value))
+    JString(value.format(DateTimeFormatter.ISO_DATE))
   }
 }
 ))

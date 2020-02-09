@@ -27,8 +27,9 @@ class QuotesController(implicit val ec :ExecutionContext)
   get("/ticker/:ticker") {
     val fx = ServerQuoteSource.db.priceFXConverter
     val ticker = params("ticker")
-    fx.data.get(AssetId(ticker)).map ( data => {
-      Map("x" -> data.ks, "y" -> data.vs, "name" -> ticker)
+    fx.data.get(AssetId(ticker))
+      .map ( data => {
+        Map("x" -> data.ks, "y" -> data.vs, "name" -> ticker)
     }).getOrElse(
       NotFound(s"${ticker} does not exist")
     )

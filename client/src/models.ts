@@ -22,3 +22,8 @@ export interface Balance {
     value: Fraction;
     ccy: string;
 }
+
+export interface QuoteConfig {
+    avSymbol: string,
+    actualCcy: string,
+}

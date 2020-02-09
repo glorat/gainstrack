@@ -1,13 +1,9 @@
 import axios from 'axios';
 import Vue from 'vue';
 import Vuex from 'vuex';
+import {QuoteConfig} from '@/models';
 
 Vue.use(Vuex);
-
-interface QuoteConfig {
-    avSymbol: string,
-    actualCcy: string,
-}
 
 interface MyState {
     count: number,
