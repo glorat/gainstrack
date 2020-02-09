@@ -2,6 +2,7 @@ package com.gainstrack.quotes.av
 
 import java.nio.file.attribute.FileTime
 import java.nio.file.{Files, Paths}
+import java.time.temporal.ChronoUnit
 import java.time.{Duration, Instant}
 
 import com.gainstrack.core._
@@ -42,7 +43,7 @@ object SyncUp {
     })
 
     QuoteConfig.allConfigs.foreach(cfg => {
-      val symbol = cfg.symbol
+      val symbol = cfg.avSymbol
       val outFile = s"db/av/$symbol.csv"
       val cmdDaily = s"""wget -O $outFile https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=$symbol&outputsize=full&datatype=csv&apikey=$apikey"""
       goGetIt(outFile, cmdDaily, forceDownload)
@@ -58,9 +59,10 @@ object SyncUp {
     val path = Paths.get(outFile)
     val exists = Files.exists(path)
     val now = Instant.now
+    val duration = Duration.ofHours(24)
     val lastModified:Instant = if (exists) Files.getLastModifiedTime(path).toInstant else now.plus(Duration.ofDays(100))
-    if (!exists || lastModified.plus(Duration.ofHours(12)).isBefore(Instant.now)) {
-      println(cmd)
+    if (!exists || lastModified.plus(duration).isBefore(Instant.now)) {
+      logger.info(cmd)
       val result = cmd !!
 
       if (throttleRequests) {
@@ -69,7 +71,8 @@ object SyncUp {
       }
     }
     else {
-      logger.warn(s"Skipping $outFile")
+      val delay = ChronoUnit.MINUTES.between(now, lastModified.plus(duration))/60.0
+      logger.info(s"Skipping $outFile for ${delay.formatted("%.1f")} hrs")
     }
 
     // Quick and dirty heuristic corruption check (e.g. throttle limit hit)
@@ -105,7 +108,7 @@ object SyncUp {
       .foreach(res => {
         val cfg = res.config
         val fixed = res.fixupLSE(cfg.domainCcy, AssetId(cfg.actualCcy), priceFXConverter)
-        QuoteStore.mergeQuotes(cfg.symbol, fixed.series)
+        QuoteStore.mergeQuotes(cfg.avSymbol, fixed.series)
       })
 
   }

@@ -1,6 +1,6 @@
 package com.gainstrack.quotes.av
 
-case class QuoteConfig(symbol:String, actualCcy:String, domainCcy:String)
+case class QuoteConfig(avSymbol:String, actualCcy:String, domainCcy:String)
 
 object QuoteConfig {
   val allConfigs:Seq[QuoteConfig] = Seq(

@@ -42,10 +42,10 @@ object Main {
     val finalState = QuoteConfig
       .allConfigs
       .foldLeft(data)((dataSoFar, cfg) => {
-        val series = QuoteStore.readQuotes(cfg.symbol)
+        val series = QuoteStore.readQuotes(cfg.avSymbol)
         val usdSeries = series.map(kv => kv._1 -> kv._2 * priceFXConverter.getFX(cfg.actualCcy, "USD", kv._1).get)
         val fastUsd = SortedColumnMap.from(usdSeries)
-        dataSoFar.updated(AssetId(cfg.symbol), fastUsd)
+        dataSoFar.updated(AssetId(cfg.avSymbol), fastUsd)
       })
 
     DbState(SingleFXConversion(finalState, AssetId("USD")))
