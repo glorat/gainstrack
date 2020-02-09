@@ -53,7 +53,8 @@
         private config: any = {
             allPages: {
                 'balance_sheet': ['Balance Sheet', 'g b'],
-                'prices': ['Prices', 'g c'],
+                'prices': ['Trade Prices', 'g c'],
+                'quotes': ['Market Quotes', ''],
                 'settings': ['Settings', ''],
                 'editor': ['Editor', 'g e'],
                 'port': ['Import/Export', ''],
@@ -80,7 +81,7 @@
                 ['command'],
                 ['balance_sheet', 'income_statement', 'journal'],
                 ['irr', 'aa', 'pnlexplain'],
-                ['prices', 'settings'],
+                ['prices', 'quotes', 'settings'],
                 ['port', 'editor', 'history'],
                 ['help', 'faq']
             ]
