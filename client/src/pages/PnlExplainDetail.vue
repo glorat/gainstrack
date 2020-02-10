@@ -1,4 +1,3 @@
-import numeral from "numeral";
 <template>
     <div class="block" v-if="explains.length>0">
         <h2>P&L Explain</h2>
@@ -11,11 +10,27 @@ import numeral from "numeral";
             <tbody>
             <tr>
                 <td>From Date</td>
-                <td class="datecell">{{ explainData.fromDate}}</td>
+                <td class="datecell">
+                    <el-datepicker :value="explainData.fromDate"
+                                   @input="fromDateChanged($event)"
+                                   type="date"
+                                   value-format="yyyy-MM-dd"
+                                   size="small"
+                                   :clearable="false">
+                    </el-datepicker>
+                </td>
             </tr>
             <tr>
                 <td>To Date</td>
-                <td class="datecell">{{ explainData.toDate}}</td>
+                <td class="datecell">
+                    <el-datepicker :value="explainData.toDate"
+                                   @input="toDateChanged($event)"
+                                   type="date"
+                                   value-format="yyyy-MM-dd"
+                                   size="small"
+                                   :clearable="false">
+                    </el-datepicker>
+                </td>
             </tr>
             <tr>
                 <td>Opening Networth</td>
@@ -123,10 +138,12 @@ import numeral from "numeral";
 
 <script>
     import axios from 'axios';
+    import {DatePicker} from 'element-ui';
 
     export default {
         name: 'PnlExplainDetail',
         props: ['fromDate', 'toDate'],
+        components: {'el-datepicker': DatePicker},
         computed: {
             explainData() {
                 return this.explains[0]
@@ -139,6 +156,21 @@ import numeral from "numeral";
         filters: {
             amount: (value) => value.toFixed(2)
         },
+        methods: {
+            fromDateChanged(ev) {
+                this.$router.push({name: 'pnldetail', params: {fromDate: ev, toDate: this.explainData.toDate}});
+            },
+            toDateChanged(ev) {
+                this.$router.push({name: 'pnldetail', params: {fromDate: this.explainData.fromDate, toDate: ev}});
+            },
+            refresh(args) {
+                axios.post('/api/pnlexplain', args)
+                    .then(response => {
+                        this.explains = response.data;
+                    })
+                    .catch(error => notify.error(error.response.statusText));
+            },
+        },
         mounted() {
             const notify = this.$notify;
 
@@ -146,18 +178,19 @@ import numeral from "numeral";
                 fromDate: this.fromDate,
                 toDate: this.toDate
             };
-
-            axios.post('/api/pnlexplain', args)
-                .then(response => {
-                    this.explains = response.data;
-                })
-                .catch(error => notify.error(error.response.statusText));
+            this.refresh(args);
         },
         data() {
             const self = this;
             return {
                 explains: [],
             }
+        },
+        beforeRouteUpdate(to, from, next) {
+            // react to route changes...
+            // don't forget to call next()
+            this.refresh(to.params);
+            next();
         },
     }
 </script>
