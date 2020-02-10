@@ -29,7 +29,8 @@ class ApiController (implicit val ec :ExecutionContext)
   protected implicit val jsonFormats: Formats = org.json4s.DefaultFormats ++ GainstrackJsonSerializers.all
 
   private def currentDate: LocalDate = {
-    dateOverride.getOrElse(getGainstrack.latestDate)
+    // TODO: Pull the clock from the user's profile timezone
+    dateOverride.getOrElse(LocalDate.now())
   }
 
   val defaultFromDate = parseDate("1900-01-01")
