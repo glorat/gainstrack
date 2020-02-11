@@ -3,7 +3,7 @@ package com.gainstrack.web
 import java.time.LocalDate
 
 import com.gainstrack.command.AccountCreation
-import com.gainstrack.core.{AccountId, AssetId}
+import com.gainstrack.core.{AccountCommandDTO, AccountId, AssetId}
 
 case class StateSummaryDTO(
                             accountIds:Seq[AccountId],
@@ -12,7 +12,8 @@ case class StateSummaryDTO(
                             conversion:String,
                             latestDate: LocalDate,
                             dateOverride:Option[LocalDate],
-                            authentication: AuthnSummary
+                            authentication: AuthnSummary,
+                            commands: Seq[AccountCommandDTO]
                           )
 
 case class AuthnSummary(
