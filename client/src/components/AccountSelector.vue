@@ -14,40 +14,46 @@
     </el-select>
 </template>
 
-<script>
+<script lang="ts">
+    import Vue from 'vue';
     import {Select, Option} from 'element-ui';
 
-    export default {
+    export default Vue.extend({
         name: 'AccountSelector',
         components: {'el-select': Select, 'el-option': Option},
-        props: {value: String, accountList: Array, placeholder: String},
+        props: {
+            value: String,
+            accountList: Array as () => string[],
+            placeholder: String
+        },
         data() {
             return {
                 // items: this.$store.state.summary.accountIds
-            }
+            };
         },
         computed: {
-            resolvedPlaceholder() {
-              return this.placeholder || 'Account';
+            resolvedPlaceholder(): string {
+                return this.placeholder || 'Account';
             },
-            accounts() {
+            accounts(): string[] {
                 return this.accountList || this.$store.state.summary.accountIds;
             },
-            options() {
+            options(): object {
                 return this.accounts.map(acctId => {
                     return {value: acctId, label: acctId};
                 });
+
             }
         },
         methods: {
-            onChanged(ev) {
+            onChanged(ev: any) {
                 this.$emit('input', ev.target.value);
             },
-            onSelectChanged(ev) {
+            onSelectChanged(ev: string) {
                 this.$emit('input', ev);
             }
         }
-    }
+    });
 </script>
 
 <style scoped>
