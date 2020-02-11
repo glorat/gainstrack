@@ -13,17 +13,28 @@ export interface AccountOptions {
     tradingAccount: boolean;
 }
 
-export interface Fraction {
-    n: bigint;
-    d: bigint;
-}
-
-export interface Balance {
-    value: Fraction;
-    ccy: string;
+export interface Amount {
+    number: number
+    ccy: string
 }
 
 export interface QuoteConfig {
-    avSymbol: string,
-    actualCcy: string,
+    avSymbol: string
+    actualCcy: string
+}
+
+export interface AccountDTO {
+    accountId: string
+    date: string
+    ccy: string
+}
+
+export interface AccountCommandDTO {
+    accountId: string
+    date: string
+    balance?: Amount
+    price?: Amount
+    otherAccount?: string
+    options?: object
+    commandType?: string
 }
