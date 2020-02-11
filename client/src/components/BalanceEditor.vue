@@ -5,10 +5,11 @@
     </span>
 </template>
 
-<script>
-    import AssetId from './AssetId';
+<script lang="ts">
+    import Vue from 'vue';
+    import AssetId from './AssetId.vue';
     import {Input} from 'element-ui';
-    export default {
+    export default Vue.extend({
         name: 'BalanceEditor',
         components: {
             AssetId,
@@ -16,11 +17,11 @@
         },
         props: {value: Object},
         methods: {
-            onChanged($event) {
+            onChanged($event: object) {
                 this.$emit('input', this.value);
             }
         }
-    }
+    })
 </script>
 
 <style scoped>

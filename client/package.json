@@ -1,6 +1,6 @@
 {
   "name": "Gainstrack",
-  "version": "0.5.2",
+  "version": "0.5.3",
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
@@ -29,6 +29,8 @@
   },
   "devDependencies": {
     "@types/chai": "^4.2.7",
+    "@types/lodash": "^4.14.149",
+    "@types/marked": "^0.7.2",
     "@types/mocha": "^5.2.4",
     "@types/numeral": "0.0.26",
     "@vue/cli-plugin-babel": "^4.1.2",

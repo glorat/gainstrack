@@ -38,3 +38,11 @@ export interface AccountCommandDTO {
     options?: object
     commandType?: string
 }
+
+export interface StateSummaryDTO {
+    accountIds: string[]
+    accounts: object[]
+    ccys: string[]
+    authentication: object
+    commands: AccountCommandDTO[]
+}

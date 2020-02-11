@@ -117,18 +117,15 @@
 <!--                <td class="num">{{ explainData.totalEquity.toFixed(2) }}</td>-->
 <!--            </tr>-->
             <tr>
-                <td class="subtitle">New Activity</td>
-                <td>Change</td>
-                <td>Profit</td>
+                <td colspan="4" class="subtitle">New Activity</td>
+                <td>P&L</td>
             </tr>
             <tr v-for="exp in explainData.newActivityByAccount">
-                <td>{{ exp.accountId }}</td>
+                <td colspan="4">{{ exp.accountId }}</td>
                 <td class="num">{{ exp.explain.toFixed(2) }}</td>
-                <td></td>
             </tr>
             <tr>
-                <td class="subtotal">New Activity Profit</td>
-                <td class="subtotal"></td>
+                <td class="subtotal" colspan="4">Total</td>
                 <td class="subtotal num">{{ explainData.newActivityPnl.toFixed(2) }}</td>
             </tr>
             </tbody>

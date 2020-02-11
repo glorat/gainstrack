@@ -3,21 +3,26 @@
     </div>
 </template>
 
-<script>
+<script lang="ts">
     import axios from 'axios';
     import marked from 'marked';
+    import Vue from 'vue';
 
-    export default {
+    interface MyData {
+        content: string
+    }
+
+    export default Vue.extend({
         name: 'Markdown',
         props: ['page'],
-        data() {
+        data(): MyData {
             return {
                 content: 'Loading...'
-            }
+            };
         },
         computed: {
-            rendered() {
-                return marked(this.content)
+            rendered(): string {
+                return marked(this.content);
             }
         },
         mounted() {
@@ -25,22 +30,22 @@
             this.loadPage(page);
         },
         methods: {
-          loadPage(page) {
-              axios.get('/' + page)
-                  .then(response => {
-                      this.content = response.data;
-                  })
-                  .catch(error => this.content = page + ':' + error.message);
-          }
+            loadPage(page: string) {
+                axios.get('/' + page)
+                    .then(response => {
+                        this.content = response.data;
+                    })
+                    .catch(error => this.content = page + ':' + error.message);
+            }
         },
         watch: {
             page: {
-                handler(val) {
-                    this.loadPage(val)
+                handler(val: string) {
+                    this.loadPage(val);
                 }
             }
         }
-    }
+    });
 </script>
 
 <style scoped>

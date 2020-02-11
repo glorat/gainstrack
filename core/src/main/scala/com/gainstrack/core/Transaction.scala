@@ -1,5 +1,7 @@
 package com.gainstrack.core
 
+import com.gainstrack.report.SingleFXConverter
+
 
 case class Transaction (
                          /** Business time */
@@ -53,6 +55,34 @@ case class Transaction (
 
   def withId(newId:Int):Transaction = {
     this.copy(id=newId)
+  }
+
+/*  def networthChange(singleFXConverter: SingleFXConverter, baseCcy:AssetId): Double = {
+    filledPostings.map(p => {
+      val amt = p.value.get
+      val fx = singleFXConverter.getFX(amt.ccy, baseCcy, this.postDate).getOrElse(0.0)
+      val pval = fx * amt.number.toDouble
+      val mult = p.account.accountType match {
+        case Assets | Liabilities => 1
+        case _ => 0
+      }
+      pval * mult
+    }).sum
+  }*/
+
+  /** Trades of assets at a discount/premium may balance at a cost-basis but generate immediate m2m pnl */
+  def activityPnL(singleFXConverter: SingleFXConverter, toDate:LocalDate, baseCcy:AssetId): Double = {
+    filledPostings.map(p => {
+      val amt = p.value.get
+      val fx = singleFXConverter.getFX(amt.ccy, baseCcy, toDate).getOrElse(0.0)
+      val pval = fx * amt.number.toDouble
+      val mult = p.account.accountType match {
+        case Assets | Liabilities => 1
+        case Income | Expenses | Equity => 1
+        case _ => 0
+      }
+      pval * mult
+    }).sum
   }
 
   override def toString: String = toBeancount.map(_.value).mkString("\n")
