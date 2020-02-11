@@ -18,6 +18,10 @@
             Balance
             <balance-editor v-model="c.balance"></balance-editor>
         </div>
+        <div>
+            Adjustment Account:
+            <account-selector v-model="c.otherAccount"></account-selector>
+        </div>
     </div>
 </template>
 
@@ -64,12 +68,12 @@
         computed: {
             isValid() {
                 const c = this.c;
-                return c.accountId && c.date && c.balance.ccy;
+                return c.accountId && c.date && c.balance.ccy && c.otherAccount;
             },
             toGainstrack() {
                 if (this.isValid) {
                     const c = this.c;
-                    return `${c.date} bal ${c.accountId} ${c.balance.number} ${c.balance.ccy}`;
+                    return `${c.date} bal ${c.accountId} ${c.balance.number} ${c.balance.ccy} ${c.otherAccount}`;
                 }
             }
         }
