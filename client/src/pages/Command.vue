@@ -1,53 +1,18 @@
 <template>
 <div>
-    <form>
-        <command-editor ref="newCmd" v-if="selectedCommand" :cmd="selectedCommand.data" :type="selectedCommand.type" v-on:gainstrack-changed="gainstrackChange($event)"></command-editor>
-        <button type="button" v-on:click="testCommand">Test</button>
-        <button type="button" v-on:click="addCommand">Add</button>
-        <div>Command:<pre>{{ this.commandStr }}</pre></div>
-    </form>
-    <table class="queryresults sortable">
-        <thead>
-        <tr>
-            <th data-sort="string">account</th>
-            <th data-sort="string">date</th>
-            <th data-sort="string">type</th>
-            <th>asset</th>
-            <th>change</th>
-            <th>price</th>
-            <th>commission</th>
-            <th>balance</th>
-            <th>other account</th>
-            <th data-sort="string">description</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr v-for="cmd in info.commands" v-on:click="selectCommand(cmd)">
-<!--            <td colspan="4"><command-editor :cmd="cmd.data" :type="cmd.type"></command-editor></td>-->
-            <td>{{ info.account.key.name }}</td>
-            <td>{{ cmd.data.date }}</td>
-            <td>{{ cmd.type }}</td>
-            <td>{{ cmd.data.asset }}</td>
-            <td class="num">{{ cmd.data.change | amount }}</td>
-            <td class="num">{{ cmd.data.price | amount }}</td>
-            <td class="num">{{ cmd.data.commission | amount }}</td>
-            <td class="num">{{ cmd.data.balance | amount }}</td>
-            <td>{{ cmd.data.otherAccount }}</td>
-            <td>{{cmd.description}}</td>
-        </tr>
-        </tbody>
-    </table>
+    <command-table :cmds="info.commands"></command-table>
 </div>
 </template>
 
 <script>
     import axios from 'axios';
     import CommandEditor from '../components/CommandEditor';
+    import CommandTable from '@/components/CommandTable.vue';
     import {cloneDeep} from 'lodash';
 
     export default {
         name: 'Command',
-        components: {CommandEditor},
+        components: {CommandEditor, CommandTable},
         props: ['accountId'],
         data() {
             return {

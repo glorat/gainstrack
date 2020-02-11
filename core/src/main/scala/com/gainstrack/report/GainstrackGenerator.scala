@@ -97,7 +97,7 @@ case class GainstrackGenerator(originalCommands:Seq[AccountCommand])  {
 
     def involvedAccounts: Set[AccountId] = Set()
 
-    def toDTO: AccountCommandDTO = ???
+    def toPartialDTO: AccountCommandDTO = ???
   }
 
   def toBeancount: Seq[BeancountLine] = {

@@ -107,7 +107,7 @@ case class UnitTrustBalance(
     Seq(s"${date} unit ${accountId.toGainstrack} ${security} @${price}")
   }
 
-  override def toDTO: AccountCommandDTO = {
+  override def toPartialDTO: AccountCommandDTO = {
     AccountCommandDTO(accountId = accountId, date = date, balance = Some(security), price = Some(price))
   }
 }

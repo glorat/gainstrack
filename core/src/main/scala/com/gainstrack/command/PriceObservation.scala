@@ -18,7 +18,7 @@ case class PriceObservation(date:LocalDate, assetId: AssetId, price:Amount)
     toBeancount.map(_.value)
   }
 
-  override def toDTO: AccountCommandDTO = AccountCommandDTO(accountId = AccountId.root, date = date, price = Some(price), asset = Some(assetId))
+  override def toPartialDTO: AccountCommandDTO = AccountCommandDTO(accountId = AccountId.root, date = date, price = Some(price), asset = Some(assetId))
 }
 
 object PriceObservation extends CommandParser {

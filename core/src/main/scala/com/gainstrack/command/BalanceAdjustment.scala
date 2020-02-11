@@ -63,7 +63,7 @@ case class BalanceAdjustment(
     Seq(s"${date} adj ${accountId.toGainstrack} ${balance} ${adjAccount.toGainstrack}")
   }
 
-  override def toDTO: AccountCommandDTO = {
+  override def toPartialDTO: AccountCommandDTO = {
     AccountCommandDTO(accountId = accountId, date = date, balance = Some(balance), otherAccount = Some(adjAccount))
   }
 }

@@ -27,7 +27,7 @@ case class BalanceStatement(
     Seq(s"${date} bal ${accountId.toGainstrack} ${balance} ${adjAccount.toGainstrack}")
   }
 
-  override def toDTO: AccountCommandDTO = {
+  override def toPartialDTO: AccountCommandDTO = {
     AccountCommandDTO(accountId = accountId, date = date, balance = Some(balance), otherAccount = Some(adjAccount))
   }
 }

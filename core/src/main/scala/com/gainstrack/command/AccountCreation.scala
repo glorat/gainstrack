@@ -60,7 +60,7 @@ case class AccountCreation (
     }
   }
 
-  override def toDTO: AccountCommandDTO = {
+  override def toPartialDTO: AccountCommandDTO = {
     AccountCommandDTO(accountId = accountId, date = date, balance = Some(Amount(0, key.assetId)), options = Some(options))
   }
 
