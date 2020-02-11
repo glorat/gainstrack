@@ -21,5 +21,5 @@ case class CommandWithAccounts[T<:CommandNeedsAccounts](underlying:T, accounts:S
 
   override def toGainstrack: Seq[String] = ???
 
-  override def toDTO: AccountCommandDTO = underlying.toDTO
+  override def toPartialDTO: AccountCommandDTO = underlying.toPartialDTO
 }

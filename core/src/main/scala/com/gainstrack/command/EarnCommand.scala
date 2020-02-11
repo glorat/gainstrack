@@ -35,7 +35,7 @@ case class EarnCommand(date:LocalDate, incomeTag:String, value:Amount, targetAcc
     }
   }
 
-  override def toDTO: AccountCommandDTO = {
+  override def toPartialDTO: AccountCommandDTO = {
     AccountCommandDTO(accountId = incomeAccountId, date = date, change = Some(value), otherAccount = targetAccountIdOpt)
   }
 }

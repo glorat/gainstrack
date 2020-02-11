@@ -225,9 +225,7 @@ class ApiController (implicit val ec :ExecutionContext)
           .reverse
 
       Map("account" -> account, "commands" -> commands.map(cmd =>
-        Map("data"->cmd.toDTO,
-          "type" -> cmd.commandString,
-          "description" -> cmd.description)
+        cmd.toDTO
       ))
     }).getOrElse(NotFound(s"${accountId} account not found"))
   }
@@ -239,19 +237,19 @@ class ApiController (implicit val ec :ExecutionContext)
   post("/state/conversion") {
     // val bg = session.get("gainstrack").getOrElse(bgDefault).asInstanceOf[GainstrackGenerator]
     session("conversion") = (parsedBody \ "conversion").extract[String]
-    ApiSourceResponse("???", true, Seq())
+    ApiSourceResponse(Seq(), Seq())
   }
 
   post("/state/dateOverride") {
     try {
       val dt:LocalDate = LocalDate.parse((parsedBody \ "dateOverride").extract[String])
       session("dateOverride") = dt
-      ApiSourceResponse("???", true, Seq())
+      ApiSourceResponse(Seq(), Seq())
     }
     catch {
       case e: Exception => {
         session.remove("dateOverride")
-        ApiSourceResponse("???", true, Seq())
+        ApiSourceResponse(Seq(), Seq())
       }
     }
   }
@@ -373,7 +371,7 @@ object ServerQuoteSource {
 
 //case class BalanceSheet(balanceSheet: Map[String,TreeTable])
 case class ApiSourceRequest(filePath:String, entryHash:String, source:String, sha256sum: String)
-case class ApiSourceResponse(sha256sum:String, success:Boolean, errors: Seq[ParserMessage])
+case class ApiSourceResponse(errors: Seq[ParserMessage], added: Seq[AccountCommandDTO])
 
 case class AccountTxSummaryDTO(accountId:String, rows:Seq[AccountTxDTO])
 case class AccountTxDTO(date:String, cmdType:String, description:String, change: String, position:String, postings:Seq[Posting])

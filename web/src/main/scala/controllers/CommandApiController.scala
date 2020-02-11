@@ -1,8 +1,9 @@
 package controllers
 
 import com.gainstrack.command.{CommodityCommand, GainstrackParser, ParserMessage}
+import com.gainstrack.core.AccountCommandDTO
 import com.gainstrack.report.GainstrackGenerator
-import com.gainstrack.web.{AuthenticationSupport, GainstrackJsonSerializers, GainstrackSupport}
+import com.gainstrack.web.{AuthenticationSupport, GainstrackJsonSerializers, GainstrackSupport, TimingSupport}
 import org.json4s.{Formats, JValue}
 import org.scalatra.{InternalServerError, ScalatraServlet}
 import org.scalatra.json.JacksonJsonSupport
@@ -13,7 +14,8 @@ class CommandApiController(implicit val ec: ExecutionContext)
   extends ScalatraServlet
     with JacksonJsonSupport
     with AuthenticationSupport
-    with GainstrackSupport {
+    with GainstrackSupport
+    with TimingSupport {
   protected implicit val jsonFormats: Formats = org.json4s.DefaultFormats ++ GainstrackJsonSerializers.all
 
   before() {
@@ -29,9 +31,10 @@ class CommandApiController(implicit val ec: ExecutionContext)
     try {
       val parser = new GainstrackParser
       parser.parseString(body.str)
-      val bg2 = parser.getCommands.map(bg.addCommand)
+      val cmds = parser.getCommands
+      val bg2 = cmds.map(bg.addCommand)
       // TODO: How about see if it actually generates??
-      CommandApiResponse("ok")
+      CommandApiResponse("ok", cmds.map(_.toPartialDTO))
     }
     catch {
       case e:Exception => InternalServerError(e.toString)
@@ -45,16 +48,17 @@ class CommandApiController(implicit val ec: ExecutionContext)
     val body = parsedBody.extract[CommandApiRequest]
     try {
       parser.parseString(body.str)
-      val bg2 = parser.getCommands.foldLeft(bg)(_.addCommand(_))
+      val cmds = parser.getCommands
+      val bg2 = cmds.foldLeft(bg)(_.addCommand(_))
       saveGainstrack(bg2)
-      CommandApiResponse("ok")
+      ApiSourceResponse(Seq(), cmds.map(cmd => cmd.toDTO))
 
     }
     catch {
       case e:Exception if parser.parserErrors.size>0 => {
-        ApiSourceResponse("???", false, parser.parserErrors)
+        ApiSourceResponse(parser.parserErrors, Seq())
       }
-      case e:Exception => ApiSourceResponse("???", false, Seq(ParserMessage(e.getMessage, 0, "")))
+      case e:Exception => ApiSourceResponse(Seq(ParserMessage(e.getMessage, 0, "")), Seq())
 
     }
 
@@ -69,13 +73,13 @@ class CommandApiController(implicit val ec: ExecutionContext)
       val cmds = parser.getCommands.collect {case c:CommodityCommand => c}
       val bg2 = cmds.foldLeft(bg)(_.addAssetCommand(_))
       saveGainstrack(bg2)
-      CommandApiResponse("ok")
+      CommandApiResponse("ok", cmds.map(_.toPartialDTO))
     }
     catch {
       case e:Exception if parser.parserErrors.size>0 => {
-        ApiSourceResponse("???", false, parser.parserErrors)
+        ApiSourceResponse( parser.parserErrors, Seq())
       }
-      case e:Exception => ApiSourceResponse("???", false, Seq(ParserMessage(e.getMessage, 0, "")))
+      case e:Exception => ApiSourceResponse(Seq(ParserMessage(e.getMessage, 0, "")), Seq())
 
     }
 
@@ -91,17 +95,18 @@ class CommandApiController(implicit val ec: ExecutionContext)
       val orderedCmds = parser.getCommands
       val bg = new GainstrackGenerator(orderedCmds)
       saveGainstrack(bg, Some(parser))
-      ApiSourceResponse("???", true, Seq())
+      // TODO: Find out what was added and return it
+      ApiSourceResponse(Seq(), added = Seq())
     }
     catch {
       case e:Exception if parser.parserErrors.size>0 => {
-        ApiSourceResponse("???", false, parser.parserErrors)
+        ApiSourceResponse(parser.parserErrors, Seq())
       }
-      case e:Exception => ApiSourceResponse("???", false, Seq(ParserMessage(e.getMessage, 0, "")))
+      case e:Exception => ApiSourceResponse(Seq(ParserMessage(e.getMessage, 0, "")), Seq())
     }
 
   }
 
 }
 case class CommandApiRequest(str:String)
-case class CommandApiResponse(success:String)
+case class CommandApiResponse(success:String, added: Seq[AccountCommandDTO])

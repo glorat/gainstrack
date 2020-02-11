@@ -10,6 +10,13 @@ case class AccountCommandDTO(
                             otherAccount: Option[AccountId] = None,
                             commission: Option[Amount] = None,
                             options: Option[Object] = None,
+                            commandType: Option[String] = None,
+                            description: Option[String] = None,
                             ) {
-
+  def autoFill(cmd:AccountCommand) :AccountCommandDTO = {
+    this.copy(
+      commandType = Some(cmd.commandString),
+      description = Some(cmd.description)
+    )
+  }
 }

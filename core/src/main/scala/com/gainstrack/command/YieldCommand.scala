@@ -66,7 +66,7 @@ case class YieldCommand(date:LocalDate, accountId:AccountId, asset:Option[AssetI
     Seq(s)
   }
 
-  override def toDTO: AccountCommandDTO = {
+  override def toPartialDTO: AccountCommandDTO = {
     AccountCommandDTO(accountId = accountId, date = date, asset = asset, change = Some(value), otherAccount = targetAccountIdOpt)
   }
 }

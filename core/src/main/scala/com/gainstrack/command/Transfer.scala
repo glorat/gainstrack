@@ -74,7 +74,7 @@ case class Transfer(
     Seq(baseStr + (if(sourceValue==targetValue) "" else s" ${targetValue}"))
   }
 
-  override def toDTO: AccountCommandDTO = {
+  override def toPartialDTO: AccountCommandDTO = {
     AccountCommandDTO(accountId = accountId, date = date, change = Some(sourceValue), price = Some(price), otherAccount = Some(dest))
   }
 }

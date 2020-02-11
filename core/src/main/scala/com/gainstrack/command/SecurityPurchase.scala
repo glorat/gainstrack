@@ -65,7 +65,7 @@ case class SecurityPurchase(
     Seq(baseStr + (if (commission.number==zeroFraction) "" else s" C${commission}"))
   }
 
-  override def toDTO: AccountCommandDTO = {
+  override def toPartialDTO: AccountCommandDTO = {
     // TODO: Commission
     AccountCommandDTO(accountId = accountId, date = date, change = Some(security), price = Some(price), commission = Some(commission))
   }
