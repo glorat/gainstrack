@@ -20,7 +20,8 @@ const initState: MyState = {
         accountIds: [],
         accounts: [],
         ccys: [],
-        authentication: {}
+        authentication: {},
+        commands: []
     },
     quoteConfig: [],
     balances: {},
@@ -78,7 +79,6 @@ export default new Vuex.Store({
             } else {
                 return context.state.gainstrackText;
             }
-
         },
         async conversion(context, c: string) {
             await axios.post('/api/state/conversion', {conversion: c});
