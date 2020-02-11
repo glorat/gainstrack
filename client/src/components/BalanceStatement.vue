@@ -26,12 +26,19 @@
 </template>
 
 <script>
+    // import {AccountCommandDTO, AccountDTO} from '@/models';
     import BalanceEditor from './BalanceEditor.vue';
     import {CommandEditorMixin} from '../mixins/CommandEditorMixin';
-    import AccountSelector from './AccountSelector';
+    import AccountSelector from './AccountSelector.vue';
     import {DatePicker, Input, Option, Select, Switch} from 'element-ui';
+    import Vue from 'vue';
 
-    export default {
+
+    // interface MyData {
+    //     c: AccountCommandDTO
+    // }
+
+    export default Vue.extend({
         name: 'BalanceStatement',
         props: {cmd: Object},
         mixins: [CommandEditorMixin],
@@ -46,17 +53,27 @@
         },
         methods: {
             accountIdChanged() {
-                const all = this.$store.state.summary.accounts;
+                const all /*: AccountDTO[]*/ = this.$store.state.summary.accounts;
                 const acct = all.find(x => x.accountId === this.c.accountId);
                 if (acct) {
+                    // @ts-ignore
                     this.c.balance.ccy = acct.ccy;
+                }
+                const allCmds /*: AccountCommandDTO[]*/ = this.$store.state.summary.commands;
+                const prev = allCmds.find(
+                    x => x.accountId === this.c.accountId && x.commandType === 'bal');
+                if (prev) {
+                    this.c.otherAccount = prev.otherAccount;
+                }
+                else {
+                    this.c.otherAccount = 'Equity:Opening'
                 }
             },
         },
-        data() {
-            let c = {};
+        data() /*: MyData*/ {
+            let c /*: AccountCommandDTO*/ = {accountId: '', date: ''};
             if (this.cmd) {
-                c = {...this.cmd}
+                c = {...this.cmd};
             }
             c.date = c.date || new Date().toISOString().slice(0, 10);
             c.balance = c.balance || {number: 0, ccy: ''};
@@ -66,18 +83,22 @@
             return {c};
         },
         computed: {
-            isValid() {
+            isValid() /*: boolean*/ {
                 const c = this.c;
-                return c.accountId && c.date && c.balance.ccy && c.otherAccount;
+                // @ts-ignore
+                return c.accountId && c.date && c.balance && c.balance.ccy && c.otherAccount;
             },
-            toGainstrack() {
+            toGainstrack() /*: string*/ {
                 if (this.isValid) {
-                    const c = this.c;
+                    const c /*: AccountCommandDTO*/ = this.c;
+                    // @ts-ignore
                     return `${c.date} bal ${c.accountId} ${c.balance.number} ${c.balance.ccy} ${c.otherAccount}`;
+                } else {
+                    return '';
                 }
             }
         }
-    }
+    });
 </script>
 
 <style scoped>
