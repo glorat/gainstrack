@@ -1,14 +1,15 @@
 <template>
     <div>
-        <div v-if="!resultStr">
+        <div v-if="!added[0]">
             <command-editor :type="this.$route.query.cmd" v-on:gainstrack-changed="gainstrackChange($event)"></command-editor>
             <div>
                 <pre>{{ commandStr }}</pre>
             </div>
             <button :disabled="!commandStr" type="button" v-on:click="addCommand">Add</button>
         </div>
-        <div v-if="resultStr">
-            <router-link :to="{path:'/journal'}">See Journal</router-link>
+        <div v-if="added[0]">
+            <router-link v-if="added[0]" :to="{name:'account', params:{accountId:added[0].accountId}}">{{added[0].accountId}}</router-link>
+            <command-table :cmds="added"></command-table>
         </div>
     </div>
 </template>
@@ -16,14 +17,15 @@
 <script>
     import CommandEditor from '../components/CommandEditor';
     import axios from 'axios';
+    import CommandTable from '../components/CommandTable';
 
     export default {
         name: 'AddCmd',
-        components: {CommandEditor},
+        components: {CommandTable, CommandEditor},
         data() {
             return {
                 commandStr: '',
-                resultStr: '',
+                added: [],
             }
         },
         methods: {
@@ -38,12 +40,19 @@
             },
             addCommand() {
                 const str = this.commandStr;
+                const notify = this.$notify;
                 axios.post('/api/post/add', {str})
                     .then(response => {
-                        this.$notify.success(response.data);
-                        this.resultStr = response.data;
+                        if (response.data.errors.length > 0) {
+                            notify.warning('Errors...' + response.data.errors[0].message)
+                        } else {
+                            this.added = response.data.added;
+                            this.$notify.success(`${this.added.length} entries added`);
+
+                        }
+
                     })
-                    .catch(error => this.$notify.error(error.response.data))
+                    .catch(error => this.$notify.error(error))
             },
         },
     }
