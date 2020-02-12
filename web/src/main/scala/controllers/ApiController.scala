@@ -301,17 +301,20 @@ class ApiController (implicit val ec :ExecutionContext)
       new FXProxy(bg.fxMapper, ServerQuoteSource.db.singleFxConverter(bg.acctState.baseCurrency)),
       bg.singleFXConversion
     )
+
+    val baseDate = dateOverride.getOrElse(bg.latestDate)
+
     val dates = Seq(
-      currentDate.minusDays(1),
-      currentDate.minusWeeks(1),
-      currentDate.minusMonths(1),
-      currentDate.minusMonths(3),
-      currentDate.minusYears(1),
-      currentDate.withDayOfYear(1))
+      baseDate.minusDays(1),
+      baseDate.minusWeeks(1),
+      baseDate.minusMonths(1),
+      baseDate.minusMonths(3),
+      baseDate.minusYears(1),
+      baseDate.withDayOfYear(1))
     val descs = Seq("1d", "1w", "1m", "3m", "1y", "YTD")
 
     val pnls = dates.zip(descs).map(
-      dtdesc => new PLExplain(dtdesc._1, currentDate)(bg.acctState, bg.txState, bg.balanceState, bg.priceFXConverter, bg.assetChainMap, fxConvert)
+      dtdesc => new PLExplain(dtdesc._1, baseDate)(bg.acctState, bg.txState, bg.balanceState, bg.priceFXConverter, bg.assetChainMap, fxConvert)
         .toDTO
         .withLabel(dtdesc._2)
     )
@@ -325,8 +328,9 @@ class ApiController (implicit val ec :ExecutionContext)
       new FXProxy(bg.fxMapper, ServerQuoteSource.db.singleFxConverter(bg.acctState.baseCurrency)),
       bg.singleFXConversion
     )
+    val baseDate = dateOverride.getOrElse(bg.latestDate)
 
-    val endDates = currentDate +: Range(0,11).map(n => currentDate.minusMonths(n).withDayOfMonth(1).minusDays(1))
+    val endDates = baseDate +: Range(0,11).map(n => baseDate.minusMonths(n).withDayOfMonth(1).minusDays(1))
     val startDates = endDates.map(_.minusDays(1).withDayOfMonth(1))
     import java.time.format.DateTimeFormatter
     val monthFmt = DateTimeFormatter.ofPattern("MMM")
