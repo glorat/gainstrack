@@ -1,3 +1,5 @@
+import {mapGetters} from "vuex";
+
 export const CommandEditorMixin = {
     inheritAttrs: false,
     props: {cmd: Object},
@@ -21,4 +23,11 @@ export const CommandEditorMixin = {
             this.$emit('gainstrack-changed', str);
         }
     },
+    computed: {
+        ...mapGetters([
+            'tradeableAccounts',
+            'findAccount',
+            'mainAccounts',
+        ]),
+    }
 };

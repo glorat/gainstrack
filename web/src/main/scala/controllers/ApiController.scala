@@ -194,12 +194,19 @@ class ApiController (implicit val ec :ExecutionContext)
   get ("/journal/") {
     val bg = getGainstrack
 
+    val fxConvert = new FXChain(
+      new FXProxy(bg.fxMapper, ServerQuoteSource.db.singleFxConverter(bg.acctState.baseCurrency)),
+      bg.singleFXConversion
+    )
+
     val txs = bg.txState.allTransactions
     val commands = txs.map(_.origin).distinct.reverse
+    val multFn:AccountType=>Double = _ match {case Assets | Liabilities => 1.0; case _ => 0.0}
     val rows = commands.map(cmd => {
       val myTxs = txs.filter(_.origin == cmd)
       val postings = myTxs.flatMap(_.filledPostings)
-      AccountTxDTO(cmd.date.toString, cmd.commandString, cmd.description, "", "", postings)
+      val txPnl:Double = myTxs.map(tx => tx.pnl(singleFXConverter = fxConvert, tx.postDate, bg.acctState.baseCurrency, multFn )).sum
+      AccountTxDTO(cmd.date.toString, cmd.commandString, cmd.description, txPnl.formatted("%.2f") , "", postings)
     })
     JournalDTO(rows)
   }
@@ -375,7 +382,7 @@ object ServerQuoteSource {
 
 //case class BalanceSheet(balanceSheet: Map[String,TreeTable])
 case class ApiSourceRequest(filePath:String, entryHash:String, source:String, sha256sum: String)
-case class ApiSourceResponse(errors: Seq[ParserMessage], added: Seq[AccountCommandDTO])
+case class ApiSourceResponse(errors: Seq[ParserMessage], added: Seq[AccountCommandDTO], addedJournal:Seq[AccountTxDTO] = Seq(), addedBalance:Map[String,Double] = Map())
 
 case class AccountTxSummaryDTO(accountId:String, rows:Seq[AccountTxDTO])
 case class AccountTxDTO(date:String, cmdType:String, description:String, change: String, position:String, postings:Seq[Posting])

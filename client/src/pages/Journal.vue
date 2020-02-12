@@ -1,6 +1,8 @@
 <template>
     <div>
-        <journal-table :entries="info.rows"></journal-table>
+        <h3>Journal</h3>
+        <p>Shows all your transactions you have made. Change column shows the impact to your networth as at the time the transaction occurred</p>
+        <journal-table :entries="info.rows" show-balance></journal-table>
     </div>
 </template>
 

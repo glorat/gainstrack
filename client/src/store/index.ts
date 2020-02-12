@@ -1,7 +1,7 @@
 import axios from 'axios';
 import Vue from 'vue';
 import Vuex from 'vuex';
-import {AccountCommandDTO, QuoteConfig, StateSummaryDTO} from '@/models';
+import {AccountCommandDTO, AccountDTO, QuoteConfig, StateSummaryDTO} from '@/models';
 
 Vue.use(Vuex);
 
@@ -127,6 +127,23 @@ export default new Vuex.Store({
             context.commit('parseState', data);
         }
     },
+    getters: {
+        tradeableAccounts: state => {
+            const all = state.summary.accounts;
+            const scope = all.filter(x => x.accountId.startsWith('Asset') && x.options.multiAsset);
+            return scope.map(x => x.accountId).sort();
+        },
+        mainAccounts: state => {
+            return state.summary.accounts.filter(acct => {
+                return (acct.options.generatedAccount === false);
+            }).map( a => a.accountId).sort()
+        },
+        findAccount: state => (accountId: string) => {
+            const all: AccountDTO[] = state.summary.accounts;
+            const acct = all.find(x => x.accountId === accountId);
+            return acct;
+        }
+    }
 });
 
 interface AccountBalances {

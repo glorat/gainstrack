@@ -22,20 +22,31 @@
     </div>
 </template>
 
-<script>
-    export default {
+<script lang="ts">
+    import Vue from 'vue'
+
+    interface MyError {
+        line: number
+        message: string
+    }
+
+    export default Vue.extend({
         name: 'SourceErrors',
+        props: {errs: Array as () => MyError[]},
         computed: {
-            errors() {
-                return this.$store.state.parseState.errors;
+            errors(): MyError[] {
+                return this.errs ? this.errs : this.$store.state.parseState.errors;
             }
         },
         methods: {
-            onRowClick(error) {
-                this.$router.push({ path: 'editor', query: { line: error.line } });
+            onRowClick(error: MyError) {
+                if (error.line) {
+                    // @ts-ignore
+                    this.$router.push({ path: 'editor', query: { line: error.line } });
+                }
             }
         }
-    }
+    })
 </script>
 
 <style scoped>

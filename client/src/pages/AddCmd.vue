@@ -1,12 +1,16 @@
 <template>
     <div>
-        <div v-if="!added[0]">
+        <div v-if="!success">
             <command-editor :type="this.$route.query.cmd" v-on:gainstrack-changed="gainstrackChange($event)"></command-editor>
             <div>
                 <pre>{{ commandStr }}</pre>
             </div>
-            <button :disabled="!commandStr" type="button" v-on:click="addCommand">Add</button>
+            <button :disabled="errors.length || !commandStr" type="button" v-on:click="addCommand">Add</button>
         </div>
+        <div v-if="errors.length>0">
+            <source-errors :errs="errors"></source-errors>
+        </div>
+        <hr>
         <div v-if="added[0]">
             <router-link v-if="added[0]" :to="{name:'account', params:{accountId:added[0].accountId}}">{{added[0].accountId}}</router-link>
             <command-table :cmds="added"></command-table>
@@ -18,26 +22,41 @@
     import CommandEditor from '../components/CommandEditor';
     import axios from 'axios';
     import CommandTable from '../components/CommandTable';
+    import SourceErrors from '../components/SourceErrors';
+    import {debounce} from 'lodash';
 
     export default {
         name: 'AddCmd',
-        components: {CommandTable, CommandEditor},
+        components: {CommandTable, CommandEditor, SourceErrors},
         data() {
             return {
                 commandStr: '',
                 added: [],
+                errors: [],
+                testing: false,
+                success: false,
             }
         },
         methods: {
             gainstrackChange(ev) {
                 this.commandStr = ev;
+                this.testCommand();
             },
-            testCommand() {
+            testCommand: debounce(function() {
                 const str = this.commandStr;
-                axios.post('/api/post/test', {str})
-                    .then(response => this.$notify.success(response.data.success))
-                    .catch(error => this.$notify.error(error.response.data))
-            },
+                const notify = this.$notify;
+                if (str) {
+                    this.testing = true;
+                    axios.post('/api/post/test', {str})
+                        .then(response => {
+                            this.added = response.data.added;
+                            this.errors = response.data.errors;
+
+                        })
+                        .catch(error => this.$notify.error(error))
+                        .finally(this.testing = false)
+                }
+            }, 1000),
             addCommand() {
                 const str = this.commandStr;
                 const notify = this.$notify;
@@ -47,8 +66,8 @@
                             notify.warning('Errors...' + response.data.errors[0].message)
                         } else {
                             this.added = response.data.added;
+                            this.success = true;
                             this.$notify.success(`${this.added.length} entries added`);
-
                         }
 
                     })

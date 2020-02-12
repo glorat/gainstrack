@@ -11,7 +11,7 @@
             </el-date-picker>
         </div>
         <div>
-            <account-selector v-model="c.accountId" :account-list="tradeableAccounts"></account-selector>
+            <account-selector v-model="c.accountId" :account-list="tradeableAccounts" @input="accountIdChanged"></account-selector>
         </div>
         <div>
             Purchase
@@ -54,6 +54,17 @@
             c.accountId = c.accountId || '';
             return {c};
         },
+        methods: {
+            accountIdChanged() {
+                const all /*: AccountDTO[]*/ = this.$store.state.summary.accounts;
+                const acct = all.find(x => x.accountId === this.c.accountId);
+                if (acct) {
+                    // @ts-ignore
+                    this.c.price.ccy = acct.ccy;
+                    this.c.commission.ccy = acct.ccy;
+                }
+            },
+        },
         computed: {
             isValid() {
                 return !!this.c.accountId
@@ -61,11 +72,6 @@
                     && this.c.change.ccy
                     && this.c.price.number
                     && this.c.price.ccy;
-            },
-            tradeableAccounts() {
-                const all = this.$store.state.summary.accounts;
-                const scope = all.filter(x => x.accountId.startsWith('Asset') && x.options.multiAsset);
-                return scope.map(x => x.accountId).sort();
             },
             toGainstrack() {
                 if (this.isValid) {

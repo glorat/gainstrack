@@ -2,6 +2,7 @@
     <div>
         <form id="entry-filters" class="wide-form">
             <span class="spacer"></span>
+            <span>Filters: </span>
             <button-toggle v-for="t in entryTypes" :key="t" :name="t" :off-state="offState"></button-toggle>
 
         </form>
