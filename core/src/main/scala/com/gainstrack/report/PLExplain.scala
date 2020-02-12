@@ -33,24 +33,21 @@ class PLExplain(fromDate: LocalDate, toDate: LocalDate)
   val totalDeltaExplain = deltaExplain.map(_.explain).sum
 
   // Activity
+  val criteria:Transaction=>Boolean = tx =>  tx.postDate.isAfter(fromDate) && ((tx.postDate.isBefore(toDate) || tx.postDate.isEqual(toDate)))
+  val activity = transactionState.cmds.collect({case tx:Transaction=>tx}).filter(criteria)
+  val newActivityByTx: Map[String, Double] = activity.map(tx => {
+    val actPnl = tx.activityPnL(singleFXConversion,toDate, baseCcy)
+    tx.origin.toGainstrack.head -> actPnl
+  }).filter(_._2 != 0.0).toMap
+
   val balanceReport = BalanceReport(transactionState.cmds, fromDate, toDate)
   // Note that income/equity has reversed sign per accounting norms
   val totalEquity = -balanceReport.getState.convertedPosition(Equity.accountId, toDate, "global").getBalance(baseCcy).number.toDouble
   val totalIncome = -balanceReport.getState.convertedPosition(Income.accountId, toDate, "global").getBalance(baseCcy).number.toDouble
   val totalExpense = balanceReport.getState.convertedPosition(Expenses.accountId, toDate, "global").getBalance(baseCcy).number.toDouble
 
-  val newActivityActual =
-    balanceReport.getState.convertedPosition(Assets.accountId, toDate, "global").getBalance(baseCcy).number.toDouble
-  // - balanceReport.getState.convertedPosition(Income.accountId, fromDate, "global").getBalance(baseCcy).number.toDouble
-  val newActivityPnl = newActivityActual - (totalEquity+totalIncome-totalExpense)
+  val newActivityPnl = newActivityByTx.map(_._2).sum
 
-  val newActivityByAccount = balanceReport.getState.childPositions(Assets.accountId, toDate, "global")
-    .map(kv => kv._1.n -> kv._2.getBalance(baseCcy).number.toDouble)
-    .filter(_._2 != 0.0)
-
-  // So this is the current hacky methodology
-  //require(newActivityActual == newActivityPnl + totalIncome - totalExpense, s"$newActivityActual == $newActivityPnl + $totalIncome - $totalExpense")
-  // that will for now, make unexplained next to zero.
   // TODO: Explain newActivityPnl properly
   val explained = totalDeltaExplain + newActivityPnl + totalEquity + totalIncome - totalExpense
   val unexplained = actualPnl - explained
@@ -64,7 +61,7 @@ class PLExplain(fromDate: LocalDate, toDate: LocalDate)
 //      "delta" -> deltaExplain
 //    )
     PLExplainDTO(Some(fromDate), Some(toDate),Some(totalNetworthEnd.getBalance(baseCcy).number.toDouble) ,actualPnl, explained, unexplained,
-      newActivityPnl, newActivityByAccount.map(x => PnlAccountComponent(x._1, x._2)).toSeq.sortBy(_.accountId),
+      newActivityPnl, newActivityByTx.map(x => PnlAccountComponent(x._1, x._2)).toSeq.sortBy(_.accountId),
       totalEquity, totalIncome, totalExpense, totalDeltaExplain,
       deltaExplain.toSeq)
   }
