@@ -16,30 +16,30 @@
     </el-select>
 </template>
 
-<script>
+<script lang="ts">
+    import {Amount, StateSummaryDTO} from '@/models';
     import {Select, Option} from 'element-ui';
+    import Vue from 'vue';
 
-    export default {
+    export default Vue.extend({
         name: 'AssetId',
         components: {'el-select': Select, 'el-option': Option},
         props: {value: String},
         computed: {
-            options() {
-                return this.$store.state.summary.ccys.map(ccy => {
+            options(): object[] {
+                const summary: StateSummaryDTO = this.$store.state.summary;
+                return summary.ccys.map(ccy => {
                     return {value: ccy, label: ccy};
                 });
             }
 
         },
         methods: {
-            onChanged(ev) {
-                this.$emit('input', ev.target.value);
-            },
-            onSelectChanged(ev) {
+            onSelectChanged(ev: string) {
                 this.$emit('input', ev.toUpperCase());
             }
         }
-    }
+    })
 </script>
 
 <style scoped>

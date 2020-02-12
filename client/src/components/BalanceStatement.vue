@@ -64,8 +64,7 @@
                     x => x.accountId === this.c.accountId && x.commandType === 'bal');
                 if (prev) {
                     this.c.otherAccount = prev.otherAccount;
-                }
-                else {
+                } else {
                     this.c.otherAccount = 'Equity:Opening'
                 }
             },

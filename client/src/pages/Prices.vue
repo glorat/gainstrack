@@ -24,10 +24,11 @@
     </div>
 </template>
 
-<script>
+<script lang="ts">
     import axios from 'axios';
+    import Vue from 'vue';
 
-    export default {
+    export default Vue.extend({
         name: 'Prices',
         data() {
             return {
@@ -47,7 +48,7 @@
                 .then(response => this.prices = response.data)
                 .catch(error => notify.error(error));
         },
-    };
+    });
 </script>
 
 <style scoped>

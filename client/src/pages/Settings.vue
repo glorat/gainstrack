@@ -7,9 +7,10 @@
     </div>
 </template>
 
-<script>
-    import AssetId from '../components/AssetId';
-    import AssetsEditor from '../components/AssetsEditor';
+<script lang="ts">
+    import AssetId from '@/components/AssetId.vue';
+    import AssetsEditor from '@/components/AssetsEditor.vue';
+
     export default {
         name: 'Settings',
         components: {AssetsEditor, AssetId},

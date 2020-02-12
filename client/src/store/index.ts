@@ -1,19 +1,18 @@
 import axios from 'axios';
 import Vue from 'vue';
 import Vuex from 'vuex';
-import {QuoteConfig} from '@/models';
+import {AccountCommandDTO, QuoteConfig, StateSummaryDTO} from '@/models';
 
 Vue.use(Vuex);
 
 interface MyState {
     count: number,
-    summary: object,
+    summary: StateSummaryDTO,
     quoteConfig: QuoteConfig[],
     balances: AccountBalances,
     parseState: object,
     gainstrackText: string
 }
-
 const initState: MyState = {
     count: 0,
     summary: {
