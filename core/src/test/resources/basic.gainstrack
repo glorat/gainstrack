@@ -54,7 +54,7 @@ option "operating_currency" "USD"
 ;; This directive tells the software to assert that at the given
 ;; date, in the given account, a specific amount of the given
 ;; commodity was present.
-2008-01-01 adj Assets:BestBank:Checking 1412.24 USD Equity:Opening
+2008-01-01 bal Assets:BestBank:Checking 1412.24 USD Equity:Opening
 
 
 ;; A check deposit, e.g. depositing a government check.
@@ -94,13 +94,13 @@ option "operating_currency" "USD"
 
 2008-04-02 tfr Assets:AccountsReceivable Assets:Cash 431.92 USD
 
-2008-02-01 adj Assets:BestBank:Checking 661.49 USD Equity:Opening
+2008-02-01 bal Assets:BestBank:Checking 661.49 USD Equity:Opening
 
 
 1970-01-01 open Assets:BestBank:Savings USD
   fundingAccount: Equity:Opening
 
-2008-01-01 adj Assets:BestBank:Savings 12000 USD Equity:Opening
+2008-01-01 bal Assets:BestBank:Savings 12000 USD Equity:Opening
 
 2008-01-03 yield Assets:BestBank:Savings 95.69 USD
 
@@ -112,7 +112,7 @@ option "operating_currency" "USD"
 2008-02-03 fund Assets:UTrade:Account 10000 USD
 
 
-2008-03-01 adj Assets:BestBank:Savings 2340.19 USD Equity:Opening
+2008-03-01 bal Assets:BestBank:Savings 2340.19 USD Equity:Opening
 
 
 
@@ -131,14 +131,14 @@ option "operating_currency" "USD"
 
 
 ;;;;
-2008-01-01 adj Assets:UTrade:Account 31273.02 USD Equity:Opening
+2008-01-01 bal Assets:UTrade:Account 31273.02 USD Equity:Opening
 2008-01-08 trade Assets:UTrade:Account 30 AAPL @185.40 USD C9.95 USD
 2008-02-02 yield Assets:UTrade:Account AAPL 0.68 USD
 2008-02-28 trade Assets:UTrade:Account -30 AAPL @193.02 USD C9.95 USD
 
 2008-02-10 trade Assets:UTrade:Account 100 EWJ @13.34 USD C9.95 USD
 
-2008-03-01 adj Assets:UTrade:Account:USD 40138.45 USD Equity:Opening
+2008-03-01 bal Assets:UTrade:Account:USD 40138.45 USD Equity:Opening
 2008-03-01 adj Assets:UTrade:Account:AAPL 0 AAPL Equity:Opening
 2008-03-01 adj Assets:UTrade:Account:EWJ 100 EWJ Equity:Opening
 
