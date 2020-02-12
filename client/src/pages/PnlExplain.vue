@@ -73,6 +73,10 @@
 <!--                    <td class="num" v-for="explainData in explains">{{ explainData.delta[ccyIndex].explain.toFixed(2) }}</td>-->
 <!--                </tr>-->
                 <tr>
+                    <td>Yield Income</td>
+                    <td class="num" v-for="explainData in explains">{{ explainData.totalYieldIncome.toFixed(2) }}</td>
+                </tr>
+                <tr>
                     <td>Income</td>
                     <td class="num" v-for="explainData in explains">{{ explainData.totalIncome.toFixed(2) }}</td>
                 </tr>
