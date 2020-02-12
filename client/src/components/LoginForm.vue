@@ -5,11 +5,11 @@
             <button v-if="false" @click="auth0validate">Test</button>
         </div>
         <hr>
-        <form @submit.prevent="login()" v-if="!authentication.username">
-            <input type="text" name="username" placeholder="Username" v-model="username" pattern="\w*" title="Only lowercase">
-            <input type="password" name="password" v-model="password">
-            <input type="submit" name="login" value="Admin Login" :disabled="loading">
-        </form>
+<!--        <form @submit.prevent="login()" v-if="!authentication.username">-->
+<!--            <input type="text" name="username" placeholder="Username" v-model="username" pattern="\w*" title="Only lowercase">-->
+<!--            <input type="password" name="password" v-model="password">-->
+<!--            <input type="submit" name="login" value="Admin Login" :disabled="loading">-->
+<!--        </form>-->
         <div v-if="authentication.username">
             Logged in as <em>{{$auth.isAuthenticated ? $auth.user.name : authentication.username}}</em>
             <form @submit.prevent="logout()">
