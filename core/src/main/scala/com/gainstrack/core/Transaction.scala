@@ -72,18 +72,25 @@ case class Transaction (
 
   /** Trades of assets at a discount/premium may balance at a cost-basis but generate immediate m2m pnl */
   def activityPnL(singleFXConverter: SingleFXConverter, toDate:LocalDate, baseCcy:AssetId): Double = {
+    val multFn:(AccountType=>Double) = _ match {
+      case Assets | Liabilities => 1
+      case Income | Expenses | Equity => 1
+      case _ => 0
+    }
+
+    pnl(singleFXConverter, toDate, baseCcy, multFn)
+  }
+
+  def pnl(singleFXConverter: SingleFXConverter, toDate:LocalDate, baseCcy:AssetId, multFn:AccountType=>Double) = {
     filledPostings.map(p => {
       val amt = p.value.get
       val fx = singleFXConverter.getFX(amt.ccy, baseCcy, toDate).getOrElse(0.0)
       val pval = fx * amt.number.toDouble
-      val mult = p.account.accountType match {
-        case Assets | Liabilities => 1
-        case Income | Expenses | Equity => 1
-        case _ => 0
-      }
+      val mult = multFn(p.account.accountType)
       pval * mult
     }).sum
   }
+
 
   override def toString: String = toBeancount.map(_.value).mkString("\n")
 }

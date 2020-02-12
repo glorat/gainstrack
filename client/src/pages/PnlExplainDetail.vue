@@ -57,6 +57,10 @@
                 <td class="num">{{ explainData.totalDeltaExplain | amount }}</td>
             </tr>
             <tr>
+                <td class="">Yield Income</td>
+                <td class="num">{{ explainData.totalYieldIncome | amount }}</td>
+            </tr>
+            <tr>
                 <td class="">Income</td>
                 <td class="num">{{ explainData.totalIncome | amount }}</td>
             </tr>

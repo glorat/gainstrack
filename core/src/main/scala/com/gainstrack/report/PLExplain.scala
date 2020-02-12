@@ -1,5 +1,6 @@
 package com.gainstrack.report
 
+import com.gainstrack.command.{Transfer, UnitTrustBalance, YieldCommand}
 import com.gainstrack.core._
 
 class PLExplain(fromDate: LocalDate, toDate: LocalDate)
@@ -43,13 +44,26 @@ class PLExplain(fromDate: LocalDate, toDate: LocalDate)
   val balanceReport = BalanceReport(transactionState.cmds, fromDate, toDate)
   // Note that income/equity has reversed sign per accounting norms
   val totalEquity = -balanceReport.getState.convertedPosition(Equity.accountId, toDate, "global").getBalance(baseCcy).number.toDouble
-  val totalIncome = -balanceReport.getState.convertedPosition(Income.accountId, toDate, "global").getBalance(baseCcy).number.toDouble
+
+  val yieldIncome = activity.filter(
+    tx => tx.origin.isInstanceOf[YieldCommand]
+//      || tx.origin.isInstanceOf[UnitTrustBalance]
+//      || tx.origin.isInstanceOf[Transfer]
+  ).map(tx => {
+    tx.pnl(singleFXConversion, tx.postDate, baseCcy, _ match { case Income => -1.0; case _ => 0.0 })
+  }).sum
+
+  val totalIncome =
+    -balanceReport.getState.convertedPosition(Income.accountId, toDate, "global").getBalance(baseCcy).number.toDouble
+    - yieldIncome
+
+
   val totalExpense = balanceReport.getState.convertedPosition(Expenses.accountId, toDate, "global").getBalance(baseCcy).number.toDouble
 
   val newActivityPnl = newActivityByTx.map(_._2).sum
 
   // TODO: Explain newActivityPnl properly
-  val explained = totalDeltaExplain + newActivityPnl + totalEquity + totalIncome - totalExpense
+  val explained = totalDeltaExplain + newActivityPnl + totalEquity + totalIncome + yieldIncome - totalExpense
   val unexplained = actualPnl - explained
 
 
@@ -62,7 +76,7 @@ class PLExplain(fromDate: LocalDate, toDate: LocalDate)
 //    )
     PLExplainDTO(Some(fromDate), Some(toDate),Some(totalNetworthEnd.getBalance(baseCcy).number.toDouble) ,actualPnl, explained, unexplained,
       newActivityPnl, newActivityByTx.map(x => PnlAccountComponent(x._1, x._2)).toSeq.sortBy(_.accountId),
-      totalEquity, totalIncome, totalExpense, totalDeltaExplain,
+      totalEquity, totalIncome, yieldIncome, totalExpense, totalDeltaExplain,
       deltaExplain.toSeq)
   }
 
@@ -73,7 +87,9 @@ case class PLExplainDTO(fromDate:Option[LocalDate], toDate:Option[LocalDate],
                         toNetworth: Option[Double],
                         actual:Double, explained:Double, unexplained:Double,
                         newActivityPnl: Double, newActivityByAccount: Seq[PnlAccountComponent],
-                        totalEquity: Double, totalIncome:Double, totalExpense:Double, totalDeltaExplain:Double,
+                        totalEquity: Double,
+                        totalIncome:Double, totalYieldIncome:Double,
+                        totalExpense:Double, totalDeltaExplain:Double,
                         delta: Seq[DeltaExplain],
                         tenor: String = "") {
   def withLabel(label:String) : PLExplainDTO = {
@@ -108,6 +124,7 @@ object PLExplainDTO {
       newActivityByAccount = null, // FIXME:!!!
       totalEquity = exps.map(_.totalEquity).sum,
       totalIncome = exps.map(_.totalIncome).sum,
+      totalYieldIncome = exps.map(_.totalYieldIncome).sum,
       totalExpense = exps.map(_.totalExpense).sum,
       totalDeltaExplain = exps.map(_.totalDeltaExplain).sum,
       delta = Seq(),
