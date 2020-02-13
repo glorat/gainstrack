@@ -11,7 +11,7 @@ trait AccountCommand extends Command with DomainEvent  {
   def commandString: String // The stored short version
   def description: String
   def toGainstrack: Seq[String]
-  def toPartialDTO: AccountCommandDTO
+  protected def toPartialDTO: AccountCommandDTO
   def toDTO = toPartialDTO.autoFill(this)
 
   // Required for filtering

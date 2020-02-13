@@ -91,6 +91,17 @@ case class Transaction (
     }).sum
   }
 
+  def pnl2(singleFXConverter: SingleFXConverter, toDate:LocalDate, baseCcy:AssetId, multFn:PartialFunction[AccountType, Double]) = {
+    filledPostings.map(p => {
+      val amt = p.value.get
+      val fx = singleFXConverter.getFX(amt.ccy, baseCcy, toDate).getOrElse(0.0)
+      val pval = fx * amt.number.toDouble
+
+      val mult:Double = if (multFn.isDefinedAt(p.account.accountType)) multFn(p.account.accountType) else 0.0
+      pval * mult
+    }).sum
+  }
+
 
   override def toString: String = toBeancount.map(_.value).mkString("\n")
 }

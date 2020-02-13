@@ -12,7 +12,7 @@
         </div>
         <div>
             Account:
-            <account-selector v-model="c.accountId" v-on:input="accountIdChanged"></account-selector>
+            <account-selector v-model="c.accountId" v-on:input="accountIdChanged" :account-list="balanceableAccounts"></account-selector>
         </div>
         <div>
             Balance
@@ -20,7 +20,7 @@
         </div>
         <div>
             Adjustment Account:
-            <account-selector v-model="c.otherAccount"></account-selector>
+            <account-selector v-model="c.otherAccount" :account-list="adjustableAccounts"></account-selector>
         </div>
     </div>
 </template>
@@ -82,6 +82,19 @@
             return {c};
         },
         computed: {
+            balanceableAccounts() {
+                return this.$store.state.summary.accounts.filter(acct => {
+                    const id = acct.accountId;
+                    const t = (/^(Asset|Liabilities|Equity)/.test(id));
+                    return (acct.options.generatedAccount === false) && t
+                }).map( a => a.accountId).sort()
+            },
+            adjustableAccounts() {
+                return this.$store.state.summary.accounts.filter(acct => {
+                    const id = acct.accountId;
+                    return (acct.options.generatedAccount === false);
+                }).map( a => a.accountId).sort()
+            },
             isValid() /*: boolean*/ {
                 const c = this.c;
                 // @ts-ignore
