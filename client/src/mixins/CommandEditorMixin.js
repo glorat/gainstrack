@@ -28,6 +28,7 @@ export const CommandEditorMixin = {
             'tradeableAccounts',
             'findAccount',
             'mainAccounts',
+            'mainAssetAccounts',
         ]),
     }
 };
