@@ -12,7 +12,7 @@
         </div>
         <div>
             Transfer:
-            <account-selector v-model="c.accountId" v-on:input="accountIdChanged"></account-selector>
+            <account-selector v-model="c.accountId" v-on:input="accountIdChanged" :account-list="transferableAccounts"></account-selector>
         </div>
         <div>
             amount
@@ -81,10 +81,7 @@
         },
         computed: {
             transferableAccounts() {
-                const all = this.$store.state.summary.accounts;
-                // FIXME: We don't transfer to non-main accounts but this isn't flagged up anywhere yet
-                // const scope = all.filter(x => x.accountId.startsWith('Asset') && x.options.multiAsset);
-                return all.map(x => x.accountId).sort();
+                return this.mainAccounts;
             },
             isValid() {
                 const c = this.c;

@@ -74,9 +74,10 @@
         },
         computed: {
             mainAccount() {
-                const all = this.$store.state.summary.accounts;
-                const acct = all.find(x => x.accountId === this.c.accountId);
-                return acct;
+                return this.findAccount(this.c.accountId);
+                // const all = this.$store.state.summary.accounts;
+                // const acct = all.find(x => x.accountId === this.c.accountId);
+                // return acct;
             },
             fundableAccounts() {
                 const all = this.$store.state.summary.accounts;

@@ -4,13 +4,24 @@ export interface AccountCreation {
     options: AccountOptions;
 }
 
+export interface AccountDTO {
+    date: string
+    accountId: string
+    ccy: string
+    options: AccountOptions
+}
+
 export interface AccountKey {
     name: string;
     assetId: string;
 }
 
 export interface AccountOptions {
-    tradingAccount: boolean;
+    tradingAccount: boolean
+    fundingAccount: string
+    autoReinvestment: boolean
+    multiAsset: boolean
+    generatedAccount: boolean
 }
 
 export interface Amount {
@@ -41,7 +52,7 @@ export interface AccountCommandDTO {
 
 export interface StateSummaryDTO {
     accountIds: string[]
-    accounts: object[]
+    accounts: AccountDTO[]
     ccys: string[]
     authentication: object
     commands: AccountCommandDTO[]
