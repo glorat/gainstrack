@@ -17,6 +17,12 @@
     <div v-else-if="type === 'open'">
         <account-creation :cmd="cmd" v-on:input="inputChanged()" v-on:gainstrack-changed="gainstrackChanged($event)"></account-creation>
     </div>
+    <div v-else-if="type === 'earn'">
+        <earn-editor :cmd="cmd" v-on:input="inputChanged()" v-on:gainstrack-changed="gainstrackChanged($event)"></earn-editor>
+    </div>
+    <div v-else-if="type === 'yield'">
+        <yield-editor :cmd="cmd" v-on:input="inputChanged()" v-on:gainstrack-changed="gainstrackChanged($event)"></yield-editor>
+    </div>
     <div v-else-if="type === 'C'">
         C
     </div>
@@ -32,10 +38,14 @@
     import FundCommand from './FundCommand';
     import UnitCommand from './UnitCommand';
     import AccountCreation from './AccountCreation';
+    import EarnEditor from './EarnEditor';
+    import YieldEditor from './YieldEditor';
 
     export default {
         name: 'CommandEditor',
-        components: {UnitCommand, FundCommand, BalanceStatement, TradeEditor, Transfer, AccountCreation},
+        components: {
+            YieldEditor,
+            EarnEditor, UnitCommand, FundCommand, BalanceStatement, TradeEditor, Transfer, AccountCreation},
         methods: {
             gainstrackChanged(str) {
                 this.$emit('gainstrack-changed', str);

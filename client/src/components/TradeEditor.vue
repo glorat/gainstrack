@@ -1,14 +1,7 @@
 <template>
     <div>
         <div>
-            <el-date-picker
-                    v-model="c.date"
-                    type="date"
-                    value-format="yyyy-MM-dd"
-                    size="mini"
-                    :clearable="false"
-            >
-            </el-date-picker>
+            <command-date-editor v-model="c.date"></command-date-editor>
         </div>
         <div>
             <account-selector v-model="c.accountId" :account-list="tradeableAccounts" @input="accountIdChanged"></account-selector>
@@ -32,15 +25,12 @@
 <script>
     import BalanceEditor from './BalanceEditor.vue';
     import {CommandEditorMixin} from '../mixins/CommandEditorMixin';
-    import {DatePicker} from 'element-ui';
-    import lang from 'element-ui/lib/locale/lang/en'
-    import locale from 'element-ui/lib/locale'
     import AccountSelector from './AccountSelector';
-    locale.use(lang);
+    import CommandDateEditor from './CommandDateEditor';
 
     export default {
         name: 'TradeEditor',
-        components: {AccountSelector, BalanceEditor, 'el-date-picker': DatePicker},
+        components: {AccountSelector, BalanceEditor, CommandDateEditor},
         mixins: [CommandEditorMixin],
         data() {
             let c = {};

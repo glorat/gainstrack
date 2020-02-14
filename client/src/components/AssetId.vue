@@ -32,7 +32,6 @@
                     return {value: ccy, label: ccy};
                 });
             }
-
         },
         methods: {
             onSelectChanged(ev: string) {

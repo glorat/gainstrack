@@ -130,7 +130,12 @@ export default new Vuex.Store({
     getters: {
         tradeableAccounts: state => {
             const all = state.summary.accounts;
-            const scope = all.filter(x => x.accountId.startsWith('Asset') && x.options.multiAsset);
+            const scope = all.filter(x => x.accountId.startsWith('Asset') && x.options.multiAsset && !x.options.generatedAccount);
+            return scope.map(x => x.accountId).sort();
+        },
+        mainAssetAccounts: state => {
+            const all = state.summary.accounts;
+            const scope = all.filter(x => x.accountId.startsWith('Asset') && !x.options.generatedAccount);
             return scope.map(x => x.accountId).sort();
         },
         mainAccounts: state => {
