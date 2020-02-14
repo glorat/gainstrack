@@ -11,7 +11,7 @@ case class AssetState(
   extends AggregateRootState {
 
   def toDTO = {
-    allAssets.values.map(_.toPartialDTO).toSeq
+    allAssets.values.map(_.toDTO).toSeq
   }
 
   /**
