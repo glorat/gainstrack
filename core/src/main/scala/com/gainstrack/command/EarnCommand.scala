@@ -3,19 +3,23 @@ package com.gainstrack.command
 import com.gainstrack.core._
 
 case class EarnCommand(date:LocalDate, incomeTag:String, value:Amount, targetAccountIdOpt:Option[AccountId] = None) extends CommandNeedsAccounts {
-  val incomeAccountId = AccountId(s"Income:${incomeTag}:${value.ccy.symbol}")
+  val mainIncomeAccountId = if (incomeTag.startsWith("Income:")) AccountId(incomeTag) else AccountId(s"Income:${incomeTag}")
+
+  // private val incomeAccountId = AccountId(s"${mainIncomeAccountId}:${value.ccy.symbol}")
 
   override def commandString: String = EarnCommand.prefix
 
   override def description: String = s"Earn ${value} ${incomeTag}"
 
-  override def mainAccount: Option[AccountId] = Some(incomeAccountId)
+  override def mainAccount: Option[AccountId] = Some(mainIncomeAccountId)
 
   // Leave as not implemented because we actually need to sub this out mid generation to a Transfer command
   override def involvedAccounts: Set[AccountId] = ???
 
   def toTransfers(accts:Set[AccountCreation]) : Seq[Transfer] = {
-    val incomeAccount = accts.find(_.accountId == incomeAccountId).getOrElse(throw new IllegalStateException(s"Income account ${incomeAccountId} is not defined"))
+    val incomeAccount = accts.find(_.accountId == mainIncomeAccountId)
+      .orElse(accts.find(_.accountId == mainIncomeAccountId.subAccount(value.ccy.symbol)))
+      .getOrElse(throw new IllegalStateException(s"Income account ${mainIncomeAccountId} is not defined"))
 
     val targetAccountId = targetAccountIdOpt.getOrElse(
       incomeAccount.options.fundingAccount.getOrElse(throw new IllegalStateException(s"Cannot earn from ${incomeAccount} without a fundingAccount option specified in its creation"))
@@ -23,7 +27,7 @@ case class EarnCommand(date:LocalDate, incomeTag:String, value:Amount, targetAcc
     val targetAccount = accts.find(_.accountId == targetAccountId).getOrElse(throw new IllegalStateException(s"Target account ${targetAccountId} does not exist"))
     // Multi-asset accounts have a dedicated sub funding account
     val targetFundingAccountId = if (targetAccount.options.multiAsset) targetAccountId.subAccount(value.ccy.symbol) else targetAccountId
-    Seq(Transfer(incomeAccountId, targetFundingAccountId, date, value, value, description))
+    Seq(Transfer(incomeAccount.accountId, targetFundingAccountId, date, value, value, description))
   }
 
   def toGainstrack: Seq[String] = {
@@ -36,7 +40,7 @@ case class EarnCommand(date:LocalDate, incomeTag:String, value:Amount, targetAcc
   }
 
   override def toPartialDTO: AccountCommandDTO = {
-    AccountCommandDTO(accountId = incomeAccountId, date = date, change = Some(value), otherAccount = targetAccountIdOpt)
+    AccountCommandDTO(accountId = mainIncomeAccountId, date = date, change = Some(value), otherAccount = targetAccountIdOpt)
   }
 }
 
