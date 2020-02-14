@@ -14,10 +14,10 @@
 </template>
 
 <script>
-    import AccountSelector from './AccountSelector';
+    import AccountSelector from '../AccountSelector';
     import BalanceEditor from './BalanceEditor';
-    import CommandDateEditor from './CommandDateEditor';
-    import {CommandEditorMixin} from "../mixins/CommandEditorMixin";
+    import CommandDateEditor from '../CommandDateEditor';
+    import {CommandEditorMixin} from '../../mixins/CommandEditorMixin';
 
     export default {
         name: 'EarnEditor',
@@ -53,12 +53,8 @@
             toGainstrack() {
                 if (this.isValid) {
                     const tag = this.c.accountId.substring(7);
-                    let baseStr = `${this.c.date} earn ${tag} ${this.c.change.number} ${this.c.change.ccy}`;
-                    return baseStr
-                } else {
-                    return undefined;
+                    return `${this.c.date} earn ${tag} ${this.c.change.number} ${this.c.change.ccy}`;
                 }
-
             }
         },
     }

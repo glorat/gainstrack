@@ -43,11 +43,11 @@
 </template>
 
 <script>
-    import AccountSelector from './AccountSelector';
+    import AccountSelector from '../AccountSelector';
     import BalanceEditor from './BalanceEditor';
     import {DatePicker, Input, Option, Select, Switch} from 'element-ui';
-    import {CommandEditorMixin} from '../mixins/CommandEditorMixin';
-    import AssetId from './AssetId';
+    import {CommandEditorMixin} from '../../mixins/CommandEditorMixin';
+    import AssetId from '../AssetId';
 
     export default {
         name: 'AccountCreation',

@@ -24,9 +24,9 @@
 
 <script>
     import BalanceEditor from './BalanceEditor.vue';
-    import {CommandEditorMixin} from '../mixins/CommandEditorMixin';
-    import AccountSelector from './AccountSelector';
-    import CommandDateEditor from './CommandDateEditor';
+    import {CommandEditorMixin} from '../../mixins/CommandEditorMixin';
+    import AccountSelector from '../AccountSelector';
+    import CommandDateEditor from '../CommandDateEditor';
 
     export default {
         name: 'TradeEditor',

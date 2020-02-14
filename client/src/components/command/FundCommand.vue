@@ -28,8 +28,8 @@
 
 <script>
     import BalanceEditor from './BalanceEditor.vue';
-    import {CommandEditorMixin} from '../mixins/CommandEditorMixin';
-    import AccountSelector from './AccountSelector';
+    import {CommandEditorMixin} from '../../mixins/CommandEditorMixin';
+    import AccountSelector from '../AccountSelector';
     import {DatePicker, Input, Option, Select, Switch} from 'element-ui';
 
     export default {

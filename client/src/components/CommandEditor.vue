@@ -32,14 +32,14 @@
 </template>
 
 <script>
-    import Transfer from './Transfer';
-    import TradeEditor from './TradeEditor';
-    import BalanceStatement from './BalanceStatement';
-    import FundCommand from './FundCommand';
-    import UnitCommand from './UnitCommand';
-    import AccountCreation from './AccountCreation';
-    import EarnEditor from './EarnEditor';
-    import YieldEditor from './YieldEditor';
+    import Transfer from './command/Transfer';
+    import TradeEditor from './command/TradeEditor';
+    import BalanceStatement from './command/BalanceStatement';
+    import FundCommand from './command/FundCommand';
+    import UnitCommand from './command/UnitCommand';
+    import AccountCreation from './command/AccountCreation';
+    import EarnEditor from './command/EarnEditor';
+    import YieldEditor from './command/YieldEditor';
 
     export default {
         name: 'CommandEditor',
