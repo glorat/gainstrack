@@ -4,3 +4,12 @@ option "operating_currency" "USD"
 
 1900-01-01 open Expenses:General USD
   multiAsset: true
+
+1900-01-01 open Assets:Bank USD
+
+1900-01-01 open Assets:Investment USD
+  fundingAccount: Assets:Bank
+  multiAsset: true
+
+1900-01-01 open Income:Salary USD
+  fundingAccount: Assets:Bank
