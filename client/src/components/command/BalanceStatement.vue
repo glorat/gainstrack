@@ -28,8 +28,8 @@
 <script>
     // import {AccountCommandDTO, AccountDTO} from '@/models';
     import BalanceEditor from './BalanceEditor.vue';
-    import {CommandEditorMixin} from '../mixins/CommandEditorMixin';
-    import AccountSelector from './AccountSelector.vue';
+    import {CommandEditorMixin} from '../../mixins/CommandEditorMixin';
+    import AccountSelector from '../AccountSelector.vue';
     import {DatePicker, Input, Option, Select, Switch} from 'element-ui';
     import Vue from 'vue';
 

@@ -26,9 +26,9 @@
 </template>
 
 <script>
-    import {CommandEditorMixin} from '../mixins/CommandEditorMixin';
+    import {CommandEditorMixin} from '../../mixins/CommandEditorMixin';
     import Vue from 'vue';
-    import AccountSelector from './AccountSelector';
+    import AccountSelector from '../AccountSelector';
     import BalanceEditor from './BalanceEditor';
     import {DatePicker} from 'element-ui';
     import { mapGetters } from 'vuex';

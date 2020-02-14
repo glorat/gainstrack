@@ -33,9 +33,9 @@
 
 <script>
     import BalanceEditor from './BalanceEditor.vue';
-    import {CommandEditorMixin} from '../mixins/CommandEditorMixin';
+    import {CommandEditorMixin} from '../../mixins/CommandEditorMixin';
     import {DatePicker, Input, Option, Select, Switch} from 'element-ui';
-    import AccountSelector from './AccountSelector';
+    import AccountSelector from '../AccountSelector';
 
     export default {
         name: 'Transfer',
