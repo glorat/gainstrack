@@ -68,6 +68,7 @@
                             this.added = response.data.added;
                             this.success = true;
                             this.$notify.success(`${this.added.length} entries added`);
+                            this.$store.dispatch('reload');
                         }
 
                     })
