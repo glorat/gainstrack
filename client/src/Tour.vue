@@ -31,16 +31,12 @@
                     {
                         target: '#add-fund',
                         content: 'Click to fund our investment account',
-                        beforeStep() {
-                            self.goto('/add');
-                        }
+                        navTarget: {path:'/add'},
                     },
                     {
                         target: '.c-account-id',
                         content: 'Choose your investment account',
-                        beforeStep() {
-                            self.goto('/add/cmd?cmd=fund');
-                        },
+                        navTarget: {path:'/add/cmd', query:{cmd:'fund'}},
                         params: {
                             placement: 'right-start'
                         }
@@ -73,9 +69,7 @@
                         params: {
                             placement: 'top'
                         },
-                        beforeStep() {
-                            self.goto('/balance_sheet');
-                        },
+                        navTarget: {path: '/balance_sheet'},
                     },
                     {
                         // target: '#add-record', // popper handles this wrong
@@ -91,16 +85,12 @@
                     {
                         target: '#add-trade',
                         content: 'Click to record a trade',
-                        beforeStep() {
-                            self.goto('/add');
-                        }
+                        navTarget: {path: '/add'},
                     },
                     {
                         target: '.c-account-id',
                         content: 'Choose your investment account',
-                        beforeStep() {
-                            self.goto('/add/cmd?cmd=trade');
-                        },
+                        navTarget: {path: '/add/cmd', query: {cmd:'trade'}},
                         params: {
                             placement: 'right'
                         }
@@ -138,6 +128,7 @@
                         // target: '#route-balance_sheet', // popper fails on this
                         target: '.login',
                         content: 'Thank you for completing the guided tour. Feel free to keep making any changes and experiment. If you want your changes to be saved, you will need to Sign/Up Login',
+                        navTarget: {path: '/balance_sheet'},
                         params: {
                             placement: 'right-start'
                         }
@@ -146,14 +137,14 @@
                 callbacks: {
                     onPreviousStep(current) {
                         const nextStep = self.steps[current - 1];
-                        if (nextStep && nextStep.beforeStep) {
-                            nextStep.beforeStep()
+                        if (nextStep && nextStep.navTarget) {
+                            self.goto(nextStep.navTarget);
                         }
                     },
                     onNextStep(current) {
                         const nextStep = self.steps[current + 1];
-                        if (nextStep && nextStep.beforeStep) {
-                            nextStep.beforeStep()
+                        if (nextStep && nextStep.navTarget) {
+                            self.goto(nextStep.navTarget);
                         }
                     }
                 }
@@ -173,6 +164,16 @@
         mounted() {
             // The tour is for anonymous users only
             if (!this.authentication.username) {
+                this.$router.afterEach((to, from) => {
+                    const nextStepIdx = this.$tours.myTour.currentStep + 1;
+                    const nextStep = this.steps[nextStepIdx];
+                    if (nextStep && nextStep.navTarget && nextStep.navTarget.path == to.path) {
+                        // TODO: Also compare to.query with nextStep.navTarget.query
+                        // TODO: Undo this hack where we just assume the new route will render in time
+                        setTimeout(()=>this.$tours.myTour.nextStep(), 500);
+                    }
+                    // console.log(`routed to ${to.path} ${JSON.stringify(to.query)}`)
+                });
                 this.$tours.myTour.start()
             }
         },
