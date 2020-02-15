@@ -4,15 +4,16 @@
             <command-date-editor v-model="c.date"></command-date-editor>
         </div>
         <div>
-            <account-selector v-model="c.accountId" :account-list="tradeableAccounts" @input="accountIdChanged"></account-selector>
+            <account-selector class="c-account-id"  v-model="c.accountId"
+                              :account-list="tradeableAccounts" @input="accountIdChanged"></account-selector>
         </div>
         <div>
             Purchase
-            <balance-editor v-model="c.change"></balance-editor>
+            <balance-editor class="c-change" v-model="c.change"></balance-editor>
         </div>
         <div>
             Price
-            <balance-editor v-model="c.price"></balance-editor>
+            <balance-editor class="c-price" v-model="c.price"></balance-editor>
         </div>
         <div>
             Commission

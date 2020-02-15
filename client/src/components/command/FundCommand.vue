@@ -12,15 +12,15 @@
         </div>
         <div>
             Fund:
-            <account-selector v-model="c.accountId" v-on:input="accountIdChanged" :account-list="fundableAccounts"></account-selector>
+            <account-selector class="c-account-id" v-model="c.accountId" v-on:input="accountIdChanged" :account-list="fundableAccounts"></account-selector>
         </div>
         <div>
             Amount
-            <balance-editor v-model="c.change" v-on:input="inputChanged()"></balance-editor>
+            <balance-editor class="c-change" v-model="c.change" v-on:input="inputChanged()"></balance-editor>
         </div>
         <div>
             Funding source
-            <account-selector v-model="c.otherAccount" v-on:input="accountIdChanged" :placeholder="defaultFundingAccount"></account-selector>
+            <account-selector class="c-other-account" v-model="c.otherAccount" v-on:input="accountIdChanged" :placeholder="defaultFundingAccount"></account-selector>
         </div>
 
     </div>
@@ -58,11 +58,10 @@
         },
         methods: {
             accountIdChanged() {
-                // const all = this.$store.state.summary.accounts;
-                // const acct = all.find(x => x.accountId === this.c.accountId);
-                // if (acct) {
-                //     this.c.change.ccy = acct.ccy;
-                // }
+                const acct = this.findAccount(this.c.accountId);
+                if (acct) {
+                    this.c.change.ccy = acct.ccy;
+                }
             },
             otherAccountChanged() {
                 const all = this.$store.state.summary.accounts;

@@ -3,7 +3,7 @@
 
         <template v-for="command in commands">
             <el-card class="box-card" :body-style="{ padding: '5px' }" shadow="always">
-                <div @click="go(command)" style="cursor: pointer;">
+                <div @click="go(command)" :id="'add-'+command.title.toLowerCase()" style="cursor: pointer;">
                     <el-link><span class="el-icon-circle-plus-outline" ></span> {{command.title}}</el-link>
                     <el-divider></el-divider>
                     {{ command.description }}

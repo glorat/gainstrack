@@ -8,7 +8,7 @@
         </div>
         <div class="row">
             <div class="column">
-                <h3>Assets</h3>
+                <h3 id="assets-table">Assets</h3>
                 <tree-table v-bind:node="info['Assets']"></tree-table>
             </div>
             <div class="column">

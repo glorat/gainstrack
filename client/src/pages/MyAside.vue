@@ -1,14 +1,14 @@
 <template>
     <aside class="myaside">
         <ul class="navigation">
-            <li>
+            <li id="add-record">
                 <router-link v-bind:to="'/add'"><span class="el-icon-circle-plus-outline"></span> {{ config.allPages['add'][0] }}</router-link>
             </li>
         </ul>
 
         <ul v-for="menuItems in config.navigationBar" class="navigation">
             <template v-for="id in menuItems">
-                <li>
+                <li :id="`route-${id}`">
                     <router-link v-bind:to="'/' + id">{{ config.allPages[id][0] }}</router-link>
                 </li>
                 <li v-if="id=='editor'" :class="errorClass">
