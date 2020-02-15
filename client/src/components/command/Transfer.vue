@@ -12,15 +12,17 @@
         </div>
         <div>
             Transfer:
-            <account-selector v-model="c.accountId" v-on:input="accountIdChanged" :account-list="transferableAccounts"></account-selector>
+            <account-selector class="c-account-id" v-model="c.accountId" v-on:input="accountIdChanged"
+                              :account-list="transferableAccounts"></account-selector>
         </div>
         <div>
             amount
-            <balance-editor v-model="c.change" v-on:input="inputChanged()"></balance-editor>
+            <balance-editor class="c-change" v-model="c.change" v-on:input="inputChanged()"></balance-editor>
         </div>
         <div>
             To
-            <account-selector v-model="c.otherAccount" v-on:input="otherAccountIdChanged" :account-list="transferableAccounts"></account-selector>
+            <account-selector v-model="c.otherAccount" v-on:input="otherAccountIdChanged"
+                              :account-list="transferableAccounts"></account-selector>
         </div>
         <div>
             value

@@ -5,7 +5,7 @@
             <div>
                 <pre>{{ commandStr }}</pre>
             </div>
-            <button :disabled="errors.length || !commandStr" type="button" v-on:click="addCommand">Add</button>
+            <button class="c-add" :disabled="errors.length || !commandStr" type="button" v-on:click="addCommand">Add</button>
         </div>
         <div v-if="errors.length>0">
             <source-errors :errs="errors"></source-errors>

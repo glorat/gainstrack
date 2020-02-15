@@ -1,7 +1,7 @@
 <template>
     <div>
         <div v-if="!$auth.loading">
-            <button v-if="!$auth.isAuthenticated" @click="auth0login">Sign Up/Log in</button>
+            <button class="login" v-if="!$auth.isAuthenticated" @click="auth0login">Sign Up/Log in</button>
             <button v-if="false" @click="auth0validate">Test</button>
         </div>
         <hr>
