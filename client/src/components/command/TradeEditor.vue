@@ -33,18 +33,6 @@
         name: 'TradeEditor',
         components: {AccountSelector, BalanceEditor, CommandDateEditor},
         mixins: [CommandEditorMixin],
-        data() {
-            let c = {};
-            if (this.cmd) {
-                c = {...this.cmd}
-            }
-            c.date = c.date || new Date().toISOString().slice(0, 10);
-            c.change = c.change || {number: 0, ccy: ''};
-            c.price = c.price || {number: 0, ccy: ''};
-            c.commission = c.commission || {number: 0, ccy: ''};
-            c.accountId = c.accountId || '';
-            return {c};
-        },
         methods: {
             accountIdChanged() {
                 const all /*: AccountDTO[]*/ = this.$store.state.summary.accounts;

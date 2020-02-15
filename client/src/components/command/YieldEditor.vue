@@ -28,17 +28,6 @@
         name: 'YieldEditor',
         components: {AssetId, AccountSelector, BalanceEditor, CommandDateEditor},
         mixins: [CommandEditorMixin],
-        data() {
-            let c = {};
-            if (this.cmd) {
-                c = {...this.cmd}
-            }
-            c.date = c.date || new Date().toISOString().slice(0, 10);
-            c.change = c.change || {number: 0, ccy: ''};
-            c.accountId = c.accountId || '';
-            c.asset = c.asset || '';
-            return {c};
-        },
         methods: {
             accountIdChanged() {
                 const acct = this.findAccount(this.c.accountId)

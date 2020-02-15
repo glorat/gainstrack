@@ -44,18 +44,6 @@
             'el-switch': Switch,
             'el-input': Input,
         },
-        data() {
-            let c = {};
-            if (this.cmd) {
-                c = {...this.cmd}
-            }
-            c.date = c.date || new Date().toISOString().slice(0, 10);
-            c.change = c.change || {number: 0, ccy: ''};
-            c.price = c.price || {number: 0, ccy: ''};
-            c.accountId = c.accountId || '';
-            c.otherAccount = c.otherAccount || '';
-            return {c};
-        },
         methods: {
             accountIdChanged() {
                 const acct = this.findAccount(this.c.accountId);
