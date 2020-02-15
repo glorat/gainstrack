@@ -46,12 +46,9 @@ store.dispatch('reload');
 Vue.config.productionTip = false;
 
 import VueTour from 'vue-tour'
-// @ts-ignore
+// tslint:disable-next-line
 require('vue-tour/dist/vue-tour.css');
 Vue.use(VueTour);
-
-
-
 
 new Vue({
   router,
