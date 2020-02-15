@@ -5,11 +5,11 @@
 <script>
     export default {
         name: 'Tour',
-        data () {
+        data() {
             const self = this;
             return {
                 options: {
-                  highlights: false // Make true when ready
+                    highlights: false // Make true when ready
                 },
                 steps: [
                     {
@@ -32,14 +32,14 @@
                         target: '#add-fund',
                         content: 'Click to fund our investment account',
                         beforeStep() {
-                            self.$router.push('/add').catch(err => {})
+                            self.goto('/add');
                         }
                     },
                     {
                         target: '.c-account-id',
                         content: 'Choose your investment account',
                         beforeStep() {
-                            self.$router.push('/add/cmd?cmd=fund').catch(err => {})
+                            self.goto('/add/cmd?cmd=fund');
                         },
                         params: {
                             placement: 'right-start'
@@ -74,7 +74,7 @@
                             placement: 'top'
                         },
                         beforeStep() {
-                            self.$router.push('/balance_sheet').catch(err => {})
+                            self.goto('/balance_sheet');
                         },
                     },
                     {
@@ -92,14 +92,14 @@
                         target: '#add-trade',
                         content: 'Click to record a trade',
                         beforeStep() {
-                            self.$router.push('/add').catch(err => {})
+                            self.goto('/add');
                         }
                     },
                     {
                         target: '.c-account-id',
                         content: 'Choose your investment account',
                         beforeStep() {
-                            self.$router.push('/add/cmd?cmd=trade').catch(err => {})
+                            self.goto('/add/cmd?cmd=trade');
                         },
                         params: {
                             placement: 'right'
@@ -145,13 +145,13 @@
                 ],
                 callbacks: {
                     onPreviousStep(current) {
-                        const nextStep = self.steps[current-1];
+                        const nextStep = self.steps[current - 1];
                         if (nextStep && nextStep.beforeStep) {
                             nextStep.beforeStep()
                         }
                     },
                     onNextStep(current) {
-                        const nextStep = self.steps[current+1];
+                        const nextStep = self.steps[current + 1];
                         if (nextStep && nextStep.beforeStep) {
                             nextStep.beforeStep()
                         }
@@ -159,15 +159,21 @@
                 }
             }
         },
+        methods: {
+          goto(target) {
+              // tslint:disable-next-line
+              this.$router.push(target).catch(err => {})
+          },
+        },
         computed: {
             authentication() {
                 return this.$store.state.summary.authentication;
             },
         },
-        mounted: function () {
+        mounted() {
             // The tour is for anonymous users only
             if (!this.authentication.username) {
-                this.$tours['myTour'].start()
+                this.$tours.myTour.start()
             }
         },
     }
