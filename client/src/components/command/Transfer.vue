@@ -53,17 +53,7 @@
         },
         mixins: [CommandEditorMixin],
         data() {
-            let c = {};
-            if (this.cmd) {
-                c = {...this.cmd}
-            }
-            c.date = c.date || new Date().toISOString().slice(0, 10);
-            c.change = c.change || {number: 0, ccy: ''};
-            c.price = c.price || {number: 0, ccy: ''};
-            c.otherAccount = c.otherAccount || '';
-            c.commission = c.commission || {number: 0, ccy: ''};
-            c.accountId = c.accountId || '';
-            return {c, targetChange: {number: 0, ccy: ''}};
+            return {targetChange: {number: 0, ccy: ''}};
         },
         methods: {
             accountIdChanged() {
@@ -97,7 +87,7 @@
             toGainstrack() {
                 if (this.isValid) {
                     const c = this.c;
-                    let baseStr = `${c.date} tfr ${c.source} ${c.otherAccount} ${c.change.number} ${c.change.ccy}`;
+                    let baseStr = `${c.date} tfr ${c.accountId} ${c.otherAccount} ${c.change.number} ${c.change.ccy}`;
                     if (c.change.number !== this.targetChange.number
                         || c.change.ccy !== this.targetChange.ccy) {
                         baseStr += ` ${this.targetChange.number} ${this.targetChange.ccy}`;

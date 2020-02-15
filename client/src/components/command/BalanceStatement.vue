@@ -69,18 +69,6 @@
                 }
             },
         },
-        data() /*: MyData*/ {
-            let c /*: AccountCommandDTO*/ = {accountId: '', date: ''};
-            if (this.cmd) {
-                c = {...this.cmd};
-            }
-            c.date = c.date || new Date().toISOString().slice(0, 10);
-            c.balance = c.balance || {number: 0, ccy: ''};
-            c.price = c.price || {number: 0, ccy: ''};
-            c.accountId = c.accountId || '';
-            c.otherAccount = c.otherAccount || '';
-            return {c};
-        },
         computed: {
             balanceableAccounts() {
                 return this.$store.state.summary.accounts.filter(acct => {

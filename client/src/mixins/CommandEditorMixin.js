@@ -3,6 +3,20 @@ import {mapGetters} from "vuex";
 export const CommandEditorMixin = {
     inheritAttrs: false,
     props: {cmd: Object},
+    data() {
+        let c = {};
+        if (this.cmd) {
+            c = {...this.cmd}
+        }
+        c.date = c.date || new Date().toISOString().slice(0, 10);
+        c.change = c.change || {number: 0, ccy: ''};
+        c.balance = c.balance || {number: 0, ccy: ''};
+        c.price = c.price || {number: 0, ccy: ''};
+        c.commission = c.commission || {number: 0, ccy: ''};
+        c.accountId = c.accountId || '';
+        c.otherAccount = c.otherAccount || '';
+        return {c};
+    },
     methods: {
         inputChanged() {
             //const str = this.toGainstrack;
