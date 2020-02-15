@@ -31,12 +31,12 @@
                     {
                         target: '#add-fund',
                         content: 'Click to fund our investment account',
-                        navTarget: {path:'/add'},
+                        navTarget: {path: '/add'},
                     },
                     {
                         target: '.c-account-id',
                         content: 'Choose your investment account',
-                        navTarget: {path:'/add/cmd', query:{cmd:'fund'}},
+                        navTarget: {path: '/add/cmd', query: {cmd: 'fund'}},
                         params: {
                             placement: 'right-start'
                         }
@@ -90,7 +90,7 @@
                     {
                         target: '.c-account-id',
                         content: 'Choose your investment account',
-                        navTarget: {path: '/add/cmd', query: {cmd:'trade'}},
+                        navTarget: {path: '/add/cmd', query: {cmd: 'trade'}},
                         params: {
                             placement: 'right'
                         }
@@ -151,10 +151,11 @@
             }
         },
         methods: {
-          goto(target) {
-              // tslint:disable-next-line
-              this.$router.push(target).catch(err => {})
-          },
+            goto(target) {
+                // tslint:disable-next-line
+                this.$router.push(target).catch(err => {
+                })
+            },
         },
         computed: {
             authentication() {
@@ -167,10 +168,10 @@
                 this.$router.afterEach((to, from) => {
                     const nextStepIdx = this.$tours.myTour.currentStep + 1;
                     const nextStep = this.steps[nextStepIdx];
-                    if (nextStep && nextStep.navTarget && nextStep.navTarget.path == to.path) {
+                    if (nextStep && nextStep.navTarget && nextStep.navTarget.path === to.path) {
                         // TODO: Also compare to.query with nextStep.navTarget.query
                         // TODO: Undo this hack where we just assume the new route will render in time
-                        setTimeout(()=>this.$tours.myTour.nextStep(), 500);
+                        setTimeout(() => this.$tours.myTour.nextStep(), 500);
                     }
                     // console.log(`routed to ${to.path} ${JSON.stringify(to.query)}`)
                 });
