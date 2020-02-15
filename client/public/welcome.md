@@ -6,6 +6,7 @@ Gainstrack is the app to help you get in personal control of your finances with 
 
 ### Getting started
 For anonymous users
+- Try the guided tour!
 - Set up your accounts in the Editor or offline in a .gainstrack file
 - Save your accounts locally in your computer
 - Upload to the server to generate reports
@@ -18,6 +19,9 @@ For online use
 ### Errata
 #### Feb'20
 - The login facility is still work in progress but can be tried. Your data will be saved fine but page refreshes and session timeouts are handled poorly
+- While the UI editor can be used for submitting new entries, amendments or deletions can only be done via the text editor
+- Guided tour is still WIP
+
 #### Dec'19
 - P&L Explain may pull in real historic quotes from external data sources but other reports do not.
 - Income/Expenses/Liabilities are counterintuitively affected by future market prices, rather than retaining their original cost basis
@@ -26,6 +30,12 @@ For online use
 
 
 ### Release notes
+#### v0.6.0
+15 February
+- A completed set of UI editors for adding all commands
+- Improved P&L explain for new activity and income
+- A basic guided tour
+
 #### v0.5.0
 8 February
 - Rudimentary UI for updating your data without the text entry
