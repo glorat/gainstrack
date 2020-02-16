@@ -17,7 +17,8 @@
                 >
 
                     <div slot="actions">
-                        <button v-if="hasNext(step)" @click="tour.nextStep" class="btn btn-primary">Next step</button>
+                        <button v-if="!tour.isLast && hasNext(step)" @click.prevent="tour.nextStep" class="btn btn-primary">Next step</button>
+                        <button @click.prevent="tour.finish" v-if="tour.isLast" class="btn btn-primary">Have Fun!</button>
                         <br>
                         <span @click="tour.stop" style="font-size: x-small; cursor: pointer">Skip Tour</span>
                     </div>
@@ -232,12 +233,11 @@
                 this.$tours.myTour.nextStep();
             }, 500),
             hasNext(step) {
-                if (step.eventTest || step.cmdTest) {
+                if ( step.eventTest || step.cmdTest) {
                     return false
                 } else {
                     return true
                 }
-                ;
             },
         },
         computed: {
