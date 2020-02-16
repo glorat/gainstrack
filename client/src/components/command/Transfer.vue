@@ -17,7 +17,7 @@
         </div>
         <div>
             amount
-            <balance-editor class="c-change" v-model="c.change" v-on:input="inputChanged()"></balance-editor>
+            <balance-editor class="c-change" v-model="c.change" v-on:input="changeChanged()"></balance-editor>
         </div>
         <div>
             To
@@ -69,7 +69,15 @@
                 if (acct) {
                     this.targetChange.ccy = acct.ccy;
                 }
-            }
+            },
+            changeChanged() {
+                if (!this.targetChange.ccy) {
+                    this.targetChange.ccy = this.c.change.ccy;
+                }
+                if (this.targetChange.ccy === this.c.change.ccy) {
+                    this.targetChange.number = this.c.change.number;
+                }
+            },
         },
         computed: {
             transferableAccounts() {

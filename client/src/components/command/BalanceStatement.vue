@@ -1,6 +1,7 @@
 <template>
     <div>
         <div>
+            Date of balance observation:
             <el-date-picker
                     v-model="c.date"
                     type="date"
@@ -15,11 +16,11 @@
             <account-selector v-model="c.accountId" v-on:input="accountIdChanged" :account-list="balanceableAccounts"></account-selector>
         </div>
         <div>
-            Balance
+            Balance:
             <balance-editor v-model="c.balance"></balance-editor>
         </div>
         <div>
-            Adjustment Account:
+            <help-tip tag="balOtherAccount"></help-tip> Adjustment Account:
             <account-selector v-model="c.otherAccount" :account-list="mainAccounts"></account-selector>
         </div>
     </div>

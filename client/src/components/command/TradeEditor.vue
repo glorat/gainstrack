@@ -8,15 +8,15 @@
                               :account-list="tradeableAccounts" @input="accountIdChanged"></account-selector>
         </div>
         <div>
-            Purchase
+            <help-tip tag="tradeChange"></help-tip> Purchase
             <balance-editor class="c-change" v-model="c.change"></balance-editor>
         </div>
         <div>
-            Price
+            <help-tip tag="tradePrice"></help-tip> Price
             <balance-editor class="c-price" v-model="c.price"></balance-editor>
         </div>
         <div>
-            Commission
+            <help-tip tag="tradeCommission"></help-tip> Commission
             <balance-editor v-model="c.commission"></balance-editor>
         </div>
 
