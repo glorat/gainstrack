@@ -1,9 +1,35 @@
 <template>
-    <v-tour name="myTour" :steps="steps" :options="options" :callbacks="callbacks"></v-tour>
+    <v-tour name="myTour" :steps="steps" :options="options" :callbacks="callbacks">
+        <template slot-scope="tour">
+            <transition name="fade">
+                <v-step
+                        v-if="tour.currentStep === index"
+                        v-for="(step, index) of tour.steps"
+                        :key="index"
+                        :step="step"
+                        :previous-step="tour.previousStep"
+                        :next-step="tour.nextStep"
+                        :stop="tour.stop"
+                        :is-first="tour.isFirst"
+                        :is-last="tour.isLast"
+                        :labels="tour.labels"
+                        :highlight="tour.highlight"
+                >
+
+                    <div slot="actions">
+                        <button v-if="hasNext(step)" @click="tour.nextStep" class="btn btn-primary">Next step</button>
+                        <br>
+                        <span @click="tour.stop" style="font-size: x-small; cursor: pointer">Skip Tour</span>
+                    </div>
+                </v-step>
+            </transition>
+        </template>
+    </v-tour>
 </template>
 
 <script>
     import EventBus from '@/event-bus';
+    import {debounce} from 'lodash';
 
     export default {
         name: 'Tour',
@@ -11,7 +37,7 @@
             const self = this;
             return {
                 options: {
-                    highlights: false // Make true when ready
+                    highlight: false // Make true when ready. Unfortunately, popper is misplacing and highlight occludes drop downs
                 },
                 steps: [
                     {
@@ -31,28 +57,33 @@
                         },
                         content: `Click "Add Record" on the left menu bar`,
                         params: {
-                            placement: 'right-start'
+                            placement: 'right-start',
+                            enabledButtons: {buttonNext: false}
+                        },
+                        eventTest(e, c) {
+                            return e === 'routed-to' && c.path === '/add';
                         }
                     },
                     {
                         target: '#add-fund',
                         content: 'Here you can choose what type of event to record. Click "Fund" to fund our investment account',
-                        navTarget: {path: '/add'},
+                        eventTest(e, c) {
+                            return e === 'routed-to' && c.path === '/add/cmd' && c.query.cmd === 'fund';
+                        }
                     },
                     {
                         target: '.c-account-id',
                         content: 'Choose your investment account (called Assets:Investment)',
-                        navTarget: {path: '/add/cmd', query: {cmd: 'fund'}},
                         cmdTest(c) {
                             return c && c.accountId && c.accountId.startsWith('Assets:Investment');
                         },
                         params: {
-                            placement: 'right-start'
+                            placement: 'right-end'
                         }
                     },
                     {
                         target: '.c-change',
-                        content: 'Enter an amount of USD to fund the account (e.g 10000)',
+                        content: 'Record funding of 10000 USD to the investment account',
                         cmdTest(c) {
                             return c && c.change && c.change.number > 9999 && c.change.ccy;
                         },
@@ -62,7 +93,7 @@
                     },
                     {
                         target: '.c-add',
-                        content: 'Press add to save this record',
+                        content: 'Press Add to save this record',
                         params: {
                             placement: 'bottom'
                         },
@@ -76,6 +107,9 @@
                         content: 'Navigate to the balance sheet to see the effect',
                         params: {
                             placement: 'right-start'
+                        },
+                        eventTest(e, c) {
+                            return e === 'routed-to' && c.path === '/balance_sheet';
                         }
                     },
                     {
@@ -84,7 +118,6 @@
                         params: {
                             placement: 'top'
                         },
-                        navTarget: {path: '/balance_sheet'},
                     },
                     {
                         // target: '#add-record', // popper handles this wrong
@@ -95,20 +128,29 @@
                         content: `Click "Add Record" so we can begin to record a stock purchase`,
                         params: {
                             placement: 'right-start'
-                        }
+                        },
+                        eventTest(e, c) {
+                            return e === 'routed-to' && c.path === '/add';
+                        },
+
                     },
                     {
                         target: '#add-trade',
                         content: 'Click "Trade" to record a trade',
                         navTarget: {path: '/add'},
+                        eventTest(e, c) {
+                            return e === 'routed-to' && c.path === '/add/cmd' && c.query.cmd === 'trade';
+                        }
                     },
                     {
                         target: '.c-account-id',
                         content: 'Choose your investment account',
-                        navTarget: {path: '/add/cmd', query: {cmd: 'trade'}},
                         params: {
                             placement: 'right'
-                        }
+                        },
+                        cmdTest(c) {
+                            return c && c.accountId && c.accountId.startsWith('Assets:Investment');
+                        },
                     },
                     {
                         target: '.c-change',
@@ -146,6 +188,9 @@
                         content: 'Navigate to the balance sheet to see the effect',
                         params: {
                             placement: 'right-start'
+                        },
+                        eventTest(e, c) {
+                            return e === 'routed-to' && c.path === '/balance_sheet';
                         }
                     },
                     {
@@ -180,7 +225,13 @@
                 const gogo = () => this.$router.push(target).catch(err => {
                 });
                 // Async this to avoid re-entrancy bug on router handler
-                setTimeout(gogo, 100);
+                debounce(gogo, 100);
+            },
+            nextStep: debounce(function(){
+                this.$tours.myTour.nextStep();
+            }, 500),
+            hasNext(step) {
+                if (step.eventTest || step.cmdTest) {return false} else {return true};
             },
         },
         computed: {
@@ -191,16 +242,14 @@
         mounted() {
             // TODO: Undo this hack where we just assume the new route will render in time
             const eventTriggerDelay = 500;
+            const self = this;
 
             // The tour is for anonymous users only
             if (!this.authentication.username) {
                 this.$router.afterEach((to, from) => {
-                    const nextStepIdx = this.$tours.myTour.currentStep + 1;
-                    const nextStep = this.steps[nextStepIdx];
-                    if (nextStep && nextStep.navTarget && nextStep.navTarget.path === to.path) {
-                        // TODO: Also compare to.query with nextStep.navTarget.query
-                        // TODO: Undo this hack where we just assume the new route will render in time
-                        setTimeout(() => this.$tours.myTour.nextStep(), eventTriggerDelay);
+                    const currentStep = this.steps[this.$tours.myTour.currentStep];
+                    if (currentStep && currentStep.eventTest && currentStep.eventTest('routed-to', to)) {
+                        self.nextStep()
                     }
                     // console.log(`routed to ${to.path} ${JSON.stringify(to.query)}`)
                 });
@@ -208,13 +257,13 @@
                 EventBus.$on('command-changed', c => {
                     const currentStep = this.steps[this.$tours.myTour.currentStep];
                     if (currentStep && currentStep.cmdTest && currentStep.cmdTest(c)) {
-                        setTimeout(() => this.$tours.myTour.nextStep(), eventTriggerDelay);
+                        self.nextStep()
                     }
                 });
                 EventBus.$on('command-added', c => {
                     const currentStep = this.steps[this.$tours.myTour.currentStep];
                     if (currentStep && currentStep.eventTest && currentStep.eventTest('command-added', c)) {
-                        setTimeout(() => this.$tours.myTour.nextStep(), eventTriggerDelay);
+                        self.nextStep()
                     }
                 });
 
