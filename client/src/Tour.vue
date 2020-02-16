@@ -37,7 +37,8 @@
             const self = this;
             return {
                 options: {
-                    highlight: false // Make true when ready. Unfortunately, popper is misplacing and highlight occludes drop downs
+                    // Make true when ready. Unfortunately, popper is misplacing and highlight occludes drop downs
+                    highlight: false
                 },
                 steps: [
                     {
@@ -227,11 +228,16 @@
                 // Async this to avoid re-entrancy bug on router handler
                 debounce(gogo, 100);
             },
-            nextStep: debounce(function(){
+            nextStep: debounce(function() {
                 this.$tours.myTour.nextStep();
             }, 500),
             hasNext(step) {
-                if (step.eventTest || step.cmdTest) {return false} else {return true};
+                if (step.eventTest || step.cmdTest) {
+                    return false
+                } else {
+                    return true
+                }
+                ;
             },
         },
         computed: {
