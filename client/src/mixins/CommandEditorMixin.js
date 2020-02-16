@@ -1,4 +1,5 @@
 import {mapGetters} from "vuex";
+import EventBus from '@/event-bus';
 
 export const CommandEditorMixin = {
     inheritAttrs: false,
@@ -21,7 +22,7 @@ export const CommandEditorMixin = {
         inputChanged() {
             //const str = this.toGainstrack;
             //this.$emit('gainstrack-changed', str);
-        }
+        },
     },
     updated() {
         const str = this.toGainstrack;
@@ -32,8 +33,15 @@ export const CommandEditorMixin = {
         this.$emit('gainstrack-changed', str);
     },
     watch: {
+        c: {
+            handler() {
+                EventBus.$emit('command-changed', this.c);
+            },
+            deep: true,
+        },
         toGainstrack() {
             const str = this.toGainstrack;
+            EventBus.$emit('gainstrack-changed', str);
             this.$emit('gainstrack-changed', str);
         }
     },
