@@ -24,6 +24,7 @@
     import CommandTable from '../components/CommandTable';
     import SourceErrors from '../components/SourceErrors';
     import {debounce} from 'lodash';
+    import EventBus from '@/event-bus';
 
     export default {
         name: 'AddCmd',
@@ -69,10 +70,11 @@
                             this.success = true;
                             this.$notify.success(`${this.added.length} entries added`);
                             this.$store.dispatch('reload');
+                            EventBus.$emit('command-added', str);
                         }
 
                     })
-                    .catch(error => this.$notify.error(error))
+                    .catch(error => this.$notify.error(error.stack || error))
             },
         },
     }
