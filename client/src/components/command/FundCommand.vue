@@ -19,7 +19,7 @@
             <balance-editor class="c-change" v-model="c.change" v-on:input="inputChanged()"></balance-editor>
         </div>
         <div>
-            Override funding source (optional)
+            Override funding source (optional) <help-tip tag="fundOtherAccount"></help-tip>
             <account-selector class="c-other-account" v-model="c.otherAccount" v-on:input="accountIdChanged" :placeholder="defaultFundingAccount"></account-selector>
         </div>
 

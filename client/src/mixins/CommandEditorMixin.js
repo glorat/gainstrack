@@ -1,9 +1,11 @@
 import {mapGetters} from "vuex";
 import EventBus from '@/event-bus';
+import HelpTip from '../components/HelpTip';
 
 export const CommandEditorMixin = {
     inheritAttrs: false,
     props: {cmd: Object},
+    components: {HelpTip},
     data() {
         let c = {};
         if (this.cmd) {
