@@ -1,32 +1,24 @@
 <template>
-    <el-select
-            :value="value"
-            v-on:input="onSelectChanged($event)"
-            filterable
-            allow-create
-            default-first-option
-            size="mini"
-            placeholder="">
-        <el-option
-                v-for="item in options"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value">
-        </el-option>
-    </el-select>
+    <el-autocomplete type="text" :value="value" v-on:input="onSelectChanged($event)"
+                     :fetch-suggestions="assetSearch" size="mini" placeholder="Asset"></el-autocomplete>
 </template>
 
 <script lang="ts">
     import {Amount, StateSummaryDTO} from '@/models';
-    import {Select, Option} from 'element-ui';
+    import {Select, Option, Autocomplete} from 'element-ui';
     import Vue from 'vue';
+
+    interface MyOpt {
+        value: string
+        label: string
+    }
 
     export default Vue.extend({
         name: 'AssetId',
-        components: {'el-select': Select, 'el-option': Option},
+        components: {'el-select': Select, 'el-option': Option, 'el-autocomplete': Autocomplete},
         props: {value: String},
         computed: {
-            options(): object[] {
+            options(): MyOpt[] {
                 const summary: StateSummaryDTO = this.$store.state.summary;
                 return summary.ccys.map(ccy => {
                     return {value: ccy, label: ccy};
@@ -36,7 +28,19 @@
         methods: {
             onSelectChanged(ev: string) {
                 this.$emit('input', ev.toUpperCase());
-            }
+            },
+            assetSearch(queryString: string|undefined, cb: any) {
+                let cfgs = this.options;
+                if (queryString) {
+                    cfgs = cfgs.filter(x => x.value.indexOf(queryString.toUpperCase()) > -1);
+                }
+                const elems = cfgs.map(cfg => {
+                    return {
+                        value: cfg.value
+                    };
+                });
+                cb(elems);
+            },
         }
     })
 </script>
