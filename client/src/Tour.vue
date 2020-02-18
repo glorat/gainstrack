@@ -17,7 +17,10 @@
                 >
 
                     <div slot="actions">
-                        <button v-if="!tour.isLast && hasNext(step)" @click.prevent="tour.nextStep" class="btn btn-primary">Next step</button>
+                        <button v-if="!tour.isLast && hasNext(step) && !customSteps" @click.prevent="tour.nextStep" class="btn btn-primary">Next step</button>
+                        <template v-for="step in customSteps">
+                            <button @click="jumpTo(step.target)" class="btn btn-primary">{{ step.label }}</button>
+                        </template>
                         <button @click.prevent="tour.finish" v-if="tour.isLast" class="btn btn-primary">Have Fun!</button>
                         <br>
                         <span @click="tour.stop" style="font-size: x-small; cursor: pointer">Skip Tour</span>
@@ -48,7 +51,7 @@
                     },
                     {
                         target: '#page-title',
-                        content: 'Gainstrack can become your personal accounting, a place to record all your activities that contribute to your networth and get insight over your networth and wealth. Suppose you have an investment account that you have funded with some cash and bought some shares. How can this be recorded? This guide will show you how as an example'
+                        content: 'Gainstrack can become your personal accounting, a place to record all your activities that contribute to your networth and get insight over your networth and wealth. Suppose you have an investment account that you have funded with some cash and bought some shares. How can this be recorded? This guide will show you how as an example',
                     },
                     //  For placement, see https://popper.js.org/docs/v1/#Popper.placements
                     {
@@ -123,6 +126,7 @@
                     },
                     {
                         // target: '#add-record', // popper handles this wrong
+                        id: 'trade',
                         target: '.myaside',
                         header: {
                             title: 'Add Record',
@@ -197,6 +201,7 @@
                     },
                     {
                         // target: '#route-balance_sheet', // popper fails on this
+                        id: 'end',
                         target: '.login',
                         content: 'Thank you for completing the guided tour. Feel free to keep making any changes and experiment. If you want your changes to be saved, you will need to Sign/Up Login',
                         navTarget: {path: '/balance_sheet'},
@@ -222,6 +227,14 @@
             }
         },
         methods: {
+            jumpTo(targetId) {
+                const targetStep = this.steps.find(step => step.id === targetId);
+                if (targetStep) {
+                    // Immediately step to with no debounce
+                    // Step must work on same page as source!
+                    this.$tours.myTour.currentStep = this.steps.indexOf(targetStep)
+                }
+            },
             goto(target) {
                 // tslint:disable-next-line
                 const gogo = () => this.$router.push(target).catch(err => {
@@ -244,6 +257,10 @@
             authentication() {
                 return this.$store.state.summary.authentication;
             },
+            customSteps() {
+                const currentStep = this.steps[this.$tours.myTour.currentStep];
+                return currentStep.customSteps;
+            }
         },
         mounted() {
             // TODO: Undo this hack where we just assume the new route will render in time
