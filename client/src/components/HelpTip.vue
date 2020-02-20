@@ -20,7 +20,7 @@
 
     export default Vue.extend({
         name: 'HelpTip',
-        components: {'el-tooltip': Tooltip,},
+        components: {'el-tooltip': Tooltip},
         computed: {
             tipText(): string {
                 return texts[this.tag] || `${this.tag} does not have help text defined`;

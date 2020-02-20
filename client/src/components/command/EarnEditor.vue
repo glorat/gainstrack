@@ -21,7 +21,7 @@
 
     export default {
         name: 'EarnEditor',
-        components: {AccountSelector, BalanceEditor, CommandDateEditor},
+        components: {AccountSelector, BalanceEditor},
         mixins: [CommandEditorMixin],
         methods: {
             accountIdChanged() {

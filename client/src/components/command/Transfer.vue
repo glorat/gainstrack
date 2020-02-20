@@ -1,17 +1,10 @@
 <template>
     <div>
         <div>
-            <el-date-picker
-                    v-model="c.date"
-                    type="date"
-                    value-format="yyyy-MM-dd"
-                    size="mini"
-                    :clearable="false"
-            >
-            </el-date-picker>
+            <command-date-editor v-model="c.date"></command-date-editor>
         </div>
         <div>
-            Transfer:
+            Transfer From:
             <account-selector class="c-account-id" v-model="c.accountId" v-on:input="accountIdChanged"
                               :account-list="transferableAccounts"></account-selector>
         </div>
@@ -21,12 +14,12 @@
         </div>
         <div>
             To
-            <account-selector v-model="c.otherAccount" v-on:input="otherAccountIdChanged"
+            <account-selector class="c-other-account" v-model="c.otherAccount" v-on:input="otherAccountIdChanged"
                               :account-list="transferableAccounts"></account-selector>
         </div>
         <div>
             value
-            <balance-editor v-model="targetChange" v-on:input="inputChanged()"></balance-editor>
+            <balance-editor class="c-options-target-change" v-model="c.options.targetChange" v-on:input="inputChanged()"></balance-editor>
         </div>
 
 
@@ -53,7 +46,10 @@
         },
         mixins: [CommandEditorMixin],
         data() {
-            return {targetChange: {number: 0, ccy: ''}};
+            const c = {};
+            c.options = {targetChange: {number: 0, ccy: ''}};
+
+            return {c};
         },
         methods: {
             accountIdChanged() {
@@ -67,15 +63,15 @@
                 const all = this.$store.state.summary.accounts;
                 const acct = all.find(x => x.accountId === this.c.otherAccount);
                 if (acct) {
-                    this.targetChange.ccy = acct.ccy;
+                    this.c.options.targetChange.ccy = acct.ccy;
                 }
             },
             changeChanged() {
-                if (!this.targetChange.ccy) {
-                    this.targetChange.ccy = this.c.change.ccy;
+                if (!this.c.options.targetChange.ccy) {
+                    this.c.options.targetChange.ccy = this.c.change.ccy;
                 }
-                if (this.targetChange.ccy === this.c.change.ccy) {
-                    this.targetChange.number = this.c.change.number;
+                if (this.c.options.targetChange.ccy === this.c.change.ccy) {
+                    this.c.options.targetChange.number = this.c.change.number;
                 }
             },
         },
@@ -88,17 +84,17 @@
                 return c.accountId
                     && c.otherAccount
                     && c.change.number
-                    && this.targetChange.number
+                    && c.options.targetChange.number
                     && c.change.ccy
-                    && this.targetChange.ccy;
+                    && c.options.targetChange.ccy;
             },
             toGainstrack() {
                 if (this.isValid) {
                     const c = this.c;
                     let baseStr = `${c.date} tfr ${c.accountId} ${c.otherAccount} ${c.change.number} ${c.change.ccy}`;
-                    if (c.change.number !== this.targetChange.number
-                        || c.change.ccy !== this.targetChange.ccy) {
-                        baseStr += ` ${this.targetChange.number} ${this.targetChange.ccy}`;
+                    if (c.change.number !== c.options.targetChange.number
+                        || c.change.ccy !== c.options.targetChange.ccy) {
+                        baseStr += ` ${c.options.targetChange.number} ${c.options.targetChange.ccy}`;
                     }
                     return baseStr;
                 }

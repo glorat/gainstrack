@@ -1,10 +1,15 @@
+import Vue from 'vue';
+import {Store} from 'vuex';
+
 declare module '*.vue' {
   import Vue from 'vue';
   export default Vue;
 }
 
-declare module 'vue-tour' {
-  const VueTour: any;
-  export default VueTour;
+import {Tour} from 'vue-tour';
 
+declare module "vue/types/vue" {
+  interface Vue {
+    $tours: Record<string, Tour>;
+  }
 }

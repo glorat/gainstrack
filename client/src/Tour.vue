@@ -1,5 +1,5 @@
 <template>
-    <v-tour name="myTour" :steps="steps" :options="options" :callbacks="callbacks">
+    <v-tour name="myTour" :steps="steps" :options="options">
         <template slot-scope="tour">
             <transition name="fade">
                 <v-step
@@ -17,11 +17,14 @@
                 >
 
                     <div slot="actions">
-                        <button v-if="!tour.isLast && hasNext(step) && !customSteps" @click.prevent="tour.nextStep" class="btn btn-primary">Next step</button>
+                        <button v-if="!tour.isLast && hasNext(step) && !customSteps.length>0" @click.prevent="tour.nextStep"
+                                class="btn btn-primary">Next step
+                        </button>
                         <template v-for="step in customSteps">
                             <button @click="jumpTo(step.target)" class="btn btn-primary">{{ step.label }}</button>
                         </template>
-                        <button @click.prevent="tour.finish" v-if="tour.isLast" class="btn btn-primary">Have Fun!</button>
+                        <button @click.prevent="tour.finish" v-if="tour.isLast" class="btn btn-primary">Have Fun!
+                        </button>
                         <br>
                         <span @click="tour.stop" style="font-size: x-small; cursor: pointer">Skip Tour</span>
                     </div>
@@ -31,11 +34,276 @@
     </v-tour>
 </template>
 
-<script>
+<script lang="ts">
     import EventBus from '@/event-bus';
+    import {AccountCommandDTO, AuthenticationDTO} from '@/models';
     import {debounce} from 'lodash';
+    import Vue from 'vue';
+    import {Route} from 'vue-router';
+    import {Tour} from 'vue-tour';
 
-    export default {
+    interface CustomStep {
+        target: string
+        label: string
+    }
+
+    interface TourStep {
+        id?: string
+        header?: object
+        target?: string
+        content: string
+        customSteps?: CustomStep[]
+        eventTest?: (e: string, c: AccountCommandDTO | Route) => boolean
+        cmdTest?: (c: AccountCommandDTO) => boolean
+        params?: object
+
+    }
+
+    function isRoute(c: AccountCommandDTO | Route): c is Route {
+        return (c as Route).path !== undefined;
+    }
+
+    function isAccountCommandDTO(c: AccountCommandDTO | Route): c is Route {
+        return (c as AccountCommandDTO).date !== undefined;
+    }
+
+    const addRecord: TourStep = {
+        // target: '#add-record', // popper handles this wrong
+        target: '.myaside',
+        header: {
+            title: 'Begin adding your records',
+        },
+        content: `Click "Add Record" on the left menu bar`,
+        params: {
+            placement: 'right-start',
+            enabledButtons: {buttonNext: false}
+        },
+        eventTest(e: string, c) {
+            return e === 'routed-to' && isRoute(c) && c.path === '/add';
+        }
+    };
+
+    const chooseInvestment: TourStep = {
+        target: '.c-account-id',
+        content: 'Choose your investment account (called Assets:Investment)',
+        params: {
+            placement: 'right'
+        },
+        cmdTest(c) {
+            return c && isAccountCommandDTO(c) && c.accountId.startsWith('Assets:Investment');
+        },
+    };
+
+    const addCommand: TourStep = {
+        target: '.c-add',
+        content: 'Press "Add" to save this record',
+        params: {
+            placement: 'bottom'
+        },
+        eventTest(e, c) {
+            return e === 'command-added';
+        },
+    };
+
+    const tourBalanceSheet: TourStep = {
+        // target: '#route-balance_sheet', // popper fails on this
+        target: '.myaside',
+        content: 'Navigate to the balance sheet to see the effect',
+        params: {
+            placement: 'right-start'
+        },
+        eventTest(e, c) {
+            return e === 'routed-to' && isRoute(c) && c.path === '/balance_sheet';
+        }
+    };
+
+    const mySteps: TourStep[] = [
+        {
+            target: '#page-title',
+            content: 'If you would like a guided tour on how to use this site, press Next'
+        },
+        {
+            target: '#page-title',
+            content: 'Gainstrack can become your personal accounting, a place to record all your activities that contribute to your networth and get insight over your networth and wealth. Suppose you have an investment account that you have funded with some cash and bought some shares. How can this be recorded? This guide will show you how as an example',
+            customSteps: [{target: 'choice', label: 'Next Step'}]
+        },
+        //  For placement, see https://popper.js.org/docs/v1/#Popper.placements
+        {
+            ...addRecord,
+            id: 'fund',
+        },
+        {
+            target: '#add-fund',
+            content: 'Here you can choose what type of event to record. Click "Fund" to fund our investment account',
+            eventTest(e: string, c) {
+                return e === 'routed-to' && isRoute(c) && c.path === '/add/cmd' && c.query.cmd === 'fund';
+            }
+        },
+        chooseInvestment,
+        {
+            target: '.c-change',
+            content: 'Record funding of 10000 USD to the investment account',
+            cmdTest(c) {
+                return c && isAccountCommandDTO(c) && c.change !== undefined && c.change.number > 9999 && c.change.ccy !== '';
+            },
+            params: {
+                placement: 'bottom'
+            }
+        },
+        {
+            target: '.c-add',
+            content: 'Press Add to save this record',
+            params: {
+                placement: 'bottom'
+            },
+            eventTest(e, c) {
+                return e === 'command-added';
+            },
+        },
+        tourBalanceSheet,
+        {
+            target: '#assets-table',
+            content: 'Here we can see money transferred from the bank account to the investment account',
+            params: {
+                placement: 'top'
+            },
+        },
+        {
+            target: '#page-title',
+            id: 'choice',
+            content: 'There are different types of events that can bee recorded. Which guide would you like to try next?',
+            customSteps: [
+                {target: 'fund', label: 'Fund'},
+                {target: 'trade', label: 'Trade Shares'},
+                {target: 'fxtfr', label: 'FX Transfer'}
+                ]
+        },
+        {
+            ...addRecord,
+            id: 'trade',
+        },
+        {
+            target: '#add-trade',
+            content: 'Click "Trade" to record a trade',
+            eventTest(e, c) {
+
+                return e === 'routed-to' && isRoute(c) && c.path === '/add/cmd' && c.query.cmd === 'trade';
+            }
+        },
+        {
+            target: '.c-account-id',
+            content: 'Choose your investment account',
+            params: {
+                placement: 'right'
+            },
+            cmdTest(c) {
+                return c && isAccountCommandDTO(c) && c.accountId.startsWith('Assets:Investment');
+            },
+        },
+        {
+            target: '.c-change',
+            content: 'Enter the shares you are purchasing, e.g. 5 GOOG shares',
+            params: {
+                placement: 'bottom'
+            },
+            cmdTest(c) {
+                return c && isAccountCommandDTO(c) && c.change !== undefined && c.change.number > 0 && c.change.ccy !== '';
+            },
+        },
+        {
+            target: '.c-price',
+            content: 'Enter the price you bought the shares for, e.g. 1500 USD',
+            params: {
+                placement: 'bottom'
+            },
+            cmdTest(c) {
+                return c && isAccountCommandDTO(c) && c.price !== undefined && c.price.number > 200 && c.price.ccy !== '';
+            },
+        },
+        {
+            target: '.c-add',
+            content: 'Press "Add" to save this trade record',
+            params: {
+                placement: 'bottom'
+            },
+            eventTest(e, c) {
+                return e === 'command-added';
+            },
+        },
+        {
+          ...tourBalanceSheet,
+            customSteps: [{target: 'choice', label: 'Next Step'}],
+        },
+        {
+            ...addRecord,
+            id: 'fxtfr',
+        },
+        {
+            target: '#add-transfer',
+            content: 'Click "Transfer" to record a transfer',
+            eventTest(e, c) {
+                return e === 'routed-to' && isRoute(c) && c.path === '/add/cmd' && c.query.cmd === 'tfr';
+            }
+        },
+        {
+            ...chooseInvestment
+        },
+        {
+            target: '.c-change',
+            content: 'Enter quantity being sold, e.g. 1000 USD',
+            params: {
+                placement: 'bottom'
+            },
+            cmdTest(c) {
+                return c && isAccountCommandDTO(c) && c.change !== undefined
+                    && c.change.number > 999 && c.change.ccy !== '';
+            },
+        },
+        {
+            target: '.c-other-account',
+            content: 'Choose your investment account again for internal transfer exchange',
+            params: {
+                placement: 'right'
+            },
+            cmdTest(c) {
+                return c && isAccountCommandDTO(c) && c.otherAccount !== undefined
+                    && c.otherAccount.startsWith('Assets:Investment');
+            },
+        },
+        {
+            target: '.c-options-target-change',
+            content: 'Enter quantity being bought, e.g. 800 GBP',
+            params: {
+                placement: 'bottom'
+            },
+            cmdTest(c) {
+                return c && isAccountCommandDTO(c) && c.change !== undefined
+                    && c.options !== undefined && c.options.targetChange.number > 500
+                    && c.change.ccy !== c.options.targetChange.ccy;
+            },
+        },
+        addCommand,
+        tourBalanceSheet,
+        {
+            target: '#assets-table',
+            content: 'In the accounts we can see money has moved between currencies',
+            params: {
+                placement: 'top'
+            },
+            customSteps: [{target: 'choice', label: 'Next Step'}],
+        },
+        {
+            // target: '#route-balance_sheet', // popper fails on this
+            id: 'end',
+            target: '.login',
+            content: 'Thank you for completing the guided tour. Feel free to keep making any changes and experiment. If you want your changes to be saved, you will need to Sign/Up Login',
+            params: {
+                placement: 'right-start'
+            }
+        },
+    ];
+
+    export default Vue.extend({
         name: 'Tour',
         data() {
             const self = this;
@@ -44,223 +312,44 @@
                     // Make true when ready. Unfortunately, popper is misplacing and highlight occludes drop downs
                     highlight: false
                 },
-                steps: [
-                    {
-                        target: '#page-title',
-                        content: 'If you would like a guided tour on how to use this site, press Next'
-                    },
-                    {
-                        target: '#page-title',
-                        content: 'Gainstrack can become your personal accounting, a place to record all your activities that contribute to your networth and get insight over your networth and wealth. Suppose you have an investment account that you have funded with some cash and bought some shares. How can this be recorded? This guide will show you how as an example',
-                    },
-                    //  For placement, see https://popper.js.org/docs/v1/#Popper.placements
-                    {
-                        // target: '#add-record', // popper handles this wrong
-                        target: '.myaside',
-                        header: {
-                            title: 'Begin adding your records',
-                        },
-                        content: `Click "Add Record" on the left menu bar`,
-                        params: {
-                            placement: 'right-start',
-                            enabledButtons: {buttonNext: false}
-                        },
-                        eventTest(e, c) {
-                            return e === 'routed-to' && c.path === '/add';
-                        }
-                    },
-                    {
-                        target: '#add-fund',
-                        content: 'Here you can choose what type of event to record. Click "Fund" to fund our investment account',
-                        eventTest(e, c) {
-                            return e === 'routed-to' && c.path === '/add/cmd' && c.query.cmd === 'fund';
-                        }
-                    },
-                    {
-                        target: '.c-account-id',
-                        content: 'Choose your investment account (called Assets:Investment)',
-                        cmdTest(c) {
-                            return c && c.accountId && c.accountId.startsWith('Assets:Investment');
-                        },
-                        params: {
-                            placement: 'right-end'
-                        }
-                    },
-                    {
-                        target: '.c-change',
-                        content: 'Record funding of 10000 USD to the investment account',
-                        cmdTest(c) {
-                            return c && c.change && c.change.number > 9999 && c.change.ccy;
-                        },
-                        params: {
-                            placement: 'bottom'
-                        }
-                    },
-                    {
-                        target: '.c-add',
-                        content: 'Press Add to save this record',
-                        params: {
-                            placement: 'bottom'
-                        },
-                        eventTest(e, c) {
-                            return e === 'command-added';
-                        },
-                    },
-                    {
-                        // target: '#route-balance_sheet', // popper fails on this
-                        target: '.myaside',
-                        content: 'Navigate to the balance sheet to see the effect',
-                        params: {
-                            placement: 'right-start'
-                        },
-                        eventTest(e, c) {
-                            return e === 'routed-to' && c.path === '/balance_sheet';
-                        }
-                    },
-                    {
-                        target: '#assets-table',
-                        content: 'Here we can see money transferred from the bank account to the investment account',
-                        params: {
-                            placement: 'top'
-                        },
-                    },
-                    {
-                        // target: '#add-record', // popper handles this wrong
-                        id: 'trade',
-                        target: '.myaside',
-                        header: {
-                            title: 'Add Record',
-                        },
-                        content: `Click "Add Record" so we can begin to record a stock purchase`,
-                        params: {
-                            placement: 'right-start'
-                        },
-                        eventTest(e, c) {
-                            return e === 'routed-to' && c.path === '/add';
-                        },
-
-                    },
-                    {
-                        target: '#add-trade',
-                        content: 'Click "Trade" to record a trade',
-                        navTarget: {path: '/add'},
-                        eventTest(e, c) {
-                            return e === 'routed-to' && c.path === '/add/cmd' && c.query.cmd === 'trade';
-                        }
-                    },
-                    {
-                        target: '.c-account-id',
-                        content: 'Choose your investment account',
-                        params: {
-                            placement: 'right'
-                        },
-                        cmdTest(c) {
-                            return c && c.accountId && c.accountId.startsWith('Assets:Investment');
-                        },
-                    },
-                    {
-                        target: '.c-change',
-                        content: 'Enter the shares you are purchasing, e.g. 5 GOOG shares',
-                        params: {
-                            placement: 'bottom'
-                        },
-                        cmdTest(c) {
-                            return c && c.change && c.change.number > 0 && c.change.ccy;
-                        },
-                    },
-                    {
-                        target: '.c-price',
-                        content: 'Enter the price you bought the shares for, e.g. 1500 USD',
-                        params: {
-                            placement: 'bottom'
-                        },
-                        cmdTest(c) {
-                            return c && c.price && c.price.number > 200 && c.price.ccy;
-                        },
-                    },
-                    {
-                        target: '.c-add',
-                        content: 'Press "Add" to save this trade record',
-                        params: {
-                            placement: 'bottom'
-                        },
-                        eventTest(e, c) {
-                            return e === 'command-added';
-                        },
-                    },
-                    {
-                        // target: '#route-balance_sheet', // popper fails on this
-                        target: '.myaside',
-                        content: 'Navigate to the balance sheet to see the effect',
-                        params: {
-                            placement: 'right-start'
-                        },
-                        eventTest(e, c) {
-                            return e === 'routed-to' && c.path === '/balance_sheet';
-                        }
-                    },
-                    {
-                        // target: '#route-balance_sheet', // popper fails on this
-                        id: 'end',
-                        target: '.login',
-                        content: 'Thank you for completing the guided tour. Feel free to keep making any changes and experiment. If you want your changes to be saved, you will need to Sign/Up Login',
-                        navTarget: {path: '/balance_sheet'},
-                        params: {
-                            placement: 'right-start'
-                        }
-                    },
-                ],
-                callbacks: {
-                    onPreviousStep(current) {
-                        const nextStep = self.steps[current - 1];
-                        if (nextStep && nextStep.navTarget) {
-                            self.goto(nextStep.navTarget);
-                        }
-                    },
-                    onNextStep(current) {
-                        const nextStep = self.steps[current + 1];
-                        if (nextStep && nextStep.navTarget) {
-                            self.goto(nextStep.navTarget);
-                        }
-                    }
-                }
-            }
+                steps: mySteps,
+            };
         },
         methods: {
-            jumpTo(targetId) {
+            jumpTo(targetId: string): void {
                 const targetStep = this.steps.find(step => step.id === targetId);
                 if (targetStep) {
                     // Immediately step to with no debounce
                     // Step must work on same page as source!
-                    this.$tours.myTour.currentStep = this.steps.indexOf(targetStep)
+                    this.$tours.myTour.currentStep = this.steps.indexOf(targetStep);
                 }
             },
-            goto(target) {
+            goto(target: string): void {
                 // tslint:disable-next-line
                 const gogo = () => this.$router.push(target).catch(err => {
                 });
                 // Async this to avoid re-entrancy bug on router handler
                 debounce(gogo, 100);
             },
-            nextStep: debounce(function() {
+            nextStep: debounce(function(this: any) {
                 this.$tours.myTour.nextStep();
             }, 500),
-            hasNext(step) {
-                if ( step.eventTest || step.cmdTest) {
-                    return false
+            hasNext(step: TourStep): boolean {
+                if (step.eventTest || step.cmdTest) {
+                    return false;
                 } else {
-                    return true
+                    return true;
                 }
             },
         },
         computed: {
-            authentication() {
+            authentication(): AuthenticationDTO {
                 return this.$store.state.summary.authentication;
             },
-            customSteps() {
+            customSteps(): CustomStep[] {
                 const currentStep = this.steps[this.$tours.myTour.currentStep];
-                return currentStep.customSteps;
-            }
+                return currentStep.customSteps || [];
+            },
         },
         mounted() {
             // TODO: Undo this hack where we just assume the new route will render in time
@@ -272,28 +361,28 @@
                 this.$router.afterEach((to, from) => {
                     const currentStep = this.steps[this.$tours.myTour.currentStep];
                     if (currentStep && currentStep.eventTest && currentStep.eventTest('routed-to', to)) {
-                        self.nextStep()
+                        self.nextStep();
                     }
                     // console.log(`routed to ${to.path} ${JSON.stringify(to.query)}`)
                 });
 
-                EventBus.$on('command-changed', c => {
+                EventBus.$on('command-changed', (c: AccountCommandDTO) => {
                     const currentStep = this.steps[this.$tours.myTour.currentStep];
                     if (currentStep && currentStep.cmdTest && currentStep.cmdTest(c)) {
-                        self.nextStep()
+                        self.nextStep();
                     }
                 });
-                EventBus.$on('command-added', c => {
+                EventBus.$on('command-added', (c: AccountCommandDTO) => {
                     const currentStep = this.steps[this.$tours.myTour.currentStep];
                     if (currentStep && currentStep.eventTest && currentStep.eventTest('command-added', c)) {
-                        self.nextStep()
+                        self.nextStep();
                     }
                 });
 
-                this.$tours.myTour.start()
+                this.$tours.myTour.start();
             }
         },
-    }
+    });
 </script>
 
 <style scoped>
