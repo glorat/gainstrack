@@ -21,7 +21,7 @@
                                 class="btn btn-primary">Next step
                         </button>
                         <template v-for="step in customSteps">
-                            <button @click="jumpTo(step.target)" class="btn btn-primary">{{ step.label }}</button>
+                            <button @click="jumpTo(step.target)" class="btn btn-primary" :style="step.buttonStyle">{{ step.label }}</button><br>
                         </template>
                         <button @click.prevent="tour.finish" v-if="tour.isLast" class="btn btn-primary">Have Fun!
                         </button>
@@ -45,6 +45,7 @@
     interface CustomStep {
         target: string
         label: string
+        buttonStyle?: string
     }
 
     interface TourStep {
@@ -173,10 +174,10 @@
             id: 'choice',
             content: 'There are different types of events that can bee recorded. Which guide would you like to try next?',
             customSteps: [
-                {target: 'fund', label: 'Fund'},
-                {target: 'trade', label: 'Trade Shares'},
-                {target: 'fxtfr', label: 'FX Transfer'}
-                ]
+                {target: 'fund', label: '1. Fund Investment Account', buttonStyle: 'width: 200px; text-align: left;',},
+                {target: 'trade', label: '2. Trade Shares', buttonStyle: 'width: 200px; text-align: left;',},
+                {target: 'fxtfr', label: '3. FX Transfer', buttonStyle: 'width: 200px; text-align: left;',}
+                ],
         },
         {
             ...addRecord,
@@ -232,6 +233,13 @@
         },
         {
           ...tourBalanceSheet,
+        },
+        {
+            target: '#assets-table',
+            content: 'Here we can see money transferred from the bank account to the investment account',
+            params: {
+                placement: 'top'
+            },
             customSteps: [{target: 'choice', label: 'Next Step'}],
         },
         {
