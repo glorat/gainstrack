@@ -13,13 +13,14 @@ interface MyState {
     parseState: object,
     gainstrackText: string
 }
+
 const initState: MyState = {
     count: 0,
     summary: {
         accountIds: [],
         accounts: [],
         ccys: [],
-        authentication: {},
+        authentication: {username: ''},
         commands: []
     },
     quoteConfig: [],

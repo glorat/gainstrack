@@ -1,11 +1,12 @@
 import {mapGetters} from "vuex";
 import EventBus from '@/event-bus';
 import HelpTip from '../components/HelpTip';
+import CommandDateEditor from '../components/CommandDateEditor';
 
 export const CommandEditorMixin = {
     inheritAttrs: false,
     props: {cmd: Object},
-    components: {HelpTip},
+    components: {CommandDateEditor, HelpTip},
     data() {
         let c = {};
         if (this.cmd) {
@@ -18,6 +19,7 @@ export const CommandEditorMixin = {
         c.commission = c.commission || {number: 0, ccy: ''};
         c.accountId = c.accountId || '';
         c.otherAccount = c.otherAccount || '';
+        c.options = c.options || {};
         return {c};
     },
     methods: {

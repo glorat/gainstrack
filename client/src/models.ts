@@ -43,10 +43,11 @@ export interface AccountDTO {
 export interface AccountCommandDTO {
     accountId: string
     date: string
+    change?: Amount
     balance?: Amount
     price?: Amount
     otherAccount?: string
-    options?: object
+    options?: Record<string, any>
     commandType?: string
 }
 
@@ -54,6 +55,10 @@ export interface StateSummaryDTO {
     accountIds: string[]
     accounts: AccountDTO[]
     ccys: string[]
-    authentication: object
+    authentication: AuthenticationDTO
     commands: AccountCommandDTO[]
+}
+
+export interface AuthenticationDTO {
+    username: string
 }
