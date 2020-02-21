@@ -249,7 +249,7 @@
         },
         {
             target: '#assets-table',
-            content: 'Here we can see money transferred from the bank account to the investment account',
+            content: 'Here we can see you now have some GOOG and your USD value has decreased',
             params: {
                 placement: 'top'
             },
@@ -281,13 +281,13 @@
         },
         {
             target: '.c-change',
-            content: 'Enter how much you earned - 20000 USD',
+            content: 'Enter how much you earned - 50000 USD',
             params: {
                 placement: 'bottom'
             },
             cmdTest(c) {
                 return c && isAccountCommandDTO(c) && c.change !== undefined
-                    && c.change.number > 19999 && c.change.ccy !== '';
+                    && c.change.number > 49999 && c.change.ccy !== '';
             },
         },
         addCommand,
@@ -304,8 +304,16 @@
 
     const fxTour: TourStep[] = [
         {
-            ...addRecord,
             id: 'fxtfr',
+            target: '#page-title',
+            content: mkParagraphs(['In this guide, we are going to convert some of our USD into pound sterling GBP',
+                'In this example, conversion will be done within the preset Investment account since that is a multi-asset account',
+                'FX conversions can also be done across different accounts. Or one can simply do simple non-FX transfers'
+            ])
+        },
+        {
+            ...addRecord,
+
         },
         {
             target: '#add-transfer',
@@ -386,7 +394,7 @@
         },
         {
             target: '.c-balance',
-            content: 'Enter the actual balance of your bank account, e.g. 1000 USD',
+            content: 'Enter the actual balance of your bank account (1000 USD)',
             params: {
                 placement: 'bottom'
             },
@@ -411,7 +419,7 @@
         tourBalanceSheet,
         {
             target: '#assets-table',
-            content: 'In the accounts we can see your bank balance has been adjusted',
+            content: 'In the accounts we can see your bank balance has been adjusted to 1000 USD',
             params: {
                 placement: 'top'
             },
@@ -431,7 +439,7 @@
         {
             target: '#page-title',
             id: 'choice',
-            content: 'There are different types of events that can bee recorded. Which guide would you like to try next?',
+            content: 'There are different types of events that can be recorded. Which guide would you like to try next?',
             customSteps: [
                 {target: 'fund', label: '1. Fund Investment Account', buttonStyle: 'width: 200px; text-align: left;'},
                 {target: 'trade', label: '2. Trade Shares', buttonStyle: 'width: 200px; text-align: left;'},
