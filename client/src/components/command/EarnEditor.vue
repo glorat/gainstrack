@@ -4,11 +4,11 @@
             <command-date-editor v-model="c.date"></command-date-editor>
         </div>
         <div>
-            <account-selector v-model="c.accountId" :account-list="earnableAccounts" @input="accountIdChanged"></account-selector>
+            <account-selector class="c-account-id" v-model="c.accountId" :account-list="earnableAccounts" @input="accountIdChanged"></account-selector>
         </div>
         <div>
             Earnings
-            <balance-editor v-model="c.change"></balance-editor>
+            <balance-editor class="c-change" v-model="c.change"></balance-editor>
         </div>
     </div>
 </template>

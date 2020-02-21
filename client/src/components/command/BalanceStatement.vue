@@ -13,15 +13,15 @@
         </div>
         <div>
             Account:
-            <account-selector v-model="c.accountId" v-on:input="accountIdChanged" :account-list="balanceableAccounts"></account-selector>
+            <account-selector class="c-account-id" v-model="c.accountId" v-on:input="accountIdChanged" :account-list="balanceableAccounts"></account-selector>
         </div>
         <div>
             Balance:
-            <balance-editor v-model="c.balance"></balance-editor>
+            <balance-editor class="c-balance" v-model="c.balance"></balance-editor>
         </div>
         <div>
             <help-tip tag="balOtherAccount"></help-tip> Adjustment Account:
-            <account-selector v-model="c.otherAccount" :account-list="mainAccounts"></account-selector>
+            <account-selector class="c-other-account" v-model="c.otherAccount" :account-list="mainAccounts"></account-selector>
         </div>
     </div>
 </template>
