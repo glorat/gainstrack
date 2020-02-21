@@ -17,11 +17,15 @@
                 >
 
                     <div slot="actions">
-                        <button v-if="!tour.isLast && hasNext(step) && !customSteps.length>0" @click.prevent="tour.nextStep"
+                        <button v-if="!tour.isLast && hasNext(step) && !customSteps.length>0"
+                                @click.prevent="tour.nextStep"
                                 class="btn btn-primary">Next step
                         </button>
                         <template v-for="step in customSteps">
-                            <button @click="jumpTo(step.target)" class="btn btn-primary" :style="step.buttonStyle">{{ step.label }}</button><br>
+                            <button @click="jumpTo(step.target)" class="btn btn-primary" :style="step.buttonStyle">{{
+                                step.label }}
+                            </button>
+                            <br>
                         </template>
                         <button @click.prevent="tour.finish" v-if="tour.isLast" class="btn btn-primary">Have Fun!
                         </button>
@@ -95,6 +99,17 @@
         },
     };
 
+    const chooseBankAccount: TourStep = {
+        target: '.c-account-id',
+        content: 'Choose your bank account (called Assets:Bank)',
+        params: {
+            placement: 'right'
+        },
+        cmdTest(c) {
+            return c && isAccountCommandDTO(c) && c.accountId.startsWith('Assets:Bank');
+        },
+    };
+
     const addCommand: TourStep = {
         target: '.c-add',
         content: 'Press "Add" to save this record',
@@ -118,17 +133,7 @@
         }
     };
 
-    const mySteps: TourStep[] = [
-        {
-            target: '#page-title',
-            content: 'If you would like a guided tour on how to use this site, press Next'
-        },
-        {
-            target: '#page-title',
-            content: 'Gainstrack can become your personal accounting, a place to record all your activities that contribute to your networth and get insight over your networth and wealth. Suppose you have an investment account that you have funded with some cash and bought some shares. How can this be recorded? This guide will show you how as an example',
-            customSteps: [{target: 'choice', label: 'Next Step'}]
-        },
-        //  For placement, see https://popper.js.org/docs/v1/#Popper.placements
+    const fundTour: TourStep[] = [
         {
             ...addRecord,
             id: 'fund',
@@ -168,17 +173,11 @@
             params: {
                 placement: 'top'
             },
+            customSteps: [{target: 'choice', label: 'Next Step'}],
         },
-        {
-            target: '#page-title',
-            id: 'choice',
-            content: 'There are different types of events that can bee recorded. Which guide would you like to try next?',
-            customSteps: [
-                {target: 'fund', label: '1. Fund Investment Account', buttonStyle: 'width: 200px; text-align: left;',},
-                {target: 'trade', label: '2. Trade Shares', buttonStyle: 'width: 200px; text-align: left;',},
-                {target: 'fxtfr', label: '3. FX Transfer', buttonStyle: 'width: 200px; text-align: left;',}
-                ],
-        },
+    ];
+
+    const tradeTour: TourStep[] = [
         {
             ...addRecord,
             id: 'trade',
@@ -232,7 +231,7 @@
             },
         },
         {
-          ...tourBalanceSheet,
+            ...tourBalanceSheet,
         },
         {
             target: '#assets-table',
@@ -242,6 +241,54 @@
             },
             customSteps: [{target: 'choice', label: 'Next Step'}],
         },
+    ];
+
+    const earnTour: TourStep[] = [
+        {
+            ...addRecord,
+            id: 'earn',
+        },
+        {
+            target: '#add-earn',
+            content: 'Click "Earn" to record your earnings',
+            eventTest(e, c) {
+                return e === 'routed-to' && isRoute(c) && c.path === '/add/cmd' && c.query.cmd === 'earn';
+            }
+        },
+        {
+            target: '.c-account-id',
+            content: 'Choose the type of earning to record ("Income:Salary")',
+            params: {
+                placement: 'right'
+            },
+            cmdTest(c) {
+                return c && isAccountCommandDTO(c) && c.accountId.startsWith('Income:Salary');
+            },
+        },
+        {
+            target: '.c-change',
+            content: 'Enter how much you earned - 20000 USD',
+            params: {
+                placement: 'bottom'
+            },
+            cmdTest(c) {
+                return c && isAccountCommandDTO(c) && c.change !== undefined
+                    && c.change.number > 19999 && c.change.ccy !== '';
+            },
+        },
+        addCommand,
+        tourBalanceSheet,
+        {
+            target: '#assets-table',
+            content: 'In the accounts we can see your bank balance has increased by your salary',
+            params: {
+                placement: 'top'
+            },
+            customSteps: [{target: 'choice', label: 'Next Step'}],
+        },
+    ];
+
+    const fxTour: TourStep[] = [
         {
             ...addRecord,
             id: 'fxtfr',
@@ -300,6 +347,91 @@
             },
             customSteps: [{target: 'choice', label: 'Next Step'}],
         },
+    ];
+
+    const balTour: TourStep[] = [
+        {
+            id: 'bal',
+            target: '#page-title',
+            content: '<p style="text-align: left">While normal accounting software requires you to record every transaction and ensure everything balances, we think that is too much work</p>' +
+                '<p style="text-align: left">Instead, you only need to record your major earnings and investments. Then by supplying your resulting account balances, you can get a view of your general expenses without further input</p>' +
+                '<p style="text-align: left">Let us record your bank balance as you may see it on your bank statement</p>'
+        },
+        {
+            ...addRecord,
+        },
+        {
+            target: '#add-balance',
+            content: 'Click "Balance" to record a balance for an account',
+            eventTest(e, c) {
+                return e === 'routed-to' && isRoute(c) && c.path === '/add/cmd' && c.query.cmd === 'bal';
+            }
+        },
+        {
+            ...chooseBankAccount
+        },
+        {
+            target: '.c-balance',
+            content: 'Enter the actual balance of your bank account, e.g. 1000 USD',
+            params: {
+                placement: 'bottom'
+            },
+            cmdTest(c) {
+                return c && isAccountCommandDTO(c) && c.balance !== undefined
+                    && c.balance.number > 999 && c.balance.ccy !== '';
+            },
+        },
+        {
+            target: '.c-other-account',
+            content: 'The adjustment set your balance needs to be accounted for somewhere. Recommend choices include "Equity:Opening" for one-off sources of income or starting balances. "Expenses:General" is a good choice for current accounts. For this walkthrough, choose "Expenses:General"',
+            params: {
+                placement: 'right'
+            },
+            cmdTest(c) {
+                return c && isAccountCommandDTO(c) && c.otherAccount !== undefined
+                    && c.otherAccount.startsWith('Expenses:General');
+            },
+        },
+        addCommand,
+        tourBalanceSheet,
+        {
+            target: '#assets-table',
+            content: 'In the accounts we can see your bank balance has been adjusted',
+            params: {
+                placement: 'top'
+            },
+            customSteps: [{target: 'choice', label: 'Next Step'}],
+        },
+    ];
+
+    const mySteps: TourStep[] = [
+        {
+            target: '#page-title',
+            content: 'If you would like a guided tour on how to use this site, press Next'
+        },
+        {
+            target: '#page-title',
+            content: 'Gainstrack can become your personal accounting, a place to record all your activities that contribute to your networth and get insight over your networth and wealth. Suppose you have an investment account that you have funded with some cash and bought some shares. How can this be recorded? This guide will show you how as an example',
+        },
+        //  For placement, see https://popper.js.org/docs/v1/#Popper.placements
+        {
+            target: '#page-title',
+            id: 'choice',
+            content: 'There are different types of events that can bee recorded. Which guide would you like to try next?',
+            customSteps: [
+                {target: 'fund', label: '1. Fund Investment Account', buttonStyle: 'width: 200px; text-align: left;'},
+                {target: 'trade', label: '2. Trade Shares', buttonStyle: 'width: 200px; text-align: left;'},
+                {target: 'fxtfr', label: '3. FX Transfer', buttonStyle: 'width: 200px; text-align: left;'},
+                {target: 'earn', label: '4. Record salary earnings', buttonStyle: 'width: 200px; text-align: left;'},
+                {target: 'bal', label: '5. Bank balance adjustment', buttonStyle: 'width: 200px; text-align: left;'},
+                {target: 'end', label: 'All Done', buttonStyle: 'width: 200px; text-align: left;'}
+            ],
+        },
+        ...fundTour,
+        ...tradeTour,
+        ...fxTour,
+        ...balTour,
+        ...earnTour,
         {
             // target: '#route-balance_sheet', // popper fails on this
             id: 'end',
