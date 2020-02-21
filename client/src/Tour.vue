@@ -60,6 +60,7 @@
         customSteps?: CustomStep[]
         eventTest?: (e: string, c: AccountCommandDTO | Route) => boolean
         cmdTest?: (c: AccountCommandDTO) => boolean
+        //  For placement, see https://popper.js.org/docs/v1/#Popper.placements
         params?: object
 
     }
@@ -71,6 +72,10 @@
     function isAccountCommandDTO(c: AccountCommandDTO | Route): c is Route {
         return (c as AccountCommandDTO).date !== undefined;
     }
+
+    const mkParagraphs = (ps: string[]): string => {
+        return ps.map(p => `<p style="text-align: left">${p}</p>`).join('');
+    };
 
     const addRecord: TourStep = {
         // target: '#add-record', // popper handles this wrong
@@ -135,8 +140,15 @@
 
     const fundTour: TourStep[] = [
         {
-            ...addRecord,
+
             id: 'fund',
+            target: '#page-title',
+            content: mkParagraphs(['Typically an investment account requires funding from somewhere like your bank account before making trades',
+                'This guide will walk you through recording that funding',
+            ])
+        },
+        {
+            ...addRecord,
         },
         {
             target: '#add-fund',
@@ -148,9 +160,11 @@
         chooseInvestment,
         {
             target: '.c-change',
-            content: 'Record funding of 10000 USD to the investment account',
+            content: mkParagraphs(['Record funding of 10000 USD to the investment account',
+            'The investment account has preset to be funded from the Assets:Bank account']),
             cmdTest(c) {
-                return c && isAccountCommandDTO(c) && c.change !== undefined && c.change.number > 9999 && c.change.ccy !== '';
+                return c && isAccountCommandDTO(c) && c.change !== undefined && c.change.number > 9999
+                    && c.change.ccy !== '';
             },
             params: {
                 placement: 'bottom'
@@ -353,9 +367,9 @@
         {
             id: 'bal',
             target: '#page-title',
-            content: '<p style="text-align: left">While normal accounting software requires you to record every transaction and ensure everything balances, we think that is too much work</p>' +
-                '<p style="text-align: left">Instead, you only need to record your major earnings and investments. Then by supplying your resulting account balances, you can get a view of your general expenses without further input</p>' +
-                '<p style="text-align: left">Let us record your bank balance as you may see it on your bank statement</p>'
+            content: mkParagraphs(['While normal accounting software requires you to record every transaction and ensure everything balances, we think that is too much work',
+                'Instead, you only need to record your major earnings and investments. Then by supplying your resulting account balances, you can get a view of your general expenses without further input',
+                'Let us record your bank balance as you may see it on your bank statement'])
         },
         {
             ...addRecord,
@@ -383,7 +397,8 @@
         },
         {
             target: '.c-other-account',
-            content: 'The adjustment set your balance needs to be accounted for somewhere. Recommend choices include "Equity:Opening" for one-off sources of income or starting balances. "Expenses:General" is a good choice for current accounts. For this walkthrough, choose "Expenses:General"',
+            content: mkParagraphs(['The adjustment set your balance needs to be accounted for somewhere. Recommend choices include "Equity:Opening" for one-off sources of income or starting balances. "Expenses:General" is a good choice for current accounts.',
+                'For this walkthrough, choose "Expenses:General"']),
             params: {
                 placement: 'right'
             },
@@ -411,9 +426,8 @@
         },
         {
             target: '#page-title',
-            content: 'Gainstrack can become your personal accounting, a place to record all your activities that contribute to your networth and get insight over your networth and wealth. Suppose you have an investment account that you have funded with some cash and bought some shares. How can this be recorded? This guide will show you how as an example',
+            content: mkParagraphs(['Gainstrack can become your personal accountant, a place to record all your activities that contribute to your networth and get insight over your networth and wealth. Suppose you have an investment account that you have funded with some cash and bought some shares. How can this be recorded? This guide will show you how as an example']),
         },
-        //  For placement, see https://popper.js.org/docs/v1/#Popper.placements
         {
             target: '#page-title',
             id: 'choice',
