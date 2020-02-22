@@ -49,7 +49,10 @@
                 const notify = this.$notify;
                 this.loading = true;
                 const summary = await this.$store.dispatch('login', {username: this.username, password: this.password})
-                    .then(response => response.data)
+                    .then(response => {
+                        this.$analytics.logEvent('login');
+                        return response.data;
+                    })
                     .catch(error => notify.error(error.response.data))
                     .finally(() => this.loading = false);
                 if (summary.authentication.error) {
@@ -79,7 +82,10 @@
                     const token = await this.$auth.getTokenSilently();
                     this.loading = true;
                     const summary = await this.$store.dispatch('loginWithToken', token)
-                        .then(response => response.data)
+                        .then(response => {
+                            this.$analytics.logEvent('login');
+                            return response.data;
+                        })
                         .catch(error => {
                             notify.error(`Auth token rejected by server: ${error.response.data}`);
                             this.$store.dispatch('logout');

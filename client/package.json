@@ -17,6 +17,7 @@
     "codemirror": "^5.51.0",
     "core-js": "^3.6.4",
     "element-ui": "^2.13.0",
+    "firebase": "^7.9.1",
     "lodash": "latest",
     "marked": "^0.7.0",
     "numeral": "^2.0.6",
