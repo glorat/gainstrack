@@ -43,7 +43,8 @@ const routes: RouteConfig[] = [
     {path: '/irr/:accountId', component: IrrDetail, name: 'irr_detail', props: true},
     {
         path: '/account/:accountId', component: () => import(/* webpackChunkName: "Account" */ '../pages/Account.vue'),
-        name: 'account', props: true
+        name: 'account', props: true,
+        meta: {title: 'Account'}
     },
     {path: '/command/', component: CommandSummary, meta: {title: 'Commands'}},
     {path: '/command/:accountId', component: () => import('../pages/Command.vue'), name: 'command', props: true},
@@ -56,9 +57,12 @@ const routes: RouteConfig[] = [
     {path: '/pnlexplain', component: () => import('../pages/PnlExplain.vue'), meta: {title: ' P&L Explain'}},
     {path: '/pnlexplain/:fromDate/:toDate', component: () => import('../pages/PnlExplainDetail.vue'),
         name: 'pnldetail', meta: {title: ' P&L Explain'}, props: true},
-    {path: '/help', component: () => import('../pages/Markdown.vue'), props: {page: 'help.md'}},
-    {path: '/faq', component: () => import('../pages/Markdown.vue'), props: {page: 'faq.md'}},
-    {path: '/*', component: () => import('../pages/Markdown.vue'), props: {page: 'welcome.md'}},
+    {path: '/help', component: () => import('../pages/Markdown.vue'),
+        props: {page: 'help.md'},  meta: {title: 'Gainstrack Help'}},
+    {path: '/faq', component: () => import('../pages/Markdown.vue'),
+        props: {page: 'faq.md'},  meta: {title: 'Gainstrack FAQ'}},
+    {path: '/*', component: () => import('../pages/Markdown.vue'),
+        props: {page: 'welcome.md'},  meta: {title: 'Welcome'}},
 ];
 
 const router = new Router({
