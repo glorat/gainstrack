@@ -1,8 +1,8 @@
 <template>
   <div id="q-app">
-    <tour></tour>
     <my-layout></my-layout>
-
+    <my-sentry></my-sentry>
+    <my-firebase></my-firebase>
   </div>
 </template>
 
@@ -10,12 +10,11 @@
 
 </style>
 <script>
-  import Tour from '@/Tour';
-
   const MyLayout = () => import ('@/pages/MyLayout');
-
+  const MySentry = () => import ('@/MySentry');
+  const MyFirebase = () => import ('@/MyFirebase');
   // import MyLayout from '@/pages/MyLayout';
   export default {
-    components: {MyLayout, Tour}
+    components: {MyLayout, MySentry, MyFirebase}
   }
 </script>

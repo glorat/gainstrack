@@ -1,11 +1,12 @@
 package com.gainstrack.core
 
+
 import com.gainstrack.report.{AssetPair, FXConverter}
 
 case class PositionSet(assetBalance:Map[AssetId, Fraction]) {
   def ccys = assetBalance.keys
 
-  def toDTO: Seq[Map[String,Any]] = {
+  def toDTO: PositionSet.DTO = {
     assetBalance.keys.map(getBalance(_).toDTO).toSeq
   }
 
@@ -85,6 +86,7 @@ case class PositionSet(assetBalance:Map[AssetId, Fraction]) {
 }
 
 object PositionSet {
+  type DTO = Seq[Map[String,Any]]
   def apply() : PositionSet = {
     PositionSet(Map())
   }

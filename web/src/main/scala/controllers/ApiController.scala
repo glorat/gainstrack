@@ -382,7 +382,13 @@ object ServerQuoteSource {
 
 //case class BalanceSheet(balanceSheet: Map[String,TreeTable])
 case class ApiSourceRequest(filePath:String, entryHash:String, source:String, sha256sum: String)
-case class ApiSourceResponse(errors: Seq[ParserMessage], added: Seq[AccountCommandDTO], addedJournal:Seq[AccountTxDTO] = Seq(), addedBalance:Map[String,Double] = Map())
+case class ApiSourceResponse(
+                              errors: Seq[ParserMessage],
+                              added: Seq[AccountCommandDTO],
+                              addedJournal:Seq[AccountTxDTO] = Seq(),
+                              accountChanges:Seq[AccountDeltaDTO] = Seq(),
+                              networthChange: Double = 0.0
+                            )
 
 case class AccountTxSummaryDTO(accountId:String, rows:Seq[AccountTxDTO])
 case class AccountTxDTO(date:String, cmdType:String, description:String, change: String, position:String, postings:Seq[Posting])

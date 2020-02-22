@@ -7,7 +7,10 @@ import spire.math.SafeLong
 
 case class Amount(number:Fraction, ccy:AssetId) {
 
-  def toDTO:Map[String, Any] = Map("ccy" -> ccy.symbol, "value" -> number.toDouble)
+  // TODO: We'd like to rename the field to number for consistency but we have a legacy issue
+  def toOldDTO:Map[String, Any] = Map("ccy" -> ccy.symbol, "value" -> number.toDouble)
+
+  def toDTO:Map[String, Any] = Map("ccy" -> ccy.symbol, "number" -> number.toDouble)
 
   private val errmsg = "Balance can only combine single currency"
 

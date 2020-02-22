@@ -19,6 +19,7 @@ RUN sbt test assembly
 # Sort out the web client
 FROM node:10-alpine as webbuilder
 RUN apk add --update --no-cache \
+    git \
     python \
     make \
     g++

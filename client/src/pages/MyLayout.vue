@@ -19,15 +19,19 @@
             <router-view></router-view>
         </article>
         <ul id="notifications" class="notifications"></ul>
+        <tour></tour>
     </div>
 </template>
 
 <script>
     import MyAside from './MyAside';
     import FilterForm from '../components/FilterForm';
+    // import Tour from '../Tour';
+    const Tour = () => import ('../Tour');
 
     export default {
         name: 'MyLayout',
+        components: {FilterForm, MyAside, Tour},
         mounted() {
           this.$router.afterEach((to, from) => {
               this.pageTitle = (to.meta.title || 'Gainstrack');
@@ -37,7 +41,6 @@
         data() {
             return {pageTitle: ''};
         },
-        components: {FilterForm, MyAside}
     }
 </script>
 

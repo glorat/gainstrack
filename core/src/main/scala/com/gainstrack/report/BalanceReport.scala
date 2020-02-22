@@ -39,6 +39,10 @@ object BalanceReport {
 
 case class BalanceReportState(balances:Map[AccountId, PositionSet]) {
 
+  def toDTO = {
+    balances.map(kv => kv._1.n -> kv._2.toDTO)
+  }
+
   def totalPosition(accountId:AccountId) : PositionSet = {
     balances.keys.toSeq.filter(_.isSubAccountOf(accountId)).foldLeft(PositionSet())((ps,account) => {
       val value = balances(account)

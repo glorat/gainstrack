@@ -46,6 +46,11 @@
     import {Route} from 'vue-router';
     import {Tour} from 'vue-tour';
 
+    import VueTour from 'vue-tour';
+    // tslint:disable-next-line
+    require('vue-tour/dist/vue-tour.css');
+    Vue.use(VueTour);
+
     interface CustomStep {
         target: string
         label: string
