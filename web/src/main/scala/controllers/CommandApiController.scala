@@ -25,6 +25,7 @@ class CommandApiController(implicit val ec: ExecutionContext)
   protected override def transformRequestBody(body: JValue): JValue = body.camelizeKeys
 
 
+
   def gainstrackChange(cmds: Seq[AccountCommand], bg: GainstrackGenerator, bg2: GainstrackGenerator, singleFXConverter: SingleFXConverter, date:LocalDate) = {
     val baseCcy = bg.acctState.baseCurrency
     val added = bg2.txState.cmds.diff(bg.txState.cmds).collect{case tx: Transaction=> tx}
@@ -32,8 +33,14 @@ class CommandApiController(implicit val ec: ExecutionContext)
     val NetworthPnl:PartialFunction[AccountType, Double] = {case Assets|Liabilities => 1.0}
     val addedNetworth = added.map(_.pnl2(singleFXConverter, date, baseCcy, NetworthPnl))
     val removedNetworth = removed.map(_.pnl2(singleFXConverter, date, bg.acctState.baseCurrency, NetworthPnl))
+    val changedNetworth = addedNetworth.sum - removedNetworth.sum
     val addedBalanceReport = BalanceReport(added)
-    val addedBalances = addedBalanceReport.getState.balances.map(x => x._1.toString -> x._2.convertTo(baseCcy, singleFXConverter, date).getBalance(baseCcy).number.toDouble)
+
+    val changes = addedBalanceReport.getState.balances.keys.toSeq.sortBy(_.n).map(acctId => {
+      val valueChange = addedBalanceReport.getState.balances(acctId).convertTo(baseCcy, bg2.priceFXConverter, date).getBalance(baseCcy).number.toDouble
+      val unitChange = addedBalanceReport.getState.balances(acctId).toDTO
+      AccountDeltaDTO(acctId.n, unitChange, valueChange)
+    })
 
     val rows = added.map(tx => {
       val cmd = tx.origin
@@ -41,7 +48,7 @@ class CommandApiController(implicit val ec: ExecutionContext)
       AccountTxDTO(cmd.date.toString, cmd.commandString, cmd.description, "0.00", "", postings)
     })
 
-    ApiSourceResponse(errors=Seq(), added = cmds.map(cmd => cmd.toDTO), addedJournal = rows, addedBalance = addedBalances )
+    ApiSourceResponse(errors=Seq(), added = cmds.map(cmd => cmd.toDTO), addedJournal = rows, accountChanges = changes, networthChange = changedNetworth )
 
 
   }
@@ -58,7 +65,7 @@ class CommandApiController(implicit val ec: ExecutionContext)
       val bg2 = cmds.foldLeft(bg)(_.addCommand(_))
 
       // FIXME: Get live!
-      val singleFXConverter = bg.singleFXConversion
+      val singleFXConverter = bg2.singleFXConversion
       val date = today()
       val res = gainstrackChange(cmds, bg, bg2, singleFXConverter, date )
       res
@@ -83,7 +90,7 @@ class CommandApiController(implicit val ec: ExecutionContext)
       val bg2 = cmds.foldLeft(bg)(_.addCommand(_))
 
       // FIXME: Get live!
-      val singleFXConverter = bg.singleFXConversion
+      val singleFXConverter = bg2.singleFXConversion
       val date = today()
       val res = gainstrackChange(cmds, bg, bg2, singleFXConverter, date )
 
@@ -147,3 +154,5 @@ class CommandApiController(implicit val ec: ExecutionContext)
 }
 case class CommandApiRequest(str:String)
 case class CommandApiResponse(success:String, added: Seq[AccountCommandDTO])
+
+case class AccountDeltaDTO(accountId: String, unitChange: PositionSet.DTO, valueChange: Double)

@@ -5,14 +5,33 @@
             <div>
                 <pre>{{ commandStr }}</pre>
             </div>
-            <button class="c-add" :disabled="errors.length || !commandStr" type="button" v-on:click="addCommand">Add</button>
+            <button class="c-add" :disabled="result.errors.length || !commandStr" type="button" v-on:click="addCommand">Add</button>
         </div>
-        <div v-if="errors.length>0">
-            <source-errors :errs="errors"></source-errors>
+        <div v-if="result.errors.length>0">
+            <source-errors :errs="result.errors"></source-errors>
         </div>
         <hr>
-        <div v-if="added[0]">
-            <router-link v-if="added[0]" :to="{name:'account', params:{accountId:added[0].accountId}}">{{added[0].accountId}}</router-link>
+        <div v-if="result.added[0]">
+<!--            <router-link v-if="added[0]" :to="{name:'account', params:{accountId:added[0].accountId}}">{{added[0].accountId}}</router-link>-->
+            <h4>Balance changes</h4>
+            <table class="queryresults sortable">
+                <thead>
+                    <tr><th>Account</th><th>Position Change</th><th>Value Change</th></tr>
+                </thead>
+
+                <tr v-for="change in result.accountChanges" :key="change.accountId">
+                    <td><router-link :to="{name: 'account', params: [change.accountId]}">{{ change.accountId }}</router-link></td>
+                    <td class="num"><span v-for="amt in change.unitChange" :key="amt.ccy">{{ amt.number }} {{ amt.ccy }} </span></td>
+                    <td class="num">{{ change.valueChange }} {{ baseCcy }}</td>
+                </tr>
+                <tr>
+                    <td class="subtotal">Networth Change</td>
+                    <td class="subtotal"></td>
+                    <td class="subtotal num">{{ result.networthChange }}</td>
+                </tr>
+            </table>
+
+            <h4>Journal additions</h4>
             <command-table :cmds="added"></command-table>
         </div>
     </div>
@@ -32,12 +51,27 @@
         data() {
             return {
                 commandStr: '',
+                result: {
+                  added:[],
+                  accountChanges: [],
+                  errors: [],
+                  networthChange: 0.0,
+                },
                 added: [],
+                accountChanges: [],
                 errors: [],
                 testing: false,
                 success: false,
             }
         },
+      computed: {
+          baseCcy() {
+            return this.$store.state.summary.baseCcy;
+          },
+        networthChange() {
+            return this.result.networthChange
+        }
+      },
         methods: {
             gainstrackChange(ev) {
                 this.commandStr = ev;
@@ -51,7 +85,9 @@
                     axios.post('/api/post/test', {str})
                         .then(response => {
                             this.added = response.data.added;
+                            this.accountChanges = response.data.accountChanges;
                             this.errors = response.data.errors;
+                            this.result = response.data;
 
                         })
                         .catch(error => this.$notify.error(error))
@@ -81,5 +117,9 @@
 </script>
 
 <style scoped>
-
+    .subtotal {
+        border-top-color: black;
+        border-top-width: 2px;
+        border-top-style: solid;
+    }
 </style>
