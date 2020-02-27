@@ -14,7 +14,7 @@
                     <router-link v-bind:to="'/account/' + node.name">{{ node.shortName }}</router-link>
                 </span>
                 <span class="num other">
-                    <span v-for="x in node.assetBalance">{{x.value.toFixed(2)}} {{x.ccy}} <br /></span>
+                    <span v-for="x in node.assetBalance">{{x.number.toFixed(2)}} {{x.ccy}} <br /></span>
                 </span>
             </p>
             <tree-table-node v-bind:node="node" depth="1"></tree-table-node>
