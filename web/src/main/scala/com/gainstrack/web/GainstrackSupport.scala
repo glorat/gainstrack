@@ -49,11 +49,15 @@ trait GainstrackSupport {
       val id = user.uuid
       val ent = repo.getByIdOpt(id, new GainstrackEntity()).getOrElse(GainstrackEntity.defaultBase(id))
       val cmds = ent.getState.cmds
-      val ret = GainstrackGenerator(cmds)
+      // val ret = GainstrackGenerator(cmds)
+      val midTime = Instant.now
+      val ret = GtCache.get(cmds)
       val endTime = Instant.now
+      val fhDuration = Duration.between(start, midTime)
+      val shDuration = Duration.between(midTime, endTime)
       val duration = Duration.between(start, endTime)
-      logger.info(s"bgFromFile generation in ${ret.generationDuration.toMillis}ms")
-      logger.info(s"bgFromFile total in ${duration.toMillis}ms")
+      logger.info(s"bgFromFile original generation in ${ret.generationDuration.toMillis}ms")
+      logger.info(s"bgFromFile ${fhDuration.toMillis}+${shDuration.toMillis} = total in ${duration.toMillis}ms")
       Some(GainstrackGenerator(cmds))
     }
     catch {
@@ -72,9 +76,10 @@ trait GainstrackSupport {
 
   def getGainstrack = {
     val gt = if (isAuthenticated) {
-      session.get("gainstrack").map(_.asInstanceOf[GainstrackGenerator])
-        .orElse(bgFromFile)
-        .getOrElse(bgDefault)
+      bgFromFile.getOrElse(bgDefault)
+//      session.get("gainstrack").map(_.asInstanceOf[GainstrackGenerator])
+//        .orElse(bgFromFile)
+//        .getOrElse(bgDefault)
     }
     else {
       session.get("gainstrack").getOrElse(bgDefault).asInstanceOf[GainstrackGenerator]
