@@ -16,6 +16,7 @@ interface MyData {
   loading: boolean,
   isAuthenticated: boolean,
   user: object,
+  auth0ClientPromise: Promise<Auth0Client>,
   auth0Client: Auth0Client,
   popupOpen: boolean,
   error: null|string,
@@ -36,6 +37,8 @@ export const useAuth0 = ({
         loading: true,
         isAuthenticated: false,
         user: {},
+        // @ts-ignore
+        auth0ClientPromise: null,
         // @ts-ignore
         auth0Client: null,
         popupOpen: false,
@@ -98,12 +101,14 @@ export const useAuth0 = ({
     /** Use this lifecycle method to instantiate the SDK client */
     async created() {
       // Create a new instance of the SDK client using members of the given options object
-      this.auth0Client = await createAuth0Client({
+      this.auth0ClientPromise = createAuth0Client({
         domain: options.domain,
         client_id: options.clientId,
         audience: options.audience,
         redirect_uri: redirectUri
-      });
+      })
+
+      this.auth0Client = await this.auth0ClientPromise;
 
       try {
         // If the user is returning to the app after authentication..

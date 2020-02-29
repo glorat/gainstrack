@@ -95,29 +95,46 @@
             auth0login() {
                 this.$auth.loginWithRedirect();
             },
-            async auth0validate() {
+            async loginWithToken(token) {
                 const notify = this.$notify;
+                const summary = await this.$store.dispatch('loginWithToken', token)
+                    .then(response => {
+                        this.$analytics.logEvent('login');
+                        return response.data;
+                    })
+                    .catch(error => {
+                        notify.error(`Auth token rejected by server: ${error.response.data}`);
+                        this.$store.dispatch('logout');
+                    })
+                    .finally(() => this.loading = false);
+                if (summary.authentication.error) {
+                    notify.warning(summary.authentication.error);
+                }
+            },
+            async auth0validate() {
+                const token = await this.$auth.getTokenSilently();
+                this.loading = true;
+                await this.loginWithToken(token)
+
+            },
+            async autoLogin() {
                 try {
                     const token = await this.$auth.getTokenSilently();
-                    this.loading = true;
-                    const summary = await this.$store.dispatch('loginWithToken', token)
-                        .then(response => {
-                            this.$analytics.logEvent('login');
-                            return response.data;
-                        })
-                        .catch(error => {
-                            notify.error(`Auth token rejected by server: ${error.response.data}`);
-                            this.$store.dispatch('logout');
-                        })
-                        .finally(() => this.loading = false);
-                    if (summary.authentication.error) {
-                        notify.warning(summary.authentication.error);
+                    if (token) {
+                        notify.success(`Welcome Back!`);
+                        await this.loginWithToken(token);
                     }
                 } catch (e) {
-                    notify.warning(`Not authenticated: ${e.error_description}`)
+                    console.error(e)
                 }
 
             }
+        },
+        mounted() {
+            this.$auth.auth0ClientPromise.then(() => {
+                this.autoLogin();
+            });
+
         }
     }
 </script>
