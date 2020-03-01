@@ -113,7 +113,8 @@ trait GainstrackSupport {
         session("gainstrack") = bg
       }
       else {
-        throw new Exception("Unable to save gainstrack due to errors")
+        // TODO: Return structured message properly
+        throw new Exception(res.map(_.message).mkString("\n"))
       }
     }
     else {
@@ -123,7 +124,7 @@ trait GainstrackSupport {
         session("gainstrack") = bg
       }
       else {
-        throw new Exception("Unable to save gainstrack due to errors")
+        throw new Exception(res.map(_.message).mkString("\n"))
       }
       logger.info("Anonymous saveGainstrack - in-memory only")
     }
