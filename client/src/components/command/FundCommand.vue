@@ -20,7 +20,7 @@
         </div>
         <div>
             Override funding source (optional) <help-tip tag="fundOtherAccount"></help-tip>
-            <account-selector class="c-other-account" v-model="c.otherAccount" v-on:input="accountIdChanged" :placeholder="defaultFundingAccount"></account-selector>
+            <account-selector class="c-other-account" v-model="c.otherAccount" v-on:input="otherAccountChanged" :placeholder="defaultFundingAccount"></account-selector>
         </div>
 
     </div>
@@ -86,11 +86,16 @@
                     && c.accountId
                     && c.change.number
                     && c.change.ccy
-                    && (this.otherAccount || this.defaultFundingAccount);
+                    && ( (this.c.otherAccount) || this.defaultFundingAccount);
             },
             toGainstrack() {
                 if (this.isValid) {
-                    return `${this.c.date} fund ${this.c.accountId} ${this.c.change.number} ${this.c.change.ccy}`;
+                    if (this.c.otherAccount) {
+                        return `${this.c.date} fund ${this.c.accountId} ${this.c.otherAccount} ${this.c.change.number} ${this.c.change.ccy}`;
+                    } else {
+                        return `${this.c.date} fund ${this.c.accountId} ${this.c.change.number} ${this.c.change.ccy}`;
+                    }
+
                 }
             }
         }
