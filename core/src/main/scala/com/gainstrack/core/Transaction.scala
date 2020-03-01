@@ -8,8 +8,6 @@ case class Transaction (
                          postDate: LocalDate,
                          description: String,
                          postings: Seq[Posting],
-                         /** System time */
-                         enterDate: ZonedDateTime,
                          origin:AccountCommand,
                          /** System order */
                          id: Int
@@ -108,9 +106,9 @@ case class Transaction (
 
 object Transaction {
   def apply(postDate:LocalDate, description:String, postings:Seq[Posting], origin:AccountCommand) : Transaction = {
-    apply(postDate, description, postings, now(), origin, 0)
+    apply(postDate, description, postings, origin, 0)
   }
   def apply(postDateStr:String, description:String, postings:Seq[Posting], origin:AccountCommand) : Transaction = {
-    apply(parseDate(postDateStr), description, postings, now(), origin, 0)
+    apply(parseDate(postDateStr), description, postings, origin, 0)
   }
 }

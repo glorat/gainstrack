@@ -20,7 +20,7 @@
                 </thead>
 
                 <tr v-for="change in result.accountChanges" :key="change.accountId">
-                    <td><router-link :to="{name: 'account', params: [change.accountId]}">{{ change.accountId }}</router-link></td>
+                    <td><router-link :to="{name: 'account', params: {accountId: change.accountId}}">{{ change.accountId }}</router-link></td>
                     <td class="num"><span v-for="amt in change.unitChange" :key="amt.ccy">{{ amt.number }} {{ amt.ccy }} </span></td>
                     <td class="num">{{ change.valueChange }} {{ baseCcy }}</td>
                 </tr>
