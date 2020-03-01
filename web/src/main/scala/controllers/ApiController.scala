@@ -188,7 +188,12 @@ class ApiController (implicit val ec :ExecutionContext)
     val toDate = currentDate
     val accountId : AccountId = params("accountId")
     val dailyBalance = DailyBalance(bg.balanceState)
-    dailyBalance.monthlySeries(accountId, conversionStrategy, toDate, bg.acctState, bg.priceFXConverter, bg.assetChainMap, bg.singleFXConversion)
+
+    // Get earliest tx date
+    val allDates = bg.txState.allTransactions.map(_.postDate)
+    val startDate = if (allDates.isEmpty) today() else allDates.min
+
+    dailyBalance.monthlySeries(accountId, conversionStrategy, startDate, toDate, bg.acctState, bg.priceFXConverter, bg.assetChainMap, bg.singleFXConversion)
   }
 
   get ("/journal/") {

@@ -7,11 +7,7 @@ import com.gainstrack.core._
 
 case class DailyBalance(balanceState: BalanceState, date: LocalDate = MaxDate) {
 
-  def monthlySeries(accountId: AccountId, conversionStrategy: String, endDate: LocalDate, acctState: AccountState, priceState: PriceFXConverter, assetChainMap: AssetChainMap, singleFXConversion: SingleFXConverter) = {
-    val allDates = acctState.accounts
-      .filter(a => accountId == a.accountId || a.accountId.isSubAccountOf(accountId))
-      .map(_.date)
-    val startDate = if (allDates.isEmpty) today() else allDates.min
+  def monthlySeries(accountId: AccountId, conversionStrategy: String, startDate: LocalDate, endDate: LocalDate, acctState: AccountState, priceState: PriceFXConverter, assetChainMap: AssetChainMap, singleFXConversion: SingleFXConverter) = {
     val startMonth = YearMonth.from(startDate)
     val end = YearMonth.from(endDate).plusMonths(1)
     val it = Iterator.iterate(startMonth)(_.plusMonths(1)).takeWhile(!_.isAfter(end))
