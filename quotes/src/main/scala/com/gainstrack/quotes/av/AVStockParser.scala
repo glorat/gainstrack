@@ -71,15 +71,15 @@ object AVStockParser {
     require(dateIndex >= 0, s"timestamp column not found for $symbol")
     val closeIndex = headers.indexOf("close")
     require(closeIndex >= 0, s"close column not found for $symbol")
-    val refPriceStr = it1.next().split(",").map(_.trim).apply(closeIndex)
-    val liveQuote: N = parseIntradayRefQuote(config).getOrElse(fractionalParser.parse(refPriceStr))
-    require(liveQuote != 0.0, s"close for ${symbol} zero in ${refPriceStr} for line")
+
+    var liveQuote:N = 0.0
     val buildMap = SortedMap.newBuilder[LocalDate, N]
 
-    for (line <- src.getLines().drop(2)) {
+    for (line <- src.getLines()) {
       val parts = line.split(",").map(_.trim)
       val date = parseDate(parts(dateIndex).take(10))
       val value = fractionalParser.parse(parts(closeIndex))
+      if (liveQuote == 0.0) {liveQuote = value}
       buildMap += (date -> value)
     }
     val map: SortedMap[LocalDate, N] = buildMap.result()

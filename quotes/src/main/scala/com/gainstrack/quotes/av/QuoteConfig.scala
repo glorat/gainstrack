@@ -26,7 +26,7 @@ object QuoteConfig {
   ).map((QuoteConfig.apply _).tupled)
 
   // A shortcut implementation for now. One day, let's get a list of ISOs
-  def allCcys = allConfigs.map(_.actualCcy).distinct.filter(_ != "USD")
+  def allCcys = Seq("GBP", "EUR", "HKD", "CAD", "AUD", "NZD")
 
   val allConfigsWithCcy = allConfigs ++ allCcys.map(ccy => QuoteConfig(ccy, "USD", ccy))
 }

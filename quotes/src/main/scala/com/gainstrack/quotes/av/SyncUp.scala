@@ -103,7 +103,7 @@ object SyncUp {
 
     val reses = QuoteConfig
       .allConfigs
-      // .filter(_.symbol == "XIU.TRT") // Uncomment here for debugging
+      // .filter(_.avSymbol == "VWRL.LON") // Uncomment here for debugging
       .flatMap(cfg => AVStockParser.tryParseSymbol(cfg))
       .foreach(res => {
         val cfg = res.config
