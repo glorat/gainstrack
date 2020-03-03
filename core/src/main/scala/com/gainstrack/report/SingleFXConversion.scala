@@ -2,6 +2,7 @@ package com.gainstrack.report
 
 import java.time.{Duration, Instant}
 
+import com.gainstrack.core.TimeSeriesInterpolator.linearDouble
 import com.gainstrack.core._
 
 import scala.collection.SortedMap
@@ -10,12 +11,16 @@ case class SingleFXConversion(data:Map[AssetId, SortedColumnMap[LocalDate, Doubl
   private val interp = new TimeSeriesInterpolator
 
   override def getFX(fx1:AssetId, fx2:AssetId, date: LocalDate): Option[Double] = {
+    getFX(fx1, fx2, date, linearDouble)
+  }
+
+  def getFX(fx1:AssetId, fx2:AssetId, date: LocalDate, interpMethod: TimeSeriesInterpolator.Interpolator[Double, Double]): Option[Double] = {
     if (fx1 == fx2) {
       Some(1.0)
     }
     else if (fx2 == baseCcy) {
       data.get(fx1).flatMap ( series =>
-        interp.getValue(series, date)(TimeSeriesInterpolator.linearDouble)
+        interp.getValue(series, date)(interpMethod)
       )
     }
     else {

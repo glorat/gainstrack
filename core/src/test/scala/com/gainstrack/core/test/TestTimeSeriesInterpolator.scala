@@ -1,6 +1,7 @@
 package com.gainstrack.core.test
 
 import com.gainstrack.core._
+import com.gainstrack.report.{FXProxy, SingleFXConversion}
 import org.scalatest.FlatSpec
 
 import scala.collection.SortedMap
@@ -46,6 +47,42 @@ class TestTimeSeriesInterpolator extends FlatSpec {
       assert(interp.getValue(data, parseDate("2019-01-02")) == Some(1))
       assert(interp.getValue(data, parseDate("2019-12-30")) == Some(1))
     }
+  }
+
+  {
+    val mktDts = IndexedSeq("2019-06-15", "2019-06-16", "2019-06-17", "2019-06-18").map(parseDate)
+    val mktVals = IndexedSeq(100.0,95.0,100.0,105.0)
+    val mkt = SingleFXConversion(Map(AssetId("MKT")->SortedColumnMap(mktDts, mktVals)), AssetId("USD") )
+
+    val trdDts = IndexedSeq("2019-06-15", "2019-06-17").map(parseDate)
+    val trdVals = IndexedSeq(1000.0, 1000.0)
+    val trd = SingleFXConversion(Map(AssetId("TRD")->SortedColumnMap(trdDts, trdVals)), AssetId("USD") )
+
+    val proxyMap = Map(AssetId("TRD") -> AssetId("MKT"))
+
+    val fxProxy = new FXProxy(proxyMap, trd, mkt)
+
+    "FX Proxy" should "return exacts" in {
+      assert (fxProxy.getFX(AssetId("TRD"), AssetId("USD"), trdDts(0)) == Some(trdVals(0)) )
+      assert (fxProxy.getFX(AssetId("TRD"), AssetId("USD"), trdDts(1)) == Some(trdVals(1)) )
+    }
+
+    it should "flat line on low side" in {
+      assert (fxProxy.getFX(AssetId("TRD"), AssetId("USD"), trdDts(0).minusDays(10)) == Some(trdVals(0)) )
+    }
+
+    it should "follow market on high side" in {
+      assert (fxProxy.getFX(AssetId("TRD"), AssetId("USD"), mktDts.last) == Some(1050) )
+    }
+
+    it should "linear interpolate in the middle" in {
+      assert (fxProxy.getFX(AssetId("TRD"), AssetId("USD"), mktDts(1)) == Some(1000) )
+    }
+
+    ignore should "follow the market in the middle" in {
+      assert (fxProxy.getFX(AssetId("TRD"), AssetId("USD"), mktDts(1)) == Some(950) )
+    }
+
   }
 
 }

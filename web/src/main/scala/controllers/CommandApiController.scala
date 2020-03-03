@@ -65,7 +65,7 @@ class CommandApiController(implicit val ec: ExecutionContext)
       val bg2 = cmds.foldLeft(bg)(_.addCommand(_))
 
       // FIXME: Get live!
-      val singleFXConverter = bg2.singleFXConversion
+      val singleFXConverter = bg2.tradeFXConversion
       val date = today()
       val res = gainstrackChange(cmds, bg, bg2, singleFXConverter, date )
       res
@@ -90,7 +90,7 @@ class CommandApiController(implicit val ec: ExecutionContext)
       val bg2 = cmds.foldLeft(bg)(_.addCommand(_))
 
       // FIXME: Get live!
-      val singleFXConverter = bg2.singleFXConversion
+      val singleFXConverter = bg2.tradeFXConversion
       val date = today()
       val res = gainstrackChange(cmds, bg, bg2, singleFXConverter, date )
 

@@ -1,6 +1,7 @@
 package com.gainstrack.report
 
 import com.gainstrack.command._
+import com.gainstrack.core.TimeSeriesInterpolator.linearDouble
 import com.gainstrack.core._
 import net.glorat.cqrs.{AggregateRootState, DomainEvent}
 import spire.math.SafeLong
@@ -111,12 +112,16 @@ class PriceFXConverter(val ccys: Set[AssetId], val prices: Map[AssetPair, Sorted
   }
 
   def getFX(tuple:AssetPair, date:LocalDate):Option[Double] = {
+    getFX(tuple, date, linearDouble)
+  }
+
+  def getFX(tuple:AssetPair, date:LocalDate, interpMethod: TimeSeriesInterpolator.Interpolator[Double, Double]):Option[Double] = {
     if (tuple.fx1 == tuple.fx2) {
       Some(1)
     }
     else {
       val timeSeries:SortedColumnMap[LocalDate, Double] = prices.getOrElse(tuple, SortedColumnMap())
-      val ret:Option[Double] = interp.interpValueDouble(timeSeries, date).map(x => x)
+      val ret:Option[Double] = interp.getValue(timeSeries, date)(interpMethod).map(x => x)
       ret
     }
   }

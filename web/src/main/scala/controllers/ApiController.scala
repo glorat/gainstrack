@@ -6,7 +6,7 @@ import java.time.format.DateTimeParseException
 import com.gainstrack.command.{AccountCreation, GainstrackParser, ParserMessage}
 import com.gainstrack.core._
 import com.gainstrack.quotes.av.{Main, QuoteConfig}
-import com.gainstrack.report.{AccountInvestmentReport, BalanceReport, DailyBalance, FXChain, FXProxy, GainstrackGenerator, IrrSummary, PLExplain, PLExplainDTO, TimeSeries}
+import com.gainstrack.report.{AccountInvestmentReport, BalanceReport, DailyBalance, FXChain, FXMapped, GainstrackGenerator, IrrSummary, PLExplain, PLExplainDTO, TimeSeries}
 import com.gainstrack.web.{AuthenticationSupport, BalanceTreeTable, GainstrackJsonSerializers, GainstrackSupport, StateSummaryDTO, TimingSupport}
 import org.json4s.{DefaultFormats, Formats, JValue}
 import org.scalatra.{NotFound, ScalatraServlet}
@@ -48,7 +48,7 @@ class ApiController (implicit val ec :ExecutionContext)
     val conversionStrategy = session.get("conversion").map(_.toString).getOrElse("parent")
 
     val toDate = currentDate
-    val treeTable = new BalanceTreeTable(toDate, conversionStrategy, _=>true)(bg.acctState, bg.priceFXConverter, bg.assetChainMap, bg.dailyBalances, bg.singleFXConversion)
+    val treeTable = new BalanceTreeTable(toDate, conversionStrategy, _=>true)(bg.acctState, bg.priceFXConverter, bg.assetChainMap, bg.dailyBalances, bg.tradeFXConversion)
 
     keys.map(key => key -> treeTable.toTreeTable(AccountId(key))).toMap
   }
@@ -75,7 +75,7 @@ class ApiController (implicit val ec :ExecutionContext)
 
     val priceState = bg.priceState
 
-    val fxConvert = new FXProxy(bg.fxMapper, ServerQuoteSource.db.singleFxConverter(bg.acctState.baseCurrency))
+    val fxConvert = new FXMapped(bg.fxMapper, ServerQuoteSource.db.singleFxConverter(bg.acctState.baseCurrency))
 
     priceState.toDTOWithQuotes(fxConvert)
 
@@ -98,8 +98,8 @@ class ApiController (implicit val ec :ExecutionContext)
     }
 
     val fxConvert = new FXChain(
-      new FXProxy(bg.fxMapper, ServerQuoteSource.db.singleFxConverter(bg.acctState.baseCurrency)),
-      bg.singleFXConversion
+      new FXMapped(bg.fxMapper, ServerQuoteSource.db.singleFxConverter(bg.acctState.baseCurrency)),
+      bg.tradeFXConversion
     )
     // val fxConvert = bg.priceFXConverter
 
@@ -112,8 +112,8 @@ class ApiController (implicit val ec :ExecutionContext)
     val bg = getGainstrack
 
     val fxConvert = new FXChain(
-      new FXProxy(bg.fxMapper, ServerQuoteSource.db.singleFxConverter(bg.acctState.baseCurrency)),
-      bg.singleFXConversion
+      new FXMapped(bg.fxMapper, ServerQuoteSource.db.singleFxConverter(bg.acctState.baseCurrency)),
+      bg.tradeFXConversion
     )
 //     val fxConvert = bg.priceFXConverter
 
@@ -163,14 +163,14 @@ class ApiController (implicit val ec :ExecutionContext)
               val balance = mypostings.foldLeft(PositionSet())(_ + _.value.get)
               balance*/
       val balanceReport = BalanceReport(myTxs)
-      balanceReport.getState.convertedPosition(accountId, cmd.date, conversionStrategy)(bg.assetChainMap, bg.acctState, bg.priceFXConverter, bg.singleFXConversion)
+      balanceReport.getState.convertedPosition(accountId, cmd.date, conversionStrategy)(bg.assetChainMap, bg.acctState, bg.priceFXConverter, bg.tradeFXConversion)
     }
 
     val deltaFor : AccountCommand => PositionSet = {cmd =>
       val myTxs = txs.filter(_.origin == cmd)
       val state = new DailyBalance(bg.balanceState)
       val balanceReport = BalanceReport(myTxs)
-      balanceReport.getState.convertedPosition(accountId, cmd.date, conversionStrategy)(bg.assetChainMap, bg.acctState, bg.priceFXConverter, bg.singleFXConversion)
+      balanceReport.getState.convertedPosition(accountId, cmd.date, conversionStrategy)(bg.assetChainMap, bg.acctState, bg.priceFXConverter, bg.tradeFXConversion)
     }
 
     val rows = commands.map(cmd => {
@@ -193,15 +193,15 @@ class ApiController (implicit val ec :ExecutionContext)
     val allDates = bg.txState.allTransactions.map(_.postDate)
     val startDate = if (allDates.isEmpty) today() else allDates.min
 
-    dailyBalance.monthlySeries(accountId, conversionStrategy, startDate, toDate, bg.acctState, bg.priceFXConverter, bg.assetChainMap, bg.singleFXConversion)
+    dailyBalance.monthlySeries(accountId, conversionStrategy, startDate, toDate, bg.acctState, bg.priceFXConverter, bg.assetChainMap, bg.tradeFXConversion)
   }
 
   get ("/journal/") {
     val bg = getGainstrack
 
     val fxConvert = new FXChain(
-      new FXProxy(bg.fxMapper, ServerQuoteSource.db.singleFxConverter(bg.acctState.baseCurrency)),
-      bg.singleFXConversion
+      new FXMapped(bg.fxMapper, ServerQuoteSource.db.singleFxConverter(bg.acctState.baseCurrency)),
+      bg.tradeFXConversion
     )
 
     val txs = bg.txState.allTransactions
@@ -268,7 +268,7 @@ class ApiController (implicit val ec :ExecutionContext)
 
   get("/aa") {
     val bg = getGainstrack
-    implicit val singleFXConversion = bg.singleFXConversion
+    implicit val singleFXConversion = bg.tradeFXConversion
 
     val queryDate = currentDate
 
@@ -300,7 +300,7 @@ class ApiController (implicit val ec :ExecutionContext)
       val name = alloc.mkString("/")
 
       val filter: (AccountCreation=>Boolean) = acct => allocationAssets.contains(acct.key.assetId)
-      val treeTable = new BalanceTreeTable(toDate, "global", filter)(bg.acctState, bg.priceFXConverter, bg.assetChainMap, bg.dailyBalances, bg.singleFXConversion)
+      val treeTable = new BalanceTreeTable(toDate, "global", filter)(bg.acctState, bg.priceFXConverter, bg.assetChainMap, bg.dailyBalances, bg.tradeFXConversion)
       Map("name" -> name, "rows" -> treeTable.toTreeTable(AccountId("Assets")))
     })
     tables
@@ -310,8 +310,8 @@ class ApiController (implicit val ec :ExecutionContext)
     val bg = getGainstrack
 
     val fxConvert = new FXChain(
-      new FXProxy(bg.fxMapper, ServerQuoteSource.db.singleFxConverter(bg.acctState.baseCurrency)),
-      bg.singleFXConversion
+      new FXMapped(bg.fxMapper, ServerQuoteSource.db.singleFxConverter(bg.acctState.baseCurrency)),
+      bg.tradeFXConversion
     )
 
     val baseDate = dateOverride.getOrElse(bg.latestDate)
@@ -337,8 +337,8 @@ class ApiController (implicit val ec :ExecutionContext)
     val bg = getGainstrack
 
     val fxConvert = new FXChain(
-      new FXProxy(bg.fxMapper, ServerQuoteSource.db.singleFxConverter(bg.acctState.baseCurrency)),
-      bg.singleFXConversion
+      new FXMapped(bg.fxMapper, ServerQuoteSource.db.singleFxConverter(bg.acctState.baseCurrency)),
+      bg.tradeFXConversion
     )
     val baseDate = dateOverride.getOrElse(bg.latestDate)
 
@@ -362,8 +362,8 @@ class ApiController (implicit val ec :ExecutionContext)
     val body = parsedBody.extract[PNLExplainRequest]
     val bg = getGainstrack
     val fxConvert = new FXChain(
-      new FXProxy(bg.fxMapper, ServerQuoteSource.db.singleFxConverter(bg.acctState.baseCurrency)),
-      bg.singleFXConversion
+      new FXMapped(bg.fxMapper, ServerQuoteSource.db.singleFxConverter(bg.acctState.baseCurrency)),
+      bg.tradeFXConversion
     )
     val pnl = new PLExplain(body.fromDate, body.toDate)(bg.acctState, bg.txState, bg.balanceState, bg.priceFXConverter, bg.assetChainMap, fxConvert)
     Seq(pnl.toDTO)
