@@ -74,10 +74,9 @@ class ApiController (implicit val ec :ExecutionContext)
     val bg = getGainstrack
 
     val priceState = bg.priceState
+    val mktConvert = bg.liveFxConverter(ServerQuoteSource.db.priceFXConverter)
 
-    val fxConvert = new FXMapped(bg.fxMapper, ServerQuoteSource.db.singleFxConverter(bg.acctState.baseCurrency))
-
-    priceState.toDTOWithQuotes(fxConvert)
+    priceState.toDTOWithQuotes(mktConvert)
 
   }
 
@@ -97,13 +96,8 @@ class ApiController (implicit val ec :ExecutionContext)
       toDate = fromDate.plusYears(1)
     }
 
-    val fxConvert = new FXChain(
-      new FXMapped(bg.fxMapper, ServerQuoteSource.db.singleFxConverter(bg.acctState.baseCurrency)),
-      bg.tradeFXConversion
-    )
-    // val fxConvert = bg.priceFXConverter
-
-    val irr = IrrSummary(bg.finalCommands, fromDate, toDate, bg.acctState, bg.balanceState, bg.txState, fxConvert, bg.assetChainMap)
+    val mktConvert = bg.liveFxConverter(ServerQuoteSource.db.priceFXConverter)
+    val irr = IrrSummary(bg.finalCommands, fromDate, toDate, bg.acctState, bg.balanceState, bg.txState, mktConvert, bg.assetChainMap)
 
     irr.toSummaryDTO
   }
@@ -111,18 +105,13 @@ class ApiController (implicit val ec :ExecutionContext)
   get("/irr/:accountId") {
     val bg = getGainstrack
 
-    val fxConvert = new FXChain(
-      new FXMapped(bg.fxMapper, ServerQuoteSource.db.singleFxConverter(bg.acctState.baseCurrency)),
-      bg.tradeFXConversion
-    )
-//     val fxConvert = bg.priceFXConverter
-
+    val mktConvert = bg.liveFxConverter(ServerQuoteSource.db.priceFXConverter)
 
     val accountId = params("accountId")
     val fromDate = defaultFromDate
     val toDate = currentDate
     bg.acctState.accountMap.get(accountId).map(account => {
-      val accountReport = new AccountInvestmentReport(accountId, account.key.assetId, fromDate,  toDate, bg.acctState, bg.balanceState, bg.txState, fxConvert, bg.assetChainMap)
+      val accountReport = new AccountInvestmentReport(accountId, account.key.assetId, fromDate,  toDate, bg.acctState, bg.balanceState, bg.txState, mktConvert, bg.assetChainMap)
       val cfs = accountReport.cashflowTable.sorted
       TimeSeries(accountId, cfs.map(_.value.ccy.symbol), cfs.map(_.date.toString),
         cfs.map(_.value.number.toDouble.formatted("%.2f")),
@@ -198,11 +187,7 @@ class ApiController (implicit val ec :ExecutionContext)
 
   get ("/journal/") {
     val bg = getGainstrack
-
-    val fxConvert = new FXChain(
-      new FXMapped(bg.fxMapper, ServerQuoteSource.db.singleFxConverter(bg.acctState.baseCurrency)),
-      bg.tradeFXConversion
-    )
+    val mktConvert = bg.liveFxConverter(ServerQuoteSource.db.priceFXConverter)
 
     val txs = bg.txState.allTransactions
     val commands = txs.map(_.origin).distinct.reverse
@@ -210,7 +195,7 @@ class ApiController (implicit val ec :ExecutionContext)
     val rows = commands.map(cmd => {
       val myTxs = txs.filter(_.origin == cmd)
       val postings = myTxs.flatMap(_.filledPostings)
-      val txPnl:Double = myTxs.map(tx => tx.pnl(singleFXConverter = fxConvert, tx.postDate, bg.acctState.baseCurrency, multFn )).sum
+      val txPnl:Double = myTxs.map(tx => tx.pnl(singleFXConverter = mktConvert, tx.postDate, bg.acctState.baseCurrency, multFn )).sum
       AccountTxDTO(cmd.date.toString, cmd.commandString, cmd.description, txPnl.formatted("%.2f") , "", postings)
     })
     JournalDTO(rows)
@@ -309,10 +294,7 @@ class ApiController (implicit val ec :ExecutionContext)
   get("/pnlexplain") {
     val bg = getGainstrack
 
-    val fxConvert = new FXChain(
-      new FXMapped(bg.fxMapper, ServerQuoteSource.db.singleFxConverter(bg.acctState.baseCurrency)),
-      bg.tradeFXConversion
-    )
+    val mktConvert = bg.liveFxConverter(ServerQuoteSource.db.priceFXConverter)
 
     val baseDate = dateOverride.getOrElse(bg.latestDate)
 
@@ -326,7 +308,7 @@ class ApiController (implicit val ec :ExecutionContext)
     val descs = Seq("1d", "1w", "1m", "3m", "1y", "YTD")
 
     val pnls = dates.zip(descs).map(
-      dtdesc => new PLExplain(dtdesc._1, baseDate)(bg.acctState, bg.txState, bg.balanceState, bg.priceFXConverter, bg.assetChainMap, fxConvert)
+      dtdesc => new PLExplain(dtdesc._1, baseDate)(bg.acctState, bg.txState, bg.balanceState, bg.priceFXConverter, bg.assetChainMap, mktConvert)
         .toDTO
         .withLabel(dtdesc._2)
     )
@@ -336,10 +318,8 @@ class ApiController (implicit val ec :ExecutionContext)
   get("/pnlexplain/monthly") {
     val bg = getGainstrack
 
-    val fxConvert = new FXChain(
-      new FXMapped(bg.fxMapper, ServerQuoteSource.db.singleFxConverter(bg.acctState.baseCurrency)),
-      bg.tradeFXConversion
-    )
+    val mktConvert = bg.liveFxConverter(ServerQuoteSource.db.priceFXConverter)
+
     val baseDate = dateOverride.getOrElse(bg.latestDate)
 
     val endDates = baseDate +: Range(0,11).map(n => baseDate.minusMonths(n).withDayOfMonth(1).minusDays(1))
@@ -349,7 +329,7 @@ class ApiController (implicit val ec :ExecutionContext)
     val descs = startDates.map(_.format(monthFmt))
 
     val exps = for (i<-0 to 11) yield {
-      new PLExplain(startDates(i), endDates(i))(bg.acctState, bg.txState, bg.balanceState, bg.priceFXConverter, bg.assetChainMap, fxConvert)
+      new PLExplain(startDates(i), endDates(i))(bg.acctState, bg.txState, bg.balanceState, bg.priceFXConverter, bg.assetChainMap, mktConvert)
         .toDTO
         .withLabel(descs(i))
     }
@@ -361,11 +341,9 @@ class ApiController (implicit val ec :ExecutionContext)
   post("/pnlexplain") {
     val body = parsedBody.extract[PNLExplainRequest]
     val bg = getGainstrack
-    val fxConvert = new FXChain(
-      new FXMapped(bg.fxMapper, ServerQuoteSource.db.singleFxConverter(bg.acctState.baseCurrency)),
-      bg.tradeFXConversion
-    )
-    val pnl = new PLExplain(body.fromDate, body.toDate)(bg.acctState, bg.txState, bg.balanceState, bg.priceFXConverter, bg.assetChainMap, fxConvert)
+    val mktConvert = bg.liveFxConverter(ServerQuoteSource.db.priceFXConverter)
+
+    val pnl = new PLExplain(body.fromDate, body.toDate)(bg.acctState, bg.txState, bg.balanceState, bg.priceFXConverter, bg.assetChainMap, mktConvert)
     Seq(pnl.toDTO)
   }
 

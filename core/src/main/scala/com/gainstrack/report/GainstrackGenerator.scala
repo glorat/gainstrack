@@ -44,6 +44,7 @@ case class GainstrackGenerator(originalCommands:Seq[AccountCommand])  {
   implicit val priceFXConverter = priceState.priceFxConverter
   val tradeFXConversion = SingleFXConversion.generate(acctState.baseCurrency)(priceFXConverter, assetChainMap)
   val fxMapper: Map[AssetId, AssetId] = new FXMapperGenerator(assetState).fxMapper
+  val proxyMapper = new FXMapperGenerator(assetState).proxyMapper
   val latestDate:LocalDate = finalCommands.maxBy(_.date).date
 
   val endTime = Instant.now
@@ -150,6 +151,14 @@ case class GainstrackGenerator(originalCommands:Seq[AccountCommand])  {
       Seq()
     }
 
+  }
+
+  def liveFxConverter(marketFx: SingleFXConversion): SingleFXConverter = {
+    new FXChain(
+      new FXMapped(this.fxMapper, marketFx),
+      new FXProxy(this.proxyMapper, this.tradeFXConversion, marketFx),
+      this.tradeFXConversion
+    )
   }
 
   def writeGainstrackFile(filename:String): Unit = {
