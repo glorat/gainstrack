@@ -1,4 +1,6 @@
 <template>
+    <div>
+        <markdown page="settings-help.md"></markdown>
     <table>
         <tr>
             <th>Asset</th>
@@ -37,12 +39,14 @@
         </tr>
 
     </table>
+    </div>
 </template>
 
 <script>
     import axios from 'axios';
     import {flatten, uniq, cloneDeep} from 'lodash';
     import {Option, Select, Button, Input, Autocomplete} from 'element-ui';
+    import Markdown from '@/pages/Markdown';
 
     export default {
         name: 'AssetsEditor',
@@ -52,6 +56,7 @@
             'el-button': Button,
             'el-input': Input,
             'el-autocomplete': Autocomplete,
+            Markdown,
         },
         data() {
             return {
