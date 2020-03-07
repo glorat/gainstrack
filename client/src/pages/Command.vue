@@ -1,12 +1,14 @@
 <template>
     <div>
         <div v-if="c.commandType">
-            <add-cmd :input="c" :command-columns="commandTableColumns" @cancel="addCancel"></add-cmd>
+            <add-cmd :input="c" :command-columns="commandTableColumns" @cancel="addCancel" has-cancel></add-cmd>
         </div>
         <div v-if="!c.commandType">
             Add Entry
-            <span v-for="cmd in scopedCommands" :key="cmd.prefix"><button @click="setupCommand(cmd)">{{ cmd.title }}</button></span>
+            <span v-for="cmd in scopedCommands" :key="cmd.prefix"><button @click="setupCommand(cmd)"
+                                                                          :title="cmd.description">{{ cmd.title }}</button></span>
         </div>
+        <h4>Existing entries</h4>
         <command-table :cmds="displayCommands" :columns="commandTableColumns"></command-table>
     </div>
 </template>
@@ -37,17 +39,21 @@
             };
         },
         mounted() {
-            axios.get('/api/command/' + this.accountId)
-                .then(response => this.info = response.data)
-                .catch(error => this.$notify.error(error));
+            this.refresh();
         },
         methods: {
+            refresh(): void {
+                axios.get('/api/command/' + this.accountId)
+                    .then(response => this.info = response.data)
+                    .catch(error => this.$notify.error(error));
+            },
             setupCommand(cmd: CommandConfig): void {
                 const c = {accountId: this.accountId, commandType: cmd.prefix};
                 this.c = defaultCommand(c);
             },
             addCancel(): void {
-              this.c = {} as AccountCommandDTO;
+                this.c = {} as AccountCommandDTO;
+                this.refresh();
             },
             gainstrackChange(ev: string): void {
                 this.commandStr = ev;

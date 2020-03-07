@@ -5,7 +5,7 @@
             <div>
                 <pre>{{ commandStr }}</pre>
             </div>
-            <button class="c-cancel" type="button" v-on:click="cancel">Cancel</button>
+            <button class="c-cancel" type="button" v-on:click="cancel" v-if="hasCancel">Cancel</button>
             <button class="c-add" :disabled="result.errors.length || !commandStr || adding" type="button" v-on:click="addCommand">Add</button>
         </div>
         <div v-if="result.errors.length>0">
@@ -31,6 +31,7 @@
                     <td class="subtotal num">{{ result.networthChange }}</td>
                 </tr>
             </table>
+            <button class="c-cancel" type="button" v-on:click="cancel" v-if="success && hasCancel">Done</button>
             <template v-if="!hideJournal">
                 <h4>Journal additions</h4>
                 <command-table :cmds="added" :columns="commandColumns"></command-table>
@@ -60,6 +61,10 @@
                 type: Array,
                 default: () => [],
             },
+            hasCancel: {
+                type: Boolean,
+                default: false,
+            }
         },
         data() {
             return {
