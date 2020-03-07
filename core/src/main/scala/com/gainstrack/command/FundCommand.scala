@@ -2,8 +2,8 @@ package com.gainstrack.command
 
 import com.gainstrack.core._
 
-case class FundCommand(date:LocalDate, accountId:AccountId, balance:Amount, sourceAccountIdOpt:Option[AccountId] = None) extends CommandNeedsAccounts {
-  override def description: String = s"Fund ${balance}"
+case class FundCommand(date:LocalDate, accountId:AccountId, change:Amount, sourceAccountIdOpt:Option[AccountId] = None) extends CommandNeedsAccounts {
+  override def description: String = s"Fund ${change}"
 
   override def mainAccount: Option[AccountId] = Some(accountId)
 
@@ -19,21 +19,21 @@ case class FundCommand(date:LocalDate, accountId:AccountId, balance:Amount, sour
       targetAccount.options.fundingAccount.getOrElse(FundCommand.DEFAULT_FUND_ACCOUNT)
     )
 
-    Transfer(sourceAccountId, accountId, date, balance, balance, description).toTransfers(accts)
+    Transfer(sourceAccountId, accountId, date, change, change, description).toTransfers(accts)
   }
 
   override def toGainstrack: Seq[String] = {
     val s = if (sourceAccountIdOpt.isDefined) {
-      s"${date} fund ${accountId.toGainstrack} ${sourceAccountIdOpt.get.toGainstrack} ${balance}"
+      s"${date} fund ${accountId.toGainstrack} ${sourceAccountIdOpt.get.toGainstrack} ${change}"
     }
     else {
-      s"${date} fund ${accountId.toGainstrack} ${balance}"
+      s"${date} fund ${accountId.toGainstrack} ${change}"
     }
     Seq(s)
   }
 
   override def toPartialDTO: AccountCommandDTO = {
-    AccountCommandDTO(accountId = accountId, date = date, balance = Some(balance), otherAccount = sourceAccountIdOpt)
+    AccountCommandDTO(accountId = accountId, date = date, change = Some(change), otherAccount = sourceAccountIdOpt)
   }
 }
 
