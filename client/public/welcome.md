@@ -16,7 +16,7 @@ For online use
 
 ### Errata
 #### Feb'20
-- Timeouts to logging in are not well handled in many edge cases
+- Clients are auto-logged out after 24hrs but UI does not know this. Please refresh if it happens
 - While the UI editor can be used for submitting new entries, amendments or deletions can only be done via the text editor
 - Now that Google Analytics is added, we really need a privacy policy
 
@@ -28,6 +28,17 @@ For online use
 
 
 ### Release notes
+
+#### v0.9.0
+7 March
+- Live quotes more reliably being pulled in
+- "Proxy" feature for live quotes
+- Minor fixes for account graph and PnlExplain
+
+#### v0.8.0
+29 February
+- Minor fixes for reporting added commands and errors
+
 #### v0.7.0
 22 February
 - A fairly comprehensive guided tour for new users
