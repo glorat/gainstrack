@@ -9,9 +9,9 @@ case class DailyBalance(balanceState: BalanceState, date: LocalDate = MaxDate) {
 
   def monthlySeries(accountId: AccountId, conversionStrategy: String, startDate: LocalDate, endDate: LocalDate, acctState: AccountState, priceState: PriceFXConverter, assetChainMap: AssetChainMap, singleFXConversion: SingleFXConverter) = {
     val startMonth = YearMonth.from(startDate)
-    val end = YearMonth.from(endDate).plusMonths(1)
+    val end = YearMonth.from(endDate)
     val it = Iterator.iterate(startMonth)(_.plusMonths(1)).takeWhile(!_.isAfter(end))
-    val dates = (for (ym <- it) yield ym.atDay(1)).map(x=>x).toVector
+    val dates = (for (ym <- it) yield ym.atDay(1)).map(x=>x).toVector :+ endDate
     val values = dates.map(date => this.convertedPosition(accountId, date, conversionStrategy)(acctState = acctState, priceState = priceState, assetChainMap = assetChainMap, singleFXConversion))
     val ccys = values.flatMap(_.assetBalance.keySet).toSet
     val allSeries = ccys.map(ccy => {
