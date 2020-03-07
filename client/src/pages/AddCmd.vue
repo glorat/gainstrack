@@ -5,7 +5,7 @@
             <div>
                 <pre>{{ commandStr }}</pre>
             </div>
-            <button class="c-add" :disabled="result.errors.length || !commandStr" type="button" v-on:click="addCommand">Add</button>
+            <button class="c-add" :disabled="result.errors.length || !commandStr || adding" type="button" v-on:click="addCommand">Add</button>
         </div>
         <div v-if="result.errors.length>0">
             <source-errors :errs="result.errors"></source-errors>
@@ -62,6 +62,7 @@
                 errors: [],
                 testing: false,
                 success: false,
+                adding: false,
             }
         },
       computed: {
@@ -91,12 +92,13 @@
 
                         })
                         .catch(error => this.$notify.error(error))
-                        .finally(this.testing = false)
+                        .finally(() => this.testing = false)
                 }
             }, 1000),
             addCommand() {
                 const str = this.commandStr;
                 const notify = this.$notify;
+                this.adding = true;
                 axios.post('/api/post/add', {str})
                     .then(response => {
                         if (response.data.errors.length > 0) {
@@ -111,6 +113,7 @@
 
                     })
                     .catch(error => this.$notify.error(error.stack || error))
+                    .finally(() => this.adding = false)
             },
         },
     }
