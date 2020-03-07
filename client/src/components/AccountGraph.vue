@@ -63,7 +63,8 @@
                     const plotlys = [];
 
                     const smoothSeries = series.map(s => {
-                        const smoothData = expMovingAverage(s.data, 12);
+                        // Need enough time before expMovingAverage is useful
+                        const smoothData = s.data.length > 12 ? expMovingAverage(s.data, 12) : s.data;
                         const plotly = {
                             type: 'scatter',
                             name: s.name,
