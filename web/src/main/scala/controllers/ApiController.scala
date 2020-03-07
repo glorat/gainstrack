@@ -5,7 +5,7 @@ import java.time.format.DateTimeParseException
 
 import com.gainstrack.command.{AccountCreation, GainstrackParser, ParserMessage}
 import com.gainstrack.core._
-import com.gainstrack.quotes.av.{Main, QuoteConfig}
+import com.gainstrack.quotes.av.{DbState, Main, QuoteConfig}
 import com.gainstrack.report.{AccountInvestmentReport, BalanceReport, DailyBalance, FXChain, FXMapped, GainstrackGenerator, IrrSummary, PLExplain, PLExplainDTO, TimeSeries}
 import com.gainstrack.web.{AuthenticationSupport, BalanceTreeTable, GainstrackJsonSerializers, GainstrackSupport, StateSummaryDTO, TimingSupport}
 import org.json4s.{DefaultFormats, Formats, JValue}
@@ -24,7 +24,6 @@ class ApiController (implicit val ec :ExecutionContext)
     with GainstrackSupport
     with TimingSupport {
   val logger =  LoggerFactory.getLogger(getClass)
-  logger.info("ApiController constructed")
 
   protected implicit val jsonFormats: Formats = org.json4s.DefaultFormats ++ GainstrackJsonSerializers.all
 
@@ -360,7 +359,21 @@ class ApiController (implicit val ec :ExecutionContext)
 }
 
 object ServerQuoteSource {
-  val db = Main.doTheWork
+  val logger =  LoggerFactory.getLogger(getClass)
+
+  private var _db: DbState = updateDB
+
+  def db = _db
+
+  def updateDB = {
+    val start = Instant.now()
+    val ret = Main.doTheWork
+    val end = Instant.now()
+    val d = Duration.between(start, end)
+    logger.info(s"ServerQuoteSource read in ${d.toMillis}ms")
+    _db = ret
+    ret
+  }
 }
 
 //case class BalanceSheet(balanceSheet: Map[String,TreeTable])

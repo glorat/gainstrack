@@ -1,4 +1,5 @@
 import com.gainstrack.quotes.av.SyncUp
+import controllers.ServerQuoteSource
 import org.eclipse.jetty.server.Server
 import org.eclipse.jetty.servlet.{DefaultServlet, ServletContextHandler}
 import org.eclipse.jetty.webapp.WebAppContext
@@ -49,6 +50,7 @@ object JettyLauncher { // this is my entry object as specified in sbt project de
     val quoteSyncThread = new Runnable() {
       override def run(): Unit = {
         SyncUp.main(Seq().toArray)
+        ServerQuoteSource.updateDB
       }
     }
 
