@@ -1,27 +1,27 @@
 <template>
     <div v-if="type === 'tfr'">
-        <transfer :cmd="cmd" v-on:input="inputChanged()" v-on:gainstrack-changed="gainstrackChanged($event)"></transfer>
+        <transfer :cmd="input" v-on:input="inputChanged()" v-on:gainstrack-changed="gainstrackChanged($event)"></transfer>
     </div>
     <div v-else-if="type === 'trade'">
-        <trade-editor :cmd="cmd" v-on:input="inputChanged()" v-on:gainstrack-changed="gainstrackChanged($event)"></trade-editor>
+        <trade-editor :cmd="input" v-on:input="inputChanged()" v-on:gainstrack-changed="gainstrackChanged($event)"></trade-editor>
     </div>
     <div v-else-if="type === 'unit'">
-        <unit-command :cmd="cmd" v-on:input="inputChanged()" v-on:gainstrack-changed="gainstrackChanged($event)"></unit-command>
+        <unit-command :cmd="input" v-on:input="inputChanged()" v-on:gainstrack-changed="gainstrackChanged($event)"></unit-command>
     </div>
     <div v-else-if="type === 'bal'">
-        <balance-statement :cmd="cmd" v-on:input="inputChanged()" v-on:gainstrack-changed="gainstrackChanged($event)"></balance-statement>
+        <balance-statement :cmd="input" v-on:input="inputChanged()" v-on:gainstrack-changed="gainstrackChanged($event)"></balance-statement>
     </div>
     <div v-else-if="type === 'fund'">
-        <fund-command :cmd="cmd" v-on:input="inputChanged()" v-on:gainstrack-changed="gainstrackChanged($event)"></fund-command>
+        <fund-command :cmd="input" v-on:input="inputChanged()" v-on:gainstrack-changed="gainstrackChanged($event)"></fund-command>
     </div>
     <div v-else-if="type === 'open'">
-        <account-creation :cmd="cmd" v-on:input="inputChanged()" v-on:gainstrack-changed="gainstrackChanged($event)"></account-creation>
+        <account-creation :cmd="input" v-on:input="inputChanged()" v-on:gainstrack-changed="gainstrackChanged($event)"></account-creation>
     </div>
     <div v-else-if="type === 'earn'">
-        <earn-editor :cmd="cmd" v-on:input="inputChanged()" v-on:gainstrack-changed="gainstrackChanged($event)"></earn-editor>
+        <earn-editor :cmd="input" v-on:input="inputChanged()" v-on:gainstrack-changed="gainstrackChanged($event)"></earn-editor>
     </div>
     <div v-else-if="type === 'yield'">
-        <yield-editor :cmd="cmd" v-on:input="inputChanged()" v-on:gainstrack-changed="gainstrackChanged($event)"></yield-editor>
+        <yield-editor :cmd="input" v-on:input="inputChanged()" v-on:gainstrack-changed="gainstrackChanged($event)"></yield-editor>
     </div>
     <div v-else-if="type === 'C'">
         C
@@ -51,10 +51,15 @@
                 this.$emit('gainstrack-changed', str);
             },
             inputChanged() {
-                this.$emit('input', this.cmd);
+                this.$emit('input', this.input);
             },
         },
-        props: {cmd: Object, type: String},
+        computed: {
+            type() {
+                return this.input.commandType;
+            }
+        },
+        props: {input: Object},
     }
 </script>
 

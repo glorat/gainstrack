@@ -49,6 +49,8 @@ export interface AccountCommandDTO {
     otherAccount?: string
     options?: Record<string, any>
     commandType?: string
+    // TODO: Put this in options or make it official
+    commission?: Amount
 }
 
 export interface StateSummaryDTO {

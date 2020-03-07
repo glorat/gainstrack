@@ -65,6 +65,8 @@
                     x => x.accountId === this.c.accountId && x.commandType === 'bal');
                 if (prev) {
                     this.c.otherAccount = prev.otherAccount;
+                    // A better than nothing heurstic - using the actual balance of this date would be better
+                    this.c.balance.number = prev.balance.number;
                 } else {
                     this.c.otherAccount = 'Equity:Opening'
                 }
@@ -92,7 +94,8 @@
                     return '';
                 }
             }
-        }
+        },
+
     });
 </script>
 

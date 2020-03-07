@@ -33,6 +33,11 @@ export const CommandEditorMixin = {
         this.$emit('gainstrack-changed', str);
     },
     mounted() {
+        // Initiate immediate defaulting
+        if (this.c.accountId && this.accountIdChanged) {
+            this.accountIdChanged();
+        }
+
         const str = this.toGainstrack;
         this.$emit('gainstrack-changed', str);
     },
@@ -40,6 +45,8 @@ export const CommandEditorMixin = {
         c: {
             handler() {
                 EventBus.$emit('command-changed', this.c);
+                this.$emit('command-changed', this.c);
+                this.$emit('input', this.c);
             },
             deep: true,
         },
@@ -56,5 +63,6 @@ export const CommandEditorMixin = {
             'mainAccounts',
             'mainAssetAccounts',
         ]),
-    }
+        accountId() {return this.c.accountId},
+    },
 };

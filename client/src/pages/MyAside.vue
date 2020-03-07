@@ -4,6 +4,9 @@
             <li id="add-record">
                 <router-link v-bind:to="'/add'"><span class="el-icon-circle-plus-outline"></span> {{ config.allPages['add'][0] }}</router-link>
             </li>
+            <li :id="`route-commands`">
+                <router-link v-bind:to="'/command'"><span class="el-icon-edit-outline"></span> Accounts</router-link>
+            </li>
         </ul>
 
         <ul v-for="menuItems in config.navigationBar" class="navigation">
@@ -78,7 +81,6 @@
                 'add': ['Add Record', ''],
             },
             navigationBar: [
-                ['command'],
                 ['balance_sheet', 'income_statement', 'journal'],
                 ['irr', 'aa', 'pnlexplain'],
                 ['prices', 'quotes', 'settings'],

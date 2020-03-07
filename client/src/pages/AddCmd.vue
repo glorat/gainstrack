@@ -1,10 +1,11 @@
 <template>
     <div>
         <div v-if="!success">
-            <command-editor :type="this.$route.query.cmd" v-on:gainstrack-changed="gainstrackChange($event)"></command-editor>
+            <command-editor :input="c" v-on:command-changed="commandChanged" v-on:gainstrack-changed="gainstrackChange($event)"></command-editor>
             <div>
                 <pre>{{ commandStr }}</pre>
             </div>
+            <button class="c-cancel" type="button" v-on:click="cancel">Cancel</button>
             <button class="c-add" :disabled="result.errors.length || !commandStr || adding" type="button" v-on:click="addCommand">Add</button>
         </div>
         <div v-if="result.errors.length>0">
@@ -30,9 +31,10 @@
                     <td class="subtotal num">{{ result.networthChange }}</td>
                 </tr>
             </table>
-
-            <h4>Journal additions</h4>
-            <command-table :cmds="added"></command-table>
+            <template v-if="!hideJournal">
+                <h4>Journal additions</h4>
+                <command-table :cmds="added" :columns="commandColumns"></command-table>
+            </template>
         </div>
     </div>
 </template>
@@ -48,6 +50,17 @@
     export default {
         name: 'AddCmd',
         components: {CommandTable, CommandEditor, SourceErrors},
+        props: {
+          hideJournal: {
+              type: Boolean,
+              default: false,
+          },
+            input: Object,
+            commandColumns: {
+                type: Array,
+                default: () => [],
+            },
+        },
         data() {
             return {
                 commandStr: '',
@@ -66,6 +79,14 @@
             }
         },
       computed: {
+            c() {
+                let c = {};
+                if (this.input) {
+                    c = {...this.input}
+                }
+                c.commandType = c.commandType || this.$route.query.cmd;
+                return c;
+            },
           baseCcy() {
             return this.$store.state.summary.baseCcy;
           },
@@ -76,7 +97,14 @@
         methods: {
             gainstrackChange(ev) {
                 this.commandStr = ev;
+                this.errors = [];
                 this.testCommand();
+            },
+            commandChanged(cmd) {
+                this.$emit('input', cmd);
+            },
+            cancel() {
+                this.$emit('cancel');
             },
             testCommand: debounce(function() {
                 const str = this.commandStr;
