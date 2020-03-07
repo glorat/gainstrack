@@ -8,7 +8,7 @@
         </div>
         <div v-if="multiAsset">
             Asset that is yielding
-            <asset-id v-model="c.asset"></asset-id>
+            <asset-id v-model="c.asset" @input="assetChanged"></asset-id>
         </div>
         <div>
             Dividend/Interest
@@ -30,9 +30,24 @@
         mixins: [CommandEditorMixin],
         methods: {
             accountIdChanged() {
-                const acct = this.findAccount(this.c.accountId)
-                if (acct) {
+                const acct = this.findAccount(this.c.accountId);
+                if (acct && acct.options.fundingAccount) {
+                    const fundAcct = this.findAccount(acct.options.fundingAccount);
+                    if (fundAcct) {
+                        // TODO: A test case would show that the PP account would yield GBP
+                        this.c.change.ccy = fundAcct.ccy;
+                    }
+                } else if (acct) {
+                    // TODO: A test case would show that a GBP savings account would yield GBP
                     this.c.change.ccy = acct.ccy;
+                }
+            },
+            assetChanged() {
+                // TODO: A test case of VWRL yielding USD instead of GBP
+                const cmds = this.$store.state.summary.commands;
+                const cmd = cmds.find(cmd => cmd.commandType === 'yield' && cmd.asset === this.c.asset);
+                if (cmd) {
+                    this.c.change.ccy = cmd.change.ccy
                 }
             },
         },
