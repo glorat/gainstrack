@@ -29,6 +29,11 @@ For online use
 
 ### Release notes
 
+#### v0.9.1
+8 March
+- More efficient alternative for data entry
+- Guided tour updated for new entry method
+
 #### v0.9.0
 7 March
 - Live quotes more reliably being pulled in
