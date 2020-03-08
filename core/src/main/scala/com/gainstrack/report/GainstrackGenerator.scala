@@ -10,6 +10,8 @@ import scala.collection.SortedSet
 
 
 case class GainstrackGenerator(originalCommands:Seq[AccountCommand])  {
+  assert(originalCommands == AccountCommand.sorted(originalCommands), "BUG: Invariant that originalCommands must be sorted")
+
   val startTime = Instant.now
   // Global
   val globalCommand = originalCommands.head match {
@@ -60,7 +62,7 @@ case class GainstrackGenerator(originalCommands:Seq[AccountCommand])  {
     // Cannot use .contains because that seems to use a ref equals
     // whereas we want a value object equals
     require(!originalCommands.exists(_ == cmd), "command already exists. Duplicates not allowed")
-    GainstrackGenerator( originalCommands :+ cmd)
+    GainstrackGenerator( AccountCommand.sorted(originalCommands :+ cmd))
   }
 
   def removeCommand(cmd:AccountCommand): GainstrackGenerator = {
@@ -77,10 +79,7 @@ case class GainstrackGenerator(originalCommands:Seq[AccountCommand])  {
       case _ => true
     })
     // Add it
-    val part2 = part1 :+ cmd
-    // TODO: Should sorting be applied here just in case?
-    // Normally parser would ensure sorted commands, although here, unsorted
-    // CommodityCommand obviously doesn't matter
+    val part2 = AccountCommand.sorted(part1 :+ cmd)
     GainstrackGenerator(part2)
 
   }
