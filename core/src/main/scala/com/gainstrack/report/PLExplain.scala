@@ -3,9 +3,12 @@ package com.gainstrack.report
 import com.gainstrack.command.{Transfer, UnitTrustBalance, YieldCommand}
 import com.gainstrack.core._
 
-class PLExplain(fromDate: LocalDate, toDate: LocalDate)
+class PLExplain(startDate: LocalDate, toDate: LocalDate)
                (implicit accountState: AccountState, transactionState: TransactionState, balanceState: BalanceState, priceState: PriceFXConverter, assetChainMap: AssetChainMap, singleFXConversion: SingleFXConverter) {
 
+  // To include startDate, we must be at the start of startDate, which is the
+  // end-of-day of the previous day!
+  val fromDate = startDate.minusDays(1)
   // FIXME: Deduct liabilities
 
   val baseCcy = accountState.baseCurrency
@@ -54,8 +57,7 @@ class PLExplain(fromDate: LocalDate, toDate: LocalDate)
   }).sum
 
   val totalIncome =
-    -balanceReport.getState.convertedPosition(Income.accountId, toDate, "global").getBalance(baseCcy).number.toDouble
-    - yieldIncome
+    -balanceReport.getState.convertedPosition(Income.accountId, toDate, "global").getBalance(baseCcy).number.toDouble - yieldIncome
 
 
   val totalExpense = balanceReport.getState.convertedPosition(Expenses.accountId, toDate, "global").getBalance(baseCcy).number.toDouble
@@ -74,7 +76,7 @@ class PLExplain(fromDate: LocalDate, toDate: LocalDate)
 //      "totalEquity" -> totalEquity, "totalIncome" -> totalIncome, "totalExpense" -> totalExpense, "totalDeltaExplain" -> totalDeltaExplain,
 //      "delta" -> deltaExplain
 //    )
-    PLExplainDTO(Some(fromDate), Some(toDate),Some(totalNetworthEnd.getBalance(baseCcy).number.toDouble) ,actualPnl, explained, unexplained,
+    PLExplainDTO(Some(startDate), Some(toDate),Some(totalNetworthEnd.getBalance(baseCcy).number.toDouble) ,actualPnl, explained, unexplained,
       newActivityPnl, newActivityByTx.map(x => PnlAccountComponent(x._1, x._2)).toSeq.sortBy(_.accountId),
       totalEquity, totalIncome, yieldIncome, totalExpense, totalDeltaExplain,
       deltaExplain.toSeq)

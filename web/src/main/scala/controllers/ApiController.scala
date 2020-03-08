@@ -295,7 +295,7 @@ class ApiController (implicit val ec :ExecutionContext)
 
     val mktConvert = bg.liveFxConverter(ServerQuoteSource.db.priceFXConverter)
 
-    val baseDate = dateOverride.getOrElse(bg.latestDate)
+    val baseDate = currentDate
 
     val dates = Seq(
       baseDate.minusDays(1),
@@ -319,10 +319,10 @@ class ApiController (implicit val ec :ExecutionContext)
 
     val mktConvert = bg.liveFxConverter(ServerQuoteSource.db.priceFXConverter)
 
-    val baseDate = dateOverride.getOrElse(bg.latestDate)
+    val baseDate = currentDate
 
     val endDates = baseDate +: Range(0,11).map(n => baseDate.minusMonths(n).withDayOfMonth(1).minusDays(1))
-    val startDates = endDates.map(_.minusDays(1).withDayOfMonth(1))
+    val startDates = endDates.map(_.withDayOfMonth(1))
     import java.time.format.DateTimeFormatter
     val monthFmt = DateTimeFormatter.ofPattern("MMM")
     val descs = startDates.map(_.format(monthFmt))

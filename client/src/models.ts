@@ -54,6 +54,7 @@ export interface AccountCommandDTO {
 }
 
 export interface StateSummaryDTO {
+    baseCcy: string;
     accountIds: string[]
     accounts: AccountDTO[]
     ccys: string[]

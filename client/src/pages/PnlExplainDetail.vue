@@ -50,7 +50,7 @@
             </tr>
             <tr>
                 <td class="subtitle">Change In Networth</td>
-                <td></td>
+                <td class="num">{{ baseCcy }}</td>
             </tr>
             <tr>
                 <td>Markets Profit</td>
@@ -91,16 +91,18 @@
             </tr>
             <tr>
                 <td class="subtitle">Markets Profit</td>
-                <td class="num"></td>
-                <td class="description">From FX</td>
-                <td class="description">To FX</td>
-                <td class="description">Position</td>
+                <td class="num">{{ baseCcy }}</td>
+                <td class="num">{{ explainData.fromDate }}</td>
+                <td class="num">{{ explainData.toDate }}</td>
+                <td class="num">%</td>
+                <td class="num">Units</td>
             </tr>
             <tr v-for="ccy in deltas">
                 <td>{{ ccy.assetId }}</td>
                 <td class="num">{{ ccy.explain.toFixed(2) }}</td>
                 <td class="num">{{ ccy.oldPrice.toFixed(2)}}</td>
                 <td class="num">{{ ccy.newPrice.toFixed(2)}}</td>
+                <td class="num">{{ 100*(ccy.newPrice-ccy.oldPrice)/ccy.oldPrice | amount }}%</td>
                 <td class="num">{{ ccy.amount.toFixed(2)}}</td>
             </tr>
             <tr>
@@ -140,12 +142,16 @@
 <script>
     import axios from 'axios';
     import {DatePicker} from 'element-ui';
+    import {mapGetters} from 'vuex';
 
     export default {
         name: 'PnlExplainDetail',
         props: ['fromDate', 'toDate'],
         components: {'el-datepicker': DatePicker},
         computed: {
+            ...mapGetters([
+                'baseCcy',
+            ]),
             explainData() {
                 return this.explains[0]
             },
@@ -165,16 +171,15 @@
                 this.$router.push({name: 'pnldetail', params: {fromDate: this.explainData.fromDate, toDate: ev}});
             },
             refresh(args) {
+                const notify = this.$notify;
                 axios.post('/api/pnlexplain', args)
                     .then(response => {
                         this.explains = response.data;
                     })
-                    .catch(error => notify.error(error.response.statusText));
+                    .catch(error => notify.error(error.response));
             },
         },
         mounted() {
-            const notify = this.$notify;
-
             const args = {
                 fromDate: this.fromDate,
                 toDate: this.toDate

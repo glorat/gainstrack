@@ -152,6 +152,9 @@ export default new Vuex.Store({
             const all: AccountDTO[] = state.summary.accounts;
             const acct = all.find(x => x.accountId === accountId);
             return acct;
+        },
+        baseCcy: state => {
+            return state.summary.baseCcy;
         }
     }
 });
