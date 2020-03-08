@@ -87,6 +87,7 @@ export default new Vuex.Store({
         },
         async reload(context) {
             // TODO: These next two can run in parallel
+            // TODO: commit some loading state so UI can reflect transitions better
             const response = await axios.get('/api/state/summary');
             await context.commit('reloaded', response.data);
             const quotesConfig = await axios.get('/api/quotes/config');

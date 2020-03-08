@@ -488,8 +488,7 @@
             },
             goto(target: string): void {
                 // tslint:disable-next-line
-                const gogo = () => this.$router.push(target).catch(err => {
-                });
+                const gogo = () => this.$router.push(target).catch(() => {});
                 // Async this to avoid re-entrancy bug on router handler
                 debounce(gogo, 100);
             },
@@ -513,34 +512,40 @@
                 return currentStep.customSteps || [];
             },
         },
+        watch: {
+            authentication(val: AuthenticationDTO) {
+                if (val.username) {
+                    this.$tours.myTour.stop();
+                }
+            }
+        },
         mounted() {
             // TODO: Undo this hack where we just assume the new route will render in time
             const eventTriggerDelay = 500;
             const self = this;
 
-            // The tour is for anonymous users only
+            this.$router.afterEach((to: Route) => {
+                const currentStep = this.steps[this.$tours.myTour.currentStep];
+                if (currentStep && currentStep.eventTest && currentStep.eventTest('routed-to', to)) {
+                    self.nextStep();
+                }
+                // console.log(`routed to ${to.path} ${JSON.stringify(to.query)}`)
+            });
+
+            EventBus.$on('command-changed', (c: AccountCommandDTO) => {
+                const currentStep = this.steps[this.$tours.myTour.currentStep];
+                if (currentStep && currentStep.cmdTest && currentStep.cmdTest(c)) {
+                    self.nextStep();
+                }
+            });
+            EventBus.$on('command-added', (c: AccountCommandDTO) => {
+                const currentStep = this.steps[this.$tours.myTour.currentStep];
+                if (currentStep && currentStep.eventTest && currentStep.eventTest('command-added', c)) {
+                    self.nextStep();
+                }
+            });
+
             if (!this.authentication.username) {
-                this.$router.afterEach((to, from) => {
-                    const currentStep = this.steps[this.$tours.myTour.currentStep];
-                    if (currentStep && currentStep.eventTest && currentStep.eventTest('routed-to', to)) {
-                        self.nextStep();
-                    }
-                    // console.log(`routed to ${to.path} ${JSON.stringify(to.query)}`)
-                });
-
-                EventBus.$on('command-changed', (c: AccountCommandDTO) => {
-                    const currentStep = this.steps[this.$tours.myTour.currentStep];
-                    if (currentStep && currentStep.cmdTest && currentStep.cmdTest(c)) {
-                        self.nextStep();
-                    }
-                });
-                EventBus.$on('command-added', (c: AccountCommandDTO) => {
-                    const currentStep = this.steps[this.$tours.myTour.currentStep];
-                    if (currentStep && currentStep.eventTest && currentStep.eventTest('command-added', c)) {
-                        self.nextStep();
-                    }
-                });
-
                 this.$tours.myTour.start();
             }
         },
