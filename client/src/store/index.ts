@@ -17,6 +17,7 @@ interface MyState {
 const initState: MyState = {
     count: 0,
     summary: {
+        baseCcy: 'USD',
         accountIds: [],
         accounts: [],
         ccys: [],
