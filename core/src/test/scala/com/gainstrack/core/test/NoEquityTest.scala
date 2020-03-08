@@ -31,7 +31,7 @@ class NoEquityTest extends FlatSpec {
   }
 
   it should "generate pnl explain" in {
-    val exp = new PLExplain(MinDate, MaxDate)(bg.acctState, bg.txState, bg.balanceState, bg.priceFXConverter, bg.assetChainMap, bg.tradeFXConversion)
+    val exp = new PLExplain(parseDate("1900-01-01"), MaxDate)(bg.acctState, bg.txState, bg.balanceState, bg.priceFXConverter, bg.assetChainMap, bg.tradeFXConversion)
     exp.actualPnl
   }
 }

@@ -30,7 +30,7 @@ class JamesTest extends FlatSpec {
   }
 
   it should "have gain on USD forex of GBP62,500" in {
-    val explain = new PLExplain(parseDate("2019-01-01"), parseDate("2019-11-30"))(bg.acctState, bg.txState, bg.balanceState, bg.priceFXConverter, bg.assetChainMap, bg.tradeFXConversion)
+    val explain = new PLExplain(parseDate("2019-01-02"), parseDate("2019-11-30"))(bg.acctState, bg.txState, bg.balanceState, bg.priceFXConverter, bg.assetChainMap, bg.tradeFXConversion)
     val usdExplain =explain.deltaExplain.find(_.assetId == AssetId("USD")).get
     assert(usdExplain.explain == 62500.00)
   }
