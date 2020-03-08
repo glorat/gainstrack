@@ -82,6 +82,10 @@
         return ps.map(p => `<p style="text-align: left">${p}</p>`).join('');
     };
 
+    const routedToEventTest = (path: string) => (e: string, c: AccountCommandDTO | Route): boolean => {
+        return e === 'routed-to' && isRoute(c) && c.path === path;
+    };
+
     const addRecord: TourStep = {
         // target: '#add-record', // popper handles this wrong
         target: '.myaside',
@@ -93,20 +97,45 @@
             placement: 'right-start',
             enabledButtons: {buttonNext: false}
         },
-        eventTest(e: string, c) {
-            return e === 'routed-to' && isRoute(c) && c.path === '/add';
-        }
+        eventTest: routedToEventTest('/add'),
     };
 
-    const chooseInvestment: TourStep = {
-        target: '.c-account-id',
-        content: 'Choose your investment account (called Assets:Investment)',
+    const addAccounts: TourStep = {
+        // target: '#add-record', // popper handles this wrong
+        target: '.myaside',
+        header: {
+            title: 'Begin adding your records',
+        },
+        content: `Click "Accounts" on the left menu bar`,
         params: {
-            placement: 'right'
+            placement: 'right-start',
+            enabledButtons: {buttonNext: false}
         },
-        cmdTest(c) {
-            return c && isAccountCommandDTO(c) && c.accountId.startsWith('Assets:Investment');
-        },
+        eventTest: routedToEventTest('/command')
+    };
+
+    // const chooseInvestment: TourStep = {
+    //     target: '.c-account-id',
+    //     content: 'Choose your investment account (called Assets:Investment)',
+    //     params: {
+    //         placement: 'right'
+    //     },
+    //     cmdTest(c) {
+    //         return c && isAccountCommandDTO(c) && c.accountId.startsWith('Assets:Investment');
+    //     },
+    // };
+
+    const chooseAccount = (accountId: string): TourStep => {
+        return {
+            target: `.account-entry[tag="${accountId}"]`,
+            content: `Choose "${accountId}"`,
+            eventTest: routedToEventTest(`/command/${accountId}`),
+        };
+    };
+
+    const chooseInvestmentAccount: TourStep = {
+        ...chooseAccount('Assets:Investment'),
+        content: 'Select your investment account Assets:Investment',
     };
 
     const chooseBankAccount: TourStep = {
@@ -118,6 +147,18 @@
         cmdTest(c) {
             return c && isAccountCommandDTO(c) && c.accountId.startsWith('Assets:Bank');
         },
+    };
+
+    //  const routedToEventTest = (path: string) => (e: string, c: AccountCommandDTO | Route): boolean => {
+
+    const clickToBeginAdd = (commandType: string): TourStep => {
+        return {
+            target: `button[tag="${commandType}"]`,
+            content: 'Click "Fund" to fund our investment account',
+            cmdTest(c) {
+                return c && isAccountCommandDTO(c) && c.commandType === commandType;
+            },
+        };
     };
 
     const addCommand: TourStep = {
@@ -138,9 +179,7 @@
         params: {
             placement: 'right-start'
         },
-        eventTest(e, c) {
-            return e === 'routed-to' && isRoute(c) && c.path === '/balance_sheet';
-        }
+        eventTest: routedToEventTest('/balance_sheet'),
     };
 
     const fundTour: TourStep[] = [
@@ -153,16 +192,15 @@
             ])
         },
         {
-            ...addRecord,
+            ...addAccounts,
         },
         {
-            target: '#add-fund',
-            content: 'Here you can choose what type of event to record. Click "Fund" to fund our investment account',
-            eventTest(e: string, c) {
-                return e === 'routed-to' && isRoute(c) && c.path === '/add/cmd' && c.query.cmd === 'fund';
-            }
+            ...chooseInvestmentAccount
         },
-        chooseInvestment,
+        {
+            ...clickToBeginAdd('fund'),
+            content: 'Click "Fund" to fund our investment account',
+        },
         {
             target: '.c-change',
             content: mkParagraphs(['Record funding of 10000 USD to the investment account',
@@ -175,16 +213,7 @@
                 placement: 'bottom'
             }
         },
-        {
-            target: '.c-add',
-            content: 'Press Add to save this record',
-            params: {
-                placement: 'bottom'
-            },
-            eventTest(e, c) {
-                return e === 'command-added';
-            },
-        },
+        addCommand,
         tourBalanceSheet,
         {
             target: '#assets-table',
@@ -198,26 +227,15 @@
 
     const tradeTour: TourStep[] = [
         {
-            ...addRecord,
+            ...addAccounts,
             id: 'trade',
         },
         {
-            target: '#add-trade',
-            content: 'Click "Trade" to record a trade',
-            eventTest(e, c) {
-
-                return e === 'routed-to' && isRoute(c) && c.path === '/add/cmd' && c.query.cmd === 'trade';
-            }
+            ...chooseInvestmentAccount
         },
         {
-            target: '.c-account-id',
-            content: 'Choose your investment account',
-            params: {
-                placement: 'right'
-            },
-            cmdTest(c) {
-                return c && isAccountCommandDTO(c) && c.accountId.startsWith('Assets:Investment');
-            },
+            ...clickToBeginAdd('trade'),
+            content: 'Click "Trade" to record a trade',
         },
         {
             target: '.c-change',
@@ -240,14 +258,7 @@
             },
         },
         {
-            target: '.c-add',
-            content: 'Press "Add" to save this trade record',
-            params: {
-                placement: 'bottom'
-            },
-            eventTest(e, c) {
-                return e === 'command-added';
-            },
+            ...addCommand
         },
         {
             ...tourBalanceSheet,
@@ -264,25 +275,15 @@
 
     const earnTour: TourStep[] = [
         {
-            ...addRecord,
-            id: 'earn',
+            ...addAccounts,
+            id: 'earn'
         },
         {
-            target: '#add-earn',
-            content: 'Click "Earn" to record your earnings',
-            eventTest(e, c) {
-                return e === 'routed-to' && isRoute(c) && c.path === '/add/cmd' && c.query.cmd === 'earn';
-            }
+            ...chooseAccount('Income:Salary')
         },
         {
-            target: '.c-account-id',
-            content: 'Choose the type of earning to record ("Income:Salary")',
-            params: {
-                placement: 'right'
-            },
-            cmdTest(c) {
-                return c && isAccountCommandDTO(c) && c.accountId.startsWith('Income:Salary');
-            },
+            ...clickToBeginAdd('earn'),
+            content: 'Click "Earn" record salary being received',
         },
         {
             target: '.c-change',
@@ -317,18 +318,14 @@
             ])
         },
         {
-            ...addRecord,
-
+            ...addAccounts,
         },
         {
-            target: '#add-transfer',
-            content: 'Click "Transfer" to record a transfer',
-            eventTest(e, c) {
-                return e === 'routed-to' && isRoute(c) && c.path === '/add/cmd' && c.query.cmd === 'tfr';
-            }
+            ...chooseInvestmentAccount
         },
         {
-            ...chooseInvestment
+            ...clickToBeginAdd('tfr'),
+            content: 'Click "Transfer"',
         },
         {
             target: '.c-change',
@@ -343,7 +340,7 @@
         },
         {
             target: '.c-other-account',
-            content: 'Choose your investment account again for internal transfer exchange',
+            content: 'Choose your "Assets:Investment" for internal account transfer exchange',
             params: {
                 placement: 'right'
             },
@@ -384,18 +381,16 @@
                 'Instead, you only need to record your major earnings and investments. Then by supplying your resulting account balances, you can get a view of your general expenses without further input',
                 'Let us record your bank balance as you may see it on your bank statement'])
         },
+
         {
-            ...addRecord,
+            ...addAccounts,
         },
         {
-            target: '#add-balance',
-            content: 'Click "Balance" to record a balance for an account',
-            eventTest(e, c) {
-                return e === 'routed-to' && isRoute(c) && c.path === '/add/cmd' && c.query.cmd === 'bal';
-            }
+            ...chooseAccount('Assets:Bank')
         },
         {
-            ...chooseBankAccount
+            ...clickToBeginAdd('bal'),
+            content: 'Click "Balance" to record a bank balance',
         },
         {
             target: '.c-balance',

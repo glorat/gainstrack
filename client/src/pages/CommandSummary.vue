@@ -6,8 +6,8 @@
         </tr>
         </thead>
         <tbody>
-        <tr v-bind:key="acct.accountId" v-for="acct in info">
-            <td><router-link :to="{name:'command', params:{accountId:acct.key.name }}">{{ acct.key.name }}</router-link> </td>
+        <tr v-bind:key="acctId" v-for="acctId in mainAccounts">
+            <td class="account-entry" :tag="acctId"><router-link :to="{name:'command', params:{accountId:acctId }}">{{ acctId }}</router-link> </td>
         </tr>
         </tbody>
     </table>
@@ -16,6 +16,7 @@
 <script>
     import AccountCreation from '../models';
     import axios from 'axios';
+    import {mapGetters} from 'vuex';
 
     export default {
         name: 'CommandSummary',
@@ -26,6 +27,9 @@
             axios.get('/api/command/')
                 .then(response => this.info = response.data)
                 .catch(error => this.$notify.error(error))
+        },
+        computed: {
+            ...mapGetters(['mainAccounts']),
         },
     }
 </script>

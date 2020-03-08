@@ -6,6 +6,7 @@
         <div v-if="!c.commandType">
             Add Entry
             <span v-for="cmd in scopedCommands" :key="cmd.prefix"><button @click="setupCommand(cmd)"
+                                                                          :tag="cmd.prefix"
                                                                           :title="cmd.description">{{ cmd.title }}</button></span>
         </div>
         <h4>Existing entries</h4>
@@ -23,6 +24,7 @@
     import {CommandConfig, commands, defaultCommand} from '@/config/commands';
     import Vue from 'vue';
     import {AccountCommandDTO, Amount} from '../models';
+    import EventBus from '@/event-bus';
 
     export default Vue.extend({
         name: 'Command',
@@ -49,6 +51,7 @@
             },
             setupCommand(cmd: CommandConfig): void {
                 const c = {accountId: this.accountId, commandType: cmd.prefix};
+
                 this.c = defaultCommand(c);
             },
             addCancel(): void {
