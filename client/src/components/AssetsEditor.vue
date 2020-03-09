@@ -9,19 +9,21 @@
             <th>Tags</th>
             <th>Actions</th>
         </tr>
-        <tr v-for="asset in assets" :key="asset.asset">
+        <tr v-for="asset in assets" :key="asset.asset" :tag="asset.asset">
             <td>
                 {{ asset.asset }}</td>
             <td>
-                <el-autocomplete type="text" v-model="asset.options.ticker" v-on:input="assetTouched(asset)"
+                <el-autocomplete class="asset-ticker" type="text" v-model="asset.options.ticker" v-on:input="assetTouched(asset)"
                           :fetch-suggestions="tickerSearch"></el-autocomplete>
             </td>
             <td>
-                <el-autocomplete type="text" v-model="asset.options.proxy" v-on:input="assetTouched(asset)"
+                <el-autocomplete class="asset-proxy" type="text" v-model="asset.options.proxy" v-on:input="assetTouched(asset)"
                                  :fetch-suggestions="tickerSearch"></el-autocomplete>
             </td>
             <td width="250px">
-                <el-select size="mini" v-model="asset.options.tags" v-on:input="assetTouched(asset)" multiple
+                <el-select size="mini" v-model="asset.options.tags" v-on:input="assetTouched(asset)"
+                           class="asset-tags"
+                           multiple
                            allow-create
                            filterable default-first-option placeholder="Select">
                     <el-option
@@ -109,6 +111,7 @@
                         const orig = this.originalAssets.find(x => x.asset === asset.asset);
                         const idx = this.originalAssets.indexOf(orig);
                         Object.assign(this.originalAssets[idx], cloneDeep(asset));
+                        this.$set(asset, 'dirty', false);
                     })
                     .catch(error => this.$notify.error(error.response.data))
             },

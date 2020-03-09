@@ -1,5 +1,6 @@
 <template>
     <el-date-picker
+            class="c-date"
             :value="value"
             v-on:input="onChanged($event)"
             type="date"

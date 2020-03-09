@@ -238,8 +238,16 @@
             content: 'Click "Trade" to record a trade',
         },
         {
+            target: '.c-date',
+            content: 'Enter the trade date. Choose 2020-01-01 for this demo (i.e. 1st Jan)',
+            params: {placement: 'bottom'},
+            cmdTest(c) {
+                return c && isAccountCommandDTO(c) && c.date === '2020-01-01';
+            }
+        },
+        {
             target: '.c-change',
-            content: 'Enter the shares you are purchasing, e.g. 5 GOOG shares',
+            content: 'Enter the shares you are purchasing: 5 GOOG shares',
             params: {
                 placement: 'bottom'
             },
@@ -249,12 +257,12 @@
         },
         {
             target: '.c-price',
-            content: 'Enter the price you bought the shares for, e.g. 1500 USD',
+            content: 'Enter the price you bought the shares for: 1337 USD',
             params: {
                 placement: 'bottom'
             },
             cmdTest(c) {
-                return c && isAccountCommandDTO(c) && c.price !== undefined && c.price.number > 200 && c.price.ccy !== '';
+                return c && isAccountCommandDTO(c) && c.price !== undefined && c.price.number > 800 && c.price.ccy !== '';
             },
         },
         {
@@ -271,6 +279,38 @@
             },
             customSteps: [{target: 'choice', label: 'Next Step'}],
         },
+    ];
+
+    const liveTour: TourStep[] = [
+        {
+            id: 'live',
+            content: mkParagraphs([
+                'We shall set up live quotes for the GOOG shares we have bought to monitor progress',
+                'Click on Settings in the menu where we shall set it up',
+            ]),
+            target: '.myaside', // Wishes to be #router-settings
+            params: {placement: 'right-start'},
+            eventTest: routedToEventTest('/settings'),
+        },
+        {
+            target: 'tr[tag="GOOG"] .asset-ticker',
+            params: {placement: 'right'},
+            content: 'We can enter the Ticker symbol to source live quotes for Google shares. Enter GOOG here then press the Green tick on the right to confirm'
+        },
+        {
+            target: '.myaside', // Wishes to be  the P&L Explain link
+            content: 'Click on the P&L Explain link to see how the value of our portfolio changed since the trade was booked',
+            eventTest: routedToEventTest('/pnlexplain')
+        },
+        {
+            target: '#bottom',
+            params: {placement: 'bottom'},
+            content: mkParagraphs([
+                'In the months following the trade, observe the Markets P&L movement caused by share price changes',
+                'Click on a month header to drill into details',
+                ]),
+            customSteps: [{target: 'choice', label: 'Next Step'}],
+        }
     ];
 
     const earnTour: TourStep[] = [
@@ -441,12 +481,13 @@
             id: 'choice',
             content: 'There are different types of events that can be recorded. Which guide would you like to try next?',
             customSteps: [
-                {target: 'fund', label: '1. Fund Investment Account', buttonStyle: 'width: 200px; text-align: left;'},
-                {target: 'trade', label: '2. Trade Shares', buttonStyle: 'width: 200px; text-align: left;'},
-                {target: 'fxtfr', label: '3. FX Transfer', buttonStyle: 'width: 200px; text-align: left;'},
-                {target: 'earn', label: '4. Record salary earnings', buttonStyle: 'width: 200px; text-align: left;'},
-                {target: 'bal', label: '5. Bank balance adjustment', buttonStyle: 'width: 200px; text-align: left;'},
-                {target: 'end', label: 'All Done', buttonStyle: 'width: 200px; text-align: left;'}
+                {target: 'fund',    label: '1. Fund Investment Account', buttonStyle: 'width: 200px; text-align: left;'},
+                {target: 'trade',   label: '2. Trade Shares', buttonStyle: 'width: 200px; text-align: left;'},
+                {target: 'live',    label: '3. Live Share Prices', buttonStyle: 'width: 200px; text-align: left;'},
+                {target: 'fxtfr',   label: '4. FX Transfer', buttonStyle: 'width: 200px; text-align: left;'},
+                {target: 'earn',    label: '5. Record salary earnings', buttonStyle: 'width: 200px; text-align: left;'},
+                {target: 'bal',     label: '6. Bank balance adjustment', buttonStyle: 'width: 200px; text-align: left;'},
+                {target: 'end',     label: 'All Done', buttonStyle: 'width: 200px; text-align: left;'}
             ],
         },
         ...fundTour,
@@ -454,6 +495,7 @@
         ...fxTour,
         ...balTour,
         ...earnTour,
+        ...liveTour,
         {
             // target: '#route-balance_sheet', // popper fails on this
             id: 'end',
