@@ -149,6 +149,17 @@
         },
     };
 
+    const chooseDate = (dt: string): TourStep => {
+        return {
+            target: '.c-date',
+            content: `Enter the date. Choose ${dt} for this demo`,
+            params: {placement: 'right'},
+            cmdTest(c) {
+                return c && isAccountCommandDTO(c) && c.date === dt;
+            }
+        };
+    };
+
     //  const routedToEventTest = (path: string) => (e: string, c: AccountCommandDTO | Route): boolean => {
 
     const clickToBeginAdd = (commandType: string): TourStep => {
@@ -187,8 +198,9 @@
 
             id: 'fund',
             target: '#page-title',
-            content: mkParagraphs(['Typically an investment account requires funding from somewhere like your bank account before making trades',
-                'This guide will walk you through recording that funding',
+            content: mkParagraphs([
+                'Typically an investment account requires funding from somewhere like your bank account before making trades',
+                'Buying GOOG shares put our investment cash balance in negative. We shall make sure it was actually funded',
             ])
         },
         {
@@ -200,6 +212,9 @@
         {
             ...clickToBeginAdd('fund'),
             content: 'Click "Fund" to fund our investment account',
+        },
+        {
+            ...chooseDate('2020-01-01'),
         },
         {
             target: '.c-change',
@@ -238,12 +253,8 @@
             content: 'Click "Trade" to record a trade',
         },
         {
-            target: '.c-date',
+            ...chooseDate('2020-01-01'),
             content: 'Enter the trade date. Choose 2020-01-01 for this demo (i.e. 1st Jan)',
-            params: {placement: 'bottom'},
-            cmdTest(c) {
-                return c && isAccountCommandDTO(c) && c.date === '2020-01-01';
-            }
         },
         {
             target: '.c-change',
@@ -456,15 +467,20 @@
             },
         },
         addCommand,
-        tourBalanceSheet,
         {
-            target: '#assets-table',
-            content: 'In the accounts we can see your bank balance has been adjusted to 1000 USD',
-            params: {
-                placement: 'top'
-            },
-            customSteps: [{target: 'choice', label: 'Next Step'}],
+            target: '.myaside', // Wishes to be  the P&L Explain link
+            content: 'Click on the P&L Explain link to see the effect',
+            eventTest: routedToEventTest('/pnlexplain')
         },
+        {
+            target: '#bottom',
+            params: {placement: 'bottom'},
+            content: mkParagraphs([
+                'Observe how your Salary earnings are recorded under Income',
+                'The balance entry is used to automatically infer your monthly expenses!',
+            ]),
+            customSteps: [{target: 'choice', label: 'Next Step'}],
+        }
     ];
 
     const mySteps: TourStep[] = [
@@ -481,9 +497,9 @@
             id: 'choice',
             content: 'There are different types of events that can be recorded. Which guide would you like to try next?',
             customSteps: [
-                {target: 'fund',    label: '1. Fund Investment Account', buttonStyle: 'width: 200px; text-align: left;'},
-                {target: 'trade',   label: '2. Trade Shares', buttonStyle: 'width: 200px; text-align: left;'},
-                {target: 'live',    label: '3. Live Share Prices', buttonStyle: 'width: 200px; text-align: left;'},
+                {target: 'trade',   label: '1. Trade Shares', buttonStyle: 'width: 200px; text-align: left;'},
+                {target: 'live',    label: '2. Live Share Prices', buttonStyle: 'width: 200px; text-align: left;'},
+                {target: 'fund',    label: '3. Fund Investment Account', buttonStyle: 'width: 200px; text-align: left;'},
                 {target: 'fxtfr',   label: '4. FX Transfer', buttonStyle: 'width: 200px; text-align: left;'},
                 {target: 'earn',    label: '5. Record salary earnings', buttonStyle: 'width: 200px; text-align: left;'},
                 {target: 'bal',     label: '6. Bank balance adjustment', buttonStyle: 'width: 200px; text-align: left;'},
