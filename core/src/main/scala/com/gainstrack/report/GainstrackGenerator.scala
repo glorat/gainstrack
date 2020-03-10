@@ -34,6 +34,7 @@ case class GainstrackGenerator(originalCommands:Seq[AccountCommand])  {
     finalCommands.foldLeft(BalanceState(acctState)) ( (state,ev) => state.handle(ev))
 
   // Third pass for projections
+  val fxChainMap = priceState.toFxChainMap(acctState.baseCurrency)
   implicit val assetChainMap = AssetChainMap(acctState.withInterpolatedAccounts, priceState)
   implicit val dailyBalances = new DailyBalance(balanceState)
 
@@ -43,8 +44,8 @@ case class GainstrackGenerator(originalCommands:Seq[AccountCommand])  {
     finalCommands.foldLeft(PriceState())((state, ev) => state.handle(ev))
   implicit val assetState: AssetState =
     finalCommands.foldLeft(AssetState())(_.handle(_))
-  implicit val priceFXConverter = priceState.priceFxConverter
-  val tradeFXConversion = SingleFXConversion.generate(acctState.baseCurrency)(priceFXConverter, assetChainMap)
+  val priceFXConverter = priceState.priceFxConverter
+  val tradeFXConversion = SingleFXConversion.generate(acctState.baseCurrency)(priceFXConverter, fxChainMap)
   val fxMapper: Map[AssetId, AssetId] = new FXMapperGenerator(assetState).fxMapper
   val proxyMapper = new FXMapperGenerator(assetState).proxyMapper
   val latestDate:LocalDate = finalCommands.maxBy(_.date).date

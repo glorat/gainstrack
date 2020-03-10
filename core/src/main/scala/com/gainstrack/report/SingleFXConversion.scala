@@ -38,15 +38,15 @@ object SingleFXConversion {
 
   val logger: Logger = LoggerFactory.getLogger(classOf[SingleFXConversion])
 
-  def generate(baseCurrency:AssetId)(priceState: PriceFXConverter, assetChainMap: AssetChainMap) : SingleFXConversion = {
+  def generate(baseCurrency:AssetId)(priceState: PriceFXConverter, fxChainMap: Map[AssetId, List[AssetId]]) : SingleFXConversion = {
     val before = Instant.now
-    val ret = generateFoo(baseCurrency)(priceState, assetChainMap)
+    val ret = generateFoo(baseCurrency)(priceState, fxChainMap)
     val after = Instant.now
 
     logger.debug(s"SingleFXConversion took ${Duration.between(before,after).toMillis} ms")
     ret
   }
-  def generateFoo(baseCurrency:AssetId)(priceState: PriceFXConverter, assetChainMap: AssetChainMap) : SingleFXConversion = {
+  def generateFoo(baseCurrency:AssetId)(priceState: PriceFXConverter, fxChainMap: Map[AssetId, List[AssetId]]) : SingleFXConversion = {
     val ccys = priceState.ccys
 
     val bar:Map[AssetId, SortedColumnMap[LocalDate, Double]] = ccys.flatMap(ccy => {
@@ -58,7 +58,8 @@ object SingleFXConversion {
         Some(ccy -> SortedColumnMap(series.ks, series.vs.map(_.toDouble)))
       }
       else {
-        val ccyChainOpt = assetChainMap.findFirst(ccy)
+        val ccyChainOpt = fxChainMap.get(ccy)
+
         ccyChainOpt
           .filter(_.last == baseCurrency) // If we can't convert, we must drop
           .map(ccyChain => {

@@ -243,12 +243,19 @@ class First extends FlatSpec {
     assert(priceFXConverter.prices.keys.map(_.fx1).toSet == priceState.ccys.map(_.symbol))
   }
 
+  it should "compute shortest paths to base" in {
+    val lookup = priceState.toGraph
+    val res = Dijkstra.shortestPath[String](lookup, "VWRD", "GBP")
+    assert(res._1 == 2.0) // Distance
+    assert(res._2 == Seq("VWRD", "USD", "GBP"))
+  }
+
   "IRR Calc" should "compute IRR" in {
     val accountId = AccountId("Assets:Investment:Zurich")
     val queryDate = LocalDate.parse("2019-12-31")
     val fromDate = parseDate("1980-01-01")
 
-    val accountReport = new AccountInvestmentReport(accountId, AssetId("GBP"), fromDate, queryDate, bg.acctState, bg.balanceState, bg.txState, priceFXConverter, bg.assetChainMap)
+    val accountReport = new AccountInvestmentReport(accountId, AssetId("GBP"), fromDate, queryDate, bg.acctState, bg.balanceState, bg.txState, priceFXConverter)
 
     // Because we are doing FX with linear interpolation, rounding errors will happen
     // The conversions here will make this equal

@@ -96,7 +96,7 @@ class ApiController (implicit val ec :ExecutionContext)
     }
 
     val mktConvert = bg.liveFxConverter(ServerQuoteSource.db.priceFXConverter)
-    val irr = IrrSummary(bg.finalCommands, fromDate, toDate, bg.acctState, bg.balanceState, bg.txState, mktConvert, bg.assetChainMap)
+    val irr = IrrSummary(bg.finalCommands, fromDate, toDate, bg.acctState, bg.balanceState, bg.txState, mktConvert)
 
     irr.toSummaryDTO
   }
@@ -110,7 +110,7 @@ class ApiController (implicit val ec :ExecutionContext)
     val fromDate = defaultFromDate
     val toDate = currentDate
     bg.acctState.accountMap.get(accountId).map(account => {
-      val accountReport = new AccountInvestmentReport(accountId, account.key.assetId, fromDate,  toDate, bg.acctState, bg.balanceState, bg.txState, mktConvert, bg.assetChainMap)
+      val accountReport = new AccountInvestmentReport(accountId, account.key.assetId, fromDate,  toDate, bg.acctState, bg.balanceState, bg.txState, mktConvert)
       val cfs = accountReport.cashflowTable.sorted
       TimeSeries(accountId, cfs.map(_.value.ccy.symbol), cfs.map(_.date.toString),
         cfs.map(_.value.number.toDouble.formatted("%.2f")),

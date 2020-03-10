@@ -2,7 +2,7 @@ package com.gainstrack.report
 
 import com.gainstrack.core._
 
-class AccountInvestmentReport(accountId: AccountId, ccy:AssetId, fromDate:LocalDate, queryDate: LocalDate, acctState:AccountState, balanceState:BalanceState, txState:TransactionState, singleFXConversion: FXConverter, assetChainMap: AssetChainMap) {
+class AccountInvestmentReport(accountId: AccountId, ccy:AssetId, fromDate:LocalDate, queryDate: LocalDate, acctState:AccountState, balanceState:BalanceState, txState:TransactionState, singleFXConversion: FXConverter) {
   val account = acctState.accountMap(accountId)
 
   val cmds = txState.cmds.filter(cmd => cmd.origin.date.isAfter(fromDate) && cmd.origin.date.isBefore(queryDate) )
@@ -35,7 +35,8 @@ class AccountInvestmentReport(accountId: AccountId, ccy:AssetId, fromDate:LocalD
   val cashflows = initialCashflows.map(cf => {
 
     // FIXME: Use singleFXConversion
-    val converted = (PositionSet() + cf.value).convertViaChain(acctState.baseCurrency, assetChainMap(cf.source), singleFXConversion, cf.date)
+    val converted = (PositionSet() + cf.value).convertTo(acctState.baseCurrency, singleFXConversion, cf.date)
+    // val converted = (PositionSet() + cf.value).convertViaChain(acctState.baseCurrency, assetChainMap(cf.source), singleFXConversion, cf.date)
     cf.copy(convertedValue = Some(converted.getBalance(acctState.baseCurrency)))
   })
   val cashflowTable = CashflowTable(cashflows)

@@ -92,7 +92,7 @@ class MultiAssetAdj extends FlatSpec {
     assert(fx1.get == 10)
     assert(None == bg.priceFXConverter.getFX(AssetId("XIU"), AssetId("USD"), dt))
 
-    val singleFXConversion = SingleFXConversion.generate(bg.acctState.baseCurrency)(bg.priceFXConverter, bg.assetChainMap)
+    val singleFXConversion = SingleFXConversion.generate(bg.acctState.baseCurrency)(bg.priceFXConverter, bg.fxChainMap)
     val x = singleFXConversion.getFX(AssetId("XIU"), AssetId("USD"), dt)
     assert(x.get == 5)
     // This now works by converting via the base currency (USD)
@@ -105,7 +105,7 @@ class MultiAssetAdj extends FlatSpec {
     val fx1 = bg.priceFXConverter.getFX(AssetId("XIU"), AssetId("CAD"), dt)
     assert(fx1.get == 10)
 
-    val singleFXConversion = SingleFXConversion.generate(bg.acctState.baseCurrency)(bg.priceFXConverter, bg.assetChainMap)
+    val singleFXConversion = SingleFXConversion.generate(bg.acctState.baseCurrency)(bg.priceFXConverter, bg.fxChainMap)
     val x = singleFXConversion.getFX(AssetId("XIU"), AssetId("USD"), dt)
     assert(x.get == 4)
   }

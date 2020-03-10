@@ -85,7 +85,7 @@ class Real extends FlatSpec with BeforeAndAfterEach {
     invAccts.foreach(account => {
       val accountId = account.accountId
       val ccy = account.key.assetId
-      val accountReport = new AccountInvestmentReport(accountId, ccy, fromDate, queryDate, bg.acctState, bg.balanceState, bg.txState, bg.priceFXConverter, bg.assetChainMap)
+      val accountReport = new AccountInvestmentReport(accountId, ccy, fromDate, queryDate, bg.acctState, bg.balanceState, bg.txState, bg.tradeFXConversion)
       println(s"${accountId} ${accountReport.endBalance}")
       accountReport.cashflowTable.sorted.foreach(cf => {
         println(s"   ${cf.date} ${cf.value}")
@@ -98,7 +98,7 @@ class Real extends FlatSpec with BeforeAndAfterEach {
   it should "calc sane irrs for my Zurich" taggedAs RealDataAvailable in {
     val bg = new GainstrackGenerator(parser.getCommands)
     val accountId = AccountId("Assets:Investment:Zurich")
-    val rep = new AccountInvestmentReport(accountId, AssetId("GBP"), fromDate, queryDate, bg.acctState, bg.balanceState, bg.txState, bg.priceFXConverter, bg.assetChainMap)
+    val rep = new AccountInvestmentReport(accountId, AssetId("GBP"), fromDate, queryDate, bg.acctState, bg.balanceState, bg.txState, bg.tradeFXConversion)
 
     assert(rep.irr < 0.068)
     assert(rep.irr > 0.05)
@@ -107,7 +107,7 @@ class Real extends FlatSpec with BeforeAndAfterEach {
   it should "calc sane irrs for my PP" taggedAs RealDataAvailable in {
     val bg = new GainstrackGenerator(parser.getCommands)
     val accountId = AccountId("Assets:Property:PP")
-    val rep = new AccountInvestmentReport(accountId, AssetId("GBP"), fromDate, queryDate, bg.acctState, bg.balanceState, bg.txState, bg.priceFXConverter, bg.assetChainMap)
+    val rep = new AccountInvestmentReport(accountId, AssetId("GBP"), fromDate, queryDate, bg.acctState, bg.balanceState, bg.txState, bg.tradeFXConversion)
 
     assert(rep.irr < 0.09)
     assert(rep.irr > 0.03)
