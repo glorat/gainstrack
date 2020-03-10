@@ -35,7 +35,7 @@
         },
         watch: {
             conversion() {
-                this.refresh();
+                this.refresh(this.accountId);
             }
         },
         methods: {
