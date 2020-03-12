@@ -14,15 +14,7 @@ export const commands: CommandConfig[] = [
             return false;
         }
     },
-    {
-        prefix: 'bal',
-        title: 'Balance',
-        description: 'Record a balance in an account',
-        columns: ['balance', 'otherAccount'],
-        appliesTo() {
-            return true;
-        }
-    },
+
     {
         prefix: 'unit',
         title: 'Unit',
@@ -39,15 +31,6 @@ export const commands: CommandConfig[] = [
         columns: ['change', 'price', 'commission'],
         appliesTo(acct: AccountDTO) {
             return acct.accountId.startsWith('Assets') && acct.options.multiAsset;
-        }
-    },
-    {
-        prefix: 'tfr',
-        title: 'Transfer',
-        description: 'Perform a transfer from one account to another',
-        columns: ['change', 'options'],
-        appliesTo(): boolean {
-            return true;
         }
     },
     {
@@ -85,7 +68,25 @@ export const commands: CommandConfig[] = [
         appliesTo(acct: AccountDTO): boolean {
             return acct.accountId.startsWith('Assets');
         }
-    }
+    },
+    {
+        prefix: 'bal',
+        title: 'Balance',
+        description: 'Record a balance in an account',
+        columns: ['balance', 'otherAccount'],
+        appliesTo() {
+            return true;
+        }
+    },
+    {
+        prefix: 'tfr',
+        title: 'Transfer',
+        description: 'Perform a transfer from one account to another',
+        columns: ['change', 'options'],
+        appliesTo(): boolean {
+            return true;
+        }
+    },
 ];
 
 export const defaultCommand = (cmd: any): AccountCommandDTO => {

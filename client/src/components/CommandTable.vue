@@ -63,8 +63,8 @@
         },
         computed: {
             columnShow(): Record<string, boolean> {
-                const cols = ['accountId', 'date', 'price', 'asset', 'commission', 'balance', 'otherAccount',
-                    'description'];
+                const cols = ['accountId', 'date', 'commandType', 'price', 'change', 'asset', 'commission', 'balance',
+                    'otherAccount', 'description'];
                 const map: Record<string, boolean> = {};
                 const show = this.columns.length > 0 ? this.columns : cols;
                 show.forEach(s => {

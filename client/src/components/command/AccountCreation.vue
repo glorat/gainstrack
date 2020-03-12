@@ -63,9 +63,9 @@
         },
         mixins: [CommandEditorMixin],
         data() {
-            const c = {};
+            let c = {};
             if (this.cmd) {
-                throw new Error('cmd prop not actually supported');
+                c = {...this.cmd}
             }
             c.date = c.date || new Date().toISOString().slice(0, 10);
             c.ccy = ''; // Default to base currency
