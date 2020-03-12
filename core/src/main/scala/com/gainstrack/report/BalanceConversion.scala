@@ -20,10 +20,10 @@ class BalanceConversion(
       case "global" => {
         positions.convertTo(acctState.baseCurrency, singleFXConversion, date)
         // positions.convertViaChain(acctState.baseCurrency, assetChainMap(acct), priceState, date)
-
       }
       case ccy: String =>
-        positions.convertViaChain(AssetId(ccy), assetChainMap(acct), priceState, date)
+        positions.convertTo(AssetId(ccy), singleFXConversion, date)
+        // positions.convertViaChain(AssetId(ccy), assetChainMap(acct), priceState, date)
     }
     converted
   }
