@@ -78,7 +78,7 @@ case class GainstrackEntityState(id: GUID, cmdStrs: Seq[Seq[String]]) extends Ag
   }
 
   private def removeCommand(cmd:Seq[String]): GainstrackEntityState = {
-    require(cmdStrs.contains(cmd))
+    // require(cmdStrs.contains(cmd))
     val without = cmdStrs.filterNot(_ == cmd)
     copy (cmdStrs = without)
   }
