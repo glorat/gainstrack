@@ -99,7 +99,7 @@ class First extends FlatSpec {
     val newAccounts = newState.accounts.&~(acctState.accounts)
 
     newAccounts.foreach(a => println(s"${a.toBeancount}"))
-    assert(newAccounts.size == 11)
+    assert(newAccounts.size == 10)
   }
 
   it should "generate asset conversion chains" in {

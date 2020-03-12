@@ -58,12 +58,14 @@ option "operating_currency" "GBP"
 2010-01-01 open Equity:Opening GBP
   multiAsset:true
 
-1970-01-01 open Expenses:Investment:Fees:USD USD
-
 2010-01-01 open Income:Salary:CNY CNY
   fundingAccount: Assets:HSBCCN
 2018-07-26 earn Salary 25000.0 CNY
 2018-07-26 earn Salary Assets:HSBCCN 25000.0 CNY
+
+2010-01-01 open Expenses:Education CNY
+  fundingAccount: Assets:HSBCCN
+2018-08-15 spend Expenses:Education 100000 CNY
 
 option "operating_currency" "GBP"
 1900-01-01 commodity VWRD
