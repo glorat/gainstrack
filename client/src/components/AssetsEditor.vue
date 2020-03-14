@@ -4,6 +4,7 @@
     <table>
         <tr>
             <th>Asset</th>
+            <th>Units</th>
             <th>Live ticker</th>
             <th>Live proxy</th>
             <th>Tags</th>
@@ -11,7 +12,11 @@
         </tr>
         <tr v-for="asset in assets" :key="asset.asset" :tag="asset.asset">
             <td>
-                {{ asset.asset }}</td>
+                {{ asset.asset }}
+            </td>
+            <td class="num">
+                {{ positions[asset.asset].units.number }}
+            </td>
             <td>
                 <el-autocomplete class="asset-ticker" type="text" v-model="asset.options.ticker" v-on:input="assetTouched(asset)"
                           :fetch-suggestions="tickerSearch"></el-autocomplete>
@@ -65,6 +70,7 @@
                 // All commands that are asset commands
                 assets: [],
                 originalAssets: [],
+                positions: [],
             };
         },
         computed: {
@@ -118,8 +124,8 @@
             async reloadAll() {
                 return axios.get('/api/assets')
                     .then(response => {
-                        this.originalAssets = response.data;
-
+                        this.originalAssets = response.data.commands; // TODO:Get from vuex
+                        this.positions = response.data.positions;
                     })
                     .catch(error => this.$notify.error(error))
             },

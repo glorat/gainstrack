@@ -81,7 +81,20 @@ class ApiController (implicit val ec :ExecutionContext)
 
   get ("/assets") {
     val bg = getGainstrack
-    bg.assetState.toDTO.sortBy(_.asset.map(_.symbol).getOrElse(""))
+    val mktConvert = bg.liveFxConverter(ServerQuoteSource.db.priceFXConverter)
+
+    val nw = bg.dailyBalances.totalPosition("Assets") - bg.dailyBalances.totalPosition("Liabilities")
+    val assets = bg.assetState.toDTO.sortBy(_.asset.map(_.symbol).getOrElse(""))
+
+    Map(
+      "commands" -> assets,
+      "positions" -> assets.map(asset => {
+        asset.asset.get.symbol -> Map(
+          "units" -> nw.getBalance(asset.asset.get).toDTO,
+          "value" -> nw.getBalance(asset.asset.get).convertTo(bg.acctState.baseCurrency, mktConvert, currentDate).toDTO
+        )
+      }
+      ).toMap)
   }
 
   get("/irr/") {

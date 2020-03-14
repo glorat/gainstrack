@@ -2,12 +2,12 @@ package com.gainstrack.core
 
 import java.math.MathContext
 
+import com.gainstrack.report.FXConverter
 import spire.math.SafeLong
 
 
 case class Amount(number:Fraction, ccy:AssetId) {
-
-  // TODO: We'd like to rename the field to number for consistency but we have a legacy issue
+  @deprecated("Call toDTO")
   def toOldDTO:Map[String, Any] = Map("ccy" -> ccy.symbol, "value" -> number.toDouble)
 
   def toDTO:Map[String, Any] = Map("ccy" -> ccy.symbol, "number" -> number.toDouble)
@@ -19,6 +19,12 @@ case class Amount(number:Fraction, ccy:AssetId) {
   // and yet we need precise fractional precision so that postings balance out perfectly
   //override def toString: String = s"${value.toBigDecimal(MathContext.DECIMAL128)} ${ccy.symbol}"
   override def toString: String = s"${number.toDouble} ${ccy.symbol}"
+
+  def convertTo(tgtCcy: AssetId, fxConverter: FXConverter, date:LocalDate): Amount = {
+    // Defaulting self if we fail to convert, to be consistent with PositionSet
+    fxConverter.getFX(ccy, tgtCcy, date).map(fx => Amount(number*fx, tgtCcy)).getOrElse(this)
+
+  }
 
   def +(rhs: Amount): Amount = {
     require(rhs.ccy == this.ccy, errmsg)
