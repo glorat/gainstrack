@@ -6,7 +6,7 @@ import java.time.format.DateTimeParseException
 import com.gainstrack.command.{AccountCreation, GainstrackParser, ParserMessage}
 import com.gainstrack.core._
 import com.gainstrack.quotes.av.{DbState, Main, QuoteConfig}
-import com.gainstrack.report.{AccountInvestmentReport, BalanceReport, DailyBalance, FXChain, FXMapped, GainstrackGenerator, IrrSummary, PLExplain, PLExplainDTO, TimeSeries}
+import com.gainstrack.report.{AccountInvestmentReport, AssetAllocation, BalanceReport, DailyBalance, FXChain, FXMapped, GainstrackGenerator, IrrSummary, PLExplain, PLExplainDTO, TimeSeries}
 import com.gainstrack.web.{AuthenticationSupport, BalanceTreeTable, GainstrackJsonSerializers, GainstrackSupport, StateSummaryDTO, TimingSupport}
 import org.json4s.{DefaultFormats, Formats, JValue}
 import org.scalatra.{NotFound, ScalatraServlet}
@@ -263,9 +263,20 @@ class ApiController (implicit val ec :ExecutionContext)
     }
   }
 
+  get ("/aa/tree") {
+    val bg = getGainstrack
+    val mktConvert = bg.liveFxConverter(ServerQuoteSource.db.priceFXConverter)
+    val queryDate = currentDate
+
+    val nw = bg.dailyBalances.totalPosition("Assets") - bg.dailyBalances.totalPosition("Liabilities")
+    val aa = new AssetAllocation(nw, Seq(Seq("blend", "property","cash"), Seq("equity", "bond", "commodity"), Seq("global", "us", "uk")), bg.assetState)
+    aa.toDTO(bg.acctState.baseCurrency, queryDate, mktConvert)
+  }
+
   get("/aa") {
     val bg = getGainstrack
     implicit val singleFXConversion = bg.tradeFXConversion
+    val mktConvert = bg.liveFxConverter(ServerQuoteSource.db.priceFXConverter)
 
     val queryDate = currentDate
 

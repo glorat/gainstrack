@@ -10,6 +10,10 @@ case class PositionSet(assetBalance:Map[AssetId, Fraction]) {
     assetBalance.keys.map(getBalance(_).toDTO).toSeq
   }
 
+  def filter(assets: Seq[AssetId]): PositionSet = {
+    PositionSet(assetBalance.filterKeys(a => assets.contains(a)))
+  }
+
   def getBalance(ccy:AssetId) : Amount = {
     val f =assetBalance.get(ccy).getOrElse(zeroFraction)
     Amount(f, ccy)
@@ -76,7 +80,11 @@ case class PositionSet(assetBalance:Map[AssetId, Fraction]) {
   def -(rhs: PositionSet): PositionSet = {
     val allKeys = assetBalance.keySet ++ rhs.assetBalance.keySet
     val newMap = allKeys.map(key => key -> (assetBalance.getOrElse(key, zeroFraction) - rhs.assetBalance.getOrElse(key, zeroFraction))).toMap
-    copy(assetBalance = newMap)
+    PositionSet.filterZeroes(newMap)
+  }
+
+  def isEmpty:Boolean = {
+    assetBalance.values.forall(_.isZero)
   }
 
   override def toString: String = {
@@ -89,5 +97,9 @@ object PositionSet {
   type DTO = Seq[Map[String,Any]]
   def apply() : PositionSet = {
     PositionSet(Map())
+  }
+
+  def filterZeroes(assetBalance:Map[AssetId, Fraction]): PositionSet = {
+    PositionSet(assetBalance.filter(_._2 != zeroFraction))
   }
 }

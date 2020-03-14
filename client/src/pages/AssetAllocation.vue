@@ -1,6 +1,6 @@
 <template>
     <div>
-        <vue-plotly :data="data" :layout="layout" :options="options" auto-resize></vue-plotly>
+       <vue-plotly :data="treeData" :layout="treeLayout" :options="treeOptions" auto-resize></vue-plotly>
 
         <div class="row">
             <div class="column" v-for="table in tables">
@@ -25,35 +25,25 @@
         components: {TreeTable, VuePlotly},
         data() {
             return {
-                // plotly
-                // data: [{x: [1, 2, 3, 4, 5], y: [2, 4, 6, 8, 9]}],
-                data: [{
+                treeData: [{
                     type: 'sunburst',
-                    labels: ['Loading'],
-                    parents: [''],
-                    values: [0],
-                    // labels: ["Eve", "Cain", "Seth", "Enos", "Noam", "Abel", "Awan", "Enoch", "Azura"],
-                    // parents: ["", "Eve", "Eve", "Seth", "Seth", "Eve", "Eve", "Awan", "Eve" ],
-                    // values:  [10, 14, 12, 10, 2, 6, 6, 4, 4],
-                    // outsidetextfont: {size: 20, color: "#377eb8"},
-                    // leaf: {opacity: 0.4},
-                    // marker: {line: {width: 2}},
+                    ids: [
+                        'loading'
+                    ],
+                    labels: [
+                        'Loading'
+                    ],
+                    parents: [
+                        ''
+                    ],
                 }],
-                layout: {
+                treeLayout: {
                     autosize: true,
-                    // showlegend: true,
-                    // xaxis: {nticks: 20},
-                    // yaxis: {zeroline: true, hoverformat: ',.0f'},
-                    height: 250,
-                    margin: {
-                        l: 30,
-                        r: 30,
-                        b: 30,
-                        t: 30,
-                        pad: 0
-                    },
+                    margin: {l: 0, r: 0, b: 0, t: 0},
+                    // @ts-ignore
+                    sunburstcolorway: ['#636efa', '#ef553b', '#00cc96'],
                 },
-                options: {
+                treeOptions: {
                     displaylogo: false
                 },
                 // table
@@ -63,29 +53,31 @@
         mounted() {
             const self = this;
             const notify = this.$notify;
-            axios.get('/api/aa')
+
+            axios.get('/api/aa/tree')
                 .then(response => {
                     const data = response.data;
 
                     const plotlys = [{
-                        type: 'pie',
-                        labels: data.labels,
-                        parents: data.labels.map(x => ''),
-                        values: data.series,
-                        hole: 0.6,
-                        name: data.ccy,
-                        // textinfo: "label+percent",
-                        // labels: ["Eve", "Cain", "Seth", "Enos", "Noam", "Abel", "Awan", "Enoch", "Azura"],
-                        // parents: ["", "Eve", "Eve", "Seth", "Seth", "Eve", "Eve", "Awan", "Eve" ],
-                        // values:  [10, 14, 12, 10, 2, 6, 6, 4, 4],
-                        // outsidetextfont: {size: 20, color: "#377eb8"},
-                        // leaf: {opacity: 0.4},
-                        // marker: {line: {width: 2}},
+                        ...data,
+                        type: 'sunburst',
+                        name: 'Networth',
+                        branchvalues: 'total',
+                        hovertemplate: '%{label}<br>%{value:,f}<br>%{percentParent:.1%}<br>%{percentRoot:.1%}',
+
                     }];
-                    self.data = plotlys;
+                    // Root element doesn't accept percentParent so we stub out the template
+                    const ts = Array(plotlys[0].ids.length).fill('%{label}<br>%{percentParent:.1%}');
+                    ts.unshift('Networth');
+                    plotlys[0].texttemplate = ts;
+
+                    self.treeData = plotlys;
 
                 })
                 .catch(error => notify.error(error));
+
+
+
             axios.get('/api/aa/table')
                 .then(response => {
                     self.tables = response.data;

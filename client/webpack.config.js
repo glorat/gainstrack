@@ -57,6 +57,10 @@ module.exports = {
           name: 'fonts/[name].[ext]'
         }
       },
+      {
+        test: /\.js$/,
+        loader: 'ify-loader' // needed by plotly.js
+      }
     ]
   },
   resolve: {
