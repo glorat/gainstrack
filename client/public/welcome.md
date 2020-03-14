@@ -29,6 +29,12 @@ For online use
 
 ### Release notes
 
+#### v0.10.0
+14 March
+- Smart multi-currency conversion - if it can be converted, the best conversion will be applied
+- Sunburst Asset Allocation report
+- Spend command
+
 #### v0.9.1
 8 March
 - More efficient alternative for data entry
