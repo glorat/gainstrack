@@ -152,7 +152,7 @@ class Real extends FlatSpec with BeforeAndAfterEach {
 
   }
 
-  it should "produce an AA tree" in {
+  it should "produce an AA tree" taggedAs RealDataAvailable in {
     val bg = new GainstrackGenerator(parser.getCommands)
     val nw = bg.dailyBalances.totalPosition("Assets") - bg.dailyBalances.totalPosition("Liabilities")
 
