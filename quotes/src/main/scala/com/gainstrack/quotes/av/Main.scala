@@ -43,7 +43,17 @@ object Main {
       .allConfigs
       .foldLeft(data)((dataSoFar, cfg) => {
         val series = QuoteStore.readQuotes(cfg.avSymbol)
-        val usdSeries = series.map(kv => kv._1 -> kv._2 * priceFXConverter.getFX(cfg.actualCcy, "USD", kv._1).get)
+        val usdSeries = series.flatMap(kv => {
+          val fxOpt = priceFXConverter.getFX(cfg.actualCcy, "USD", kv._1)
+
+          if (fxOpt.isEmpty) {
+            println(s"No FX for ${cfg.actualCcy} at ${kv._1}")
+          }
+
+          fxOpt.map (fx => {
+            kv._1 -> kv._2 * fx
+          })
+        })
         val fastUsd = SortedColumnMap.from(usdSeries)
         dataSoFar.updated(AssetId(cfg.avSymbol), fastUsd)
       })

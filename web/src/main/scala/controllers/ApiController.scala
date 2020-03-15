@@ -389,14 +389,24 @@ object ServerQuoteSource {
 
   def db = _db
 
-  def updateDB = {
+  def updateDB:DbState = {
     val start = Instant.now()
-    val ret = Main.doTheWork
-    val end = Instant.now()
-    val d = Duration.between(start, end)
-    logger.info(s"ServerQuoteSource read in ${d.toMillis}ms")
-    _db = ret
-    ret
+    try {
+      val ret = Main.doTheWork
+      _db = ret
+      ret
+    }
+    catch {
+      case e: Exception => {
+        println(e)
+        throw e
+      }
+    }
+    finally {
+      val end = Instant.now()
+      val d = Duration.between(start, end)
+      logger.info(s"ServerQuoteSource read in ${d.toMillis}ms")
+    }
   }
 }
 
