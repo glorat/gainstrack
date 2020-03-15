@@ -31,6 +31,8 @@ RUN npm install
 
 # Then build
 COPY ./client/ .
+# Override symlink with physical for container build
+COPY ./VERSION.json .
 RUN npm run build
 
 FROM openjdk:11-jre-slim

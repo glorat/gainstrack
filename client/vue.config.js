@@ -13,4 +13,4 @@ module.exports = {
     },
 };
 
-process.env.VUE_APP_VERSION = require('./package.json').version;
+process.env.VUE_APP_VERSION = require('./VERSION.json').version;
