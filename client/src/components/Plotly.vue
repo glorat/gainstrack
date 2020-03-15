@@ -3,11 +3,13 @@
 </template>
 <script>
     // Full bundle
-    import Plotly from 'plotly.js'
+    // import Plotly from 'plotly.js'
     // Partial bundle from full plotly.js
     // import Plotly from 'plotly.js/lib/index-basic'
     // Compiled partial bundle from plotly.js-basic-dist
     // import Plotly from 'plotly.js-basic-dist'
+    // Preprared full dist
+    import Plotly from 'plotly.js-dist'
 
     import debounce from 'lodash/debounce'
     import defaults from 'lodash/defaults'
