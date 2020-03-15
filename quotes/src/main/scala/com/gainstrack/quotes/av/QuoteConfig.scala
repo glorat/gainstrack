@@ -18,6 +18,7 @@ object QuoteConfig {
     Tuple3("VMID.LON", "GBP", "LSEGBP"),
     Tuple3("SLXX.LON", "GBP", "LSEGBP"),
     Tuple3("VUKE.LON", "GBP", "LSEGBP"),
+    Tuple3("ES3.SGP", "SGD", "SGD"),
     Tuple3("STAN.LON", "GBP", "GBX"),
     Tuple3("2888.HKG", "HKD", "HKD"),
     Tuple3("2823.HKG", "HKD", "HKD"),
@@ -28,7 +29,7 @@ object QuoteConfig {
   ).map((QuoteConfig.apply _).tupled)
 
   // A shortcut implementation for now. One day, let's get a list of ISOs
-  def allCcys = Seq("GBP", "EUR", "HKD", "CAD", "AUD", "NZD")
+  def allCcys = Seq("GBP", "EUR", "HKD", "CAD", "AUD", "NZD", "CNY", "SGP", "JPY", "SEK", "XAU")
 
   val allConfigsWithCcy = allConfigs ++ allCcys.map(ccy => QuoteConfig(ccy, "USD", ccy))
 }
