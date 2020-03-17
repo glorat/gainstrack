@@ -52,6 +52,10 @@ case class GainstrackGenerator(originalCommands:Seq[AccountCommand])  {
 
   val endTime = Instant.now
 
+  def networth(date: LocalDate): PositionSet = {
+    this.balanceState.totalPosition("Assets", date) - this.balanceState.totalPosition("Liabilities", date)
+  }
+
   def generationDuration: Duration = Duration.between(startTime, endTime)
 
     //     val machine = new PriceCollector

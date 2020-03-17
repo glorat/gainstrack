@@ -20,9 +20,6 @@ class Real extends FlatSpec with BeforeAndAfterEach {
 
   "parser" should "parseFile" taggedAs RealDataAvailable in {
     parser.parseFile(s"data/${realFile}.gainstrack")
-
-
-
   }
 
   it should "match gainstrack entity" taggedAs RealDataAvailable in {
@@ -134,11 +131,13 @@ class Real extends FlatSpec with BeforeAndAfterEach {
     implicit val singleFXConversion = bg.tradeFXConversion
     val dailyReport = new DailyBalance(bg.balanceState)
     val equities = bg.assetState.assetsForTags(Set("equity"))
-    val equityValue = dailyReport.positionOfAssets(equities, bg.acctState, bg.priceFXConverter, bg.assetChainMap, queryDate)
+
+    val equityValue = bg.networth(today).filter(equities.toSeq).convertTo(bg.acctState.baseCurrency, bg.tradeFXConversion, today)
     val equityTotal = equityValue.getBalance(bg.acctState.baseCurrency)
 
     val bonds = bg.assetState.assetsForTags(Set("bond"))
-    val bondValue = dailyReport.positionOfAssets(bonds, bg.acctState, bg.priceFXConverter, bg.assetChainMap, queryDate)
+    val bondValue = bg.networth(today).filter(bonds.toSeq).convertTo(bg.acctState.baseCurrency, bg.tradeFXConversion, today)
+
     val bondTotal = bondValue.getBalance(bg.acctState.baseCurrency)
 
     assert(equityTotal.number.round > 0)
@@ -154,7 +153,7 @@ class Real extends FlatSpec with BeforeAndAfterEach {
 
   it should "produce an AA tree" taggedAs RealDataAvailable in {
     val bg = new GainstrackGenerator(parser.getCommands)
-    val nw = bg.dailyBalances.totalPosition("Assets") - bg.dailyBalances.totalPosition("Liabilities")
+    val nw = bg.balanceState.totalPosition("Assets", bg.latestDate) - bg.balanceState.totalPosition("Liabilities", bg.latestDate)
 
 
     val aa = new AssetAllocation(nw, Seq(Seq("equity", "bond"), Seq("global", "us", "uk")), bg.assetState)

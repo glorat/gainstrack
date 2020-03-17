@@ -275,9 +275,8 @@ class First extends FlatSpec {
   }
 
   "BalanceReport" should "project balances" in {
-    val state = new DailyBalance(bg.balanceState)
     // Values in these assertions match higher up values
-    val fn:AccountId=>Fraction = state.totalPosition(_).assetBalance(AssetId("USD"))
+    val fn:AccountId=>Fraction = bg.balanceState.totalPosition(_, bg.latestDate).assetBalance(AssetId("USD"))
     assert(fn("Assets:Investment:IBUSD:USD") == 172.05)
     assert(fn("Expenses:Investment:IBUSD:USD")== 18.87)
     assert(fn("Assets") == -52857.23)
@@ -335,17 +334,21 @@ class First extends FlatSpec {
     //val equities = bg.assetState.tagToAssets("equity")
     val equities = bg.assetState.assetsForTags(Set("equity"))
     implicit val singleFXConversion = bg.tradeFXConversion
-    val equityValue = dailyReport.positionOfAssets(equities, bg.acctState, bg.priceFXConverter, bg.assetChainMap, today)
+//    val equityValue = dailyReport.positionOfAssets(equities, bg.acctState, bg.priceFXConverter, bg.assetChainMap, today)
+    //
+    //    assert(equityValue.getBalance(AssetId("GBP")).number.round == 22211)
 
+    val equityValue = bg.networth(today).filter(equities.toSeq).convertTo(AssetId("GBP"), bg.tradeFXConversion, today)
     assert(equityValue.getBalance(AssetId("GBP")).number.round == 22211)
+
   }
 
   it should "show empty balance for unknown asset tags" in {
     val dailyReport = new DailyBalance(bg.balanceState)
     val equities = bg.assetState.assetsForTags(Set("equity", "unknown"))
     implicit val singleFXConversion = bg.tradeFXConversion
-    val equityValue = dailyReport.positionOfAssets(equities, bg.acctState, bg.priceFXConverter, bg.assetChainMap, today)
 
+    val equityValue = bg.networth(today).filter(equities.toSeq).convertTo(AssetId("GBP"), bg.tradeFXConversion, today)
     assert(equityValue.getBalance(AssetId("GBP")).number.round == 0)
   }
 

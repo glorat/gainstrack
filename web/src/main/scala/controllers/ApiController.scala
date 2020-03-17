@@ -83,7 +83,7 @@ class ApiController (implicit val ec :ExecutionContext)
     val bg = getGainstrack
     val mktConvert = bg.liveFxConverter(ServerQuoteSource.db.priceFXConverter)
 
-    val nw = bg.dailyBalances.totalPosition("Assets") - bg.dailyBalances.totalPosition("Liabilities")
+    val nw = bg.networth(currentDate)
     val assets = bg.assetState.toDTO.sortBy(_.asset.map(_.symbol).getOrElse(""))
 
     Map(
@@ -268,7 +268,7 @@ class ApiController (implicit val ec :ExecutionContext)
     val mktConvert = bg.liveFxConverter(ServerQuoteSource.db.priceFXConverter)
     val queryDate = currentDate
 
-    val nw = bg.dailyBalances.totalPosition("Assets") - bg.dailyBalances.totalPosition("Liabilities")
+    val nw = bg.networth(currentDate)
     val aa = new AssetAllocation(nw, Seq(Seq("blend", "property","cash"), Seq("equity", "bond", "commodity"), Seq("global", "us", "uk")), bg.assetState)
     aa.toDTO(bg.acctState.baseCurrency, queryDate, mktConvert)
   }
@@ -283,9 +283,11 @@ class ApiController (implicit val ec :ExecutionContext)
     val allocations = Seq(Seq("equity"), Seq("bond"))
     val labels = allocations.map(_.mkString("/"))
 
+    val networth = bg.networth(currentDate)
+
     val values = allocations.map(a => {
       val allocationAssets = bg.assetState.assetsForTags(a.toSet)
-      val allocationValue = bg.dailyBalances.positionOfAssets(allocationAssets, bg.acctState, bg.priceFXConverter, bg.assetChainMap, queryDate)
+      val allocationValue = networth.filter(allocationAssets.toSeq).convertTo(bg.acctState.baseCurrency, mktConvert, today)
       allocationValue.getBalance(bg.acctState.baseCurrency)
     })
     val valueNum = values.map(_.number.toDouble)

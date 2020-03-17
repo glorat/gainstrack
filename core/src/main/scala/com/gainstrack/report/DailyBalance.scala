@@ -5,7 +5,7 @@ import java.time.{YearMonth, ZoneOffset}
 import com.gainstrack.command.AccountCreation
 import com.gainstrack.core._
 
-case class DailyBalance(balanceState: BalanceState, date: LocalDate = MaxDate) {
+case class DailyBalance(balanceState: BalanceState) {
 
   def monthlySeries(accountId: AccountId, conversionStrategy: String, startDate: LocalDate, endDate: LocalDate, acctState: AccountState, priceState: PriceFXConverter, assetChainMap: AssetChainMap, singleFXConversion: SingleFXConverter) = {
     val startMonth = YearMonth.from(startDate)
@@ -24,21 +24,13 @@ case class DailyBalance(balanceState: BalanceState, date: LocalDate = MaxDate) {
 
   }
 
-  def totalPosition(accountId:AccountId) : PositionSet = {
-    val keys = balanceState.balances.keys.toSeq.filter(_.isSubAccountOf(accountId))
-    keys.foldLeft(PositionSet())((ps,account) => {
-      val balOpt = balanceState.getBalanceOpt(account, date)
-      balOpt.map(ps + _).getOrElse(ps)
-    })
-  }
-
-  def positionOfAssets(assets:Set[AssetId], origAcctState:AccountState, priceState: PriceFXConverter, assetChainMap: AssetChainMap, date:LocalDate,
-                         conversionStrategy:String = "global")(implicit singleFXConversion: SingleFXConverter) = {
-    origAcctState.withAsset(assets).foldLeft(PositionSet()) ((ps, account) => {
-      val value = this.convertedPosition(account.accountId, date, conversionStrategy)(origAcctState, priceState ,  assetChainMap, singleFXConversion)
-      ps + value
-    })
-  }
+//  def positionOfAssets(assets:Set[AssetId], origAcctState:AccountState, priceState: PriceFXConverter, assetChainMap: AssetChainMap, date:LocalDate,
+//                         conversionStrategy:String = "global")(implicit singleFXConversion: SingleFXConverter) = {
+//    origAcctState.withAsset(assets).foldLeft(PositionSet()) ((ps, account) => {
+//      val value = this.convertedPosition(account.accountId, date, conversionStrategy)(origAcctState, priceState ,  assetChainMap, singleFXConversion)
+//      ps + value
+//    })
+//  }
 
   def convertedPosition(accountId: AccountId, date: LocalDate, conversionStrategy: String, accountFilter: AccountCreation => Boolean = _ => true)
                        (implicit acctState: AccountState, priceState: PriceFXConverter, assetChainMap: AssetChainMap, singleFXConversion: SingleFXConverter): PositionSet = {
