@@ -384,4 +384,11 @@ class First extends FlatSpec {
   it should "map to tickers" in  {
     assert(bg.fxMapper(AssetId("VWRD")) == AssetId("VWRD.LON") )
   }
+
+  "Networth Report" should "report per asset" in {
+    val ret = NetworthReport.byAsset(bg.latestDate, bg.acctState.baseCurrency)(balanceState = bg.balanceState, assetState = bg.assetState, singleFXConverter = bg.tradeFXConversion)
+    val iuaa = ret.find(_.assetId == AssetId("IUAA")).get
+    assert(iuaa.units == 1000)
+    assert(iuaa.value.round == 4097)
+  }
 }

@@ -5,16 +5,25 @@ import java.time.temporal.ChronoUnit
 import com.gainstrack.core.TimeSeriesInterpolator.{Empty, Exact, ExtrapolateHigh, ExtrapolateLow, Interpolate, Interpolator}
 import com.gainstrack.core.{AssetId, LocalDate}
 
-class FXMapped(mapper:Map[AssetId,AssetId], fxConverter: FXConverter) extends SingleFXConverter {
+class FXMapped(mapper:Map[AssetId,AssetId], singleFXConverter: SingleFXConverter) extends SingleFXConverter {
+  override def baseCcy: AssetId = singleFXConverter.baseCcy
+
   override def getFX(fx1: AssetId, fx2: AssetId, date: LocalDate): Option[Double] = {
     val cfx1 = mapper.get(fx1).getOrElse(fx1)
     val cfx2 = mapper.get(fx2).getOrElse(fx2)
-    val ret = fxConverter.getFX(cfx1, cfx2, date)
+    val ret = singleFXConverter.getFX(cfx1, cfx2, date)
     ret
+  }
+
+  override def latestDate(fx1: AssetId, fx2: AssetId, date: LocalDate): Option[LocalDate] = {
+    val cfx1 = mapper.get(fx1).getOrElse(fx1)
+    val cfx2 = mapper.get(fx2).getOrElse(fx2)
+    singleFXConverter.latestDate(cfx1, cfx2, date)
   }
 }
 
 class FXProxy(mapper:Map[AssetId, AssetId], tradeFx: SingleFXConversion, marketFx: SingleFXConverter) extends SingleFXConverter {
+  override def baseCcy: AssetId = marketFx.baseCcy
 
   override def getFX(fx1: AssetId, fx2: AssetId, date: LocalDate): Option[Double] = {
     mapper.get(fx1).flatMap(proxyTicker => {
@@ -63,15 +72,30 @@ class FXProxy(mapper:Map[AssetId, AssetId], tradeFx: SingleFXConversion, marketF
     })
 
 
+  }
 
+  override def latestDate(fx1: AssetId, fx2: AssetId, date: LocalDate): Option[LocalDate] = {
+    mapper.get(fx1).flatMap(proxyTicker => {
+      tradeFx.latestDate(proxyTicker, fx2, date)
+    })
   }
 }
 
-class FXChain(fxConverters: FXConverter*) extends SingleFXConverter {
+class FXChain(fxConverters: SingleFXConverter*) extends SingleFXConverter {
+
+  override def baseCcy: AssetId = fxConverters.head.baseCcy
+
   override def getFX(fx1: AssetId, fx2: AssetId, date: LocalDate): Option[Double] = {
-    val x:Option[Double] = None
-    fxConverters.foldLeft(x)( (soFar, next) => {
+    val x: Option[Double] = None
+    fxConverters.foldLeft(x)((soFar, next) => {
       soFar.map(Some(_)).getOrElse(next.getFX(fx1, fx2, date))
+    })
+  }
+
+  override def latestDate(fx1: AssetId, fx2: AssetId, date: LocalDate): Option[LocalDate] = {
+    val x: Option[LocalDate] = None
+    fxConverters.foldLeft(x)((soFar, next) => {
+      soFar.map(Some(_)).getOrElse(next.latestDate(fx1, fx2, date))
     })
   }
 }

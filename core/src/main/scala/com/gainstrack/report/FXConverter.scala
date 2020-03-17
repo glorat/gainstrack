@@ -8,4 +8,5 @@ trait FXConverter {
 
   def getFX(fx1:AssetId, fx2:AssetId, date:LocalDate):Option[Double]
 
+  def latestDate(fx1: AssetId, fx2: AssetId, date: LocalDate): Option[LocalDate]
 }

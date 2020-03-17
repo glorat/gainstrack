@@ -121,6 +121,12 @@ case class PriceState(ccys: Set[AssetId], prices: Map[AssetPair, SortedMap[Local
 class PriceFXConverter(val ccys: Set[AssetId], val prices: Map[AssetPair, SortedColumnMap[LocalDate, Double]]) extends FXConverter {
   private val interp = new TimeSeriesInterpolator
 
+  override def latestDate(fx1: AssetId, fx2: AssetId, date: LocalDate): Option[LocalDate] = {
+    prices.get(AssetPair(fx1,fx2)).flatMap(series => {
+      series.latestKey(date)
+    })
+  }
+
   def getFX(fx1:AssetId, fx2:AssetId, date:LocalDate):Option[Double] = {
     getFX(AssetPair(fx1,fx2), date)
   }

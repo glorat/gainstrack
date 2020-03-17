@@ -14,6 +14,14 @@ case class SingleFXConversion(data:Map[AssetId, SortedColumnMap[LocalDate, Doubl
     getFX(fx1, fx2, date, linearDouble)
   }
 
+  def latestDate(fx1: AssetId, fx2: AssetId, date: LocalDate) = {
+    // If fx2 !== baseCcy return None?
+    val ret = data.get(fx1).flatMap(series => {
+      series.latestKey(date)
+    })
+    ret
+  }
+
   def getFX(fx1:AssetId, fx2:AssetId, date: LocalDate, interpMethod: TimeSeriesInterpolator.Interpolator[Double, Double]): Option[Double] = {
     if (fx1 == fx2) {
       Some(1.0)
@@ -83,4 +91,8 @@ object SingleFXConversion {
   }
 }
 
-trait SingleFXConverter extends FXConverter
+trait SingleFXConverter extends FXConverter {
+  def baseCcy: AssetId
+
+  def latestDate(fx1: AssetId, date: LocalDate): Option[LocalDate] = latestDate(fx1, baseCcy, date)
+}

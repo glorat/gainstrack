@@ -12,6 +12,19 @@ case class SortedColumnMap[K ,V] (ks: IndexedSeq[K], val vs:IndexedSeq[V]) {
   def contains(key: K) = ks.contains(key) // FIXME: Use binary search
 
   def iota(key:K)(implicit kOrder:Ordering[K]) = ks.indexWhere(kOrder.compare(_, key)>0)
+
+  def latestKey(key:K)(implicit kOrder:Ordering[K]): Option[K] = {
+    val idx = this.iota(key)
+    if (idx<0) {
+      this.ks.lastOption
+    }
+    else if (idx == 0) {
+      this.ks.headOption // Sort of shouldn't happen
+    }
+    else {
+      Some(this.ks(idx))
+    }
+  }
 }
 
 object SortedColumnMap {
