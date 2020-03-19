@@ -1,7 +1,7 @@
 import {Notification} from 'element-ui';
 import store from './store';
 import router from './router';
-import App from './App.vue';
+import App from './OrigApp.vue';
 import Vue from 'vue';
 
 Vue.prototype.$notify = Notification;

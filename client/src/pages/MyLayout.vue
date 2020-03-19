@@ -59,6 +59,7 @@
         color: var(--color-header-text);
         background-color: var(--color-header);
     }
+
     h1 {
         padding: 8px;
         line-height: normal;

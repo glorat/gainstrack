@@ -1,6 +1,6 @@
 <template>
   <div id="q-app">
-    <my-layout></my-layout>
+      <my-q-layout></my-q-layout>
     <my-sentry></my-sentry>
     <my-firebase></my-firebase>
   </div>
@@ -9,12 +9,13 @@
 <style>
 
 </style>
+
 <script>
-  const MyLayout = () => import ('@/pages/MyLayout');
+  import MyQLayout from './pages/MyQLayout';
   const MySentry = () => import ('@/MySentry');
   const MyFirebase = () => import ('@/MyFirebase');
   // import MyLayout from '@/pages/MyLayout';
   export default {
-    components: {MyLayout, MySentry, MyFirebase}
+    components: { MyQLayout, MySentry, MyFirebase}
   }
 </script>
