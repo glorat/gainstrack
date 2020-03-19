@@ -118,6 +118,7 @@
 
             },
             async autoLogin() {
+                const notify = this.$notify;
                 try {
                     const token = await this.$auth.getTokenSilently();
                     if (token) {

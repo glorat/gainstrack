@@ -44,6 +44,7 @@
 
     const methods = functions.reduce((all, funcName) => {
         all[funcName] = function(...args) {
+            // eslint-disable-next-line
             return Plotly[funcName].apply(Plotly, [this.$refs.container].concat(args))
         }
         return all
@@ -113,6 +114,7 @@
                     return {
                         fullName: 'plotly_' + eventName,
                         handler: (...args) => {
+                            // eslint-disable-next-line
                             this.$emit.apply(this, [eventName].concat(args))
                         }
                     }

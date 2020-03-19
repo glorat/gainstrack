@@ -1,4 +1,5 @@
 <template>
+    <!-- eslint-disable -->
     <v-tour name="myTour" :steps="steps" :options="options">
         <template slot-scope="tour">
             <transition name="fade">
@@ -36,6 +37,7 @@
             </transition>
         </template>
     </v-tour>
+    <!-- eslint-enable -->
 </template>
 
 <script lang="ts">
@@ -48,6 +50,7 @@
 
     import VueTour from 'vue-tour';
     // tslint:disable-next-line
+    // eslint-disable-next-line
     require('vue-tour/dist/vue-tour.css');
     Vue.use(VueTour);
 
@@ -526,7 +529,6 @@
     export default Vue.extend({
         name: 'Tour',
         data() {
-            const self = this;
             return {
                 options: {
                     // Make true when ready. Unfortunately, popper is misplacing and highlight occludes drop downs
@@ -546,6 +548,7 @@
             },
             goto(target: string): void {
                 // tslint:disable-next-line
+                // eslint-disable-next-line
                 const gogo = () => this.$router.push(target).catch(() => {});
                 // Async this to avoid re-entrancy bug on router handler
                 debounce(gogo, 100);

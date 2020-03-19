@@ -43,6 +43,8 @@
             toGainstrack() {
                 if (this.isValid) {
                     return `${this.c.date} spend ${this.c.accountId} ${this.c.change.number} ${this.c.change.ccy}`;
+                } else {
+                    return '';
                 }
             }
         },

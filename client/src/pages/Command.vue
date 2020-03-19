@@ -26,6 +26,7 @@
     import {AccountCommandDTO, Amount} from '../models';
     import EventBus from '@/event-bus';
 
+
     export default Vue.extend({
         name: 'Command',
         components: {AddCmd, CommandEditor, CommandTable},

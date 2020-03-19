@@ -1,6 +1,7 @@
 <template>
     <div>
-
+        <!-- eslint-disable -->
+<!--        FIXME: command needs a unique id-->
         <template v-for="command in commands">
             <el-card class="box-card" :body-style="{ padding: '5px' }" shadow="always">
                 <div @click="go(command)" :id="'add-'+command.title.toLowerCase()" style="cursor: pointer;">
@@ -11,6 +12,7 @@
             </el-card>
             <br>
         </template>
+        <!-- eslint-enable -->
     </div>
 
 </template>

@@ -88,8 +88,9 @@
                       accountId: this.c.accountType + ':' + this.c.accountName,
                       ccy: this.c.ccy,
                       options: this.c.options
-
                   }
+              } else {
+                  return undefined;
               }
             },
             toGainstrack() {

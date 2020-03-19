@@ -95,7 +95,8 @@
                     } else {
                         return `${this.c.date} fund ${this.c.accountId} ${this.c.change.number} ${this.c.change.ccy}`;
                     }
-
+                } else {
+                    return '';
                 }
             }
         }

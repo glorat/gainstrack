@@ -97,14 +97,16 @@
                 <td class="num">%</td>
                 <td class="num">Units</td>
             </tr>
-            <tr v-if="deltas.length" v-for="ccy in deltas">
-                <td>{{ ccy.assetId }}</td>
-                <td class="num">{{ ccy.explain.toFixed(2) }}</td>
-                <td class="num">{{ ccy.oldPrice.toFixed(2)}}</td>
-                <td class="num">{{ ccy.newPrice.toFixed(2)}}</td>
-                <td class="num">{{ 100*(ccy.newPrice-ccy.oldPrice)/ccy.oldPrice | amount }}%</td>
-                <td class="num">{{ ccy.amount.toFixed(2)}}</td>
-            </tr>
+            <template v-if="deltas.length">
+                <tr v-for="ccy in deltas">
+                    <td>{{ ccy.assetId }}</td>
+                    <td class="num">{{ ccy.explain.toFixed(2) }}</td>
+                    <td class="num">{{ ccy.oldPrice.toFixed(2)}}</td>
+                    <td class="num">{{ ccy.newPrice.toFixed(2)}}</td>
+                    <td class="num">{{ 100*(ccy.newPrice-ccy.oldPrice)/ccy.oldPrice | amount }}%</td>
+                    <td class="num">{{ ccy.amount.toFixed(2)}}</td>
+                </tr>
+            </template>
             <tr v-if="deltas.length">
                 <td class="subtotal">Total</td>
                 <td class="num subtotal">{{ explainData.totalDeltaExplain.toFixed(2) }}</td>
@@ -126,10 +128,12 @@
                 <td colspan="4" class="subtitle">New Activity</td>
                 <td>P&L</td>
             </tr>
-            <tr v-if="explainData.newActivityByAccount.length" v-for="exp in explainData.newActivityByAccount">
-                <td colspan="4">{{ exp.accountId }}</td>
-                <td class="num">{{ exp.explain.toFixed(2) }}</td>
-            </tr>
+            <template v-if="explainData.newActivityByAccount.length">
+                <tr v-for="exp in explainData.newActivityByAccount">
+                    <td colspan="4">{{ exp.accountId }}</td>
+                    <td class="num">{{ exp.explain.toFixed(2) }}</td>
+                </tr>
+            </template>
             <tr v-if="explainData.newActivityByAccount.length">
                 <td class="subtotal" colspan="4">Total</td>
                 <td class="subtotal num">{{ explainData.newActivityPnl.toFixed(2) }}</td>

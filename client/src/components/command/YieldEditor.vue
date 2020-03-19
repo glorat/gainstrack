@@ -72,6 +72,8 @@
                     } else {
                         return `${this.c.date} yield ${this.c.accountId} ${this.c.change.number} ${this.c.change.ccy}`
                     }
+                } else {
+                    return '';
                 }
             }
         }

@@ -90,6 +90,7 @@
             options(newOptions, oldVal) {
                 if (typeof newOptions === 'object') {
                     for (const optionName in newOptions) {
+                        // eslint-disable-next-line no-prototype-builtins
                         if (newOptions.hasOwnProperty(optionName)) {
                             this.editor.setOption(optionName, newOptions[optionName])
                         }

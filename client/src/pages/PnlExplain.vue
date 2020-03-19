@@ -29,7 +29,7 @@
                     <td></td>
                     <td class="description" v-for="explainData in explains">
                         <el-link
-                            v-if="explainData.fromDate" @click.prevent="onColumnClick(explainData)"icon="el-icon-data-analysis">{{ explainData.tenor}}</el-link><span v-else>{{ explainData.tenor}}</span></td>
+                            v-if="explainData.fromDate" @click.prevent="onColumnClick(explainData)" icon="el-icon-data-analysis">{{ explainData.tenor}}</el-link><span v-else>{{ explainData.tenor}}</span></td>
                 </tr>
                 <tr>
                     <td>From Date</td>

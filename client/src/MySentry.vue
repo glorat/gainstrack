@@ -1,10 +1,11 @@
 <template>
-
+    <div></div>
 </template>
 
 <script>
     import * as Sentry from '@sentry/browser';
     import * as Integrations from '@sentry/integrations';
+    import Vue from 'vue';
 
     const sentryIntegration = (process.env.NODE_ENV === 'development') ? [] : [new Integrations.Vue({
         Vue,

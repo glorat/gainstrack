@@ -97,6 +97,8 @@
                         baseStr += ` ${c.options.targetChange.number} ${c.options.targetChange.ccy}`;
                     }
                     return baseStr;
+                } else {
+                    return '';
                 }
             }
         }

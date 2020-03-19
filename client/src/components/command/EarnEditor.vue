@@ -44,6 +44,8 @@
                 if (this.isValid) {
                     const tag = this.c.accountId.substring(7);
                     return `${this.c.date} earn ${tag} ${this.c.change.number} ${this.c.change.ccy}`;
+                } else {
+                    return '';
                 }
             }
         },
