@@ -4,5 +4,12 @@
     "rename": true,
     "vscode": false,
     "prettier": true
+  },
+  "@quasar/dotenv": {
+    "env_development": ".env.development",
+    "env_production": ".env.production",
+    "common_root_object": "none",
+    "create_env_files": false,
+    "add_env_to_gitignore": false
   }
 }
