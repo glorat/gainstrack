@@ -126,6 +126,7 @@
                         await this.loginWithToken(token);
                     }
                 } catch (e) {
+                    // eslint-disable-next-line
                     console.error(e)
                 }
 
