@@ -46,4 +46,34 @@
 
 <style scoped>
 
+    header {
+        position: fixed;
+        top: 0;
+        left: 0;
+        z-index: var(--z-index-header);
+        display: flex;
+        align-items: center;
+        width: 100%;
+        height: var(--header-height);
+        padding: 0 7px 0 10px;
+        color: var(--color-header-text);
+        background-color: var(--color-header);
+    }
+    h1 {
+        padding: 8px;
+        line-height: normal;
+    }
+
+    h1 {
+        display: block;
+        flex: 1;
+        max-height: var(--header-height);
+        padding: calc((var(--header-height) - 24px) / 2) 10px;
+        margin: 0;
+        overflow: hidden;
+        font-size: 16px;
+        font-weight: normal;
+        color: var(--color-header-text);
+    }
+
 </style>
