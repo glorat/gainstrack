@@ -79,7 +79,7 @@ module.exports = function (ctx) {
       vueRouterMode: 'hash', // available values: 'hash', 'history'
       showProgress: true,
       gzip: false,
-      analyze: false,
+      analyze: true,
       // Options below are automatically set depending on the env, set them if you want to override
       // preloadChunks: false,
       // extractCSS: false,
@@ -115,6 +115,13 @@ module.exports = function (ctx) {
             }
         }
     },
+
+      vendor: {
+          /* optional; @quasar/app v1.4.2+;
+             disables vendor chunk: */
+          // disable: true,
+          remove: ['plotly.js-dist'],
+      },
 
     // animations: 'all', // --- includes all animations
     // https://quasar.dev/options/animations
