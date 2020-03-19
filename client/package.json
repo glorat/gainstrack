@@ -9,6 +9,7 @@
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
+    "quasar": "quasar dev",
     "test:unit": "vue-cli-service test:unit",
     "vue-cli-lint": "vue-cli-service lint",
     "build-report": "vue-cli-service build --report",

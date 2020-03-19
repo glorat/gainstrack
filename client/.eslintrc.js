@@ -76,6 +76,10 @@ module.exports = {
     '@typescript-eslint/indent': 'off',
 
     // My custom
-    'vue/require-v-for-key': 'off'
+    'vue/require-v-for-key': 'off',
+      'vue/no-unused-components': 'warn',
+      '@typescript-eslint/no-this-alias': 'warn',
+      '@typescript-eslint/ban-ts-ignore': 'warn',
+      '@typescript-eslint/no-this-alias': 'warn',
   }
 }
