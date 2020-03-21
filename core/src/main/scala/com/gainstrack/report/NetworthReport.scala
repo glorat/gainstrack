@@ -42,6 +42,19 @@ case class NetworthByAssetDTO(
                                accountNetworth: Seq[NetworthSubByAccountDTO] = Seq()
                              )
 
+object NetworthByAssetDTO {
+  def total(rows: Seq[NetworthByAssetDTO]) : NetworthByAssetDTO = {
+    NetworthByAssetDTO (
+      assetId = AssetId("TOTAL"),
+      units = 0,
+      value = rows.map(_.value).reduce(_ + _),
+      price = 0,
+      priceDate = None,
+      accountNetworth = Seq()
+    )
+  }
+}
+
 case class NetworthSubByAccountDTO(
                                     accountId: AccountId,
                                     units: Fraction
