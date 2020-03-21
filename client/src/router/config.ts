@@ -12,7 +12,12 @@ const routes: RouteConfig[] = [
     {
         path: '/balance_sheet',
         component: () => import(/* webpackChunkName: "BalanceSheet" */ '../pages/BalanceSheet.vue'),
-        meta: {title: 'Balance Sheet'}
+        meta: {title: 'Balances'}
+    },
+    {
+        path: '/assets',
+        component: () => import('@/pages/Assets.vue'),
+        meta: {title: 'Assets'}
     },
     {path: '/income_statement', component: IncomeStatement, meta: {title: 'Income Statement'}},
     {path: '/journal', component: Journal, meta: {title: 'Journal'}},

@@ -43,7 +43,7 @@
         data() {
             const navBar = [
                     ['add', 'command'],
-                ['balance_sheet', 'income_statement', 'journal'],
+                ['balance_sheet', 'assets', 'income_statement', 'journal'],
                 ['irr', 'aa', 'pnlexplain'],
                 ['prices', 'quotes', 'settings'],
                 ['port', 'editor', 'history'],

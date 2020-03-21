@@ -1,5 +1,5 @@
 <template>
-<div>
+<my-page padding>
 
     <h6><a href="/gainstrack/command/get/">{{ accountId }}</a></h6>
     <div>
@@ -10,7 +10,7 @@
     </div>
 
     <journal-table :entries="info.rows" show-balance></journal-table>
-</div>
+</my-page>
 </template>
 
 <script>
