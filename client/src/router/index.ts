@@ -20,6 +20,7 @@ const routes: RouteConfig[] = [
     {path: '/income_statement', component: IncomeStatement, meta: {title: 'Income Statement'}},
     {path: '/journal', component: Journal, meta: {title: 'Journal'}},
     {path: '/prices', component: Prices, meta: {title: 'Prices'}},
+    {path: '/assets', component: () => import('@/pages/Assets.vue'), meta: {title: 'Networth By Asset'}},
     {path: '/quotes', component: () => import('../pages/Quotes.vue'), meta: {title: 'Market Quotes'}},
     {path: '/settings', component: () => import('../pages/Settings.vue'), meta: {title: 'Settings'}},
     {path: '/editor', component: Editor, meta: {title: 'Editor'}},

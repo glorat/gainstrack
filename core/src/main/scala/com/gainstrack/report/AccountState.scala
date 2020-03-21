@@ -178,4 +178,8 @@ case class AccountState(accounts:Set[AccountCreation], baseCurrency:AssetId = As
   def withAsset(assets: Set[AssetId]): Set[AccountCreation] = {
     accounts.filter(a => assets.contains(a.key.assetId))
   }
+
+  def mainAccounts: Set[AccountCreation] = {
+    accounts.filter(a => a.options.generatedAccount == false)
+  }
 }

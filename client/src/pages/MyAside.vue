@@ -56,6 +56,7 @@
         private config: any = {
             allPages: {
                 'balance_sheet': ['Balance Sheet', 'g b'],
+                'assets': ['Networth By Asset', ''],
                 'prices': ['Trade Prices', 'g c'],
                 'quotes': ['Market Quotes', ''],
                 'settings': ['Settings', ''],
@@ -81,7 +82,7 @@
                 'add': ['Add Record', ''],
             },
             navigationBar: [
-                ['balance_sheet', 'income_statement', 'journal'],
+                ['balance_sheet', 'income_statement', 'assets', 'journal'],
                 ['irr', 'aa', 'pnlexplain'],
                 ['prices', 'quotes', 'settings'],
                 ['port', 'editor', 'history'],

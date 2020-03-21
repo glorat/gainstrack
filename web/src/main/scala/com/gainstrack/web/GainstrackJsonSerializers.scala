@@ -7,7 +7,7 @@ import java.time.format.DateTimeFormatter
 import com.gainstrack.core._
 import com.gainstrack.lifecycle.{InstantSerializer, UUIDSerializer}
 import org.json4s.CustomSerializer
-import org.json4s.JsonAST.JString
+import org.json4s.JsonAST.{JDecimal, JString}
 
 object GainstrackJsonSerializers {
   def all: Seq[CustomSerializer[_]] =
@@ -34,10 +34,11 @@ object AccountIdSerializer extends CustomSerializer[AccountId] (_ => ({
 
 
 object FractionSerializer extends CustomSerializer[Fraction] (format => ({
-  case JString(str) => parseNumber(str)
+  case JString(str) => ???
 }, {
   case value: Fraction => {
-    JString(value.toBigDecimal(MathContext.DECIMAL64).toString)
+    // JString(value.toBigDecimal(MathContext.DECIMAL64).toString)
+    JDecimal(value.toBigDecimal(MathContext.DECIMAL64))
   }
 }))
 

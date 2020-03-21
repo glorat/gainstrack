@@ -6,7 +6,7 @@ import java.time.format.DateTimeParseException
 import com.gainstrack.command.{AccountCreation, GainstrackParser, ParserMessage}
 import com.gainstrack.core._
 import com.gainstrack.quotes.av.{DbState, Main, QuoteConfig}
-import com.gainstrack.report.{AccountInvestmentReport, AssetAllocation, BalanceReport, DailyBalance, FXChain, FXMapped, GainstrackGenerator, IrrSummary, PLExplain, PLExplainDTO, TimeSeries}
+import com.gainstrack.report.{AccountInvestmentReport, AssetAllocation, BalanceReport, DailyBalance, FXChain, FXMapped, GainstrackGenerator, IrrSummary, NetworthReport, PLExplain, PLExplainDTO, TimeSeries}
 import com.gainstrack.web.{AuthenticationSupport, BalanceTreeTable, GainstrackJsonSerializers, GainstrackSupport, StateSummaryDTO, TimingSupport}
 import org.json4s.{DefaultFormats, Formats, JValue}
 import org.scalatra.{NotFound, ScalatraServlet}
@@ -96,6 +96,16 @@ class ApiController (implicit val ec :ExecutionContext)
       }
       ).toMap)
   }
+
+  get ("/assets/networth") {
+    val bg = getGainstrack
+    val mktConvert = bg.liveFxConverter(ServerQuoteSource.db.priceFXConverter)
+    val nwByAsset = NetworthReport.byAsset(currentDate, bg.acctState.baseCurrency)(bg.acctState, bg.balanceState, bg.assetState, mktConvert)
+
+    Map("networthByAsset" -> nwByAsset)
+
+  }
+
 
   get("/irr/") {
     val bg = getGainstrack
