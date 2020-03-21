@@ -30,7 +30,7 @@
     import BalanceEditor from './BalanceEditor.vue';
     import {CommandEditorMixin} from '../../mixins/CommandEditorMixin';
     import AccountSelector from '../AccountSelector';
-    import {DatePicker, Input, Option, Select, Switch} from 'element-ui';
+    import {DatePicker} from 'element-ui';
 
     export default {
         name: 'FundCommand',
@@ -39,10 +39,6 @@
             BalanceEditor,
             AccountSelector,
             'el-date-picker': DatePicker,
-            'el-select': Select,
-            'el-option': Option,
-            'el-switch': Switch,
-            'el-input': Input,
         },
         methods: {
             accountIdChanged() {

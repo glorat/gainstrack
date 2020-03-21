@@ -29,7 +29,6 @@
 <script>
     import BalanceEditor from './BalanceEditor.vue';
     import {CommandEditorMixin} from '../../mixins/CommandEditorMixin';
-    import {DatePicker, Input, Option, Select, Switch} from 'element-ui';
     import AccountSelector from '../AccountSelector';
 
     export default {
@@ -38,11 +37,6 @@
         components: {
             BalanceEditor,
             AccountSelector,
-            'el-date-picker': DatePicker,
-            'el-select': Select,
-            'el-option': Option,
-            'el-switch': Switch,
-            'el-input': Input,
         },
         mixins: [CommandEditorMixin],
         data() {

@@ -38,7 +38,6 @@
                 treeLayout: {
                     autosize: true,
                     margin: {l: 0, r: 0, b: 0, t: 0},
-                    // @ts-ignore
                     sunburstcolorway: ['#636efa', '#ef553b', '#00cc96'],
                 },
                 treeOptions: {

@@ -31,7 +31,6 @@
     import AccountSelector from '../AccountSelector';
     import BalanceEditor from './BalanceEditor';
     import {DatePicker} from 'element-ui';
-    import { mapGetters } from 'vuex';
 
     export default Vue.extend({
         name: 'UnitCommand',
@@ -42,7 +41,6 @@
                 const all /*: AccountDTO[]*/ = this.$store.state.summary.accounts;
                 const acct = all.find(x => x.accountId === this.c.accountId);
                 if (acct) {
-                    // @ts-ignore
                     this.c.price.ccy = acct.ccy;
                     this.c.commission.ccy = acct.ccy;
                 }

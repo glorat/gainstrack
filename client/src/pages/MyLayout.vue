@@ -80,7 +80,7 @@
         name: 'MyQLayout',
         components: { MyAside, Tour, FilterForm },
         mounted() {
-            this.$router.afterEach((to, from) => {
+            this.$router.afterEach((to) => {
                 this.pageTitle = (to.meta.title || 'Gainstrack');
             });
             this.pageTitle = this.$router.currentRoute.meta.title;

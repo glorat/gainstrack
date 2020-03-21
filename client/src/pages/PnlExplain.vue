@@ -110,19 +110,16 @@
 
 <script>
     import axios from 'axios';
-    import {DatePicker, Tooltip, Link} from 'element-ui';
-    import lang from 'element-ui/lib/locale/lang/en'
-    import locale from 'element-ui/lib/locale'
+    import {DatePicker, Link} from 'element-ui';
+
     import HelpTip from '../components/HelpTip';
 
-    locale.use(lang);
 
     export default {
         name: 'PnlExplain',
         components: {
             HelpTip,
             'el-date-picker': DatePicker,
-            'el-tooltip': Tooltip,
             'el-link': Link
         },
         computed: {

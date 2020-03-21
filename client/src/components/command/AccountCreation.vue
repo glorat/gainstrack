@@ -43,8 +43,6 @@
 </template>
 
 <script>
-    import AccountSelector from '../AccountSelector';
-    import BalanceEditor from './BalanceEditor';
     import {DatePicker, Input, Option, Select, Switch} from 'element-ui';
     import {CommandEditorMixin} from '../../mixins/CommandEditorMixin';
     import AssetId from '../AssetId';
@@ -52,8 +50,6 @@
     export default {
         name: 'AccountCreation',
         components: {
-            AccountSelector,
-            BalanceEditor,
             AssetId,
             'el-date-picker': DatePicker,
             'el-select': Select,

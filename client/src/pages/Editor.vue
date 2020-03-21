@@ -46,7 +46,7 @@
         methods: {
             editorReset() {
                 this.$store.dispatch('reload')
-                    .then(x => this.reload());
+                    .then( () => this.reload());
             },
             editorSave() {
                 this.$store.commit('gainstrackText', this.info.source);
@@ -59,7 +59,7 @@
                         } else {
                             notify.success('Saved');
                             this.$store.dispatch('reload')
-                                .then(x => this.reload());
+                                .then( () => this.reload());
                         }
                     })
                     .catch(error => notify.error( error.response || error))

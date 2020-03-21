@@ -68,7 +68,7 @@
             });
         },
         watch: {
-            value(newVal, oldVal) {
+            value(newVal) {
                 const editorValue = this.editor.getValue();
                 if (newVal !== editorValue) {
                     this.skipNextChangeEvent = true;
@@ -87,7 +87,7 @@
                     this.applyErrors(this.errors);
                 }
             },
-            options(newOptions, oldVal) {
+            options(newOptions) {
                 if (typeof newOptions === 'object') {
                     for (const optionName in newOptions) {
                         // eslint-disable-next-line no-prototype-builtins

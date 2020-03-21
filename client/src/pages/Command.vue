@@ -18,18 +18,14 @@
     import AddCmd from '@/pages/AddCmd.vue';
     import axios from 'axios';
     import {mapGetters} from 'vuex';
-    import CommandEditor from '../components/CommandEditor.vue';
     import CommandTable from '@/components/CommandTable.vue';
-    import {cloneDeep} from 'lodash';
     import {CommandConfig, commands, defaultCommand} from '@/config/commands';
     import Vue from 'vue';
     import {AccountCommandDTO, Amount} from '../models';
-    import EventBus from '@/event-bus';
-
 
     export default Vue.extend({
         name: 'Command',
-        components: {AddCmd, CommandEditor, CommandTable},
+        components: {AddCmd, CommandTable},
         props: ['accountId'],
         data() {
             return {

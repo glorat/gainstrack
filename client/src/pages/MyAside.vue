@@ -35,10 +35,7 @@
 
 <script lang="ts">
     import LoginForm from '@/components/LoginForm.vue';
-    import axios from 'axios';
-    import {Upload} from 'element-ui';
-
-    import { Component, Vue } from 'vue-property-decorator';
+    import Vue from 'vue'
     import routes from '@/router/config';
 
     export default Vue.extend({

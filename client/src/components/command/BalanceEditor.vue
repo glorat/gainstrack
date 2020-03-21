@@ -17,7 +17,7 @@
         },
         props: {value: Object},
         methods: {
-            onChanged($event: object) {
+            onChanged() {
                 this.$emit('input', this.value);
             }
         }

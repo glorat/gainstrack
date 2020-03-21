@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <my-page padding>
         <!-- eslint-disable -->
 <!--        FIXME: command needs a unique id-->
         <template v-for="command in commands">
@@ -13,12 +13,12 @@
             <br>
         </template>
         <!-- eslint-enable -->
-    </div>
+    </my-page>
 
 </template>
 
 <script>
-    import {Card, Link, Divider, DatePicker} from 'element-ui';
+    import {Card, Link, Divider} from 'element-ui';
     import lang from 'element-ui/lib/locale/lang/en'
     import locale from 'element-ui/lib/locale'
     import {commands} from '@/config/commands';
@@ -41,7 +41,6 @@
             'el-card': Card,
             'el-link': Link,
             'el-divider': Divider,
-            'el-datepicker': DatePicker,
         }
     }
 </script>

@@ -124,7 +124,7 @@
                             this.result = response.data;
 
                         })
-                        .catch(error => this.$notify.error(error))
+                        .catch(error => notify.error(error))
                         .finally(() => this.testing = false)
                 }
             }, 1000),

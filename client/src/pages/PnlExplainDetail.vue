@@ -191,7 +191,6 @@
             this.refresh(args);
         },
         data() {
-            const self = this;
             return {
                 explains: [],
             }

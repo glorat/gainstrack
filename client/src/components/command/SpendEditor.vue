@@ -16,7 +16,6 @@
 <script>
     import AccountSelector from '../AccountSelector';
     import BalanceEditor from './BalanceEditor';
-    import CommandDateEditor from '../CommandDateEditor';
     import {CommandEditorMixin} from '../../mixins/CommandEditorMixin';
 
     export default {

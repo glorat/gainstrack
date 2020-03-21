@@ -29,7 +29,7 @@
         domain: process.env.VUE_APP_AUTH0_ID + '.auth0.com',
         clientId: process.env.VUE_APP_AUTH0_CLIENT,
         audience: process.env.VUE_APP_AUTH0_AUDIENCE,
-        // @ts-ignore
+        // lint-ignore
         // onRedirectCallback: appState => {
         //   router.push(
         //       appState && appState.targetUrl
@@ -81,7 +81,7 @@
             async logout() {
                 const notify = this.$notify;
                 this.loading = true;
-                const summary = await this.$store.dispatch('logout')
+                await this.$store.dispatch('logout')
                     .then(response => response.data)
                     .catch(error => notify.error(error.response.data))
                     .finally(() => this.loading = false);
@@ -122,7 +122,7 @@
                 try {
                     const token = await this.$auth.getTokenSilently();
                     if (token) {
-                        notify.success(`Welcome Back!`);
+                        notify.success('Welcome Back!');
                         await this.loginWithToken(token);
                     }
                 } catch (e) {

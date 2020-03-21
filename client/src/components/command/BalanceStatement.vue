@@ -31,7 +31,7 @@
     import BalanceEditor from './BalanceEditor.vue';
     import {CommandEditorMixin} from '../../mixins/CommandEditorMixin';
     import AccountSelector from '../AccountSelector.vue';
-    import {DatePicker, Input, Option, Select, Switch} from 'element-ui';
+    import {DatePicker} from 'element-ui';
     import Vue from 'vue';
 
 
@@ -47,10 +47,6 @@
             BalanceEditor,
             AccountSelector,
             'el-date-picker': DatePicker,
-            'el-select': Select,
-            'el-option': Option,
-            'el-switch': Switch,
-            'el-input': Input,
         },
         methods: {
             accountIdChanged() {
@@ -82,13 +78,13 @@
             },
             isValid() /*: boolean*/ {
                 const c = this.c;
-                // @ts-ignore
+                // lint-ignore
                 return c.accountId && c.date && c.balance && c.balance.ccy && c.otherAccount;
             },
             toGainstrack() /*: string*/ {
                 if (this.isValid) {
                     const c /*: AccountCommandDTO*/ = this.c;
-                    // @ts-ignore
+                    // lint-ignore
                     return `${c.date} bal ${c.accountId} ${c.balance.number} ${c.balance.ccy} ${c.otherAccount}`;
                 } else {
                     return '';

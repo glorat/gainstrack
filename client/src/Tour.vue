@@ -46,8 +46,6 @@
     import {debounce} from 'lodash';
     import Vue from 'vue';
     import {Route} from 'vue-router';
-    import {Tour} from 'vue-tour';
-
     import VueTour from 'vue-tour';
     // tslint:disable-next-line
     // eslint-disable-next-line
@@ -89,13 +87,14 @@
         return e === 'routed-to' && isRoute(c) && c.path === path;
     };
 
+    // @eslint-ignore-next-line @typescript-eslint/no-unused-vars
     const addRecord: TourStep = {
         // target: '#add-record', // popper handles this wrong
         target: '.q-drawer',
         header: {
             title: 'Begin adding your records',
         },
-        content: `Click "Add Record" on the left menu bar`,
+        content: 'Click "Add Record" on the left menu bar',
         params: {
             placement: 'right-start',
             enabledButtons: {buttonNext: false}
@@ -109,7 +108,7 @@
         header: {
             title: 'Begin adding your records',
         },
-        content: `Click "Accounts" on the left menu bar`,
+        content: 'Click "Accounts" on the left menu bar',
         params: {
             placement: 'right',
             enabledButtons: {buttonNext: false}
@@ -526,6 +525,9 @@
         },
     ];
 
+    // TODO: Undo this hack where we just assume the new route will render in time
+    const eventTriggerDelay = 500;
+
     export default Vue.extend({
         name: 'Tour',
         data() {
@@ -555,7 +557,7 @@
             },
             nextStep: debounce(function(this: any) {
                 this.$tours.myTour.nextStep();
-            }, 500),
+            }, eventTriggerDelay),
             hasNext(step: TourStep): boolean {
                 if (step.eventTest || step.cmdTest) {
                     return false;
@@ -581,8 +583,7 @@
             }
         },
         mounted() {
-            // TODO: Undo this hack where we just assume the new route will render in time
-            const eventTriggerDelay = 500;
+
             const self = this;
 
             this.$router.afterEach((to: Route) => {

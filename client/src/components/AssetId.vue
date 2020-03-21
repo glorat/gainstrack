@@ -4,8 +4,8 @@
 </template>
 
 <script lang="ts">
-    import {Amount, StateSummaryDTO} from '@/models';
-    import {Select, Option, Autocomplete} from 'element-ui';
+    import {StateSummaryDTO} from '@/models';
+    import {Autocomplete} from 'element-ui';
     import Vue from 'vue';
 
     interface MyOpt {
@@ -15,7 +15,7 @@
 
     export default Vue.extend({
         name: 'AssetId',
-        components: {'el-select': Select, 'el-option': Option, 'el-autocomplete': Autocomplete},
+        components: {'el-autocomplete': Autocomplete},
         props: {value: String},
         computed: {
             options(): MyOpt[] {
