@@ -1,7 +1,7 @@
 <template>
 <div>
 
-    <h3><a href="/gainstrack/command/get/">{{ accountId }}</a></h3>
+    <h6><a href="/gainstrack/command/get/">{{ accountId }}</a></h6>
     <div>
         <account-graph :accountId="accountId"></account-graph>
     </div>

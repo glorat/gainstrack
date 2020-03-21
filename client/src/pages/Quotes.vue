@@ -1,6 +1,6 @@
 <template>
-    <div>
-        <h4>Market Quotes</h4>
+    <my-page padding>
+        <h5>Market Quotes</h5>
         <p>
             Note: These are raw market prices for the selected assets. As raw prices, they are not useful for determining total returns as they do not include dividends, stock splits etc.
         </p>
@@ -24,7 +24,7 @@
                     width="120">
             </el-table-column>
         </el-table>
-    </div>
+    </my-page>
 </template>
 
 <script lang="ts">

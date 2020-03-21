@@ -4,7 +4,7 @@
             <button class="login" v-if="!$auth.isAuthenticated" @click="auth0login">Sign Up/Log in</button>
             <button v-if="false" @click="auth0validate">Test</button>
         </div>
-        <hr>
+        <q-separator />
 <!--        <form @submit.prevent="login()" v-if="!authentication.username">-->
 <!--            <input type="text" name="username" placeholder="Username" v-model="username" pattern="\w*" title="Only lowercase">-->
 <!--            <input type="password" name="password" v-model="password">-->

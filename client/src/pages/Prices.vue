@@ -1,9 +1,9 @@
 <template>
-    <div>
+    <my-page padding>
 
     <div v-for="series in prices" class="left">
       <template v-if="prices.length>0">
-        <h3>{{ series.name }}</h3>
+        <h6>{{ series.name }}</h6>
         <table class="sortable">
             <thead>
             <th data-sort="string" data-sort-default="desc" data-order="asc">Date</th>
@@ -21,7 +21,7 @@
       </template>
     </div>
 
-    </div>
+    </my-page>
 </template>
 
 <script lang="ts">

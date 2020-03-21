@@ -1,6 +1,6 @@
 <template>
-    <div>
-        <h3>Investment cashflows for <router-link :to="{name:'account', params:{accountId:accountId}}">{{accountId}}</router-link></h3>
+    <my-page padding>
+        <h6>Investment cashflows for <router-link :to="{name:'account', params:{accountId:accountId}}">{{accountId}}</router-link></h6>
         <table class="queryresults sortable">
             <thead>
             <tr>
@@ -24,7 +24,7 @@
             </tr>
             </tbody>
         </table>
-    </div>
+    </my-page>
 </template>
 
 <script>

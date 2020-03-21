@@ -1,16 +1,18 @@
 <template>
-    <table class="queryresults sortable">
-        <thead>
-        <tr>
-            <th data-sort="string">account</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr v-bind:key="acctId" v-for="acctId in mainAccounts">
-            <td class="account-entry" :tag="acctId"><router-link :to="{name:'command', params:{accountId:acctId }}">{{ acctId }}</router-link> </td>
-        </tr>
-        </tbody>
-    </table>
+    <my-page padding>
+        <table class="queryresults sortable">
+            <thead>
+            <tr>
+                <th data-sort="string">account</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr v-bind:key="acctId" v-for="acctId in mainAccounts">
+                <td class="account-entry" :tag="acctId"><router-link :to="{name:'command', params:{accountId:acctId }}">{{ acctId }}</router-link> </td>
+            </tr>
+            </tbody>
+        </table>
+    </my-page>
 </template>
 
 <script>

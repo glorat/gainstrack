@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <q-page padding>
         <div v-if="c.commandType">
             <add-cmd :input="c" :command-columns="commandTableColumns" @cancel="addCancel" has-cancel></add-cmd>
         </div>
@@ -9,9 +9,9 @@
                                                                           :tag="cmd.prefix"
                                                                           :title="cmd.description">{{ cmd.title }}</button></span>
         </div>
-        <h4>Existing entries</h4>
+        <h5>Existing entries</h5>
         <command-table :cmds="displayCommands" :columns="commandTableColumns"></command-table>
-    </div>
+    </q-page>
 </template>
 
 <script lang="ts">

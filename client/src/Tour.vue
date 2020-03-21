@@ -91,7 +91,7 @@
 
     const addRecord: TourStep = {
         // target: '#add-record', // popper handles this wrong
-        target: '.myaside',
+        target: '.q-drawer',
         header: {
             title: 'Begin adding your records',
         },
@@ -104,14 +104,14 @@
     };
 
     const addAccounts: TourStep = {
-        // target: '#add-record', // popper handles this wrong
-        target: '.myaside',
+        // target: '#route-command', // popper handles this wrong
+        target: '.q-drawer',
         header: {
             title: 'Begin adding your records',
         },
         content: `Click "Accounts" on the left menu bar`,
         params: {
-            placement: 'right-start',
+            placement: 'right',
             enabledButtons: {buttonNext: false}
         },
         eventTest: routedToEventTest('/command')
@@ -188,7 +188,7 @@
 
     const tourBalanceSheet: TourStep = {
         // target: '#route-balance_sheet', // popper fails on this
-        target: '.myaside',
+        target: '.q-drawer',
         content: 'Navigate to the balance sheet to see the effect',
         params: {
             placement: 'right-start'
@@ -302,7 +302,7 @@
                 'We shall set up live quotes for the GOOG shares we have bought to monitor progress',
                 'Click on Settings in the menu where we shall set it up',
             ]),
-            target: '.myaside', // Wishes to be #router-settings
+            target: '.q-drawer', // Wishes to be #router-settings
             params: {placement: 'right-start'},
             eventTest: routedToEventTest('/settings'),
         },
@@ -312,7 +312,7 @@
             content: 'We can enter the Ticker symbol to source live quotes for Google shares. Enter GOOG here then press the Green tick on the right to confirm'
         },
         {
-            target: '.myaside', // Wishes to be  the P&L Explain link
+            target: '.q-drawer', // Wishes to be  the P&L Explain link
             content: 'Click on the P&L Explain link to see how the value of our portfolio changed since the trade was booked',
             eventTest: routedToEventTest('/pnlexplain')
         },
@@ -471,7 +471,7 @@
         },
         addCommand,
         {
-            target: '.myaside', // Wishes to be  the P&L Explain link
+            target: '.q-drawer', // Wishes to be  the P&L Explain link
             content: 'Click on the P&L Explain link to see the effect',
             eventTest: routedToEventTest('/pnlexplain')
         },
@@ -488,15 +488,15 @@
 
     const mySteps: TourStep[] = [
         {
-            target: '#page-title',
+            target: 'header',
             content: 'If you would like a guided tour on how to use this site, press Next'
         },
         {
-            target: '#page-title',
+            target: 'header',
             content: mkParagraphs(['Gainstrack can become your personal accountant, a place to record all your activities that contribute to your networth and get insight over your networth and wealth. Suppose you have an investment account that you have funded with some cash and bought some shares. How can this be recorded? This guide will show you how as an example']),
         },
         {
-            target: '#page-title',
+            target: 'header',
             id: 'choice',
             content: 'There are different types of events that can be recorded. Which guide would you like to try next?',
             customSteps: [

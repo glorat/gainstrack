@@ -1,30 +1,35 @@
 <template>
-    <aside class="myaside">
-        <ul class="navigation">
-            <li id="add-record">
-                <router-link v-bind:to="'/add'"><span class="el-icon-circle-plus-outline"></span> {{ config.allPages['add'][0] }}</router-link>
-            </li>
-            <li :id="`route-commands`">
-                <router-link v-bind:to="'/command'"><span class="el-icon-edit-outline"></span> Accounts</router-link>
-            </li>
-        </ul>
+    <q-scroll-area class="fit myaside">
+        <q-list v-for="(menuItems, index) in menuItemsList" :key="index">
+            <div v-for="(menuItem, idx2) in menuItems" :key="idx2">
+                <q-item dense clickable v-ripple :to="menuItem.path" :id="`route-${menuItem.path.replace('/','')}`">
+                    <q-item-section avatar>
+                        <q-icon :name="menuItem.meta.icon" />
+                    </q-item-section>
+                    <q-item-section>
+                        {{ menuItem.meta.title }}
+                    </q-item-section>
+                </q-item>
 
-        <ul v-for="menuItems in config.navigationBar" class="navigation">
-            <template v-for="id in menuItems">
-                <li :id="`route-${id}`">
-                    <router-link v-bind:to="'/' + id">{{ config.allPages[id][0] }}</router-link>
-                </li>
-                <li v-if="id=='editor'" :class="errorClass">
-                  <router-link active-class="error" v-bind:to="'/errors'">Errors <span class="bubble">{{errors.length}}</span>
-                  </router-link>
-                </li>
-            </template>
-        </ul>
-        <div>
-            <login-form></login-form>
-        </div>
-        <div>Ver: {{ version }}</div>
-    </aside>
+                <q-item v-if="menuItem.path=='/editor' && errors.length>0" dense clickable v-ripple to="/errors">
+                    <q-item-section avatar>
+                        <q-badge color="red" text-color="black" :label="errors.length" />
+                    </q-item-section>
+                    <q-item-section>
+                        Errors
+                    </q-item-section>
+                </q-item>
+            </div>
+            <q-separator />
+        </q-list>
+        <q-list>
+            <q-item>
+                <login-form></login-form>
+            </q-item>
+            <q-item>Ver: {{ version }}</q-item>
+        </q-list>
+    </q-scroll-area>
+
 </template>
 
 
@@ -34,9 +39,29 @@
     import {Upload} from 'element-ui';
 
     import { Component, Vue } from 'vue-property-decorator';
+    import routes from '@/router/config';
 
-    @Component({
-        components: {LoginForm, 'el-upload': Upload},
+    export default Vue.extend({
+
+        data() {
+            const navBar = [
+                    ['add', 'command'],
+                ['balance_sheet', 'income_statement', 'journal'],
+                ['irr', 'aa', 'pnlexplain'],
+                ['prices', 'quotes', 'settings'],
+                ['port', 'editor', 'history'],
+                ['help', 'faq']
+            ];
+
+            return {
+                menuItemsList: navBar.map(ss => {
+                    return ss.map((key: string) => {
+                        return routes.find(rt => rt.path === `/${key}`);
+                    });
+                })
+            }
+        },
+        components: {LoginForm},
         computed: {
             version() {
                 return process.env.VUE_APP_VERSION;
@@ -49,48 +74,6 @@
             }
         }
     })
-    export default class extends Vue {
-
-        private menuItems: string[] = ['foo', 'bar'];
-        /* tslint:disable:object-literal-key-quotes */
-        private config: any = {
-            allPages: {
-                'balance_sheet': ['Balance Sheet', 'g b'],
-                'assets': ['Networth By Asset', ''],
-                'prices': ['Trade Prices', 'g c'],
-                'quotes': ['Market Quotes', ''],
-                'settings': ['Settings', ''],
-                'editor': ['Editor', 'g e'],
-                'port': ['Import/Export', ''],
-                'history': ['History', ''],
-                'errors': ['Errors', ''],
-                'events': ['Events', 'g E'],
-                'help': ['Help', 'g H'],
-                'faq': ['FAQ', ''],
-                'holdings': ['Holdings', 'g h'],
-                'import': ['Import', 'g n'],
-                'income_statement': ['Income Statement', 'g i'],
-                'journal': ['Journal', 'g j'],
-                'options': ['Options', 'g o'],
-                'query': ['Query', 'g q'],
-                'statistics': ['Statistics', 'g x'],
-                'trial_balance': ['Trial Balance', 'g t'],
-                'irr':              ['IRR',    ''],
-                'aa': ['Asset Allocation', ''],
-                'pnlexplain': ['P&L Explain', ''],
-                'command': ['Commands', ''],
-                'add': ['Add Record', ''],
-            },
-            navigationBar: [
-                ['balance_sheet', 'income_statement', 'assets', 'journal'],
-                ['irr', 'aa', 'pnlexplain'],
-                ['prices', 'quotes', 'settings'],
-                ['port', 'editor', 'history'],
-                ['help', 'faq']
-            ]
-        };
-
-    }
 </script>
 
 <style>
@@ -99,8 +82,9 @@
         height: auto;
     }
 
-    .myaside .router-link-active {
+    aside .router-link-active {
         color: var(--color-sidebar-text-hover);
         background-color: var(--color-sidebar-border);
     }
+
 </style>

@@ -1,10 +1,10 @@
 <template>
-    <div>
+    <my-page padding>
         <div>
-            <h4>Asset configuration</h4>
+            <h5>Asset configuration</h5>
             <assets-editor></assets-editor>
         </div>
-    </div>
+    </my-page>
 </template>
 
 <script lang="ts">

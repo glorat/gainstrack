@@ -1,9 +1,9 @@
 <template>
-    <div>
-        <h3>Journal</h3>
+    <my-page padding>
+        <h5>Journal</h5>
         <p>Shows all your transactions you have made. Change column shows the impact to your networth as at the time the transaction occurred</p>
         <journal-table :entries="info.rows" show-balance></journal-table>
-    </div>
+    </my-page>
 </template>
 
 <script>

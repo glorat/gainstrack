@@ -1,6 +1,6 @@
 <template>
-    <div class="block" v-if="explains.length>0">
-        <h2>P&L Explain</h2>
+    <my-page padding v-if="explains.length>0">
+        <h5>P&L Explain</h5>
         <!--            Map("actual" -> actualPnl, "explained" -> explained, "unexplained" -> unexplained,-->
         <!--            "newActivityPnl" -> newActivityPnl,-->
         <!--            "totalEquity" -> totalEquity, "totalIncome" -> totalIncome, "totalExpense" -> totalExpense, "totalDeltaExplain" -> totalDeltaExplain-->
@@ -140,7 +140,7 @@
             </tr>
             </tbody>
         </table>
-    </div>
+    </my-page>
 </template>
 
 <script>

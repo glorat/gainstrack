@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <my-page padding>
         Your data can be exported and saved to your local computer in Gainstrack format - a simple text based format
         <ul>
             <li><a href="/api/export/gainstrack">Export Gainstrack...</a></li>
@@ -19,7 +19,7 @@
             <i class="el-icon-upload"></i>
             <div class="el-upload__text">Drop Gainstrack here or<br><em>click to upload</em></div>
         </el-upload>
-    </div>
+    </my-page>
 </template>
 
 <script lang="ts">

@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <my-page padding>
         <template v-for="commit in commits">
             <template v-if="commit.event && commit.event.adds">
                 Added: <pre><template v-for="cmd in commit.event.adds"><template
@@ -12,7 +12,7 @@
             </template>
 
         </template>
-    </div>
+    </my-page>
 </template>
 
 <script>

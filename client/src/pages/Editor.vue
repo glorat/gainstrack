@@ -1,25 +1,28 @@
 <template>
-    <form id="source-editor-form" class="source-form">
-        <div class="fieldset">
-            <ul class="dropdown">
-                <li>Edit&nbsp;▾
-                    <ul>
-                        <li>
-                            <button data-command="favaToggleComment" type="button" class="link">Toggle Comment (selection)</button>
-                            <span>
-                        <kbd>Ctrl</kbd>/<kbd>Cmd</kbd>+<kbd>y</kbd>
-                    </span>
-                        </li>
-                    </ul>
-                </li>
-            </ul>
-            <button id="source-editor-submit" type="button" v-on:click="editorReset">Reset</button>
+<!--        <div class="">-->
+<!--            <button id="source-editor-submit" type="button" v-on:click="editorReset">Reset</button>-->
+<!--            <button id="source-editor-reset" type="button" v-on:click="editorSave">Save</button>-->
+<!--        </div>-->
+    <my-page class="full-width column source-form">
+<!--        <div >-->
+            <div class="col-1">
+                <button id="source-editor-submit" type="button" v-on:click="editorReset">Reset</button>
+                <button id="source-editor-reset" type="button" v-on:click="editorSave">Save</button>
+            </div>
+            <div class="col-11 overflow-auto" >
+                <codemirror v-model="info.source" :errors="errors" ></codemirror>
+            </div>
+<!--        </div>-->
+    </my-page>
+<!--    <form id="source-editor-form" class="source-form">-->
+<!--        <q-page-sticky position="top">-->
+<!--            <button id="source-editor-submit" type="button" v-on:click="editorReset">Reset</button>-->
 
-            <button id="source-editor-reset" type="button" v-on:click="editorSave">Save</button>
-        </div>
-        <codemirror v-model="info.source" :errors="errors"></codemirror>
+<!--            <button id="source-editor-reset" type="button" v-on:click="editorSave">Save</button>-->
+<!--        </q-page-sticky>-->
+<!--        <codemirror v-model="info.source" :errors="errors"></codemirror>-->
 
-    </form>
+<!--    </form>-->
 </template>
 
 <script>
@@ -59,7 +62,7 @@
                                 .then(x => this.reload());
                         }
                     })
-                    .catch(error => notify.error(error.response.data || error))
+                    .catch(error => notify.error( error.response || error))
             },
             reload() {
                 const notify = this.$notify;
@@ -67,11 +70,92 @@
                     .then(source => this.info.source = source)
                     .catch(error => notify.error(error))
             },
+          pageStyle(offset) {
+            // "offset" is a Number (pixels) that refers to the total
+            // height of header + footer that occupies on screen,
+            // based on the QLayout "view" prop configuration
+
+            // this is actually what the default style-fn does in Quasar
+            return { minHeight: offset ? `calc(100vh - ${offset+40}px)` : '100vh' };
+          }
         }
     }
 </script>
 
 <style>
+
+    :root {
+        --source-editor-fieldset-height: 44px;
+    }
+
+    /*.source-editor-wrapper {*/
+    /*    position: fixed;*/
+    /*    top: calc(var(--header-height) + var(--source-editor-fieldset-height));*/
+    /*    right: 0;*/
+    /*    bottom: 0;*/
+    /*    left: var(--aside-width);*/
+    /*}*/
+
+    .source-editor-wrapper {
+        position: absolute;
+        top: 35px;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        height: 100%;
+    }
+
+    .dropdown {
+        display: flex;
+        height: 100%;
+        margin: 0;
+    }
+
+    .dropdown .selected::before {
+        content: "›";
+    }
+
+    .dropdown > li {
+        position: relative;
+        height: var(--source-editor-fieldset-height);
+        margin-right: 10px;
+        line-height: var(--source-editor-fieldset-height);
+        cursor: default;
+    }
+
+    .dropdown button {
+        color: inherit;
+    }
+
+    .dropdown > li > ul {
+        position: absolute;
+        top: var(--source-editor-fieldset-height);
+        z-index: var(--z-index-floating-ui);
+        display: none;
+        width: 500px;
+        max-height: 400px;
+        margin-left: -10px;
+        overflow-y: auto;
+        line-height: 1.5;
+        background-color: var(--color-background);
+        border: 1px solid var(--color-background-darker);
+        border-bottom-right-radius: 3px;
+        border-bottom-left-radius: 3px;
+        box-shadow: 0 3px 6px var(--color-transparent-black);
+    }
+
+    .dropdown > li > ul > li {
+        padding: 2px 10px;
+    }
+
+    .dropdown > li > ul > li span {
+        float: right;
+    }
+
+    .dropdown li:hover > ul {
+        display: block;
+    }
+
 
     .CodeMirror-gutters {
         background: var(--color-sidebar-background);
@@ -84,14 +168,14 @@
         border: 1px solid var(--color-sidebar-border);
     }
 
-    .source-form {
-        position: fixed;
-        top: var(--header-height);
-        right: 0;
-        bottom: 0;
-        left: var(--aside-width);
-        background: var(--color-sidebar-background);
-    }
+    /*.source-form {*/
+    /*    position: fixed;*/
+    /*    top: var(--header-height);*/
+    /*    right: 0;*/
+    /*    bottom: 0;*/
+    /*    left: var(--aside-width);*/
+    /*    background: var(--color-sidebar-background);*/
+    /*}*/
 
     .source-form .fieldset {
         height: var(--source-editor-fieldset-height);

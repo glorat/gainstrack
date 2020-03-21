@@ -1,3 +1,4 @@
+import MyPage from '@/components/MyPage.vue';
 import {Notification} from 'element-ui';
 import store from './store';
 import router from './router';
@@ -6,10 +7,9 @@ import Vue from 'vue';
 
 Vue.prototype.$notify = Notification;
 
-// Get some state on startup
-store.dispatch('reload');
-
 Vue.config.productionTip = false;
+
+Vue.component('MyPage', MyPage);
 
 new Vue({
   router,

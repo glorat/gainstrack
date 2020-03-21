@@ -1,6 +1,8 @@
 <template>
-    <div v-html="rendered">
-    </div>
+    <my-page>
+        &nbsp;
+        <div v-html="rendered"></div>
+    </my-page>
 </template>
 
 <script lang="ts">

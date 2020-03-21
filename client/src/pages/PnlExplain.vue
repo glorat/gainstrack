@@ -1,6 +1,5 @@
 <template>
-    <div>
-
+    <my-page padding>
         <div class="block">
             <span class="demonstration">P&L Explain Date Range: </span>
             <el-date-picker
@@ -17,7 +16,7 @@
             <button @click="submit" :disabled="selectedRange==null">Go</button>
         </div>
         <div class="block" v-if="explains.length>0">
-            <h3>P&L Explanation</h3>
+            <h5>P&L Explanation</h5>
 <!--            Map("actual" -> actualPnl, "explained" -> explained, "unexplained" -> unexplained,-->
 <!--            "newActivityPnl" -> newActivityPnl,-->
 <!--            "totalEquity" -> totalEquity, "totalIncome" -> totalIncome, "totalExpense" -> totalExpense, "totalDeltaExplain" -> totalDeltaExplain-->
@@ -106,7 +105,7 @@
             </table>
         </div>
         <span id="bottom"></span>
-    </div>
+    </my-page>
 </template>
 
 <script>

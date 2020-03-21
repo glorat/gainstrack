@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <my-page padding>
        <vue-plotly :data="treeData" :layout="treeLayout" :options="treeOptions" auto-resize></vue-plotly>
 
         <div class="row">
@@ -11,7 +11,7 @@
 
 
 
-    </div>
+    </my-page>
 </template>
 
 <script>

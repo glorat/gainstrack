@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <my-page padding>
         <div>
             <account-graph :key="conversion" accountId="Assets"></account-graph>
         </div>
@@ -8,17 +8,17 @@
         </div>
         <div class="row">
             <div class="column">
-                <h3 id="assets-table">Assets</h3>
+                <h5 id="assets-table">Assets</h5>
                 <tree-table v-bind:node="info['Assets']"></tree-table>
             </div>
             <div class="column">
-                <h3>Liabilities</h3>
+                <h5>Liabilities</h5>
                 <tree-table v-bind:node="info['Liabilities']"></tree-table>
-                <h3>Equity</h3>
+                <h5>Equity</h5>
                 <tree-table v-bind:node="info['Equity']"></tree-table>
             </div>
         </div>
-    </div>
+    </my-page>
 </template>
 
 <script>
