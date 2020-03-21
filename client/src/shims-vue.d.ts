@@ -8,8 +8,8 @@ declare module '*.vue' {
 }
 
 declare module "vue/types/vue" {
-
-  interface Vue {
-    $analytics: firebase.analytics.Analytics
-  }
+    interface Vue {
+        $analytics: firebase.analytics.Analytics
+        $appVersion: string
+    }
 }

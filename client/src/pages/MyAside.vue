@@ -52,7 +52,6 @@
                 ['port', 'editor', 'history'],
                 ['help', 'faq']
             ];
-
             return {
                 menuItemsList: navBar.map(ss => {
                     return ss.map((key: string) => {

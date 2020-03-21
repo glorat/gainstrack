@@ -1,5 +1,5 @@
 <template>
-    <my-page>
+    <my-page padding>
         &nbsp;
         <div v-html="rendered"></div>
     </my-page>
