@@ -87,7 +87,7 @@
         return e === 'routed-to' && isRoute(c) && c.path === path;
     };
 
-    // @eslint-ignore-next-line @typescript-eslint/no-unused-vars
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const addRecord: TourStep = {
         // target: '#add-record', // popper handles this wrong
         target: '.q-drawer',
@@ -140,6 +140,7 @@
         content: 'Select your investment account Assets:Investment',
     };
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const chooseBankAccount: TourStep = {
         target: '.c-account-id',
         content: 'Choose your bank account (called Assets:Bank)',
@@ -180,7 +181,7 @@
         params: {
             placement: 'bottom'
         },
-        eventTest(e, c) {
+        eventTest(e) {
             return e === 'command-added';
         },
     };
@@ -555,6 +556,7 @@
                 // Async this to avoid re-entrancy bug on router handler
                 debounce(gogo, 100);
             },
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             nextStep: debounce(function(this: any) {
                 this.$tours.myTour.nextStep();
             }, eventTriggerDelay),
@@ -584,6 +586,7 @@
         },
         mounted() {
 
+            // eslint-disable-next-line @typescript-eslint/no-this-alias
             const self = this;
 
             this.$router.afterEach((to: Route) => {

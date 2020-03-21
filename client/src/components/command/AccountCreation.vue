@@ -95,10 +95,10 @@
 
                     let baseStr = `${dto.date} open ${dto.accountId} ${dto.ccy}`;
                     if (dto.options.multiAsset) {
-                        baseStr += `\n  multiAsset: true`;
+                        baseStr += '\n  multiAsset: true';
                     }
                     if (dto.options.automaticReinvestment) {
-                        baseStr += `\n  automaticReinvestment: true`;
+                        baseStr += '\n  automaticReinvestment: true';
                     }
                     return baseStr
                 } else {

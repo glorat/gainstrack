@@ -35,7 +35,6 @@
 <script lang="ts">
     import {AccountCommandDTO, Amount} from '@/models';
     import Vue from 'vue';
-    import {commands} from '@/config/commands';
 
     export default Vue.extend({
         name: 'CommandTable',
@@ -57,8 +56,8 @@
             }
         },
         methods: {
-            selectCommand(cmd: AccountCommandDTO) {
-                // this.selectedCommand = cloneDeep(cmd);
+            selectCommand() {
+                // TODO
             },
         },
         computed: {

@@ -55,14 +55,13 @@
             }
         },
         mounted() {
-            const self = this;
             const notify = this.$notify;
             axios.get('/api/account/' + this.accountId + '/graph')
                 .then(response => {
                     const series = response.data.series;
                     const plotlys = [];
 
-                    const smoothSeries = series.map(s => {
+                    series.map(s => {
                         // Need enough time before expMovingAverage is useful
                         const smoothData = s.data.length > 12 ? expMovingAverage(s.data, 12) : s.data;
                         const plotly = {
@@ -75,7 +74,7 @@
                         return s;
                     });
 
-                    self.data = plotlys;
+                    this.data = plotlys;
                 })
                 .catch(error => notify.error(error))
         },

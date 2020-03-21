@@ -38,6 +38,7 @@
             }
         },
         ready() {
+            // eslint-disable-next-line @typescript-eslint/no-this-alias
             const self = this;
             this.editor = CodeMirror.fromTextArea(this.$el.querySelector('textarea'), this.options);
             this.editor.setValue(this.value);
@@ -53,6 +54,7 @@
             });
         },
         mounted() {
+            // eslint-disable-next-line @typescript-eslint/no-this-alias
             const self = this;
             this.editor = CodeMirror.fromTextArea(this.$el.querySelector('textarea'), this.options);
             this.editor.setValue(this.value);

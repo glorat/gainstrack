@@ -46,6 +46,7 @@
             }
         },
         methods: {
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             onChanged(ev: any) {
                 this.$emit('input', ev.target.value);
             },

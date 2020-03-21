@@ -153,6 +153,7 @@
             amount: (value) => value.toFixed(2)
         },
         data() {
+          // eslint-disable-next-line
             const self = this;
             return {
                 explains: [],

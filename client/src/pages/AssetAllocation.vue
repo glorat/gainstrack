@@ -48,7 +48,6 @@
             }
         },
         mounted() {
-            const self = this;
             const notify = this.$notify;
 
             axios.get('/api/aa/tree')
@@ -68,7 +67,7 @@
                     ts.unshift('Networth');
                     plotlys[0].texttemplate = ts;
 
-                    self.treeData = plotlys;
+                    this.treeData = plotlys;
 
                 })
                 .catch(error => notify.error(error));
@@ -77,7 +76,7 @@
 
             axios.get('/api/aa/table')
                 .then(response => {
-                    self.tables = response.data;
+                    this.tables = response.data;
                 })
                 .catch(error => notify.error(error));
         },
