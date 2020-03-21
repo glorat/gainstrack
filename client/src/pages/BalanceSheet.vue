@@ -7,11 +7,11 @@
             <conversion-select></conversion-select>
         </div>
         <div class="row">
-            <div class="column">
+            <div class="col-md-6">
                 <h5 id="assets-table">Assets</h5>
                 <tree-table v-bind:node="info['Assets']"></tree-table>
             </div>
-            <div class="column">
+            <div class="col-md-6">
                 <h5>Liabilities</h5>
                 <tree-table v-bind:node="info['Liabilities']"></tree-table>
                 <h5>Equity</h5>

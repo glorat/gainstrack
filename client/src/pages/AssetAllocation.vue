@@ -3,13 +3,11 @@
        <vue-plotly :data="treeData" :layout="treeLayout" :options="treeOptions" auto-resize></vue-plotly>
 
         <div class="row">
-            <div class="column" v-for="table in tables">
-                <h3>{{ table.name }}</h3>
+            <div class="col-md-6" v-for="table in tables">
+                <h6>{{ table.name }}</h6>
                 <tree-table v-bind:node="table.rows"></tree-table>
             </div>
         </div>
-
-
 
     </my-page>
 </template>

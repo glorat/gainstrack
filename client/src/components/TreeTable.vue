@@ -48,10 +48,9 @@
 </script>
 
 <style>
-    /* Collapsible trees
-     *
-     * some of the shared styles are in `journal-table.css`
-     */
+    .tree-table {
+        margin: 5px;
+    }
 
     .tree-table.fullwidth {
         display: block;

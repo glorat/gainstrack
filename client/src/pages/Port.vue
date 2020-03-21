@@ -13,7 +13,7 @@
         <el-upload
                 class=""
                 drag
-                action="/api/postssss/"
+                action="/api/post/"
                 :before-upload="beforeUpload"
         >
             <i class="el-icon-upload"></i>
