@@ -1,5 +1,5 @@
 <template>
-    <my-page padding>
+    <div>
         <div v-if="!success">
             <command-editor :input="c" v-on:command-changed="commandChanged" v-on:gainstrack-changed="gainstrackChange($event)"></command-editor>
             <div>
@@ -37,7 +37,7 @@
                 <command-table :cmds="added" :columns="commandColumns"></command-table>
             </template>
         </div>
-    </my-page>
+    </div>
 </template>
 
 <script>

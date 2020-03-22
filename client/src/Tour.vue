@@ -189,7 +189,7 @@
     const tourBalanceSheet: TourStep = {
         // target: '#route-balance_sheet', // popper fails on this
         target: '.q-drawer',
-        content: 'Navigate to the balance sheet to see the effect',
+        content: 'Navigate to "Balances" to see the effect',
         params: {
             placement: 'right-start'
         },
@@ -200,7 +200,7 @@
         {
 
             id: 'fund',
-            target: '#page-title',
+            target: 'header',
             content: mkParagraphs([
                 'Typically an investment account requires funding from somewhere like your bank account before making trades',
                 'Buying GOOG shares put our investment cash balance in negative. We shall make sure it was actually funded',
@@ -365,7 +365,7 @@
     const fxTour: TourStep[] = [
         {
             id: 'fxtfr',
-            target: '#page-title',
+            target: 'header',
             content: mkParagraphs(['In this guide, we are going to convert some of our USD into pound sterling GBP',
                 'In this example, conversion will be done within the preset Investment account since that is a multi-asset account',
                 'FX conversions can also be done across different accounts. Or one can simply do simple non-FX transfers'
@@ -430,7 +430,7 @@
     const balTour: TourStep[] = [
         {
             id: 'bal',
-            target: '#page-title',
+            target: 'header',
             content: mkParagraphs(['While normal accounting software requires you to record every transaction and ensure everything balances, we think that is too much work',
                 'Instead, you only need to record your major earnings and investments. Then by supplying your resulting account balances, you can get a view of your general expenses without further input',
                 'Let us record your bank balance as you may see it on your bank statement'])
