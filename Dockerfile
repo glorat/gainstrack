@@ -24,6 +24,8 @@ RUN apk add --update --no-cache \
     make \
     g++
 
+WORKDIR /build
+
 # Cache dependencies first
 COPY ./client/package.json package.json
 COPY ./client/package-lock.json package-lock.json
@@ -46,7 +48,7 @@ COPY --from=builder /build/web/target/scala-2.12/web-assembly-0.1.jar ./
 ENTRYPOINT ["./run_jar.sh"]
 RUN mkdir -p /app/src/main/webapp
 #COPY --from=builder ./web/src/main/webapp/ ./src/main/webapp/
-COPY --from=webbuilder ./dist/ ./dist/
+COPY --from=webbuilder /build/dist/spa/ ./dist/
 RUN mkdir -p db/userdata
 RUN mkdir -p /Users/kevin/dev/gainstrack/data/
 COPY core/src/test/resources/src.gainstrack /Users/kevin/dev/gainstrack/data/real.gainstrack
