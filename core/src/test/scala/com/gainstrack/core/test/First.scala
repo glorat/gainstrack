@@ -387,7 +387,7 @@ class First extends FlatSpec {
 
   "Networth Report" should "report per asset" in {
     val ret = NetworthReport.byAsset(bg.latestDate, bg.acctState.baseCurrency)(accountState = acctState, balanceState = bg.balanceState, assetState = bg.assetState, singleFXConverter = bg.tradeFXConversion)
-    val iuaa = ret.find(_.assetId == AssetId("IUAA")).get
+    val iuaa = ret.rows.find(_.assetId == AssetId("IUAA")).get
     assert(iuaa.units == 1000)
     assert(iuaa.value.round == 4097)
   }

@@ -101,9 +101,7 @@ class ApiController (implicit val ec :ExecutionContext)
     val bg = getGainstrack
     val mktConvert = bg.liveFxConverter(ServerQuoteSource.db.priceFXConverter)
     val nwByAsset = NetworthReport.byAsset(currentDate, bg.acctState.baseCurrency)(bg.acctState, bg.balanceState, bg.assetState, mktConvert)
-
-    Map("networthByAsset" -> nwByAsset)
-
+    nwByAsset.withPriceMoves(bg.acctState.baseCurrency, mktConvert)
   }
 
 

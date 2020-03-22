@@ -1,5 +1,7 @@
 package com.gainstrack.report
 
+import java.time.Duration
+
 import com.gainstrack.core._
 
 object NetworthReport {
@@ -7,15 +9,15 @@ object NetworthReport {
     val nw = networth(date)(balanceState)
 
     val assets = assetState.allAssets.values.toSeq.sortBy(_.asset.symbol)
-    assets.map(assetInfo => {
+    val rows = assets.map(assetInfo => {
       val nwAccounts = accountState.mainAccounts.filter(_.accountId.accountType match {case Assets|Liabilities => true; case _ => false})
       val accountNetworth = nwAccounts.toSeq.flatMap(acct => {
         balanceState.totalPosition(acct.accountId, date).assetBalance.get(assetInfo.asset).map( units => {
-          NetworthSubByAccountDTO(acct.accountId, units)
+          AssetAccountDTO(acct.accountId, units)
         })
       })
 
-      NetworthByAssetDTO(
+      AssetReportDTO(
         assetId = assetInfo.asset,
         units = nw.getBalance(assetInfo.asset).number,
         value = nw.getBalance(assetInfo.asset).convertTo(baseCcy, singleFXConverter, date).number,
@@ -25,6 +27,7 @@ object NetworthReport {
       )
     })
 
+    NetworthAssetReportDTO(rows)
   }
 
   def networth(date: LocalDate)(balanceState: BalanceState): PositionSet = {
@@ -33,29 +36,76 @@ object NetworthReport {
   }
 }
 
-case class NetworthByAssetDTO(
+case class AssetReportDTO(
                                assetId: AssetId,
                                units: Fraction,
                                value: Fraction, // in base currency
                                price: Double,
                                priceDate: Option[LocalDate],
-                               accountNetworth: Seq[NetworthSubByAccountDTO] = Seq()
+                               accountNetworth: Seq[AssetAccountDTO] = Seq(),
+                               priceMoves: Map[String, Double] = Map()
                              )
 
-object NetworthByAssetDTO {
-  def total(rows: Seq[NetworthByAssetDTO]) : NetworthByAssetDTO = {
-    NetworthByAssetDTO (
+case class ReportColumn[T] (
+               name: String,
+               label: String,
+               value: T,
+               tag: String
+               )
+
+case class NetworthAssetReportDTO(rows: Seq[AssetReportDTO], columns: Seq[ReportColumn[LocalDate]] = Seq()) {
+  def total: AssetReportDTO = {
+    AssetReportDTO (
       assetId = AssetId("TOTAL"),
       units = 0,
       value = rows.map(_.value).reduce(_ + _),
       price = 0,
-      priceDate = None,
+      priceDate = Some(latestPriceDate),
       accountNetworth = Seq()
     )
   }
+
+  def latestPriceDate: LocalDate = {
+    rows.flatMap(_.priceDate).max
+  }
+
+  private def priceMoveColumns(baseDate: LocalDate) = {
+
+    val dates = Seq(
+      baseDate.minusDays(1),
+      baseDate.minusWeeks(1),
+      baseDate.minusMonths(1),
+      baseDate.minusMonths(3),
+      baseDate.minusYears(1),
+      baseDate.withDayOfYear(1))
+    val descs = Seq("1d", "1w", "1m", "3m", "1y", "YTD")
+    dates.zip(descs).map(x => ReportColumn[LocalDate](x._2, x._2, x._1, "priceMove"))
+  }
+
+  def withPriceMoves(baseCcy:AssetId, singleFXConverter: SingleFXConverter): NetworthAssetReportDTO = {
+
+    val baseDate = latestPriceDate
+    val columns = priceMoveColumns(baseDate)
+    val newRows = rows.map(row => {
+      val baseFx = singleFXConverter.getFX(row.assetId, baseCcy, baseDate).getOrElse(0.0)
+      val moves = columns.map(col => {
+        val fx = singleFXConverter.getFX(row.assetId, baseCcy, col.value).getOrElse(0.0)
+        val change = if(fx != 0.0) (baseFx-fx)/fx else 0.0
+        col.name -> change
+      }).toMap
+
+      row.copy(priceMoves = moves)
+    })
+    NetworthAssetReportDTO(newRows, columns)
+  }
 }
 
-case class NetworthSubByAccountDTO(
+
+object AssetReportDTO {
+
+}
+
+case class AssetAccountDTO(
                                     accountId: AccountId,
                                     units: Fraction
                                   )
