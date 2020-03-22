@@ -60,13 +60,14 @@ case class NetworthAssetReportDTO(rows: Seq[AssetReportDTO], columns: Seq[Report
       units = 0,
       value = rows.map(_.value).reduce(_ + _),
       price = 0,
-      priceDate = Some(latestPriceDate),
+      priceDate = latestPriceDate,
       accountNetworth = Seq()
     )
   }
 
-  def latestPriceDate: LocalDate = {
-    rows.flatMap(_.priceDate).max
+  def latestPriceDate: Option[LocalDate] = {
+    val dts = rows.flatMap(_.priceDate)
+      if (dts.length>0) Some(dts.max) else None
   }
 
   private def priceMoveColumns(baseDate: LocalDate) = {
@@ -85,18 +86,20 @@ case class NetworthAssetReportDTO(rows: Seq[AssetReportDTO], columns: Seq[Report
   def withPriceMoves(baseCcy:AssetId, singleFXConverter: SingleFXConverter): NetworthAssetReportDTO = {
 
     val baseDate = latestPriceDate
-    val columns = priceMoveColumns(baseDate)
-    val newRows = rows.map(row => {
-      val baseFx = singleFXConverter.getFX(row.assetId, baseCcy, baseDate).getOrElse(0.0)
-      val moves = columns.map(col => {
-        val fx = singleFXConverter.getFX(row.assetId, baseCcy, col.value).getOrElse(0.0)
-        val change = if(fx != 0.0) (baseFx-fx)/fx else 0.0
-        col.name -> change
-      }).toMap
+    latestPriceDate.map( baseDate => {
+      val columns = priceMoveColumns(baseDate)
+      val newRows = rows.map(row => {
+        val baseFx = singleFXConverter.getFX(row.assetId, baseCcy, baseDate).getOrElse(0.0)
+        val moves = columns.map(col => {
+          val fx = singleFXConverter.getFX(row.assetId, baseCcy, col.value).getOrElse(0.0)
+          val change = if(fx != 0.0) (baseFx-fx)/fx else 0.0
+          col.name -> change
+        }).toMap
 
-      row.copy(priceMoves = moves)
-    })
-    NetworthAssetReportDTO(newRows, columns)
+        row.copy(priceMoves = moves)
+      })
+      NetworthAssetReportDTO(newRows, columns)
+    }).getOrElse(this)
   }
 }
 
