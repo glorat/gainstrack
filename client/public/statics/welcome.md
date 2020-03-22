@@ -28,9 +28,10 @@ For online use
 
 
 ### Release notes
-###### v0.11.0
+###### v1.0.0
 21 March
 - Mobile usable UI based on Quasar
+- Assets report
 
 ###### v0.10.0
 14 March
