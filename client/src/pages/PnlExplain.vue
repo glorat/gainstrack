@@ -47,6 +47,10 @@
                     <td class="num change" v-for="explainData in explains">{{ explainData.actual | amount}}</td>
                 </tr>
                 <tr>
+                    <td>(%)</td>
+                    <td class="num" v-for="explainData in explains"><template v-if="explainData.networthChange">{{ explainData.networthChange | perc}}</template></td>
+                </tr>
+                <tr>
                     <td class="total">Networth</td>
                     <td class="num total" v-for="explainData in explains"><template v-if="explainData.toNetworth">{{ explainData.toNetworth.toFixed(2) }}</template></td>
                 </tr>
@@ -147,10 +151,15 @@
                     toDate: this.selectedRange[1]
                 };
                 this.$router.push({name: 'pnldetail', params: args});
-            }
+            },
+            percChange(explainData) {
+                const denom = explainData.toNetworth ? explainData.toNetworth - explainData.actual : 0.0;
+                return (denom === 0.0) ? 0.0 : explainData.actual / denom;
+            },
         },
         filters: {
-            amount: (value) => value.toFixed(2)
+            amount: (value) => value.toFixed(2),
+            perc: (value) => (100*value).toFixed(1) + '%',
         },
         data() {
           // eslint-disable-next-line

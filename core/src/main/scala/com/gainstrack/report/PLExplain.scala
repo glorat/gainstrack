@@ -67,6 +67,9 @@ class PLExplain(startDate: LocalDate, toDate: LocalDate)
   // TODO: Explain newActivityPnl properly
   val explained = totalDeltaExplain + newActivityPnl + totalEquity + totalIncome + yieldIncome - totalExpense
   val unexplained = actualPnl - explained
+  val toNetworth = totalNetworthEnd.getBalance(baseCcy).number.toDouble
+  val changeDenom = toNetworth - actualPnl
+  val networthChange =  if(changeDenom != 0.0) Some(actualPnl / changeDenom) else None
 
 
   def toDTO = {
@@ -76,7 +79,7 @@ class PLExplain(startDate: LocalDate, toDate: LocalDate)
 //      "totalEquity" -> totalEquity, "totalIncome" -> totalIncome, "totalExpense" -> totalExpense, "totalDeltaExplain" -> totalDeltaExplain,
 //      "delta" -> deltaExplain
 //    )
-    PLExplainDTO(Some(startDate), Some(toDate),Some(totalNetworthEnd.getBalance(baseCcy).number.toDouble) ,actualPnl, explained, unexplained,
+    PLExplainDTO(Some(startDate), Some(toDate),Some(toNetworth), networthChange, actualPnl, explained, unexplained,
       newActivityPnl, newActivityByTx.map(x => PnlAccountComponent(x._1, x._2)).toSeq.sortBy(_.accountId),
       totalEquity, totalIncome, yieldIncome, totalExpense, totalDeltaExplain,
       deltaExplain.toSeq)
@@ -86,7 +89,7 @@ class PLExplain(startDate: LocalDate, toDate: LocalDate)
 
 case class PnlAccountComponent(accountId: String, explain: Double)
 case class PLExplainDTO(fromDate:Option[LocalDate], toDate:Option[LocalDate],
-                        toNetworth: Option[Double],
+                        toNetworth: Option[Double], networthChange: Option[Double],
                         actual:Double, explained:Double, unexplained:Double,
                         newActivityPnl: Double, newActivityByAccount: Seq[PnlAccountComponent],
                         totalEquity: Double,
@@ -101,6 +104,7 @@ case class PLExplainDTO(fromDate:Option[LocalDate], toDate:Option[LocalDate],
   def divide(n:Double): PLExplainDTO = {
     this.copy(
       actual = actual / n,
+      networthChange = None,
       explained = explained / n,
       unexplained = unexplained / n,
       newActivityPnl = newActivityPnl / n,
@@ -117,9 +121,14 @@ case class PLExplainDTO(fromDate:Option[LocalDate], toDate:Option[LocalDate],
 object PLExplainDTO {
 
   def total(exps: Iterable[PLExplainDTO]) : PLExplainDTO = {
+    val toNetworth = exps.lastOption.flatMap(_.toNetworth)
+    val networthChange = toNetworth.map(nw => exps.map(_.actual).sum / nw)
+
     PLExplainDTO(
       fromDate = None, toDate = None,
+      // toNetworth = exps.lastOption.flatMap(_.toNetworth),
       toNetworth = None,
+      networthChange = networthChange,
       actual = exps.map(_.actual).sum,
       explained = exps.map(_.explained).sum,
       unexplained = exps.map(_.unexplained).sum,
