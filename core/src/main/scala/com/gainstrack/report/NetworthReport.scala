@@ -70,6 +70,17 @@ case class NetworthAssetReportDTO(rows: Seq[AssetReportDTO], columns: Seq[Report
       if (dts.length>0) Some(dts.max) else None
   }
 
+  def bestPriceDate: Option[LocalDate] = {
+    val dts = rows.flatMap(_.priceDate)
+    if (dts.length>0) {
+      val cutOff = dts.max.minusDays(4)
+      val recentDts = dts.filter(_.isAfter(cutOff))
+      val bestDt = recentDts.groupBy(identity).maxBy(_._2.size)._1
+      Some(bestDt)
+    }
+    else None
+  }
+
   private def priceMoveColumns(baseDate: LocalDate) = {
 
     val dates = Seq(
@@ -85,8 +96,8 @@ case class NetworthAssetReportDTO(rows: Seq[AssetReportDTO], columns: Seq[Report
 
   def withPriceMoves(baseCcy:AssetId, singleFXConverter: SingleFXConverter): NetworthAssetReportDTO = {
 
-    val baseDate = latestPriceDate
-    latestPriceDate.map( baseDate => {
+    val baseDate = bestPriceDate
+    baseDate.map( baseDate => {
       val columns = priceMoveColumns(baseDate)
       val newRows = rows.map(row => {
         val baseFx = singleFXConverter.getFX(row.assetId, baseCcy, baseDate).getOrElse(0.0)
