@@ -192,17 +192,20 @@ class ApiController (implicit val ec :ExecutionContext)
 
   get("/account/:accountId/graph") {
     val bg = getGainstrack
+    val mktConvert = bg.liveFxConverter(ServerQuoteSource.db.priceFXConverter)
 
     val conversionStrategy = session.get("conversion").map(_.toString).getOrElse("parent")
     val toDate = currentDate
     val accountId : AccountId = params("accountId")
     val dailyBalance = DailyBalance(bg.balanceState)
 
-    // Get earliest tx date
-    val allDates = bg.txState.allTransactions.map(_.postDate)
+    // Get earliest tx date for this account
+    val allDates = bg.txState.allTransactions.filter(_.postings.exists(_.account.isSubAccountOf(accountId))).map(_.postDate)
     val startDate = if (allDates.isEmpty) today() else allDates.min
 
     dailyBalance.monthlySeries(accountId, conversionStrategy, startDate, toDate, bg.acctState, bg.priceFXConverter, bg.assetChainMap, bg.tradeFXConversion)
+    // dailyBalance.txSeries(accountId, conversionStrategy, startDate, toDate, bg.acctState, bg.priceFXConverter, bg.assetChainMap, bg.tradeFXConversion, bg.txState)
+    // dailyBalance.txSeries(accountId, conversionStrategy, startDate, toDate, bg.acctState, bg.priceFXConverter, bg.assetChainMap, mktConvert, bg.txState)
   }
 
   get ("/journal/") {

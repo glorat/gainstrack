@@ -12,6 +12,10 @@ case class DailyBalance(balanceState: BalanceState) {
     val end = YearMonth.from(endDate)
     val it = Iterator.iterate(startMonth)(_.plusMonths(1)).takeWhile(!_.isAfter(end))
     val dates = (for (ym <- it) yield ym.atDay(1)).map(x=>x).toVector :+ endDate
+    seriesForDates(accountId, conversionStrategy, acctState, priceState, assetChainMap, singleFXConversion, dates)
+  }
+
+  private def seriesForDates(accountId: AccountId, conversionStrategy: String, acctState: AccountState, priceState: PriceFXConverter, assetChainMap: AssetChainMap, singleFXConversion: SingleFXConverter, dates: Vector[LocalDate]) = {
     val values = dates.map(date => this.convertedPosition(accountId, date, conversionStrategy)(acctState = acctState, priceState = priceState, assetChainMap = assetChainMap, singleFXConversion))
     val ccys = values.flatMap(_.assetBalance.keySet).toSet
     val allSeries = ccys.map(ccy => {
@@ -21,7 +25,11 @@ case class DailyBalance(balanceState: BalanceState) {
     }).toSeq
 
     ApexOptions(allSeries)
+  }
 
+  def txSeries(accountId: AccountId, conversionStrategy: String, startDate: LocalDate, endDate: LocalDate, acctState: AccountState, priceState: PriceFXConverter, assetChainMap: AssetChainMap, singleFXConversion: SingleFXConverter, transactionState: TransactionState):ApexOptions = {
+    val dates = transactionState.txsUnderAccount(accountId).map(_.postDate).toVector
+    seriesForDates(accountId, conversionStrategy, acctState, priceState, assetChainMap, singleFXConversion, dates)
   }
 
 //  def positionOfAssets(assets:Set[AssetId], origAcctState:AccountState, priceState: PriceFXConverter, assetChainMap: AssetChainMap, date:LocalDate,
