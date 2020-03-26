@@ -1,6 +1,6 @@
 <template>
     <ol>
-    <li v-bind:key="acct.accountId" v-for="acct in node.children" v-bind:class="{toggled: acct.toggled}">
+    <li v-bind:key="acct.name" v-for="acct in node.children" v-bind:class="{toggled: toggled[acct.name]}">
         <p v-if="acct.assetBalance.length>0 && acct.assetBalance.filter(a => (Math.abs(a.number)>0.005)).length>0">
           <span
                   class="account-cell droptarget"
@@ -19,23 +19,32 @@
     </ol>
 </template>
 
+
 <script>
+    import { mapGetters } from 'vuex';
+
     export default {
         name: 'TreeTableNode',
         props: ['node', 'depth'],
         data() {
-            return {toggled: false}
+            return {
+                toggled: this.node.children.reduce((map, obj) => {
+                    map[obj.name] = this.$store.getters.mainAccounts.includes(obj.name);
+                    return map;
+                }, {}),
+            }
         },
         computed: {
             classObject() {
                 const ret = {};
                 ret['depth-' + this.depth] = true;
                 return ret;
-            }
+            },
+            ...mapGetters(['mainAccounts']),
         },
         methods: {
             onToggle(acct) {
-                this.$set(acct, 'toggled', !acct.toggled);
+                this.$set(this.toggled, acct.name, !this.toggled[acct.name]);
             }
         }
     }
