@@ -106,9 +106,12 @@ export const useAuth0 = ({
         client_id: options.clientId,
         audience: options.audience,
         redirect_uri: redirectUri
+      }).then(client => {
+          this.auth0Client = client;
+          return client;
       })
 
-      this.auth0Client = await this.auth0ClientPromise;
+      const client = await this.auth0ClientPromise;
 
       try {
         // If the user is returning to the app after authentication..
@@ -117,7 +120,7 @@ export const useAuth0 = ({
           window.location.search.includes('state=')
         ) {
           // handle the redirect and retrieve tokens
-          const { appState } = await this.auth0Client.handleRedirectCallback();
+          const { appState } = await client.handleRedirectCallback();
 
           // Notify subscribers that the redirect callback has happened, passing the appState
           // (useful for retrieving any pre-authentication state)
@@ -127,8 +130,8 @@ export const useAuth0 = ({
         this.error = e;
       } finally {
         // Initialize our internal authentication state
-        this.isAuthenticated = await this.auth0Client.isAuthenticated();
-        this.user = await this.auth0Client.getUser();
+        this.isAuthenticated = await client.isAuthenticated();
+        this.user = await client.getUser();
         this.loading = false;
       }
     }

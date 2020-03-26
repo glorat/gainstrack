@@ -120,6 +120,7 @@
             async autoLogin() {
                 const notify = this.$notify;
                 try {
+                    await this.$auth.auth0ClientPromise;
                     const token = await this.$auth.getTokenSilently();
                     if (token) {
                         notify.success('Welcome Back!');
@@ -133,10 +134,7 @@
             }
         },
         mounted() {
-            this.$auth.auth0ClientPromise.then(() => {
-                this.autoLogin();
-            });
-
+            this.autoLogin();
         }
     }
 </script>
