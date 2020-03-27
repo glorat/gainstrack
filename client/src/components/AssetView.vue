@@ -72,7 +72,7 @@
             }, {
                 name: 'value',
                 field: 'value',
-                label: 'Value',
+                label: this.$store.getters.baseCcy + ' Value',
                 classes: ['num'],
                 sortable: true,
                 format: (val: number) => `${val.toFixed(2)}`

@@ -1,9 +1,9 @@
 <template>
 <my-page padding>
-    <q-tabs v-model="tab">
-        <q-tab name="statement" label="Statements"></q-tab>
-        <q-tab name="journal" label="Journal" v-if="hasJournal"></q-tab>
-        <q-tab name="assets" label="Assets"></q-tab>
+    <q-tabs v-model="tab" inline-label class="bg-secondary text-white">
+        <q-tab name="assets" icon="assignment" label="Balance"></q-tab>
+        <q-tab name="statement" icon="account_balance" label="Statements"></q-tab>
+        <q-tab name="journal" icon="edit" label="Journal" v-if="hasJournal"></q-tab>
     </q-tabs>
 
     <q-tab-panels v-model="tab" animated>
@@ -50,7 +50,7 @@
             return {
                 info: {accountId: 'Loading...', rows: []},
                 assetResponse: {rows:[], columns:[]},
-                tab: 'statement'
+                tab: 'assets'
             };
         },
         computed: {

@@ -59,7 +59,7 @@ case class ReportColumn[T] (
                tag: String
                )
 
-case class NetworthAssetReportDTO(rows: Seq[AssetReportDTO], columns: Seq[ReportColumn[LocalDate]], total: Seq[AssetReportDTO]) {
+case class NetworthAssetReportDTO(rows: Seq[AssetReportDTO], columns: Seq[ReportColumn[LocalDate]], totals: Seq[AssetReportDTO]) {
 
   def latestPriceDate: Option[LocalDate] = {
     NetworthAssetReportDTO.latestPriceDateFor(rows)
@@ -104,7 +104,7 @@ case class NetworthAssetReportDTO(rows: Seq[AssetReportDTO], columns: Seq[Report
 
         row.copy(priceMoves = moves)
       })
-      NetworthAssetReportDTO(newRows, columns, this.total)
+      NetworthAssetReportDTO(newRows, columns, this.totals)
     }).getOrElse(this)
   }
 }
