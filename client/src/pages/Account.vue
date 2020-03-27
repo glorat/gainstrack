@@ -2,7 +2,8 @@
 <my-page padding>
     <q-tabs v-model="tab">
         <q-tab name="statement" label="Statements"></q-tab>
-        <q-tab name="journal" label="Journal"></q-tab>
+        <q-tab name="journal" label="Journal" v-if="hasJournal"></q-tab>
+        <q-tab name="assets" label="Assets"></q-tab>
     </q-tabs>
 
     <q-tab-panels v-model="tab" animated>
@@ -22,6 +23,9 @@
             <account-journal :accountId="accountId"></account-journal>
         </q-tab-panel>
 
+        <q-tab-panel name="assets">
+            <asset-view :assetResponse="assetResponse" :loading="false"></asset-view>
+        </q-tab-panel>
 
     </q-tab-panels>
 
@@ -35,18 +39,27 @@
     import ConversionSelect from '@/components/ConversionSelect.vue';
     import AccountGraph from '@/components/AccountGraph.vue';
     import AccountJournal from '@/components/AccountJournal.vue';
+    import AssetView from '@/components/AssetView.vue';
+    import { mapGetters } from 'vuex';
 
     export default {
         name: 'Account',
-        components: {AccountGraph, ConversionSelect, JournalTable, AccountJournal},
+        components: {AccountGraph, ConversionSelect, JournalTable, AccountJournal, AssetView},
         props: ['accountId'],
         data() {
             return {
                 info: {accountId: 'Loading...', rows: []},
+                assetResponse: {rows:[], columns:[]},
                 tab: 'statement'
             };
         },
         computed: {
+            ...mapGetters([
+                'mainAccounts',
+            ]),
+            hasJournal() {
+                return this.mainAccounts.includes(this.accountId);
+            },
             conversion() {
                 return this.$store.state.summary.conversion;
             }
@@ -57,10 +70,16 @@
             }
         },
         methods: {
-          refresh(path) {
-              axios.get('/api/account/' + path)
-                  .then(response => this.info = response.data)
-                  .catch(error => this.$notify.error(error))
+          async refresh(path) {
+              try {
+                  const response = await axios.get('/api/account/' + path);
+                  this.info = response.data;
+                  const res2 = await axios.get('/api/assets/' + path);
+                  this.assetResponse = res2.data;
+              }
+              catch(error) {
+                  this.$notify.error(error);
+              }
           }
         },
         mounted() {

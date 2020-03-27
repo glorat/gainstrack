@@ -65,3 +65,31 @@ export interface StateSummaryDTO {
 export interface AuthenticationDTO {
     username: string
 }
+
+
+export interface NetworthByAsset {
+    assetId: string
+    value: number
+    price: number
+    priceDate: string
+    priceMoves: Record<string, number>
+}
+
+export interface AssetColumn {
+    name: string,
+    label: string | number
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    field: string | ((row: any) => any)
+    classes?: string[]
+    align?: string
+    sortable?: boolean
+    format?: (val: number) => string
+    tag?: string
+    value?: string
+}
+
+export interface AssetResponse {
+    rows: NetworthByAsset[]
+    columns: Array<Record<string, any>>
+    totals: NetworthByAsset[]
+}

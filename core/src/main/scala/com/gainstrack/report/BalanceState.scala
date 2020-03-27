@@ -60,6 +60,14 @@ case class BalanceState(acctState:AccountState, balances:Map[AccountId,BalanceSt
     })
   }
 
+  def totalPosition(accountfilter: AccountId => Boolean, date: LocalDate) : PositionSet = {
+    val keys = this.balances.keys.toSeq.filter(accountfilter)
+    keys.foldLeft(PositionSet())((ps,account) => {
+      val balOpt = this.getBalanceOpt(account, date)
+      balOpt.map(ps + _).getOrElse(ps)
+    })
+  }
+
   override def handle(e: DomainEvent): BalanceState = {
     e match {
       case _:GlobalCommand => this

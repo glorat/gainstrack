@@ -2,15 +2,21 @@ package com.gainstrack.report
 
 import java.time.Duration
 
+import com.gainstrack.command.AccountCreation
 import com.gainstrack.core._
 
 object NetworthReport {
-  def byAsset(date: LocalDate, baseCcy: AssetId)(accountState: AccountState, balanceState: BalanceState, assetState: AssetState, singleFXConverter: SingleFXConverter) = {
-    val nw = networth(date)(balanceState)
+  val networthAccounts : AccountId=>Boolean = _.accountType match {
+    case Assets | Liabilities => true;
+    case _ => false
+  }
+
+  def byAsset(date: LocalDate, baseCcy: AssetId, accountFilter:AccountId=>Boolean = networthAccounts)(accountState: AccountState, balanceState: BalanceState, assetState: AssetState, singleFXConverter: SingleFXConverter) = {
+    val nw = balanceState.totalPosition(accountFilter, date)
 
     val assets = assetState.allAssets.values.toSeq.sortBy(_.asset.symbol)
     val rows = assets.map(assetInfo => {
-      val nwAccounts = accountState.mainAccounts.filter(_.accountId.accountType match {case Assets|Liabilities => true; case _ => false})
+      val nwAccounts = accountState.mainAccounts.filter(acct => accountFilter(acct.accountId))
       val accountNetworth = nwAccounts.toSeq.flatMap(acct => {
         balanceState.totalPosition(acct.accountId, date).assetBalance.get(assetInfo.asset).map( units => {
           AssetAccountDTO(acct.accountId, units)
@@ -53,21 +59,10 @@ case class ReportColumn[T] (
                tag: String
                )
 
-case class NetworthAssetReportDTO(rows: Seq[AssetReportDTO], columns: Seq[ReportColumn[LocalDate]] = Seq()) {
-  def total: AssetReportDTO = {
-    AssetReportDTO (
-      assetId = AssetId("TOTAL"),
-      units = 0,
-      value = rows.map(_.value).reduce(_ + _),
-      price = 0,
-      priceDate = latestPriceDate,
-      accountNetworth = Seq()
-    )
-  }
+case class NetworthAssetReportDTO(rows: Seq[AssetReportDTO], columns: Seq[ReportColumn[LocalDate]], total: Seq[AssetReportDTO]) {
 
   def latestPriceDate: Option[LocalDate] = {
-    val dts = rows.flatMap(_.priceDate)
-      if (dts.length>0) Some(dts.max) else None
+    NetworthAssetReportDTO.latestPriceDateFor(rows)
   }
 
   def bestPriceDate: Option[LocalDate] = {
@@ -109,11 +104,34 @@ case class NetworthAssetReportDTO(rows: Seq[AssetReportDTO], columns: Seq[Report
 
         row.copy(priceMoves = moves)
       })
-      NetworthAssetReportDTO(newRows, columns)
+      NetworthAssetReportDTO(newRows, columns, this.total)
     }).getOrElse(this)
   }
 }
 
+object NetworthAssetReportDTO {
+  def apply (rows: Seq[AssetReportDTO]) : NetworthAssetReportDTO = {
+    NetworthAssetReportDTO(rows, Seq(), Seq(totalFor(rows)))
+  }
+
+  private def totalFor(rows: Seq[AssetReportDTO]): AssetReportDTO = {
+    AssetReportDTO (
+      assetId = AssetId("TOTAL"),
+      units = 0,
+      value = rows.map(_.value).reduce(_ + _),
+      price = 0,
+      priceDate = latestPriceDateFor(rows),
+      accountNetworth = Seq()
+    )
+  }
+
+  private def latestPriceDateFor(rows: Seq[AssetReportDTO]): Option[LocalDate] = {
+    val dts = rows.flatMap(_.priceDate)
+    if (dts.length>0) Some(dts.max) else None
+  }
+
+
+}
 
 object AssetReportDTO {
 

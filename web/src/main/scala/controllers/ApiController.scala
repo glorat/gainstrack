@@ -97,12 +97,28 @@ class ApiController (implicit val ec :ExecutionContext)
       ).toMap)
   }
 
+
+  get("/assets/:accountId") {
+    val bg = getGainstrack
+    val mktConvert = bg.liveFxConverter(ServerQuoteSource.db.priceFXConverter)
+    val accountId = params("accountId")
+
+    val fromDate = defaultFromDate
+    val toDate = currentDate
+
+    val nwByAsset = NetworthReport.byAsset(currentDate, bg.acctState.baseCurrency, _.isSubAccountOf(accountId))(bg.acctState, bg.balanceState, bg.assetState, mktConvert)
+    nwByAsset.withPriceMoves(bg.acctState.baseCurrency, mktConvert)
+
+  }
+
+
   get ("/assets/networth") {
     val bg = getGainstrack
     val mktConvert = bg.liveFxConverter(ServerQuoteSource.db.priceFXConverter)
     val nwByAsset = NetworthReport.byAsset(currentDate, bg.acctState.baseCurrency)(bg.acctState, bg.balanceState, bg.assetState, mktConvert)
     nwByAsset.withPriceMoves(bg.acctState.baseCurrency, mktConvert)
   }
+
 
 
   get("/irr/") {
