@@ -14,7 +14,7 @@ class BalanceConversion(
     val positions: PositionSet = acctToPosition(acct)
     val converted = conversionStrategy match {
       case "" | "parent" =>
-        positions.convertViaChain(thisCcy, assetChainMap(acct), priceState, date)
+        positions.convertViaChain(thisCcy, assetChainMap(acct), singleFXConversion, date)
       case "units" =>
         positions.convertViaChain(AssetId("NOVALIDUNIT"), assetChainMap(acct).takeRight(1), priceState, date)
       case "global" => {

@@ -45,9 +45,10 @@ class ApiController (implicit val ec :ExecutionContext)
   def tables(keys:Seq[String]) = {
     val bg = getGainstrack
     val conversionStrategy = session.get("conversion").map(_.toString).getOrElse("parent")
+    val mktConvert = bg.liveFxConverter(ServerQuoteSource.db.priceFXConverter)
 
     val toDate = currentDate
-    val treeTable = new BalanceTreeTable(toDate, conversionStrategy, _=>true)(bg.acctState, bg.priceFXConverter, bg.assetChainMap, bg.dailyBalances, bg.tradeFXConversion)
+    val treeTable = new BalanceTreeTable(toDate, conversionStrategy, _=>true)(bg.acctState, bg.priceFXConverter, bg.assetChainMap, bg.dailyBalances, mktConvert)
 
     keys.map(key => key -> treeTable.toTreeTable(AccountId(key))).toMap
   }

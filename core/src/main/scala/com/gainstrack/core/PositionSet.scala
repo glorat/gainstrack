@@ -45,7 +45,7 @@ case class PositionSet(assetBalance:Map[AssetId, Fraction]) {
     assetBalance.foldLeft(PositionSet())(convertEntry)
   }
 
-  def convertViaChain(tgtCcy: AssetId, ccyChain: Seq[AssetId], priceState: PriceFXConverter, date:LocalDate) : PositionSet = {
+  def convertViaChain(tgtCcy: AssetId, ccyChain: Seq[AssetId], priceState: FXConverter, date:LocalDate) : PositionSet = {
     require(ccyChain.headOption.isDefined, s"No ccyChain was passed for $tgtCcy")
     ccyChain match {
       case h :: _ if (h == tgtCcy) => this
