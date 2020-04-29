@@ -49,8 +49,16 @@ object JettyLauncher { // this is my entry object as specified in sbt project de
 
     val quoteSyncThread = new Runnable() {
       override def run(): Unit = {
-        SyncUp.main(Seq().toArray)
-        ServerQuoteSource.updateDB
+        try {
+          SyncUp.main(Seq().toArray)
+          ServerQuoteSource.updateDB
+        }
+        catch {
+          case e:Exception => {
+            Console.err.println("QuoteSyncUp failed this time")
+            Console.err.println(e.toString)
+          }
+        }
       }
     }
 
