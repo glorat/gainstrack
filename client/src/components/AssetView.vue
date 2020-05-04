@@ -24,7 +24,6 @@
 
 <script lang="ts">
     import Vue from 'vue';
-    import { sum } from 'lodash';
     import { date } from 'quasar';
     import {NetworthByAsset, AssetColumn, AssetResponse} from '@/models';
 

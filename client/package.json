@@ -41,7 +41,6 @@
   "devDependencies": {
     "@quasar/app": "^1.7.4",
     "@quasar/quasar-app-extension-dotenv": "^1.0.1",
-    "@quasar/quasar-app-extension-typescript": "^1.0.1",
     "@types/chai": "^4.2.11",
     "@types/lodash": "^4.14.150",
     "@types/marked": "^0.7.4",

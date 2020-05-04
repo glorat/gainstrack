@@ -3,6 +3,8 @@
 
 module.exports = function (ctx) {
   return {
+      supportTS: true,
+
     // Quasar looks for *.js files by default
     sourceFiles: {
       router: 'src/router/index.ts',
