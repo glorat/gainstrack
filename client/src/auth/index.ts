@@ -1,6 +1,11 @@
 import Auth0Client from '@auth0/auth0-spa-js/dist/typings/Auth0Client';
 import Vue from 'vue';
-import createAuth0Client from '@auth0/auth0-spa-js';
+import createAuth0Client, {
+    getIdTokenClaimsOptions,
+    GetTokenSilentlyOptions,
+    GetTokenWithPopupOptions, LogoutOptions,
+    PopupLoginOptions, RedirectLoginOptions
+} from '@auth0/auth0-spa-js';
 import {PluginFunction, PluginObject} from 'vue/types/plugin';
 
 /** Define a default action to perform after authentication */
