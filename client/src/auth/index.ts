@@ -105,12 +105,18 @@ export const useAuth0 = ({
     },
     /** Use this lifecycle method to instantiate the SDK client */
     async created() {
+        const moreOpts = {
+            useRefreshTokens: true,
+            cacheLocation: (process.env.NODE_ENV === 'development') ? 'localstorage' : 'memory' as "memory"|"localstorage"
+        };
+        
       // Create a new instance of the SDK client using members of the given options object
       this.auth0ClientPromise = createAuth0Client({
         domain: options.domain,
         client_id: options.clientId,
         audience: options.audience,
-        redirect_uri: redirectUri
+        redirect_uri: redirectUri,
+        ...moreOpts
       }).then(client => {
           this.auth0Client = client;
           return client;
