@@ -32,7 +32,6 @@
     import {QuoteConfig} from '@/models';
     import {Table, TableColumn} from 'element-ui';
     import Vue from 'vue';
-    import axios from 'axios';
 
     interface MyData {
         quoteConfig: QuoteConfig,
@@ -83,7 +82,8 @@
         methods: {
             async handleCurrentChange(val: QuoteConfig) {
                 this.currentRow = val;
-                const response = await axios.get('/api/quotes/ticker/' + val.avSymbol);
+                const response = {data: await this.$store.dispatch('loadQuotes', val.avSymbol)};
+                // const response = await axios.get('/api/quotes/ticker/' + val.avSymbol);
                 const series = {
                     ...response.data,
                     type: 'scatter',

@@ -109,7 +109,7 @@ export const useAuth0 = ({
             useRefreshTokens: true,
             cacheLocation: (process.env.NODE_ENV === 'development') ? 'localstorage' : 'memory' as "memory"|"localstorage"
         };
-        
+
       // Create a new instance of the SDK client using members of the given options object
       this.auth0ClientPromise = createAuth0Client({
         domain: options.domain,

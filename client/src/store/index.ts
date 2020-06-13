@@ -5,6 +5,12 @@ import {AccountCommandDTO, AccountDTO, AllState, QuoteConfig, StateSummaryDTO} f
 
 Vue.use(Vuex);
 
+interface TimeSeries {
+    x: string[]
+    y: number[]
+    name:string
+}
+
 interface MyState {
     allState?: AllState,
     count: number,
@@ -12,7 +18,8 @@ interface MyState {
     quoteConfig: QuoteConfig[],
     balances: AccountBalances,
     parseState: object,
-    gainstrackText: string
+    gainstrackText: string,
+    quotes: Record<string, TimeSeries>
 }
 
 const initState: MyState = {
@@ -29,6 +36,7 @@ const initState: MyState = {
     balances: {},
     parseState: {errors: []},
     gainstrackText: '',
+    quotes: {},
 };
 
 export default new Vuex.Store({
@@ -58,6 +66,9 @@ export default new Vuex.Store({
         },
         allStateLoaded(state, data:AllState) {
             state.allState = data;
+        },
+        quotesUpserted(state, data: {key: string, series: TimeSeries}) {
+            state.quotes[data.key] = data.series;
         }
     },
     actions: {
@@ -71,6 +82,16 @@ export default new Vuex.Store({
                         context.commit('balances', response.data);
                         return response;
                     });
+            }
+        },
+        async loadQuotes(context, key: string): Promise<TimeSeries> {
+            if (context.state.quotes[key]) {
+                return context.state.quotes[key];
+            } else {
+                const response = await axios.get('/api/quotes/ticker/' + key);
+                const series: TimeSeries = response.data;
+                context.commit('quotesUpserted', {key, series});
+                return series;
             }
         },
         async gainstrackText(context) {
