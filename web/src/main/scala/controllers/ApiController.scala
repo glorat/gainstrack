@@ -7,15 +7,13 @@ import com.gainstrack.command.{AccountCreation, GainstrackParser, ParserMessage}
 import com.gainstrack.core._
 import com.gainstrack.quotes.av.{DbState, Main, QuoteConfig}
 import com.gainstrack.report.{AccountInvestmentReport, AssetAllocation, BalanceReport, DailyBalance, FXChain, FXMapped, GainstrackGenerator, IrrSummary, NetworthReport, PLExplain, PLExplainDTO, TimeSeries}
-import com.gainstrack.web.{AuthenticationSupport, BalanceTreeTable, GainstrackJsonSerializers, GainstrackSupport, StateSummaryDTO, TimingSupport}
+import com.gainstrack.web.{AccountIdKeySerializer, AuthenticationSupport, BalanceTreeTable, GainstrackJsonSerializers, GainstrackSupport, StateSummaryDTO, TimingSupport}
 import org.json4s.{DefaultFormats, Formats, JValue}
 import org.scalatra.{NotFound, ScalatraServlet}
 import org.scalatra.json._
 import org.slf4j.LoggerFactory
 
 import scala.concurrent.ExecutionContext
-
-
 
 class ApiController (implicit val ec :ExecutionContext)
   extends ScalatraServlet
@@ -25,7 +23,7 @@ class ApiController (implicit val ec :ExecutionContext)
     with TimingSupport {
   val logger =  LoggerFactory.getLogger(getClass)
 
-  protected implicit val jsonFormats: Formats = org.json4s.DefaultFormats ++ GainstrackJsonSerializers.all
+  protected implicit val jsonFormats: Formats = org.json4s.DefaultFormats ++ GainstrackJsonSerializers.all addKeySerializers GainstrackJsonSerializers.allKeys
 
   private def currentDate: LocalDate = {
     // TODO: Pull the clock from the user's profile timezone
@@ -404,6 +402,9 @@ class ApiController (implicit val ec :ExecutionContext)
     getHistory
   }
 
+  get("/allState") {
+    getGainstrack.allState + ("quoteDB" -> ServerQuoteSource.db.priceFXConverter)
+  }
 /*
   error {
     case e: Throwable => {

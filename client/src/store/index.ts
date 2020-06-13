@@ -1,11 +1,12 @@
 import axios from 'axios';
 import Vue from 'vue';
 import Vuex from 'vuex';
-import {AccountCommandDTO, AccountDTO, QuoteConfig, StateSummaryDTO} from '@/models';
+import {AccountCommandDTO, AccountDTO, AllState, QuoteConfig, StateSummaryDTO} from '@/models';
 
 Vue.use(Vuex);
 
 interface MyState {
+    allState?: AllState,
     count: number,
     summary: StateSummaryDTO,
     quoteConfig: QuoteConfig[],
@@ -55,6 +56,9 @@ export default new Vuex.Store({
         gainstrackText(state, data: string) {
             state.gainstrackText = data;
         },
+        allStateLoaded(state, data:AllState) {
+            state.allState = data;
+        }
     },
     actions: {
         increment(context) {
@@ -94,6 +98,12 @@ export default new Vuex.Store({
             await context.commit('reloadedQuotesConfig', quotesConfig.data)
             // Since components don't know to retrigger this if already on display, let's get it for them
             await context.dispatch('balances');
+            await context.dispatch('loadAllState');
+            return response;
+        },
+        async loadAllState(context) {
+            const response = await axios.get('/api/allState');
+            await context.commit('allStateLoaded', response.data);
             return response;
         },
         async dateOverride(context, d: string) {
@@ -104,7 +114,8 @@ export default new Vuex.Store({
             const summary = await axios.post('/api/authn/login', data);
             await context.commit('reloaded', summary.data);
             // Get stuff in background
-            context.dispatch('balances');
+            await context.dispatch('balances');
+            await context.dispatch('loadAllState');
             return summary;
         },
         async loginWithToken(context, token: string) {
@@ -117,7 +128,8 @@ export default new Vuex.Store({
             const summary = await axios.post('/api/authn/login', {});
             await context.commit('reloaded', summary.data);
             // Get stuff in background
-            context.dispatch('balances');
+            await context.dispatch('balances');
+            await context.dispatch('loadAllState');
             return summary;
         },
         async logout(context, data: object) {

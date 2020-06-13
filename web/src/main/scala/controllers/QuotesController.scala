@@ -31,7 +31,8 @@ class QuotesController(implicit val ec :ExecutionContext)
       .map ( data => {
         Map("x" -> data.ks, "y" -> data.vs, "name" -> ticker)
     }).getOrElse(
-      NotFound(s"${ticker} does not exist")
+      Map("x" -> Seq(), "y" -> Seq(), "name" -> ticker)
+      // NotFound(s"${ticker} does not exist")
     )
   }
 

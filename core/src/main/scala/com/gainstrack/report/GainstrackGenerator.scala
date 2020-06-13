@@ -50,6 +50,16 @@ case class GainstrackGenerator(originalCommands:Seq[AccountCommand])  {
   val proxyMapper = new FXMapperGenerator(assetState).proxyMapper
   val latestDate:LocalDate = finalCommands.maxBy(_.date).date
 
+  def allState:Map[String, Any] = {
+    Map(
+      "acctState" -> acctState,
+      "balances" -> balanceState.balances,
+      "txs" -> txState.cmds,
+      "priceState" -> priceState,
+      "assetState" -> assetState
+    )
+  }
+
   val endTime = Instant.now
 
   def networth(date: LocalDate): PositionSet = {

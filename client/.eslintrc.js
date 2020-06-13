@@ -39,9 +39,7 @@ module.exports = {
   // `parser: 'vue-eslint-parser'` is already included with any 'plugin:vue/**' config and should be omitted
   parserOptions: {
     parser: '@typescript-eslint/parser',
-    sourceType: 'module',
-    project: './tsconfig.json',
-      extraFileExtensions: ['.vue']
+    sourceType: 'module'
   },
 
   env: {

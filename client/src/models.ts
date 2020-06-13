@@ -93,3 +93,61 @@ export interface AssetResponse {
     columns: Array<Record<string, any>>
     totals: NetworthByAsset[]
 }
+
+export interface Posting {
+    account: string
+    value: Amount
+}
+
+export interface Transaction  {
+    accountId: string
+    origin: AccountCommandDTO
+    description: string
+    id: number
+    postDate: string
+    postings: Posting[]
+}
+
+export interface AccountState {
+    accounts: AccountCommandDTO[]
+    baseCurrency: string
+}
+
+export interface AssetOptions extends Record<string, any> {
+    tags: string[]
+    ticker?: string
+    proxy?: string
+}
+
+export interface AssetDTO {
+    date: string,
+    asset: string,
+    options: AssetOptions
+}
+
+export interface AssetState {
+    allAssets: AssetDTO[]
+    assetToTags: Record<string, string[]>
+    tagToAssets: Record<string, string[]>
+}
+
+export interface BalanceStateSeries {
+    series: Record<string, number>
+    ccy: string
+}
+
+type LocalDate = string
+
+export interface PriceState {
+    ccys: string[]
+    // key: assetPair
+    prices: Record<string, Record<LocalDate, number>>
+}
+
+export interface AllState {
+    acctState: AccountState
+    assetState: AssetState
+    balances: Record<string, BalanceStateSeries>
+    txs: Transaction|AccountCommandDTO[]
+    priceState: PriceState
+}
