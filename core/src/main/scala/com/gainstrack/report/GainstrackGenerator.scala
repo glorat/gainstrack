@@ -56,7 +56,10 @@ case class GainstrackGenerator(originalCommands:Seq[AccountCommand])  {
       "balances" -> balanceState.balances,
       "txs" -> txState.cmds,
       "priceState" -> priceState,
-      "assetState" -> assetState
+      "assetState" -> assetState,
+      "tradeFx" -> tradeFXConversion,
+      "fxMapper" -> fxMapper, // Should be redundant one day
+      "proxyMapper" -> proxyMapper // Also should become redundant
     )
   }
 

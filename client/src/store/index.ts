@@ -1,18 +1,18 @@
 import axios from 'axios';
 import Vue from 'vue';
 import Vuex from 'vuex';
-import {AccountCommandDTO, AccountDTO, AllState, QuoteConfig, StateSummaryDTO} from '@/models';
+import { AccountCommandDTO, AccountDTO, AllState, emptyAllState, QuoteConfig, StateSummaryDTO } from '@/models';
 
 Vue.use(Vuex);
 
-interface TimeSeries {
+export interface TimeSeries {
     x: string[]
     y: number[]
     name:string
 }
 
-interface MyState {
-    allState?: AllState,
+export interface MyState {
+    allState: AllState,
     count: number,
     summary: StateSummaryDTO,
     quoteConfig: QuoteConfig[],
@@ -23,6 +23,7 @@ interface MyState {
 }
 
 const initState: MyState = {
+  allState: emptyAllState,
     count: 0,
     summary: {
         baseCcy: 'USD',
@@ -68,7 +69,8 @@ export default new Vuex.Store({
             state.allState = data;
         },
         quotesUpserted(state, data: {key: string, series: TimeSeries}) {
-            state.quotes[data.key] = data.series;
+          Vue.set(state.quotes, data.key, data.series);
+            // state.quotes[data.key] = data.series;
         }
     },
     actions: {
@@ -88,9 +90,13 @@ export default new Vuex.Store({
             if (context.state.quotes[key]) {
                 return context.state.quotes[key];
             } else {
+              // Commit a placeholder first to prevent stampeding horde
+              console.log(`Loading quotes for ${key}`);
+              context.commit('quotesUpserted', {key, series:{x:[], y:[], name:key}});
                 const response = await axios.get('/api/quotes/ticker/' + key);
                 const series: TimeSeries = response.data;
                 context.commit('quotesUpserted', {key, series});
+                console.log(`Applied quotes for ${key}`);
                 return series;
             }
         },

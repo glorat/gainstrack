@@ -24,6 +24,7 @@
     "axios": "^0.19.2",
     "codemirror": "^5.53.2",
     "core-js": "^3.6.5",
+    "date-fns": "^2.14.0",
     "element-ui": "^2.13.1",
     "firebase": "^7.14.2",
     "lodash": "latest",

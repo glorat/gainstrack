@@ -403,7 +403,7 @@ class ApiController (implicit val ec :ExecutionContext)
   }
 
   get("/allState") {
-    getGainstrack.allState + ("quoteDB" -> ServerQuoteSource.db.priceFXConverter)
+    getGainstrack.allState
   }
 /*
   error {

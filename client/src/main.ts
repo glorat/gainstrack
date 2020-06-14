@@ -1,8 +1,8 @@
-import MyPage from '@/components/MyPage.vue';
+import MyPage from 'src/components/MyPage.vue';
 import {Notification} from 'element-ui';
 import store from './store';
 import router from './router';
-import App from './OrigApp.vue';
+import App from 'src/OrigApp.vue';
 import Vue from 'vue';
 
 Vue.prototype.$notify = Notification;

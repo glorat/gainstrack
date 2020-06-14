@@ -145,9 +145,23 @@ export interface PriceState {
 }
 
 export interface AllState {
-    acctState: AccountState
-    assetState: AssetState
-    balances: Record<string, BalanceStateSeries>
-    txs: Transaction|AccountCommandDTO[]
-    priceState: PriceState
+  acctState: AccountState
+  assetState: AssetState
+  balances: Record<string, BalanceStateSeries>
+  txs: Transaction | AccountCommandDTO[]
+  priceState: PriceState
+  tradeFx: { baseCcy: string, data: Record<string, { ks: string[], vs: number[] }> }
+  fxMapper: Record<string, string>,
+  proxyMapper: Record<string, string>,
+}
+
+export const emptyAllState: AllState = {
+  acctState: {accounts:[], baseCurrency: 'USD'},
+  assetState: {allAssets:[], assetToTags:{}, tagToAssets:{}},
+  balances: {},
+  txs: [],
+  priceState: {ccys:[], prices:{} },
+  tradeFx: {baseCcy: 'USD', data:{}},
+  fxMapper: {},
+  proxyMapper:{}
 }

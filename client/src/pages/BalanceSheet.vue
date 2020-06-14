@@ -22,9 +22,9 @@
 </template>
 
 <script>
-    import TreeTable from '@/components/TreeTable';
-    import ConversionSelect from '@/components/ConversionSelect';
-    import AccountGraph from '@/components/AccountGraph';
+    import TreeTable from 'src/components/TreeTable.vue';
+    import ConversionSelect from 'src/components/ConversionSelect.vue';
+    import AccountGraph from 'src/components/AccountGraph.vue';
 
     export default {
         name: 'BalanceSheet',
