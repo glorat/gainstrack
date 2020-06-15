@@ -17,13 +17,13 @@ case class CommandAccountExpander(acctState:AccountState, cmds:Seq[AccountComman
        case cmd:CommandWithAccounts[_] => {
          val newAcctIds =
            cmd.toTransfers
-             .map(_.toTransaction).flatMap(_.filledPostings).map(_.account)
+             .map(_.toTransaction).flatMap(_.postings).map(_.account)
            .filter(id => !accountSet.exists(_.accountId == id))
          newAcctIds.foldLeft(acctState)(_.withInferredAccount(_))
        }
        case bal: BalanceAdjustment => {
          val newAcctIds = bal.toTransfers(acctState.accounts, bal.balance + 9999 /* fake non-zero */)
-           .map(_.toTransaction).flatMap(_.filledPostings).map(_.account)
+           .map(_.toTransaction).flatMap(_.postings).map(_.account)
            .filter(id => !accountSet.exists(_.accountId == id))
          newAcctIds.foldLeft(acctState)(_.withInferredAccount(_))
 
@@ -39,7 +39,7 @@ case class CommandAccountExpander(acctState:AccountState, cmds:Seq[AccountComman
        }
        case bal: BalanceStatement => {
          val newAcctIds = bal.toTransfers(acctState.accounts, bal.balance + 9999 /* fake non-zero */)
-           .map(_.toTransaction).flatMap(_.filledPostings).map(_.account)
+           .map(_.toTransaction).flatMap(_.postings).map(_.account)
            .filter(id => !accountSet.exists(_.accountId == id))
          newAcctIds.foldLeft(acctState)(_.withInferredAccount(_))
        }

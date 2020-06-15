@@ -34,19 +34,6 @@ class TransactionAmountTest extends FlatSpec {
     assert(p4.toString == "Asset:Account 10.0 SOME {2.02 USD} @2.5 USD")
   }
 
-  "Transactions" should "interpolate one posting" in {
-    //2012-11-03 * "Transfer to pay credit card"
-    //  Assets:MyBank:Checking            -400.00 USD
-    //  Liabilities:CreditCard
-    val tx = Transaction("2012-11-03", "Transfer to pay credit card", Seq(
-      Posting("Assets:MyBank:Checking", Amount(-400.00, "USD")),
-      Posting("Assets:MyBank:Checking")
-    ), null)
-
-    assert(tx.postings(1).value.isEmpty)
-    assert(tx.filledPostings(1).value.get == Amount(400, "USD"))
-  }
-
   "Security Purchase" should "balance" in {
     // 2014-02-11 * "Bought shares of S&P 500"
     //  Assets:ETrade:IVV                10 IVV {183.07 USD}
@@ -54,7 +41,7 @@ class TransactionAmountTest extends FlatSpec {
     val sp = SecurityPurchase("Assets:Broker", LocalDate.parse("2014-02-11"), Amount(10, "IVV"), Amount(183.07, "USD"))
     val tx = sp.toTransaction
     assert(tx.isBalanced)
-    assert(tx.filledPostings(0).toString == "Assets:Broker:USD -1830.7 USD")
+    assert(tx.postings(0).toString == "Assets:Broker:USD -1830.7 USD")
     println(tx)
   }
 

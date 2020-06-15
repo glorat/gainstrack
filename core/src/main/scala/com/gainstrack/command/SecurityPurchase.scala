@@ -20,7 +20,7 @@ case class SecurityPurchase(
   val requiredAccountIds:Seq[AccountId] = Seq(cashAccountId, securityAccountId, incomeAcctId, expenseAcctId)
 
   override def mainAccount: Option[AccountId] = Some(accountId)
-  override def involvedAccounts: Set[AccountId] = toTransaction.filledPostings.map(p => p.account).toSet
+  override def involvedAccounts: Set[AccountId] = toTransaction.postings.map(p => p.account).toSet
 
   //val expenseAcct = acct.replace("Asset", "Expenses")
   override def commandString: String = SecurityPurchase.prefix

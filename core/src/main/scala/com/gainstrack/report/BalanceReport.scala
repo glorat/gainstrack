@@ -82,7 +82,7 @@ case class BalanceReportState(balances:Map[AccountId, PositionSet]) {
   }
 
   def processTx(tx:Transaction) : BalanceReportState = {
-    tx.filledPostings.foldLeft(this)(BalanceReportState.processPosting)
+    tx.postings.foldLeft(this)(BalanceReportState.processPosting)
   }
 
 

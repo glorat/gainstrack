@@ -31,19 +31,19 @@ class MultiAssetAdj extends FlatSpec {
     val txs = bg.txState.allTransactions
     // Adjustments are done the day before to achieve the start of day balance
     assert(txs(0).postDate == parseDate("2017-10-30"))
-    assert(txs(0).filledPostings == Seq(
+    assert(txs(0).postings == Seq(
       Posting("Equity:Opening:CAD", Amount(-1500, AssetId("CAD"))),
       Posting("Assets:Bank:CAD", Amount(1500, AssetId("CAD")))
     ))
 
     assert(txs(1).postDate == parseDate("2019-10-30"))
-    assert(txs(1).filledPostings == Seq(
+    assert(txs(1).postings == Seq(
       Posting("Equity:Opening:CAD", Amount(-8500, AssetId("CAD"))),
       Posting("Assets:Bank:CAD", Amount(8500, AssetId("CAD")))
     ))
 
     assert(txs(2).postDate == parseDate("2019-11-11"))
-    assert(txs(2).filledPostings == Seq(
+    assert(txs(2).postings == Seq(
       Posting("Assets:Bank:CAD", Amount(-10000, AssetId("CAD"))),
       Posting("Assets:Bank:XIU", Amount(1000, AssetId("XIU")), Amount(10, AssetId("CAD")))
     ))

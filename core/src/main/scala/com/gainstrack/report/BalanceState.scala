@@ -132,7 +132,7 @@ case class BalanceState(acctState:AccountState, balances:Map[AccountId,BalanceSt
   }
 
   private def process(tx:Transaction) : BalanceState = {
-    val newBalances = tx.filledPostings.foldLeft(balances)( (bs:Map[AccountId,BalanceStateSeries],p:Posting) => {
+    val newBalances = tx.postings.foldLeft(balances)( (bs:Map[AccountId,BalanceStateSeries],p:Posting) => {
       require(bs.isDefinedAt(p.account), s"${p.account} must be populated")
       // To assert this, we need full acct details, not just the keys
       // require(!bs(p.account).isEmpty, s"${p.account} should have initial balance on opening")

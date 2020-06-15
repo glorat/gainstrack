@@ -44,7 +44,7 @@ class CommandApiController(implicit val ec: ExecutionContext)
 
     val rows = added.map(tx => {
       val cmd = tx.origin
-      val postings = tx.filledPostings
+      val postings = tx.postings
       AccountTxDTO(cmd.date.toString, cmd.commandString, cmd.description, "0.00", "", postings)
     })
 

@@ -83,14 +83,14 @@ case class TransactionState(acctState:AccountState, balanceState:BalanceState, c
   }
 
   def postingsForAccount(acctId:AccountId) = {
-    allTransactions.flatMap(_.filledPostings.filter(_.account == acctId))
+    allTransactions.flatMap(_.postings.filter(_.account == acctId))
   }
 
   def txsForAccount(acctId:AccountId) : Seq[Transaction] = {
-    allTransactions.filter(_.filledPostings.exists(_.account == acctId))
+    allTransactions.filter(_.postings.exists(_.account == acctId))
   }
 
   def txsUnderAccount(acctId:AccountId) : Seq[Transaction] = {
-    allTransactions.filter(_.filledPostings.exists(_.account.isSubAccountOf(acctId)))
+    allTransactions.filter(_.postings.exists(_.account.isSubAccountOf(acctId)))
   }
 }

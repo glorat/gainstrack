@@ -14,41 +14,27 @@ case class Transaction (
 
                        ) extends BeancountCommand {
   require(postings.length>=2, "A transaction must have at least 2 postings")
-  lazy val filledPostings: Seq[Posting] = {
-    // Logic allows one post to have no amount
-    val idx = postings.indexWhere(p => p.isEmpty)
-    val ret = if (idx == -1) {
-      postings
-    }
-    else {
-      val firstPost = postings.head
-      val weight : Fraction = postings.map(p=>p.weight.number).foldLeft(zeroFraction)((a:Fraction, b:Fraction)=>a+b)
-      val newPost = postings(idx).copy(value = Some(Amount(-weight, firstPost.weight.ccy)))
-      postings.updated(idx,newPost)
-    }
-    require(!ret.exists(p => p.isEmpty), "No more than one posting can be empty")
-    ret
-  }
+
+  require(!postings.exists(p => p.isEmpty), "No more than one posting can be empty")
 
   lazy val isBalanced : Boolean = {
-    val filled = filledPostings
-    val ccy = filled.head.weight.ccy
-    filled.forall(p => p.weight.ccy == ccy) &&
-      filled.map(_.weight.number).foldLeft(zeroFraction)((a:Fraction, b:Fraction)=>a+b) == 0
+    val ccy = postings.head.weight.ccy
+    postings.forall(p => p.weight.ccy == ccy) &&
+      postings.map(_.weight.number).foldLeft(zeroFraction)((a:Fraction, b:Fraction)=>a+b) == 0
   }
 
   def balanceChange(accountId:AccountId) : Fraction = {
-    filledPostings.filter(_.account == accountId).foldLeft(zeroFraction)((sum,p)=>sum+p.weight.number)
+    postings.filter(_.account == accountId).foldLeft(zeroFraction)((sum,p)=>sum+p.weight.number)
   }
 
   def subBalanceChange(accountId:AccountId) : Fraction = {
-    filledPostings.filter(a => a.account.isSubAccountOf(accountId)).foldLeft(zeroFraction)((sum,p)=>sum+p.weight.number)
+    postings.filter(a => a.account.isSubAccountOf(accountId)).foldLeft(zeroFraction)((sum,p)=>sum+p.weight.number)
   }
 
   def toBeancount: Seq[BeancountLine] = {
     val header = s"""${postDate.toString} * "${description}""""
-    val postings = filledPostings.map(p => s"  ${p}")
-    BeancountLines(header +: postings, origin)
+    val ps = postings.map(p => s"  ${p}")
+    BeancountLines(header +: ps, origin)
   }
 
   def withId(newId:Int):Transaction = {
@@ -80,7 +66,7 @@ case class Transaction (
   }
 
   def pnl(singleFXConverter: SingleFXConverter, toDate:LocalDate, baseCcy:AssetId, multFn:AccountType=>Double) = {
-    filledPostings.map(p => {
+    postings.map(p => {
       val amt = p.value.get
       val fx = singleFXConverter.getFX(amt.ccy, baseCcy, toDate).getOrElse(0.0)
       val pval = fx * amt.number.toDouble
@@ -90,7 +76,7 @@ case class Transaction (
   }
 
   def pnl2(singleFXConverter: SingleFXConverter, toDate:LocalDate, baseCcy:AssetId, multFn:PartialFunction[AccountType, Double]) = {
-    filledPostings.map(p => {
+    postings.map(p => {
       val amt = p.value.get
       val fx = singleFXConverter.getFX(amt.ccy, baseCcy, toDate).getOrElse(0.0)
       val pval = fx * amt.number.toDouble

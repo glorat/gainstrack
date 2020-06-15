@@ -12,7 +12,7 @@ class InflowCalculator( cmds:Seq[BeancountCommand]) {
       cmd match {
         case tx: Transaction => {
 
-          val fps = tx.filledPostings
+          val fps = tx.postings
           val others = fps.filter(p => !(p.account.isSubAccountOf(accountId) || relatedAccounts.exists(p.account.isSubAccountOf(_))))
 
           if (others.size > 0 && others.size < fps.size) {

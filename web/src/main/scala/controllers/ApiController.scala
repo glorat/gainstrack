@@ -199,7 +199,7 @@ class ApiController (implicit val ec :ExecutionContext)
 
     val rows = commands.map(cmd => {
       val myTxs = txs.filter(_.origin == cmd)
-      val postings = myTxs.flatMap(_.filledPostings)
+      val postings = myTxs.flatMap(_.postings)
       AccountTxDTO(cmd.date.toString, cmd.commandString, cmd.description, deltaFor(cmd).toString, balanceFor(cmd).toString, postings)
     })
     AccountTxSummaryDTO(accountId.toString, rows)
@@ -232,7 +232,7 @@ class ApiController (implicit val ec :ExecutionContext)
     val multFn:AccountType=>Double = _ match {case Assets | Liabilities => 1.0; case _ => 0.0}
     val rows = commands.map(cmd => {
       val myTxs = txs.filter(_.origin == cmd)
-      val postings = myTxs.flatMap(_.filledPostings)
+      val postings = myTxs.flatMap(_.postings)
       val txPnl:Double = myTxs.map(tx => tx.pnl(singleFXConverter = mktConvert, tx.postDate, bg.acctState.baseCurrency, multFn )).sum
       AccountTxDTO(cmd.date.toString, cmd.commandString, cmd.description, txPnl.formatted("%.2f") , "", postings)
     })
