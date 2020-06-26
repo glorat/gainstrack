@@ -10,6 +10,8 @@ import com.gainstrack.report.GainstrackGenerator
 import net.glorat.cqrs.{Repository, RepositoryWithEntityStream}
 import org.scalatest.{BeforeAndAfterAll, FlatSpec}
 
+import scala.concurrent.Await
+import scala.concurrent.duration.Duration
 import scala.io.Source
 
 class FirstStored extends FlatSpec with BeforeAndAfterAll {
@@ -31,13 +33,18 @@ class FirstStored extends FlatSpec with BeforeAndAfterAll {
     repo.purge(idbad)
   }
 
+  def saveAndAwait(e: GainstrackEntity, expectedVersion:Int) : Unit = {
+    val fut = repo.save(e, expectedVersion)
+    Await.result(fut, Duration("10 s"))
+  }
+
   "GainstrackEntity" should "source" in {
     import scala.io.Source
     e.source(Source.fromResource("src.gainstrack"))
   }
 
   it should "save to repo" in {
-    repo.save(e, 0)
+    saveAndAwait(e, 0)
   }
 
   it should "have events" in {
@@ -54,7 +61,7 @@ class FirstStored extends FlatSpec with BeforeAndAfterAll {
 
     assertSameEntity(e, e2)
 
-    repo.save(e2, 0)
+    saveAndAwait(e2, 0)
   }
 
   it should "load from repo" in {
@@ -72,7 +79,7 @@ class FirstStored extends FlatSpec with BeforeAndAfterAll {
   it should "ignore corrupted entries" in {
     val e = new GainstrackEntity(idbad)
     e.addCommand("2000-01-01 open Assets:Foo GBP")
-    repo.save(e, 100) // Wrong expected version!
+    saveAndAwait(e, 100) // Wrong expected version!
 
     val e2 = repo.getById(idbad, new GainstrackEntity())
     assert(e2.getState.cmdStrs.isEmpty)
@@ -92,7 +99,7 @@ class FirstStored extends FlatSpec with BeforeAndAfterAll {
     assert(bg2.assetState.allAssets(AssetId("GOOG")).options.ticker == "")
 
     e2.source(bg2.originalCommands)
-    repo.save(e2, e2.getRevision)
+    saveAndAwait(e2, e2.getRevision)
 
     assert (repo.getAllCommits(id2).size == 4)
   }
@@ -108,7 +115,7 @@ class FirstStored extends FlatSpec with BeforeAndAfterAll {
 
     assert(bg2.assetState.allAssets(AssetId("GOOG")).options.ticker == "GOOG.NY")
 
-    repo.save(e2, e2.getRevision)
+    saveAndAwait(e2, e2.getRevision)
 
     assert (repo.getAllCommits(id2).size == 5)
   }
