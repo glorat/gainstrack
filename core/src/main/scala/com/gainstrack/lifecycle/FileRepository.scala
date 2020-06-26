@@ -14,7 +14,7 @@ import org.json4s._
 import org.json4s.jackson.Serialization.{read, write}
 import org.slf4j.LoggerFactory
 
-class GainstrackRepository(basePath:Path) extends Repository {
+class FileRepository(basePath:Path) extends RepositoryWithEntityStream {
   val logger =  LoggerFactory.getLogger(getClass)
 
   protected implicit val jsonFormats: Formats = org.json4s.DefaultFormats + UUIDSerializer + InstantSerializer
@@ -85,12 +85,12 @@ class GainstrackRepository(basePath:Path) extends Repository {
     }
   }
 
-  def getAllCommits(id: GUID) : Seq[MyCommittedEvent] = {
+  def getAllCommits(id: GUID) : Seq[CommittedEvent] = {
     val lines = readLinesForId(id)
     var revision = 1
     val cevs = lines.toSeq.map(line => {
-      val cev = read[MyCommittedEvent](line)
-      cev
+      val mcev = read[MyCommittedEvent](line)
+      CommittedEvent(event = mcev.event, streamId = mcev.streamId, streamRevision = mcev.streamRevision)
     }).filter(cev=> {
       if (id == cev.streamId) {
         if (revision == cev.streamRevision) {
@@ -110,7 +110,7 @@ class GainstrackRepository(basePath:Path) extends Repository {
   }
 
   // Use for admin only
-  def purge(id: GUID) = {
+  override def purge(id: GUID) = {
     val filename = basePath.resolve(id.toString)
     Files.deleteIfExists(filename)
   }

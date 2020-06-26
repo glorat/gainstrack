@@ -5,7 +5,7 @@ import java.nio.file.{Files, Paths}
 
 import com.gainstrack.command._
 import com.gainstrack.core._
-import com.gainstrack.lifecycle.{GainstrackEntity, GainstrackRepository}
+import com.gainstrack.lifecycle.{GainstrackEntity, FileRepository}
 import com.gainstrack.report.{AccountInvestmentReport, AssetAllocation, DailyBalance, GainstrackGenerator, PriceState}
 import org.scalatest.{BeforeAndAfterEach, FlatSpec, Ignore, Tag}
 
@@ -24,7 +24,7 @@ class Real extends FlatSpec with BeforeAndAfterEach {
 
   it should "match gainstrack entity" taggedAs RealDataAvailable in {
     val uuid = java.util.UUID.fromString("fec320db-f125-35f3-a0d2-e66ca7e4ce95")
-    val repo = new GainstrackRepository(Paths.get("db/userdata"))
+    val repo = new FileRepository(Paths.get("db/userdata"))
     val entOpt = repo.getByIdOpt(uuid, new GainstrackEntity())
     entOpt.map(ent => {
       val p2 = new GainstrackParser

@@ -5,8 +5,9 @@ import java.nio.file.{Files, Paths}
 
 import com.gainstrack.command.{CommodityCommand, CommodityOptions}
 import com.gainstrack.core._
-import com.gainstrack.lifecycle.{GainstrackEntity, GainstrackEntityDelta, GainstrackRepository, MyCommittedEvent}
+import com.gainstrack.lifecycle.{FileRepository, GainstrackEntity, GainstrackEntityDelta, MyCommittedEvent}
 import com.gainstrack.report.GainstrackGenerator
+import net.glorat.cqrs.{Repository, RepositoryWithEntityStream}
 import org.scalatest.{BeforeAndAfterAll, FlatSpec}
 
 import scala.io.Source
@@ -19,7 +20,7 @@ class FirstStored extends FlatSpec with BeforeAndAfterAll {
 
   val e = new GainstrackEntity(id)
 
-  val repo = new GainstrackRepository(Paths.get("/tmp"))
+  val repo:RepositoryWithEntityStream = new FileRepository(Paths.get("/tmp"))
 
 
   override def beforeAll(): Unit = {
@@ -42,7 +43,7 @@ class FirstStored extends FlatSpec with BeforeAndAfterAll {
   it should "have events" in {
     val cevs = repo.getAllCommits(id)
     assert (cevs.size == 2)
-    assert(cevs(0).event.id == Some(id) )
+    assert(cevs(0).event.asInstanceOf[GainstrackEntityDelta].id == Some(id) )
   }
 
   it should "combine base with anything" in {

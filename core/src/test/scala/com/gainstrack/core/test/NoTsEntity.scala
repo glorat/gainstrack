@@ -2,7 +2,7 @@ package com.gainstrack.core.test
 
 import java.nio.file.Paths
 
-import com.gainstrack.lifecycle.{GainstrackEntity, GainstrackRepository}
+import com.gainstrack.lifecycle.{GainstrackEntity, FileRepository}
 import net.glorat.cqrs.GUID
 import org.scalatest.FlatSpec
 
@@ -11,7 +11,7 @@ class NoTsEntity extends FlatSpec {
 
   val e = new GainstrackEntity(id)
 
-  val repo = new GainstrackRepository(Paths.get("/tmp")) {
+  val repo = new FileRepository(Paths.get("/tmp")) {
     override protected def readLinesForId(id: GUID): Seq[String] = {
       import scala.io.Source
       Source.fromResource("nots.history").getLines.toSeq
