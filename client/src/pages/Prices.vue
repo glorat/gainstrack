@@ -14,8 +14,7 @@
             <tr v-for="(date, index) in series.dates">
               <td>{{ date }}</td>
               <td class="num">{{ series.values[index] }} {{ series.units[index] }}</td>
-              <td class="num" v-if="series.cvalues[0]">{{ series.cvalues[index] }} {{ series.units[index] }} {{
-                series.cvalues2[index] }}
+              <td class="num" v-if="series.cvalues[0]">{{ series.cvalues[index] }} {{ series.units[index] }}
               </td>
             </tr>
             </tbody>
@@ -28,7 +27,7 @@
 </template>
 
 <script lang="ts">
-  import { FXChain, FXMapped, FXMarketLazyLoad, FXProxy, SingleFXConversion, SingleFXConverter } from '@/lib/fx';
+  import { SingleFXConversion, SingleFXConverter } from '@/lib/fx';
   import { MyState, TimeSeries } from '@/store';
   import axios from 'axios';
   import Vue from 'vue';
@@ -69,26 +68,12 @@
         return SingleFXConversion.empty();
       },
       fxConverter(): SingleFXConverter {
-        const lazyLoad = (nm: string) => this.$store.dispatch('loadQuotes', nm);
-
-        const myState: MyState = this.$store.state;
-        const quotes = myState.quotes;
-        const allState = myState.allState;
-        const tradeFxConverter = this.tradeFxConverter();
-        const marketFx = SingleFXConversion.fromQuotes(quotes);
-        const lazyMkt = new FXMarketLazyLoad(marketFx, lazyLoad);
-
-        return new FXChain([
-          new FXMapped(allState.fxMapper, lazyMkt),
-          new FXProxy(allState.proxyMapper, tradeFxConverter, lazyMkt),
-          tradeFxConverter,
-        ]);
+        return this.$store.getters.fxConverter;
 
       },
       reloadQuotes() {
         const fx = this.fxConverter();
         this.prices.forEach(price => {
-
           const cvalues2 = price.dates.map(dt => {
             const val = fx.getFX(price.name.split('/')[0], price.name.split('/')[1], dt);
             return val ? Math.round(val*100)/100: undefined;
@@ -109,7 +94,7 @@
       quotes: {
         handler() {
           // console.error('Quotes updated for Prices');
-          // this.reloadQuotes();
+          this.reloadQuotes();
         },
         deep: true,
       }
@@ -119,7 +104,7 @@
       try {
         const response = await axios.get('/api/prices/');
         this.prices = response.data;
-        // this.reloadQuotes();
+        this.reloadQuotes();
 
       } catch (error) {
         notify.error(error);

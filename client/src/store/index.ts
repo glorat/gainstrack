@@ -1,3 +1,4 @@
+import { FXChain, FXMapped, FXMarketLazyLoad, FXProxy, SingleFXConversion, SingleFXConverter } from '@/lib/fx';
 import axios from 'axios';
 import Vue from 'vue';
 import Vuex from 'vuex';
@@ -39,6 +40,8 @@ const initState: MyState = {
     gainstrackText: '',
     quotes: {},
 };
+
+type FXConverterWrapper = ((fx:SingleFXConversion) => SingleFXConverter)
 
 export default new Vuex.Store({
     state: initState,
@@ -128,11 +131,17 @@ export default new Vuex.Store({
             await context.dispatch('loadAllState');
             return response;
         },
-        async loadAllState(context) {
-            const response = await axios.get('/api/allState');
-            await context.commit('allStateLoaded', response.data);
-            return response;
-        },
+      async loadAllState(context) {
+        const response = await axios.get('/api/allState');
+        await context.commit('allStateLoaded', response.data);
+        const ccys:string[] = response.data.priceState.ccys;
+        const lazyLoad = (nm: string) => this.dispatch('loadQuotes', nm);
+        const wrapper: FXConverterWrapper = marketFx => new FXMarketLazyLoad(marketFx, lazyLoad);
+
+        const fxconv: SingleFXConverter = this.getters.customFxConverter(wrapper);
+        ccys.forEach(ccy => fxconv.getFX(ccy, 'USD', '2000-01-01'));
+        return response;
+      },
         async dateOverride(context, d: string) {
             await axios.post('/api/state/dateOverride', {dateOverride: d});
             return this.dispatch('reload');
@@ -196,7 +205,37 @@ export default new Vuex.Store({
         },
         baseCcy: state => {
             return state.summary.baseCcy;
+        },
+      tradeFxConverter: state => {
+        const allState = state.allState;
+        if (allState) {
+          const tradeFxData: { baseCcy: string; data: Record<string, { ks: string[]; vs: number[] }> } | undefined = allState.tradeFx;
+          if (tradeFxData) {
+            return SingleFXConversion.fromDTO(tradeFxData.data, tradeFxData.baseCcy);
+          }
         }
+        return SingleFXConversion.empty();
+      },
+      customFxConverter: (state,getters) => ( wrapper: FXConverterWrapper) => {
+        const myState: MyState = state;
+        const quotes = myState.quotes;
+        const allState = myState.allState;
+        const tradeFxConverter = getters.tradeFxConverter;
+        const marketFx = SingleFXConversion.fromQuotes(quotes);
+        const wrapped = wrapper(marketFx);
+
+        return new FXChain([
+          new FXMapped(allState.fxMapper, wrapped),
+          new FXProxy(allState.proxyMapper, tradeFxConverter, wrapped),
+          tradeFxConverter,
+        ]);
+
+      },
+      fxConverter: (state, getters) => {
+          const identity: FXConverterWrapper = x => x;
+          const curried = getters.customFxConverter;
+          return curried(identity);
+      },
     }
 });
 
