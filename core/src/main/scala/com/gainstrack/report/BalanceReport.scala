@@ -2,7 +2,6 @@ package com.gainstrack.report
 
 import com.gainstrack.command.AccountCreation
 import com.gainstrack.core._
-import jdk.internal.dynalink.linker.MethodTypeConversionStrategy
 
 /**
   * Generates a projection of the balance of all accounts given a date
