@@ -5,7 +5,7 @@
 
 <script lang="ts">
   // eslint-disable-next-line no-unused-vars
-    import {StateSummaryDTO} from '@/models';
+    import {StateSummaryDTO} from '../models';
     import {Autocomplete} from 'element-ui';
     import Vue from 'vue';
 

@@ -1,9 +1,9 @@
 <template>
   <my-page padding>
     <q-tabs v-model="tab" inline-label class="bg-secondary text-white">
-      <q-tab name="assets" icon="assignment" label="Balance"></q-tab>
-      <q-tab name="statement" icon="account_balance" label="Statements"></q-tab>
-      <q-tab name="journal" icon="edit" label="Journal" v-if="hasJournal"></q-tab>
+      <q-tab name="assets" :icon="matAssignment" label="Balance"></q-tab>
+      <q-tab name="statement" :icon="matAccountBalance" label="Statements"></q-tab>
+      <q-tab name="journal" :icon="matEdit" label="Journal" v-if="hasJournal"></q-tab>
     </q-tabs>
 
     <q-tab-panels v-model="tab" animated>
@@ -41,6 +41,7 @@
   import AccountJournal from '../components/AccountJournal.vue'
   import AssetView from '../components/AssetView.vue'
   import { mapGetters } from 'vuex'
+  import { matAccountBalance, matAssignment, matEdit } from '@quasar/extras/material-icons'
 
   export default {
     name: 'Account',
@@ -62,12 +63,16 @@
           rows: [],
           columns: []
         },
-        tab: 'assets'
+        tab: 'assets',
+        matAssignment,
+        matEdit,
+        matAccountBalance,
       }
     },
     computed: {
       ...mapGetters([
         'mainAccounts',
+        'reloadCounter',
       ]),
       hasJournal () {
         return this.mainAccounts.includes(this.accountId)
@@ -78,6 +83,9 @@
     },
     watch: {
       conversion () {
+        this.refresh(this.accountId)
+      },
+      reloadCounter() {
         this.refresh(this.accountId)
       }
     },

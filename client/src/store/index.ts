@@ -55,6 +55,7 @@ export default function () {
         state.balances = {}
         state.gainstrackText = ''
         state.parseState = { errors: [] }
+        state.count ++
       },
       reloadedQuotesConfig (state: MyState, data) {
         state.quoteConfig = data
@@ -181,6 +182,9 @@ export default function () {
       }
     },
     getters: {
+      reloadCounter: state => {
+        return state.count;
+      },
       tradeableAccounts: state => {
         const all = state.summary.accounts
         const scope = all.filter(

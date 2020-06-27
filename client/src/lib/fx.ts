@@ -1,4 +1,4 @@
-import { TimeSeries } from '@/store';
+import { TimeSeries } from '../store';
 
 import differenceInDays from 'date-fns/differenceInDays';
 

@@ -66,11 +66,15 @@
           .then(response => this.$notify.success(response.data.success))
           .catch(error => this.$notify.error(error.response.data));
       },
-      addCommand(): void {
+      async addCommand(): Promise<void> {
         const str = this.commandStr;
-        axios.post('/api/post/add', {str})
-          .then(response => this.$notify.success(response.data))
-          .catch(error => this.$notify.error(error.response.data));
+        try {
+          const response = await axios.post('/api/post/add', {str});
+          this.$notify.success(response.data);
+          await this.$store.dispatch('reload');
+        } catch (error) {
+          this.$notify.error(error.response.data)
+        }
       },
     },
     computed: {

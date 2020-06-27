@@ -8,7 +8,7 @@
             </thead>
             <tbody>
             <tr v-bind:key="acctId" v-for="acctId in mainAccounts">
-                <td class="account-entry" :tag="acctId"><router-link :to="{name:'command', params:{accountId:acctId }}">{{ acctId }}</router-link> </td>
+                <td class="account-entry" :tag="acctId"><router-link :to="{name:'account', params:{accountId:acctId }}">{{ acctId }}</router-link> </td>
             </tr>
             </tbody>
         </table>

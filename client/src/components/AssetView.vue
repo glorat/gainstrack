@@ -25,8 +25,7 @@
 <script lang="ts">
     import Vue from 'vue';
     import { date } from 'quasar';
-    // eslint-disable-next-line no-unused-vars
-    import {NetworthByAsset, AssetColumn, AssetResponse} from '@/models';
+    import {NetworthByAsset, AssetColumn, AssetResponse} from '../models';
 
     interface Mode {
         name: string

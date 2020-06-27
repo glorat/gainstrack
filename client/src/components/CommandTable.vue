@@ -33,10 +33,8 @@
 </template>
 
 <script lang="ts">
-  // eslint-disable-next-line no-unused-vars
-    import {AccountCommandDTO, Amount} from '@/models';
-  // eslint-disable-next-line no-unused-vars
-  import Vue, { PropType } from 'vue';
+  import {AccountCommandDTO, Amount} from '../models';
+  import Vue, {PropType} from 'vue';
 
     export default Vue.extend({
         name: 'CommandTable',

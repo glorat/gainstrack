@@ -1,7 +1,13 @@
 import { Notify } from 'quasar';
 import Vue from 'vue';
 
-const qnotify = {
+interface MyNotify {
+  success(msg: string): void
+  error(msg: string): void
+  warning(msg: string): void
+}
+
+const qnotify: MyNotify = {
     success(msg) {
         Notify.create({
             type: 'positive',
@@ -21,6 +27,13 @@ const qnotify = {
         })
     }
 };
+
+// declare module 'vue/types/vue' {
+//   interface Vue {
+//     $notify: MyNotify;
+//   }
+// }
+
 Vue.prototype.$notify = qnotify;
 
 

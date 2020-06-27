@@ -30,8 +30,7 @@
 
 <script lang="ts">
   import VuePlotly from '../components/Plotly.vue';
-  // eslint-disable-next-line no-unused-vars
-  import {QuoteConfig} from '@/models';
+  import {QuoteConfig} from '../models';
   import {Table, TableColumn} from 'element-ui';
   import Vue from 'vue';
 
