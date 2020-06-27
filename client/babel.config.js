@@ -1,15 +1,16 @@
+/* eslint-env node */
 module.exports = {
-  "presets": [
-    "@vue/cli-plugin-babel/preset"
+  'presets': [
+    '@quasar/babel-preset-app'
   ],
-  "plugins": [
+  'plugins': [
     [
-      "component",
+      'component',
       {
-        "libraryName": "element-ui",
-        "styleLibraryName": "theme-chalk"
+        'libraryName': 'element-ui',
+        'styleLibraryName': 'theme-chalk'
       }
     ],
-      ["lodash"]
+      ['lodash']
   ]
 }

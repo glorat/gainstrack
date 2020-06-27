@@ -27,7 +27,6 @@
 
         created(): void {
             this.$router.afterEach(( to ) => {
-                // eslint-disable-next-line @typescript-eslint/camelcase
                 Vue.prototype.$analytics.logEvent('page_view', {page_path: to.path})
             });
         }

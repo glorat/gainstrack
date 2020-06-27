@@ -41,8 +41,7 @@
         methods: {
             onRowClick(error: MyError) {
                 if (error.line) {
-                    // @ts-ignore
-                    this.$router.push({ path: 'editor', query: { line: error.line } });
+                    this.$router.push({ path: 'editor', query: { line: error.line.toString() } });
                 }
             }
         }

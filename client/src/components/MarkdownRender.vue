@@ -30,7 +30,7 @@
         },
         methods: {
             loadPage(page: string) {
-                axios.get('/statics/' + page)
+                axios.get('/md/' + page)
                     .then(response => {
                         this.content = response.data;
                     })

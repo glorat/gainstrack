@@ -10,27 +10,40 @@
         </ul>
 
         If you have exported your Gainstrack file, you can re-upload and apply it here
-        <el-upload
-                class=""
-                drag
-                action="/api/post/"
-                :before-upload="beforeUpload"
-        >
-            <i class="el-icon-upload"></i>
-            <div class="el-upload__text">Drop Gainstrack here or<br><em>click to upload</em></div>
-        </el-upload>
+      <q-file
+        v-model="file"
+        label="Drop file here or click to upload"
+        filled
+        @input="onFileInput"
+      >
+        <template v-slot:before>
+          <q-icon :name="matCloudUpload" />
+        </template>
+      </q-file>
     </my-page>
 </template>
 
 <script lang="ts">
+    import { matCloudUpload } from '@quasar/extras/material-icons';
     import Vue from 'vue';
-    import {Upload} from 'element-ui';
     import axios from 'axios';
 
     export default Vue.extend({
         name: 'Port',
-        components: {'el-upload': Upload},
+      data() {
+        return {
+          matCloudUpload,
+          file: undefined as undefined | File
+        }
+
+      },
         methods: {
+          onFileInput() {
+            const file = this.file;
+            if (file) {
+              this.beforeUpload(file);
+            }
+          },
             beforeUpload(file: File) {
                 const notify = this.$notify;
                 const store = this.$store;

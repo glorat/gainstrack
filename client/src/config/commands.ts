@@ -1,4 +1,4 @@
-import {AccountCommandDTO, AccountDTO} from '@/models';
+import {AccountCommandDTO, AccountDTO} from '../models';
 
 export interface CommandConfig {
     prefix: string

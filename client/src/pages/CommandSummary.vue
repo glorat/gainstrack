@@ -16,9 +16,9 @@
 </template>
 
 <script>
-    import AccountCreation from '../models';
     import axios from 'axios';
     import {mapGetters} from 'vuex';
+    import AccountCreation from '../components/command/AccountCreation';
 
     export default {
         name: 'CommandSummary',

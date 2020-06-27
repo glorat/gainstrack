@@ -4,6 +4,7 @@
 </template>
 
 <script lang="ts">
+  // eslint-disable-next-line no-unused-vars
     import {StateSummaryDTO} from '@/models';
     import {Autocomplete} from 'element-ui';
     import Vue from 'vue';
@@ -29,7 +30,6 @@
             onSelectChanged(ev: string) {
                 this.$emit('input', ev.toUpperCase());
             },
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             assetSearch(queryString: string|undefined, cb: any) {
                 let cfgs = this.options;
                 if (queryString) {

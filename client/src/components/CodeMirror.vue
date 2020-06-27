@@ -38,34 +38,30 @@
             }
         },
         ready() {
-            // eslint-disable-next-line @typescript-eslint/no-this-alias
-            const self = this;
             this.editor = CodeMirror.fromTextArea(this.$el.querySelector('textarea'), this.options);
             this.editor.setValue(this.value);
             this.editor.on('change', cm => {
-                if (self.skipNextChangeEvent) {
-                    self.skipNextChangeEvent = false;
+                if (this.skipNextChangeEvent) {
+                  this.skipNextChangeEvent = false;
                     return
                 }
-                self.value = cm.getValue();
-                if (self.$emit) {
-                    self.$emit('change', cm.getValue())
+              this.value = cm.getValue();
+                if (this.$emit) {
+                  this.$emit('change', cm.getValue())
                 }
             });
         },
         mounted() {
-            // eslint-disable-next-line @typescript-eslint/no-this-alias
-            const self = this;
             this.editor = CodeMirror.fromTextArea(this.$el.querySelector('textarea'), this.options);
             this.editor.setValue(this.value);
             this.editor.on('change', (cm) => {
-                if (self.skipNextChangeEvent) {
-                    self.skipNextChangeEvent = false;
+                if (this.skipNextChangeEvent) {
+                  this.skipNextChangeEvent = false;
                     return
                 }
-                if (self.$emit) {
-                    self.$emit('change', cm.getValue());
-                    self.$emit('input', cm.getValue())
+                if (this.$emit) {
+                  this.$emit('change', cm.getValue());
+                  this.$emit('input', cm.getValue())
                 }
             });
         },

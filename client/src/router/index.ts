@@ -1,14 +1,30 @@
-import Vue from 'vue';
-import Router, {RouteConfig} from 'vue-router';
-import routes from './config';
-Vue.use(Router);
+import { route } from 'quasar/wrappers'
+import VueRouter from 'vue-router'
+import {MyState} from '../store'
+import routes from './routes'
 
-const router = new Router({
-    routes
-});
+/*
+ * If not building with SSR mode, you can
+ * directly export the Router instantiation
+ */
 
-router.afterEach((to, from) => {
+export default route<MyState>(function ({ Vue }) {
+  Vue.use(VueRouter)
+
+  const Router = new VueRouter({
+    scrollBehavior: () => ({ x: 0, y: 0 }),
+    routes,
+
+    // Leave these as is and change from quasar.conf.js instead!
+    // quasar.conf.js -> build -> vueRouterMode
+    // quasar.conf.js -> build -> publicPath
+    mode: process.env.VUE_ROUTER_MODE,
+    base: process.env.VUE_ROUTER_BASE
+  });
+
+  Router.afterEach((to) => {
     document.title = (to.meta.title || 'Gainstrack');
-});
+  });
 
-export default router;
+  return Router
+})

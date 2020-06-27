@@ -2,7 +2,7 @@
         <q-layout view="hHh LpR fFf" class="bg-grey-1">
             <q-header>
                 <q-toolbar>
-                    <q-btn flat @click="drawer = !drawer" round dense icon="menu"></q-btn>
+                    <q-btn flat @click="drawer = !drawer" round dense :icon="matMenu"></q-btn>
                     <q-toolbar-title>Gainstrack</q-toolbar-title>
                     <filter-form></filter-form>
                 </q-toolbar>
@@ -35,6 +35,7 @@
 <script>
     import MyAside from './MyAside';
     import FilterForm from '../components/FilterForm';
+    import { matMenu } from '@quasar/extras/material-icons';
     const Tour = () => import ('../Tour');
 
     const menuList = [
@@ -94,7 +95,8 @@
                 menuList,
                 left: false,
                 drawer: false,
-                pageTitle: ''
+                pageTitle: '',
+              matMenu,
             }
         }
     };

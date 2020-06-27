@@ -53,7 +53,6 @@
                 const all /*: AccountDTO[]*/ = this.$store.state.summary.accounts;
                 const acct = all.find(x => x.accountId === this.c.accountId);
                 if (acct) {
-                    // @ts-ignore
                     this.c.balance.ccy = acct.ccy;
                 }
                 const allCmds /*: AccountCommandDTO[]*/ = this.$store.state.summary.commands;

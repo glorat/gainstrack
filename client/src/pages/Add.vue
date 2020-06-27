@@ -21,7 +21,7 @@
     import {Card, Link, Divider} from 'element-ui';
     import lang from 'element-ui/lib/locale/lang/en'
     import locale from 'element-ui/lib/locale'
-    import {commands} from '@/config/commands';
+    import {commands} from '../config/commands';
 
     locale.use(lang);
 

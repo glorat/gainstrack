@@ -1,12 +1,11 @@
 import Auth0Client from '@auth0/auth0-spa-js/dist/typings/Auth0Client';
 import Vue from 'vue';
 import createAuth0Client, {
-    getIdTokenClaimsOptions,
-    GetTokenSilentlyOptions,
-    GetTokenWithPopupOptions, LogoutOptions,
-    PopupLoginOptions, RedirectLoginOptions
+  getIdTokenClaimsOptions,
+  GetTokenSilentlyOptions,
+  GetTokenWithPopupOptions, LogoutOptions,
+  PopupLoginOptions, RedirectLoginOptions
 } from '@auth0/auth0-spa-js';
-import {PluginFunction, PluginObject} from 'vue/types/plugin';
 
 /** Define a default action to perform after authentication */
 const DEFAULT_REDIRECT_CALLBACK: any = () =>
@@ -20,35 +19,38 @@ export const getInstance = () => instance;
 interface MyData {
   loading: boolean,
   isAuthenticated: boolean,
-  user: object,
+  user: Record<string, unknown>,
   auth0ClientPromise: Promise<Auth0Client>,
   auth0Client: Auth0Client,
   popupOpen: boolean,
-  error: null|string,
+  error: null | string,
 }
 
 /** Creates an instance of the Auth0 SDK. If one has already been created, it returns that instance */
 export const useAuth0 = ({
-  onRedirectCallback = DEFAULT_REDIRECT_CALLBACK,
-  redirectUri = window.location.origin,
-  ...options
-}) => {
-  if (instance) {return instance};
+                           onRedirectCallback = DEFAULT_REDIRECT_CALLBACK,
+                           redirectUri = window.location.origin,
+                           ...options
+                         }) => {
+  if (instance) {
+    return instance
+  }
 
   // The 'instance' is simply a Vue object
   instance = new Vue({
     data(): MyData {
-      return {
+      // Some fancy type hacking since auth0* vars are null
+      // Relying on component init to guarantee not-null
+      const ret = {
         loading: true,
         isAuthenticated: false,
         user: {},
-        // @ts-ignore
         auth0ClientPromise: null,
-        // @ts-ignore
         auth0Client: null,
         popupOpen: false,
         error: null
-      };
+      } as unknown;
+      return ret as MyData;
     },
     methods: {
       /** Authenticates the user using a popup window */
@@ -105,10 +107,10 @@ export const useAuth0 = ({
     },
     /** Use this lifecycle method to instantiate the SDK client */
     async created() {
-        const moreOpts = {
-            useRefreshTokens: true,
-            cacheLocation: (process.env.NODE_ENV === 'development') ? 'localstorage' : 'memory' as "memory"|"localstorage"
-        };
+      const moreOpts = {
+        useRefreshTokens: true,
+        cacheLocation: (process.env.NODE_ENV === 'development') ? 'localstorage' : 'memory' as 'memory' | 'localstorage'
+      };
 
       // Create a new instance of the SDK client using members of the given options object
       this.auth0ClientPromise = createAuth0Client({
@@ -118,8 +120,8 @@ export const useAuth0 = ({
         redirect_uri: redirectUri,
         ...moreOpts
       }).then(client => {
-          this.auth0Client = client;
-          return client;
+        this.auth0Client = client;
+        return client;
       })
 
       const client = await this.auth0ClientPromise;
@@ -131,7 +133,7 @@ export const useAuth0 = ({
           window.location.search.includes('state=')
         ) {
           // handle the redirect and retrieve tokens
-          const { appState } = await client.handleRedirectCallback();
+          const {appState} = await client.handleRedirectCallback();
 
           // Notify subscribers that the redirect callback has happened, passing the appState
           // (useful for retrieving any pre-authentication state)
@@ -153,7 +155,7 @@ export const useAuth0 = ({
 
 // Create a simple Vue plugin to expose the wrapper object throughout the application
 export const Auth0Plugin = {
-  install(vue: any, options: object) {
+  install(vue: any, options: Record<string, unknown>) {
     vue.prototype.$auth = useAuth0(options);
   }
 };

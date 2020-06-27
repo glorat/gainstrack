@@ -27,8 +27,10 @@
 </template>
 
 <script lang="ts">
-  import { SingleFXConversion, SingleFXConverter } from '@/lib/fx';
-  import { MyState, TimeSeries } from '@/store';
+  // eslint-disable-next-line no-unused-vars
+  import { SingleFXConversion, SingleFXConverter } from '../lib/fx';
+  // eslint-disable-next-line no-unused-vars
+  import { MyState, TimeSeries } from '../store';
   import axios from 'axios';
   import Vue from 'vue';
 

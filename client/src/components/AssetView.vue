@@ -25,6 +25,7 @@
 <script lang="ts">
     import Vue from 'vue';
     import { date } from 'quasar';
+    // eslint-disable-next-line no-unused-vars
     import {NetworthByAsset, AssetColumn, AssetResponse} from '@/models';
 
     interface Mode {
@@ -137,7 +138,6 @@
                 return this.assetResponse.columns.map(col => {
                     return {
                         ...col,
-                        // eslint-disable-next-line @typescript-eslint/no-explicit-any
                         field: row => row.priceMoves[col.name],
                         format: (val: number) => val ? `${(val * 100).toFixed(1)}%` : ''
                     } as AssetColumn;

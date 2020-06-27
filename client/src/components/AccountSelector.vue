@@ -38,7 +38,7 @@
             accounts(): string[] {
                 return this.accountList || this.$store.state.summary.accountIds;
             },
-            options(): object {
+            options(): {value:string, label:string}[] {
                 return this.accounts.map(acctId => {
                     return {value: acctId, label: acctId};
                 });
@@ -46,7 +46,6 @@
             }
         },
         methods: {
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             onChanged(ev: any) {
                 this.$emit('input', ev.target.value);
             },

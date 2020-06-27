@@ -1,4 +1,4 @@
-import { MyState, TimeSeries } from '@/store';
+import { TimeSeries } from '@/store';
 
 import differenceInDays from 'date-fns/differenceInDays';
 
@@ -88,7 +88,6 @@ type AssetId = string
 type LocalDate = string
 
 import { mapValues, uniq } from 'lodash';
-import base = Mocha.reporters.base;
 
 interface FXConverter {
   getFX(fx1:AssetId, fx2:AssetId, date:LocalDate): number|undefined
