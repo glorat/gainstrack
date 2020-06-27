@@ -50,6 +50,7 @@ lazy val commonSettings = Seq(
   test in assembly := {},
   assemblyMergeStrategy in assembly := {
     case "module-info.class" => MergeStrategy.discard // Jackson libraries
+    case PathList("META-INF", xs @ _*) => MergeStrategy.discard
     case x => {
       val oldStrategy = (assemblyMergeStrategy in assembly).value
       oldStrategy(x)
