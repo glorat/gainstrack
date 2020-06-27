@@ -164,4 +164,4 @@ export const emptyAllState: AllState = {
   tradeFx: {baseCcy: 'USD', data:{}},
   fxMapper: {},
   proxyMapper:{}
-}
+};

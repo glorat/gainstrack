@@ -37,7 +37,7 @@
 </template>
 
 <script>
-    import {DatePicker, Input, Option, Select, Switch} from 'element-ui';
+    import {Input, Option, Select, Switch} from 'element-ui';
     import {CommandEditorMixin} from '../../mixins/CommandEditorMixin';
     import AssetId from '../AssetId';
 

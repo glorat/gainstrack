@@ -122,7 +122,7 @@ export const useAuth0 = ({
       }).then(client => {
         this.auth0Client = client;
         return client;
-      })
+      });
 
       const client = await this.auth0ClientPromise;
 

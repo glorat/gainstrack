@@ -11,7 +11,7 @@
           </q-item-section>
         </q-item>
 
-        <q-item v-if="menuItem.path=='/editor' && errors.length>0" dense clickable v-ripple to="/errors">
+        <q-item v-if="menuItem.path==='/editor' && errors.length>0" dense clickable v-ripple to="/errors">
           <q-item-section avatar>
             <q-badge color="red" text-color="black" :label="errors.length"/>
           </q-item-section>

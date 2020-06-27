@@ -8,12 +8,10 @@
 <script lang="ts">
     import Vue from 'vue';
     import AssetId from '../AssetId.vue';
-    import {Input} from 'element-ui';
     export default Vue.extend({
         name: 'BalanceEditor',
         components: {
-            AssetId,
-            'el-input': Input,
+            AssetId
         },
         props: {value: Object},
         methods: {

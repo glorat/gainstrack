@@ -9,7 +9,7 @@ import routes from './routes'
  */
 
 export default route<MyState>(function ({ Vue }) {
-  Vue.use(VueRouter)
+  Vue.use(VueRouter);
 
   const Router = new VueRouter({
     scrollBehavior: () => ({ x: 0, y: 0 }),

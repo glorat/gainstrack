@@ -23,7 +23,6 @@
     import Vue from 'vue';
     import AccountSelector from '../AccountSelector';
     import BalanceEditor from './BalanceEditor';
-    import {DatePicker} from 'element-ui';
 
     export default Vue.extend({
         name: 'UnitCommand',

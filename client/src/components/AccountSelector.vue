@@ -8,7 +8,6 @@
 
 <script lang="ts">
   import Vue from 'vue';
-  import {Select, Option} from 'element-ui';
 
   export default Vue.extend({
     name: 'AccountSelector',

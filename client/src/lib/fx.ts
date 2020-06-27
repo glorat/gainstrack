@@ -50,7 +50,7 @@ const linear:Interpolator = (nearest: InterpolationOption, key: LocalDate) => {
     const int = nearest.interpolate;
     return linearInterpolateValue(int, key);
   }
-}
+};
 
 class SortedColumnMap {
   ks: string[];
@@ -102,8 +102,8 @@ export interface SingleFXConverter extends FXConverter {
 export class FXMarketLazyLoad implements SingleFXConverter {
   baseCcy: AssetId;
   marketFx: SingleFXConversion;
-  ccys: AssetId[] = []
-  lazyLoad: (ccy:AssetId) => Promise<void>
+  ccys: AssetId[] = [];
+  lazyLoad: (ccy:AssetId) => Promise<void>;
 
   constructor(marketFx: SingleFXConversion, lazyLoad: (ccy:AssetId)=>Promise<void>) {
     this.marketFx = marketFx;
@@ -141,7 +141,7 @@ export class SingleFXConversion {
   }
 
   static fromDTO(quotes: Record<string, {ks:string[], vs:number[]}>, baseCcy: string) {
-    const state = mapValues(quotes, x => new SortedColumnMap(x.ks, x.vs))
+    const state = mapValues(quotes, x => new SortedColumnMap(x.ks, x.vs));
     return new SingleFXConversion(state, baseCcy || 'USD');
   }
 
@@ -176,7 +176,7 @@ export class SingleFXConversion {
 }
 
 export class FXMapped implements SingleFXConverter{
-  baseCcy: AssetId
+  baseCcy: AssetId;
   mapper: Record<AssetId, AssetId>;
   singleFXConverter: SingleFXConverter;
 
@@ -189,7 +189,7 @@ export class FXMapped implements SingleFXConverter{
   getFX(fx1: AssetId, fx2: AssetId, date: LocalDate): number|undefined {
     const cfx1 = this.mapper[fx1] || fx1;
     const cfx2 = this.mapper[fx2] || fx2;
-    const ret = this.singleFXConverter.getFX(cfx1, cfx2, date)
+    const ret = this.singleFXConverter.getFX(cfx1, cfx2, date);
     return ret;
   }
 
@@ -201,10 +201,10 @@ export class FXMapped implements SingleFXConverter{
 }
 
 export class FXProxy {
-  baseCcy: string
-  mapper: Record<AssetId, AssetId>
-  tradeFx: SingleFXConversion
-  marketFx: SingleFXConverter
+  baseCcy: string;
+  mapper: Record<AssetId, AssetId>;
+  tradeFx: SingleFXConversion;
+  marketFx: SingleFXConverter;
 
   constructor(mapper: Record<AssetId, AssetId>, tradeFx: SingleFXConversion, marketFx: SingleFXConverter) {
     this.mapper = mapper;
@@ -232,7 +232,7 @@ export class FXProxy {
           const marketBase = this.marketFx.getFX(proxyTicker, fx2, lastDate);
           const marketRef = this.marketFx.getFX(proxyTicker, fx2, date);
           if (marketBase != 0.0 && marketRef && marketBase) {
-            const proxyVal = lastTrade * (marketRef/marketBase)
+            const proxyVal = lastTrade * (marketRef/marketBase);
             return proxyVal;
           }
         } else if (nearest.interpolate) {
@@ -248,7 +248,7 @@ export class FXProxy {
 
 export class FXChain implements SingleFXConverter {
   baseCcy: AssetId;
-  fxConverters: SingleFXConverter[]
+  fxConverters: SingleFXConverter[];
   constructor(fxConverters: SingleFXConverter[]) {
     this.fxConverters = fxConverters;
     this.baseCcy = fxConverters[0].baseCcy;

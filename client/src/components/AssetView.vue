@@ -10,7 +10,13 @@
                 :loading="loading"
                 :pagination.sync="pagination"
                 dense
-        />
+        >
+          <template v-slot:body-cell-units="props" v-if="canEdit">
+            <q-td :props="props" @click="onUnitsEdit(props)">
+              {{ props.value }} <q-icon :name="matEdit"></q-icon>
+            </q-td>
+          </template>
+        </q-table>
         <q-table :data="totalRows"
                  :columns="allColumns"
                  :visible-columns="visibleColumns"
@@ -26,6 +32,8 @@
     import Vue from 'vue';
     import { date } from 'quasar';
     import {NetworthByAsset, AssetColumn, AssetResponse} from '../models';
+    import {matEdit} from '@quasar/extras/material-icons';
+    import UnitEditorDialog from 'components/UnitEditorDialog.vue';
 
     interface Mode {
         name: string
@@ -96,15 +104,51 @@
                     rowsPerPage: 10
                 },
                 columns,
+              matEdit,
             };
         },
         props: {
+          accountId: String,
             assetResponse: {
                 type: Object as () => AssetResponse
             },
             loading: Boolean,
         },
+      methods: {
+        onUnitsEdit(props: any) {
+          debugger;
+          const cmd = {
+            commandType: 'unit',
+            accountId: this.accountId,
+            date: '2000-01-01',
+            balance: {number:0, ccy: 'GOOG'},
+            price: {number:0, ccy: 'USD'},
+
+          };
+
+          this.$q.dialog({
+            component: UnitEditorDialog,
+
+            parent: this,
+
+            // props forwarded to component
+            // (everything except "component" and "parent" props above):
+            cmd: cmd
+            // ...more.props...
+          }).onOk(() => {
+            console.log('OK')
+          }).onCancel(() => {
+            console.log('Cancel')
+          }).onDismiss(() => {
+            console.log('Called on OK or Cancel')
+          })
+        }
+      },
         computed: {
+          canEdit(): boolean {
+            // TODO: Check that accountId is a mainAccount
+            return !!this.accountId;
+          },
             currentMode(): Mode {
                 const mode = this.modes.find(m => m.name === this.mode);
                 if (mode) {

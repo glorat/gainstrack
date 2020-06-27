@@ -19,9 +19,9 @@ import {
 import { Todo, Meta } from './models'
 
 function useClickCount () {
-  const clickCount = ref(0)
+  const clickCount = ref(0);
   function increment () {
-    clickCount.value += 1
+    clickCount.value += 1;
     return clickCount.value
   }
 
@@ -29,7 +29,7 @@ function useClickCount () {
 }
 
 function useDisplayTodo (todos: Ref<Todo[]>) {
-  const todoCount = computed(() => todos.value.length)
+  const todoCount = computed(() => todos.value.length);
   return { todoCount }
 }
 

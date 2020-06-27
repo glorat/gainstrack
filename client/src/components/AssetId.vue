@@ -15,7 +15,6 @@
 <script lang="ts">
   // eslint-disable-next-line no-unused-vars
   import {StateSummaryDTO} from '../models';
-  import {Autocomplete} from 'element-ui';
   import Vue from 'vue';
 
   interface MyOpt {
@@ -42,24 +41,12 @@
     methods: {
       filterFn(val: string, update: any) {
         update(() => {
-          const needle = val.toUpperCase()
+          const needle = val.toUpperCase();
           this.filteredOptions = this.options.filter(v => v.value.toUpperCase().indexOf(needle) > -1)
         })
       },
       onSelectChanged(ev: string) {
         this.$emit('input', ev.toUpperCase());
-      },
-      assetSearch(queryString: string | undefined, cb: any) {
-        let cfgs = this.options;
-        if (queryString) {
-          cfgs = cfgs.filter(x => x.value.indexOf(queryString.toUpperCase()) > -1);
-        }
-        const elems = cfgs.map(cfg => {
-          return {
-            value: cfg.value
-          };
-        });
-        cb(elems);
       },
     }
   })
