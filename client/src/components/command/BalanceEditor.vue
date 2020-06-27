@@ -1,8 +1,8 @@
 <template>
-    <span>
-        <el-input @focus="$event.target.select()" type="number" v-model="value.number" step="0.01" v-on:input="onChanged()" size="mini"></el-input>
-        <asset-id v-model="value.ccy" v-on:input="onChanged()"></asset-id>
-    </span>
+    <div class="row items-start">
+      <q-input @focus="$event.target.select()" type="number" v-model.number="value.number" v-on:input="onChanged()"></q-input>
+      <asset-id v-model="value.ccy" v-on:input="onChanged()"></asset-id>
+    </div>
 </template>
 
 <script lang="ts">

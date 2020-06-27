@@ -2,13 +2,7 @@
     <div>
         <div>
             Account opening date
-            <el-date-picker
-                    v-model="c.date"
-                    type="date"
-                    value-format="yyyy-MM-dd"
-                    :clearable="false"
-            >
-            </el-date-picker>
+          <command-date-editor v-model="c.date"></command-date-editor>
         </div>
         <div>
             Account Name
@@ -51,7 +45,6 @@
         name: 'AccountCreation',
         components: {
             AssetId,
-            'el-date-picker': DatePicker,
             'el-select': Select,
             'el-option': Option,
             'el-switch': Switch,

@@ -1,32 +1,55 @@
 <template>
-    <el-date-picker
-            class="c-date"
-            :value="value"
-            v-on:input="onChanged($event)"
-            type="date"
-            value-format="yyyy-MM-dd"
-            size="mini"
-            :clearable="false"
-    >
-    </el-date-picker>
+    <q-input class="c-date" dense :value="dateObj" @input="onDateChanged($event)"
+             label="Date" mask="date" :rules="['date']">
+        <template v-slot:append>
+            <q-icon :name="matEvent" class="cursor-pointer">
+                <q-popup-proxy ref="qDateProxy" transition-show="scale" transition-hide="scale">
+                    <q-date :value="dateObj" @input="(ev) => {$refs.qDateProxy.hide(); onDateChanged(ev)}" />
+                </q-popup-proxy>
+            </q-icon>
+        </template>
+    </q-input>
 </template>
 
 <script lang="ts">
-    import {DatePicker} from 'element-ui';
-    import lang from 'element-ui/lib/locale/lang/en'
-    import locale from 'element-ui/lib/locale'
     import Vue from 'vue';
-    locale.use(lang);
+    import {matEvent} from '@quasar/extras/material-icons';
+    import {date} from 'quasar';
 
+    function fromISO(dt:string) {
+        const s = dt ? dt.split(/\D/).map(x => parseInt(x)) : [];
+        if (s[0] && s[1] && s[2]) {
+            return new Date(+s[0], --s[1], +s[2],  0, 0, 0, 0)
+        } else {
+            return undefined
+        }
+    }
+
+    function reformatIsoDate(dt:string, format:string) {
+        return date.formatDate(fromISO(dt), format);
+    }
 
     export default Vue.extend({
         name: 'CommandDateEditor',
-        components: { 'el-date-picker': DatePicker},
+        data() {
+          return {
+              matEvent
+          }
+        },
         props: {value: String},
         methods: {
             onChanged(ev: string) {
                 this.$emit('input', ev);
             },
+            onDateChanged(ev: string) {
+                const myDate = reformatIsoDate(ev, 'YYYY-MM-DD');
+                this.$emit('input', myDate);
+            },
+        },
+        computed: {
+            dateObj() {
+                return reformatIsoDate(this.value, 'YYYY/MM/DD');
+            }
         }
     })
 </script>

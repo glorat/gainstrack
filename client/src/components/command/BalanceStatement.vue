@@ -2,14 +2,7 @@
     <div>
         <div>
             Date of balance observation:
-            <el-date-picker
-                    v-model="c.date"
-                    type="date"
-                    value-format="yyyy-MM-dd"
-                    size="mini"
-                    :clearable="false"
-            >
-            </el-date-picker>
+          <command-date-editor v-model="c.date"></command-date-editor>
         </div>
         <div>
             Account:
@@ -31,7 +24,6 @@
     import BalanceEditor from './BalanceEditor.vue';
     import {CommandEditorMixin} from '../../mixins/CommandEditorMixin';
     import AccountSelector from '../AccountSelector.vue';
-    import {DatePicker} from 'element-ui';
     import Vue from 'vue';
 
 
@@ -46,7 +38,6 @@
         components: {
             BalanceEditor,
             AccountSelector,
-            'el-date-picker': DatePicker,
         },
         methods: {
             accountIdChanged() {

@@ -1,14 +1,7 @@
 <template>
     <div>
         <div>
-            <el-date-picker
-                    v-model="c.date"
-                    type="date"
-                    value-format="yyyy-MM-dd"
-                    size="mini"
-                    :clearable="false"
-            >
-            </el-date-picker>
+          <command-date-editor v-model="c.date"></command-date-editor>
         </div>
         <div>
             <account-selector v-model="c.accountId" :account-list="tradeableAccounts" @input="accountIdChanged"></account-selector>
@@ -35,7 +28,7 @@
     export default Vue.extend({
         name: 'UnitCommand',
         mixins: [CommandEditorMixin],
-        components: {AccountSelector, BalanceEditor, 'el-date-picker': DatePicker},
+        components: {AccountSelector, BalanceEditor},
         methods: {
             accountIdChanged() {
                 const all /*: AccountDTO[]*/ = this.$store.state.summary.accounts;
