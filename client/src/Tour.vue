@@ -43,7 +43,7 @@
 <script lang="ts">
   import EventBus from './event-bus';
   // eslint-disable-next-line no-unused-vars
-  import {AccountCommandDTO, AuthenticationDTO} from './models';
+  import {AccountCommandDTO, AuthenticationDTO} from './lib/models';
   import {debounce} from 'lodash';
   import Vue from 'vue';
   // eslint-disable-next-line no-unused-vars

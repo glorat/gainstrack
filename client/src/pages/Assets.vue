@@ -9,7 +9,7 @@
   import Vue from 'vue';
   import axios from 'axios';
   // eslint-disable-next-line no-unused-vars
-  import {AssetResponse} from '../models';
+  import {AssetResponse} from '../lib/models';
 
   export default Vue.extend({
     name: 'Assets',

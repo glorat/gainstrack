@@ -30,7 +30,7 @@
 
 <script lang="ts">
   import VuePlotly from '../components/Plotly.vue';
-  import {QuoteConfig} from '../models';
+  import {QuoteConfig} from '../lib/models';
   import {Table, TableColumn} from 'element-ui';
   import Vue from 'vue';
 

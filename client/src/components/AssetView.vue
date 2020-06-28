@@ -31,7 +31,7 @@
 <script lang="ts">
     import Vue from 'vue';
     import { date } from 'quasar';
-    import {NetworthByAsset, AssetColumn, AssetResponse} from '../models';
+    import {NetworthByAsset, AssetColumn, AssetResponse} from '../lib/models';
     import {matEdit} from '@quasar/extras/material-icons';
     import UnitEditorDialog from 'components/CommandEditorDialog.vue';
     import {mapGetters} from 'vuex';

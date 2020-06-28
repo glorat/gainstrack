@@ -14,7 +14,7 @@
 
 <script lang="ts">
   // eslint-disable-next-line no-unused-vars
-  import {StateSummaryDTO} from '../models';
+  import {StateSummaryDTO} from '../lib/models';
   import Vue from 'vue';
 
   interface MyOpt {

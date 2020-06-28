@@ -2,7 +2,7 @@ import {FXChain, FXMapped, FXMarketLazyLoad, FXProxy, SingleFXConversion, Single
 import axios from 'axios'
 import Vue from 'vue'
 import Vuex from 'vuex'
-import {AccountDTO, AllState, emptyAllState, isTransaction, Posting, QuoteConfig, StateSummaryDTO} from '../models'
+import {AccountDTO, AllState, emptyAllState, isTransaction, Posting, QuoteConfig, StateSummaryDTO} from '../lib/models'
 import {flatten} from 'lodash'
 
 Vue.use(Vuex);
