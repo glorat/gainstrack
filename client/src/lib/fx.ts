@@ -7,7 +7,31 @@ interface InterpolationOption {
   exact? :number
   low?: number
   high?:number
-  interpolate?: {before:{k:LocalDate, v:number}, after: {k:LocalDate, v:number}}
+  interpolate?: {before:{k:IntDate, v:number}, after: {k:IntDate, v:number}}
+}
+
+function isoToIntDate(iso: LocalDate): IntDate {
+  const bits = iso.split('-');
+  return parseInt(bits[0]) * 10000 + parseInt(bits[1])*100 + parseInt(bits[2]);
+}
+
+export function fromIntDate(dt?: IntDate): Date|undefined {
+  if (dt) {
+    const days = dt % 100;
+    const monthLeft = (dt - days)/100;
+    const months = monthLeft % 100;
+    const years = (monthLeft-months) / 100;
+    const ret = Date.UTC(years, months-1, days);
+    return new Date(ret);
+  } else {
+    return undefined;
+  }
+}
+
+export function intDateToIsoDate(dt?: IntDate): LocalDate|undefined {
+  if (dt) {
+    return (fromIntDate(dt) as Date).toISOString().substr(0, 10)
+  }
 }
 
 export function fromISO(dt?: LocalDate): Date|undefined {
@@ -19,10 +43,10 @@ export function fromISO(dt?: LocalDate): Date|undefined {
   }
 }
 
-function linearInterpolateValue(int: { before: { k: LocalDate; v: number }; after: { k: LocalDate; v: number } }, key: string) {
-  const beforeDate = fromISO(int.before.k);
-  const afterDate = fromISO(int.after.k);
-  const keyDate = fromISO(key);
+function linearInterpolateValue(int: { before: { k: IntDate; v: number }; after: { k: IntDate; v: number } }, key: IntDate) {
+  const beforeDate = fromIntDate(int.before.k);
+  const afterDate = fromIntDate(int.after.k);
+  const keyDate = fromIntDate(key);
   if (keyDate && beforeDate && afterDate) {
     const all = differenceInDays(beforeDate, afterDate);
     const n = differenceInDays(beforeDate, keyDate);
@@ -36,8 +60,8 @@ function linearInterpolateValue(int: { before: { k: LocalDate; v: number }; afte
   }
 }
 
-type Interpolator = (nearest: InterpolationOption, key: LocalDate) => number|undefined;
-const linear:Interpolator = (nearest: InterpolationOption, key: LocalDate) => {
+type Interpolator = (nearest: InterpolationOption, key: IntDate) => number|undefined;
+const linear:Interpolator = (nearest: InterpolationOption, key: IntDate) => {
   if (nearest.empty) {
     return undefined;
   } else if (nearest.exact) {
@@ -53,19 +77,19 @@ const linear:Interpolator = (nearest: InterpolationOption, key: LocalDate) => {
 };
 
 class SortedColumnMap {
-  ks: string[];
+  ks: IntDate[];
   vs: number[];
 
-  constructor(ks: string[], vs: number[]) {
+  constructor(ks: IntDate[], vs: number[]) {
     this.ks = ks;
     this.vs = vs;
   }
 
-  iota(key: string): number {
+  iota(key: IntDate): number {
     return this.ks.findIndex(k => key < k);
   }
 
-  getNearest(key: string): InterpolationOption {
+  getNearest(key: IntDate): InterpolationOption {
     if (this.ks.length == 0) {
       return {empty: true};
     } else {
@@ -82,7 +106,7 @@ class SortedColumnMap {
     }
   }
 
-  latestKey(key: string):string|undefined {
+  latestKey(key: IntDate):IntDate|undefined {
     const idx = this.iota(key)
     if (idx<0) {
       return this.ks[this.ks.length-1]
@@ -98,6 +122,7 @@ class SortedColumnMap {
 
 type AssetId = string
 type LocalDate = string
+type IntDate = number
 
 import { mapValues, uniq } from 'lodash';
 
@@ -153,12 +178,12 @@ export class SingleFXConversion implements SingleFXConverter {
   }
 
   static fromQuotes(quotes: Record<string, TimeSeries>, baseCcy?: string) {
-    const state = mapValues(quotes, (ts: TimeSeries) => new SortedColumnMap(ts.x, ts.y));
+    const state = mapValues(quotes, (ts: TimeSeries) => new SortedColumnMap(ts.x.map(isoToIntDate), ts.y));
     return new SingleFXConversion(state, baseCcy || 'USD');
   }
 
   static fromDTO(quotes: Record<string, {ks:string[], vs:number[]}>, baseCcy: string) {
-    const state = mapValues(quotes, x => new SortedColumnMap(x.ks, x.vs));
+    const state = mapValues(quotes, x => new SortedColumnMap(x.ks.map(isoToIntDate), x.vs));
     return new SingleFXConversion(state, baseCcy || 'USD');
   }
 
@@ -166,7 +191,8 @@ export class SingleFXConversion implements SingleFXConverter {
     return new SingleFXConversion({}, 'USD');
   }
 
-  getFX(fx1: AssetId, fx2: AssetId, date: LocalDate, interp?: Interpolator): number | undefined {
+  getFX(fx1: AssetId, fx2: AssetId, localDate: LocalDate, interp?: Interpolator): number | undefined {
+    const date = isoToIntDate(localDate);
     interp = interp || linear;
 
     if (fx1 == fx2) {
@@ -180,9 +206,9 @@ export class SingleFXConversion implements SingleFXConverter {
         }
       }
     } else {
-      const fxval1 = this.getFX(fx1, this.baseCcy, date);
+      const fxval1 = this.getFX(fx1, this.baseCcy, localDate);
       if (fxval1) {
-        const fxval2 = this.getFX(fx2, this.baseCcy, date);
+        const fxval2 = this.getFX(fx2, this.baseCcy, localDate);
         if (fxval2) {
           return fxval1 / fxval2;
         }
@@ -192,9 +218,10 @@ export class SingleFXConversion implements SingleFXConverter {
   }
 
   latestDate(fx1: string, fx2: string, date: string): string | undefined {
+    const intDate = isoToIntDate(date);
     const series = this.state[fx1];
     if (series) {
-      return series.latestKey(date)
+      return intDateToIsoDate(series.latestKey(intDate))
     } else {
       return undefined;
     }
@@ -264,7 +291,7 @@ export class FXProxy implements FXConverter {
           const lastEntry = this.tradeFx.state[fx1];
           const lastDate = lastEntry.ks[lastEntry.ks.length-1];
           const lastTrade = lastEntry.vs[lastEntry.vs.length-1];
-          const marketBase = this.marketFx.getFX(proxyTicker, fx2, lastDate);
+          const marketBase = this.marketFx.getFX(proxyTicker, fx2, intDateToIsoDate(lastDate) as LocalDate);
           const marketRef = this.marketFx.getFX(proxyTicker, fx2, date);
           if (marketBase != 0.0 && marketRef && marketBase) {
             const proxyVal = lastTrade * (marketRef/marketBase);

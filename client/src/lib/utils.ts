@@ -46,7 +46,8 @@ export function journalEntries(mktConvert: SingleFXConverter, txs: Transaction[]
     const postings = flatMap(myTxs, tx => tx.postings);
     const pnlPostings = postings.filter(p => p.account.match('^(Assets|Liabilities)'));
     const txPnl = sum(pnlPostings.map(posting => {
-      const fx = mktConvert.getFX(posting.value.ccy, baseCcy, posting.postDate) || 0.0;
+      // FIXME: pull date from tx.date in case some BalAdj is off by one? or myTxs[0].date?
+      const fx = mktConvert.getFX(posting.value.ccy, baseCcy, cmd.date) || 0.0;
       return fx * posting.value.number;
     }));
 

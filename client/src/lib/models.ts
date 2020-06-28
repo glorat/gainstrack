@@ -96,7 +96,6 @@ export interface AssetResponse {
 }
 
 export interface Posting {
-  postDate: string
   account: string
   value: Amount
   price?: Amount
