@@ -33,7 +33,8 @@
     import { date } from 'quasar';
     import {NetworthByAsset, AssetColumn, AssetResponse} from '../models';
     import {matEdit} from '@quasar/extras/material-icons';
-    import UnitEditorDialog from 'components/UnitEditorDialog.vue';
+    import UnitEditorDialog from 'components/CommandEditorDialog.vue';
+    import {mapGetters} from 'vuex';
 
     interface Mode {
         name: string
@@ -116,12 +117,13 @@
         },
       methods: {
         onUnitsEdit(props: any) {
-          debugger;
+          // FIXME: TZ bug
+          const today = new Date(Date.now()).toISOString().substr(0, 10);
           const cmd = {
             commandType: 'unit',
             accountId: this.accountId,
-            date: '2000-01-01',
-            balance: {number:0, ccy: 'GOOG'},
+            date: today,
+            balance: {number:0, ccy: props.row.assetId},
             price: {number:0, ccy: 'USD'},
 
           };
@@ -145,9 +147,10 @@
         }
       },
         computed: {
+          ...mapGetters(['mainAccounts']),
           canEdit(): boolean {
             // TODO: Check that accountId is a mainAccount
-            return !!this.accountId;
+            return !!this.accountId && this.mainAccounts.find( (x:string) => x===this.accountId);
           },
             currentMode(): Mode {
                 const mode = this.modes.find(m => m.name === this.mode);

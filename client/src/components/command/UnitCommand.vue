@@ -28,15 +28,30 @@
         name: 'UnitCommand',
         mixins: [CommandEditorMixin],
         components: {AccountSelector, BalanceEditor},
-        methods: {
+      created () {
+          if (!this.c.balance.number) {
+            this.defaultStuff();
+          }
+      },
+      methods: {
             accountIdChanged() {
                 const all /*: AccountDTO[]*/ = this.$store.state.summary.accounts;
                 const acct = all.find(x => x.accountId === this.c.accountId);
                 if (acct) {
                     this.c.price.ccy = acct.ccy;
                     this.c.commission.ccy = acct.ccy;
+                    this.defaultStuff();
                 }
             },
+          defaultStuff() {
+            const cmds = this.$store.state.summary.commands;
+            const prev = cmds.reverse().find(cmd =>  cmd.accountId === this.c.accountId && cmd.commandType === 'unit' && cmd.balance.ccy === this.c.balance.ccy);
+            if (prev) {
+              this.c.balance.number = prev.balance.number;
+              this.c.price.number = prev.price.number;
+              this.c.price.ccy = prev.price.ccy;
+            }
+          }
         },
         computed: {
             toGainstrack() {

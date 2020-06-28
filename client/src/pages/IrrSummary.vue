@@ -26,7 +26,7 @@
 
 <script>
     import axios from 'axios';
-    import numeral from 'numeral';
+    import numbro from 'numbro';
 
     export default {
         name: 'IrrSummary',
@@ -34,7 +34,7 @@
             return {info: []}
         },
         filters: {
-          numeral: (value, format) => numeral(value).format(format)
+          numeral: (value, format) => numbro(value).format(format)
         },
         mounted() {
             const notify = this.$notify;

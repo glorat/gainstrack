@@ -82,6 +82,18 @@ class SortedColumnMap {
     }
   }
 
+  latestKey(key: string):string|undefined {
+    const idx = this.iota(key)
+    if (idx<0) {
+      return this.ks[this.ks.length-1]
+    }
+    else if (idx == 0) {
+      return this.ks[0] // Sort of shouldn't happen
+    }
+    else {
+      return this.ks[idx]
+    }
+  }
 }
 
 type AssetId = string
@@ -91,7 +103,7 @@ import { mapValues, uniq } from 'lodash';
 
 interface FXConverter {
   getFX(fx1:AssetId, fx2:AssetId, date:LocalDate): number|undefined
-  // latestDate(fx1: AssetId, fx2: AssetId, date: LocalDate): LocalDate|undefined
+  latestDate(fx1: AssetId, fx2: AssetId, date: LocalDate): LocalDate|undefined
 }
 
 
@@ -124,9 +136,14 @@ export class FXMarketLazyLoad implements SingleFXConverter {
     }
     return this.marketFx.getFX(fx1, fx2, date);
   }
+
+  latestDate( /*fx1: string, fx2: string, date: string*/ ): string | undefined {
+    throw new Error('Not implemented');
+    // return undefined;
+  }
 }
 
-export class SingleFXConversion {
+export class SingleFXConversion implements SingleFXConverter {
   state: Record<string, SortedColumnMap> = {};
   baseCcy: string;
 
@@ -173,6 +190,15 @@ export class SingleFXConversion {
       }
     }
   }
+
+  latestDate(fx1: string, fx2: string, date: string): string | undefined {
+    const series = this.state[fx1];
+    if (series) {
+      return series.latestKey(date)
+    } else {
+      return undefined;
+    }
+  }
 }
 
 export class FXMapped implements SingleFXConverter{
@@ -193,14 +219,14 @@ export class FXMapped implements SingleFXConverter{
     return ret;
   }
 
-  // latestDate(fx1: AssetId, fx2: AssetId, date: LocalDate): LocalDate|undefined {
-  //   const cfx1 = this.mapper[fx1] || fx1;
-  //   const cfx2 = this.mapper[fx2] || fx2;
-  //   return this.singleFXConverter.latestDate(cfx1, cfx2, date)
-  // }
+  latestDate(fx1: AssetId, fx2: AssetId, date: LocalDate): LocalDate|undefined {
+    const cfx1 = this.mapper[fx1] || fx1;
+    const cfx2 = this.mapper[fx2] || fx2;
+    return this.singleFXConverter.latestDate(cfx1, cfx2, date)
+  }
 }
 
-export class FXProxy {
+export class FXProxy implements FXConverter {
   baseCcy: string;
   mapper: Record<AssetId, AssetId>;
   tradeFx: SingleFXConversion;
@@ -211,6 +237,15 @@ export class FXProxy {
     this.tradeFx = tradeFx;
     this.marketFx = marketFx;
     this.baseCcy = marketFx.baseCcy;
+  }
+
+  latestDate(fx1: string, fx2: string, date: string): string | undefined {
+    const proxyTicker = this.mapper[fx1];
+    if (proxyTicker) {
+      return this.tradeFx.latestDate(proxyTicker, fx2, date)
+    } else {
+      return undefined
+    }
   }
 
 
@@ -257,6 +292,17 @@ export class FXChain implements SingleFXConverter {
   getFX(fx1: AssetId, fx2:AssetId, date: LocalDate): number|undefined {
     for (const conv of this.fxConverters) {
       const ret = conv.getFX(fx1, fx2, date);
+      if (ret) {
+        return ret;
+      }
+    }
+    return undefined;
+  }
+
+  latestDate(fx1: string, fx2: string, date: string): string | undefined {
+    for (const conv of this.fxConverters) {
+      if (!conv.latestDate) {debugger;}
+      const ret = conv.latestDate(fx1, fx2, date);
       if (ret) {
         return ret;
       }

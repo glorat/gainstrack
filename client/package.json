@@ -16,12 +16,12 @@
     "@quasar/extras": "^1.0.0",
     "@types/lodash": "^4.14.157",
     "@types/marked": "^1.1.0",
-    "@types/numeral": "0.0.28",
     "@vue/composition-api": "^0.6.4",
     "axios": "^0.18.1",
     "core-js": "^3.6.5",
     "date-fns": "^2.14.0",
     "lodash": "^4.17.15",
+    "numbro": "^2.3.1",
     "plotly.js-dist": "^1.54.5",
     "quasar": "^1.0.0"
   },
@@ -48,7 +48,6 @@
     "eslint-plugin-vue": "^6.1.2",
     "firebase": "^7.15.1",
     "marked": "^0.7.0",
-    "numeral": "^2.0.6",
     "vue-tour": "git://github.com/glorat/vue-tour.git#popper2"
   },
   "browserslist": [

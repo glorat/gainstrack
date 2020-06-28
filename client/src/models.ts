@@ -95,8 +95,9 @@ export interface AssetResponse {
 }
 
 export interface Posting {
-    account: string
-    value: Amount
+  account: string
+  value: Amount
+  price?: Amount
 }
 
 export interface Transaction  {
@@ -148,7 +149,7 @@ export interface AllState {
   acctState: AccountState
   assetState: AssetState
   balances: Record<string, BalanceStateSeries>
-  txs: Transaction | AccountCommandDTO[]
+  txs: (Transaction | AccountCommandDTO)[]
   priceState: PriceState
   tradeFx: { baseCcy: string, data: Record<string, { ks: string[], vs: number[] }> }
   fxMapper: Record<string, string>,
@@ -165,3 +166,7 @@ export const emptyAllState: AllState = {
   fxMapper: {},
   proxyMapper:{}
 };
+
+export function isTransaction(tx: AccountCommandDTO|Transaction):tx is Transaction {
+  return (tx as Transaction).postings !== undefined;
+}
