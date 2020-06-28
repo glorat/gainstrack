@@ -56,12 +56,17 @@ case class GainstrackGenerator(originalCommands:Seq[AccountCommand])  {
     val unknownCommand = txState.cmds(badOrigin).origin
     throw new IllegalStateException("Unmatched tx.origin: " + unknownCommand.toGainstrack.mkString("\n"));
   }
+
+  val txs = txState.cmds.collect({ case tx: Transaction => tx })
+  val origins = txs.map(_.origin).map(originalCommands.indexOf(_))
+  val txDTOs = txs.zip(origins).map(tup => tup._1.toDTO(tup._2))
+
   def allState:Map[String, Any] = {
     Map(
+      "cmds" -> originalCommands.map(_.toDTO),
       "acctState" -> acctState,
       "balances" -> balanceState.balances,
-      "txs" -> txState.cmds,
-      "txOrigins" -> txOrigins,
+      "txs" -> txDTOs,
       "priceState" -> priceState,
       "assetState" -> assetState,
       "tradeFx" -> tradeFXConversion,

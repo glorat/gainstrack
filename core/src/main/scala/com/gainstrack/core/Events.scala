@@ -24,6 +24,13 @@ trait BeancountCommand {
   def toBeancount : Seq[BeancountLine]
 }
 
+case class TransactionDTO(
+                                originIndex: Int,
+                                postDate: LocalDate,
+                                description: String,
+                                postings: Seq[Posting],
+                              )
+
 trait AccountEvent extends DomainEvent {
   def accountId: AccountId
   def date:LocalDate

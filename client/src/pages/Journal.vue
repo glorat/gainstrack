@@ -7,25 +7,37 @@
   </my-page>
 </template>
 
-<script>
-  import axios from 'axios'
-  import JournalTable from '../components/JournalTable'
+<script lang="ts">
+  // import axios from 'axios'
+  import JournalTable from '../components/JournalTable.vue'
+  import {AccountTxDTO, journalEntries} from 'src/lib/utils'
+  import { mapGetters } from 'vuex'
+  import Vue from 'vue';
+  import { MyState } from 'src/store';
+  import {SingleFXConverter} from 'src/lib/fx';
 
-  export default {
+  export default Vue.extend({
     name: 'Journal',
     components: { JournalTable },
     props: ['accountId'],
     data () {
       return {
-        info: { rows: [] },
+        info: { rows: [] as AccountTxDTO[] },
       }
     },
-    mounted () {
-      axios.get('/api/journal/')
-        .then(response => this.info = response.data)
-        .catch(error => this.$notify.error(error))
+    computed: {
+      ...mapGetters(['fxConverter', 'allTxs'])
     },
-  }
+    mounted () {
+      const state: MyState = this.$store.state;
+      const fxConverter: SingleFXConverter = this.fxConverter
+      const txs = this.allTxs;
+      const cmds = state.summary.commands;
+      const baseCcy = state.summary.baseCcy;
+
+      this.info = {rows: journalEntries(fxConverter, txs, cmds, baseCcy)}
+    },
+  })
 </script>
 
 <style>

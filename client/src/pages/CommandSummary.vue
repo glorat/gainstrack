@@ -16,19 +16,12 @@
 </template>
 
 <script>
-    import axios from 'axios';
     import {mapGetters} from 'vuex';
-    import AccountCreation from '../components/command/AccountCreation';
 
     export default {
         name: 'CommandSummary',
         data() {
-            return {info: Array < AccountCreation > []}
-        },
-        mounted() {
-            axios.get('/api/command/')
-                .then(response => this.info = response.data)
-                .catch(error => this.$notify.error(error))
+            return {}
         },
         computed: {
             ...mapGetters(['mainAccounts']),

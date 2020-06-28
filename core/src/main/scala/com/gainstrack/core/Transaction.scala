@@ -17,6 +17,13 @@ case class Transaction (
 
   require(!postings.exists(p => p.isEmpty), "No more than one posting can be empty")
 
+  def toDTO(originIndex: Int): TransactionDTO = {
+    TransactionDTO(originIndex,
+    postDate,
+    description,
+    postings)
+  }
+
   lazy val isBalanced : Boolean = {
     val ccy = postings.head.weight.ccy
     postings.forall(p => p.weight.ccy == ccy) &&

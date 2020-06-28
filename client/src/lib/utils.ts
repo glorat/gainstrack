@@ -1,10 +1,14 @@
 import numbro from 'numbro';
-import {Posting} from 'src/lib/models';
+import {AccountCommandDTO, Posting, Transaction} from 'src/lib/models';
 import {SingleFXConverter} from 'src/lib/fx';
-import {groupBy, keys, sum} from 'lodash';
+import {flatMap, groupBy, keys, sum, uniq} from 'lodash';
 
 export function formatNumber(val: unknown) {
   return numbro(val).format({thousandSeparated: true, mantissa: 2});
+}
+
+export function formatPerc(val: unknown) {
+  return numbro(val).format({output: 'percent', mantissa: 1});
 }
 
 export function isSubAccountOf(accountId: string, parentId: string): boolean {
@@ -23,6 +27,38 @@ export function assetRowsFromPostings(myPostings: Posting[], fx: SingleFXConvert
     return {unitNumber, unitCcy, valueNumber, valueCcy, price, priceDate};
   });
   return assetRows;
+}
+
+export interface AccountTxDTO {
+  date: string,
+  cmdType: string,
+  description: string,
+  change: string,
+  postings: Posting[]
+}
+
+export function journalEntries(mktConvert: SingleFXConverter, txs: Transaction[], cmds: AccountCommandDTO[], baseCcy: string): AccountTxDTO[] {
+  const commandIndices = uniq(txs.map(tx => tx.originIndex)).reverse();
+
+  const rows = commandIndices.map(idx => {
+    const cmd = cmds[idx];
+    const myTxs = txs.filter(tx => tx.originIndex === idx);
+    const postings = flatMap(myTxs, tx => tx.postings);
+    const pnlPostings = postings.filter(p => p.account.match('^(Assets|Liabilities)'));
+    const txPnl = sum(pnlPostings.map(posting => {
+      const fx = mktConvert.getFX(posting.value.ccy, baseCcy, posting.postDate) || 0.0;
+      return fx * posting.value.number;
+    }));
+
+    return {
+      date: cmd.date,
+      cmdType: cmd.commandType || '',
+      description: cmd.description || '',
+      change: formatNumber(txPnl),
+      postings
+    };
+  });
+  return rows;
 }
 
 export interface AssetRow {

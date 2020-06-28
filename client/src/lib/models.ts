@@ -51,6 +51,7 @@ export interface AccountCommandDTO {
     commandType?: string
     // TODO: Put this in options or make it official
     commission?: Amount
+  description?: string
 }
 
 export interface StateSummaryDTO {
@@ -95,14 +96,14 @@ export interface AssetResponse {
 }
 
 export interface Posting {
+  postDate: string
   account: string
   value: Amount
   price?: Amount
 }
 
 export interface Transaction  {
-    accountId: string
-    origin: AccountCommandDTO
+    originIndex: number
     description: string
     id: number
     postDate: string
