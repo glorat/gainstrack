@@ -7,10 +7,12 @@ case class BalanceAdjustment(
                               date: LocalDate, // post or enter?
                               accountId:AccountId,
                               balance:Amount,
-                              adjAccount:AccountId
+                              adjAccount:AccountId,
+                              myOrigin: Option[AccountCommand]
                             ) extends AccountCommand {
   private val self = this
 
+  def origin: AccountCommand = myOrigin.getOrElse(this)
   override def mainAccount: Option[AccountId] = Some(accountId)
   // FIXME: Unless there is no adjustment
   override def involvedAccounts: Set[AccountId] = Set(accountId, adjAccount)
@@ -34,13 +36,13 @@ case class BalanceAdjustment(
     val targetAccountId = if (account.options.multiAsset) accountId.subAccount(balance.ccy.symbol) else accountId
 
     val newUnits = balance-oldValue
-    val balanceAssertion = BalanceAssertion(date, targetAccountId, balance, this)
+    val balanceAssertion = BalanceAssertion(date, targetAccountId, balance, origin)
     if (newUnits.number == zeroFraction) {
       Seq(balanceAssertion)
     }
     else {
       val tfrExpand = toTransfers(accts, Amount(oldValue, balance.ccy.symbol))
-      val txs: Seq[Transaction] = tfrExpand.map(_.toTransaction)
+      val txs: Seq[Transaction] = tfrExpand.map(_.toTransaction.copy(origin = origin))
       txs :+ balanceAssertion
     }
   }
@@ -85,7 +87,7 @@ object BalanceAdjustment extends CommandParser {
 
     str match {
       case re(date, acct, balance, adjAcct) => {
-        BalanceAdjustment(parseDate(date), AccountId(acct), balance, AccountId(adjAcct))
+        BalanceAdjustment(parseDate(date), AccountId(acct), balance, AccountId(adjAcct), None)
       }
     }
   }

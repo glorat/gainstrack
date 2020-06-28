@@ -40,7 +40,7 @@ case class UnitTrustBalance(
   def toBeancountCommand(oldBalance:Amount)(acctState:AccountState) : BeancountCommand = {
     if (security == oldBalance) {
       // No transaction just emit a price
-      PriceObservation(date, security.ccy, price)
+      PriceObservation(date, security.ccy, price, Some(this))
     }
     else {
       toTransaction(oldBalance, acctState).get

@@ -76,7 +76,8 @@ class First extends FlatSpec {
       accountId = AccountId("Assets:HSBCHK"),
       date = LocalDate.parse("2019-01-01"), // post or enter?
       balance = "138668.37 HKD",
-      adjAccount = AccountId("Equity:Opening:HKD")
+      adjAccount = AccountId("Equity:Opening:HKD"),
+      myOrigin = None
     )
 
     assert(BalanceAdjustment.parse("2019-01-01 adj Assets:HSBCHK 138668.37 HKD Equity:Opening:HKD") == bohkd)
@@ -391,4 +392,5 @@ class First extends FlatSpec {
     assert(iuaa.units == 1000)
     assert(iuaa.value.round == 4097)
   }
+
 }

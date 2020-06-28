@@ -49,12 +49,19 @@ case class GainstrackGenerator(originalCommands:Seq[AccountCommand])  {
   val fxMapper: Map[AssetId, AssetId] = new FXMapperGenerator(assetState).fxMapper
   val proxyMapper = new FXMapperGenerator(assetState).proxyMapper
   val latestDate:LocalDate = finalCommands.maxBy(_.date).date
-
+  val txOrigins = txState.cmds.map(_.origin).map(originalCommands.indexOf(_))
+  val badOrigin = txOrigins.indexOf(-1)
+  // Invariant condition of linking beancountCommand back to accountCommand
+  if (badOrigin >= 0) {
+    val unknownCommand = txState.cmds(badOrigin).origin
+    throw new IllegalStateException("Unmatched tx.origin: " + unknownCommand.toGainstrack.mkString("\n"));
+  }
   def allState:Map[String, Any] = {
     Map(
       "acctState" -> acctState,
       "balances" -> balanceState.balances,
       "txs" -> txState.cmds,
+      "txOrigins" -> txOrigins,
       "priceState" -> priceState,
       "assetState" -> assetState,
       "tradeFx" -> tradeFXConversion,

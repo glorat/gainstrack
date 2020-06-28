@@ -11,7 +11,7 @@ case class BalanceStatement(
                            ) extends AccountCommand {
   private val self = this
 
-  val adjustment = BalanceAdjustment(date.plusDays(1), accountId, balance, adjAccount)
+  val adjustment = BalanceAdjustment(date.plusDays(1), accountId, balance, adjAccount, Some(this))
 
   override def mainAccount: Option[AccountId] = Some(accountId)
   override def involvedAccounts: Set[AccountId] = adjustment.involvedAccounts
