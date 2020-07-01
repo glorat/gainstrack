@@ -128,7 +128,7 @@
         },
         computed: {
             latestDate() {
-                return this.$store.state.summary.latestDate;
+                return this.$store.state.allState.latestDate;
             },
         },
         mounted() {

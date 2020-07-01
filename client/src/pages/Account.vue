@@ -4,6 +4,7 @@
       <q-tab name="assets" :icon="matAssignment" label="Balance"></q-tab>
       <q-tab name="statement" :icon="matAccountBalance" label="Statements"></q-tab>
       <q-tab name="journal" :icon="matEdit" label="Journal" v-if="hasJournal"></q-tab>
+      <q-tab name="more" :icon="matAssignment" label="More" v-if="hasJournal"></q-tab>
     </q-tabs>
 
     <q-tab-panels v-model="tab" animated>
@@ -24,7 +25,11 @@
       </q-tab-panel>
 
       <q-tab-panel name="assets">
-        <asset-view :assetResponse="assetResponse" :loading="false"></asset-view>
+        <asset-view :assetResponse="assetResponse" :loading="false" :account-id="accountId"></asset-view>
+      </q-tab-panel>
+
+      <q-tab-panel name="more">
+        <asset-balance :account-id="accountId"></asset-balance>
       </q-tab-panel>
 
     </q-tab-panels>
@@ -42,6 +47,7 @@
   import AssetView from '../components/AssetView.vue'
   import { mapGetters } from 'vuex'
   import { matAccountBalance, matAssignment, matEdit } from '@quasar/extras/material-icons'
+  import AssetBalance from '../components/AssetBalance'
 
   export default {
     name: 'Account',
@@ -50,7 +56,8 @@
       ConversionSelect,
       JournalTable,
       AccountJournal,
-      AssetView
+      AssetView,
+      AssetBalance,
     },
     props: ['accountId'],
     data () {
@@ -78,7 +85,7 @@
         return this.mainAccounts.includes(this.accountId)
       },
       conversion () {
-        return this.$store.state.summary.conversion
+        return this.$store.state.allState.conversion
       }
     },
     watch: {

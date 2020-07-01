@@ -17,7 +17,7 @@
         <q-td>
         </q-td>
         <q-td class="num">
-          {{ totalValue }}
+          {{ totalValueStr }}
         </q-td>
         <q-td />
         <q-td />
@@ -33,7 +33,7 @@
   import {Posting} from 'src/lib/models';
 
   import {SingleFXConverter} from 'src/lib/fx';
-  import {assetRowsFromPostings, formatNumber, isSubAccountOf, AssetRow} from 'src/lib/utils';
+  import {assetRowsFromPostings, formatNumber, isSubAccountOf, AssetRow, formatPerc} from 'src/lib/utils';
 
   export default Vue.extend({
     name: 'AssetBalance',
@@ -71,6 +71,12 @@
           field: 'valueNumber',
           format:formatNumber
         }, {
+          name: 'valuePerc',
+          label: '%',
+          classes: ['num'],
+          field: (row:AssetRow) => row.valueNumber / this.totalValue,
+          format:formatPerc
+        }, {
           name: 'price',
           label: 'Price',
           classes: ['num'],
@@ -95,9 +101,12 @@
 
         return assetRows;
       },
-      totalValue():string {
+      totalValue():number {
         const allVals = this.myData.map(row => row.valueNumber);
-        return formatNumber(sum(allVals));
+        return sum(allVals);
+      },
+      totalValueStr():string {
+        return formatNumber(this.totalValue);
       }
     }
   })

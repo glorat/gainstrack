@@ -35,8 +35,7 @@
       },
       methods: {
             accountIdChanged() {
-                const all /*: AccountDTO[]*/ = this.$store.state.summary.accounts;
-                const acct = all.find(x => x.accountId === this.c.accountId);
+              const acct = this.findAccount(this.c.accountId);
                 if (acct) {
                     this.c.price.ccy = acct.ccy;
                     this.c.commission.ccy = acct.ccy;
@@ -44,7 +43,7 @@
                 }
             },
           defaultStuff() {
-            const cmds = this.$store.state.summary.commands;
+            const cmds = this.$store.state.allState.commands;
             const prev = cmds.reverse().find(cmd =>  cmd.accountId === this.c.accountId && cmd.commandType === 'unit' && cmd.balance.ccy === this.c.balance.ccy);
             if (prev) {
               this.c.balance.number = prev.balance.number;

@@ -32,8 +32,8 @@
       const state: MyState = this.$store.state;
       const fxConverter: SingleFXConverter = this.fxConverter
       const txs = this.allTxs;
-      const cmds = state.summary.commands;
-      const baseCcy = state.summary.baseCcy;
+      const cmds = state.allState.commands;
+      const baseCcy = state.allState.baseCcy;
 
       this.info = {rows: journalEntries(fxConverter, txs, cmds, baseCcy)}
     },

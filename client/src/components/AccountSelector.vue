@@ -8,6 +8,7 @@
 
 <script lang="ts">
   import Vue from 'vue';
+  import {mapGetters} from 'vuex';
 
   export default Vue.extend({
     name: 'AccountSelector',
@@ -22,11 +23,12 @@
       };
     },
     computed: {
+      ...mapGetters(['accountIds']),
       resolvedPlaceholder(): string {
         return this.placeholder || 'Account';
       },
       accounts(): string[] {
-        return this.accountList || this.$store.state.summary.accountIds;
+        return this.accountList || this.accountIds;
       },
       options(): { value: string, label: string }[] {
         return this.accounts.map(acctId => {

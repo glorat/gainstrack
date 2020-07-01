@@ -35,8 +35,7 @@
         mixins: [CommandEditorMixin],
         methods: {
             accountIdChanged() {
-                const all /*: AccountDTO[]*/ = this.$store.state.summary.accounts;
-                const acct = all.find(x => x.accountId === this.c.accountId);
+                const acct = this.findAccount(this.c.accountId);
                 if (acct) {
                     this.c.price.ccy = acct.ccy;
                     this.c.commission.ccy = acct.ccy;

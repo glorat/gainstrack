@@ -143,6 +143,25 @@ trait GainstrackSupport {
       bg.latestDate, dateOverride, authnSummary, bg.originalCommands.map(_.toDTO))
   }
 
+  def getAllState: Map[String, Any] = {
+    val bg = getGainstrack
+    val ret = bg.allState
+
+    val accts = bg.acctState.accounts.map(_.accountId)
+    val ccys = bg.priceState.ccys
+    val conversionStrategy = session.get("conversion").map(_.toString).getOrElse("parent")
+    val authnSummary = getAuthentication
+
+    ret + ("accountIds" -> accts) +
+      ("accounts" -> bg.acctState.accounts.toSeq.map(_.toAccountDTO)) +
+      ("baseCcy" -> bg.acctState.baseCurrency) +
+      ("ccys" -> ccys.toSeq.sorted) +
+      ("conversion" -> conversionStrategy) +
+      ("latestDate" -> bg.latestDate) +
+      ("dateOverride" -> dateOverride) +
+      ("authentication" -> authnSummary)
+  }
+
   def getAuthentication: AuthnSummary = {
     if (isAuthenticated) {
       AuthnSummary(Some(user.username))

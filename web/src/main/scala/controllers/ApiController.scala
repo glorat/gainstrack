@@ -269,6 +269,10 @@ class ApiController (implicit val ec :ExecutionContext)
     this.getSummary
   }
 
+  get("/allState") {
+    this.getAllState
+  }
+
   post("/state/conversion") {
     // val bg = session.get("gainstrack").getOrElse(bgDefault).asInstanceOf[GainstrackGenerator]
     session("conversion") = (parsedBody \ "conversion").extract[String]
@@ -402,9 +406,6 @@ class ApiController (implicit val ec :ExecutionContext)
     getHistory
   }
 
-  get("/allState") {
-    getGainstrack.allState
-  }
 /*
   error {
     case e: Throwable => {

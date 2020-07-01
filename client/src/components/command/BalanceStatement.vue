@@ -41,12 +41,11 @@
         },
         methods: {
             accountIdChanged() {
-                const all /*: AccountDTO[]*/ = this.$store.state.summary.accounts;
-                const acct = all.find(x => x.accountId === this.c.accountId);
+                const acct = this.findAccount(this.c.accountId);
                 if (acct) {
                     this.c.balance.ccy = acct.ccy;
                 }
-                const allCmds /*: AccountCommandDTO[]*/ = this.$store.state.summary.commands;
+                const allCmds /*: AccountCommandDTO[]*/ = this.$store.state.allState.commands;
                 const prev = allCmds.find(
                     x => x.accountId === this.c.accountId && x.commandType === 'bal');
                 if (prev) {
@@ -60,7 +59,7 @@
         },
         computed: {
             balanceableAccounts() {
-                return this.$store.state.summary.accounts.filter(acct => {
+                return this.$store.state.allState.accounts.filter(acct => {
                     const id = acct.accountId;
                     const t = (/^(Asset|Liabilities|Equity)/.test(id));
                     return (acct.options.generatedAccount === false) && t

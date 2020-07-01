@@ -2,7 +2,7 @@ import {FXChain, FXMapped, FXMarketLazyLoad, FXProxy, SingleFXConversion, Single
 import axios from 'axios'
 import Vue from 'vue'
 import Vuex from 'vuex'
-import {AccountDTO, AllState, emptyAllState, isTransaction, Posting, QuoteConfig, StateSummaryDTO} from '../lib/models'
+import {AccountDTO, AllState, emptyAllState, isTransaction, Posting, QuoteConfig} from '../lib/models'
 import {flatten} from 'lodash'
 
 Vue.use(Vuex);
@@ -16,7 +16,6 @@ export interface TimeSeries {
 export interface MyState {
   allState: AllState,
   count: number,
-  summary: StateSummaryDTO,
   quoteConfig: QuoteConfig[],
   balances: AccountBalances,
   parseState: Record<string, unknown>,
@@ -27,14 +26,6 @@ export interface MyState {
 const initState: MyState = {
   allState: emptyAllState,
   count: 0,
-  summary: {
-    baseCcy: 'USD',
-    accountIds: [],
-    accounts: [],
-    ccys: [],
-    authentication: { username: '' },
-    commands: []
-  },
   quoteConfig: [],
   balances: {},
   parseState: { errors: [] },
@@ -51,13 +42,6 @@ export default function () {
       increment (state: MyState) {
         state.count++
       },
-      reloaded (state: MyState, data) {
-        state.summary = data;
-        state.balances = {};
-        state.gainstrackText = '';
-        state.parseState = { errors: [] };
-        state.count ++
-      },
       reloadedQuotesConfig (state: MyState, data) {
         state.quoteConfig = data
       },
@@ -72,6 +56,11 @@ export default function () {
         state.gainstrackText = data
       },
       allStateLoaded (state: MyState, data: AllState) {
+        state.balances = {};
+        state.gainstrackText = '';
+        state.parseState = { errors: [] };
+        state.count ++;
+
         state.allState = data
       },
       quotesUpserted (state: MyState, data: { key: string, series: TimeSeries }) {
@@ -124,14 +113,13 @@ export default function () {
       },
       async reload (context) {
         // TODO: These next two can run in parallel
-        // TODO: commit some loading state so UI can reflect transitions better
-        const response = await axios.get('/api/state/summary');
-        await context.commit('reloaded', response.data);
+        const response = await context.dispatch('loadAllState');
+
         const quotesConfig = await axios.get('/api/quotes/config');
         await context.commit('reloadedQuotesConfig', quotesConfig.data);
         // Since components don't know to retrigger this if already on display, let's get it for them
         await context.dispatch('balances');
-        await context.dispatch('loadAllState');
+
         return response
       },
       async loadAllState (context) {
@@ -151,10 +139,13 @@ export default function () {
       },
       async login (context, data: Record<string, unknown>) {
         const summary = await axios.post('/api/authn/login', data);
-        await context.commit('reloaded', summary.data);
+        // await context.commit('reloaded', summary.data);
+
+        await context.dispatch('loadAllState');
+
         // Get stuff in background
         await context.dispatch('balances');
-        await context.dispatch('loadAllState');
+
         return summary
       },
       async loginWithToken (context, token: string) {
@@ -167,7 +158,6 @@ export default function () {
         axios.defaults.headers.common = config.headers;
 
         const summary = await axios.post('/api/authn/login', {});
-        await context.commit('reloaded', summary.data);
         // Get stuff in background
         await context.dispatch('balances');
         await context.dispatch('loadAllState');
@@ -175,7 +165,7 @@ export default function () {
       },
       async logout (context, data: Record<string, any>) {
         const summary = await axios.post('/api/authn/logout', data);
-        await context.commit('reloaded', summary.data);
+        await context.dispatch('loadAllState');
         return summary
       },
       parseState (context, data) {
@@ -183,11 +173,14 @@ export default function () {
       }
     },
     getters: {
+      accountIds: state => {
+        return state.allState.accountIds;
+      },
       reloadCounter: state => {
         return state.count;
       },
       tradeableAccounts: state => {
-        const all = state.summary.accounts;
+        const all = state.allState.accounts;
         const scope = all.filter(
           x => x.accountId.startsWith('Asset') &&
             x.options.multiAsset &&
@@ -196,22 +189,22 @@ export default function () {
         return scope.map(x => x.accountId).sort()
       },
       mainAssetAccounts: state => {
-        const all = state.summary.accounts;
+        const all = state.allState.accounts;
         const scope = all.filter(x => x.accountId.startsWith('Asset') && !x.options.generatedAccount);
         return scope.map(x => x.accountId).sort()
       },
       mainAccounts: state => {
-        return state.summary.accounts.filter(acct => {
+        return state.allState.accounts.filter(acct => {
           return (acct.options.generatedAccount === false)
         }).map(a => a.accountId).sort()
       },
       findAccount: state => (accountId: string) => {
-        const all: AccountDTO[] = state.summary.accounts;
+        const all: AccountDTO[] = state.allState.accounts;
         const acct = all.find(x => x.accountId === accountId);
         return acct
       },
       baseCcy: state => {
-        return state.summary.baseCcy
+        return state.allState.baseCcy
       },
       tradeFxConverter: state => {
         const allState = state.allState;

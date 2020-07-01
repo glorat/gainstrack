@@ -32,7 +32,8 @@
     },
     computed: {
       options(): MyOpt[] {
-        const summary: StateSummaryDTO = this.$store.state.summary;
+        const state = this.$store.state;
+        const summary: StateSummaryDTO = state.allState.ccys;
         return summary.ccys.map(ccy => {
           return {value: ccy, label: ccy};
         });

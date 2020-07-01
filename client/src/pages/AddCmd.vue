@@ -58,6 +58,7 @@
   import SourceErrors from '../components/SourceErrors'
   import { debounce } from 'lodash'
   import EventBus from '../event-bus'
+  import { mapGetters } from 'vuex'
 
   export default {
     name: 'AddCmd',
@@ -99,6 +100,7 @@
       }
     },
     computed: {
+      ...mapGetters(['baseCcy']),
       c () {
         let c = {}
         if (this.input) {
@@ -106,9 +108,6 @@
         }
         c.commandType = c.commandType || this.$route.query.cmd
         return c
-      },
-      baseCcy () {
-        return this.$store.state.summary.baseCcy
       },
       networthChange () {
         return this.result.networthChange

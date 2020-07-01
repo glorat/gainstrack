@@ -37,7 +37,7 @@
                 return this.$store.state.balances
             },
             conversion() {
-                return this.$store.state.summary.conversion;
+                return this.$store.state.allState.conversion;
             },
         },
         mounted() {

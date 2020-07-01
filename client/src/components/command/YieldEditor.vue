@@ -44,7 +44,7 @@
             },
             assetChanged() {
                 // TODO: A test case of VWRL yielding USD instead of GBP
-                const cmds = this.$store.state.summary.commands;
+                const cmds = this.$store.state.allState.commands;
                 const prev = cmds.reverse().find(cmd => cmd.commandType === 'yield' && cmd.asset === this.c.asset);
                 if (prev) {
                     this.c.change.ccy = prev.change.ccy

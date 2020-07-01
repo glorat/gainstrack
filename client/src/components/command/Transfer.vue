@@ -47,15 +47,13 @@
         },
         methods: {
             accountIdChanged() {
-                const all = this.$store.state.summary.accounts;
-                const acct = all.find(x => x.accountId === this.c.accountId);
+                const acct = this.findAccount(this.c.accountId);
                 if (acct) {
                     this.c.change.ccy = acct.ccy;
                 }
             },
             otherAccountIdChanged() {
-                const all = this.$store.state.summary.accounts;
-                const acct = all.find(x => x.accountId === this.c.otherAccount);
+                const acct = this.findAccount(this.c.otherAccount);
                 if (acct) {
                     this.c.options.targetChange.ccy = acct.ccy;
                 }

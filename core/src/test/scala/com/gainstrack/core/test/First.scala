@@ -393,4 +393,10 @@ class First extends FlatSpec {
     assert(iuaa.value.round == 4097)
   }
 
+  it should "report the same by tx summation" in {
+    val ret = NetworthReport.byAsset2(bg.latestDate, bg.acctState.baseCurrency)(accountState = acctState, txState = bg.txState, assetState = bg.assetState, singleFXConverter = bg.tradeFXConversion)
+    val iuaa = ret.rows.find(_.assetId == AssetId("IUAA")).get
+    assert(iuaa.units == 1000)
+    assert(iuaa.value.round == 4097)
+  }
 }

@@ -63,7 +63,7 @@ case class GainstrackGenerator(originalCommands:Seq[AccountCommand])  {
 
   def allState:Map[String, Any] = {
     Map(
-      "cmds" -> originalCommands.map(_.toDTO),
+      "commands" -> originalCommands.map(_.toDTO),
       "acctState" -> acctState,
       "balances" -> balanceState.balances,
       "txs" -> txDTOs,

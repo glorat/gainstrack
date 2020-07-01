@@ -49,6 +49,7 @@
   // eslint-disable-next-line no-unused-vars
   import {Route} from 'vue-router';
   import VueTour from 'vue-tour';
+  import {MyState} from "src/store";
   // tslint:disable-next-line
   // eslint-disable-next-line
   require('vue-tour/dist/vue-tour.css');
@@ -570,7 +571,8 @@
     },
     computed: {
       authentication(): AuthenticationDTO {
-        return this.$store.state.summary.authentication;
+        const state:MyState = this.$store.state;
+        return state.allState.authentication;
       },
       customSteps(): CustomStep[] {
         const currentStep = this.steps[this.$tours.myTour.currentStep];

@@ -54,15 +54,6 @@ export interface AccountCommandDTO {
   description?: string
 }
 
-export interface StateSummaryDTO {
-    baseCcy: string;
-    accountIds: string[]
-    accounts: AccountDTO[]
-    ccys: string[]
-    authentication: AuthenticationDTO
-    commands: AccountCommandDTO[]
-}
-
 export interface AuthenticationDTO {
     username: string
 }
@@ -145,7 +136,17 @@ export interface PriceState {
     prices: Record<string, Record<LocalDate, number>>
 }
 
-export interface AllState {
+export interface StateSummaryDTO {
+  baseCcy: string;
+  accountIds: string[]
+  accounts: AccountDTO[]
+  ccys: string[]
+  authentication: AuthenticationDTO
+  commands: AccountCommandDTO[]
+}
+
+export interface AllState extends StateSummaryDTO {
+  commands: AccountCommandDTO[]
   acctState: AccountState
   assetState: AssetState
   balances: Record<string, BalanceStateSeries>
@@ -157,6 +158,10 @@ export interface AllState {
 }
 
 export const emptyAllState: AllState = {
+  accountIds: [], accounts: [],
+  authentication: {username: ''},
+  baseCcy: '', ccys: [],
+  commands: [],
   acctState: {accounts:[], baseCurrency: 'USD'},
   assetState: {allAssets:[], assetToTags:{}, tagToAssets:{}},
   balances: {},

@@ -82,6 +82,10 @@ case class TransactionState(acctState:AccountState, balanceState:BalanceState, c
     cmds.filter(_.isInstanceOf[Transaction]).asInstanceOf[Seq[Transaction]]
   }
 
+  def forDate(date: LocalDate): Seq[Transaction] = {
+    allTransactions.filter(tx => tx.postDate.isBefore(date) || tx.postDate.isEqual(date))
+  }
+
   def postingsForAccount(acctId:AccountId) = {
     allTransactions.flatMap(_.postings.filter(_.account == acctId))
   }

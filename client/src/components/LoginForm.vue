@@ -50,7 +50,7 @@
         },
         computed: {
             authentication() {
-                return this.$store.state.summary.authentication;
+                return this.$store.state.allState.authentication;
             },
             auth0authned() {
                 return this.$auth.isAuthenticated

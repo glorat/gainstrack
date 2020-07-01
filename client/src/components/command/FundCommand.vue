@@ -39,8 +39,7 @@
                 }
             },
             otherAccountChanged() {
-                const all = this.$store.state.summary.accounts;
-                const acct = all.find(x => x.accountId === this.c.otherAccount);
+                const acct = this.findAccount(this.c.otherAccount);
                 if (acct) {
                     this.c.change.ccy = acct.ccy;
                 }
@@ -54,7 +53,7 @@
                 // return acct;
             },
             fundableAccounts() {
-                const all = this.$store.state.summary.accounts;
+                const all = this.$store.state.allState.accounts;
                 const acctMatch = /^(Assets|Liabilities)/;
                 const scope = all.filter(x => acctMatch.test(x.accountId) && !x.options.generatedAccount);
                 return scope.map(x => x.accountId).sort();

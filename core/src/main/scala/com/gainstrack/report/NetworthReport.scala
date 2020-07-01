@@ -13,15 +13,16 @@ object NetworthReport {
 
   def byAsset(date: LocalDate, baseCcy: AssetId, accountFilter:AccountId=>Boolean = networthAccounts)(accountState: AccountState, balanceState: BalanceState, assetState: AssetState, singleFXConverter: SingleFXConverter) = {
     val nw = balanceState.totalPosition(accountFilter, date)
+    val nwAccounts = accountState.mainAccounts.filter(acct => accountFilter(acct.accountId))
 
     val assets = assetState.allAssets.values.toSeq.sortBy(_.asset.symbol)
     val rows = assets.map(assetInfo => {
-      val nwAccounts = accountState.mainAccounts.filter(acct => accountFilter(acct.accountId))
       val accountNetworth = nwAccounts.toSeq.flatMap(acct => {
         balanceState.totalPosition(acct.accountId, date).assetBalance.get(assetInfo.asset).map( units => {
           AssetAccountDTO(acct.accountId, units)
         })
       })
+
 
       AssetReportDTO(
         assetId = assetInfo.asset,
@@ -35,6 +36,31 @@ object NetworthReport {
 
     NetworthAssetReportDTO(rows)
   }
+
+  def byAsset2(date: LocalDate, baseCcy: AssetId, accountFilter:AccountId=>Boolean = networthAccounts)(accountState: AccountState, txState: TransactionState, assetState: AssetState, singleFXConverter: SingleFXConverter) = {
+    val nwAccounts = accountState.mainAccounts.filter(acct => accountFilter(acct.accountId))
+
+    // val txsInScope = txState.allTransactions.filter(_.postings.exists(p => accountFilter(p.account)))
+    val postingsInScope = txState.forDate(date).flatMap(_.postings).filter(p => accountFilter(p.account))
+
+    val assets = assetState.allAssets.values.toSeq.sortBy(_.asset.symbol)
+    val rows = assets.map(assetInfo => {
+      val assetId: AssetId = assetInfo.asset
+     //  val postingsOfAsset =
+      val units = postingsInScope.map(p => p.value.map(amt => if (amt.ccy==assetId) amt.number else zeroFraction).getOrElse(zeroFraction) ).reduce(_ + _)
+
+      AssetReportDTO(
+        assetId = assetInfo.asset,
+        units = units,
+        value = Amount(units, assetId).convertTo(baseCcy, singleFXConverter, date).number,
+        price = singleFXConverter.getFX(assetInfo.asset, baseCcy, date).getOrElse(0.0),
+        priceDate = singleFXConverter.latestDate(assetInfo.asset, date),
+        accountNetworth = Seq() // Not yet supported
+      )
+    })
+    NetworthAssetReportDTO(rows)
+   }
+
 
   def networth(date: LocalDate)(balanceState: BalanceState): PositionSet = {
     // Note that it is plus since liabilties are held in negative

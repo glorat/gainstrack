@@ -14,12 +14,12 @@
     export default {
         name: 'ConversionSelect',
         data() {
-            return {value: this.$store.state.summary.conversion}
+            return {value: this.$store.state.allState.conversion}
         },
         methods: {
             async conversionChange(e) {
                 await this.$store.dispatch('conversion', e.target.value);
-                this.value = this.$store.state.summary.conversion;
+                this.value = this.$store.state.allState.conversion;
             },
         },
     }
