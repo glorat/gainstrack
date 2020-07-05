@@ -1,6 +1,23 @@
 package com.gainstrack.quotes.av
 
-case class QuoteConfig(avSymbol:String, actualCcy:String, domainCcy:String)
+case class QuoteExchange(symbol: String)
+
+case class QuoteConfig(avSymbol:String, actualCcy:String, domainCcy:String) {
+
+  def ticker: String = {
+    avSymbol.split('.')(0)
+  }
+
+  def exchange:QuoteExchange = {
+    val bits = avSymbol.split('.')
+    if (bits.length == 1) {
+      // TODO: For FX, have a generic FX exchange
+      QuoteExchange("NYSE")
+    } else {
+      QuoteExchange(bits(1))
+    }
+  }
+}
 
 object QuoteConfig {
   val allConfigs:Seq[QuoteConfig] = Seq(

@@ -62,7 +62,7 @@ object AVStockParser {
     val symbol = config.avSymbol
     val path = Paths.get(s"db/av/${symbol}.csv")
     if (!Files.exists(path))
-      throw new IllegalArgumentException(s"${symbol} intraday file does not exist")
+      throw new IllegalArgumentException(s"${symbol} file does not exist")
 
     val src = scala.io.Source.fromFile(s"db/av/${symbol}.csv")
     val it1 = src.getLines()
@@ -71,26 +71,31 @@ object AVStockParser {
     require(dateIndex >= 0, s"timestamp column not found for $symbol")
     val closeIndex = headers.indexOf("close")
     require(closeIndex >= 0, s"close column not found for $symbol")
-
+    val sourceCcyIndex = headers.indexOf("currency")
+    var sourceCcy:Option[AssetId] = None
     var liveQuote:N = 0.0
     val buildMap = SortedMap.newBuilder[LocalDate, N]
 
+  // TODO: A CSV parser might be better
     for (line <- src.getLines()) {
       val parts = line.split(",").map(_.trim)
-      val date = parseDate(parts(dateIndex).take(10))
-      val value = fractionalParser.parse(parts(closeIndex))
-      if (liveQuote == 0.0) {liveQuote = value}
-      buildMap += (date -> value)
+      if (parts.length > 2) {
+        val date = parseDate(parts(dateIndex).take(10))
+        val value = fractionalParser.parse(parts(closeIndex))
+        if (liveQuote == 0.0) {liveQuote = value}
+        if (sourceCcyIndex>=0 && sourceCcy.isEmpty) {sourceCcy = Some(AssetId(parts(sourceCcyIndex)))}
+        buildMap += (date -> value)
+      }
     }
     val map: SortedMap[LocalDate, N] = buildMap.result()
-    StockParseResult(series = map, liveQuote = liveQuote, config = config)
+    StockParseResult(series = map, liveQuote = liveQuote, config = config, sourceCcy = sourceCcy)
   }
 
 
 
 }
 
-case class StockParseResult(series:SortedMap[LocalDate, Double], liveQuote:Double, config: QuoteConfig) {
+case class StockParseResult(series:SortedMap[LocalDate, Double], liveQuote:Double, config: QuoteConfig, sourceCcy:Option[AssetId]) {
   type N = Double
 
   def fixupLSE(lseCcy:String, actualCcy:AssetId, priceState: SingleFXConversion) : StockParseResult = {
@@ -145,7 +150,9 @@ case class StockParseResult(series:SortedMap[LocalDate, Double], liveQuote:Doubl
           val gbp = amount / 100
           gbp
         }
-        case _ => amount
+        case ccy => {
+          priceState.getFX(ccy, actualCcy.symbol, date).getOrElse(0.0) * amount
+        }
       }
 
       refPrice = corrected

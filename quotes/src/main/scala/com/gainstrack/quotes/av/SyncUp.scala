@@ -1,7 +1,7 @@
 package com.gainstrack.quotes.av
 
 import java.nio.file.attribute.FileTime
-import java.nio.file.{Files, Paths}
+import java.nio.file.{Files, Path, Paths}
 import java.time.temporal.ChronoUnit
 import java.time.{Duration, Instant}
 
@@ -38,32 +38,54 @@ object SyncUp {
 
       val cmd = s"""wget -O $outFile https://www.alphavantage.co/query?function=FX_DAILY&from_symbol=$ccy&to_symbol=USD&outputsize=full&datatype=csv&apikey=$apikey"""
 
-      goGetIt(outFile, cmd, forceDownload)
+      goGetIt(outFile, cmd, stdoutResult = false,  forceDownload = forceDownload)
 
     })
 
     QuoteConfig.allConfigs.foreach(cfg => {
-      val symbol = cfg.avSymbol
-      val outFile = s"db/av/$symbol.csv"
-      val cmdDaily = s"""wget -O $outFile https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=$symbol&outputsize=full&datatype=csv&apikey=$apikey"""
-      goGetIt(outFile, cmdDaily, forceDownload)
-      val outFileIntraday = s"db/av/intraday.$symbol.csv"
-      val cmdIntraday = s"""wget -O $outFileIntraday https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol=$symbol&interval=60min&datatype=csv&apikey=$apikey"""
-      goGetIt(outFileIntraday, cmdIntraday, forceDownload)
+      downloadForQuote(cfg, forceDownload)
     })
   }
 
-  private def goGetIt(outFile:String, cmd:String, forceDownload:Boolean) = {
+  private def downloadForQuote(cfg: QuoteConfig, forceDownload: Boolean) = {
+    if (cfg.exchange == QuoteExchange("LON")) {
+      downloadQuoteFromInvestPy(cfg, forceDownload)
+    } else {
+      downloadQuoteFromAlphaVantage(cfg, forceDownload)
+    }
+
+  }
+
+  private def downloadQuoteFromInvestPy(cfg: QuoteConfig, forceDownload: Boolean) = {
+    val symbol = cfg.avSymbol
+    val ticker = cfg.ticker
+
+    val outFile = s"db/av/$symbol.csv"
+    val cmd = s"""python3 python/quotes.py ${ticker}"""
+    goGetIt(outFile, cmd, stdoutResult = true, forceDownload = forceDownload)
+  }
+
+  private def downloadQuoteFromAlphaVantage(cfg: QuoteConfig, forceDownload: Boolean) = {
+    val symbol = cfg.avSymbol
+    val outFile = s"db/av/$symbol.csv"
+    val cmdDaily = s"""wget -O $outFile https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=$symbol&outputsize=full&datatype=csv&apikey=$apikey"""
+    goGetIt(outFile, cmdDaily, stdoutResult = false, forceDownload = forceDownload)
+//    val outFileIntraday = s"db/av/intraday.$symbol.csv"
+//    val cmdIntraday = s"""wget -O $outFileIntraday https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol=$symbol&interval=60min&datatype=csv&apikey=$apikey"""
+//    goGetIt(outFileIntraday, cmdIntraday, forceDownload)
+  }
+
+  private def goGetIt(outFile:String, cmd:String, stdoutResult:Boolean, forceDownload:Boolean) = {
     import sys.process._
 
-    val path = Paths.get(outFile)
+    val path: Path = Paths.get(outFile)
     val exists = Files.exists(path)
     val now = Instant.now
     val duration = Duration.ofHours(24)
     val lastModified:Instant = if (exists) Files.getLastModifiedTime(path).toInstant else now.plus(Duration.ofDays(100))
     if (!exists || lastModified.plus(duration).isBefore(Instant.now)) {
       logger.info(cmd)
-      val result = cmd !!
+      val result = if (stdoutResult) cmd #> path.toFile ! else cmd !
 
       if (throttleRequests) {
         // Free access limits to 5 request per second
@@ -107,7 +129,8 @@ object SyncUp {
       .flatMap(cfg => AVStockParser.tryParseSymbol(cfg))
       .foreach(res => {
         val cfg = res.config
-        val fixed = res.fixupLSE(cfg.domainCcy, AssetId(cfg.actualCcy), priceFXConverter)
+        val srcCcy = res.sourceCcy.map(_.symbol).getOrElse(cfg.domainCcy)
+        val fixed = res.fixupLSE(srcCcy, AssetId(cfg.actualCcy), priceFXConverter)
         QuoteStore.mergeQuotes(cfg.avSymbol, fixed.series)
       })
 
