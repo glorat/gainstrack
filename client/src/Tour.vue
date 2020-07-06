@@ -49,7 +49,7 @@
   // eslint-disable-next-line no-unused-vars
   import {Route} from 'vue-router';
   import VueTour from 'vue-tour';
-  import {MyState} from "src/store";
+  import {MyState} from 'src/store';
   // tslint:disable-next-line
   // eslint-disable-next-line
   require('vue-tour/dist/vue-tour.css');

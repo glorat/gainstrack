@@ -9,27 +9,15 @@
         <table class="sortable">
             <tbody>
             <tr>
-                <td>From Date</td>
-                <td class="datecell">
-                    <el-datepicker :value="explainData.fromDate"
-                                   @input="fromDateChanged($event)"
-                                   type="date"
-                                   value-format="yyyy-MM-dd"
-                                   size="small"
-                                   :clearable="false">
-                    </el-datepicker>
+                <td class="datecell" colspan="2">
+                  <command-date-editor label="From Date" :value="explainData.fromDate"
+                                       @input="fromDateChanged($event)"></command-date-editor>
                 </td>
             </tr>
             <tr>
-                <td>To Date</td>
-                <td class="datecell">
-                    <el-datepicker :value="explainData.toDate"
-                                   @input="toDateChanged($event)"
-                                   type="date"
-                                   value-format="yyyy-MM-dd"
-                                   size="small"
-                                   :clearable="false">
-                    </el-datepicker>
+                <td class="datecell" colspan="2">
+                  <command-date-editor label="To Date" :value="explainData.toDate"
+                                       @input="toDateChanged($event)"></command-date-editor>
                 </td>
             </tr>
             <tr>
@@ -145,13 +133,13 @@
 
 <script>
     import axios from 'axios';
-    import {DatePicker} from 'element-ui';
     import {mapGetters} from 'vuex';
+    import CommandDateEditor from '../components/CommandDateEditor'
 
     export default {
         name: 'PnlExplainDetail',
         props: ['fromDate', 'toDate'],
-        components: {'el-datepicker': DatePicker},
+        components: {CommandDateEditor},
         computed: {
             ...mapGetters([
                 'baseCcy',

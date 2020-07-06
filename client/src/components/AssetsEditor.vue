@@ -18,34 +18,38 @@
           {{ positions[asset.asset].units.number }}
         </td>
         <td>
-          <el-autocomplete class="asset-ticker" type="text" v-model="asset.options.ticker"
-                           v-on:input="assetTouched(asset)"
-                           :fetch-suggestions="tickerSearch"></el-autocomplete>
+          <q-select
+            use-input
+            class="asset-ticker"
+            v-model="asset.options.ticker"
+            v-on:input="assetTouched(asset)"
+            :options="tickerOptions"
+            @filter="tickerSearch"
+            />
         </td>
         <td>
-          <el-autocomplete class="asset-proxy" type="text" v-model="asset.options.proxy"
-                           v-on:input="assetTouched(asset)"
-                           :fetch-suggestions="tickerSearch"></el-autocomplete>
+          <q-select
+            use-input
+            class="asset-proxy"
+            v-model="asset.options.proxy"
+            v-on:input="assetTouched(asset)"
+            :options="tickerOptions"
+            @filter="tickerSearch"
+          />
         </td>
         <td width="250px">
-          <el-select size="mini" v-model="asset.options.tags" v-on:input="assetTouched(asset)"
-                     class="asset-tags"
-                     multiple
-                     allow-create
-                     filterable default-first-option placeholder="Select">
-            <el-option
-              v-for="item in allTags"
-              :key="item"
-              :label="item"
-              :value="item">
-            </el-option>
-          </el-select>
+          <q-select v-model="asset.options.tags"
+                    v-on:input="assetTouched(asset)"
+                    multiple
+                    new-value-mode="add-unique"
+                    use-chips
+                    use-input
+                    :options="allTags"
+          />
         </td>
-        <td>
-          <el-button type="info" size="mini" icon="el-icon-refresh" circle @click="assetReset(asset)"
-                     :disabled="!asset.dirty"></el-button>
-          <el-button type="success" size="mini" icon="el-icon-check" circle @click="assetSave(asset)"
-                     :disabled="!asset.dirty"></el-button>
+        <td class="q-pa-sm q-gutter-xs">
+          <q-btn color="warning" size="sm" :disable="!asset.dirty" :icon="matRefresh" round @click="assetReset(asset)"/>
+          <q-btn color="primary" size="sm" :disable="!asset.dirty" :icon="matCheck" round @click="assetSave(asset)"/>
         </td>
       </tr>
 
@@ -56,16 +60,12 @@
 <script>
   import axios from 'axios'
   import { flatten, uniq, cloneDeep } from 'lodash'
-  import { Option, Select, Button, Autocomplete } from 'element-ui'
   import MarkdownRender from '../components/MarkdownRender'
+  import { matCheck, matRefresh } from '@quasar/extras/material-icons'
 
   export default {
     name: 'AssetsEditor',
     components: {
-      'el-select': Select,
-      'el-option': Option,
-      'el-button': Button,
-      'el-autocomplete': Autocomplete,
       MarkdownRender,
     },
     data () {
@@ -74,11 +74,19 @@
         assets: [],
         originalAssets: [],
         positions: [],
+        tickerOptions: [],
+        matRefresh,
+        matCheck,
       }
     },
     computed: {
       allTags () {
         return uniq(flatten(this.assets.map(x => x.options.tags)))
+      },
+      allTickers () {
+        const state = this.$store.state;
+        let cfgs = state.quoteConfig;
+        return uniq(cfgs.map(cfg => cfg.avSymbol)).sort()
       },
     },
     methods: {
@@ -91,17 +99,17 @@
         Object.assign(this.assets[idx], cloneDeep(orig))
         this.$set(this.assets[idx], 'dirty', false)
       },
-      tickerSearch (queryString, cb) {
-        let cfgs = this.$store.state.quoteConfig
-        if (queryString) {
-          cfgs = cfgs.filter(x => x.avSymbol.indexOf(queryString.toUpperCase()) > -1)
-        }
-        const elems = cfgs.map(cfg => {
-          return {
-            value: cfg.avSymbol
+      tickerSearch (queryString, update) {
+
+        update(() => {
+          const state = this.$store.state;
+          let cfgs = state.quoteConfig
+          if (queryString) {
+            cfgs = cfgs.filter(x => x.avSymbol.indexOf(queryString.toUpperCase()) > -1)
           }
-        })
-        cb(elems)
+          const elems = cfgs.map(cfg => cfg.avSymbol);
+          this.tickerOptions = elems;
+        });
       },
       toGainstrack (asset) {
         let str = `1900-01-01 commodity ${asset.asset}`

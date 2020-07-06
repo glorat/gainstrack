@@ -1,6 +1,6 @@
 <template>
     <q-input class="c-date" dense :value="dateObj" @input="onDateChanged($event)"
-             label="Date" mask="date" :rules="['date']">
+             :label="label || 'Date'" mask="date" :rules="['date']">
         <template v-slot:append>
             <q-icon :name="matEvent" class="cursor-pointer">
                 <q-popup-proxy ref="qDateProxy" transition-show="scale" transition-hide="scale">
@@ -36,7 +36,7 @@
               matEvent
           }
         },
-        props: {value: String},
+        props: {value: String, label: String},
         methods: {
             onChanged(ev: string) {
                 this.$emit('input', ev);

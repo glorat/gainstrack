@@ -1,69 +1,78 @@
 <template>
-    <my-page padding>
-        <!-- eslint-disable -->
-<!--        FIXME: command needs a unique id-->
-        <template v-for="command in commands">
-            <el-card class="box-card" :body-style="{ padding: '5px' }" shadow="always">
-                <div @click="go(command)" :id="'add-'+command.title.toLowerCase()" style="cursor: pointer;">
-                    <el-link><span class="el-icon-circle-plus-outline" ></span> {{command.title}}</el-link>
-                    <el-divider></el-divider>
-                    {{ command.description }}
-                </div>
-            </el-card>
-            <br>
-        </template>
-        <!-- eslint-enable -->
-    </my-page>
+  <my-page padding>
+    <div class="q-pa-md row items-start q-gutter-md">
+      <!-- eslint-disable -->
+      <!--        FIXME: command needs a unique id-->
+      <template v-for="command in commands">
+        <q-card class="box-card">
+          <q-card-section @click="go(command)" :id="'add-'+command.title.toLowerCase()" style="cursor: pointer;">
+            <span class="fake-link"><q-icon :name="matAddCircleOutline"/> {{command.title}}</span>
+          </q-card-section>
+          <q-separator inset/>
+          <q-card-section>
+            {{ command.description }}
+          </q-card-section>
+        </q-card>
+        <br>
+      </template>
+      <!-- eslint-enable -->
+    </div>
+  </my-page>
 
 </template>
 
 <script>
-    import {Card, Link, Divider} from 'element-ui';
-    import lang from 'element-ui/lib/locale/lang/en'
-    import locale from 'element-ui/lib/locale'
-    import {commands} from '../config/commands';
+  import { commands } from '../config/commands'
+  import { matAddCircleOutline } from '@quasar/extras/material-icons'
 
-    locale.use(lang);
-
-    export default {
-        name: 'Add',
-        methods: {
-            go(cmd) {
-                this.$router.push({path: '/add/cmd', query: {cmd: cmd.prefix}});
-            },
-        },
-        data() {
-            return {
-                commands,
-            }
-        },
-        components: {
-            'el-card': Card,
-            'el-link': Link,
-            'el-divider': Divider,
-        }
-    }
+  export default {
+    name: 'Add',
+    methods: {
+      go (cmd) {
+        this.$router.push({
+          path: '/add/cmd',
+          query: { cmd: cmd.prefix }
+        })
+      },
+    },
+    data () {
+      return {
+        commands,
+        matAddCircleOutline
+      }
+    },
+    components: {}
+  }
 </script>
 
 <style scoped>
-    .clearfix:before,
-    .clearfix:after {
-        display: table;
-        content: "";
-    }
-    .clearfix:after {
-        clear: both
-    }
+  .fake-link {
+    cursor: pointer;
+  }
 
-    .body-style {
-        padding: 0px;
-    }
+  .fake-link:hover {
+    color: #409EFF
+  }
 
-    .box-card {
-        width: 480px;
-    }
+  .clearfix:before,
+  .clearfix:after {
+    display: table;
+    content: "";
+  }
 
-    .el-divider {
-        margin: 0px;
-    }
+  .clearfix:after {
+    clear: both
+  }
+
+  .body-style {
+    padding: 0px;
+  }
+
+  .box-card {
+    width: 480px;
+  }
+
+  .el-divider {
+    margin: 0px;
+  }
 </style>

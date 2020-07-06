@@ -1,5 +1,6 @@
 <template>
   <q-select
+    :label="label"
     :value="value"
     @input-value="onSelectChanged"
     use-input
@@ -24,7 +25,7 @@
 
   export default Vue.extend({
     name: 'AssetId',
-    props: {value: String},
+    props: {value: String, label: String},
     data() {
       return {
         filteredOptions: [] as MyOpt[]
@@ -33,8 +34,9 @@
     computed: {
       options(): MyOpt[] {
         const state = this.$store.state;
-        const summary: StateSummaryDTO = state.allState.ccys;
-        return summary.ccys.map(ccy => {
+        const summary: StateSummaryDTO = state.allState;
+        const ccys = summary.ccys.length>0 ? summary.ccys : ['USD'];
+        return ccys.map(ccy => {
           return {value: ccy, label: ccy};
         });
       },

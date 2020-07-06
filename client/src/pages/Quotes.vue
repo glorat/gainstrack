@@ -8,33 +8,19 @@
 
     <vue-plotly :data="series" :layout="layout" :options="options" auto-resize></vue-plotly>
 
-    <el-table
-      ref="quoteConfig"
-      :data="quoteConfig"
-      highlight-current-row
-      @current-change="handleCurrentChange"
-      size="mini"
-      style="width: 100%">
-      <el-table-column
-        type="index"
-        width="50">
-      </el-table-column>
-      <el-table-column
-        property="avSymbol"
-        label="Ticker"
-        width="120">
-      </el-table-column>
-    </el-table>
+    <q-table dense row-key="avSymbol" :columns="columns" :pagination.sync="pagination" :selected.sync="selected" selection="single" :data="quoteConfig"></q-table>
   </my-page>
 </template>
 
 <script lang="ts">
   import VuePlotly from '../components/Plotly.vue';
   import {QuoteConfig} from '../lib/models';
-  import {Table, TableColumn} from 'element-ui';
   import Vue from 'vue';
 
   interface MyData {
+    pagination: unknown,
+    selected: unknown[],
+    columns: Record<string, unknown>[],
     quoteConfig: QuoteConfig,
     currentRow?: QuoteConfig,
     series: Record<string, unknown>[],
@@ -45,13 +31,25 @@
   export default Vue.extend({
     name: 'Quotes',
     components: {
-      'el-table': Table,
-      'el-table-column': TableColumn,
       VuePlotly
     },
     data(): MyData {
       const cfg = this.$store.state.quoteConfig;
+      const columns = [{
+        name: 'avSymbol',
+        field: 'avSymbol',
+        label: 'Symbol',
+        sortable: true,
+        align: 'left',
+      }, {
+
+      }];
       return {
+        pagination: {
+          rowsPerPage: 50
+        },
+        selected: [],
+        columns: columns,
         quoteConfig: cfg,
         currentRow: undefined,
         series: [{
@@ -78,6 +76,11 @@
         },
         options: {displaylogo: false},
       };
+    },
+    watch: {
+      selected(val:QuoteConfig[]) {
+        this.handleCurrentChange(val[0])
+      }
     },
     methods: {
       async handleCurrentChange(val: QuoteConfig) {
