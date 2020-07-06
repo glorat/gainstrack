@@ -4,7 +4,7 @@
 
 <script>
     import axios from 'axios';
-    import VuePlotly from './Plotly'
+    import { VuePlotly } from '../lib/loader'
 
     const expMovingAverage = (array, range) => {
         const k = 2 / (range + 1);

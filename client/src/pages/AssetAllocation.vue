@@ -14,9 +14,9 @@
 
 <script>
 
-    import VuePlotly from '../components/Plotly'
     import axios from 'axios';
     import TreeTable from '../components/TreeTable';
+    import { VuePlotly } from '../lib/loader'
 
     export default {
         name: 'AssetAllocation',

@@ -60,8 +60,8 @@
 <script>
   import axios from 'axios'
   import { flatten, uniq, cloneDeep } from 'lodash'
-  import MarkdownRender from '../components/MarkdownRender'
   import { matCheck, matRefresh } from '@quasar/extras/material-icons'
+  import { MarkdownRender } from 'src/lib/loader'
 
   export default {
     name: 'AssetsEditor',

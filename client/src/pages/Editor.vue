@@ -27,7 +27,7 @@
 
 <script>
     import axios from 'axios';
-    const codemirror = () => import (/* webpackChunkName: "code-mirror" */  '../components/CodeMirror.vue');
+    import {codemirror} from 'src/lib/loader';
 
     export default {
         name: 'Editor',

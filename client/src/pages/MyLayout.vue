@@ -36,7 +36,8 @@
     import MyAside from './MyAside';
     import FilterForm from '../components/FilterForm';
     import { matMenu } from '@quasar/extras/material-icons';
-    const Tour = () => import ('../Tour');
+    import { Tour } from '../lib/loader'
+
 
     const menuList = [
         {

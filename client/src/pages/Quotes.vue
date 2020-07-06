@@ -13,9 +13,9 @@
 </template>
 
 <script lang="ts">
-  import VuePlotly from '../components/Plotly.vue';
   import {QuoteConfig} from '../lib/models';
   import Vue from 'vue';
+  import {VuePlotly} from 'src/lib/loader';
 
   interface MyData {
     pagination: unknown,

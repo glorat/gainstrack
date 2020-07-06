@@ -12,9 +12,8 @@
 
 <script>
 import MyLayout from './pages/MyLayout'
-const MySentry = () => import('./MySentry.vue')
-const MyFirebase = () => import('./MyFirebase.vue')
-// import MyLayout from '@/pages/MyLayout';
+import { MyFirebase, MySentry } from './lib/loader'
+
 export default {
   components: { MyLayout, MySentry, MyFirebase }
 }

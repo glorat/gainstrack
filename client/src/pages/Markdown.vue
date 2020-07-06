@@ -5,8 +5,8 @@
 </template>
 
 <script lang="ts">
-  import MarkdownRender from '../components/MarkdownRender.vue';
   import Vue from 'vue';
+  import {MarkdownRender} from 'src/lib/loader';
 
   export default Vue.extend({
     name: 'Markdown',
