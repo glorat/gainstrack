@@ -90,8 +90,8 @@ export const commands: CommandConfig[] = [
 ];
 
 export const defaultCommand = (cmd: any): AccountCommandDTO => {
-    // @ts-ignore
-    let c: AccountCommandDTO = {};
+    let c: AccountCommandDTO = {} as AccountCommandDTO;
+
     if (cmd) {
         c = {...cmd};
     }
