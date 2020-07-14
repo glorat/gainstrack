@@ -92,13 +92,19 @@ export interface Posting {
   price?: Amount
 }
 
-export interface Transaction  {
+export interface HasPostings {
+  postings: Posting[]
+}
+
+export interface Transaction extends HasPostings {
     originIndex: number
     description: string
     id: number
     postDate: string
     postings: Posting[]
 }
+
+
 
 export interface AccountState {
     accounts: AccountCommandDTO[]
