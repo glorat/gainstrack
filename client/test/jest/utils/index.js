@@ -46,10 +46,11 @@ export const mountQuasar = (component, options = {}) => {
   }
 
   // mock vue-i18n
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
   const $t = () => {}
-  const $tc = () => {}
-  const $n = () => {}
-  const $d = () => {}
+  const $tc = $t
+  const $n = $t
+  const $d = $t
 
   return shallowMount(component, {
     localVue: localVue,

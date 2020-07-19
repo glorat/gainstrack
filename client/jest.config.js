@@ -1,3 +1,4 @@
+/* eslint-env node */
 module.exports = {
   globals: {
     __DEV__: true
