@@ -121,7 +121,7 @@ class SortedColumnMap {
 }
 
 type AssetId = string
-type LocalDate = string
+export type LocalDate = string
 type IntDate = number
 
 import { mapValues, uniq } from 'lodash';
@@ -130,7 +130,6 @@ interface FXConverter {
   getFX(fx1:AssetId, fx2:AssetId, date:LocalDate): number|undefined
   latestDate(fx1: AssetId, fx2: AssetId, date: LocalDate): LocalDate|undefined
 }
-
 
 export interface SingleFXConverter extends FXConverter {
   baseCcy: AssetId

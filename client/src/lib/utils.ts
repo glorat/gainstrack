@@ -1,7 +1,7 @@
 import numbro from 'numbro';
-import {AccountCommandDTO, Posting, Transaction} from 'src/lib/models';
-import {SingleFXConverter} from 'src/lib/fx';
-import {flatMap, groupBy, keys, sum, uniq, reduce, mergeWith} from 'lodash';
+import {AccountCommandDTO, AccountDTO, Posting, Transaction} from 'src/lib/models';
+import {LocalDate, SingleFXConverter} from 'src/lib/fx';
+import {flatMap, groupBy, keys, sum, uniq, reduce, mergeWith, stubTrue} from 'lodash';
 
 export function formatNumber(val: unknown) {
   return numbro(val).format({thousandSeparated: true, mantissa: 2});
@@ -41,28 +41,72 @@ interface CommandPostings {
   originIndex:number
   cmd:AccountCommandDTO
   postings:Posting[]
+  filteredPostings: Posting[]
 }
 
-export function postingsByCommand(txs: Transaction[], cmds: AccountCommandDTO[]): CommandPostings[] {
-  const commandIndices = uniq(txs.map(tx => tx.originIndex)).reverse();
+export interface CommandPostingsWithBalance extends CommandPostings {
+  balance: Record<string, number>
+  delta: Record<string, number>
+}
+
+export function postingsByCommand(txs: Transaction[], cmds: AccountCommandDTO[], postingFilter: (p:Posting)=>boolean = stubTrue): CommandPostings[] {
+  const commandIndices = uniq(txs.map(tx => tx.originIndex));
   const rows = commandIndices.map(originIndex => {
     const cmd = cmds[originIndex];
     const myTxs = txs.filter(tx => tx.originIndex === originIndex);
     const postings = flatMap(myTxs, tx => tx.postings);
-    return {originIndex, cmd, postings};
-  });
+    const filteredPostings = postings.filter(postingFilter);
+    return {originIndex, cmd, postings, filteredPostings};
+  }).filter(row => row.filteredPostings.length > 0);
   return rows;
 }
+
+const numberMerger = (x:number|undefined,y:number|undefined) =>  (x||0) + (y||0);
+
+export function commandPostingsWithBalance(commandPostings:CommandPostings[]): CommandPostingsWithBalance[] {
+  const ret:CommandPostingsWithBalance[] = [];
+  let balanceSoFar: Record<string, number> = {};
+  commandPostings.forEach(cp => {
+    const delta = postingsToPositionSet(cp.filteredPostings);
+    balanceSoFar = mergeWith(balanceSoFar, delta, numberMerger);
+    const balance = {...balanceSoFar};
+    const r = {...cp, delta, balance};
+    ret.push(r);
+  });
+  return ret;
+}
+
 
 export function postingsToPositionSet(ps: Posting[]) : Record<string, number> {
   // const posMerge = (a:Record<string, number>, b: Record<string, number>) => {
   const posMerge = (a:any, b: any) => {
-    return mergeWith(a, b, (x,y) =>  (x||0) + (y||0))
+    return mergeWith(a, b, numberMerger)
   };
 
   const poses = ps.map(p => {return {[p.value.ccy] : p.value.number}});
   const ret = reduce(poses, posMerge, {});
   return ret;
+}
+
+export function convertPositionSetTo(positions: Record<string, number>, baseCcy:string, date:LocalDate, fxConverter: SingleFXConverter) {
+  const toCcy = keys(positions).map (ccy => positions[ccy] * (fxConverter.getFX(ccy, baseCcy, date)||0));
+  return sum(toCcy);
+}
+
+export function displayConvertedPositionSet(pos: Record<string, number>, baseCcy: string, conversion: string, date: string, account: AccountDTO|undefined, fxConverter: SingleFXConverter) {
+  if (conversion == 'units') {
+    return keys(pos).map(ccy => `${pos[ccy].toFixed(2)} ${ccy}`).join(' ');
+  } else {
+    let ccy;
+    if (conversion == 'global') {
+      ccy = baseCcy
+    } else if (conversion == 'parent' || !conversion) {
+      ccy = account ? account.ccy : baseCcy
+    } else {
+      ccy = conversion;
+    }
+    return convertPositionSetTo(pos, ccy, date, fxConverter).toFixed(2) + ` ${ccy}`;
+  }
 }
 
 export function journalEntries(mktConvert: SingleFXConverter, txs: Transaction[], cmds: AccountCommandDTO[], baseCcy: string): AccountTxDTO[] {

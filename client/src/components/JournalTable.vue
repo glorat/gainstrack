@@ -16,12 +16,12 @@
           <span v-if="showBalance" class="num" data-sort="number">Balance</span>
         </p>
       </li>
-      <li class="transaction cleared" :class="{'show-postings':row.show}" v-for="row in filteredEntries">
+      <li class="transaction cleared" :class="{'show-postings':visiblePostings[rowIndex]?'show':''}" v-for="(row, rowIndex) in filteredEntries">
         <p>
           <span class="datecell">{{ row.date }}</span>
           <span class="description">{{ row.description }}</span>
           <!-- eslint-disable-next-line vue/no-unused-vars -->
-          <span class="indicators" v-on:click="rowClick(row)"><span v-for="i in row.postings"></span>
+          <span class="indicators" v-on:click="rowClick(rowIndex)"><span v-for="i in row.postings"></span>
             <!-- {{i}} --></span>
           <span data-sort="number"></span>
           <span v-if="showBalance" class="num">{{ row.change }} </span>
@@ -56,12 +56,13 @@
     },
     data () {
       return {
+        visiblePostings: {},
         offState: {}
       }
     },
     methods: {
       rowClick (row) {
-        this.$set(row, 'show', !row.show)
+        this.$set(this.visiblePostings, row, !this.visiblePostings[row])
       },
     },
     computed: {

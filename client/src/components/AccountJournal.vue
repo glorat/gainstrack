@@ -18,12 +18,13 @@
   import AddCmd from '../pages/AddCmd.vue';
   import CommandTable from '..//components/CommandTable.vue';
   // eslint-disable-next-line no-unused-vars
-  import {AccountCommandDTO, Amount} from '../lib/models';
+  import {AccountCommandDTO, Amount, Posting} from '../lib/models';
   import axios from 'axios';
   // eslint-disable-next-line no-unused-vars
   import {CommandConfig, commands, defaultCommand} from '../config/commands';
   import {mapGetters} from 'vuex';
   import Vue from 'vue';
+  import {MyState} from 'src/store';
 
   export default Vue.extend({
     name: 'AccountJournal',
@@ -83,10 +84,12 @@
         return commands.filter(c => acct && c.appliesTo(acct));
       },
       displayCommands(): AccountCommandDTO[] {
+        // const commands = this.info.commands;
+        const commands = this.myCommands;
         if (this.c.commandType) {
-          return this.info.commands.filter(c => c.commandType === this.c.commandType);
+          return commands.filter(c => c.commandType === this.c.commandType);
         } else {
-          return this.info.commands;
+          return commands;
         }
       },
       commandTableColumns(): string[] {
@@ -100,7 +103,15 @@
       },
       ...mapGetters([
         'findAccount',
+        'allTxs',
+        'fxConverter',
       ]),
+      myCommands(): AccountCommandDTO[] {
+        const state: MyState = this.$store.state;
+        const cmds = state.allState.commands;
+        const myCmds = cmds.filter(cmd => cmd.accountId == this.accountId).reverse();
+        return myCmds;
+      },
     },
     filters: {
       amount(value: Amount): string {

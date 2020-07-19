@@ -17,7 +17,7 @@
           <conversion-select></conversion-select>
         </div>
 
-        <journal-table :entries="info.rows" show-balance></journal-table>
+        <journal-table :entries="displayEntries" show-balance></journal-table>
       </q-tab-panel>
 
       <q-tab-panel name="journal">
@@ -38,8 +38,9 @@
   </my-page>
 </template>
 
-<script>
+<script lang="ts">
   import axios from 'axios'
+  import Vue from 'vue';
   import JournalTable from '../components/JournalTable.vue'
   import ConversionSelect from '../components/ConversionSelect.vue'
   import AccountGraph from '../components/AccountGraph.vue'
@@ -47,9 +48,17 @@
   import AssetView from '../components/AssetView.vue'
   import { mapGetters } from 'vuex'
   import { matAccountBalance, matAssignment, matEdit } from '@quasar/extras/material-icons'
-  import AssetBalance from '../components/AssetBalance'
+  import AssetBalance from '../components/AssetBalance.vue'
+  import { MyState } from 'src/store'
+  import {
+    postingsByCommand,
+    commandPostingsWithBalance,
+    CommandPostingsWithBalance,
+    displayConvertedPositionSet
+  } from 'src/lib/utils';
+  import {AccountDTO, Posting} from 'src/lib/models';
 
-  export default {
+  export default Vue.extend({
     name: 'Account',
     components: {
       AccountGraph,
@@ -78,14 +87,41 @@
     },
     computed: {
       ...mapGetters([
+        'baseCcy',
+        'findAccount',
         'mainAccounts',
         'reloadCounter',
+        'allTxs',
+        'fxConverter',
+        'tradeFxConverter',
       ]),
-      hasJournal () {
+      myAccount (): AccountDTO|undefined {
+        return this.findAccount(this.accountId)
+      },
+      hasJournal ():boolean {
         return this.mainAccounts.includes(this.accountId)
       },
-      conversion () {
+      conversion (): string {
         return this.$store.state.allState.conversion
+      },
+      entries(): CommandPostingsWithBalance[] {
+        const state: MyState = this.$store.state;
+        //const fxConverter: SingleFXConverter = this.fxConverter;
+        const txs = this.allTxs;
+        const cmds = state.allState.commands;
+        // const baseCcy = state.allState.baseCcy;
+        const res = postingsByCommand(txs, cmds, (p:Posting) => p.account.startsWith(this.accountId));
+        return commandPostingsWithBalance(res);
+      },
+      displayEntries(): any {
+        return [...this.entries].reverse().map(cp => {
+          const postings = cp.postings;
+          const conversion = this.conversion;
+          const date = cp.cmd.date; // FIXME: tx dates may differ from cmd date!
+          const change = displayConvertedPositionSet(cp.delta, this.baseCcy, conversion, date, this.myAccount, this.tradeFxConverter);
+          const position = displayConvertedPositionSet(cp.delta, this.baseCcy, conversion, date, this.myAccount, this.tradeFxConverter);
+          return {date: cp.cmd.date, cmdType: cp.cmd.commandType, description: cp.cmd.description, change, position, postings};
+        })
       }
     },
     watch: {
@@ -97,7 +133,7 @@
       }
     },
     methods: {
-      async refresh (path) {
+      async refresh (path: string) {
         try {
           const response = await axios.get('/api/account/' + path)
           this.info = response.data
@@ -117,7 +153,7 @@
       this.refresh(to.params.accountId)
       next()
     }
-  }
+  })
 </script>
 
 <style scoped>
