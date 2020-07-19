@@ -26,7 +26,7 @@
     "axios": "^0.18.1",
     "core-js": "^3.6.5",
     "date-fns": "^2.14.0",
-    "lodash": "^4.17.15",
+    "lodash": "^4.17.19",
     "numbro": "^2.3.1",
     "plotly.js-dist": "^1.54.5",
     "quasar": "^1.0.0"
