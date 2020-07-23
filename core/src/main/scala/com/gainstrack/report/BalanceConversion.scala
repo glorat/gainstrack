@@ -8,7 +8,7 @@ class BalanceConversion(
                          thisCcy: AssetId,
                          acctToPosition: (AccountId => PositionSet),
                          date: LocalDate
-                       ) (implicit acctState:AccountState, priceState: PriceFXConverter, assetChainMap: AssetChainMap, singleFXConversion: SingleFXConverter) {
+                       ) (implicit acctState:AccountState, assetChainMap: AssetChainMap, singleFXConversion: SingleFXConverter) {
 
   val convert: (AccountId => PositionSet) = acct => {
     val positions: PositionSet = acctToPosition(acct)
@@ -16,7 +16,7 @@ class BalanceConversion(
       case "" | "parent" =>
         positions.convertViaChain(thisCcy, assetChainMap(acct), singleFXConversion, date)
       case "units" =>
-        positions.convertViaChain(AssetId("NOVALIDUNIT"), assetChainMap(acct).takeRight(1), priceState, date)
+        positions.convertViaChain(AssetId("NOVALIDUNIT"), assetChainMap(acct).takeRight(1), singleFXConversion, date)
       case "global" => {
         positions.convertTo(acctState.baseCurrency, singleFXConversion, date)
         // positions.convertViaChain(acctState.baseCurrency, assetChainMap(acct), priceState, date)

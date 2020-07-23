@@ -218,7 +218,7 @@ class ApiController (implicit val ec :ExecutionContext)
     val allDates = bg.txState.allTransactions.filter(_.postings.exists(_.account.isSubAccountOf(accountId))).map(_.postDate)
     val startDate = if (allDates.isEmpty) today() else allDates.min
 
-    dailyBalance.monthlySeries(accountId, conversionStrategy, startDate, toDate, bg.acctState, bg.priceFXConverter, bg.assetChainMap, bg.tradeFXConversion)
+    dailyBalance.monthlySeries(accountId, conversionStrategy, startDate, toDate, bg.acctState, bg.assetChainMap, bg.tradeFXConversion)
     // dailyBalance.txSeries(accountId, conversionStrategy, startDate, toDate, bg.acctState, bg.priceFXConverter, bg.assetChainMap, bg.tradeFXConversion, bg.txState)
     // dailyBalance.txSeries(accountId, conversionStrategy, startDate, toDate, bg.acctState, bg.priceFXConverter, bg.assetChainMap, mktConvert, bg.txState)
   }

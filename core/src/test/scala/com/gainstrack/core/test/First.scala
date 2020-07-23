@@ -289,7 +289,7 @@ class First extends FlatSpec {
     val dailyReport = new DailyBalance(bg.balanceState)
 
     val testMeStrategy:( String)=>(String, String, Int)=>Unit = (strategy) => (acctId, ccyStr, expected) => {
-      val ps = dailyReport.convertedPosition(acctId, today, strategy)(bg.acctState, priceState = bg.priceFXConverter, assetChainMap = bg.assetChainMap, bg.tradeFXConversion)
+      val ps = dailyReport.convertedPosition(acctId, today, strategy)(bg.acctState, assetChainMap = bg.assetChainMap, bg.tradeFXConversion)
       val ps2 = balanceReport.getState.convertedPosition(acctId, today, strategy)(bg.assetChainMap, bg.acctState, bg.priceFXConverter, bg.tradeFXConversion)
 
 //      if (ps != ps2) {
@@ -361,7 +361,7 @@ class First extends FlatSpec {
     val acct = AccountId("Assets")
 
     for (dt <- range) {
-      val x = dailyReport.convertedPosition(acct, dt, "GBP")(bg.acctState, priceState = bg.priceFXConverter, assetChainMap = bg.assetChainMap, bg.tradeFXConversion)
+      val x = dailyReport.convertedPosition(acct, dt, "GBP")(bg.acctState, assetChainMap = bg.assetChainMap, bg.tradeFXConversion)
     }
   }
 
@@ -373,7 +373,7 @@ class First extends FlatSpec {
     val acct = AccountId("Assets")
 
     dates.foreach(date => {
-      dailyReport.convertedPosition(acct, date, "GBP")(bg.acctState, priceState = bg.priceFXConverter, assetChainMap = bg.assetChainMap, bg.tradeFXConversion)
+      dailyReport.convertedPosition(acct, date, "GBP")(bg.acctState, assetChainMap = bg.assetChainMap, bg.tradeFXConversion)
     })
   }
 

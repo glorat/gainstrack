@@ -20,12 +20,12 @@ class JamesTest extends FlatSpec {
   }
 
   it should "have 122,500 GBP net assets on 1 Jan 19" in {
-    val assets = bg.dailyBalances.convertedPosition(Assets.accountId, parseDate("2019-01-01"),"global" )(bg.acctState, bg.priceFXConverter, bg.assetChainMap, bg.tradeFXConversion)
+    val assets = bg.dailyBalances.convertedPosition(Assets.accountId, parseDate("2019-01-01"),"global" )(bg.acctState, bg.assetChainMap, bg.tradeFXConversion)
     assert(assets.getBalance(AssetId("GBP")).number == 122500)
   }
 
   it should "have net assets 30 Nov 19 of GBP 185k" in {
-    val assets = bg.dailyBalances.convertedPosition(Assets.accountId, parseDate("2019-11-30"),"global" )(bg.acctState, bg.priceFXConverter, bg.assetChainMap, bg.tradeFXConversion)
+    val assets = bg.dailyBalances.convertedPosition(Assets.accountId, parseDate("2019-11-30"),"global" )(bg.acctState, bg.assetChainMap, bg.tradeFXConversion)
     assert(assets.getBalance(AssetId("GBP")).number == 185000)
   }
 
