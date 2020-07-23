@@ -36,7 +36,7 @@
 <script lang="ts">
   import LoginForm from '../components/LoginForm.vue';
   import Vue from 'vue'
-  import routes from '../router/routes';
+  import {appRoutes} from 'src/router/routes';
 
   export default Vue.extend({
 
@@ -52,7 +52,7 @@
       return {
         menuItemsList: navBar.map(ss => {
           return ss.map((key: string) => {
-            return routes.find(rt => rt.path === `/${key}`);
+            return appRoutes.find(rt => rt.path === `/${key}`);
           });
         })
       }

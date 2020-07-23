@@ -22,7 +22,7 @@ import AddCmd from 'pages/AddCmd.vue';
 import PnlExplainDetail from 'pages/PnlExplainDetail.vue';
 import Account from 'pages/Account.vue';
 
-const routes: RouteConfig[] = [
+export const appRoutes: RouteConfig[] = [
   {path: '/add', component: Add, meta: {title: 'Add Record', icon: matAddCircleOutline}},
   {path: '/add/cmd', name: 'addcmd', component: AddCmd, meta: {title: 'Add Record'}},
   {
@@ -82,5 +82,13 @@ const routes: RouteConfig[] = [
   {path: '/*', component: Markdown,
     props: {page: 'welcome.md'},  meta: {title: 'Welcome'}},
 ];
+
+const routes: RouteConfig[] = [
+  {
+    path: '/',
+    component: () => import('../pages/MyLayout.vue'),
+    children: appRoutes
+  }
+]
 
 export default routes;
