@@ -54,7 +54,7 @@
     postingsByCommand,
     commandPostingsWithBalance,
     CommandPostingsWithBalance,
-    displayConvertedPositionSet
+    displayConvertedPositionSet, isSubAccountOf
   } from 'src/lib/utils';
   import {AccountDTO, Posting} from 'src/lib/models';
 
@@ -71,10 +71,6 @@
     props: ['accountId'],
     data () {
       return {
-        info: {
-          accountId: 'Loading...',
-          rows: []
-        },
         assetResponse: {
           rows: [],
           columns: []
@@ -110,7 +106,7 @@
         const txs = this.allTxs;
         const cmds = state.allState.commands;
         // const baseCcy = state.allState.baseCcy;
-        const res = postingsByCommand(txs, cmds, (p:Posting) => p.account.startsWith(this.accountId));
+        const res = postingsByCommand(txs, cmds, (p:Posting) => isSubAccountOf(p.account, this.accountId));
         return commandPostingsWithBalance(res);
       },
       displayEntries(): any {
@@ -119,7 +115,7 @@
           const conversion = this.conversion;
           const date = cp.cmd.date; // FIXME: tx dates may differ from cmd date!
           const change = displayConvertedPositionSet(cp.delta, this.baseCcy, conversion, date, this.myAccount, this.tradeFxConverter);
-          const position = displayConvertedPositionSet(cp.delta, this.baseCcy, conversion, date, this.myAccount, this.tradeFxConverter);
+          const position = displayConvertedPositionSet(cp.balance, this.baseCcy, conversion, date, this.myAccount, this.tradeFxConverter);
           return {date: cp.cmd.date, cmdType: cp.cmd.commandType, description: cp.cmd.description, change, position, postings};
         })
       }
@@ -135,8 +131,6 @@
     methods: {
       async refresh (path: string) {
         try {
-          const response = await axios.get('/api/account/' + path)
-          this.info = response.data
           const res2 = await axios.get('/api/assets/' + path)
           this.assetResponse = res2.data
         } catch (error) {

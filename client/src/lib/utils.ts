@@ -1,7 +1,7 @@
 import numbro from 'numbro';
 import {AccountCommandDTO, AccountDTO, Posting, Transaction} from 'src/lib/models';
 import {LocalDate, SingleFXConverter} from 'src/lib/fx';
-import {flatMap, groupBy, keys, sum, uniq, reduce, mergeWith, stubTrue} from 'lodash';
+import {flatMap, groupBy, keys, sum, uniq, reduce, mergeWith, stubTrue, mapValues, omitBy, flatten} from 'lodash';
 
 export function formatNumber(val: unknown) {
   return numbro(val).format({thousandSeparated: true, mantissa: 2});
@@ -61,6 +61,17 @@ export function postingsByCommand(txs: Transaction[], cmds: AccountCommandDTO[],
   return rows;
 }
 
+export function postingsByDate(txs: Transaction[], postingFilter: (p:Posting)=>boolean = stubTrue): {dates:string[], postings:Posting[][]} {
+  const filteredTxs: { postDate: string; postings: Posting[] }[] = txs.map(tx => {return {postDate: tx.postDate, postings: tx.postings.filter(postingFilter)}});
+  const allTxByDate: Record<string, { postDate: string; postings: Posting[] }[]> = groupBy(filteredTxs, tx => tx.postDate);
+  const reducer = (txs:{ postDate: string; postings: Posting[] }[]) : Posting[] => flatten(txs.map(tx => tx.postings));
+  const dateToSomePostings: Record<string, Posting[]> = mapValues(allTxByDate, reducer);
+  const dateToPostings = omitBy(dateToSomePostings, ps => ps.length === 0);
+  const dates = keys(dateToPostings).sort();
+  const postings = dates.map(dt => dateToPostings[dt]);
+  return {dates, postings};
+}
+
 const numberMerger = (x:number|undefined,y:number|undefined) =>  (x||0) + (y||0);
 
 export function commandPostingsWithBalance(commandPostings:CommandPostings[]): CommandPostingsWithBalance[] {
@@ -76,22 +87,40 @@ export function commandPostingsWithBalance(commandPostings:CommandPostings[]): C
   return ret;
 }
 
+export const positionSetAdd = (a:Record<string,number>, b: Record<string, number>):Record<string, number> => {
+  return mergeWith({...a}, b, numberMerger)
+};
 
 export function postingsToPositionSet(ps: Posting[]) : Record<string, number> {
   // const posMerge = (a:Record<string, number>, b: Record<string, number>) => {
-  const posMerge = (a:any, b: any) => {
-    return mergeWith(a, b, numberMerger)
-  };
+
 
   const poses = ps.map(p => {return {[p.value.ccy] : p.value.number}});
-  const ret = reduce(poses, posMerge, {});
+  const ret = reduce(poses, positionSetAdd, {});
   return ret;
 }
 
-export function convertPositionSetTo(positions: Record<string, number>, baseCcy:string, date:LocalDate, fxConverter: SingleFXConverter) {
+export function positionSetFx(positions: Record<string, number>, baseCcy:string, date:LocalDate, fxConverter: SingleFXConverter): number {
   const toCcy = keys(positions).map (ccy => positions[ccy] * (fxConverter.getFX(ccy, baseCcy, date)||0));
   return sum(toCcy);
 }
+
+export function convertedPositionSet(pos: Record<string, number>, baseCcy: string, conversion: string, date: string, account: AccountDTO|undefined, fxConverter: SingleFXConverter) {
+  if (conversion == 'units') {
+    return pos;
+  } else {
+    let ccy;
+    if (conversion == 'global') {
+      ccy = baseCcy
+    } else if (conversion == 'parent' || !conversion) {
+      ccy = account ? account.ccy : baseCcy
+    } else {
+      ccy = conversion;
+    }
+    return {[ccy]: positionSetFx(pos, ccy, date, fxConverter)};
+  }
+}
+
 
 export function displayConvertedPositionSet(pos: Record<string, number>, baseCcy: string, conversion: string, date: string, account: AccountDTO|undefined, fxConverter: SingleFXConverter) {
   if (conversion == 'units') {
@@ -105,7 +134,7 @@ export function displayConvertedPositionSet(pos: Record<string, number>, baseCcy
     } else {
       ccy = conversion;
     }
-    return convertPositionSetTo(pos, ccy, date, fxConverter).toFixed(2) + ` ${ccy}`;
+    return positionSetFx(pos, ccy, date, fxConverter).toFixed(2) + ` ${ccy}`;
   }
 }
 
