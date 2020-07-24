@@ -4,7 +4,7 @@
  */
 
 import { mount, createLocalVue, shallowMount } from '@vue/test-utils'
-import { postingsToPositionSet } from 'src/lib/utils'
+import { parentAccountIdOf, postingsToPositionSet } from 'src/lib/utils'
 
 
 describe('Utils', () => {
@@ -30,8 +30,21 @@ describe('Utils', () => {
       const ret = postingsToPositionSet(ps)
       expect(ret).toStrictEqual({'USD': 100, 'GBP': 500})
     })
+  })
 
+  describe('parentAccountIdOf', () => {
+    it ('handles empty', () => {
+      expect(parentAccountIdOf('')).toStrictEqual('')
+    })
 
+    it ('top-level', () => {
+      expect(parentAccountIdOf('Assets')).toStrictEqual('')
+    })
+
+    it ('handles sub-level', () => {
+      expect(parentAccountIdOf('Assets:Foo')).toStrictEqual('Assets')
+      expect(parentAccountIdOf('Assets:Foo:Bar')).toStrictEqual('Assets:Foo')
+    })
   })
 
 

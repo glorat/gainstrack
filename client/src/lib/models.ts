@@ -92,6 +92,12 @@ export interface Posting {
   price?: Amount
 }
 
+/** Denormalised posting view that includes Tx data*/
+export interface PostingEx extends Posting {
+  date: string
+  originIndex: number
+}
+
 export interface HasPostings {
   postings: Posting[]
 }

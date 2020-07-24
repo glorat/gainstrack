@@ -2,7 +2,16 @@ import {FXChain, FXMapped, FXMarketLazyLoad, FXProxy, SingleFXConversion, Single
 import axios from 'axios'
 import Vue from 'vue'
 import Vuex from 'vuex'
-import {AccountDTO, AllState, emptyAllState, isTransaction, Posting, QuoteConfig} from '../lib/models'
+import {
+  AccountDTO,
+  AllState,
+  emptyAllState,
+  isTransaction,
+  Posting,
+  PostingEx,
+  QuoteConfig,
+  Transaction
+} from '../lib/models'
 import {flatten} from 'lodash'
 
 Vue.use(Vuex);
@@ -235,13 +244,23 @@ export default function () {
         const curried = getters.customFxConverter;
         return curried(identity)
       },
-      allTxs: (state) => {
+      allTxs: (state):Transaction[] => {
         return state.allState.txs.filter(isTransaction);
       },
       allPostings: (state) => {
         const allTxPostings : Posting[][] = state.allState.txs.map(tx => isTransaction(tx) ?  tx.postings : []);
         const allPostings = flatten(allTxPostings);
         return allPostings;
+      },
+      allPostingsEx: (state, getters): PostingEx[] => {
+        const ret:PostingEx[] = [];
+        const allTxs: Transaction[] = getters.allTxs;
+        allTxs.forEach(tx => {
+          tx.postings.forEach(p => {
+            ret.push({...p, date: tx.postDate, originIndex: tx.originIndex})
+          });
+        });
+        return ret;
       }
     }
   });

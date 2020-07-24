@@ -22,7 +22,7 @@ object AccountState {
       val withParent = ensureExists(state, parentId)
       // Infinite loop sanity check
       val parent = withParent.accountMap(parentId)
-      val account = AccountCreation(parent.date, AccountKey(accountId, parent.key.assetId))
+      val account = AccountCreation(parent.date, AccountKey(accountId, parent.key.assetId)).copy(options = AccountOptions(generatedAccount = true))
       withParent.copy(withParent.accounts + account)
     }
   }

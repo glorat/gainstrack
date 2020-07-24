@@ -147,13 +147,13 @@ trait GainstrackSupport {
     val bg = getGainstrack
     val ret = bg.allState
 
-    val accts = bg.acctState.accounts.map(_.accountId)
+    val accts = bg.acctState.withInterpolatedAccounts.accounts.map(_.accountId)
     val ccys = bg.priceState.ccys
     val conversionStrategy = session.get("conversion").map(_.toString).getOrElse("parent")
     val authnSummary = getAuthentication
 
     ret + ("accountIds" -> accts) +
-      ("accounts" -> bg.acctState.accounts.toSeq.map(_.toAccountDTO)) +
+      ("accounts" -> bg.acctState.withInterpolatedAccounts.accounts.toSeq.map(_.toAccountDTO)) +
       ("baseCcy" -> bg.acctState.baseCurrency) +
       ("ccys" -> ccys.toSeq.sorted) +
       ("conversion" -> conversionStrategy) +
