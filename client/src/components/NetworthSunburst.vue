@@ -10,10 +10,9 @@
     isSubAccountOf,
     parentAccountIdOf, positionSetAdd,
     positionSetFx,
-    positionUnderAccount,
     postingsToPositionSet
   } from 'src/lib/utils';
-  import {AccountDTO, PostingEx} from 'src/lib/models';
+  import {PostingEx} from 'src/lib/models';
   import {date} from 'quasar';
   import { mapValues } from 'lodash';
   import {reduce} from 'lodash';
@@ -21,6 +20,7 @@
   export default Vue.extend({
     name: 'NetworthSunburst',
     components: {VuePlotly},
+    props: {height: Number, negativeValues: Boolean},
     computed: {
       ...mapGetters([
         'findAccount',
@@ -31,26 +31,30 @@
         'allPostingsEx',
       ]),
       myAccountIds():string[] {
+        const networthAccountFilter : ((acctId:string)=>boolean) = acctId => isSubAccountOf(acctId, 'Assets') || isSubAccountOf(acctId, 'Liabilities');
         return this.accountIds
-          // networth filter: FIXME: pull to lib and test
-          .filter((acctId:string) => isSubAccountOf(acctId, 'Assets') || isSubAccountOf(acctId, 'Liabilities'))
+          .filter(networthAccountFilter)
           .sort()
       },
       positionsPerAccount():Record<string, Record<string,number>> {
+
         const postings: PostingEx[] = this.allPostingsEx;
         const acctIds = this.myAccountIds;
         const ret:Record<string, Record<string,number>> = {};
         acctIds.forEach(acctId => {
           const myPs = postings.filter(p => p.account === acctId); // TODO: Date filter
-          const pSet = postingsToPositionSet(myPs);
+          let pSet = postingsToPositionSet(myPs);
+          // This will pick up liabilities (or negative assets)
+          if (this.negativeValues) {
+            pSet = mapValues(pSet, x => -x);
+          }
+          // Only accept positive values
           const pSetFloor = mapValues(pSet, x => Math.max(x,0));
           ret[acctId] = pSetFloor
         });
         return ret;
       },
-      mySeries() {
-        const postings: PostingEx[] = this.allPostingsEx;
-
+      mySeries():any {
         const acctIds = this.myAccountIds;
 
         let ids:string[] = [];
@@ -75,7 +79,8 @@
         // console.log(labels);
         // console.log(parents);
         // console.log(values);
-        const labels = ids.map(id => id.replace('Assets:',''));
+
+        const labels = ids.map(id => id.split(':').pop());
 
         return [{
           type: 'sunburst',
@@ -95,7 +100,7 @@
           // plot_bgcolor:'black',
           // paper_bgcolor:'black',
           margin: {l: 0, r: 0, b: 0, t: 0},
-          height: 480,
+          height: this.height,
           autosize: true
         }
 
