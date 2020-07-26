@@ -20,7 +20,11 @@
   export default Vue.extend({
     name: 'NetworthSunburst',
     components: {VuePlotly},
-    props: {height: Number, negativeValues: Boolean},
+    props: {
+      height: Number,
+      negativeValues: Boolean,
+      accountId: String,
+    },
     computed: {
       ...mapGetters([
         'findAccount',
@@ -32,8 +36,10 @@
       ]),
       myAccountIds():string[] {
         const networthAccountFilter : ((acctId:string)=>boolean) = acctId => isSubAccountOf(acctId, 'Assets') || isSubAccountOf(acctId, 'Liabilities');
+        const filter:((acctId:string)=>boolean) = this.accountId ? (acctId => isSubAccountOf(acctId, this.accountId)) : networthAccountFilter;
+
         return this.accountIds
-          .filter(networthAccountFilter)
+          .filter(filter)
           .sort()
       },
       positionsPerAccount():Record<string, Record<string,number>> {

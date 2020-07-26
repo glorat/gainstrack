@@ -1,7 +1,8 @@
 <template>
     <my-page padding>
         <div>
-            <account-graph :key="conversion" accountId="Assets"></account-graph>
+<!--            <account-graph :key="conversion" accountId="Assets"></account-graph>-->
+          <networth-sunburst height="250" :key="conversion"></networth-sunburst>
         </div>
         <div>
             <conversion-select></conversion-select>
@@ -25,10 +26,12 @@
     import TreeTable from 'src/components/TreeTable.vue';
     import ConversionSelect from 'src/components/ConversionSelect.vue';
     import AccountGraph from 'src/components/AccountGraph.vue';
+    import NetworthSunburst from 'components/NetworthSunburst.vue';
 
     export default {
         name: 'BalanceSheet',
-        components: {AccountGraph, ConversionSelect, TreeTable},
+      // eslint-disable-next-line vue/no-unused-components
+        components: {AccountGraph, ConversionSelect, TreeTable, NetworthSunburst},
         data() {
             return {};
         },
