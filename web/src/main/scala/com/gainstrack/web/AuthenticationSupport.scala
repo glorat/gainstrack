@@ -30,6 +30,7 @@ trait AuthenticationSupport extends ScentrySupport[GUser] {
   override protected def registerAuthStrategies = {
     scentry.register("SimpleAuthStrategy", app => new SimpleAuthStrategy(app))
     scentry.register("Auth0Strategy", app => new Auth0Strategy(app))
+    scentry.register("FirebaseStrategy", app => new FirebaseStrategy(app))
   }
 
 }
