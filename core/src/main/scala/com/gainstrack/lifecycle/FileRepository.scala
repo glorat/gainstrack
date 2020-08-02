@@ -53,12 +53,6 @@ class FileRepository(basePath:Path) extends RepositoryWithEntityStream {
     Future.successful()
   }
 
-  // TODO: This is to be deprecated because the getOrElse is not safe
-  def getById[T <: AggregateRoot](id: GUID, tmpl: T)(implicit evidence$1: ClassTag[T]): T = {
-    getByIdOpt(id, tmpl).getOrElse(tmpl)
-  }
-
-
   def getByIdOpt[T <: AggregateRoot](id: GUID, tmpl: T)(implicit evidence$1: ClassTag[T]): Option[T] = {
     try {
       val lines = readLinesForId(id)
