@@ -16,7 +16,7 @@ lazy val myResolvers = Seq(
 )
 
 lazy val dependencies = new {
-  val dlstoreV = "0.3.1"
+  val dlstoreV = "0.3.2"
   val dlstore = "net.glorat" %% "dlstore" % dlstoreV
 }
 
