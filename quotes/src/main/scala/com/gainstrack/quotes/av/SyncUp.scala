@@ -18,7 +18,11 @@ object SyncUp {
 
   val apikey = scala.io.Source.fromFile("db/apikey.txt").getLines().next()
   val throttleRequests = true
-  val inFlight = scala.collection.concurrent.TrieMap[String, Int]()
+  private val inFlight = scala.collection.concurrent.TrieMap[String, Int]()
+  private val infDur = scala.concurrent.duration.Duration.Inf
+
+  // Flip this to FileStore as needed!
+  val theStore:QuoteStore = QuotesDb
 
   def main(args: Array[String]): Unit = {
     implicit val ec: ExecutionContext = ExecutionContext.global
@@ -28,11 +32,9 @@ object SyncUp {
 
     val forceDownload = false
 
-    //downloadFromAlphaVantage(forceDownload)
+    downloadFromAlphaVantage(forceDownload)
 
-    // val fut = normaliseTheQuotes
-
-    val fut = migrateFileToDB
+    val fut = normaliseTheQuotes
 
     Await.result(fut, Duration.Inf)
   }
@@ -41,11 +43,11 @@ object SyncUp {
     val all = QuoteConfig.allConfigsWithCcy
    //     .filter(_.avSymbol == "XAU")
         .map(cfg => {
-      val orig = QuoteStore.readQuotes(cfg.avSymbol)
-      QuotesDb.readQuotes(cfg.avSymbol).flatMap(actual => {
+      val orig = Await.result(QuotesFileStore.readQuotes(cfg.avSymbol), infDur)
+      theStore.readQuotes(cfg.avSymbol).flatMap(actual => {
         inFlight += cfg.avSymbol -> 1
         logger.info(s"Merging quotes for ${cfg.avSymbol}. In-flight: (${inFlight.size}) ${inFlight.keys.mkString(",")}")
-        QuotesDb.mergeQuotes(cfg.avSymbol, orig, actual).map(x => {
+        theStore.mergeQuotes(cfg.avSymbol, orig, actual).map(x => {
           inFlight.remove(cfg.avSymbol)
           logger.info(s"Merging complete for ${cfg.avSymbol}. In-flight: (${inFlight.size}) ${inFlight.keys.mkString(",")}")
         })
@@ -112,8 +114,8 @@ object SyncUp {
       logger.info(cmd)
       val result = if (stdoutResult) cmd #> path.toFile ! else cmd !
 
-      if (throttleRequests) {
-        // Free access limits to 5 request per second
+      if (throttleRequests && cmd.contains("alphavantage")) {
+        // alphavantage has free access limits to 5 request per second
         Thread.sleep(12000)
       }
     }
@@ -138,7 +140,10 @@ object SyncUp {
     val data:Map[AssetId, SortedColumnMap[LocalDate, Double]] = isoCcys.flatMap(fxCcy => {
       AVStockParser.tryParseSymbol(QuoteConfig(fxCcy, "USD", "USD") ).map(res =>{
         val series: SortedMap[LocalDate, Double] = res.series
-        QuoteStore.mergeQuotes(fxCcy, series)
+        val fxFut = theStore.readQuotes(fxCcy).map(orig => {
+          theStore.mergeQuotes(fxCcy, orig, series)
+        })
+        Await.result(fxFut, Duration.Inf)
         // Convert to FX conversion format
         val fast = SortedColumnMap.from(series)
         AssetId(fxCcy) -> fast
@@ -156,7 +161,9 @@ object SyncUp {
         val cfg = res.config
         val srcCcy = res.sourceCcy.map(_.symbol).getOrElse(cfg.domainCcy)
         val fixed = res.fixupLSE(srcCcy, AssetId(cfg.actualCcy), priceFXConverter)
-        QuoteStore.mergeQuotes(cfg.avSymbol, fixed.series)
+        theStore.readQuotes(cfg.avSymbol).map(orig => {
+          theStore.mergeQuotes(cfg.avSymbol, orig, fixed.series)
+        })
       })
     Future.sequence(reses)
   }

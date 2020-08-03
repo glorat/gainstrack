@@ -11,7 +11,7 @@ import scala.collection.SortedMap
 import scala.concurrent.duration.Duration
 import scala.concurrent.{Await, ExecutionContext, Future}
 
-object QuotesDb {
+object QuotesDb extends QuoteStore {
   val logger = LoggerFactory.getLogger(getClass)
   val db = Database.forConfig("quotesdb")
   val quotesTable = TableQuery[Quotes]
