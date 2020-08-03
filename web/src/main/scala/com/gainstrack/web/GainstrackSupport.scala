@@ -4,12 +4,14 @@ import java.nio.file.{Files, Paths}
 import java.time.{Duration, Instant, LocalDate}
 
 import com.gainstrack.command.GainstrackParser
-import com.gainstrack.lifecycle.{FileRepository, GainstrackEntity, MyCommittedEvent}
+import com.gainstrack.lifecycle.{FileRepository, FirebaseFactory, GainstrackEntity, MyCommittedEvent}
 import com.gainstrack.report.GainstrackGenerator
 import javax.servlet.http.HttpServletRequest
 import net.glorat.cqrs.CommittedEvent
 import org.scalatra.ScalatraBase
 import org.slf4j.LoggerFactory
+
+import scala.concurrent.ExecutionContext
 
 trait GainstrackSupport {
   self: ScalatraBase =>
@@ -18,6 +20,7 @@ trait GainstrackSupport {
   // dependency here in case, for example, it needs mocking out
   protected def isAuthenticated(implicit request: HttpServletRequest): Boolean
   protected def user(implicit request: HttpServletRequest): GUser
+  protected implicit val ec: ExecutionContext
 
   private val logger =  LoggerFactory.getLogger(getClass)
 
@@ -25,7 +28,8 @@ trait GainstrackSupport {
 
   Files.createDirectories(Paths.get(UserDataDir))
 
-  private val repo = new FileRepository(Paths.get(UserDataDir))
+  // private val repo = new FileRepository(Paths.get(UserDataDir))
+  private val repo = FirebaseFactory.createRepo
 
   private def bgDefault = {
     val start:Instant = Instant.now

@@ -27,6 +27,8 @@ lazy val dlstore_deps =
 lazy val common_deps = Seq(
   "org.scalatest" %% "scalatest" % "3.0.4" % "test",
   "org.json4s"   %% "json4s-jackson" % "3.6.7",
+  "com.typesafe.slick" %% "slick" % "3.3.1",
+  "mysql" % "mysql-connector-java" % "6.0.6"
 )
 
 lazy val dlsuite_deps = dlstore_deps ++ common_deps

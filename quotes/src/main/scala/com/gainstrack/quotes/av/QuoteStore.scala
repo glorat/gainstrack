@@ -4,13 +4,27 @@ import java.io.FileNotFoundException
 
 import com.gainstrack.core._
 import org.slf4j.LoggerFactory
+import slick.basic.DatabaseConfig
+import slick.jdbc.JdbcProfile
+import slick.jdbc.MySQLProfile.api._
 
 import scala.collection.SortedMap
+import scala.concurrent.{ExecutionContext, Future}
+import scala.util.{Failure, Success}
 
 object QuoteStore {
   val logger =  LoggerFactory.getLogger(getClass)
 
+//  val db = Database.forURL(
+//    url = "jdbc:mysql://root:mwelcome12@127.0.0.1:3306/quotes?serverTimezone=UTC",
+//    driver="com.mysql.cj.jdbc.Driver"
+//  )
+
+  val db = Database.forConfig("quotesdb")
+
   def readQuotes(symbol: String): SortedMap[LocalDate, Double] = {
+
+
     try {
       val src = scala.io.Source.fromFile(s"db/quotes/${symbol}.csv")
       val lines = src.getLines()
@@ -28,7 +42,7 @@ object QuoteStore {
 
   }
 
-  def mergeQuotes(symbol:String, series: SortedMap[LocalDate, Double]) = {
+  def mergeQuotes(symbol:String, series: SortedMap[LocalDate, Double])(implicit ec: ExecutionContext): Future[Any] = {
     val orig = readQuotes(symbol)
 
     // Merge in
@@ -48,10 +62,12 @@ object QuoteStore {
 
   }
 
-  private def writeQuotes(symbol:String, series: SortedMap[LocalDate, Double]): Unit = {
+  private def writeQuotes(symbol:String, series: SortedMap[LocalDate, Double])(implicit ec: ExecutionContext): Future[Any] = {
     import java.io._
     val pw = new PrintWriter(new File(s"db/quotes/${symbol}.csv" ))
     series.foreach(x => pw.println(s"${x._1},${x._2}"))
     pw.close
+    Future.successful()
   }
+
 }

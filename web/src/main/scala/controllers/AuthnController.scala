@@ -1,5 +1,6 @@
 package controllers
 
+import com.gainstrack.lifecycle.FirebaseFactory
 import com.gainstrack.web.{AuthenticationSupport, GainstrackJsonSerializers, GainstrackSupport}
 import org.json4s.Formats
 import org.scalatra.ScalatraServlet
@@ -26,7 +27,7 @@ class AuthnController(implicit val ec: ExecutionContext)
       if (gtOpt.isDefined) {
         session("gainstrack") = gtOpt.get
       }
-      getSummary
+      getSummary.copy(customToken = Some(FirebaseFactory.createCustomToken(user.uuid.toString)))
 
     }).getOrElse({
       logger.warn(s"Login failed")

@@ -25,3 +25,9 @@ With all that information, your overall expenses can be determined. Any specific
 By knowing your networth, income and expenses, we can forecast many things like
 * Return on your investments (IRR calculation)
 * How close you are to retirement
+
+### Developer notes
+
+Proxy the mysql instance as localhost with this
+
+`cloud_sql_proxy -credential_file=./gainstrack-firebase-adminsdk-i4v7p-cd5c94630a.json -instances=gainstrack:asia-east2:gainstrack-hk=tcp:3306`
