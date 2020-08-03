@@ -14,7 +14,8 @@ case class StateSummaryDTO(
                             latestDate: LocalDate,
                             dateOverride:Option[LocalDate],
                             authentication: AuthnSummary,
-                            commands: Seq[AccountCommandDTO]
+                            commands: Seq[AccountCommandDTO],
+                            customToken: Option[String] = None
                           )
 
 case class AuthnSummary(

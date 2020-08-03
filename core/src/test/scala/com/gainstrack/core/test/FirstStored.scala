@@ -9,12 +9,14 @@ import com.gainstrack.lifecycle.{FileRepository, GainstrackEntity, GainstrackEnt
 import com.gainstrack.report.GainstrackGenerator
 import net.glorat.cqrs.{Repository, RepositoryWithEntityStream}
 import org.scalatest.{BeforeAndAfterAll, FlatSpec}
+import org.slf4j.LoggerFactory
 
 import scala.concurrent.Await
 import scala.concurrent.duration.Duration
 import scala.io.Source
 
 class FirstStored extends FlatSpec with BeforeAndAfterAll {
+  val logger = LoggerFactory.getLogger(getClass)
 
   val id = java.util.UUID.nameUUIDFromBytes("first stored test case".getBytes)
   val id2 = java.util.UUID.nameUUIDFromBytes("by a different route".getBytes)
@@ -92,6 +94,7 @@ class FirstStored extends FlatSpec with BeforeAndAfterAll {
     assert (repo.getAllCommits(id2).size == 3)
 
     val e2 = repo.getById(id2, new GainstrackEntity())
+    assert (e2.id == id2)
     val bg = new GainstrackGenerator(e2.getState.cmds)
     val cmd = CommodityCommand(parseDate("1900-01-01"), AssetId("GOOG"), CommodityOptions())
     val bg2 = bg.addAssetCommand(cmd)
