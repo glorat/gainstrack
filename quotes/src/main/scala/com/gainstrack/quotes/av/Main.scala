@@ -36,15 +36,18 @@ object Main {
     println(s"Duration: ${duration.toMillis/1000.0}s")
   }
 
-
-  def doTheWork:DbState = {
-    val isoCcys = QuoteConfig.allCcys
-    val data:Map[AssetId, SortedColumnMap[LocalDate, Double]] = isoCcys.map(fxCcy => {
+  def isoCcyPriceFxConverterData(ccys: Seq[String]) = {
+    val data:Map[AssetId, SortedColumnMap[LocalDate, Double]] = ccys.map(fxCcy => {
       val qts = Await.result(theStore.readQuotes(fxCcy), infDur)
       val fast = SortedColumnMap.from(qts)
       AssetId(fxCcy) -> fast
     }).toMap
 
+    data
+  }
+
+  def doTheWork:DbState = {
+    val data:Map[AssetId, SortedColumnMap[LocalDate, Double]] = isoCcyPriceFxConverterData(QuoteConfig.allCcys)
     val priceFXConverter = SingleFXConversion(data, AssetId("USD"))
 
     val finalState = QuoteConfig

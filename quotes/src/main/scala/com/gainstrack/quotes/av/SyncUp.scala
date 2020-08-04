@@ -39,6 +39,25 @@ object SyncUp {
     Await.result(fut, Duration.Inf)
   }
 
+  def syncOneSymbol(symbol:String)(implicit ec:ExecutionContext) = {
+    QuoteConfig.allConfigsWithCcy.find(_.avSymbol == symbol).map(quoteConfig => {
+      this.downloadForQuote(quoteConfig, forceDownload = true)
+
+      val fxData = Main.isoCcyPriceFxConverterData(Set(quoteConfig.actualCcy).toSeq)
+      val priceFXConverter = SingleFXConversion(fxData, AssetId("USD"))
+
+      AVStockParser.tryParseSymbol(quoteConfig)
+        .map(res => {
+          val cfg = res.config
+          val srcCcy = res.sourceCcy.map(_.symbol).getOrElse(cfg.domainCcy)
+          val fixed = res.fixupLSE(srcCcy, AssetId(cfg.actualCcy), priceFXConverter)
+          theStore.readQuotes(cfg.avSymbol).map(orig => {
+            theStore.mergeQuotes(cfg.avSymbol, orig, fixed.series)
+          })
+        }).getOrElse(Future.successful())
+    }).getOrElse(Future.successful())
+  }
+
   private def migrateFileToDB(implicit ec:ExecutionContext) = {
     val all = QuoteConfig.allConfigsWithCcy
    //     .filter(_.avSymbol == "XAU")
