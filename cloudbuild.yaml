@@ -1,0 +1,7 @@
+steps:
+- name: 'gcr.io/kaniko-project/executor:latest'
+  args:
+  - --destination=gcr.io/gainstrack/gainstrack
+  - --cache=true
+  - --cache-ttl=240h
+  timeout: 1200s
