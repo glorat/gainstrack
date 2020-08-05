@@ -1,16 +1,20 @@
 import com.gainstrack.quotes.av.SyncUp
+import com.gainstrack.web.Auth0Config.getClass
 import controllers.ServerQuoteSource
 import io.grpc.ManagedChannelProvider
+import io.grpc.netty.shaded.io.grpc.netty.NettyChannelProvider
 import org.eclipse.jetty.server.Server
 import org.eclipse.jetty.servlet.{DefaultServlet, ServletContextHandler}
 import org.eclipse.jetty.webapp.WebAppContext
 import org.scalatra.servlet.ScalatraListener
+import org.slf4j.LoggerFactory
 
 object JettyLauncher { // this is my entry object as specified in sbt project definition
+  val logger = LoggerFactory.getLogger(getClass)
+
   def main(args: Array[String]) {
     primeJit()
-
-    println(s"Is android: ${isAndroid(classOf[ManagedChannelProvider].getClassLoader)}")
+    sanityCheck()
 
     val port = if(System.getenv("PORT") != null) System.getenv("PORT").toInt else 9050
 
@@ -30,16 +34,17 @@ object JettyLauncher { // this is my entry object as specified in sbt project de
     server.join
   }
 
+  /** This method is to assert various uber-jar classpath gotchas */
+  def sanityCheck(): Unit = {
+    val caller = classOf[io.grpc.ManagedChannelProvider]
+    val cl = classOf[ManagedChannelProvider].getClassLoader
+    // This can go wrong if META-INF is barfed for netty in the uber-jar merge
+    val its = java.util.ServiceLoader.load(caller, cl)
+    val it = its.iterator()
+    require(it.hasNext, "Unable to ServiceLoader the NettyChannelProvider")
+    logger.debug("We have a " + it.next.getClass.getName)
 
-  private def isAndroid(cl: ClassLoader) = try { // Specify a class loader instead of null because we may be running under Robolectric
-    Class.forName("android.app.Application", /*initialize=*/ false, cl)
-    true
-  } catch {
-    case e: Exception =>
-      // If Application isn't loaded, it might as well not be Android.
-      false
   }
-
 
   // This method is to get this out of the way right at the start because
   // compiling this one method apparently requires 400MB of RAM
