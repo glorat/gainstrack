@@ -9,6 +9,8 @@ import org.eclipse.jetty.webapp.WebAppContext
 import org.scalatra.servlet.ScalatraListener
 import org.slf4j.LoggerFactory
 
+import scala.concurrent.ExecutionContext
+
 object JettyLauncher { // this is my entry object as specified in sbt project definition
   val logger = LoggerFactory.getLogger(getClass)
 
@@ -64,13 +66,16 @@ object JettyLauncher { // this is my entry object as specified in sbt project de
     import java.util.concurrent.Executors
     import java.util.concurrent.TimeUnit._
 
+
     val scheduler = Executors.newScheduledThreadPool(1)
+    implicit val ec = ExecutionContext.fromExecutor(scheduler)
 
     val quoteSyncThread = new Runnable() {
       override def run(): Unit = {
         try {
-          SyncUp.main(Seq().toArray)
-          ServerQuoteSource.updateDB
+          SyncUp.batchSyncAll.map( _ => {
+            ServerQuoteSource.updateDB
+          })
         }
         catch {
           case e:Exception => {

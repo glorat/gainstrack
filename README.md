@@ -31,3 +31,8 @@ By knowing your networth, income and expenses, we can forecast many things like
 Proxy the mysql instance as localhost with this
 
 `cloud_sql_proxy -credential_file=./gainstrack-firebase-adminsdk-i4v7p-cd5c94630a.json -instances=gainstrack:asia-east2:gainstrack-hk=tcp:3306`
+
+#### Environment variables
+`MYSQL_PASS` - Password to MySQL database
+`GOOGLE_APPLICATION_CREDENTIALS` - Path to JSON file containing Google credentials for Firestore. Supplied automatically in Google environments
+`QUOTES_ADMIN` - Enable quotes admin web API
