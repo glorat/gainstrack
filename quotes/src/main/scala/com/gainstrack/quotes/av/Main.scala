@@ -3,7 +3,9 @@ package com.gainstrack.quotes.av
 import java.time.{Duration, Instant}
 
 import com.gainstrack.core._
+import com.gainstrack.quotes.av.SyncUp.{logger, theStore}
 import com.gainstrack.report.{AssetChainMap, AssetPair, FXConverter, PriceFXConverter, PriceState, SingleFXConversion}
+import com.typesafe.config.ConfigFactory
 
 import scala.collection.SortedMap
 import scala.concurrent.{Await, ExecutionContext}
@@ -13,7 +15,9 @@ object Main {
   val infDur = scala.concurrent.duration.Duration.Inf
 
   // Flip this to decide where the web server should get quotes from!
-  val theStore:QuoteStore = QuotesFileStore
+  val config = ConfigFactory.load()
+  val theStore:QuoteStore = if (config.getBoolean("quotes.useDb")) QuotesDb else QuotesFileStore
+  logger.info(s"Main using QuoteStore of type ${theStore.getClass.getSimpleName}")
 
   def main(args: Array[String]): Unit = {
     // Prime it first so we can measure

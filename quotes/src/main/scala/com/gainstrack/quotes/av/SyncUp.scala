@@ -30,6 +30,7 @@ object SyncUp {
   // Flip this to FileStore as needed!
   val config = ConfigFactory.load()
   val theStore:QuoteStore = if (config.getBoolean("quotes.useDb")) QuotesDb else QuotesFileStore
+  logger.info(s"SyncUp using QuoteStore of type ${theStore.getClass.getSimpleName}")
   val apikey = config.getString("quotes.avApiKey")
 
   def batchSyncAll(implicit ec:ExecutionContext) = {
