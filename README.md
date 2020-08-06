@@ -33,6 +33,8 @@ Proxy the mysql instance as localhost with this
 `cloud_sql_proxy -credential_file=./gainstrack-firebase-adminsdk-i4v7p-cd5c94630a.json -instances=gainstrack:asia-east2:gainstrack-hk=tcp:3306`
 
 #### Environment variables
+`AV_API_KEY` - API Key for alphavantage. Free keys can be obtained from their webiste
 `MYSQL_PASS` - Password to MySQL database
+`MYSQL_URL` - (Optional) custom JDBC connect string
 `GOOGLE_APPLICATION_CREDENTIALS` - Path to JSON file containing Google credentials for Firestore. Supplied automatically in Google environments
 `QUOTES_ADMIN` - Enable quotes admin web API
