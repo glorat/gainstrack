@@ -24,19 +24,17 @@ object SyncUp {
   private val alphaVantageTimeGap = java.time.Duration.ofSeconds(12) // 12 second throttle
   private var lastAlphaVantageDownload: Instant = Instant.now().minusSeconds(5) // It took 5 secs to start up since last crash
 
+  Files.createDirectories(Paths.get("db/av"))
+  Files.createDirectories(Paths.get("db/quotes"))
+
   // Flip this to FileStore as needed!
   val config = ConfigFactory.load()
   val theStore:QuoteStore = if (config.getBoolean("quotes.useDb")) QuotesDb else QuotesFileStore
   val apikey = config.getString("quotes.avApiKey")
 
   def batchSyncAll(implicit ec:ExecutionContext) = {
-    Files.createDirectories(Paths.get("db/av"))
-    Files.createDirectories(Paths.get("db/quotes"))
-
     val forceDownload = false
-
     downloadFromAlphaVantage(forceDownload)
-
     normaliseTheQuotes
   }
 
