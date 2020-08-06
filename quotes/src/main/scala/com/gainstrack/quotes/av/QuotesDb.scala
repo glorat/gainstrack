@@ -46,8 +46,8 @@ object QuotesDb extends QuoteStore {
 
   def mergeQuotes(symbol: String, orig: SortedMap[LocalDate, Double], actual: SortedMap[LocalDate, Double])(implicit ec: ExecutionContext): Future[Any] = {
 
-    val toInsert = orig.filter(x => actual.get(x._1).isEmpty)
-    val toUpdate = orig.filter(x => actual.get(x._1).map(_ != x._2).getOrElse(false))
+    val toInsert = actual.filter(x => orig.get(x._1).isEmpty)
+    val toUpdate = actual.filter(x => orig.get(x._1).map(_ != x._2).getOrElse(false))
 
     val insertBatches = toInsert.grouped(200).map(
       quotesTable ++= _.map(x => QuoteValue(None, symbol, localDateToIntDate(x._1), x._2, None))
@@ -56,11 +56,19 @@ object QuotesDb extends QuoteStore {
 
     val q = (sym:ConstColumn[String], dt:ConstColumn[Int]) =>  (for {qt <- quotesTable if (qt.symbol === symbol && qt.date === dt)} yield qt.value)
     val cq = Compiled(q)
-    val updates = toUpdate.map(x => cq(symbol, localDateToIntDate(x._1)).update(x._2) )
+    val updates = toUpdate.map(x => {
+      logger.info(s"${symbol} ${x._1}: ${orig(x._1)} -> ${x._2} (${x._2 - orig(x._1)})")
+      cq(symbol, localDateToIntDate(x._1)).update(x._2)
+    } )
 
 
-    logger.info(s"To Insert ${toInsert.size} and update ${toUpdate.size} for $symbol")
-    val fut = db.run(DBIO.sequence(insertBatches ++ updates))
+    logger.info(s"$symbol to Insert ${toInsert.size} and update ${toUpdate.size} for $symbol")
+    val fut = db.run(DBIO.sequence(insertBatches ++ updates)).map(_ => {
+      logger.info(s"$symbol upsert complete!")
+    }).recoverWith{case e:Exception => {
+      logger.error(s"$symbol went wrong somehow" + e.toString)
+      Future.successful()
+    }}
     fut
 
   }

@@ -16,6 +16,10 @@ class ScalatraBootstrap extends LifeCycle {
     context.mount(new controllers.AuthnController(), "/api/authn/*")
     context.mount(new controllers.QuotesController(), "/api/quotes/*")
 
+    if (System.getenv("QUOTES_ADMIN") != null) {
+      context.mount(new controllers.QuotesAdminController(), "/api/quotesAdmin/*")
+    }
+
     val env = System.getenv(EnvironmentKey)
     if(env != null) {
       context.setInitParameter(EnvironmentKey, env)

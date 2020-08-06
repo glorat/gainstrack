@@ -7,6 +7,7 @@ import java.time.Instant
 
 import com.gainstrack.core._
 import com.gainstrack.report.SingleFXConversion
+import com.typesafe.config.ConfigFactory
 import org.slf4j.LoggerFactory
 
 import scala.collection.SortedMap
@@ -20,13 +21,14 @@ object SyncUp {
   val throttleRequests = true
   private val inFlight = scala.collection.concurrent.TrieMap[String, Int]()
   private val infDur = scala.concurrent.duration.Duration.Inf
+  private val alphaVantageTimeGap = java.time.Duration.ofSeconds(12) // 12 second throttle
+  private var lastAlphaVantageDownload: Instant = Instant.now().minusSeconds(5) // It took 5 secs to start up since last crash
 
   // Flip this to FileStore as needed!
-  val theStore:QuoteStore = QuotesDb
+  val config = ConfigFactory.load()
+  val theStore:QuoteStore = if (config.getBoolean("quotesdb.useDb")) QuotesDb else QuotesFileStore
 
-  def main(args: Array[String]): Unit = {
-    implicit val ec: ExecutionContext = ExecutionContext.global
-
+  def batchSyncAll(implicit ec:ExecutionContext) = {
     Files.createDirectories(Paths.get("db/av"))
     Files.createDirectories(Paths.get("db/quotes"))
 
@@ -34,16 +36,15 @@ object SyncUp {
 
     downloadFromAlphaVantage(forceDownload)
 
-    val fut = normaliseTheQuotes
-
-    Await.result(fut, Duration.Inf)
+    normaliseTheQuotes
   }
 
   def syncOneSymbol(symbol:String)(implicit ec:ExecutionContext) = {
     QuoteConfig.allConfigsWithCcy.find(_.avSymbol == symbol).map(quoteConfig => {
       this.downloadForQuote(quoteConfig, forceDownload = true)
 
-      val fxData = Main.isoCcyPriceFxConverterData(Set(quoteConfig.actualCcy).toSeq)
+      // Always need EUR & GBP for LSE fixup
+      val fxData = Main.isoCcyPriceFxConverterData(Set(quoteConfig.actualCcy, "GBP", "EUR").toSeq)
       val priceFXConverter = SingleFXConversion(fxData, AssetId("USD"))
 
       AVStockParser.tryParseSymbol(quoteConfig)
@@ -114,7 +115,12 @@ object SyncUp {
   private def downloadQuoteFromAlphaVantage(cfg: QuoteConfig, forceDownload: Boolean) = {
     val symbol = cfg.avSymbol
     val outFile = s"db/av/$symbol.csv"
-    val cmdDaily = s"""wget -O $outFile https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=$symbol&outputsize=full&datatype=csv&apikey=$apikey"""
+    val cmdDaily = if (cfg.assetType =="FX") {
+      s"""wget -O $outFile https://www.alphavantage.co/query?function=FX_DAILY&from_symbol=$symbol&to_symbol=USD&outputsize=full&datatype=csv&apikey=$apikey"""
+    } else {
+      s"""wget -O $outFile https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=$symbol&outputsize=full&datatype=csv&apikey=$apikey"""
+    }
+
     goGetIt(outFile, cmdDaily, stdoutResult = false, forceDownload = forceDownload)
 //    val outFileIntraday = s"db/av/intraday.$symbol.csv"
 //    val cmdIntraday = s"""wget -O $outFileIntraday https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol=$symbol&interval=60min&datatype=csv&apikey=$apikey"""
@@ -129,14 +135,15 @@ object SyncUp {
     val now = Instant.now
     val duration = java.time.Duration.ofHours(24)
     val lastModified:Instant = if (exists) Files.getLastModifiedTime(path).toInstant else now.plus(java.time.Duration.ofDays(100))
-    if (!exists || lastModified.plus(duration).isBefore(Instant.now)) {
+    if (!exists || forceDownload || lastModified.plus(duration).isBefore(Instant.now)) {
+      val timeToSleep = java.time.Duration.between(Instant.now, lastAlphaVantageDownload).minus(alphaVantageTimeGap)
+      if (throttleRequests && cmd.contains("alphavantage") && !timeToSleep.isNegative) {
+        logger.info(s"Sleeping for ${timeToSleep.toMillis}ms to throttle alphavantage requests")
+        Thread.sleep(timeToSleep.toMillis)
+      }
       logger.info(cmd)
       val result = if (stdoutResult) cmd #> path.toFile ! else cmd !
 
-      if (throttleRequests && cmd.contains("alphavantage")) {
-        // alphavantage has free access limits to 5 request per second
-        Thread.sleep(12000)
-      }
     }
     else {
       val delay = ChronoUnit.MINUTES.between(now, lastModified.plus(duration))/60.0
@@ -157,7 +164,7 @@ object SyncUp {
     val isoCcys = QuoteConfig.allCcys
     // First sort out all the ISO currencies
     val data:Map[AssetId, SortedColumnMap[LocalDate, Double]] = isoCcys.flatMap(fxCcy => {
-      AVStockParser.tryParseSymbol(QuoteConfig(fxCcy, "USD", "USD") ).map(res =>{
+      AVStockParser.tryParseSymbol(QuoteConfig(fxCcy, "USD", "USD", "FX") ).map(res =>{
         val series: SortedMap[LocalDate, Double] = res.series
         val fxFut = theStore.readQuotes(fxCcy).map(orig => {
           theStore.mergeQuotes(fxCcy, orig, series)

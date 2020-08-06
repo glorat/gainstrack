@@ -2,7 +2,7 @@ package com.gainstrack.quotes.av
 
 case class QuoteExchange(symbol: String)
 
-case class QuoteConfig(avSymbol:String, actualCcy:String, domainCcy:String) {
+case class QuoteConfig(avSymbol:String, actualCcy:String, domainCcy:String, assetType:String) {
 
   def ticker: String = {
     avSymbol.split('.')(0)
@@ -20,6 +20,10 @@ case class QuoteConfig(avSymbol:String, actualCcy:String, domainCcy:String) {
 }
 
 object QuoteConfig {
+  def create(avSymbol:String, actualCcy:String, domainCcy:String):QuoteConfig = {
+    QuoteConfig(avSymbol, actualCcy, domainCcy, "Stock")
+  }
+
   val allConfigs:Seq[QuoteConfig] = Seq(
     Tuple3("VWRD.LON", "USD", "LSEUSD"),
     Tuple3("VDEV.LON", "USD", "LSEUSD"),
@@ -49,10 +53,10 @@ object QuoteConfig {
     Tuple3("XIU.TRT", "CAD", "CAD"),
     Tuple3("GOOG", "USD", "USD"),
     Tuple3("DAX", "USD", "USD")
-  ).map((QuoteConfig.apply _).tupled)
+  ).map((QuoteConfig.create _).tupled)
 
   // A shortcut implementation for now. One day, let's get a list of ISOs
   def allCcys = Seq("GBP", "EUR", "HKD", "CAD", "AUD", "NZD", "CNY", "SGD", "JPY", "SEK", "XAU")
 
-  val allConfigsWithCcy = allConfigs ++ allCcys.map(ccy => QuoteConfig(ccy, "USD", ccy))
+  val allConfigsWithCcy = allConfigs ++ allCcys.map(ccy => QuoteConfig(ccy, ccy, ccy, "FX"))
 }
