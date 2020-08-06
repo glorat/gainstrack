@@ -17,7 +17,7 @@ import scala.concurrent.{Await, ExecutionContext, Future}
 object SyncUp {
   val logger =  LoggerFactory.getLogger(getClass)
 
-  val apikey = scala.io.Source.fromFile("db/apikey.txt").getLines().next()
+
   val throttleRequests = true
   private val inFlight = scala.collection.concurrent.TrieMap[String, Int]()
   private val infDur = scala.concurrent.duration.Duration.Inf
@@ -26,7 +26,8 @@ object SyncUp {
 
   // Flip this to FileStore as needed!
   val config = ConfigFactory.load()
-  val theStore:QuoteStore = if (config.getBoolean("quotesdb.useDb")) QuotesDb else QuotesFileStore
+  val theStore:QuoteStore = if (config.getBoolean("quotes.useDb")) QuotesDb else QuotesFileStore
+  val apikey = config.getString("quotes.avApiKey")
 
   def batchSyncAll(implicit ec:ExecutionContext) = {
     Files.createDirectories(Paths.get("db/av"))
