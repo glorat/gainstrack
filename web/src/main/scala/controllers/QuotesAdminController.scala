@@ -36,5 +36,22 @@ class QuotesAdminController(implicit val executor :ExecutionContext)
 
   }
 
+  post("/subsync") {
+    val body = parsedBody.extract[GooglePubSubRequest]
+    val symbol = body.message.message
+    new AsyncResult() {
+      override val is: Future[_] = {
+        SyncUp.syncOneSymbol(symbol)
+      }
+    }
+  }
+
 
 }
+
+case class GooglePubSubMessage(attributes: Map[String, String], data: String, messageId: String) {
+  def message:String = {
+    new String(java.util.Base64.getDecoder.decode(data))
+  }
+}
+case class GooglePubSubRequest(message: GooglePubSubMessage, subscription: String)
