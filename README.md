@@ -34,7 +34,13 @@ Proxy the mysql instance as localhost with this
 
 #### Environment variables
 `AV_API_KEY` - API Key for alphavantage. Free keys can be obtained from their webiste
+
 `MYSQL_PASS` - Password to MySQL database
-`MYSQL_URL` - (Optional) custom JDBC connect string
+
+`MYSQL_URL` - (Optional) custom JDBC connect string. Examples include
+- `jdbc:mysql:///cloudsql/gainstrack:asia-east2:gainstrack-hk`
+- `jdbc:mysql://google/quotes?cloudSqlInstance=gainstrack:asia-east2:gainstrack-hk&socketFactory=com.google.cloud.sql.mysql.SocketFactory`
+
 `GOOGLE_APPLICATION_CREDENTIALS` - Path to JSON file containing Google credentials for Firestore. Supplied automatically in Google environments
+
 `QUOTES_ADMIN` - Enable quotes admin web API
