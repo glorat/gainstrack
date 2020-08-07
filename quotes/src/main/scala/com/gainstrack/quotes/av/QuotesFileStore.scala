@@ -35,21 +35,29 @@ object QuotesFileStore extends QuoteStore {
     }
   }
 
-  def mergeQuotes(symbol: String, orig: SortedMap[LocalDate, Double], actual: SortedMap[LocalDate, Double])(implicit ec: ExecutionContext): Future[Any] = {
+  def mergeQuotes(symbol: String, orig: SortedMap[LocalDate, Double], actual: SortedMap[LocalDate, Double])(implicit ec: ExecutionContext): Future[QuotesMergeResult] = {
     // Merge in
     var toUpdate = orig
+    var updateCount = 0
+    var insertCount = 0
     actual.foreach(x => {
       // FIXME: double comparison is not accurate
       if (orig.get(x._1).map(_ != x._2).getOrElse(true)) {
         logger.info(s"${symbol} ${x._1} updated to ${x._2}")
         // Value exists and is different
         toUpdate = toUpdate.updated(x._1, x._2)
+        updateCount += 1
         // TODO: Also centrally log all historic changes for audit
+      } else {
+        insertCount += 1 // even if unchanged since we always do a full rewrite
       }
     })
 
     // Write to file
-    writeQuotes(symbol, toUpdate)
+    writeQuotes(symbol, toUpdate).map( _ => {
+      QuotesMergeResult(inserts = insertCount, updates = updateCount, error = None)
+    })
+
 
   }
 

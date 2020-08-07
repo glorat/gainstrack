@@ -44,7 +44,7 @@ object QuotesDb extends QuoteStore {
 
   }
 
-  def mergeQuotes(symbol: String, orig: SortedMap[LocalDate, Double], actual: SortedMap[LocalDate, Double])(implicit ec: ExecutionContext): Future[Any] = {
+  def mergeQuotes(symbol: String, orig: SortedMap[LocalDate, Double], actual: SortedMap[LocalDate, Double])(implicit ec: ExecutionContext): Future[QuotesMergeResult] = {
 
     val toInsert = actual.filter(x => orig.get(x._1).isEmpty)
     val toUpdate = actual.filter(x => orig.get(x._1).map(_ != x._2).getOrElse(false))
@@ -61,20 +61,20 @@ object QuotesDb extends QuoteStore {
       cq(symbol, localDateToIntDate(x._1)).update(x._2)
     } )
 
-
     logger.info(s"$symbol to Insert ${toInsert.size} and update ${toUpdate.size} for $symbol")
     val fut = db.run(DBIO.sequence(insertBatches ++ updates)).map(_ => {
       logger.info(s"$symbol upsert complete!")
+      QuotesMergeResult(updates = toUpdate.size, inserts = toInsert.size, error = None)
     }).recoverWith{case e:Exception => {
       logger.error(s"$symbol went wrong somehow" + e.toString)
-      Future.successful()
+      val res = QuotesMergeResult(updates = toUpdate.size, inserts = toInsert.size, error = Some(e.toString))
+      Future.successful(res)
     }}
     fut
 
   }
 
 }
-
 
 case class QuoteValue(id: Option[Int], symbol: String, date: Int, value: Double, source: Option[String])
 

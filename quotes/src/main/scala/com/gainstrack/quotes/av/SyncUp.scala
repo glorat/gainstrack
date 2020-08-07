@@ -39,7 +39,7 @@ object SyncUp {
     normaliseTheQuotes
   }
 
-  def syncOneSymbol(symbol:String)(implicit ec:ExecutionContext) = {
+  def syncOneSymbol(symbol:String)(implicit ec:ExecutionContext): Future[QuotesMergeResult] = {
     QuoteConfig.allConfigsWithCcy.find(_.avSymbol == symbol).map(quoteConfig => {
       this.downloadForQuote(quoteConfig, forceDownload = true)
 
@@ -52,11 +52,12 @@ object SyncUp {
           val cfg = res.config
           val srcCcy = res.sourceCcy.map(_.symbol).getOrElse(cfg.domainCcy)
           val fixed = res.fixupLSE(srcCcy, AssetId(cfg.actualCcy), priceFXConverter)
-          theStore.readQuotes(cfg.avSymbol).map(orig => {
+          val mergeRes = theStore.readQuotes(cfg.avSymbol).flatMap(orig => {
             theStore.mergeQuotes(cfg.avSymbol, orig, fixed.series)
           })
-        }).getOrElse(Future.successful())
-    }).getOrElse(Future.successful())
+          mergeRes
+        }).getOrElse(Future.successful(QuotesMergeResult(0,0, Some("Could not obtain AV results"))))
+    }).getOrElse(Future.successful(QuotesMergeResult(0,0, Some("Unknown symbol"))))
   }
 
   private def migrateFileToDB(implicit ec:ExecutionContext) = {
