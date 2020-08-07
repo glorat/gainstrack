@@ -29,7 +29,9 @@ lazy val common_deps = Seq(
   "org.json4s"   %% "json4s-jackson" % "3.6.7",
   "com.typesafe.slick" %% "slick" % "3.3.1",
   "mysql" % "mysql-connector-java" % "6.0.6",
-  "com.google.cloud.sql" % "mysql-socket-factory-connector-j-6" % "1.0.16"
+  "com.google.cloud.sql" % "mysql-socket-factory-connector-j-6" % "1.0.16",
+  "com.google.cloud" % "google-cloud-pubsub" % "1.108.1"
+
 )
 
 lazy val dlsuite_deps = dlstore_deps ++ common_deps

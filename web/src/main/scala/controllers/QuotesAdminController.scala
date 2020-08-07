@@ -44,10 +44,27 @@ class QuotesAdminController(implicit val executor :ExecutionContext)
           logger.info(request.body)
           val body = parsedBody.extract[GooglePubSubRequest]
           logger.info(s"Handling published subsync message ${body.message.messageId}")
-          val symbol = body.message.message
-          logger.info(s"Requested to sync one symbol ${symbol}")
+          val symbols = body.message.message.split(",").toList
+          symbols match {
+            case Nil => Future.successful(QuotesMergeResult(0,0,None))
+            case symbol :: Nil => {
+              logger.info(s"Requested to sync one symbol ${symbol}")
+              SyncUp.syncOneSymbol(symbol)
+            }
+            case symbol :: tail => {
+              logger.info(s"Requested to sync one symbol ${symbol}")
+              SyncUp.syncOneSymbol(symbol).map(res => {
+                val rest = tail.mkString(",")
+                logger.info(s"Queuing up: ${rest}")
+                SyncUp.googlePublishOneSync(rest).map(_ => {
+                  res
+                })
+              })
+            }
+          }
 
-          SyncUp.syncOneSymbol(symbol)
+
+
         }
         catch {
           case e: Exception => {
@@ -56,6 +73,22 @@ class QuotesAdminController(implicit val executor :ExecutionContext)
           }
         }
 
+      }
+    }
+  }
+
+  post("/syncall") {
+    new AsyncResult() {
+      override val is: Future[_] = {
+        try {
+          logger.info(request.body)
+          SyncUp.googlePublishAllSyncs.map(_ => "OK")
+        } catch {
+          case e: Exception => {
+            logger.error("syncall dropping error: " + e.toString)
+            Future.successful(e.toString)
+          }
+        }
       }
     }
   }
