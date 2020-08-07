@@ -2,7 +2,7 @@ package controllers
 
 import com.gainstrack.core.{AssetId, SortedColumnMap}
 import com.gainstrack.quotes.av.Main.{infDur, theStore}
-import com.gainstrack.quotes.av.{QuoteConfig, SyncUp}
+import com.gainstrack.quotes.av.{QuoteConfig, QuotesMergeResult, SyncUp}
 import com.gainstrack.web.{GainstrackJsonSerializers, TimingSupport}
 import org.json4s.Formats
 import org.scalatra.json.JacksonJsonSupport
@@ -37,19 +37,38 @@ class QuotesAdminController(implicit val executor :ExecutionContext)
   }
 
   post("/subsync") {
-    val body = parsedBody.extract[GooglePubSubRequest]
-    val symbol = body.message.message
+
     new AsyncResult() {
       override val is: Future[_] = {
-        SyncUp.syncOneSymbol(symbol)
+        try {
+          logger.info(request.body)
+          val body = parsedBody.extract[GooglePubSubRequest]
+          logger.info(s"Handling published subsync message ${body.message.messageId}")
+          val symbol = body.message.message
+          logger.info(s"Requested to sync one symbol ${symbol}")
+
+          SyncUp.syncOneSymbol(symbol)
+        }
+        catch {
+          case e: Exception => {
+            logger.error("subsync dropping error: " + e.toString)
+            Future.successful(QuotesMergeResult(0,0, Some(e.toString)))
+          }
+        }
+
       }
     }
   }
 
+  error {
+    case e:Exception => {
+      logger.error("Unhandled error: " + e.toString)
+    }
+  }
 
 }
 
-case class GooglePubSubMessage(attributes: Map[String, String], data: String, messageId: String) {
+case class GooglePubSubMessage(attributes: Option[Map[String, String]], data: String, messageId: String) {
   def message:String = {
     new String(java.util.Base64.getDecoder.decode(data))
   }
