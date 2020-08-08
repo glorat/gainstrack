@@ -16,5 +16,6 @@
     <logger name="slick.compiler" level="info"/>
     <logger name="slick.relational" level="info"/>
     <logger name="slick.jdbc.JdbcBackend" level="info"/>
+    <logger name="slick.jdbc.StatementInvoker" level="info"/>
     <logger name="slick" level="debug"/>
 </configuration>
