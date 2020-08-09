@@ -47,3 +47,4 @@ yarn-error.log*
 *.ntvs*
 *.njsproj
 *.sln
+.firebase
