@@ -32,6 +32,7 @@ trait GainstrackSupport {
   private val repo = FirebaseFactory.createRepo
 
   private def bgDefault = {
+
     val start:Instant = Instant.now
 
     val ent = GainstrackEntity.defaultBase(java.util.UUID.randomUUID())
@@ -89,8 +90,6 @@ trait GainstrackSupport {
     else {
       session.get("gainstrack").getOrElse(bgDefault).asInstanceOf[GainstrackGenerator]
     }
-    // Use session from now on
-    session("gainstrack") = gt
     gt
   }
 
@@ -115,7 +114,6 @@ trait GainstrackSupport {
       val res = bg.writeBeancountFile(s"/tmp/${id}.beancount", parser.map(_.sourceMap).getOrElse(ent.getState.sourceMap))
       if (res.length == 0) {
         repo.save(ent, ent.getRevision)
-        session("gainstrack") = bg
       }
       else {
         // TODO: Return structured message properly

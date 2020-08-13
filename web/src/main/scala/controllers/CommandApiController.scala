@@ -19,6 +19,7 @@ class CommandApiController(implicit val ec: ExecutionContext)
   protected implicit val jsonFormats: Formats = org.json4s.DefaultFormats ++ GainstrackJsonSerializers.all
 
   before() {
+    scentry.authenticate()
     contentType = formats("json")
   }
 
