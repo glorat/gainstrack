@@ -1,3 +1,5 @@
+import java.net.InetAddress
+
 import com.gainstrack.quotes.av.SyncUp
 import com.gainstrack.web.Auth0Config.getClass
 import controllers.ServerQuoteSource
@@ -45,6 +47,12 @@ object JettyLauncher { // this is my entry object as specified in sbt project de
     val it = its.iterator()
     require(it.hasNext, "Unable to ServiceLoader the NettyChannelProvider")
     logger.debug("We have a " + it.next.getClass.getName)
+
+    // Check that DNS is working
+    // dscacheutil -flushcache
+    // might help on MacOS if this is failing
+    require(InetAddress.getAllByName("google.com").length > 0)
+    require(InetAddress.getAllByName("firestore.googleapis.com").length > 0)
 
   }
 
