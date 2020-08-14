@@ -7,7 +7,7 @@ import com.gainstrack.command.GainstrackParser
 import com.gainstrack.lifecycle.{FileRepository, FirebaseFactory, GainstrackEntity, MyCommittedEvent}
 import com.gainstrack.report.GainstrackGenerator
 import javax.servlet.http.HttpServletRequest
-import net.glorat.cqrs.CommittedEvent
+import net.glorat.cqrs.{CommittedEvent, RepositoryWithEntityStream}
 import org.scalatra.ScalatraBase
 import org.slf4j.LoggerFactory
 
@@ -29,7 +29,16 @@ trait GainstrackSupport {
   Files.createDirectories(Paths.get(UserDataDir))
 
   // private val repo = new FileRepository(Paths.get(UserDataDir))
-  private val repo = FirebaseFactory.createRepo
+  private val mainRepo = FirebaseFactory.createRepo
+  private val anonRepo = FirebaseFactory.createAnonRepo
+
+  private def repo: RepositoryWithEntityStream = {
+    if (isAuthenticated) {
+      if (user.isAnonymous) anonRepo else mainRepo
+    } else {
+      anonRepo
+    }
+  }
 
   private def bgDefault = {
 
@@ -88,7 +97,7 @@ trait GainstrackSupport {
 //        .getOrElse(bgDefault)
     }
     else {
-      session.get("gainstrack").getOrElse(bgDefault).asInstanceOf[GainstrackGenerator]
+      bgDefault
     }
     gt
   }
@@ -104,32 +113,25 @@ trait GainstrackSupport {
   }
 
   def saveGainstrack(bg:GainstrackGenerator, parser:Option[GainstrackParser] = None) = {
-    if (isAuthenticated) {
-      val id = user.uuid
-      logger.info(s"Saving updates to ${user.username} ${id}")
-      val ent = repo.getByIdOpt(id, new GainstrackEntity()).getOrElse(GainstrackEntity.defaultBase(id))
-      ent.source(bg.originalCommands)
+    val id = if (isAuthenticated) user.uuid else {
+      val newId = java.util.UUID.randomUUID()
+      logger.info(s"Generating anonymous session for ${newId}")
+      cookies += (AnonAuthStrategy.ANON_KEY -> newId.toString)
+      newId
+    }
 
-      // Perform final validations
-      val res = bg.writeBeancountFile(s"/tmp/${id}.beancount", parser.map(_.sourceMap).getOrElse(ent.getState.sourceMap))
-      if (res.length == 0) {
-        repo.save(ent, ent.getRevision)
-      }
-      else {
-        // TODO: Return structured message properly
-        throw new Exception(res.map(_.message).mkString("\n"))
-      }
+    logger.info(s"Saving updates to ${user.username} ${id}")
+    val ent = repo.getByIdOpt(id, new GainstrackEntity()).getOrElse(GainstrackEntity.defaultBase(id))
+    ent.source(bg.originalCommands)
+
+    // Perform final validations
+    val res = bg.writeBeancountFile(s"/tmp/${id}.beancount", parser.map(_.sourceMap).getOrElse(ent.getState.sourceMap))
+    if (res.length == 0) {
+      repo.save(ent, ent.getRevision)
     }
     else {
-      // Perform final validations
-      val res = bg.writeBeancountFile(s"/tmp/anonymous.beancount", parser.map(_.sourceMap).getOrElse(_ => 0))
-      if (res.length == 0) {
-        session("gainstrack") = bg
-      }
-      else {
-        throw new Exception(res.map(_.message).mkString("\n"))
-      }
-      logger.info("Anonymous saveGainstrack - in-memory only")
+      // TODO: Return structured message properly
+      throw new Exception(res.map(_.message).mkString("\n"))
     }
 
   }

@@ -1,5 +1,7 @@
 package com.gainstrack.web
 
+import java.util.UUID
+
 import javax.servlet.http.{HttpServletRequest, HttpServletResponse}
 import org.json4s.Formats
 import org.scalatra.ScalatraBase
@@ -57,11 +59,20 @@ class SimpleAuthStrategy(protected override val app: ScalatraBase)
   }
 }
 
-case class GUser(username: String) {
-  def id = username
-  // This is effectively an MD5 of the PBKDF2WithHmacSHA256
-  def uuid = java.util.UUID.nameUUIDFromBytes(id.getBytes("UTF-8"))
+case class GUser(username: String, uuid:UUID) {
+  def isAnonymous:Boolean = {
+    username.startsWith("ANONYMOUS.")
+  }
 }
 
 object GUser {
+  def apply(username:String):GUser = {
+    // This is effectively an MD5 of the PBKDF2WithHmacSHA256
+    val uuid = java.util.UUID.nameUUIDFromBytes(username.getBytes("UTF-8"))
+    GUser(username, uuid)
+  }
+
+  def anonymous(randomId:String): GUser = {
+    GUser("ANONYMOUS." + randomId)
+  }
 }

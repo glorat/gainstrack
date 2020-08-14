@@ -8,7 +8,9 @@ import org.json4s.{DefaultFormats, ShortTypeHints}
 import scala.concurrent.ExecutionContext
 
 object FirebaseFactory {
-  val firestoreConfig = FirestoreLedgerConfig("https://gainstrack-poc.firebaseio.com", "users", "records")
+  // FIXME: Move to application.conf or equivalent
+  val firestoreConfig = FirestoreLedgerConfig("https://gainstrack.firebaseio.com", "users", "records")
+  val anonFirestoreConfig = firestoreConfig.copy(mainCollectionName = "anons")
   implicit val formats = DefaultFormats.withHints(ShortTypeHints(List(classOf[GainstrackEntityDelta]))) + InstantSerializer + UUIDSerializer
 
 
@@ -28,4 +30,6 @@ object FirebaseFactory {
 
 
   def createRepo(implicit ec: ExecutionContext) = new FirestoreLedger(firestoreConfig)
+
+  def createAnonRepo(implicit ec: ExecutionContext) = new FirestoreLedger(anonFirestoreConfig)
 }

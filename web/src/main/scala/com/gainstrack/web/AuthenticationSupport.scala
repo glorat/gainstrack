@@ -10,11 +10,12 @@ import org.slf4j.LoggerFactory
 trait AuthenticationSupport extends ScentrySupport[GUser] {
   self: ScalatraBase with JacksonJsonSupport =>
   private val logger =  LoggerFactory.getLogger(getClass)
-  protected def fromSession = { case id: String => GUser(id)  }
-  protected def toSession   = { case usr: GUser => usr.id }
+  protected def fromSession = { case username: String => GUser(username)  }
+  protected def toSession   = { case usr: GUser => usr.username }
 
   protected val scentryConfig = (new ScentryConfig {}).asInstanceOf[ScentryConfiguration]
 
+  this.cookies
 /**
  * If an unauthenticated user attempts to access a route which is protected by Scentry
  * */
@@ -33,6 +34,7 @@ trait AuthenticationSupport extends ScentrySupport[GUser] {
     scentry.register("SimpleAuthStrategy", app => new SimpleAuthStrategy(app))
     scentry.register("Auth0Strategy", app => new Auth0Strategy(app))
     scentry.register("FirebaseStrategy", app => new FirebaseStrategy(app))
+    scentry.register("AnonyAuthStrategy", app => new AnonAuthStrategy(app))
 
     scentry.store = new ScentryAuthStore {
       val myKey = Scentry.scentryAuthKey + ".token"
