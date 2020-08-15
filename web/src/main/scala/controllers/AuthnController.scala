@@ -1,7 +1,7 @@
 package controllers
 
 import com.gainstrack.lifecycle.FirebaseFactory
-import com.gainstrack.web.{AuthenticationSupport, GainstrackJsonSerializers, GainstrackSupport}
+import com.gainstrack.web.{AuthenticationSupport, GainstrackJsonSerializers, GainstrackSupport, TimingSupport}
 import org.json4s.Formats
 import org.scalatra.ScalatraServlet
 import org.scalatra.json.JacksonJsonSupport
@@ -13,7 +13,8 @@ class AuthnController(implicit val ec: ExecutionContext)
   extends ScalatraServlet
     with JacksonJsonSupport
     with AuthenticationSupport
-    with GainstrackSupport {
+    with GainstrackSupport
+    with TimingSupport {
   val logger = LoggerFactory.getLogger(getClass)
 
   protected implicit val jsonFormats: Formats = org.json4s.DefaultFormats ++ GainstrackJsonSerializers.all
@@ -27,7 +28,7 @@ class AuthnController(implicit val ec: ExecutionContext)
       if (gtOpt.isDefined) {
         session("gainstrack") = gtOpt.get
       }
-      getSummary.copy(customToken = Some(FirebaseFactory.createCustomToken(user.uuid.toString)))
+      getSummary // .copy(customToken = Some(FirebaseFactory.createCustomToken(user.uuid.toString)))
 
     }).getOrElse({
       logger.warn(s"Login failed")

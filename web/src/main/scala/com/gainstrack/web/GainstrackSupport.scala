@@ -9,12 +9,12 @@ import com.gainstrack.report.GainstrackGenerator
 import com.typesafe.config.ConfigFactory
 import javax.servlet.http.HttpServletRequest
 import net.glorat.cqrs.{CommittedEvent, RepositoryWithEntityStream}
-import org.scalatra.ScalatraBase
+import org.scalatra.{ContentEncodingSupport, ScalatraBase}
 import org.slf4j.LoggerFactory
 
 import scala.concurrent.ExecutionContext
 
-trait GainstrackSupport {
+trait GainstrackSupport extends ContentEncodingSupport {
   self: ScalatraBase =>
 
   // These methods can be found on AuthenticationSupport but we maintain a narrow
