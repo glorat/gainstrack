@@ -15,6 +15,7 @@ class ScalatraBootstrap extends LifeCycle {
     context.mount(new controllers.ExportController(), "/api/export/*")
     context.mount(new controllers.AuthnController(), "/api/authn/*")
     context.mount(new controllers.QuotesController(), "/api/quotes/*")
+    context.mount(new controllers.DebugController(), "/api/debug/*")
 
     if (System.getenv("QUOTES_ADMIN") != null) {
       context.mount(new controllers.QuotesAdminController(), "/api/quotesAdmin/*")
