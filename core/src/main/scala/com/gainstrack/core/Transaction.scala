@@ -20,7 +20,6 @@ case class Transaction (
   def toDTO(originIndex: Int): TransactionDTO = {
     TransactionDTO(originIndex,
     postDate,
-    description,
     postings)
   }
 

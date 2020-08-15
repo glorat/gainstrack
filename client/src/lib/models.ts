@@ -104,7 +104,6 @@ export interface HasPostings {
 
 export interface Transaction extends HasPostings {
     originIndex: number
-    description: string
     id: number
     postDate: string
     postings: Posting[]

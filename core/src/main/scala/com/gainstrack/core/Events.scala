@@ -27,7 +27,6 @@ trait BeancountCommand {
 case class TransactionDTO(
                                 originIndex: Int,
                                 postDate: LocalDate,
-                                description: String,
                                 postings: Seq[Posting],
                               )
 
