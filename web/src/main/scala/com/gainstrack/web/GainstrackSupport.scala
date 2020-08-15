@@ -6,6 +6,7 @@ import java.time.{Duration, Instant, LocalDate}
 import com.gainstrack.command.GainstrackParser
 import com.gainstrack.lifecycle.{FileRepository, FirebaseFactory, GainstrackEntity, MyCommittedEvent}
 import com.gainstrack.report.GainstrackGenerator
+import com.typesafe.config.ConfigFactory
 import javax.servlet.http.HttpServletRequest
 import net.glorat.cqrs.{CommittedEvent, RepositoryWithEntityStream}
 import org.scalatra.ScalatraBase
@@ -28,9 +29,8 @@ trait GainstrackSupport {
 
   Files.createDirectories(Paths.get(UserDataDir))
 
-  // private val repo = new FileRepository(Paths.get(UserDataDir))
-  private val mainRepo = FirebaseFactory.createRepo
-  private val anonRepo = FirebaseFactory.createAnonRepo
+  private val mainRepo = if (GainstrackSupport.useFirestore) FirebaseFactory.createRepo else new FileRepository(Paths.get(UserDataDir))
+  private val anonRepo = if (GainstrackSupport.useFirestore) FirebaseFactory.createAnonRepo else mainRepo
 
   private def repo: RepositoryWithEntityStream = {
     if (isAuthenticated) {
@@ -156,8 +156,7 @@ trait GainstrackSupport {
     val conversionStrategy = session.get("conversion").map(_.toString).getOrElse("parent")
     val authnSummary = getAuthentication
 
-    ret + ("accountIds" -> accts) +
-      ("accounts" -> bg.acctState.withInterpolatedAccounts.accounts.toSeq.map(_.toAccountDTO)) +
+    ret + ("accounts" -> bg.acctState.withInterpolatedAccounts.accounts.toSeq.map(_.toAccountDTO)) +
       ("baseCcy" -> bg.acctState.baseCurrency) +
       ("ccys" -> ccys.toSeq.sorted) +
       ("conversion" -> conversionStrategy) +
@@ -174,4 +173,9 @@ trait GainstrackSupport {
       AuthnSummary()
     }
   }
+}
+
+object GainstrackSupport {
+  val config = ConfigFactory.load()
+  val useFirestore:Boolean = config.getBoolean("gainstrack.useFirestore")
 }

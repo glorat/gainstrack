@@ -2,6 +2,7 @@ import java.net.InetAddress
 
 import com.gainstrack.quotes.av.SyncUp
 import com.gainstrack.web.Auth0Config.getClass
+import com.typesafe.config.ConfigFactory
 import controllers.ServerQuoteSource
 import io.grpc.ManagedChannelProvider
 import io.grpc.netty.shaded.io.grpc.netty.NettyChannelProvider
@@ -15,6 +16,8 @@ import scala.concurrent.ExecutionContext
 
 object JettyLauncher { // this is my entry object as specified in sbt project definition
   val logger = LoggerFactory.getLogger(getClass)
+
+  val config = ConfigFactory.load()
 
   def main(args: Array[String]) {
     primeJit()
@@ -48,11 +51,13 @@ object JettyLauncher { // this is my entry object as specified in sbt project de
     require(it.hasNext, "Unable to ServiceLoader the NettyChannelProvider")
     logger.debug("We have a " + it.next.getClass.getName)
 
-    // Check that DNS is working
-    // dscacheutil -flushcache
-    // might help on MacOS if this is failing
-    require(InetAddress.getAllByName("google.com").length > 0)
-    require(InetAddress.getAllByName("firestore.googleapis.com").length > 0)
+    if (config.getBoolean("gainstrack.sanityCheck.dns")) {
+      // Check that DNS is working
+      // dscacheutil -flushcache
+      // might help on MacOS if this is failing
+      require(InetAddress.getAllByName("google.com").length > 0)
+      require(InetAddress.getAllByName("firestore.googleapis.com").length > 0)
+    }
 
   }
 

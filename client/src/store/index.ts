@@ -9,7 +9,7 @@ import {
   isTransaction,
   Posting,
   PostingEx,
-  QuoteConfig,
+  QuoteConfig, StateSummaryDTO,
   Transaction
 } from '../lib/models'
 import {flatten} from 'lodash'
@@ -158,13 +158,11 @@ export default function () {
         return summary
       },
       async loginWithToken (context, token: string) {
-        const config = {
-          headers: {
+        const headers = {
             Authorization: `Bearer ${token}` // send the access token through the 'Authorization' header
           }
-        };
 
-        axios.defaults.headers.common = config.headers;
+        axios.defaults.headers.common = headers;
 
         const summary = await axios.post('/api/authn/login', {});
         // Get stuff in background
@@ -174,6 +172,7 @@ export default function () {
       },
       async logout (context, data: Record<string, any>) {
         const summary = await axios.post('/api/authn/logout', data);
+        axios.defaults.headers.common = {}
         await context.dispatch('loadAllState');
         return summary
       },
@@ -183,7 +182,7 @@ export default function () {
     },
     getters: {
       accountIds: state => {
-        return state.allState.accountIds;
+        return state.allState.accounts.map(x => x.accountId);
       },
       reloadCounter: state => {
         return state.count;
