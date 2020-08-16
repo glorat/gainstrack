@@ -90,7 +90,27 @@ export default function () {
             })
         }
       },
-      async loadQuotes (context, args: {key: string, fromDate: string}): Promise<TimeSeries> {
+      async loadQuotes (context, ccy: string): Promise<TimeSeries> {
+        const ccyToSymbol = (ccy:string):string => {
+          const allState = context.state.allState;
+          if (allState.fxMapper[ccy]) {
+            return allState.fxMapper[ccy]
+          } else if (allState.proxyMapper[ccy]) {
+            return allState.proxyMapper[ccy]
+          } else {
+            return ccy;
+          }
+        };
+
+        const key = ccyToSymbol(ccy);
+        // Only obtain from lowest date
+        const allPostingsEx: PostingEx[] = context.getters.allPostingsEx;
+        const dts = allPostingsEx.filter(p => p.value.ccy === ccy).map(p => p.date).sort();
+        const fromDate = dts[0];
+        const arg = {key, fromDate};
+        return await context.dispatch('loadQuotesEx', arg);
+      },
+      async loadQuotesEx (context, args: {key: string, fromDate: string}): Promise<TimeSeries> {
         const {key, fromDate} = args;
         if (context.state.quotes[key]) {
           return context.state.quotes[key]
@@ -136,31 +156,10 @@ export default function () {
         const response = await axios.get('/api/allState');
         await context.commit('allStateLoaded', response.data);
         const ccys: string[] = response.data.priceState.ccys;
-
-        const ccyToSymbol = (ccy:string):string => {
-          const allState = context.state.allState;
-          if (allState.fxMapper[ccy]) {
-            return allState.fxMapper[ccy]
-          } else if (allState.proxyMapper[ccy]) {
-            return allState.proxyMapper[ccy]
-          } else {
-            return ccy;
-          }
-        }
-
-        const loadQuotesArgs = ccys.map(ccy => {
-          const key = ccyToSymbol(ccy);
-          // Only obtain from lowest date
-          const allPostingsEx:PostingEx[] = context.getters.allPostingsEx;
-          const dts = allPostingsEx.filter(p => p.value.ccy === ccy).map(p => p.date).sort();
-          const fromDate = dts[0];
-          return {key, fromDate};
-        })
-
         // NOTE: These are all async calls being ignored
-        loadQuotesArgs.forEach(arg => {
-          this.dispatch('loadQuotes', arg);
-        })
+        ccys.forEach(ccy => {
+          this.dispatch('loadQuotes', ccy);
+        });
 
         return response
       },
