@@ -8,7 +8,7 @@ WORKDIR /build
 # Cache dependencies first
 COPY project project
 COPY build.sbt .
-COPY core/build.sbt core/build.sbt
+# COPY core/build.sbt core/build.sbt
 COPY web/build.sbt web/build.sbt
 RUN sbt update
 # Then build
@@ -35,6 +35,7 @@ RUN npm install
 # Then build
 COPY ./client/ .
 # Override symlink with physical for container build
+RUN rm VERSION.json
 COPY ./VERSION.json .
 RUN npm run build
 
@@ -48,7 +49,7 @@ COPY python python
 RUN pip3 install -r python/requirements.txt
 
 COPY ./run_jar.sh ./
-COPY --from=builder /build/web/target/scala-2.12/web-assembly-0.1.jar ./
+COPY --from=builder /build/web/target/scala-2.13/web-assembly-0.1.jar ./
 ENTRYPOINT ["./run_jar.sh"]
 RUN mkdir -p /app/src/main/webapp
 #COPY --from=builder ./web/src/main/webapp/ ./src/main/webapp/
