@@ -1,4 +1,4 @@
-import {FXChain, FXMapped, FXMarketLazyLoad, FXProxy, SingleFXConversion, SingleFXConverter} from '../lib/fx'
+import {FXChain, FXMapped, FXProxy, SingleFXConversion, SingleFXConverter} from '../lib/fx'
 import axios from 'axios'
 import Vue from 'vue'
 import Vuex from 'vuex'
@@ -9,7 +9,7 @@ import {
   isTransaction,
   Posting,
   PostingEx,
-  QuoteConfig, StateSummaryDTO,
+  QuoteConfig,
   Transaction
 } from '../lib/models'
 import {flatten} from 'lodash'
@@ -90,14 +90,16 @@ export default function () {
             })
         }
       },
-      async loadQuotes (context, key: string): Promise<TimeSeries> {
+      async loadQuotes (context, args: {key: string, fromDate: string}): Promise<TimeSeries> {
+        const {key, fromDate} = args;
         if (context.state.quotes[key]) {
           return context.state.quotes[key]
         } else {
           // Commit a placeholder first to prevent stampeding horde
           console.log(`Loading quotes for ${key}`);
           context.commit('quotesUpserted', { key, series: { x: [], y: [], name: key } });
-          const response = await axios.get('/api/quotes/ticker/' + key);
+          const params = {fromDate};
+          const response = await axios.get('/api/quotes/ticker/' + key, {params});
           const series: TimeSeries = response.data;
           context.commit('quotesUpserted', { key, series });
           console.log(`Applied quotes for ${key}`);
@@ -128,18 +130,38 @@ export default function () {
         await context.commit('reloadedQuotesConfig', quotesConfig.data);
         // Since components don't know to retrigger this if already on display, let's get it for them
         await context.dispatch('balances');
-
         return response
       },
       async loadAllState (context) {
         const response = await axios.get('/api/allState');
         await context.commit('allStateLoaded', response.data);
         const ccys: string[] = response.data.priceState.ccys;
-        const lazyLoad = (nm: string) => this.dispatch('loadQuotes', nm);
-        const wrapper: FXConverterWrapper = marketFx => new FXMarketLazyLoad(marketFx, lazyLoad);
 
-        const fxconv: SingleFXConverter = this.getters.customFxConverter(wrapper);
-        ccys.forEach(ccy => fxconv.getFX(ccy, 'USD', '2000-01-01'));
+        const ccyToSymbol = (ccy:string):string => {
+          const allState = context.state.allState;
+          if (allState.fxMapper[ccy]) {
+            return allState.fxMapper[ccy]
+          } else if (allState.proxyMapper[ccy]) {
+            return allState.proxyMapper[ccy]
+          } else {
+            return ccy;
+          }
+        }
+
+        const loadQuotesArgs = ccys.map(ccy => {
+          const key = ccyToSymbol(ccy);
+          // Only obtain from lowest date
+          const allPostingsEx:PostingEx[] = context.getters.allPostingsEx;
+          const dts = allPostingsEx.filter(p => p.value.ccy === ccy).map(p => p.date).sort();
+          const fromDate = dts[0];
+          return {key, fromDate};
+        })
+
+        // NOTE: These are all async calls being ignored
+        loadQuotesArgs.forEach(arg => {
+          this.dispatch('loadQuotes', arg);
+        })
+
         return response
       },
       async dateOverride (context, d: string) {
