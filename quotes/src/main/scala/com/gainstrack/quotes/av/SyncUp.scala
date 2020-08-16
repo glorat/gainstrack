@@ -13,7 +13,7 @@ import com.google.pubsub.v1.{PubsubMessage, TopicName}
 import com.typesafe.config.ConfigFactory
 import org.slf4j.LoggerFactory
 
-import scala.collection.SortedMap
+import scala.collection.immutable.SortedMap
 import scala.concurrent.duration.Duration
 import scala.concurrent.{Await, ExecutionContext, Future}
 
@@ -172,6 +172,7 @@ object SyncUp {
       }
       lastAlphaVantageDownload = Instant.now
       logger.info(cmd)
+      import scala.language.postfixOps
       val result = if (stdoutResult) cmd #> path.toFile ! else cmd !
 
     }

@@ -3,9 +3,9 @@ package com.gainstrack.core.test
 import com.gainstrack.command.GainstrackParser
 import com.gainstrack.core._
 import com.gainstrack.report.{AccountState, AssetChainMap, BalanceState, GainstrackGenerator, PLExplain, PriceFXConverter, SingleFXConverter, TransactionState}
-import org.scalatest.FlatSpec
+import org.scalatest.flatspec.AnyFlatSpec
 
-class JamesTest extends FlatSpec {
+class JamesTest extends AnyFlatSpec {
   val parser = new GainstrackParser
   var bg:GainstrackGenerator = null
 

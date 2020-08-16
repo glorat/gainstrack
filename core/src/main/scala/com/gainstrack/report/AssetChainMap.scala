@@ -44,7 +44,7 @@ object AssetChainMap {
 
 
     val accounts = acctState.accounts
-    val map:Map[AccountId, Seq[AssetId]] = accounts.map(a => a.accountId -> assetChainFor(a.accountId))(collection.breakOut)
+    val map:Map[AccountId, Seq[AssetId]] = accounts.map(a => a.accountId -> assetChainFor(a.accountId)).toMap
     AssetChainMap(map)
   }
 }

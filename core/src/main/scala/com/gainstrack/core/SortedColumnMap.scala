@@ -1,8 +1,7 @@
 package com.gainstrack.core
 
-import scala.collection.generic.CanBuildFrom
-import scala.collection.parallel.{Combiner, ParMap}
-import scala.collection.{GenIterable, GenMap, GenMapLike, GenSeq, GenSet, GenTraversable, GenTraversableOnce, SortedMap, immutable, mutable}
+import scala.collection.MapView
+import scala.collection.immutable.SortedMap
 import scala.reflect.ClassTag
 
 case class SortedColumnMap[K ,V] (ks: IndexedSeq[K], val vs:IndexedSeq[V]) {
@@ -36,6 +35,20 @@ object SortedColumnMap {
   def apply[K,V]():SortedColumnMap[K,V] = SortedColumnMap(IndexedSeq(), IndexedSeq())
 
   def from[K:ClassTag,V:ClassTag](map: SortedMap[K,V])(implicit kOrder:Ordering[K]) : SortedColumnMap[K,V] = {
+    val n = map.size
+    val ks = new Array[K](n)
+    val vs = new Array[V](n)
+    var i=0
+    map.foreach(kv => {
+      ks(i) = kv._1
+      vs(i) = kv._2
+      i += 1
+    })
+
+    SortedColumnMap(ks, vs)
+  }
+
+  def from[K:ClassTag,V:ClassTag](map: MapView[K,V])(implicit kOrder:Ordering[K]) : SortedColumnMap[K,V] = {
     val n = map.size
     val ks = new Array[K](n)
     val vs = new Array[V](n)

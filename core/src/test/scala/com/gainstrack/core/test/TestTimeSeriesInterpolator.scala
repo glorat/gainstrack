@@ -2,11 +2,11 @@ package com.gainstrack.core.test
 
 import com.gainstrack.core._
 import com.gainstrack.report.{FXProxy, SingleFXConversion}
-import org.scalatest.FlatSpec
+import org.scalatest.flatspec.AnyFlatSpec
 
-import scala.collection.SortedMap
+import scala.collection.immutable.SortedMap
 
-class TestTimeSeriesInterpolator extends FlatSpec {
+class TestTimeSeriesInterpolator extends AnyFlatSpec {
   val data = SortedColumnMap.from(SortedMap(
     parseDate("2019-01-01") -> parseNumber("1"),
     parseDate("2019-12-31") -> parseNumber("365")

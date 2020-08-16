@@ -3,9 +3,9 @@ package com.gainstrack.core.test
 import com.gainstrack.command.GainstrackParser
 import com.gainstrack.core._
 import com.gainstrack.report.{BalanceReport, GainstrackGenerator, PLExplain}
-import org.scalatest.FlatSpec
+import org.scalatest.flatspec.AnyFlatSpec
 
-class NoEquityTest extends FlatSpec {
+class NoEquityTest extends AnyFlatSpec {
   val parser = new GainstrackParser
 
   import scala.io.Source

@@ -153,7 +153,7 @@ case class GainstrackGenerator(originalCommands:Seq[AccountCommand])  {
     Files.write(Paths.get(filename), str.getBytes(StandardCharsets.UTF_8))
     // Automatically check for correctness
 
-    var stdout = scala.collection.mutable.MutableList[String]()
+    var stdout = scala.collection.mutable.ListBuffer[String]()
     val logger = ProcessLogger(line => stdout.+=(line), line=>stdout+=line )
     val exitCode = s"bean-check ${filename}" ! logger
 
@@ -173,7 +173,7 @@ case class GainstrackGenerator(originalCommands:Seq[AccountCommand])  {
 
       })
       // throw new IllegalStateException("There are errors in the inputs\n" + res.mkString("\n"))
-      res
+      res.toSeq
     }
     else {
       Seq()

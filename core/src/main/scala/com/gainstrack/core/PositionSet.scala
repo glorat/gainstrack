@@ -11,7 +11,7 @@ case class PositionSet(assetBalance:Map[AssetId, Fraction]) {
   }
 
   def filter(assets: Seq[AssetId]): PositionSet = {
-    PositionSet(assetBalance.filterKeys(a => assets.contains(a)))
+    PositionSet(assetBalance.view.filterKeys(a => assets.contains(a)).toMap)
   }
 
   def getBalance(ccy:AssetId) : Amount = {

@@ -1,4 +1,4 @@
-val ScalatraVersion = "2.6.5"
+val ScalatraVersion = "2.7.0"
 
 name := "web"
 

@@ -4,7 +4,7 @@ ThisBuild / version := "0.1"
 
 ThisBuild / organization := "com.gainstrack"
 
-ThisBuild / scalaVersion := "2.12.10"
+ThisBuild / scalaVersion := "2.13.3"
 
 updateOptions := updateOptions.value.withCachedResolution(true)
 
@@ -16,7 +16,7 @@ lazy val myResolvers = Seq(
 )
 
 lazy val dependencies = new {
-  val dlstoreV = "0.3.2"
+  val dlstoreV = "0.4.0"
   val dlstore = "net.glorat" %% "dlstore" % dlstoreV
 }
 
@@ -25,9 +25,10 @@ lazy val dlstore_deps =
   else Seq(dependencies.dlstore)
 
 lazy val common_deps = Seq(
-  "org.scalatest" %% "scalatest" % "3.0.4" % "test",
+  "org.typelevel" %% "spire" % "0.17.0-RC1",
+  "org.scalatest" %% "scalatest" % "3.2.0" % "test",
   "org.json4s"   %% "json4s-jackson" % "3.6.7",
-  "com.typesafe.slick" %% "slick" % "3.3.1",
+  "com.typesafe.slick" %% "slick" % "3.3.2",
   "mysql" % "mysql-connector-java" % "8.0.21",
   "com.google.cloud.sql" % "mysql-socket-factory-connector-j-8" % "1.0.16",
   "com.google.cloud" % "google-cloud-pubsub" % "1.108.1"

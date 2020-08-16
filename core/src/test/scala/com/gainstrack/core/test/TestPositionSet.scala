@@ -1,9 +1,9 @@
 package com.gainstrack.core.test
 
 import com.gainstrack.core._
-import org.scalatest.FlatSpec
+import org.scalatest.flatspec.AnyFlatSpec
 
-class TestPositionSet extends FlatSpec {
+class TestPositionSet extends AnyFlatSpec {
   val empty = PositionSet()
   val someUsd = Amount.parse("10 USD")
   val someGbp = Amount.parse("6 GBP")

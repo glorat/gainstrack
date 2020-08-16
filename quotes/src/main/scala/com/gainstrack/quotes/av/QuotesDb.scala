@@ -1,14 +1,12 @@
 package com.gainstrack.quotes.av
 
-import java.io.FileNotFoundException
 import java.time.LocalDate
 
 import com.gainstrack.core._
 import org.slf4j.LoggerFactory
 import slick.jdbc.MySQLProfile.api._
 
-import scala.collection.SortedMap
-import scala.concurrent.duration.Duration
+import scala.collection.immutable.SortedMap
 import scala.concurrent.{Await, ExecutionContext, Future}
 
 object QuotesDb extends QuoteStore {

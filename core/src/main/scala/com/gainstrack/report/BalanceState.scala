@@ -5,7 +5,7 @@ import com.gainstrack.core._
 import net.glorat.cqrs.{AggregateRootState, DomainEvent}
 import spire.math.SafeLong
 
-import scala.collection.SortedMap
+import scala.collection.immutable.SortedMap
 
 case class BalanceStateSeries(series: SortedMap[LocalDate,Fraction], ccy:AssetId)
 case class BalanceState(acctState:AccountState, balances:Map[AccountId,BalanceStateSeries]) extends AggregateRootState {

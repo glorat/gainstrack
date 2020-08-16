@@ -2,7 +2,7 @@ package com.gainstrack.command
 
 import com.gainstrack.core.AccountId
 
-import scala.collection.SortedMap
+import scala.collection.immutable.SortedMap
 
 case class CommodityOptions (
                               name:String = "",

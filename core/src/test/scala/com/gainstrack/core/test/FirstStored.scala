@@ -8,14 +8,15 @@ import com.gainstrack.core._
 import com.gainstrack.lifecycle.{FileRepository, GainstrackEntity, GainstrackEntityDelta, MyCommittedEvent}
 import com.gainstrack.report.GainstrackGenerator
 import net.glorat.cqrs.{Repository, RepositoryWithEntityStream}
-import org.scalatest.{BeforeAndAfterAll, FlatSpec}
+import org.scalatest.flatspec.AnyFlatSpec
+import org.scalatest.{BeforeAndAfterAll}
 import org.slf4j.LoggerFactory
 
 import scala.concurrent.Await
 import scala.concurrent.duration.Duration
 import scala.io.Source
 
-class FirstStored extends FlatSpec with BeforeAndAfterAll {
+class FirstStored extends AnyFlatSpec with BeforeAndAfterAll {
   val logger = LoggerFactory.getLogger(getClass)
 
   val id = java.util.UUID.nameUUIDFromBytes("first stored test case".getBytes)

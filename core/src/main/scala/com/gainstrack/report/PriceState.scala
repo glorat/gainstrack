@@ -7,7 +7,7 @@ import net.glorat.cqrs.{AggregateRootState, DomainEvent}
 import spire.math.SafeLong
 
 import scala.annotation.tailrec
-import scala.collection.SortedMap
+import scala.collection.immutable.SortedMap
 import scala.math.BigDecimal.RoundingMode
 
 
@@ -17,7 +17,7 @@ case class PriceState(ccys: Set[AssetId], prices: Map[AssetPair, SortedMap[Local
   private val implicitPrices = true
 
   def priceFxConverter : PriceFXConverter = {
-    val fastPrices = prices.mapValues(series => SortedColumnMap.from(series.mapValues(_.toDouble)))
+    val fastPrices = prices.view.mapValues(series => SortedColumnMap.from(series.mapValues(_.toDouble))).toMap
 
     new PriceFXConverter(ccys, fastPrices)
   }

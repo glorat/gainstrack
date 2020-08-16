@@ -28,7 +28,7 @@ class FileRepository(basePath:Path) extends RepositoryWithEntityStream {
   protected def readLinesForId(id: GUID):Seq[String] = {
     import scala.collection.JavaConverters._
     val filename = filenameForId(id)
-    val lines = Files.readAllLines(filename).asScala
+    val lines = Files.readAllLines(filename).asScala.toSeq
     lines
   }
 

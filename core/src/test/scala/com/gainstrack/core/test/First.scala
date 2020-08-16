@@ -5,11 +5,11 @@ import java.time.{LocalDate, YearMonth}
 import com.gainstrack.command.{AccountCreation, BalanceAdjustment, GainstrackParser, GlobalCommand, Transfer}
 import com.gainstrack.core._
 import com.gainstrack.report._
-import org.scalatest.FlatSpec
+import org.scalatest.flatspec.AnyFlatSpec
 
 import scala.collection.SortedSet
 
-class First extends FlatSpec {
+class First extends AnyFlatSpec {
   val parser = new GainstrackParser
   import scala.io.Source
   parser.parseLines(Source.fromResource("src.gainstrack").getLines)
@@ -127,7 +127,7 @@ class First extends FlatSpec {
     import sys.process._
     import java.nio.file.{Paths, Files}
     val bcFile = "/tmp/gainstrack.beancount"
-    var stdout = scala.collection.mutable.MutableList[String]()
+    var stdout = scala.collection.mutable.ListBuffer[String]()
     val logger = ProcessLogger(line => stdout.+=(line), line=>stdout+=line )
     val exitCode = s"bean-check ${bcFile}" ! logger
 

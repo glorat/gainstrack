@@ -6,11 +6,11 @@ import java.time.{LocalDate, ZonedDateTime}
 import com.gainstrack.command._
 import com.gainstrack.core._
 import com.gainstrack.report.{AccountInvestmentReport, GainstrackGenerator, IrrSummary}
-import org.scalatest.FlatSpec
+import org.scalatest.flatspec.AnyFlatSpec
 
 import scala.collection.SortedSet
 
-class TransactionAmountTest extends FlatSpec {
+class TransactionAmountTest extends AnyFlatSpec {
 
   "Postings" should "have correct weight" in {
     /*
@@ -54,6 +54,8 @@ class TransactionAmountTest extends FlatSpec {
 
     "unit commands" should "generate beancount" in {
       import sys.process._
+      import scala.language.postfixOps
+
       val bFile = "/tmp/unit.beancount"
       val res = bg.writeBeancountFile(bFile, parser.lineFor(_))
       assert(res.length == 0)

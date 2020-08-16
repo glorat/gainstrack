@@ -2,9 +2,9 @@ package com.gainstrack.core.test
 
 import com.gainstrack.command.GainstrackParser
 import com.gainstrack.report.GainstrackGenerator
-import org.scalatest.FlatSpec
+import org.scalatest.flatspec.AnyFlatSpec
 
-class YieldTest extends FlatSpec {
+class YieldTest extends AnyFlatSpec {
   val parser = new GainstrackParser
   var bg:GainstrackGenerator = null
 

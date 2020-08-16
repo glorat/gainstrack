@@ -2,7 +2,7 @@ package com.gainstrack.quotes.av
 
 import java.time.LocalDate
 
-import scala.collection.SortedMap
+import scala.collection.immutable.SortedMap
 import scala.concurrent.{ExecutionContext, Future}
 
 trait QuoteStore {

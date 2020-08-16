@@ -3,10 +3,10 @@ package com.gainstrack.core.test
 import com.gainstrack.command.GainstrackParser
 import com.gainstrack.core._
 import com.gainstrack.report._
-import org.scalatest.FlatSpec
+import org.scalatest.flatspec.AnyFlatSpec
 
 
-class MultiAssetAdj extends FlatSpec {
+class MultiAssetAdj extends AnyFlatSpec {
   val parser = new GainstrackParser
   var bg:GainstrackGenerator = null
 

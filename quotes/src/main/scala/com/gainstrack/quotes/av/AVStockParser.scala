@@ -8,7 +8,7 @@ import com.gainstrack.quotes.av.SyncUp.getClass
 import com.gainstrack.report.{AssetPair, FXConverter, PriceState, SingleFXConversion}
 import org.slf4j.LoggerFactory
 
-import scala.collection.SortedMap
+import scala.collection.immutable.SortedMap
 
 object AVStockParser {
   val logger =  LoggerFactory.getLogger(getClass)

@@ -5,16 +5,17 @@ import java.nio.file.{Files, Paths}
 
 import com.gainstrack.command._
 import com.gainstrack.core._
-import com.gainstrack.lifecycle.{GainstrackEntity, FileRepository}
+import com.gainstrack.lifecycle.{FileRepository, GainstrackEntity}
 import com.gainstrack.report.{AccountInvestmentReport, AssetAllocation, DailyBalance, GainstrackGenerator, PriceState}
-import org.scalatest.{BeforeAndAfterEach, FlatSpec, Ignore, Tag}
+import org.scalatest.flatspec.AnyFlatSpec
+import org.scalatest.{BeforeAndAfterEach, Ignore, Tag}
 
 import scala.collection.SortedSet
 
 object RealDataAvailable extends Tag(if (Files.exists(Paths.get( s"data/real.gainstrack"))) "" else classOf[Ignore].getName)
 
 
-class Real extends FlatSpec with BeforeAndAfterEach {
+class Real extends AnyFlatSpec with BeforeAndAfterEach {
   val parser = new GainstrackParser
   val realFile = "real"
 

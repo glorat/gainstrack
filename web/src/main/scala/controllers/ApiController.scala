@@ -287,7 +287,7 @@ class ApiController (implicit val ec :ExecutionContext)
     }
     catch {
       case e: Exception => {
-        session.remove("dateOverride")
+        session -= "dateOverride"
         ApiSourceResponse(Seq(), Seq())
       }
     }
