@@ -44,3 +44,7 @@ Proxy the mysql instance as localhost with this
 `GOOGLE_APPLICATION_CREDENTIALS` - Path to JSON file containing Google credentials for Firestore. Supplied automatically in Google environments
 
 `QUOTES_ADMIN` - Enable quotes admin web API
+
+`AUTH0_DOMAIN` - e.g gainstrack.auth0.com
+`AUTH0_AUDIENCE` - e.g. https://poc.gainstrack.com
+`AUTH0_CLIENT` - e.g. UjVvEmeNTbgIEU6g60h1xvvvBPL4vJqi
