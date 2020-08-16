@@ -15,19 +15,31 @@ For online use
 - Export locally if desired
 
 ##### Errata
+
 ###### Feb'20
-- Clients are auto-logged out after 24hrs but UI does not know this. Please refresh if it happens
 - While the UI editor can be used for submitting new entries, amendments or deletions can only be done via the text editor
 - Now that Google Analytics is added, we really need a privacy policy
 
 ###### Dec'19
-- P&L Explain may pull in real historic quotes from external data sources but other reports do not.
 - Income/Expenses/Liabilities are counterintuitively affected by future market prices, rather than retaining their original cost basis
 ###### Nov'19
 - Liabilities are not supported in reports yet
 
 
 ### Release notes
+###### v1.2.0
+16 August
+- Whole architecture has been revamped. Now following a serverless architecture inspired off the https://www.covibes.org project
+- No more cookies for state management of accounts
+- Only Auth0 for authentication, now supports persistent login
+- Greatly reduced required bandwidth for using app
+- Various experimental changes at reducing network traffic - more logic handled in the browser
+
+###### v1.1.0
+1 July
+- Various experimental changes in the UI
+- Migrating away from Element UI to Quasar for widgets
+
 ###### v1.0.0
 21 March
 - Mobile usable UI based on Quasar
