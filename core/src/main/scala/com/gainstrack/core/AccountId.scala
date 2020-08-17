@@ -52,6 +52,7 @@ case class AccountId(n:String) extends Ordered[AccountId] {
 }
 
 object AccountId {
+  import scala.language.implicitConversions
   implicit def stringToAccountId(str:String):AccountId = AccountId(str)
 
   val root = AccountId("")

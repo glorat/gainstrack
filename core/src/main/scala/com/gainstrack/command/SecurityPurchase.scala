@@ -46,7 +46,7 @@ case class SecurityPurchase(
   }
 
   def toTransaction : Transaction = {
-    val expense = (-price*security.number - commission)
+    val expense = -price*security.number - commission
 
     var postings = Seq(
       Posting(cashAccountId, expense),

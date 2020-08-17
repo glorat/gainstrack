@@ -32,7 +32,7 @@ object QuotesDb extends QuoteStore {
       fut.map((rows: Seq[QuoteValue]) => {
         val builder = SortedMap.newBuilder[LocalDate, Double]
         rows.foreach(row => builder += intDateToLocalDate(row.date) ->  row.value)
-        builder.result
+        builder.result()
       })
 
     }
@@ -87,5 +87,5 @@ class Quotes(tag: Tag) extends Table[QuoteValue](tag, "quotes") {
 
   def source = column[Option[String]]("quote_source", O.Length(45))
 
-  def * = (id.?, symbol, date, value, source) <> (QuoteValue.tupled, QuoteValue.unapply)
+  def * = (id.?, symbol, date, value, source) .<> (QuoteValue.tupled, QuoteValue.unapply)
 }

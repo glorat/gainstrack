@@ -57,8 +57,8 @@ class FXProxy(mapper:Map[AssetId, AssetId], tradeFx: SingleFXConversion, marketF
           case e: Interpolate[N] => {
             // Linear interpolation
             // TODO: Apply market interp
-            val all: Double = ChronoUnit.DAYS.between(e.before._1, e.after._1)
-            val n: Double = ChronoUnit.DAYS.between(e.before._1, date)
+            val all: Double = ChronoUnit.DAYS.between(e.before._1, e.after._1).toDouble
+            val n: Double = ChronoUnit.DAYS.between(e.before._1, date).toDouble
             val ratio: Double = (n / all).toDouble
             val diff: Double = (e.after._2 - e.before._2).toDouble
             val ret: Double = (diff * ratio) + e.before._2.toDouble

@@ -48,7 +48,7 @@ class TransactionAmountTest extends AnyFlatSpec {
   {
     val parser = new GainstrackParser
     import scala.io.Source
-    parser.parseLines(Source.fromResource("unit.gainstrack").getLines)
+    parser.parseLines(Source.fromResource("unit.gainstrack").getLines())
     val cmds = parser.getCommands
     val bg = new GainstrackGenerator(cmds)
 

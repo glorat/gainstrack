@@ -13,7 +13,7 @@ case class BalanceState(acctState:AccountState, balances:Map[AccountId,BalanceSt
   type Series = SortedMap[LocalDate,Fraction]
   val interp = new TimeSeriesInterpolator
 
-  lazy val balanceSeries = balances.mapValues(s => SortedColumnMap.from(s.series))
+  lazy val balanceSeries = balances.view.mapValues(s => SortedColumnMap.from(s.series))
 
   def getAccountValueOpt(account:AccountId, date: LocalDate) : Option[Fraction] = {
     val series = balanceSeries.get(account).getOrElse(SortedColumnMap())

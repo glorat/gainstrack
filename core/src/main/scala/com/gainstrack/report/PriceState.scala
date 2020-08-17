@@ -17,7 +17,7 @@ case class PriceState(ccys: Set[AssetId], prices: Map[AssetPair, SortedMap[Local
   private val implicitPrices = true
 
   def priceFxConverter : PriceFXConverter = {
-    val fastPrices = prices.view.mapValues(series => SortedColumnMap.from(series.mapValues(_.toDouble))).toMap
+    val fastPrices = prices.view.mapValues(series => SortedColumnMap.from(series.view.mapValues(_.toDouble))).toMap
 
     new PriceFXConverter(ccys, fastPrices)
   }

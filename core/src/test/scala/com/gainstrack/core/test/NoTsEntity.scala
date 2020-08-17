@@ -14,7 +14,7 @@ class NoTsEntity extends AnyFlatSpec {
   val repo = new FileRepository(Paths.get("/tmp")) {
     override protected def readLinesForId(id: GUID): Seq[String] = {
       import scala.io.Source
-      Source.fromResource("nots.history").getLines.toSeq
+      Source.fromResource("nots.history").getLines().toSeq
     }
   }
 

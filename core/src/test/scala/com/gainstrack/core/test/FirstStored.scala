@@ -36,6 +36,10 @@ class FirstStored extends AnyFlatSpec with BeforeAndAfterAll {
     repo.purge(idbad)
   }
 
+  def getEntity(id: GUID): GainstrackEntity = {
+    repo.getByIdOpt(id, new GainstrackEntity()).getOrElse(fail(s"${id} does not exist"))
+  }
+
   def saveAndAwait(e: GainstrackEntity, expectedVersion:Int) : Unit = {
     val fut = repo.save(e, expectedVersion)
     Await.result(fut, Duration("10 s"))
@@ -68,8 +72,8 @@ class FirstStored extends AnyFlatSpec with BeforeAndAfterAll {
   }
 
   it should "load from repo" in {
-    val e1 = repo.getById(id, new GainstrackEntity())
-    val e2 = repo.getById(id2, new GainstrackEntity())
+    val e1 = getEntity(id)
+    val e2 = getEntity(id2)
 
     assertSameEntity(e1, e2)
   }
@@ -84,7 +88,7 @@ class FirstStored extends AnyFlatSpec with BeforeAndAfterAll {
     e.addCommand("2000-01-01 open Assets:Foo GBP")
     saveAndAwait(e, 100) // Wrong expected version!
 
-    val e2 = repo.getById(idbad, new GainstrackEntity())
+    val e2 = getEntity(idbad)
     assert(e2.getState.cmdStrs.isEmpty)
 
     val cevs = repo.getAllCommits(idbad)
@@ -94,7 +98,7 @@ class FirstStored extends AnyFlatSpec with BeforeAndAfterAll {
   it should "handle added CommodityCommand" in {
     assert (repo.getAllCommits(id2).size == 3)
 
-    val e2 = repo.getById(id2, new GainstrackEntity())
+    val e2 = getEntity(id2)
     assert (e2.id == id2)
     val bg = new GainstrackGenerator(e2.getState.cmds)
     val cmd = CommodityCommand(parseDate("1900-01-01"), AssetId("GOOG"), CommodityOptions())
@@ -111,7 +115,7 @@ class FirstStored extends AnyFlatSpec with BeforeAndAfterAll {
   it should "handle replaced CommodityCommand" in {
     assert (repo.getAllCommits(id2).size == 4)
 
-    val e2 = repo.getById(id2, new GainstrackEntity())
+    val e2 = getEntity(id2)
     val bg = new GainstrackGenerator(e2.getState.cmds)
     val cmd = CommodityCommand(parseDate("1900-01-01"), AssetId("GOOG"), CommodityOptions(ticker = "GOOG.NY"))
     val bg2 = bg.addAssetCommand(cmd)

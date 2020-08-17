@@ -32,7 +32,7 @@ case class Hash(inner: Seq[Byte]) {
 
 object Hash {
   def fromHex(s: String): Hash = {
-    Hash(parseHexBinary(s))
+    Hash(parseHexBinary(s).toSeq)
   }
 
   def parseHexBinary(s: String): Array[Byte] = {

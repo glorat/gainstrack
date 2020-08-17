@@ -12,7 +12,7 @@ class MultiAssetAdj extends AnyFlatSpec {
 
   "parser" should "parse multiasset adj command" in {
     import scala.io.Source
-    parser.parseLines(Source.fromResource("multiadj.gainstrack").getLines)
+    parser.parseLines(Source.fromResource("multiadj.gainstrack").getLines())
 
   }
 

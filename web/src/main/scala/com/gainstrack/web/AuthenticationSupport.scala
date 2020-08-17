@@ -19,7 +19,7 @@ trait AuthenticationSupport extends ScentrySupport[GUser] {
 /**
  * If an unauthenticated user attempts to access a route which is protected by Scentry
  * */
-  override protected def configureScentry = {
+  override protected def configureScentry() = {
     // This is commented out because it is pointless
 //    scentry.unauthenticated {
 //      scentry.strategies("SimpleAuthStrategy").unauthenticated()
@@ -30,7 +30,7 @@ trait AuthenticationSupport extends ScentrySupport[GUser] {
    * Register auth strategies with Scentry. Any controller with this trait mixed in will attempt to
    * progressively use all registered strategies to log the user in, falling back if necessary.
    */
-  override protected def registerAuthStrategies = {
+  override protected def registerAuthStrategies() = {
     scentry.register("SimpleAuthStrategy", app => new SimpleAuthStrategy(app))
     scentry.register("Auth0Strategy", app => new Auth0Strategy(app))
     scentry.register("FirebaseStrategy", app => new FirebaseStrategy(app))
