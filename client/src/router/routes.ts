@@ -22,7 +22,7 @@ import AddCmd from 'pages/AddCmd.vue';
 import PnlExplainDetail from 'pages/PnlExplainDetail.vue';
 import Account from 'pages/Account.vue';
 
-export const appRoutes: RouteConfig[] = [
+const gainstrackRoutes: RouteConfig[] = [
   {path: '/add', component: Add, meta: {title: 'Add Record', icon: matAddCircleOutline}},
   {path: '/add/cmd', name: 'addcmd', component: AddCmd, meta: {title: 'Add Record'}},
   {
@@ -72,7 +72,7 @@ export const appRoutes: RouteConfig[] = [
     name: 'aa',
     meta: {title: 'Asset Allocation'}
   },
-  {path: '/pnlexplain', component: () => import(/* webpackChunkName: "PnlDetail" */ '../pages/PnlExplain.vue'), meta: {title: ' P&L Explain'}},
+  {path: '/pnlexplain', component: () => import(/* webpackChunkName: "PnlExplain" */ '../pages/PnlExplain.vue'), meta: {title: ' P&L Explain'}},
   {path: '/pnlexplain/:fromDate/:toDate', component: PnlExplainDetail,
     name: 'pnldetail', meta: {title: ' P&L Explain'}, props: true},
   {path: '/help', component: Markdown,
@@ -82,6 +82,41 @@ export const appRoutes: RouteConfig[] = [
   {path: '/*', component: Markdown,
     props: {page: 'welcome.md'},  meta: {title: 'Welcome'}},
 ];
+
+const gainstrackNavBar = [
+  ['add', 'command'],
+  ['balance_sheet', 'assets', 'income_statement', 'journal'],
+  ['irr', 'aa', 'pnlexplain'],
+  ['prices', 'quotes', 'settings'],
+  ['port', 'editor', 'history'],
+  ['help', 'faq']
+];
+
+const gainstrackMode = {appRoutes:gainstrackRoutes, navBar: gainstrackNavBar};
+
+const simpleRoutes: RouteConfig[] = [
+  {path: '/*', component: Markdown,
+    props: {page: 'welcome.md'},  meta: {title: 'Welcome'}},
+  ];
+const simpleNavBar: string[][] = [
+
+];
+
+const simpleMode = {appRoutes: simpleRoutes, navBar: simpleNavBar}
+
+export const {appRoutes, navBar} : {appRoutes:RouteConfig[], navBar: string[][]} = (() => {
+  const host = window.location.hostname;
+  if (host.match('gainstrack')) {
+    return gainstrackMode;
+  } else if (host.match('boglebot')) {
+    return simpleMode;
+  } else {
+    // Default to gainstrack for unknown host
+    // Can change this during development. Should not hit this in production
+    return gainstrackMode;
+
+  }
+})()
 
 const routes: RouteConfig[] = [
   {
