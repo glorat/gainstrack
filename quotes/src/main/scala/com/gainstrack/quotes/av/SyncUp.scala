@@ -88,24 +88,6 @@ object SyncUp {
     }).getOrElse(Future.successful(QuotesMergeResult(0, 0, Some("Unknown symbol"))))
   }
 
-  private def migrateFileToDB(implicit ec: ExecutionContext) = {
-    val all = QuoteConfig.allConfigsWithCcy
-      //     .filter(_.avSymbol == "XAU")
-      .map(cfg => {
-        val orig = Await.result(QuotesFileStore.readQuotes(cfg.avSymbol), infDur)
-        theStore.readQuotes(cfg.avSymbol).flatMap(actual => {
-          inFlight += cfg.avSymbol -> 1
-          logger.info(s"Merging quotes for ${cfg.avSymbol}. In-flight: (${inFlight.size}) ${inFlight.keys.mkString(",")}")
-          theStore.mergeQuotes(cfg.avSymbol, orig, actual).map(x => {
-            inFlight.remove(cfg.avSymbol)
-            logger.info(s"Merging complete for ${cfg.avSymbol}. In-flight: (${inFlight.size}) ${inFlight.keys.mkString(",")}")
-          })
-
-        })
-      })
-    Future.sequence(all)
-  }
-
   private def downloadFromAlphaVantage(forceDownload: Boolean) = {
     def allCcys = QuoteConfig.allCcys
 
