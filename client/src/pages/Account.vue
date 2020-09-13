@@ -54,9 +54,12 @@
     postingsByCommand,
     commandPostingsWithBalance,
     CommandPostingsWithBalance,
-    displayConvertedPositionSet, isSubAccountOf
+    displayConvertedPositionSet, isSubAccountOf, positionUnderAccount
   } from 'src/lib/utils';
-  import {AccountDTO, Posting} from 'src/lib/models';
+  import {AccountDTO, NetworthByAsset, Posting, PostingEx} from 'src/lib/models';
+  import {SingleFXConverter} from 'src/lib/fx';
+  import {date} from 'quasar';
+  import formatDate = date.formatDate;
 
   export default Vue.extend({
     name: 'Account',
@@ -72,8 +75,9 @@
     data () {
       return {
         assetResponse: {
-          rows: [],
-          columns: []
+          rows: [] as NetworthByAsset[],
+          columns: [] as Record<string, any>[],
+          totals: [] as NetworthByAsset[],
         },
         tab: 'assets',
         matAssignment,
@@ -90,6 +94,7 @@
         'allTxs',
         'fxConverter',
         'tradeFxConverter',
+        'allPostingsEx',
       ]),
       myAccount (): AccountDTO|undefined {
         return this.findAccount(this.accountId)
@@ -133,6 +138,38 @@
         try {
           const res2 = await axios.get('/api/assets/' + path)
           this.assetResponse = res2.data
+
+          const localCompute = false;
+          if (localCompute) {
+            // Gather dependencies
+            const allPostings: PostingEx[] = this.allPostingsEx;
+            const pricer:SingleFXConverter = this.fxConverter;
+            const baseCcy = this.baseCcy;
+            const date = formatDate(Date.now(), 'YYYY-MM-DD');
+
+            // Compute our report
+            const pSet = positionUnderAccount(allPostings, path);
+            const rows = Object.entries(pSet).map(([assetId, units]) => {
+              const price = pricer.getFX(assetId, baseCcy, date) ?? 0;
+              const value = price * units;
+              console.error(`${price} for ${assetId} to ${baseCcy}`)
+              const priceDate = pricer.latestDate(assetId, baseCcy, date);
+              const priceMoves = {} as Record<string, number>;
+              return {
+                assetId, units, value, price, priceDate, priceMoves
+              }
+            });
+            const totalValue = rows.map(row=> row.value).reduce((a,b)=>a+b);
+            // const allDates:string[] = rows.map(row => row.priceDate ?? '').filter(x => x !== '');
+
+
+            const columns = [] as Record<string, any>[];
+            const totals = [{assetId: 'TOTAL', value: totalValue, price:0, priceMoves:{}, units:0}];
+            this.assetResponse = {rows, columns, totals};
+            // this.assetResponse.rows = rows;
+          }
+
+
         } catch (error) {
           this.$notify.error(error)
         }

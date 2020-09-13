@@ -67,9 +67,9 @@
   import { matCheck, matRefresh } from '@quasar/extras/material-icons'
   import { MarkdownRender } from 'src/lib/loader'
   import Vue from 'vue';
-  import {GlobalPricer} from "src/lib/pricer";
-  import {MyState} from "src/store";
-  import {AccountCommandDTO} from "src/lib/models";
+  import {GlobalPricer} from 'src/lib/pricer';
+  import {MyState} from 'src/store';
+  import {AccountCommandDTO} from 'src/lib/models';
 
   export default Vue.extend({
     name: 'AssetsEditor',

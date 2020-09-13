@@ -64,7 +64,7 @@ export interface NetworthByAsset {
     assetId: string
     value: number
     price: number
-    priceDate: string
+    priceDate?: string
     priceMoves: Record<string, number>
 }
 

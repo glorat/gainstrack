@@ -61,7 +61,7 @@
                     label: 'Market Returns',
                     columns: ['assetId', 'value', 'price'],
                     moreColumns: 'priceMove',
-                    filter: nw => nw.value !== 0.0 && (nw.priceMoves['1d'] !== 0.0 || date.getDateDiff(date.subtractFromDate(Date.now(), { days: 4 }), nw.priceDate, 'days') < 0)
+                    filter: nw => nw.value !== 0.0 && (nw.priceMoves['1d'] !== 0.0 || date.getDateDiff(date.subtractFromDate(Date.now(), { days: 4 }), nw.priceDate ?? '1900-01-01', 'days') < 0)
                 }
             ];
 

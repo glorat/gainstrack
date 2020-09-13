@@ -1,5 +1,5 @@
 import {LocalDate, SingleFXConversion, SingleFXConverter} from 'src/lib/fx';
-import {AccountCommandDTO, AssetDTO, AssetOptions, AssetState} from 'src/lib/models';
+import {AccountCommandDTO, AssetDTO} from 'src/lib/models';
 import {intDateToIsoDate, Interpolator, linearInterpolateValue} from 'src/lib/SortedColumnMap';
 
 type AssetId = string
