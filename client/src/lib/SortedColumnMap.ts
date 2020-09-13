@@ -85,7 +85,7 @@ export function intDateToIsoDate(dt?: IntDate): LocalDate | undefined {
 export function fromISO(dt?: LocalDate): Date | undefined {
   const s = dt ? dt.split(/\D/).map(x => parseInt(x)) : [];
   if (s[0] && s[1] && s[2]) {
-    return new Date(+s[0], --s[1], +s[2], 0, 0, 0, 0)
+    return new Date(Date.UTC(+s[0], --s[1], +s[2], 0, 0, 0, 0))
   } else {
     return undefined
   }
