@@ -1,4 +1,4 @@
-import {FXChain, FXMapped, FXProxy, SingleFXConversion, SingleFXConverter} from '../lib/fx'
+import {SingleFXConversion, SingleFXConverter} from '../lib/fx'
 import axios from 'axios'
 import Vue from 'vue'
 import Vuex from 'vuex'
@@ -13,6 +13,7 @@ import {
   Transaction
 } from '../lib/models'
 import {flatten} from 'lodash'
+import {GlobalPricer} from 'src/lib/pricer';
 
 Vue.use(Vuex);
 
@@ -253,11 +254,13 @@ export default function () {
         const marketFx = SingleFXConversion.fromQuotes(quotes);
         const wrapped = wrapper(marketFx);
 
-        return new FXChain([
-          new FXMapped(allState.fxMapper, wrapped),
-          new FXProxy(allState.proxyMapper, tradeFxConverter, wrapped),
-          tradeFxConverter
-        ])
+        return new GlobalPricer(allState.commands, allState.ccys, tradeFxConverter, wrapped)
+        //
+        // return new FXChain([
+        //   new FXMapped(allState.fxMapper, wrapped),
+        //   new FXProxy(allState.proxyMapper, tradeFxConverter, wrapped),
+        //   tradeFxConverter
+        // ])
       },
       fxConverter: (state, getters) => {
         const identity: FXConverterWrapper = x => x;

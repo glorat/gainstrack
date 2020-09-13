@@ -43,6 +43,7 @@ export interface AccountDTO {
 export interface AccountCommandDTO {
     accountId: string
     date: string
+    asset?: string
     change?: Amount
     balance?: Amount
     price?: Amount
@@ -123,7 +124,7 @@ export interface AssetOptions extends Record<string, any> {
 }
 
 export interface AssetDTO {
-    date: string,
+    // date: string,
     asset: string,
     options: AssetOptions
 }
