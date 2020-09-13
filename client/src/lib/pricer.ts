@@ -49,7 +49,8 @@ export class GlobalPricer implements SingleFXConverter {
     this.marketFx = marketFx;
     this.pricers = [
       new ProxyPricer(this.tradeFx, this.marketFx),
-      new FXPricer(this.marketFx)
+      new FXPricer(this.marketFx),
+      new BookPricer(this.tradeFx)
     ]
   }
 
@@ -98,7 +99,7 @@ class FXPricer implements Pricer {
 
   canPrice(asset:AssetDTO) {
     // TODO: Or is an ISO symbol
-    return asset.options.ticker !== undefined ||
+    return (!!asset.options.ticker) ||
       this.singleFXConverter.getFX(asset.asset, 'USD', '2099-01-01') !== undefined;
 
   }
@@ -119,6 +120,36 @@ class FXPricer implements Pricer {
   }
 }
 
+class BookPricer implements Pricer {
+  id = 'book';
+  label = 'Book';
+  tradeFx: SingleFXConversion;
+  baseCcy: string;
+
+  constructor(tradeFx: SingleFXConversion) {
+    this.tradeFx = tradeFx;
+    this.baseCcy = tradeFx.baseCcy;
+  }
+
+  canPrice(asset:AssetDTO) {
+    // TODO: Or is an ISO symbol
+    return this.tradeFx.getFX(asset.asset, this.baseCcy, '2099-01-01') !== undefined;
+
+  }
+
+  getPrice(asset:AssetDTO, fx2: AssetId, date: LocalDate): number|undefined {
+    const fx1 = asset.asset;
+    const cfx1 = asset.options.ticker || fx1;
+    const cfx2 = fx2; // Assume target is unmapped
+    const ret = this.tradeFx.getFX(cfx1, cfx2, date);
+    return ret;
+  }
+
+  latestDate(asset:AssetDTO, fx2: AssetId, date: LocalDate): LocalDate|undefined {
+    const fx1 = asset.asset;
+    return this.tradeFx.latestDate(fx1, fx2, date)
+  }
+}
 
 class ProxyPricer implements Pricer {
   id = 'proxy';
@@ -172,6 +203,8 @@ class ProxyPricer implements Pricer {
           if (marketBase != 0.0 && marketRef && marketBase) {
             const proxyVal = lastTrade * (marketRef/marketBase);
             return proxyVal;
+          } else {
+            return lastTrade;
           }
         } else if (nearest.interpolate) {
           const int = nearest.interpolate;
