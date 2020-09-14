@@ -15,6 +15,7 @@
       isSubAccountOf
     } from 'src/lib/utils';
     import { keys, flatten, uniq } from 'lodash';
+    import {LocalDate} from '@js-joda/core';
     //
     // const expMovingAverage = (array: {x:unknown, y: number}[], range:number) => {
     //     const k = 2 / (range + 1);
@@ -90,7 +91,7 @@
           for (let i=0;i<pByDate.dates.length; i++) {
             const posting = pByDate.postings[i];
             const pos = postingsToPositionSet(posting);
-            const date = pByDate.dates[i];
+            const date = LocalDate.parse(pByDate.dates[i]);
 
             // Carefully sum on the non-converted pos
             pSetSoFar = positionSetAdd(pos, pSetSoFar);

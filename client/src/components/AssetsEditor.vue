@@ -77,6 +77,7 @@
   import {MyState} from 'src/store';
   import {AccountCommandDTO} from 'src/lib/models';
   import {mapGetters} from 'vuex';
+  import {LocalDate} from '@js-joda/core';
 
   export default Vue.extend({
     name: 'AssetsEditor',
@@ -118,7 +119,7 @@
       },
       priceFor(asset: AccountCommandDTO) {
         const pricer = this.globalPricer;
-        const today = new Date(Date.now()).toISOString().substr(0, 10)
+        const today = LocalDate.now();
         return pricer.getFX(asset.asset??'', this.baseCcy, today)
       },
       assetTouched (asset: AccountCommandDTO) {

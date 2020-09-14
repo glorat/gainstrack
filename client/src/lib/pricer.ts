@@ -1,6 +1,7 @@
-import {LocalDate, SingleFXConversion, SingleFXConverter} from 'src/lib/fx';
+import {SingleFXConversion, SingleFXConverter} from 'src/lib/fx';
 import {AccountCommandDTO, AssetDTO} from 'src/lib/models';
 import {intDateToIsoDate, Interpolator, linearInterpolateValue} from 'src/lib/SortedColumnMap';
+import {LocalDate} from '@js-joda/core';
 
 type AssetId = string
 
@@ -9,7 +10,7 @@ interface Pricer {
   label: string
   canPrice(asset:AssetDTO):boolean
   getPrice(asset:AssetDTO, tgtCcy: AssetId, date: LocalDate): number|undefined
-  latestDate(asset: AssetDTO, tgtCcy: AssetId, date: LocalDate): string|undefined
+  latestDate(asset: AssetDTO, tgtCcy: AssetId, date: LocalDate): LocalDate|undefined
 }
 
 function commmodityCommandToAssetDTO(cmd: AccountCommandDTO) : AssetDTO {
@@ -68,7 +69,7 @@ export class GlobalPricer implements SingleFXConverter {
     return asset ? this.modelFor(asset) : undefined;
   }
 
-  getFX(fx1: string, fx2: string, date: string): number | undefined {
+  getFX(fx1: string, fx2: string, date: LocalDate): number | undefined {
     const asset = this.findAsset(fx1);
     if (asset) {
       const pricer = this.modelFor(asset);
@@ -76,7 +77,7 @@ export class GlobalPricer implements SingleFXConverter {
     }
   }
 
-  latestDate(fx1: string, fx2: string, date: string): string | undefined {
+  latestDate(fx1: string, fx2: string, date: LocalDate): LocalDate | undefined {
     const asset = this.findAsset(fx1);
     if (asset) {
       const pricer = this.modelFor(asset);
@@ -100,7 +101,7 @@ class FXPricer implements Pricer {
   canPrice(asset:AssetDTO) {
     // TODO: Or is an ISO symbol
     return (!!asset.options.ticker) ||
-      this.singleFXConverter.getFX(asset.asset, 'USD', '2099-01-01') !== undefined;
+      this.singleFXConverter.getFX(asset.asset, 'USD', LocalDate.MAX) !== undefined;
 
   }
 
@@ -133,7 +134,7 @@ class BookPricer implements Pricer {
 
   canPrice(asset:AssetDTO) {
     // TODO: Or is an ISO symbol
-    return this.tradeFx.getFX(asset.asset, this.baseCcy, '2099-01-01') !== undefined;
+    return this.tradeFx.getFX(asset.asset, this.baseCcy, LocalDate.now()) !== undefined;
 
   }
 
@@ -168,7 +169,7 @@ class ProxyPricer implements Pricer {
     return proxy !== undefined && proxy !== '';
   }
 
-  latestDate(asset:AssetDTO, fx2: string, date: string): string | undefined {
+  latestDate(asset:AssetDTO, fx2: string, date: LocalDate): LocalDate | undefined {
     if (!asset.options.proxy) throw new Error(`ProxyPricer used on asset ${asset.asset} without proxyTicker`)
     const proxyTicker = asset.options.proxy;
 

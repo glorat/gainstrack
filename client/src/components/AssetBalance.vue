@@ -34,6 +34,7 @@
 
   import {SingleFXConverter} from 'src/lib/fx';
   import {assetRowsFromPostings, formatNumber, isSubAccountOf, AssetRow, formatPerc} from 'src/lib/utils';
+  import { LocalDate } from '@js-joda/core';
 
   export default Vue.extend({
     name: 'AssetBalance',
@@ -49,8 +50,8 @@
     },
     computed: {
       ...mapGetters(['allPostings', 'fxConverter', 'baseCcy']),
-      today(): string {
-        return new Date(Date.now()).toISOString().substr(0, 10)
+      today(): LocalDate {
+        return LocalDate.now()
       },
       columns(): Record<string, unknown>[] {
         return [{
@@ -96,7 +97,7 @@
         const myPostings = allPostings.filter(p => isSubAccountOf(p.account, this.accountId));
         const fx:SingleFXConverter = this.fxConverter;
         const valueCcy:string = this.baseCcy;
-        const today:string = this.today;
+        const today: LocalDate = this.today;
         const assetRows = assetRowsFromPostings(myPostings, fx, valueCcy, today);
 
         return assetRows;

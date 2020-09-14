@@ -4,12 +4,12 @@ import {
   intDateToIsoDate,
   Interpolator,
   isoToIntDate,
-  linear,
+  linear, localDateToIntDate,
   SortedColumnMap
 } from 'src/lib/SortedColumnMap';
+import {LocalDate} from '@js-joda/core';
 
 type AssetId = string
-export type LocalDate = string
 
 interface FXConverter {
   getFX(fx1:AssetId, fx2:AssetId, date:LocalDate): number|undefined
@@ -46,7 +46,7 @@ export class FXMarketLazyLoad implements SingleFXConverter {
     return this.marketFx.getFX(fx1, fx2, date);
   }
 
-  latestDate( /*fx1: string, fx2: string, date: string*/ ): string | undefined {
+  latestDate( /*fx1: string, fx2: string, date: string*/ ): LocalDate | undefined {
     throw new Error('Not implemented');
     // return undefined;
   }
@@ -76,7 +76,7 @@ export class SingleFXConversion implements SingleFXConverter {
   }
 
   getFX(fx1: AssetId, fx2: AssetId, localDate: LocalDate, interp?: Interpolator): number | undefined {
-    const date = isoToIntDate(localDate);
+    const date = localDateToIntDate(localDate);
     interp = interp || linear;
 
     if (fx1 == fx2) {
@@ -101,8 +101,8 @@ export class SingleFXConversion implements SingleFXConverter {
     }
   }
 
-  latestDate(fx1: string, fx2: string, date: string): string | undefined {
-    const intDate = isoToIntDate(date);
+  latestDate(fx1: string, fx2: string, date: LocalDate): LocalDate | undefined {
+    const intDate = localDateToIntDate(date);
     const series = this.state[fx1];
     if (series) {
       return intDateToIsoDate(series.latestKey(intDate))
