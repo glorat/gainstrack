@@ -6,6 +6,7 @@
         <th>Asset</th>
         <th>Units</th>
         <th>Pricer</th>
+        <th>Price</th>
         <th>Live ticker</th>
         <th>Live proxy</th>
         <th>Tags</th>
@@ -22,8 +23,12 @@
           {{ pricerLabelFor(asset)}}
         </td>
         <td>
+          {{ priceFor(asset)}}
+        </td>
+        <td>
           <q-select
             use-input
+            clearable
             class="asset-ticker"
             v-model="asset.options.ticker"
             v-on:input="assetTouched(asset)"
@@ -34,6 +39,7 @@
         <td>
           <q-select
             use-input
+            clearable
             class="asset-proxy"
             v-model="asset.options.proxy"
             v-on:input="assetTouched(asset)"
@@ -70,6 +76,7 @@
   import {GlobalPricer} from 'src/lib/pricer';
   import {MyState} from 'src/store';
   import {AccountCommandDTO} from 'src/lib/models';
+  import {mapGetters} from "app/node_modules/vuex";
 
   export default Vue.extend({
     name: 'AssetsEditor',
@@ -88,6 +95,9 @@
       }
     },
     computed: {
+      ...mapGetters([
+        'baseCcy',
+      ]),
       globalPricer (): GlobalPricer {
         return this.$store.getters.fxConverter;
       },
@@ -105,6 +115,11 @@
         const pricer = this.globalPricer;
         const model = pricer.modelForAssetId(asset.asset || '');
         return model?.label;
+      },
+      priceFor(asset: AccountCommandDTO) {
+        const pricer = this.globalPricer;
+        const today = new Date(Date.now()).toISOString().substr(0, 10)
+        return pricer.getFX(asset.asset??'', this.baseCcy, today)
       },
       assetTouched (asset: AccountCommandDTO) {
         this.$set(asset, 'dirty', true)
@@ -133,7 +148,7 @@
         for (const [key, value] of Object.entries(options)) {
           if (key === 'tags' && value.length > 0) {
             str += `\n tags: ${value.join(',')}`
-          } else if (value !== '') {
+          } else if (value) {
             str += `\n  ${key}: ${value}`
           }
         }
