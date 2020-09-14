@@ -76,7 +76,7 @@
   import {GlobalPricer} from 'src/lib/pricer';
   import {MyState} from 'src/store';
   import {AccountCommandDTO} from 'src/lib/models';
-  import {mapGetters} from "app/node_modules/vuex";
+  import {mapGetters} from 'vuex';
 
   export default Vue.extend({
     name: 'AssetsEditor',

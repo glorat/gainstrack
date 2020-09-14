@@ -60,9 +60,8 @@
   import {SingleFXConverter} from 'src/lib/fx';
   import {date} from 'quasar';
   import formatDate = date.formatDate;
-  import {fromISO} from "src/lib/SortedColumnMap";
-  import {add, isAfter, max, setDayOfYear, sub} from "date-fns";
-  import { groupBy, maxBy } from 'lodash';
+  import {fromISO} from 'src/lib/SortedColumnMap';
+  import {max, setDayOfYear, sub} from 'date-fns';
 
   export default Vue.extend({
     name: 'Account',
@@ -163,9 +162,9 @@
               }
             });
             const totalValue = rows.map(row=> row.value).reduce((a,b)=>a+b);
-            const allDates:Date[] = rows.map(row => row.priceDate ?? '').map(fromISO).filter(x => x !== undefined);
+            const allDates:Date[] = rows.map(row => row.priceDate ?? '').map(fromISO).filter(x => x !== undefined) as Date[];
             let columns: any[] = [];
-            let baseDate:string = '';
+            let baseDate = '';
             if (allDates.length > 0) {
               const maxDate = max(allDates);
               // const cutOff = sub(maxDate, {days: 4});
@@ -182,25 +181,24 @@
                 sub(bestDate, {years: 1}),
                 setDayOfYear(bestDate, 1),
               ].map(x => x.toISOString().substr(0, 10));
-              const tenors = ['1d', '1w', '1m', '3m', '1y', 'YTD'];
               columns = [
                 {
-                  "name": "1d", "label": "1d", "value": dates[0], "tag": "priceMove"
+                  'name': '1d', 'label': '1d', 'value': dates[0], 'tag': 'priceMove'
                 }, {
-                  "name": "1w",
-                  "label": "1w",
-                  "value": dates[1],
-                  "tag": "priceMove"
-                }, {"name": "1m", "label": "1m", "value": dates[2], "tag": "priceMove"}, {
-                  "name": "3m",
-                  "label": "3m",
-                  "value": dates[3],
-                  "tag": "priceMove"
-                }, {"name": "1y", "label": "1y", "value": dates[4], "tag": "priceMove"}, {
-                  "name": "YTD",
-                  "label": "YTD",
-                  "value": dates[5],
-                  "tag": "priceMove"
+                  'name': '1w',
+                  'label': '1w',
+                  'value': dates[1],
+                  'tag': 'priceMove'
+                }, {'name': '1m', 'label': '1m', 'value': dates[2], 'tag': 'priceMove'}, {
+                  'name': '3m',
+                  'label': '3m',
+                  'value': dates[3],
+                  'tag': 'priceMove'
+                }, {'name': '1y', 'label': '1y', 'value': dates[4], 'tag': 'priceMove'}, {
+                  'name': 'YTD',
+                  'label': 'YTD',
+                  'value': dates[5],
+                  'tag': 'priceMove'
                 }];
 
 
