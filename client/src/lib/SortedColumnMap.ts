@@ -1,4 +1,4 @@
-import {LocalDate} from '@js-joda/core';
+import {ChronoUnit, LocalDate} from '@js-joda/core';
 
 export interface InterpolationOption {
   empty?: boolean
@@ -87,8 +87,8 @@ export function linearInterpolateValue(int: { before: { k: IntDate; v: number };
   const afterDate = fromIntDate(int.after.k);
   const keyDate = fromIntDate(key);
   if (keyDate && beforeDate && afterDate) {
-    const all = beforeDate.until(afterDate).days();
-    const n =  beforeDate.until(keyDate).days();
+    const all = beforeDate.until(afterDate, ChronoUnit.DAYS);
+    const n =  beforeDate.until(keyDate, ChronoUnit.DAYS);
     const ratio = n / all;
     const diff = int.after.v - int.before.v;
     const ret = (diff * ratio) + int.before.v;
