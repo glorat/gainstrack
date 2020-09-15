@@ -152,7 +152,7 @@ class BookPricer implements Pricer {
   }
 }
 
-class ProxyPricer implements Pricer {
+export class ProxyPricer implements Pricer {
   id = 'proxy';
   label = 'Proxy';
   tradeFx: SingleFXConversion;
