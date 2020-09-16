@@ -1,7 +1,5 @@
-import {PostingEx} from 'src/lib/models';
 import {SingleFXConverter} from 'src/lib/fx';
 import {LocalDate} from '@js-joda/core';
-import {positionUnderAccount} from 'src/lib/utils';
 import {maxBy} from 'lodash';
 
 function assetReportRows(pSet: Record<string, number>, pricer: SingleFXConverter, baseCcy: string, date: LocalDate) {
@@ -17,9 +15,8 @@ function assetReportRows(pSet: Record<string, number>, pricer: SingleFXConverter
   return rows;
 }
 
-export function assetReport(allPostings: PostingEx[], accountId: string, pricer: SingleFXConverter, baseCcy: string, date: LocalDate) {
+export function assetReport(pSet: Record<string, number> , pricer: SingleFXConverter, baseCcy: string, date: LocalDate) {
   // Compute our report
-  const pSet = positionUnderAccount(allPostings, accountId);
   const rows = assetReportRows(pSet, pricer, baseCcy, date);
 
   const allDates: string[] = rows.map(row => row.priceDate ?? LocalDate.MIN).filter(x => x !== LocalDate.MIN) as string[];

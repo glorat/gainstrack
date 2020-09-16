@@ -54,7 +54,7 @@
     commandPostingsWithBalance,
     CommandPostingsWithBalance,
     displayConvertedPositionSet,
-    isSubAccountOf,
+    isSubAccountOf, positionUnderAccount,
     postingsByCommand
   } from 'src/lib/utils';
   import {AccountDTO, NetworthByAsset, Posting, PostingEx} from 'src/lib/models';
@@ -154,7 +154,8 @@
             const pricer: SingleFXConverter = this.fxConverter;
             const baseCcy = this.baseCcy;
             const date = LocalDate.now();
-            const assetResponse = assetReport(allPostings, path, pricer, baseCcy, date);
+            const pSet = positionUnderAccount(allPostings, path);
+            const assetResponse = assetReport(pSet, pricer, baseCcy, date);
 
             this.assetResponse = assetResponse;
             // this.assetResponse.rows = rows;
