@@ -14,6 +14,7 @@ import {
 } from '../lib/models'
 import {flatten} from 'lodash'
 import {GlobalPricer} from 'src/lib/pricer';
+import {AllStateEx} from "src/lib/AllStateEx";
 
 Vue.use(Vuex);
 
@@ -203,6 +204,9 @@ export default function () {
       }
     },
     getters: {
+      allStateEx: state => {
+        return new AllStateEx(state.allState);
+      },
       accountIds: state => {
         return state.allState.accounts.map(x => x.accountId);
       },
@@ -236,13 +240,10 @@ export default function () {
       baseCcy: state => {
         return state.allState.baseCcy
       },
-      tradeFxConverter: state => {
+      tradeFxConverter: (state, getters) => {
         const allState = state.allState;
         if (allState) {
-          const tradeFxData: { baseCcy: string; data: Record<string, { ks: string[]; vs: number[] }> } | undefined = allState.tradeFx;
-          if (tradeFxData) {
-            return SingleFXConversion.fromDTO(tradeFxData.data, tradeFxData.baseCcy)
-          }
+          return getters.allStateEx.tradeFxConverter()
         }
         return SingleFXConversion.empty()
       },
@@ -267,23 +268,14 @@ export default function () {
         const curried = getters.customFxConverter;
         return curried(identity)
       },
-      allTxs: (state):Transaction[] => {
-        return state.allState.txs.filter(isTransaction);
+      allTxs: (state, getters):Transaction[] => {
+        return getters.allStateEx.allTxs()
       },
-      allPostings: (state) => {
-        const allTxPostings : Posting[][] = state.allState.txs.map(tx => isTransaction(tx) ?  tx.postings : []);
-        const allPostings = flatten(allTxPostings);
-        return allPostings;
+      allPostings: (state, getters) => {
+        return getters.allStateEx.allPostings()
       },
       allPostingsEx: (state, getters): PostingEx[] => {
-        const ret:PostingEx[] = [];
-        const allTxs: Transaction[] = getters.allTxs;
-        allTxs.forEach(tx => {
-          tx.postings.forEach(p => {
-            ret.push({...p, date: tx.postDate, originIndex: tx.originIndex})
-          });
-        });
-        return ret;
+        return getters.allStateEx.allPostingsEx()
       }
     }
   });
