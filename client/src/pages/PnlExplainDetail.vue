@@ -135,8 +135,8 @@
     import axios from 'axios';
     import {mapGetters} from 'vuex';
     import CommandDateEditor from '../components/CommandDateEditor'
-    import {pnlExplain} from "src/lib/PLExplain";
-    import {LocalDate} from "@js-joda/core";
+    import {pnlExplain} from 'src/lib/PLExplain';
+    import {LocalDate} from '@js-joda/core';
 
     export default {
         name: 'PnlExplainDetail',

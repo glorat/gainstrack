@@ -28,7 +28,7 @@ class JamesTest extends AnyFlatSpec {
     import org.json4s.jackson.Serialization.write
     implicit val jsonFormats: Formats = org.json4s.DefaultFormats ++ GainstrackJsonSerializers.all addKeySerializers GainstrackJsonSerializers.allKeys
     val str = write(bg.allState)
-    val filename = "db/testdata/james.json"
+    val filename = "/tmp/james.json"
     Files.write(Paths.get(filename), str.getBytes(StandardCharsets.UTF_8))
   }
 

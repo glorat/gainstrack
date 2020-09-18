@@ -1,14 +1,13 @@
-import {LocalDate} from "@js-joda/core";
-import {AccountCommandDTO, AllState, PostingEx, Transaction} from "src/lib/models";
+import {LocalDate} from '@js-joda/core';
+import {AccountCommandDTO, PostingEx} from 'src/lib/models';
 import {
-  convertedPositionSet,
   isSubAccountOf,
   positionSetFx,
   positionUnderAccount,
   postingsToPositionSet
-} from "src/lib/utils";
-import { mergeWith, keys, groupBy, mapValues, values, sum } from "lodash";
-import {SingleFXConverter} from "src/lib/fx";
+} from 'src/lib/utils';
+import { keys, groupBy, sum } from 'lodash';
+import {SingleFXConverter} from 'src/lib/fx';
 
 export function pnlExplain(startDate: LocalDate, toDate: LocalDate, allPostings: PostingEx[], allCmds: AccountCommandDTO[], baseCcy: string, fxConverter: SingleFXConverter) {
   const postings = allPostings.filter(p => isSubAccountOf(p.account, 'Assets')); // FIXME: +Liabilities

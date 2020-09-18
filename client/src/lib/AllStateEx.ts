@@ -1,6 +1,6 @@
-import {AllState, isTransaction, Posting, PostingEx, Transaction} from "src/lib/models";
-import {flatten} from "lodash";
-import {SingleFXConversion} from "src/lib/fx";
+import {AllState, isTransaction, Posting, PostingEx, Transaction} from 'src/lib/models';
+import {flatten} from 'lodash';
+import {SingleFXConversion} from 'src/lib/fx';
 
 export class AllStateEx {
   state: AllState

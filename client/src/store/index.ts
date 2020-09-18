@@ -6,15 +6,12 @@ import {
   AccountDTO,
   AllState,
   emptyAllState,
-  isTransaction,
-  Posting,
   PostingEx,
   QuoteConfig,
   Transaction
 } from '../lib/models'
-import {flatten} from 'lodash'
 import {GlobalPricer} from 'src/lib/pricer';
-import {AllStateEx} from "src/lib/AllStateEx";
+import {AllStateEx} from 'src/lib/AllStateEx';
 
 Vue.use(Vuex);
 
