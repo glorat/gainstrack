@@ -1,7 +1,8 @@
 package controllers
 
+import com.gainstrack.core.GainstrackJsonSerializers
 import com.gainstrack.lifecycle.FirebaseFactory
-import com.gainstrack.web.{AuthenticationSupport, GainstrackJsonSerializers, GainstrackSupport, TimingSupport}
+import com.gainstrack.web.{AuthenticationSupport, GainstrackSupport, TimingSupport}
 import org.json4s.Formats
 import org.scalatra.ScalatraServlet
 import org.scalatra.json.JacksonJsonSupport

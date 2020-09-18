@@ -1,15 +1,14 @@
-package com.gainstrack.web
+package com.gainstrack.core
 
 import java.math.MathContext
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
 import com.gainstrack.command.AccountCreation
-import com.gainstrack.core._
 import com.gainstrack.lifecycle.{InstantSerializer, UUIDSerializer}
 import com.gainstrack.report.AssetPair
-import org.json4s.{CustomKeySerializer, CustomSerializer, Extraction}
 import org.json4s.JsonAST.{JDecimal, JString}
+import org.json4s.{CustomKeySerializer, CustomSerializer, Extraction}
 
 object GainstrackJsonSerializers {
   def all: Seq[CustomSerializer[_]] =

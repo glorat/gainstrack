@@ -7,7 +7,7 @@ import com.gainstrack.command.{AccountCreation, GainstrackParser, ParserMessage}
 import com.gainstrack.core._
 import com.gainstrack.quotes.av.{DbState, Main, QuoteConfig}
 import com.gainstrack.report.{AccountInvestmentReport, AssetAllocation, BalanceReport, DailyBalance, FXChain, FXMapped, GainstrackGenerator, IrrSummary, NetworthReport, PLExplain, PLExplainDTO, TimeSeries}
-import com.gainstrack.web.{AccountIdKeySerializer, AuthenticationSupport, BalanceTreeTable, GainstrackJsonSerializers, GainstrackSupport, StateSummaryDTO, TimingSupport}
+import com.gainstrack.web.{AuthenticationSupport, BalanceTreeTable, GainstrackSupport, StateSummaryDTO, TimingSupport}
 import org.json4s.{DefaultFormats, Formats, JValue}
 import org.scalatra.{NotFound, ScalatraServlet}
 import org.scalatra.json._

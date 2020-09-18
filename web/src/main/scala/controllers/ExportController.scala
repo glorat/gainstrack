@@ -1,8 +1,9 @@
 package controllers
 
 import com.gainstrack.command.GainstrackParser
+import com.gainstrack.core.GainstrackJsonSerializers
 import com.gainstrack.report.GainstrackGenerator
-import com.gainstrack.web.{AuthenticationSupport, GainstrackJsonSerializers, GainstrackSupport}
+import com.gainstrack.web.{AuthenticationSupport, GainstrackSupport}
 import org.json4s.Formats
 import org.scalatra.ScalatraServlet
 import org.scalatra.json.JacksonJsonSupport

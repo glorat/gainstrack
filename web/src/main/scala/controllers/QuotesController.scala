@@ -2,9 +2,9 @@ package controllers
 
 import java.time.LocalDate
 
-import com.gainstrack.core.AssetId
+import com.gainstrack.core.{AssetId, GainstrackJsonSerializers}
 import com.gainstrack.quotes.av.QuoteConfig
-import com.gainstrack.web.{GainstrackJsonSerializers, TimingSupport}
+import com.gainstrack.web.TimingSupport
 import org.json4s.Formats
 import org.scalatra.json.JacksonJsonSupport
 import org.scalatra.{ContentEncodingSupport, NotFound, ScalatraServlet}
