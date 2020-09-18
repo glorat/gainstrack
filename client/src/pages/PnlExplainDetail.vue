@@ -1,12 +1,12 @@
 <template>
-    <my-page padding v-if="explains.length>0">
+    <my-page padding >
         <h5>P&L Explain</h5>
         <!--            Map("actual" -> actualPnl, "explained" -> explained, "unexplained" -> unexplained,-->
         <!--            "newActivityPnl" -> newActivityPnl,-->
         <!--            "totalEquity" -> totalEquity, "totalIncome" -> totalIncome, "totalExpense" -> totalExpense, "totalDeltaExplain" -> totalDeltaExplain-->
         <!--            // , "delta" -> deltaExplain-->
         <!--            )-->
-        <table class="sortable">
+        <table class="sortable" v-if="explains.length>0">
             <tbody>
             <tr>
                 <td class="datecell" colspan="2">
@@ -135,6 +135,8 @@
     import axios from 'axios';
     import {mapGetters} from 'vuex';
     import CommandDateEditor from '../components/CommandDateEditor'
+    import {pnlExplain} from "src/lib/PLExplain";
+    import {LocalDate} from "@js-joda/core";
 
     export default {
         name: 'PnlExplainDetail',
@@ -143,6 +145,8 @@
         computed: {
             ...mapGetters([
                 'baseCcy',
+              'allPostingsEx',
+              'fxConverter',
             ]),
             explainData() {
                 return this.explains[0]
@@ -162,13 +166,25 @@
             toDateChanged(ev) {
                 this.$router.push({name: 'pnldetail', params: {fromDate: this.explainData.fromDate, toDate: ev}});
             },
-            refresh(args) {
+            async refresh(args) {
                 const notify = this.$notify;
-                axios.post('/api/pnlexplain', args)
-                    .then(response => {
-                        this.explains = response.data;
-                    })
-                    .catch(error => notify.error(error.response));
+                const localCompute = true;
+                try {
+                  if (localCompute) {
+                    const startDate = LocalDate.parse(this.fromDate);
+                    const endDate = LocalDate.parse(this.toDate)
+                    const allCmds = this.$store.state.allState.commands;
+                    this.explains = [pnlExplain(startDate, endDate, this.allPostingsEx, allCmds, this.baseCcy, this.fxConverter)]
+                  } else {
+                    const response = await axios.post('/api/pnlexplain', args)
+                    this.explains = response.data;
+
+                  }
+                }
+                catch(error) {
+                  console.error(error);
+                  notify.error(error.response)
+                }
             },
         },
         mounted() {

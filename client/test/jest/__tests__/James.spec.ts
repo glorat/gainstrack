@@ -15,7 +15,6 @@ describe('James', () => {
       expect(allState.baseCcy).toBe('GBP');
     })
 
-
     test('should have 122,500 GBP net assets on 1 Jan 19', () => {
       const pSet = positionUnderAccount(allStateEx.allPostingsEx(), 'Assets')
       const balance = positionSetFx(pSet, 'GBP', LocalDate.parse('2019-01-01'), allStateEx.tradeFxConverter())
@@ -30,10 +29,11 @@ describe('James', () => {
 
     test('should have gain on USD forex of GBP62,500', () => {
       const myPs = allStateEx.allPostingsEx().filter(p => isSubAccountOf(p.account, 'Assets'));
-      const explain = pnlExplain(LocalDate.parse('2019-01-02'), LocalDate.parse('2019-11-30'), myPs, 'GBP', allStateEx.tradeFxConverter())
-      const gbpDelta = explain.deltaExplain.find(d => d?.assetId === 'USD')
+      const explain = pnlExplain(LocalDate.parse('2019-01-02'), LocalDate.parse('2019-11-30'),
+        myPs, allStateEx.state.commands, 'GBP', allStateEx.tradeFxConverter())
+      const gbpDelta = explain.delta.find(d => d?.assetId === 'USD')
       expect(gbpDelta).toBeDefined();
       expect(gbpDelta?.explain).toBe(62500);
     });
-  });
+  })
 });
