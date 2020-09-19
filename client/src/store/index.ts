@@ -12,6 +12,7 @@ import {
 } from '../lib/models'
 import {GlobalPricer} from 'src/lib/pricer';
 import {AllStateEx} from 'src/lib/AllStateEx';
+import { includes } from 'lodash'
 
 Vue.use(Vuex);
 
@@ -90,6 +91,11 @@ export default function () {
         }
       },
       async loadQuotes (context, ccy: string): Promise<TimeSeries> {
+        // TODO: Elegantly remove the reliance on fxMapper/proxyMapper and use GlobalPricer
+        const cmds = context.state.allState.commands;
+        const assets = cmds.filter(x => x.commandType === 'commodity');
+
+
         const ccyToSymbol = (ccy:string):string => {
           const allState = context.state.allState;
           if (allState.fxMapper[ccy]) {
@@ -102,9 +108,12 @@ export default function () {
         };
 
         const key = ccyToSymbol(ccy);
+        // All posting ccys that depend on this ccy
+        const deps = assets.filter(x => x.options?.proxy === key || x.options?.ticker === key).map(x => x.asset)
+        const depFilter = (p:PostingEx) => includes(deps, p.value.ccy);
         // Only obtain from lowest date
         const allPostingsEx: PostingEx[] = context.getters.allPostingsEx;
-        const dts = allPostingsEx.filter(p => p.value.ccy === ccy).map(p => p.date).sort();
+        const dts = allPostingsEx.filter(depFilter).map(p => p.date).sort();
         const fromDate = dts[0];
         const arg = {key, fromDate};
         return await context.dispatch('loadQuotesEx', arg);

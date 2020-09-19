@@ -117,6 +117,9 @@
     import {DatePicker, Link} from 'element-ui';
 
     import HelpTip from '../components/HelpTip';
+    import { LocalDate } from '@js-joda/core'
+    import { pnlExplainMonthly } from '../lib/PLExplain'
+    import { mapGetters } from 'vuex'
 
 
     export default {
@@ -127,19 +130,37 @@
             'el-link': Link
         },
         computed: {
+          ...mapGetters([
+            'baseCcy',
+            'allPostingsEx',
+            'fxConverter',
+          ]),
             latestDate() {
                 return this.$store.state.allState.latestDate;
             },
         },
         mounted() {
-            const notify = this.$notify;
-            axios.get('/api/pnlexplain/monthly')
-                .then(response => {
-                    this.explains = response.data;
-                })
-                .catch(error => notify.error(error));
+            this.refresh()
         },
         methods: {
+          async refresh() {
+            const notify = this.$notify;
+            const localCompute = true;
+            try {
+              if (localCompute) {
+                const allCmds = this.$store.state.allState.commands;
+                const baseDate = LocalDate.now();
+                this.explains = pnlExplainMonthly(baseDate, this.allPostingsEx, allCmds, this.baseCcy, this.fxConverter);
+              } else {
+                const response = await axios.get('/api/pnlexplain/monthly');
+                this.explains = response.data;
+              }
+
+            } catch (error) {
+              console.error(error);
+              notify.error(error);
+            }
+          },
             onColumnClick(explain) {
                 if (explain.fromDate && explain.toDate) {
                     this.$router.push({name: 'pnldetail', params: {fromDate: explain.fromDate, toDate: explain.toDate}});

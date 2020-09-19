@@ -100,8 +100,8 @@ class FXPricer implements Pricer {
 
   canPrice(asset:AssetDTO) {
     // TODO: Or is an ISO symbol
-    return (!!asset.options.ticker) ||
-      this.singleFXConverter.getFX(asset.asset, 'USD', LocalDate.MAX) !== undefined;
+    return ((!!asset.options.ticker) && this.singleFXConverter.getFX(asset.options.ticker, this.baseCcy, LocalDate.MAX) !== undefined)
+      || this.singleFXConverter.getFX(asset.asset, this.baseCcy, LocalDate.MAX) !== undefined;
 
   }
 
@@ -140,9 +140,7 @@ class BookPricer implements Pricer {
 
   getPrice(asset:AssetDTO, fx2: AssetId, date: LocalDate): number|undefined {
     const fx1 = asset.asset;
-    const cfx1 = asset.options.ticker || fx1;
-    const cfx2 = fx2; // Assume target is unmapped
-    const ret = this.tradeFx.getFX(cfx1, cfx2, date);
+    const ret = this.tradeFx.getFX(fx1, fx2, date);
     return ret;
   }
 
@@ -166,7 +164,9 @@ export class ProxyPricer implements Pricer {
 
   canPrice(asset:AssetDTO) {
     const proxy = asset.options.proxy;
-    return proxy !== undefined && proxy !== '';
+    return proxy !== undefined
+      && proxy !== ''
+      && this.marketFx.getFX(proxy, this.marketFx.baseCcy, LocalDate.MAX) !== undefined;
   }
 
   latestDate(asset:AssetDTO, fx2: string, date: LocalDate): LocalDate | undefined {
