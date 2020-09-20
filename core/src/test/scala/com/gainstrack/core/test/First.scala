@@ -150,6 +150,17 @@ class First extends AnyFlatSpec {
     assert(exitCode == 0)
   }
 
+  it should "generate json allstate" in {
+    import java.nio.file.{Files, Paths}
+    import java.nio.charset.StandardCharsets
+    import org.json4s._
+    import org.json4s.jackson.Serialization.write
+    implicit val jsonFormats: Formats = org.json4s.DefaultFormats ++ GainstrackJsonSerializers.all addKeySerializers GainstrackJsonSerializers.allKeys
+    val str = write(bg.allState)
+    val filename = "/tmp/first.json"
+    Files.write(Paths.get(filename), str.getBytes(StandardCharsets.UTF_8))
+  }
+
   lazy val priceState : PriceState = bg.priceState
   lazy val priceFXConverter : PriceFXConverter = bg.priceFXConverter
 
