@@ -158,6 +158,7 @@ export interface StateSummaryDTO {
 }
 
 export interface AllState extends StateSummaryDTO {
+  accounts: AccountDTO[]
   commands: AccountCommandDTO[]
   assetState: AssetState
   balances: Record<string, BalanceStateSeries>
