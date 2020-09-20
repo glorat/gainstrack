@@ -3,7 +3,7 @@ import {AllState} from 'src/lib/models';
 import {AllStateEx} from 'src/lib/AllStateEx';
 import {isSubAccountOf, positionSetFx, positionUnderAccount, convertedPositionSet} from 'src/lib/utils';
 import { LocalDate } from '@js-joda/core';
-import {pnlExplain} from 'src/lib/PLExplain';
+import {pnlExplain, pnlExplainMonthly} from 'src/lib/PLExplain';
 
 describe('First', () => {
   describe('State', () => {
@@ -56,5 +56,12 @@ describe('First', () => {
       testMe('Assets:Investment:IBUSD', 'USD', 'USD', 34960)
       testMe('Assets', 'USD', 'USD', 797742)
     });
+
+
+    test('pnlExplain monthly', () => {
+      const pnl = pnlExplainMonthly(today, allStateEx.allPostingsEx(), allState.commands, allState.baseCcy, allStateEx.tradeFxConverter());
+      expect(pnl).toMatchSnapshot();
+    })
   })
+
 });
