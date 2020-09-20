@@ -64,6 +64,7 @@ case class GainstrackGenerator(originalCommands:Seq[AccountCommand])  {
   def allState:Map[String, Any] = {
     Map(
       "commands" -> originalCommands.map(_.toDTO),
+      "accounts" -> acctState.withInterpolatedAccounts.accounts.toSeq.map(_.toAccountDTO),
       "balances" -> balanceState.balances,
       "txs" -> txDTOs,
       "priceState" -> priceState,

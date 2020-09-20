@@ -156,7 +156,7 @@ trait GainstrackSupport extends ContentEncodingSupport {
     val conversionStrategy = session.get("conversion").map(_.toString).getOrElse("parent")
     val authnSummary = getAuthentication
 
-    ret + ("accounts" -> bg.acctState.withInterpolatedAccounts.accounts.toSeq.map(_.toAccountDTO)) +
+    ret +
       ("conversion" -> conversionStrategy) +
       ("latestDate" -> bg.latestDate) +
       ("dateOverride" -> dateOverride) +
