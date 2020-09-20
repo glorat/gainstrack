@@ -95,7 +95,6 @@ export default function () {
         const cmds = context.state.allState.commands;
         const assets = cmds.filter(x => x.commandType === 'commodity');
 
-
         const ccyToSymbol = (ccy:string):string => {
           const allState = context.state.allState;
           if (allState.fxMapper[ccy]) {
@@ -106,6 +105,7 @@ export default function () {
             return ccy;
           }
         };
+
 
         const key = ccyToSymbol(ccy);
         // All posting ccys that depend on this ccy

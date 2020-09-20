@@ -1,9 +1,9 @@
 import fs from 'fs';
-import {AllState} from "src/lib/models";
-import {AllStateEx} from "src/lib/AllStateEx";
-import {isSubAccountOf, positionSetFx, positionUnderAccount} from "src/lib/utils";
+import {AllState} from 'src/lib/models';
+import {AllStateEx} from 'src/lib/AllStateEx';
+import {isSubAccountOf, positionSetFx, positionUnderAccount} from 'src/lib/utils';
 import { LocalDate } from '@js-joda/core';
-import {pnlExplain} from "src/lib/PLExplain";
+import {pnlExplain} from 'src/lib/PLExplain';
 
 describe('James', () => {
   describe('State', () => {

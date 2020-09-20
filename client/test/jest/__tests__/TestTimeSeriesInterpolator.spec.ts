@@ -1,12 +1,13 @@
 /* eslint-env jest */
+/* eslint jest/expect-expect: ["error", { "assertFunctionNames": ["expect", "testMe", "interpTest"] }] */
 /**
  * @jest-environment jsdom
  */
-import {SortedColumnMap, linear, fromIntDate} from "../../../src/lib/SortedColumnMap";
-import {SingleFXConversion} from "src/lib/fx";
-import {ProxyPricer} from "src/lib/pricer";
-import {AssetDTO} from "src/lib/models";
-import {LocalDate} from "@js-joda/core";
+import {SortedColumnMap, linear, fromIntDate} from '../../../src/lib/SortedColumnMap';
+import {SingleFXConversion} from 'src/lib/fx';
+import {ProxyPricer} from 'src/lib/pricer';
+import {AssetDTO} from 'src/lib/models';
+import {LocalDate} from '@js-joda/core';
 
 describe('TestTimeSeriesInterpolator', () => {
   const data = new SortedColumnMap([20190101, 20191231], [1, 365])
@@ -25,14 +26,14 @@ describe('TestTimeSeriesInterpolator', () => {
     it('extrapolates before the start', () => {
       interpTest(20180101, 1)
     })
-    it("extrapolate after end", () => {
+    it('extrapolate after end', () => {
       interpTest(20200101, 365);
     })
-    it("return exact values", () => {
+    it('return exact values', () => {
       interpTest(20190101, 1);
       interpTest(20191231, 365);
     })
-    it("linearly interpolate in between", () => {
+    it('linearly interpolate in between', () => {
       interpTest(20191230, 364);
       interpTest(20190102, 2);
     })
@@ -70,9 +71,9 @@ describe('TestTimeSeriesInterpolator', () => {
       testMe(mktDts[1], 1000)
     })
 
-    // it ('follow market in the middle', () => {
-    //   testMe(mktDts[1], 1000)
-    // })
+    test.skip ('follow market in the middle', () => {
+      testMe(mktDts[1], 1000)
+    })
   })
 
 
