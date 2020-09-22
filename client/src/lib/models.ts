@@ -183,6 +183,13 @@ export const emptyAllState: AllState = {
   proxyMapper:{}
 };
 
+export interface TreeTableDTO {
+  name: string
+  shortName: string
+  children: TreeTableDTO[]
+  assetBalance: Record<string, any>
+}
+
 export function isTransaction(tx: AccountCommandDTO|Transaction):tx is Transaction {
   return (tx as Transaction).postings !== undefined;
 }

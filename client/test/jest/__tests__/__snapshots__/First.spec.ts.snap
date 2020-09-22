@@ -1,5 +1,271 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`First State asset tree converted to global 1`] = `
+Object {
+  "assetBalance": Object {
+    "GBP": 625581.5365236884,
+  },
+  "children": Array [
+    Object {
+      "assetBalance": Object {
+        "GBP": 0,
+      },
+      "children": Array [],
+      "name": "Assets:HSBCCN",
+      "shortName": "HSBCCN",
+    },
+    Object {
+      "assetBalance": Object {
+        "GBP": 433653.2031242158,
+      },
+      "children": Array [
+        Object {
+          "assetBalance": Object {
+            "GBP": 348045.33999999997,
+          },
+          "children": Array [
+            Object {
+              "assetBalance": Object {
+                "GBP": 34620.4287,
+              },
+              "children": Array [],
+              "name": "Assets:Investment:Zurich:TBOND",
+              "shortName": "TBOND",
+            },
+            Object {
+              "assetBalance": Object {
+                "GBP": 155303.3314,
+              },
+              "children": Array [],
+              "name": "Assets:Investment:Zurich:AMER",
+              "shortName": "AMER",
+            },
+            Object {
+              "assetBalance": Object {
+                "GBP": -0.020100000030652154,
+              },
+              "children": Array [],
+              "name": "Assets:Investment:Zurich:GBP",
+              "shortName": "GBP",
+            },
+            Object {
+              "assetBalance": Object {
+                "GBP": 158121.6,
+              },
+              "children": Array [],
+              "name": "Assets:Investment:Zurich:FTSE",
+              "shortName": "FTSE",
+            },
+          ],
+          "name": "Assets:Investment:Zurich",
+          "shortName": "Zurich",
+        },
+        Object {
+          "assetBalance": Object {
+            "GBP": 27415.40934755332,
+          },
+          "children": Array [
+            Object {
+              "assetBalance": Object {
+                "GBP": 22211.33939774153,
+              },
+              "children": Array [],
+              "name": "Assets:Investment:IBUSD:VWRD",
+              "shortName": "VWRD",
+            },
+            Object {
+              "assetBalance": Object {
+                "GBP": 4097.396486825595,
+              },
+              "children": Array [],
+              "name": "Assets:Investment:IBUSD:IUAA",
+              "shortName": "IUAA",
+            },
+            Object {
+              "assetBalance": Object {
+                "GBP": 971.7534504391468,
+              },
+              "children": Array [],
+              "name": "Assets:Investment:IBUSD:BRK-B",
+              "shortName": "BRK-B",
+            },
+            Object {
+              "assetBalance": Object {
+                "GBP": 134.92001254704837,
+              },
+              "children": Array [],
+              "name": "Assets:Investment:IBUSD:USD",
+              "shortName": "USD",
+            },
+          ],
+          "name": "Assets:Investment:IBUSD",
+          "shortName": "IBUSD",
+        },
+        Object {
+          "assetBalance": Object {
+            "GBP": -22107.826223337514,
+          },
+          "children": Array [
+            Object {
+              "assetBalance": Object {
+                "GBP": 806.0774780426599,
+              },
+              "children": Array [],
+              "name": "Assets:Investment:HSBC:VCSH",
+              "shortName": "VCSH",
+            },
+            Object {
+              "assetBalance": Object {
+                "GBP": -41585.069008782935,
+              },
+              "children": Array [],
+              "name": "Assets:Investment:HSBC:USD",
+              "shortName": "USD",
+            },
+            Object {
+              "assetBalance": Object {
+                "GBP": 16241.781681304896,
+              },
+              "children": Array [],
+              "name": "Assets:Investment:HSBC:VTI",
+              "shortName": "VTI",
+            },
+            Object {
+              "assetBalance": Object {
+                "GBP": 2429.383626097867,
+              },
+              "children": Array [],
+              "name": "Assets:Investment:HSBC:BRK-B",
+              "shortName": "BRK-B",
+            },
+          ],
+          "name": "Assets:Investment:HSBC",
+          "shortName": "HSBC",
+        },
+        Object {
+          "assetBalance": Object {
+            "GBP": 80300.28,
+          },
+          "children": Array [
+            Object {
+              "assetBalance": Object {
+                "GBP": 3475.46032769,
+              },
+              "children": Array [],
+              "name": "Assets:Investment:OldMutual:QLNC",
+              "shortName": "QLNC",
+            },
+            Object {
+              "assetBalance": Object {
+                "GBP": 17342.540658,
+              },
+              "children": Array [],
+              "name": "Assets:Investment:OldMutual:OPY7",
+              "shortName": "OPY7",
+            },
+            Object {
+              "assetBalance": Object {
+                "GBP": 1906.9092712,
+              },
+              "children": Array [],
+              "name": "Assets:Investment:OldMutual:SVDK",
+              "shortName": "SVDK",
+            },
+            Object {
+              "assetBalance": Object {
+                "GBP": 18405.485914,
+              },
+              "children": Array [],
+              "name": "Assets:Investment:OldMutual:OPXC",
+              "shortName": "OPXC",
+            },
+            Object {
+              "assetBalance": Object {
+                "GBP": 1802.43824,
+              },
+              "children": Array [],
+              "name": "Assets:Investment:OldMutual:GBR04S9K",
+              "shortName": "GBR04S9K",
+            },
+            Object {
+              "assetBalance": Object {
+                "GBP": 3981.925561,
+              },
+              "children": Array [],
+              "name": "Assets:Investment:OldMutual:GBR06HUW",
+              "shortName": "GBR06HUW",
+            },
+            Object {
+              "assetBalance": Object {
+                "GBP": 0.0017671099985818728,
+              },
+              "children": Array [],
+              "name": "Assets:Investment:OldMutual:GBP",
+              "shortName": "GBP",
+            },
+            Object {
+              "assetBalance": Object {
+                "GBP": 33385.518261,
+              },
+              "children": Array [],
+              "name": "Assets:Investment:OldMutual:QS90",
+              "shortName": "QS90",
+            },
+          ],
+          "name": "Assets:Investment:OldMutual",
+          "shortName": "OldMutual",
+        },
+      ],
+      "name": "Assets:Investment",
+      "shortName": "Investment",
+    },
+    Object {
+      "assetBalance": Object {
+        "GBP": 3292.743399472632,
+      },
+      "children": Array [],
+      "name": "Assets:HSBCHK",
+      "shortName": "HSBCHK",
+    },
+    Object {
+      "assetBalance": Object {
+        "GBP": 188635.59,
+      },
+      "children": Array [
+        Object {
+          "assetBalance": Object {
+            "GBP": 115703.48999999999,
+          },
+          "children": Array [],
+          "name": "Assets:Bank:Nationwide",
+          "shortName": "Nationwide",
+        },
+        Object {
+          "assetBalance": Object {
+            "GBP": 19000,
+          },
+          "children": Array [],
+          "name": "Assets:Bank:HSBCUK",
+          "shortName": "HSBCUK",
+        },
+        Object {
+          "assetBalance": Object {
+            "GBP": 53932.1,
+          },
+          "children": Array [],
+          "name": "Assets:Bank:NationwideSavings",
+          "shortName": "NationwideSavings",
+        },
+      ],
+      "name": "Assets:Bank",
+      "shortName": "Bank",
+    },
+  ],
+  "name": "Assets",
+  "shortName": "Assets",
+}
+`;
+
 exports[`First State pnlExplain monthly 1`] = `
 Array [
   Object {

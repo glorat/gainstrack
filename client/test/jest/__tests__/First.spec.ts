@@ -1,9 +1,10 @@
 import fs from 'fs';
 import {AllState} from 'src/lib/models';
 import {AllStateEx} from 'src/lib/AllStateEx';
-import {isSubAccountOf, positionSetFx, positionUnderAccount, convertedPositionSet} from 'src/lib/utils';
+import {positionUnderAccount, convertedPositionSet} from 'src/lib/utils';
 import { LocalDate } from '@js-joda/core';
-import {pnlExplain, pnlExplainMonthly} from 'src/lib/PLExplain';
+import {pnlExplainMonthly} from 'src/lib/PLExplain';
+import {balanceTreeTable} from "src/lib/TreeTable";
 
 describe('First', () => {
   describe('State', () => {
@@ -61,6 +62,11 @@ describe('First', () => {
     test('pnlExplain monthly', () => {
       const pnl = pnlExplainMonthly(today, allStateEx.allPostingsEx(), allState.commands, allState.baseCcy, allStateEx.tradeFxConverter());
       expect(pnl).toMatchSnapshot();
+    })
+
+    test('asset tree converted to global', () => {
+      const tree = balanceTreeTable('Assets', today, 'GBP', 'global', allState.accounts, allStateEx.allPostingsEx(), allStateEx.tradeFxConverter())
+      expect(tree).toMatchSnapshot();
     })
   })
 
