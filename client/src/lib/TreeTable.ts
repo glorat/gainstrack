@@ -1,13 +1,12 @@
-import {AccountCommandDTO, AccountDTO, PostingEx, TreeTableDTO} from "src/lib/models";
-import { LocalDate } from "@js-joda/core";
-import {SingleFXConverter} from "src/lib/fx";
+import {AccountCommandDTO, AccountDTO, PostingEx, TreeTableDTO} from 'src/lib/models';
+import { LocalDate } from '@js-joda/core';
+import {SingleFXConverter} from 'src/lib/fx';
 import {
   convertedPositionSet,
   isSubAccountOf,
   parentAccountIdOf,
-  positionUnderAccount,
   postingsToPositionSet
-} from "src/lib/utils";
+} from 'src/lib/utils';
 
 function shortAccountId(accountId: string) {
   const bits = accountId.split(':')
@@ -16,12 +15,12 @@ function shortAccountId(accountId: string) {
 
 export function balanceTreeTable(topAccountId: string, date: LocalDate, baseCcy: string, conversionStrategy: string,
                           allAccounts: AccountDTO[], postings: PostingEx[], fx: SingleFXConverter,
-                          accountFilter: (a: AccountCommandDTO) => boolean = _ => true) {
+                          accountFilter: (a: AccountCommandDTO) => boolean = () => true) {
 
   const accounts = allAccounts.filter(accountFilter);
 
   function childrenOfAccount(accountId: string) {
-    return accounts.filter(a => parentAccountIdOf(a.accountId) === accountId)
+    return accounts.filter(a => parentAccountIdOf(a.accountId) === accountId).sort( (a,b) => a.accountId.localeCompare(b.accountId))
   }
 
   function findAccount(accountId:string): AccountDTO|undefined {
@@ -38,12 +37,12 @@ export function balanceTreeTable(topAccountId: string, date: LocalDate, baseCcy:
         name: accountId,
         shortName: shortAccountId(accountId),
         children: childrenOfAccount(accountId).map(childId => toTreeTable(childId.accountId)),
-        assetBalance: balance
+        assetBalance: Object.entries(balance).map(bits => {return {ccy: bits[0], number: bits[1]}})
       }
     }
 
     // Return empty
-    return {name: accountId, shortName: shortAccountId(accountId), children:[], assetBalance: {}}
+    return {name: accountId, shortName: shortAccountId(accountId), children:[], assetBalance: []}
   }
 
   return toTreeTable(topAccountId);

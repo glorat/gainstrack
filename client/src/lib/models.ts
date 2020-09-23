@@ -187,7 +187,7 @@ export interface TreeTableDTO {
   name: string
   shortName: string
   children: TreeTableDTO[]
-  assetBalance: Record<string, any>
+  assetBalance: { ccy: string, number: number }[]
 }
 
 export function isTransaction(tx: AccountCommandDTO|Transaction):tx is Transaction {

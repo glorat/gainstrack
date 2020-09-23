@@ -126,7 +126,7 @@ export function positionSetFx(positions: Record<string, number>, baseCcy: string
   return sum(toCcy);
 }
 
-export function convertedPositionSet(pos: Record<string, number>, baseCcy: string, conversion: string, date: LocalDate, account: AccountDTO | undefined, fxConverter: SingleFXConverter) {
+export function convertedPositionSet(pos: Record<string, number>, baseCcy: string, conversion: string, date: LocalDate, account: AccountDTO | undefined, fxConverter: SingleFXConverter): Record<string, number> {
   if (conversion == 'units') {
     return pos;
   } else {

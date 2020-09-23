@@ -8,11 +8,13 @@ import {
   emptyAllState,
   PostingEx,
   QuoteConfig,
-  Transaction
+  Transaction, TreeTableDTO
 } from '../lib/models'
 import {GlobalPricer} from 'src/lib/pricer';
 import {AllStateEx} from 'src/lib/AllStateEx';
 import { includes } from 'lodash'
+import {balanceTreeTable} from 'src/lib/TreeTable';
+import {LocalDate} from '@js-joda/core';
 
 Vue.use(Vuex);
 
@@ -24,22 +26,26 @@ export interface TimeSeries {
 
 export interface MyState {
   allState: AllState,
+  dateOverride?: LocalDate
   count: number,
   quoteConfig: QuoteConfig[],
   balances: AccountBalances,
   parseState: Record<string, unknown>,
   gainstrackText: string,
-  quotes: Record<string, TimeSeries>
+  quotes: Record<string, TimeSeries>,
+  conversion: string
 }
 
 const initState: MyState = {
   allState: emptyAllState,
+  dateOverride: undefined,
   count: 0,
   quoteConfig: [],
   balances: {},
   parseState: { errors: [] },
   gainstrackText: '',
-  quotes: {}
+  quotes: {},
+  conversion: 'parent',
 };
 
 type FXConverterWrapper = ((fx: SingleFXConversion) => SingleFXConverter)
@@ -75,19 +81,44 @@ export default function () {
       quotesUpserted (state: MyState, data: { key: string, series: TimeSeries }) {
         Vue.set(state.quotes, data.key, data.series)
         // state.quotes[data.key] = data.series;
+      },
+      conversionApplied(state: MyState, conversion: string) {
+        state.conversion = conversion;
+      },
+      dateOverriden(state: MyState, dt: LocalDate) {
+        state.dateOverride = dt;
       }
     },
     actions: {
       increment (context) {
         context.commit('increment')
       },
-      balances (context) {
+      async balances (context) {
+        const getters = context.getters;
+        const localCompute = true;
         if (!context.state.balances.Assets) {
-          return axios.get('/api/balances/')
-            .then(response => {
-              context.commit('balances', response.data);
-              return response
-            })
+          if (localCompute) {
+            const state:MyState = context.state;
+            const conversion = state.conversion;
+            const today = state.dateOverride ?? LocalDate.now();
+
+            const forCategory = (cat:string) => balanceTreeTable(cat, today, getters.baseCcy, conversion,
+              state.allState.accounts, getters.allPostingsEx, getters.fxConverter)
+            const foo: AccountBalances = {
+              Assets: forCategory('Assets'),
+              Liabilities: forCategory('Liabilities'),
+              Expenses: forCategory('Expenses'),
+              Income: forCategory('Income'),
+              Equities: forCategory('Equity')
+            }
+            context.commit('balances', foo);
+            return foo
+          } else {
+            const response = await axios.get('/api/balances/')
+            context.commit('balances', response.data);
+            return response
+
+          }
         }
       },
       async loadQuotes (context, ccy: string): Promise<TimeSeries> {
@@ -148,6 +179,7 @@ export default function () {
       },
       async conversion (context, c: string) {
         await axios.post('/api/state/conversion', { conversion: c });
+        context.commit('conversionApplied', c);
         return await this.dispatch('reload')
       },
       async reload (context) {
@@ -156,8 +188,6 @@ export default function () {
 
         const quotesConfig = await axios.get('/api/quotes/config');
         await context.commit('reloadedQuotesConfig', quotesConfig.data);
-        // Since components don't know to retrigger this if already on display, let's get it for them
-        await context.dispatch('balances');
         return response
       },
       async loadAllState (context) {
@@ -169,20 +199,21 @@ export default function () {
           this.dispatch('loadQuotes', ccy);
         });
 
+        await context.dispatch('balances');
+
         return response
       },
       async dateOverride (context, d: string) {
         await axios.post('/api/state/dateOverride', { dateOverride: d });
-        return this.dispatch('reload')
+        context.commit('dateOverriden', LocalDate.parse(d))
+
+        await context.dispatch('balances');
       },
       async login (context, data: Record<string, unknown>) {
         const summary = await axios.post('/api/authn/login', data);
         // await context.commit('reloaded', summary.data);
 
         await context.dispatch('loadAllState');
-
-        // Get stuff in background
-        await context.dispatch('balances');
 
         return summary
       },
@@ -195,8 +226,8 @@ export default function () {
 
         const summary = await axios.post('/api/authn/login', {});
         // Get stuff in background
-        await context.dispatch('balances');
         await context.dispatch('loadAllState');
+
         return summary
       },
       async logout (context, data: Record<string, any>) {
@@ -289,9 +320,9 @@ export default function () {
 }
 
 interface AccountBalances {
-  Assets?: any;
-  Liabilities?: any;
-  Equities?: any;
-  Income?: any;
-  Expenses?: any;
+  Assets?: TreeTableDTO;
+  Liabilities?: TreeTableDTO;
+  Equities?: TreeTableDTO;
+  Income?: TreeTableDTO;
+  Expenses?: TreeTableDTO;
 }

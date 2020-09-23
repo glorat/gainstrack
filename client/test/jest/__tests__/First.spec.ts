@@ -4,7 +4,7 @@ import {AllStateEx} from 'src/lib/AllStateEx';
 import {positionUnderAccount, convertedPositionSet} from 'src/lib/utils';
 import { LocalDate } from '@js-joda/core';
 import {pnlExplainMonthly} from 'src/lib/PLExplain';
-import {balanceTreeTable} from "src/lib/TreeTable";
+import {balanceTreeTable} from 'src/lib/TreeTable';
 
 describe('First', () => {
   describe('State', () => {
