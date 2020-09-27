@@ -5,7 +5,7 @@ import java.nio.file.{Files, Paths}
 
 import com.gainstrack.command.GainstrackParser
 import com.gainstrack.core._
-import com.gainstrack.report.{AccountState, AssetChainMap, BalanceState, GainstrackGenerator, PLExplain, PriceFXConverter, SingleFXConverter, TransactionState}
+import com.gainstrack.report.{AccountInvestmentReport, AccountState, AssetChainMap, BalanceState, GainstrackGenerator, PLExplain, PriceFXConverter, SingleFXConverter, TransactionState}
 import org.json4s.Formats
 import org.scalatest.flatspec.AnyFlatSpec
 
@@ -46,5 +46,12 @@ class JamesTest extends AnyFlatSpec {
     val explain = new PLExplain(parseDate("2019-01-02"), parseDate("2019-11-30"))(bg.acctState, bg.txState, bg.balanceState, bg.priceFXConverter, bg.assetChainMap, bg.tradeFXConversion)
     val usdExplain =explain.deltaExplain.find(_.assetId == AssetId("USD")).get
     assert(usdExplain.explain == 62500.00)
+  }
+
+  it should "calc irr for the fx loss" in {
+    val accountId = AccountId("Assets:Equities:USDStock")
+    val rep = new AccountInvestmentReport(accountId, AssetId("GBP"), parseDate("2019-01-02"), parseDate("2019-11-30"), bg.acctState, bg.balanceState, bg.txState, bg.tradeFXConversion)
+
+    assert( (rep.irr*100).round == 114)
   }
 }

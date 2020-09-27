@@ -27,6 +27,11 @@ export function isSubAccountOf(accountId: string, parentId: string): boolean {
   return (accountId === parentId) || (accountId.startsWith(parentId + ':'))
 }
 
+export function convertAccountType(accountId: string, aType: string): string {
+  const prefix = accountId.split(':')[0] ?? '__Undefined__';
+  return accountId.replace(`${prefix}:`, `${aType}:`)
+}
+
 export function assetRowsFromPostings(myPostings: Posting[], fx: SingleFXConverter, valueCcy: string, today: LocalDate) {
   const byAsset: Record<string, Posting[]> = groupBy(myPostings, p => p.value.ccy);
   const assetRows: AssetRow[] = keys(byAsset).sort().map(key => {

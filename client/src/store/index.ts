@@ -101,7 +101,6 @@ export default function () {
             const state:MyState = context.state;
             const conversion = state.conversion;
             const today = state.dateOverride ?? LocalDate.now();
-
             const forCategory = (cat:string) => balanceTreeTable(cat, today, getters.baseCcy, conversion,
               state.allState.accounts, getters.allPostingsEx, getters.fxConverter)
             const foo: AccountBalances = {

@@ -410,4 +410,5 @@ class First extends AnyFlatSpec {
     assert(iuaa.units == 1000)
     assert(iuaa.value.round == 4097)
   }
+
 }
