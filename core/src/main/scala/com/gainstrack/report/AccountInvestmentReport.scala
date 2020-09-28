@@ -5,10 +5,11 @@ import com.gainstrack.core._
 class AccountInvestmentReport(accountId: AccountId, ccy:AssetId, fromDate:LocalDate, queryDate: LocalDate, acctState:AccountState, balanceState:BalanceState, txState:TransactionState, singleFXConversion: FXConverter) {
   val account = acctState.accountMap(accountId)
 
-  val cmds = txState.cmds.filter(cmd => cmd.origin.date.isAfter(fromDate) && cmd.origin.date.isBefore(queryDate) )
+  val cmds = txState.cmds.filter(cmd => cmd.origin.date.isAfter(fromDate) && cmd.origin.date.isBefore(queryDate.plusDays(1)) )
   val inflows = new InflowCalculator(cmds).calcInflows(accountId)
 
-  val firstDate = inflows.headOption.map(_.date).getOrElse(fromDate).minusDays(1)
+  // Go just before the first cashflow so we have a good startBalance
+  val firstDate = inflows.headOption.map(_.date.minusDays(1)).getOrElse(fromDate)
 
   // Take just the final equity balance as positive
   val allAccounts = acctState.accounts.filter(a => a.accountId.isSubAccountOf(accountId))
