@@ -27,6 +27,9 @@
 <script>
     import axios from 'axios';
     import numbro from 'numbro';
+    import {irrSummary} from 'src/lib/AccountInvestmentReport';
+    import {mapGetters} from 'vuex';
+    import {LocalDate} from '@js-joda/core';
 
     export default {
         name: 'IrrSummary',
@@ -36,12 +39,40 @@
         filters: {
           numeral: (value, format) => numbro(value).format(format)
         },
-        mounted() {
-            const notify = this.$notify;
-            axios.get('/api/irr/')
-                .then(response => this.info = response.data)
-                .catch(error => notify.error(error))
-        },
+      methods: {
+        async refresh() {
+          const localCompute = true;
+          const notify = this.$notify;
+          try {
+            if (localCompute) {
+              const defaultFromDate = LocalDate.parse('1900-01-01')
+              const fromDate = defaultFromDate
+              const queryDate = LocalDate.now() // Or date override
+              const allAccounts = this.mainAssetAccounts;
+              this.info = irrSummary(allAccounts, this.baseCcy, fromDate, queryDate, this.allTxs, this.allPostingsEx, this.fxConverter)
+            } else {
+              const response = await axios.get('/api/irr/');
+              this.info = response.data;
+            }
+          } catch (error) {
+            console.error(error);
+            notify.error(error)
+          }
+        }
+      },
+      computed: {
+        ...mapGetters([
+          'baseCcy',
+          'allPostingsEx',
+          'allTxs',
+          'fxConverter',
+          'mainAccounts',
+          'mainAssetAccounts',
+        ]),
+      },
+      mounted() {
+        this.refresh()
+      },
     }
 </script>
 

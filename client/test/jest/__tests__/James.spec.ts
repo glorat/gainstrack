@@ -4,6 +4,7 @@ import {AllStateEx} from 'src/lib/AllStateEx';
 import {isSubAccountOf, positionSetFx, positionUnderAccount} from 'src/lib/utils';
 import { LocalDate } from '@js-joda/core';
 import {pnlExplain} from 'src/lib/PLExplain';
+import { accountInvestmentReport } from 'src/lib/AccountInvestmentReport';
 
 describe('James', () => {
   describe('State', () => {
@@ -35,5 +36,14 @@ describe('James', () => {
       expect(gbpDelta).toBeDefined();
       expect(gbpDelta?.explain).toBe(62500);
     });
+
+    test('calc irr for the fx', () => {
+      const fromDate = LocalDate.parse('2019-01-01')
+      const queryDate = LocalDate.parse('2019-11-30')
+      const rep = accountInvestmentReport('Assets:Equities:USDStock', 'GBP', fromDate, queryDate, allStateEx.allTxs(), allStateEx.allPostingsEx(), allStateEx.tradeFxConverter())
+      expect(rep.irr).toBeCloseTo(1.14)
+    })
+
   })
+
 });

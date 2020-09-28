@@ -1,8 +1,8 @@
-import {ChronoUnit, LocalDate} from "@js-joda/core";
-import {AccountDTO, Amount, PostingEx, Transaction} from "src/lib/models";
-import {SingleFXConverter} from "src/lib/fx";
-import {convertAccountType, isSubAccountOf, positionSetFx, positionUnderAccount} from "src/lib/utils";
-import {includes, some} from "lodash";
+import {ChronoUnit, LocalDate} from '@js-joda/core';
+import {Amount, PostingEx, Transaction} from 'src/lib/models';
+import {SingleFXConverter} from 'src/lib/fx';
+import {convertAccountType, isSubAccountOf, positionSetFx, positionUnderAccount} from 'src/lib/utils';
+import {some} from 'lodash';
 
 const AccountTypes = ['Assets', 'Liabilities', 'Equity', 'Income', 'Expenses']
 
@@ -21,17 +21,17 @@ function calcInflows(txs: Transaction[], accountId: string) {
   return flows;
 }
 
-function accountInvestmentReport(accountId: string, ccy: string, fromDate: LocalDate, queryDate: LocalDate,
-                                 accounts: AccountDTO[], allTxs: Transaction[], allPostings: PostingEx[], fx: SingleFXConverter) {
+export function accountInvestmentReport(accountId: string, ccy: string, fromDate: LocalDate, queryDate: LocalDate,
+                                 allTxs: Transaction[], allPostings: PostingEx[], fx: SingleFXConverter) {
 
-  // TODO: Off by one confusion here?
-  const postings = allPostings.filter(p => LocalDate.parse(p.date).isAfter(fromDate) && LocalDate.parse(p.date).isBefore(queryDate));
-  const txs = allTxs.filter(p => LocalDate.parse(p.postDate).isAfter(fromDate) && LocalDate.parse(p.postDate).isBefore(queryDate));
+  // const postings = allPostings.filter(p => LocalDate.parse(p.date).isAfter(fromDate) && LocalDate.parse(p.date).isBefore(queryDate.plusDays(1)));
+  const txs = allTxs.filter(p => LocalDate.parse(p.postDate).isAfter(fromDate) && LocalDate.parse(p.postDate).isBefore(queryDate.plusDays(1)));
   const inflows = calcInflows(txs, accountId);
-  const firstDate = (inflows[0]?.date ?? fromDate).minusDays(1)
+  const firstDate = (inflows[0]?.date.minusDays(1) ?? fromDate)
 
-  const startPs = positionUnderAccount(allPostings.filter(p => LocalDate.parse(p.date).isBefore(firstDate)), accountId)
-  const startBalance = positionSetFx(startPs, ccy, firstDate, fx)
+  const startPs = positionUnderAccount(allPostings.filter(p => LocalDate.parse(p.date).isBefore(firstDate.plusDays(1))), accountId)
+  // Minus for starting value
+  const startBalance = - positionSetFx(startPs, ccy, firstDate, fx)
 
   const endPs = positionUnderAccount(allPostings.filter(p => LocalDate.parse(p.date).isBefore(queryDate.plusDays(1))), accountId)
   const endBalance = positionSetFx(endPs, ccy, queryDate, fx)
@@ -44,13 +44,23 @@ function accountInvestmentReport(accountId: string, ccy: string, fromDate: Local
     cf.convertedValue = {ccy, number: positionSetFx({[cf.value.ccy]: cf.value.number}, ccy, cf.date, fx)}
   })
 
+  const cashflowTable = new CashflowTable(baseFlows)
+
   return {
     accountId,
     balance: endBalance,
     start: baseFlows[0].date.toString(),
     end: baseFlows[baseFlows.length-1].date.toString(),
-    irr: new CashflowTable(baseFlows).irr()
+    cashflowTable,
+    irr: cashflowTable.irr()
   }
+}
+
+export function irrSummary(accountIds: string[], ccy: string, fromDate: LocalDate, queryDate: LocalDate,
+                           allTxs: Transaction[], allPostings: PostingEx[], fx: SingleFXConverter) {
+  return accountIds.map(accountId => {
+    return accountInvestmentReport(accountId, ccy, fromDate, queryDate, allTxs, allPostings, fx)
+  })
 }
 
 class Cashflow {
@@ -117,10 +127,13 @@ class CashflowTable {
 }
 
 function newtonRaphson(f: (x: number) => number, d: (x: number) => number, xk: number, tolerance: number, maxIter: number): number {
+
   const x = xk - f(xk) / d(xk);
   const y = f(x) + d(x) * (x - xk)
+  // console.log(`Newton Raphson at ${xk} to ${x} at ${y}`)
+
   if (maxIter <= 0 || Math.abs(y) < tolerance) {
-    // println(s"Newton Raphson resolved to ${y} with ${maxIter} iterations remaining")
+    // console.log(`Newton Raphson resolved to ${y} with ${maxIter} iterations remaining`)
     return xk
   } // Resolved
   else return newtonRaphson(f, d, x, tolerance, maxIter - 1) // Not resolved, run next iteration
