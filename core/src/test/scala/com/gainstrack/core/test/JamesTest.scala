@@ -48,10 +48,15 @@ class JamesTest extends AnyFlatSpec {
     assert(usdExplain.explain == 62500.00)
   }
 
-  it should "calc irr for the fx loss" in {
+  it should "calc irr for the fx" in {
     val accountId = AccountId("Assets:Equities:USDStock")
-    val rep = new AccountInvestmentReport(accountId, AssetId("GBP"), parseDate("2019-01-02"), parseDate("2019-11-30"), bg.acctState, bg.balanceState, bg.txState, bg.tradeFXConversion)
+    val rep = new AccountInvestmentReport(accountId, AssetId("GBP"), parseDate("2019-01-01"), parseDate("2019-11-30"), bg.acctState, bg.balanceState, bg.txState, bg.tradeFXConversion)
+
 
     assert( (rep.irr*100).round == 114)
+    assert(rep.startBalance.number == -12500)
+
+    val rep2 = new AccountInvestmentReport(accountId, AssetId("GBP"), parseDate("2019-01-01"), parseDate("2020-09-25"), bg.acctState, bg.balanceState, bg.txState, bg.tradeFXConversion)
+    assert( (rep2.irr*100).round == 49)
   }
 }
