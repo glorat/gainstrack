@@ -22,13 +22,9 @@ export interface SingleFXConverter extends FXConverter {
 
 export class FXMarketLazyLoad implements SingleFXConverter {
   baseCcy: AssetId;
-  marketFx: SingleFXConversion;
   ccys: AssetId[] = [];
-  lazyLoad: (ccy:AssetId) => Promise<void>;
 
-  constructor(marketFx: SingleFXConversion, lazyLoad: (ccy:AssetId)=>Promise<void>) {
-    this.marketFx = marketFx;
-    this.lazyLoad = lazyLoad;
+  constructor(readonly marketFx: SingleFXConversion, readonly lazyLoad: (ccy:AssetId)=>Promise<void>) {
     this.baseCcy = marketFx.baseCcy;
   }
 
@@ -53,12 +49,7 @@ export class FXMarketLazyLoad implements SingleFXConverter {
 }
 
 export class SingleFXConversion implements SingleFXConverter {
-  state: Record<string, SortedColumnMap> = {};
-  baseCcy: string;
-
-  constructor(state: Record<string, SortedColumnMap>, baseCcy: string) {
-    this.state = state;
-    this.baseCcy = baseCcy
+  constructor(readonly state: Record<string, SortedColumnMap>, readonly baseCcy: string) {
   }
 
   static fromQuotes(quotes: Record<string, TimeSeries>, baseCcy?: string) {

@@ -34,20 +34,16 @@ function commmodityCommandToAssetDTO(cmd: AccountCommandDTO) : AssetDTO {
 export class GlobalPricer implements SingleFXConverter {
   readonly baseCcy: string;
   readonly assetCommands: AssetDTO[];
-  readonly marketFx: SingleFXConverter;
-  readonly tradeFx: SingleFXConversion;
 
   readonly pricers: Pricer[] = [];
 
-  constructor(allCommands: AccountCommandDTO[], allCcys:AssetId[], tradeFx: SingleFXConversion, marketFx: SingleFXConverter) {
+  constructor(allCommands: AccountCommandDTO[], allCcys:AssetId[], readonly tradeFx: SingleFXConversion, readonly marketFx: SingleFXConverter) {
     const definedAssets = allCommands.filter(cmd => cmd.commandType === 'commodity').map(commmodityCommandToAssetDTO);
     const moreAssets:AssetDTO[] = allCcys
       .filter(ccy => !definedAssets.find(a => a.asset === ccy))
       .map(ccy => {return {asset:ccy, options: {tags: []}}});
     this.assetCommands = [...definedAssets, ...moreAssets];
     this.baseCcy = marketFx.baseCcy;
-    this.tradeFx = tradeFx;
-    this.marketFx = marketFx;
     this.pricers = [
       new ProxyPricer(this.tradeFx, this.marketFx),
       new FXPricer(this.marketFx),
@@ -124,11 +120,9 @@ class FXPricer implements Pricer {
 class BookPricer implements Pricer {
   id = 'book';
   label = 'Book';
-  tradeFx: SingleFXConversion;
   baseCcy: string;
 
-  constructor(tradeFx: SingleFXConversion) {
-    this.tradeFx = tradeFx;
+  constructor(readonly tradeFx: SingleFXConversion) {
     this.baseCcy = tradeFx.baseCcy;
   }
 
@@ -153,12 +147,8 @@ class BookPricer implements Pricer {
 export class ProxyPricer implements Pricer {
   id = 'proxy';
   label = 'Proxy';
-  tradeFx: SingleFXConversion;
-  marketFx: SingleFXConverter;
 
-  constructor(tradeFx: SingleFXConversion, marketFx: SingleFXConverter) {
-    this.tradeFx = tradeFx;
-    this.marketFx = marketFx;
+  constructor(readonly tradeFx: SingleFXConversion, readonly marketFx: SingleFXConverter) {
     // this.baseCcy = marketFx.baseCcy;
   }
 

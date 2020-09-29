@@ -9,12 +9,7 @@ export interface InterpolationOption {
 }
 
 export class SortedColumnMap {
-  ks: IntDate[];
-  vs: number[];
-
-  constructor(ks: IntDate[], vs: number[]) {
-    this.ks = ks;
-    this.vs = vs;
+  constructor(readonly ks: IntDate[], readonly vs: number[]) {
   }
 
   iota(key: IntDate): number {

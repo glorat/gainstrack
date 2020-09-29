@@ -3,10 +3,8 @@ import {flatten} from 'lodash';
 import {SingleFXConversion} from 'src/lib/fx';
 
 export class AllStateEx {
-  state: AllState
 
-  constructor(state: AllState) {
-    this.state = state;
+  constructor(readonly state: AllState) {
   }
 
   allTxs() {
