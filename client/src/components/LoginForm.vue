@@ -95,9 +95,9 @@
             auth0login() {
                 this.$auth.loginWithRedirect();
             },
-            async loginWithToken(token) {
+            async loginWithToken(auth) {
                 const notify = this.$notify;
-                const summary = await this.$store.dispatch('loginWithToken', token)
+                const summary = await this.$store.dispatch('loginWithToken', auth)
                     .then(response => {
                         this.$analytics.logEvent('login');
                         return response.data;
@@ -112,9 +112,9 @@
                 }
             },
             async auth0validate() {
-                const token = await this.$auth.getTokenSilently();
+                await this.$auth.getTokenSilently();
                 this.loading = true;
-                await this.loginWithToken(token)
+                await this.loginWithToken(this.$auth)
 
             },
             async autoLogin() {
@@ -124,7 +124,7 @@
                     const token = await this.$auth.getTokenSilently();
                     if (token) {
                         notify.success('Welcome Back!');
-                        await this.loginWithToken(token);
+                        await this.loginWithToken(this.$auth);
                     }
                 } catch (e) {
                     // eslint-disable-next-line
