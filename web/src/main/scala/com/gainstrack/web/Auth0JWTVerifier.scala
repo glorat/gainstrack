@@ -51,7 +51,7 @@ class Auth0SavedJwkProvider(issuer: String) extends UrlJwkProvider(issuer) {
     import java.util
     import java.util.{List, Map}
     import com.google.common.collect.Lists
-    import scala.collection.JavaConverters._
+    import scala.jdk.CollectionConverters._
 
     val inputStream = new StringReader(KEYS(issuer))
     val reader = new ObjectMapper().readerFor(classOf[Map[String, Object]]);

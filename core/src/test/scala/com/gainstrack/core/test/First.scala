@@ -12,7 +12,7 @@ import scala.collection.SortedSet
 class First extends AnyFlatSpec {
   val parser = new GainstrackParser
   import scala.io.Source
-  parser.parseLines(Source.fromResource("src.gainstrack").getLines)
+  parser.parseLines(Source.fromResource("src.gainstrack").getLines())
 
   val cmds = parser.getCommands
   val today = parseDate("2019-12-31")

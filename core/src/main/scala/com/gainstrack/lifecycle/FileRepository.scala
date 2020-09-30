@@ -14,6 +14,8 @@ import org.json4s._
 import org.json4s.jackson.Serialization.{read, write}
 import org.slf4j.LoggerFactory
 
+import scala.util.Using
+
 class FileRepository(basePath:Path) extends RepositoryWithEntityStream {
   val logger =  LoggerFactory.getLogger(getClass)
 
@@ -26,7 +28,7 @@ class FileRepository(basePath:Path) extends RepositoryWithEntityStream {
   }
 
   protected def readLinesForId(id: GUID):Seq[String] = {
-    import scala.collection.JavaConverters._
+    import scala.jdk.CollectionConverters._
     val filename = filenameForId(id)
     val lines = Files.readAllLines(filename).asScala.toSeq
     lines
@@ -42,7 +44,7 @@ class FileRepository(basePath:Path) extends RepositoryWithEntityStream {
 
     val path = filenameForId(aggregate.id)
 
-    using(new PrintWriter(Files.newOutputStream(path, StandardOpenOption.CREATE, StandardOpenOption.APPEND))) { w =>
+    Using(new PrintWriter(Files.newOutputStream(path, StandardOpenOption.CREATE, StandardOpenOption.APPEND))) { w =>
       cevs.foreach(cev => {
         // Cannot write directly to stream because the write method might close it
         val str = write(cev)
@@ -50,7 +52,7 @@ class FileRepository(basePath:Path) extends RepositoryWithEntityStream {
       })
     }
 
-    Future.successful()
+    Future.unit
   }
 
   def getByIdOpt[T <: AggregateRoot](id: GUID, tmpl: T)(implicit evidence$1: ClassTag[T]): Option[T] = {
@@ -109,16 +111,6 @@ class FileRepository(basePath:Path) extends RepositoryWithEntityStream {
     Files.deleteIfExists(filename)
   }
 
-  // Retire this when we get to scala 2.13
-  def using[T <: {def close()}]
-  (resource: T)
-  (block: T => Unit) {
-    try {
-      block(resource)
-    } finally {
-      if (resource != null) resource.close()
-    }
-  }
 }
 
 object UUIDSerializer extends CustomSerializer[UUID](format => ({

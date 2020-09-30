@@ -50,7 +50,7 @@ case class Amount(number:Fraction, ccy:AssetId) {
   def -(rhs:Fraction): Amount = Amount(number - rhs, ccy)
   def *(rhs:Fraction): Amount = Amount(number * rhs, ccy)
   def /(rhs:Fraction): Amount = Amount(number / rhs, ccy)
-  def unary_-(): Amount = Amount(-number, ccy)
+  def unary_- : Amount = Amount(number.unary_-(), ccy)
 }
 object Amount {
   private val re = raw"(\S+) (\S+)".r

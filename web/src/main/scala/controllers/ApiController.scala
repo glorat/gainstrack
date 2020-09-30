@@ -317,7 +317,7 @@ class ApiController (implicit val ec :ExecutionContext)
 
     val values = allocations.map(a => {
       val allocationAssets = bg.assetState.assetsForTags(a.toSet)
-      val allocationValue = networth.filter(allocationAssets.toSeq).convertTo(bg.acctState.baseCurrency, mktConvert, today)
+      val allocationValue = networth.filter(allocationAssets.toSeq).convertTo(bg.acctState.baseCurrency, mktConvert, today())
       allocationValue.getBalance(bg.acctState.baseCurrency)
     })
     val valueNum = values.map(_.number.toDouble)

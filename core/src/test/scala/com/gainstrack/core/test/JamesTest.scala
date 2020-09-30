@@ -15,7 +15,7 @@ class JamesTest extends AnyFlatSpec {
 
   "JamesTest" should "parse james" in {
     import scala.io.Source
-    parser.parseLines(Source.fromResource("james.gainstrack").getLines)
+    parser.parseLines(Source.fromResource("james.gainstrack").getLines())
 
   }
 

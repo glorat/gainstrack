@@ -39,7 +39,7 @@ class AuthnController(implicit val ec: ExecutionContext)
   }
 
   post("/logout") {
-    scentry.logout
+    scentry.logout()
     getSummary
   }
 }

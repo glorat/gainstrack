@@ -10,7 +10,7 @@ class YieldTest extends AnyFlatSpec {
 
   "yield commeands" should "parse" in {
     import scala.io.Source
-    parser.parseLines(Source.fromResource("div.gainstrack").getLines)
+    parser.parseLines(Source.fromResource("div.gainstrack").getLines())
 
   }
 

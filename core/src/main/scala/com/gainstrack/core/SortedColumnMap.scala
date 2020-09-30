@@ -1,7 +1,7 @@
 package com.gainstrack.core
 
 import scala.collection.MapView
-import scala.collection.immutable.SortedMap
+import scala.collection.immutable.{ArraySeq, SortedMap}
 import scala.reflect.ClassTag
 
 case class SortedColumnMap[K ,V] (ks: IndexedSeq[K], val vs:IndexedSeq[V]) {
@@ -44,8 +44,7 @@ object SortedColumnMap {
       vs(i) = kv._2
       i += 1
     })
-
-    SortedColumnMap(ks, vs)
+    SortedColumnMap(ArraySeq.unsafeWrapArray(ks), ArraySeq.unsafeWrapArray(vs))
   }
 
   def from[K:ClassTag,V:ClassTag](map: MapView[K,V])(implicit kOrder:Ordering[K]) : SortedColumnMap[K,V] = {
@@ -59,6 +58,6 @@ object SortedColumnMap {
       i += 1
     })
 
-    SortedColumnMap(ks, vs)
+    SortedColumnMap(ArraySeq.unsafeWrapArray(ks), ArraySeq.unsafeWrapArray(vs))
   }
 }

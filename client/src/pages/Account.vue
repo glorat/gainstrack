@@ -1,9 +1,9 @@
 <template>
   <my-page padding>
-    <q-tabs v-model="tab" inline-label class="bg-secondary text-white">
+    <q-tabs v-model="tab" inline-label class="bg-secondary text-white" @input="onTabPanelChanged">
       <q-tab name="assets" :icon="matAssignment" label="Balance"></q-tab>
       <q-tab name="statement" :icon="matAccountBalance" label="Statements"></q-tab>
-      <q-tab name="journal" :icon="matEdit" label="Journal" v-if="hasJournal"></q-tab>
+      <q-tab name="journal" :icon="matEdit" label="Journal" v-if="hasJournal" class="account-tab-journal"></q-tab>
       <q-tab name="more" :icon="matAssignment" label="More" v-if="hasJournal"></q-tab>
     </q-tabs>
 
@@ -61,6 +61,7 @@
   import {SingleFXConverter} from 'src/lib/fx';
   import {LocalDate} from '@js-joda/core';
   import {assetReport} from 'src/lib/assetReport';
+  import EventBus from "src/event-bus";
 
   export default Vue.extend({
     name: 'Account',
@@ -142,7 +143,10 @@
       }
     },
     methods: {
-      async refresh(path: string) {
+      onTabPanelChanged() {
+        EventBus.$emit('account-tab-changed', this.tab);
+      },
+      async refresh (path: string) {
         try {
           const localCompute = true;
           if (!localCompute) {

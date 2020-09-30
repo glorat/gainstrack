@@ -28,7 +28,7 @@ object QuotesFileStore extends QuoteStore {
         builder += (parseDate(bits(0)) -> bits(1).toDouble)
       })
 
-      Future.successful(builder.result)
+      Future.successful(builder.result())
     }
     catch {
       case _: FileNotFoundException => Future.successful(SortedMap())
@@ -66,7 +66,7 @@ object QuotesFileStore extends QuoteStore {
     val pw = new PrintWriter(new File(s"db/quotes/${symbol}.csv" ))
     series.foreach(x => pw.println(s"${x._1},${x._2}"))
     pw.close
-    Future.successful()
+    Future.unit
   }
 
 }

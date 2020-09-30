@@ -67,14 +67,14 @@
     target?: string
     content: string
     customSteps?: CustomStep[]
-    eventTest?: (e: string, c: AccountCommandDTO | Route) => boolean
+    eventTest?: (e: string, c: AccountCommandDTO | Route | string) => boolean
     cmdTest?: (c: AccountCommandDTO) => boolean
     //  For placement, see https://popper.js.org/docs/v1/#Popper.placements
     params?: Record<string, unknown>
 
   }
 
-  function isRoute(c: AccountCommandDTO | Route): c is Route {
+  function isRoute(c: AccountCommandDTO | Route | string): c is Route {
     return (c as Route).path !== undefined;
   }
 
@@ -86,9 +86,13 @@
     return ps.map(p => `<p style="text-align: left">${p}</p>`).join('');
   };
 
-  const routedToEventTest = (path: string) => (e: string, c: AccountCommandDTO | Route): boolean => {
+  const routedToEventTest = (path: string) => (e: string, c: AccountCommandDTO | Route | string): boolean => {
     return e === 'routed-to' && isRoute(c) && c.path === path;
   };
+
+  const stringEventTest = (cmdType: string, payload: string) => (e: string, c: AccountCommandDTO | Route | string): boolean => {
+    return (e === cmdType) && (payload === c);
+  }
 
   // const addRecord: TourStep = {
   //   // target: '#add-record', // popper handles this wrong
@@ -129,18 +133,19 @@
   //     },
   // };
 
-  const chooseAccount = (accountId: string): TourStep => {
-    return {
+  const chooseAccount = (accountId: string): TourStep[] => {
+    return [{
       target: `.account-entry[tag="${accountId}"]`,
       content: `Choose "${accountId}"`,
-      eventTest: routedToEventTest(`/command/${accountId}`),
-    };
+      eventTest: routedToEventTest(`/account/${accountId}`),
+    }, {
+      target: '.account-tab-journal',
+      content: 'Click on Journal',
+      eventTest: stringEventTest('account-tab-changed', 'journal'),
+    }];
   };
 
-  const chooseInvestmentAccount: TourStep = {
-    ...chooseAccount('Assets:Investment'),
-    content: 'Select your investment account Assets:Investment',
-  };
+  const chooseInvestmentAccount: TourStep[] = chooseAccount('Assets:Investment')
 
   // const chooseBankAccount: TourStep = {
   //   target: '.c-account-id',
@@ -155,9 +160,9 @@
 
   const chooseDate = (dt: string): TourStep => {
     return {
-      target: '.c-date',
+      target: '.add-cmd .c-date',
       content: `Enter the date. Choose ${dt} for this demo`,
-      params: {placement: 'right'},
+      params: {placement: 'bottom'},
       cmdTest(c) {
         return c && isAccountCommandDTO(c) && c.date === dt;
       }
@@ -210,9 +215,7 @@
     {
       ...addAccounts,
     },
-    {
-      ...chooseInvestmentAccount
-    },
+    ...chooseInvestmentAccount,
     {
       ...clickToBeginAdd('fund'),
       content: 'Click "Fund" to fund our investment account',
@@ -249,9 +252,7 @@
       ...addAccounts,
       id: 'trade',
     },
-    {
-      ...chooseInvestmentAccount
-    },
+    ...chooseInvestmentAccount,
     {
       ...clickToBeginAdd('trade'),
       content: 'Click "Trade" to record a trade',
@@ -333,9 +334,7 @@
       ...addAccounts,
       id: 'earn'
     },
-    {
-      ...chooseAccount('Income:Salary')
-    },
+    ...chooseAccount('Income:Salary'),
     {
       ...clickToBeginAdd('earn'),
       content: 'Click "Earn" record salary being received',
@@ -375,9 +374,7 @@
     {
       ...addAccounts,
     },
-    {
-      ...chooseInvestmentAccount
-    },
+    ...chooseInvestmentAccount,
     {
       ...clickToBeginAdd('tfr'),
       content: 'Click "Transfer"',
@@ -440,9 +437,7 @@
     {
       ...addAccounts,
     },
-    {
-      ...chooseAccount('Assets:Bank')
-    },
+    ...chooseAccount('Assets:Bank'),
     {
       ...clickToBeginAdd('bal'),
       content: 'Click "Balance" to record a bank balance',
@@ -605,6 +600,12 @@
       EventBus.$on('command-added', (c: AccountCommandDTO) => {
         const currentStep = this.steps[this.$tours.myTour.currentStep];
         if (currentStep && currentStep.eventTest && currentStep.eventTest('command-added', c)) {
+          this.nextStep();
+        }
+      });
+      EventBus.$on('account-tab-changed', (c: string) => {
+        const currentStep = this.steps[this.$tours.myTour.currentStep];
+        if (currentStep && currentStep.eventTest && currentStep.eventTest('account-tab-changed', c)) {
           this.nextStep();
         }
       });

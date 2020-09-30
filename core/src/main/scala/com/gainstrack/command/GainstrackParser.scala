@@ -111,8 +111,8 @@ class GainstrackParser {
     }
   }
 
-  def parseLines(lines:TraversableOnce[String]) : Unit = {
-    lines.foreach(tryParseLine)
+  def parseLines(lines:IterableOnce[String]) : Unit = {
+    lines.iterator.foreach(tryParseLine)
     if (this.errors.length > 0) {
       throw new Exception("There were parsing errors")
     }
@@ -130,7 +130,7 @@ class GainstrackParser {
   }
 
   private def parseBuffer(src: Source) = {
-    src.getLines.foreach(this.parseLine)
+    src.getLines().foreach(this.parseLine)
     if (this.errors.length > 0) {
       throw new Exception("There were parsing errors")
     }

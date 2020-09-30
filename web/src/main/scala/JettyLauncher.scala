@@ -19,7 +19,7 @@ object JettyLauncher { // this is my entry object as specified in sbt project de
 
   val config = ConfigFactory.load()
 
-  def main(args: Array[String]) {
+  def main(args: Array[String]): Unit = {
     primeJit()
     sanityCheck()
 

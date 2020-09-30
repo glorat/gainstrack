@@ -36,19 +36,11 @@
 <script lang="ts">
   import LoginForm from '../components/LoginForm.vue';
   import Vue from 'vue'
-  import {appRoutes} from 'src/router/routes';
+  import {appRoutes, navBar} from 'src/router/routes';
 
   export default Vue.extend({
 
     data() {
-      const navBar = [
-        ['add', 'command'],
-        ['balance_sheet', 'assets', 'income_statement', 'journal'],
-        ['irr', 'aa', 'pnlexplain'],
-        ['prices', 'quotes', 'settings'],
-        ['port', 'editor', 'history'],
-        ['help', 'faq']
-      ];
       return {
         menuItemsList: navBar.map(ss => {
           return ss.map((key: string) => {

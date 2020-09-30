@@ -1,7 +1,7 @@
 <template>
     <div>
         <div>
-            <command-date-editor v-model="c.date"></command-date-editor>
+            <command-date-editor id="trade-date" v-model="c.date"></command-date-editor>
         </div>
         <div>
             <account-selector class="c-account-id"  v-model="c.accountId"

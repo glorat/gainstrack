@@ -10,7 +10,7 @@ class NoEquityTest extends AnyFlatSpec {
 
   import scala.io.Source
 
-  parser.parseLines(Source.fromResource("noequity.gainstrack").getLines)
+  parser.parseLines(Source.fromResource("noequity.gainstrack").getLines())
   val cmds = parser.getCommands
   val bg = new GainstrackGenerator(cmds)
 
