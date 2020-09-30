@@ -7,6 +7,7 @@ import com.gainstrack.web.{AuthenticationSupport, GainstrackJsonSerializers, Gai
 import org.json4s.{Formats, JValue}
 import org.scalatra.{InternalServerError, ScalatraServlet}
 import org.scalatra.json.JacksonJsonSupport
+import org.slf4j.LoggerFactory
 
 import scala.concurrent.ExecutionContext
 
@@ -17,6 +18,7 @@ class CommandApiController(implicit val ec: ExecutionContext)
     with GainstrackSupport
     with TimingSupport {
   protected implicit val jsonFormats: Formats = org.json4s.DefaultFormats ++ GainstrackJsonSerializers.all
+  val logger =  LoggerFactory.getLogger(getClass)
 
   before() {
     scentry.authenticate()
@@ -124,7 +126,10 @@ class CommandApiController(implicit val ec: ExecutionContext)
       case e:Exception if parser.parserErrors.size>0 => {
         ApiSourceResponse( parser.parserErrors, Seq())
       }
-      case e:Exception => ApiSourceResponse(Seq(ParserMessage(e.getMessage, 0, "")), Seq())
+      case e:Exception => {
+        logger.error(e.toString)
+        ApiSourceResponse(Seq(ParserMessage(e.getMessage, 0, "")), Seq())
+      }
 
     }
 
@@ -147,7 +152,10 @@ class CommandApiController(implicit val ec: ExecutionContext)
       case e:Exception if parser.parserErrors.size>0 => {
         ApiSourceResponse(parser.parserErrors, Seq())
       }
-      case e:Exception => ApiSourceResponse(Seq(ParserMessage(e.getMessage, 0, "")), Seq())
+      case e:Exception => {
+        logger.error(e.toString)
+        ApiSourceResponse(Seq(ParserMessage(e.getMessage, 0, "")), Seq())
+      }
     }
 
   }
