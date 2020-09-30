@@ -1,4 +1,4 @@
-# Quasar App (quasar-ts2)
+# Quasar App (gainstrack)
 
 A Quasar Framework app
 
