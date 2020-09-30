@@ -1,5 +1,5 @@
 import {SingleFXConversion, SingleFXConverter} from '../lib/fx'
-import axios from 'axios'
+import axios, {AxiosRequestConfig} from 'axios'
 import Vue from 'vue'
 import Vuex from 'vuex'
 import {
@@ -51,6 +51,19 @@ const initState: MyState = {
 type FXConverterWrapper = ((fx: SingleFXConversion) => SingleFXConverter)
 
 export default function () {
+
+  let requestPreprocessor = async (config:AxiosRequestConfig):Promise<AxiosRequestConfig> => {
+    return config;
+  }
+
+  axios.interceptors.request.use(function (config) {
+    return requestPreprocessor(config);
+  }, function (error) {
+    // Do something with request error
+    return Promise.reject(error);
+  });
+
+
   const Store = new Vuex.Store<MyState>({
     state: initState,
     mutations: {
@@ -216,12 +229,15 @@ export default function () {
 
         return summary
       },
-      async loginWithToken (context, token: string) {
-        const headers = {
-            Authorization: `Bearer ${token}` // send the access token through the 'Authorization' header
-          }
+      async loginWithToken (context, auth) {
 
-        axios.defaults.headers.common = headers;
+        requestPreprocessor = async (config) => {
+          const token = await auth.getTokenSilently();
+          config.headers.common = {
+            Authorization: `Bearer ${token}` // send the access token through the 'Authorization' header
+          };
+          return config;
+        }
 
         const summary = await axios.post('/api/authn/login', {});
         // Get stuff in background
@@ -231,7 +247,7 @@ export default function () {
       },
       async logout (context, data: Record<string, any>) {
         const summary = await axios.post('/api/authn/logout', data);
-        axios.defaults.headers.common = {}
+        requestPreprocessor = async (config) => config;
         await context.dispatch('loadAllState');
         return summary
       },
