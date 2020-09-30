@@ -48,3 +48,16 @@ Proxy the mysql instance as localhost with this
 `AUTH0_DOMAIN` - e.g gainstrack.auth0.com
 `AUTH0_AUDIENCE` - e.g. https://poc.gainstrack.com
 `AUTH0_CLIENT` - e.g. UjVvEmeNTbgIEU6g60h1xvvvBPL4vJqi
+
+### Build instructions
+
+Front end client build can be buit and submitted with
+```bash
+cd client
+quasar build
+firebase deploy --only hosting
+```
+
+Backend app server image can be built and submitted with
+`gcloud builds submit --config cloudbuild.yaml`
+

@@ -27,6 +27,10 @@ For online use
 
 
 ### Release notes
+###### v1.3.0
+Sep
+- Refactored auth0 login integration for better stability
+
 ###### v1.2.0
 16 August
 - Whole architecture has been revamped. Now following a serverless architecture inspired off the https://www.covibes.org project
