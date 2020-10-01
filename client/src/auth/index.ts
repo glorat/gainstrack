@@ -109,7 +109,9 @@ export const useAuth0 = ({
     async created() {
       const moreOpts = {
         useRefreshTokens: true,
-        cacheLocation: (process.env.NODE_ENV === 'development') ? 'localstorage' : 'memory' as 'memory' | 'localstorage'
+        // Since we are not using auth0 custom domains, this is the only way to more reliably
+        // get the client to remember its authentication status across refreshes
+        cacheLocation: 'localstorage' as 'memory' | 'localstorage'
       };
 
       // Create a new instance of the SDK client using members of the given options object
