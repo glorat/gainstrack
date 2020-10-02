@@ -2,7 +2,6 @@ import {SingleFXConversion, SingleFXConverter} from 'src/lib/fx';
 import {AccountCommandDTO, AssetDTO} from 'src/lib/models';
 import {intDateToIsoDate, Interpolator, linearInterpolateValue} from 'src/lib/SortedColumnMap';
 import {LocalDate} from '@js-joda/core';
-import { uniq } from 'lodash';
 
 type AssetId = string
 
@@ -158,7 +157,7 @@ class BookPricer implements Pricer {
     this.baseCcy = tradeFx.baseCcy;
   }
 
-  quotesRequired(asset:AssetDTO): string[] {
+  quotesRequired(): string[] {
     return [];
   }
 

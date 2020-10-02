@@ -12,7 +12,7 @@ import {
 } from '../lib/models'
 import {GlobalPricer} from 'src/lib/pricer';
 import {AllStateEx} from 'src/lib/AllStateEx';
-import { includes, uniq, flatten, merge, keys, mergeWith } from 'lodash'
+import { includes, keys, mergeWith } from 'lodash'
 import {balanceTreeTable} from 'src/lib/TreeTable';
 import {LocalDate} from '@js-joda/core';
 
@@ -134,9 +134,7 @@ export default function () {
         }
       },
       async loadQuotes (context, ccy: string): Promise<TimeSeries> {
-        // TODO: Elegantly remove the reliance on fxMapper/proxyMapper and use GlobalPricer
-        const cmds = context.state.allState.commands;
-        const assets = cmds.filter(x => x.commandType === 'commodity');
+        // Rely on pricing dependencies to load from just the right date
         const quoteDeps = context.getters.quoteDeps;
         const deps = quoteDeps[ccy];
 

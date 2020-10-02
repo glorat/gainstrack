@@ -61,7 +61,7 @@
   import {SingleFXConverter} from 'src/lib/fx';
   import {LocalDate} from '@js-joda/core';
   import {assetReport} from 'src/lib/assetReport';
-  import EventBus from "src/event-bus";
+  import EventBus from 'src/event-bus';
 
   export default Vue.extend({
     name: 'Account',
