@@ -129,12 +129,6 @@ export interface AssetDTO {
     options: AssetOptions
 }
 
-export interface AssetState {
-    allAssets: AssetDTO[]
-    assetToTags: Record<string, string[]>
-    tagToAssets: Record<string, string[]>
-}
-
 export interface BalanceStateSeries {
     series: Record<string, number>
     ccy: string
@@ -160,7 +154,7 @@ export interface StateSummaryDTO {
 export interface AllState extends StateSummaryDTO {
   accounts: AccountDTO[]
   commands: AccountCommandDTO[]
-  assetState: AssetState
+  assetState: AssetDTO[]
   balances: Record<string, BalanceStateSeries>
   txs: (Transaction | AccountCommandDTO)[]
   priceState: PriceState
@@ -174,7 +168,7 @@ export const emptyAllState: AllState = {
   authentication: {username: ''},
   baseCcy: '', ccys: [],
   commands: [],
-  assetState: {allAssets:[], assetToTags:{}, tagToAssets:{}},
+  assetState: [],
   balances: {},
   txs: [],
   priceState: {ccys:[], prices:{} },

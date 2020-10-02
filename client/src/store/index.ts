@@ -12,7 +12,7 @@ import {
 } from '../lib/models'
 import {GlobalPricer} from 'src/lib/pricer';
 import {AllStateEx} from 'src/lib/AllStateEx';
-import { includes } from 'lodash'
+import { includes, uniq, flatten, merge, keys, mergeWith } from 'lodash'
 import {balanceTreeTable} from 'src/lib/TreeTable';
 import {LocalDate} from '@js-joda/core';
 
@@ -137,28 +137,16 @@ export default function () {
         // TODO: Elegantly remove the reliance on fxMapper/proxyMapper and use GlobalPricer
         const cmds = context.state.allState.commands;
         const assets = cmds.filter(x => x.commandType === 'commodity');
+        const quoteDeps = context.getters.quoteDeps;
+        const deps = quoteDeps[ccy];
 
-        const ccyToSymbol = (ccy:string):string => {
-          const allState = context.state.allState;
-          if (allState.fxMapper[ccy]) {
-            return allState.fxMapper[ccy]
-          } else if (allState.proxyMapper[ccy]) {
-            return allState.proxyMapper[ccy]
-          } else {
-            return ccy;
-          }
-        };
-
-
-        const key = ccyToSymbol(ccy);
         // All posting ccys that depend on this ccy
-        const deps = assets.filter(x => x.options?.proxy === key || x.options?.ticker === key).map(x => x.asset)
         const depFilter = (p:PostingEx) => includes(deps, p.value.ccy);
         // Only obtain from lowest date
         const allPostingsEx: PostingEx[] = context.getters.allPostingsEx;
         const dts = allPostingsEx.filter(depFilter).map(p => p.date).sort();
         const fromDate = dts[0];
-        const arg = {key, fromDate};
+        const arg = {key: ccy, fromDate};
         return await context.dispatch('loadQuotesEx', arg);
       },
       async loadQuotesEx (context, args: {key: string, fromDate: string}): Promise<TimeSeries> {
@@ -205,11 +193,14 @@ export default function () {
       async loadAllState (context) {
         const response = await axios.get('/api/allState');
         await context.commit('allStateLoaded', response.data);
-        const ccys: string[] = response.data.priceState.ccys;
-        // NOTE: These are all async calls being ignored
-        ccys.forEach(ccy => {
-          this.dispatch('loadQuotes', ccy);
-        });
+        const quoteDeps = context.getters.quoteDeps;
+        const quotesToLoad = keys(quoteDeps);
+        console.log(`Pre-load quotes for ${quotesToLoad.join(',')}`);
+        for (const i in quotesToLoad) {
+          //console.log(`before ${quotesToLoad[i]}`);
+          await this.dispatch('loadQuotes', quotesToLoad[i]);
+          //console.log(`after ${quotesToLoad[i]}`);
+        }
 
         await context.dispatch('balances');
 
@@ -319,6 +310,14 @@ export default function () {
         const identity: FXConverterWrapper = x => x;
         const curried = getters.customFxConverter;
         return curried(identity)
+      },
+      quoteDeps: (state, getters) => {
+        const pricer:GlobalPricer = getters.fxConverter;
+        const assets = state.allState.assetState;
+        const reducer = (prev:Record<string, string[]>, item: Record<string, string[]>) => mergeWith(prev, item, (x,y) => (x||[]).concat(y));
+        const allDeps = assets.map(asset => pricer.quotesRequired(asset));
+        const quoteDeps = allDeps.reduce(reducer, {});
+        return quoteDeps;
       },
       allTxs: (state, getters):Transaction[] => {
         return getters.allStateEx.allTxs()

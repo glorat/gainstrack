@@ -2,12 +2,15 @@ import {SingleFXConversion, SingleFXConverter} from 'src/lib/fx';
 import {AccountCommandDTO, AssetDTO} from 'src/lib/models';
 import {intDateToIsoDate, Interpolator, linearInterpolateValue} from 'src/lib/SortedColumnMap';
 import {LocalDate} from '@js-joda/core';
+import { uniq } from 'lodash';
 
 type AssetId = string
 
 interface Pricer {
   id: string
   label: string
+  /** Quotes required for both canPrice and getPrice, so that they can be pre-loaded */
+  quotesRequired(asset:AssetDTO): string[]
   canPrice(asset:AssetDTO):boolean
   getPrice(asset:AssetDTO, tgtCcy: AssetId, date: LocalDate): number|undefined
   latestDate(asset: AssetDTO, tgtCcy: AssetId, date: LocalDate): LocalDate|undefined
@@ -55,6 +58,18 @@ export class GlobalPricer implements SingleFXConverter {
     return this.assetCommands.find(a => a.asset === asset)
   }
 
+  quotesRequired(asset:AssetDTO): Record<string, string[]> {
+    return this.pricers.reduce(
+      (prev, pricer) => {
+        const qts = pricer.quotesRequired(asset);
+        qts.forEach(qt => {
+          if (!prev[qt]) prev[qt] = [];
+          prev[qt].push(asset.asset);
+        });
+        return prev;
+      }, {} as Record<string, string[]>);
+  }
+
   protected modelFor(asset: AssetDTO): Pricer | undefined {
     const pricer = this.pricers.find(pricer => pricer.canPrice(asset))
     return pricer;
@@ -94,10 +109,27 @@ class FXPricer implements Pricer {
     this.baseCcy = singleFXConversion.baseCcy;
   }
 
+  static isIso(ccy: string) {
+    // A temporary shortcut until we load a proper list
+    return ccy.length === 3;
+  }
+
+  quotesRequired(asset:AssetDTO): string[] {
+    if (asset.options.ticker) {
+      return [asset.options.ticker]
+    } else if (FXPricer.isIso(asset.asset)) {
+      return [asset.asset]
+    } else {
+      return [];
+    }
+  }
+
   canPrice(asset:AssetDTO) {
     // TODO: Or is an ISO symbol
-    return ((!!asset.options.ticker) && this.singleFXConverter.getFX(asset.options.ticker, this.baseCcy, LocalDate.MAX) !== undefined)
-      || this.singleFXConverter.getFX(asset.asset, this.baseCcy, LocalDate.MAX) !== undefined;
+    // const eligible = (!!asset.options.ticker) || (FXPricer.isIso(asset.asset));
+    const tickerEligible = () => (!!asset.options.ticker) && (this.singleFXConverter.getFX(asset.options.ticker, this.baseCcy, LocalDate.MAX) !== undefined)
+    const isoEligible = () => (FXPricer.isIso(asset.asset) && this.singleFXConverter.getFX(asset.asset, this.baseCcy, LocalDate.MAX) !== undefined)
+    return tickerEligible() || isoEligible();
 
   }
 
@@ -126,6 +158,10 @@ class BookPricer implements Pricer {
     this.baseCcy = tradeFx.baseCcy;
   }
 
+  quotesRequired(asset:AssetDTO): string[] {
+    return [];
+  }
+
   canPrice(asset:AssetDTO) {
     // TODO: Or is an ISO symbol
     return this.tradeFx.getFX(asset.asset, this.baseCcy, LocalDate.now()) !== undefined;
@@ -150,6 +186,14 @@ export class ProxyPricer implements Pricer {
 
   constructor(readonly tradeFx: SingleFXConversion, readonly marketFx: SingleFXConverter) {
     // this.baseCcy = marketFx.baseCcy;
+  }
+
+  quotesRequired(asset:AssetDTO): string[] {
+    if (asset.options.proxy) {
+      return [asset.options.proxy]
+    } else {
+      return [];
+    }
   }
 
   canPrice(asset:AssetDTO) {
@@ -185,6 +229,7 @@ export class ProxyPricer implements Pricer {
         } else if (nearest.low) {
           return nearest.low
         } else if (nearest.high) {
+
           // Extrapolate from market
           const lastEntry = this.tradeFx.state[fx1];
           const lastDate = lastEntry.ks[lastEntry.ks.length-1];
