@@ -134,19 +134,19 @@
     },
     watch: {
       conversion() {
-        this.refresh(this.accountId)
+        this.refresh()
       },
       reloadCounter() {
-        this.refresh(this.accountId)
+        this.refresh()
       }
     },
     methods: {
       onTabPanelChanged() {
         EventBus.$emit('account-tab-changed', this.tab);
       },
-      async refresh (path: string) {
+      async refresh (props?: Record<string, any>) {
         try {
-          this.assetResponse = await apiAssetsReport(this.$store, {path});
+          this.assetResponse = await apiAssetsReport(this.$store, props ?? this.$props);
         } catch (error) {
           console.error(error)
           this.$notify.error(error)
@@ -154,12 +154,12 @@
       }
     },
     mounted() {
-      this.refresh(this.accountId)
+      this.refresh()
     },
     beforeRouteUpdate(to, from, next) {
       // react to route changes...
       // don't forget to call next()
-      this.refresh(to.params.accountId)
+      this.refresh(to.params)
       next()
     }
   })

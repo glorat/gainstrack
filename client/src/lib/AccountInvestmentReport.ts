@@ -98,7 +98,7 @@ class Cashflow {
   }
 }
 
-class CashflowTable {
+export class CashflowTable {
   cashflows: Cashflow[]
   constructor(cashflows: Cashflow[]) {
     this.cashflows = cashflows.sort( (a,b) => a.date.compareTo(b.date))
