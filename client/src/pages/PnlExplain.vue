@@ -113,13 +113,11 @@
 </template>
 
 <script>
-    import axios from 'axios';
     import {DatePicker, Link} from 'element-ui';
 
     import HelpTip from '../components/HelpTip';
-    import { LocalDate } from '@js-joda/core'
-    import { pnlExplainMonthly } from '../lib/PLExplain'
-    import { mapGetters } from 'vuex'
+    import { mapGetters } from 'vuex';
+    import { apiPnlExplainMonthly } from '../lib/apiFacade';
 
 
     export default {
@@ -145,17 +143,8 @@
         methods: {
           async refresh() {
             const notify = this.$notify;
-            const localCompute = true;
             try {
-              if (localCompute) {
-                const allCmds = this.$store.state.allState.commands;
-                const baseDate = LocalDate.now();
-                this.explains = pnlExplainMonthly(baseDate, this.allPostingsEx, allCmds, this.baseCcy, this.fxConverter);
-              } else {
-                const response = await axios.get('/api/pnlexplain/monthly');
-                this.explains = response.data;
-              }
-
+              this.explains = await apiPnlExplainMonthly(this.$store);
             } catch (error) {
               console.error(error);
               notify.error(error);

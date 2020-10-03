@@ -132,13 +132,11 @@
 </template>
 
 <script>
-    import axios from 'axios';
-    import {mapGetters} from 'vuex';
-    import CommandDateEditor from '../components/CommandDateEditor'
-    import {pnlExplain} from 'src/lib/PLExplain';
-    import {LocalDate} from '@js-joda/core';
+  import { mapGetters } from 'vuex'
+  import CommandDateEditor from '../components/CommandDateEditor'
+  import { apiPnlExplainDetail } from 'src/lib/apiFacade'
 
-    export default {
+  export default {
         name: 'PnlExplainDetail',
         props: ['fromDate', 'toDate'],
         components: {CommandDateEditor},
@@ -168,18 +166,9 @@
             },
             async refresh(args) {
                 const notify = this.$notify;
-                const localCompute = true;
                 try {
-                  if (localCompute) {
-                    const startDate = LocalDate.parse(this.fromDate);
-                    const endDate = LocalDate.parse(this.toDate)
-                    const allCmds = this.$store.state.allState.commands;
-                    this.explains = [pnlExplain(startDate, endDate, this.allPostingsEx, allCmds, this.baseCcy, this.fxConverter)]
-                  } else {
-                    const response = await axios.post('/api/pnlexplain', args)
-                    this.explains = response.data;
-
-                  }
+                  const {fromDate, toDate} = args;
+                  this.explains = await apiPnlExplainDetail(this.$store, {fromDate, toDate})
                 }
                 catch(error) {
                   console.error(error);

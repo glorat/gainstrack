@@ -10,7 +10,7 @@ import {
 import { keys, groupBy, sum, range } from 'lodash';
 import {SingleFXConverter} from 'src/lib/fx';
 
-interface PLExplainDTO {
+export interface PLExplainDTO {
   fromDate: string, toDate: string
   toNetworth: number, networthChange: number
   actual: number, explained: number, unexplained: number

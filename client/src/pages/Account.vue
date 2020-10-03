@@ -39,7 +39,6 @@
 </template>
 
 <script lang="ts">
-  import axios from 'axios'
   import Vue from 'vue';
   import JournalTable from '../components/JournalTable.vue'
   import ConversionSelect from '../components/ConversionSelect.vue'
@@ -54,14 +53,13 @@
     commandPostingsWithBalance,
     CommandPostingsWithBalance,
     displayConvertedPositionSet,
-    isSubAccountOf, positionUnderAccount,
+    isSubAccountOf,
     postingsByCommand
   } from 'src/lib/utils';
-  import {AccountDTO, NetworthByAsset, Posting, PostingEx} from 'src/lib/models';
-  import {SingleFXConverter} from 'src/lib/fx';
+  import {AccountDTO, NetworthByAsset, Posting} from 'src/lib/models';
   import {LocalDate} from '@js-joda/core';
-  import {assetReport} from 'src/lib/assetReport';
   import EventBus from 'src/event-bus';
+  import {apiAssetsReport} from 'src/lib/apiFacade';
 
   export default Vue.extend({
     name: 'Account',
@@ -148,25 +146,9 @@
       },
       async refresh (path: string) {
         try {
-          const localCompute = true;
-          if (!localCompute) {
-            const res2 = await axios.get('/api/assets/' + path)
-            this.assetResponse = res2.data
-          } else {
-            // Gather dependencies
-            const allPostings: PostingEx[] = this.allPostingsEx;
-            const pricer: SingleFXConverter = this.fxConverter;
-            const baseCcy = this.baseCcy;
-            const date = LocalDate.now();
-            const pSet = positionUnderAccount(allPostings, path);
-            const assetResponse = assetReport(pSet, pricer, baseCcy, date);
-
-            this.assetResponse = assetResponse;
-            // this.assetResponse.rows = rows;
-          }
-
-
+          this.assetResponse = await apiAssetsReport(this.$store, {path});
         } catch (error) {
+          console.error(error)
           this.$notify.error(error)
         }
       }
