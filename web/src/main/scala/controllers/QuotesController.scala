@@ -57,4 +57,28 @@ class QuotesController(implicit val ec :ExecutionContext)
     )
   }
 
+  post ("/tickers") {
+    val body = parsedBody.extract[QuotesRequest]
+
+    val fx = ServerQuoteSource.db.priceFXConverter
+    val res = body.quotes.flatMap(req => {
+      val ticker = req.name
+      fx.data.get(AssetId(ticker)).flatMap(data => {
+        req.fromDate.map(fromDate => {
+          val idx = data.iota(fromDate)
+          if (idx>=0) {
+            Map("x" -> data.ks.drop(idx), "y" -> data.vs.drop(idx), "name" -> ticker)
+          } else {
+            Map("x" -> Seq(data.ks.last), "y" -> Seq(data.vs.last), "name" -> ticker)
+          }
+        })
+      })
+    })
+    res
+
+  }
+
 }
+
+case class QuoteRequestConfig(name: String, fromDate: Option[LocalDate])
+case class QuotesRequest(quotes: Seq[QuoteRequestConfig])

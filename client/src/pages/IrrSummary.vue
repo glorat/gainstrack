@@ -27,32 +27,38 @@
 <script>
   import numbro from 'numbro'
   import { apiIrrSummary } from 'src/lib/apiFacade'
+  import { mapGetters } from 'vuex'
 
   export default {
-        name: 'IrrSummary',
-        data() {
-            return {info: []}
-        },
-        filters: {
-          numeral: (value, format) => numbro(value).format(format)
-        },
-      methods: {
-        async refresh() {
-          const notify = this.$notify;
-          try {
-            this.info = await apiIrrSummary(this.$store)
-          } catch (error) {
-            console.error(error);
-            notify.error(error)
-          }
+    name: 'IrrSummary',
+    data () {
+      return { info: [] }
+    },
+    filters: {
+      numeral: (value, format) => numbro(value).format(format)
+    },
+    methods: {
+      async refresh () {
+        const notify = this.$notify;
+        try {
+          this.info = await apiIrrSummary(this.$store)
+        } catch (error) {
+          console.error(error);
+          notify.error(error)
         }
-      },
-      computed: {
-      },
-      mounted() {
+      }
+    },
+    computed: {
+      ...mapGetters([,
+        'fxConverter',
+      ]),
+    },
+    watch: {
+      fxConverter () {
         this.refresh()
-      },
-    }
+      }
+    },
+  }
 </script>
 
 <style scoped>

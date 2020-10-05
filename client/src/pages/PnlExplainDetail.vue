@@ -145,6 +145,7 @@
                 'baseCcy',
               'allPostingsEx',
               'fxConverter',
+              'allStateEx',
             ]),
             explainData() {
                 return this.explains[0]
@@ -166,8 +167,11 @@
             },
             async refresh(args) {
                 const notify = this.$notify;
+                const params = args ?? this.$props;
+                if (!params) debugger;
                 try {
-                  const {fromDate, toDate} = args;
+                  const {fromDate, toDate} = params;
+                  if (!fromDate) debugger;
                   this.explains = await apiPnlExplainDetail(this.$store, {fromDate, toDate})
                 }
                 catch(error) {
@@ -176,13 +180,11 @@
                 }
             },
         },
-        mounted() {
-            const args = {
-                fromDate: this.fromDate,
-                toDate: this.toDate
-            };
-            this.refresh(args);
-        },
+    watch: {
+      fxConverter () {
+        this.refresh()
+      }
+    },
         data() {
             return {
                 explains: [],

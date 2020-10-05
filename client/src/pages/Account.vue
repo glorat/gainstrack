@@ -138,6 +138,9 @@
       },
       reloadCounter() {
         this.refresh()
+      },
+      fxConverter() {
+        this.refresh()
       }
     },
     methods: {
@@ -152,9 +155,6 @@
           this.$notify.error(error)
         }
       }
-    },
-    mounted() {
-      this.refresh()
     },
     beforeRouteUpdate(to, from, next) {
       // react to route changes...

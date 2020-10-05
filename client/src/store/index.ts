@@ -95,6 +95,11 @@ export default function () {
         Vue.set(state.quotes, data.key, data.series)
         // state.quotes[data.key] = data.series;
       },
+      multiQuotesUpserted(state: MyState, data: { key: string, series: TimeSeries }[]) {
+        data.forEach(row => {
+          Vue.set(state.quotes, row.key, row.series);
+        })
+      },
       conversionApplied(state: MyState, conversion: string) {
         state.conversion = conversion;
       },
@@ -133,34 +138,44 @@ export default function () {
           }
         }
       },
-      async loadQuotes (context, ccy: string): Promise<TimeSeries> {
-        // Rely on pricing dependencies to load from just the right date
+      async loadMultiQuotes(context, ccys: string[]): Promise<TimeSeries[]> {
         const quoteDeps = context.getters.quoteDeps;
-        const deps = quoteDeps[ccy];
+        const reqs = ccys.map(ccy => {
+          const deps = quoteDeps[ccy];
 
-        // All posting ccys that depend on this ccy
-        const depFilter = (p:PostingEx) => includes(deps, p.value.ccy);
-        // Only obtain from lowest date
-        const allPostingsEx: PostingEx[] = context.getters.allPostingsEx;
-        const dts = allPostingsEx.filter(depFilter).map(p => p.date).sort();
-        const fromDate = dts[0];
-        const arg = {key: ccy, fromDate};
-        return await context.dispatch('loadQuotesEx', arg);
+          // All posting ccys that depend on this ccy
+          const depFilter = (p:PostingEx) => includes(deps, p.value.ccy);
+          // Only obtain from lowest date
+          const allPostingsEx: PostingEx[] = context.getters.allPostingsEx;
+          const dts = allPostingsEx.filter(depFilter).map(p => p.date).sort();
+          const fromDate = dts[0];
+          return {name: ccy, fromDate};
+        });
+        // To prevent stampeding horde and repeated requests to not-exists
+        const blanks = reqs.map(req => {return { key: req.name, series: { x: [], y: [], name: req.name }}});
+        context.commit('multiQuotesUpserted', blanks);
+
+        const response = await axios.post('/api/quotes/tickers', {quotes: reqs});
+        const multiSeries: TimeSeries[] = response.data;
+        context.commit('multiQuotesUpserted', multiSeries.map(row => {return {key:row.name, series: row}}));
+        return multiSeries;
       },
-      async loadQuotesEx (context, args: {key: string, fromDate: string}): Promise<TimeSeries> {
-        const {key, fromDate} = args;
-        if (context.state.quotes[key]) {
+      async loadQuotes (context, ccy: string): Promise<TimeSeries> {
+        const quoteDeps = context.getters.quoteDeps;
+        const key = quoteDeps[ccy];
+        if (key && context.state.quotes[key]) {
           return context.state.quotes[key]
         } else {
-          // Commit a placeholder first to prevent stampeding horde
-          console.log(`Loading quotes for ${key}`);
-          context.commit('quotesUpserted', { key, series: { x: [], y: [], name: key } });
-          const params = {fromDate};
-          const response = await axios.get('/api/quotes/ticker/' + key, {params});
-          const series: TimeSeries = response.data;
-          context.commit('quotesUpserted', { key, series });
-          console.log(`Applied quotes for ${key}`);
-          return series
+          const multi = await context.dispatch('loadMultiQuotes', [ccy]);
+          return multi[0];
+        }
+      },
+      async loadQuotesRaw (context, key: string): Promise<TimeSeries> {
+        if (key && context.state.quotes[key]) {
+          return context.state.quotes[key]
+        } else {
+          const multi = await context.dispatch('loadMultiQuotes', [key]);
+          return multi[0];
         }
       },
       async gainstrackText (context) {
@@ -194,11 +209,12 @@ export default function () {
         const quoteDeps = context.getters.quoteDeps;
         const quotesToLoad = keys(quoteDeps);
         console.log(`Pre-load quotes for ${quotesToLoad.join(',')}`);
-        for (const i in quotesToLoad) {
-          //console.log(`before ${quotesToLoad[i]}`);
-          await this.dispatch('loadQuotes', quotesToLoad[i]);
-          //console.log(`after ${quotesToLoad[i]}`);
-        }
+        // for (const i in quotesToLoad) {
+        //   //console.log(`before ${quotesToLoad[i]}`);
+        //   await this.dispatch('loadQuotes', quotesToLoad[i]);
+        //   //console.log(`after ${quotesToLoad[i]}`);
+        // }
+        await this.dispatch('loadMultiQuotes', quotesToLoad);
 
         await context.dispatch('balances');
 
