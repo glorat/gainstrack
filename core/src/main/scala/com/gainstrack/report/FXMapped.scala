@@ -49,6 +49,8 @@ class FXProxy(mapper:Map[AssetId, AssetId], tradeFx: SingleFXConversion, marketF
                   Some(proxyVal)
                 }
                 else {
+                  // FIXME: Surely return lastTrade in this case!
+                  // see also git commit 651a905
                   None
                 }
               })

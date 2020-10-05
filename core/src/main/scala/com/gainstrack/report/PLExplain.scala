@@ -6,6 +6,11 @@ import com.gainstrack.core._
 class PLExplain(startDate: LocalDate, toDate: LocalDate)
                (implicit accountState: AccountState, transactionState: TransactionState, balanceState: BalanceState, priceState: PriceFXConverter, assetChainMap: AssetChainMap, singleFXConversion: SingleFXConverter) {
 
+//  val d1 = singleFXConversion.getFX("GOLD", "GBP", parseDate("2020-04-01"))
+//  val d2 = singleFXConversion.getFX("GOLD", "GBP", parseDate("2020-04-30"))
+//  println(d1)
+//  println(d2)
+
   // To include startDate, we must be at the start of startDate, which is the
   // end-of-day of the previous day!
   val fromDate = startDate.minusDays(1)
