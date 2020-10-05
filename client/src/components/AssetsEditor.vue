@@ -22,7 +22,7 @@
         <td>
           {{ pricerLabelFor(asset)}}
         </td>
-        <td>
+        <td class="num">
           {{ priceFor(asset)}}
         </td>
         <td>
@@ -78,6 +78,7 @@
   import {AccountCommandDTO} from 'src/lib/models';
   import {mapGetters} from 'vuex';
   import {LocalDate} from '@js-joda/core';
+  import {formatNumber} from "src/lib/utils";
 
   export default Vue.extend({
     name: 'AssetsEditor',
@@ -120,7 +121,8 @@
       priceFor(asset: AccountCommandDTO) {
         const pricer = this.globalPricer;
         const today = LocalDate.now();
-        return pricer.getFX(asset.asset??'', this.baseCcy, today)
+        const price = pricer.getFX(asset.asset??'', this.baseCcy, today);
+        return formatNumber(price);
       },
       assetTouched (asset: AccountCommandDTO) {
         this.$set(asset, 'dirty', true)
