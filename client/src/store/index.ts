@@ -215,6 +215,7 @@ export default function () {
         //   //console.log(`after ${quotesToLoad[i]}`);
         // }
         await this.dispatch('loadMultiQuotes', quotesToLoad);
+        console.log('Pre-load of quotes complete');
 
         await context.dispatch('balances');
 

@@ -58,6 +58,9 @@
         this.refresh()
       }
     },
+    mounted () {
+      this.refresh();
+    }
   }
 </script>
 

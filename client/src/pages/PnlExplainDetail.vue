@@ -185,7 +185,11 @@
         this.refresh()
       }
     },
-        data() {
+    mounted () {
+      console.error('pnld mounted');
+      this.refresh()
+    },
+    data() {
             return {
                 explains: [],
             }
