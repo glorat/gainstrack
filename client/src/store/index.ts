@@ -1,4 +1,4 @@
-import {FXChain, FXMapped, FXProxy, SingleFXConversion, SingleFXConverter} from '../lib/fx'
+import {SingleFXConversion, SingleFXConverter} from '../lib/fx'
 import axios, {AxiosRequestConfig} from 'axios'
 import Vue from 'vue'
 import Vuex from 'vuex'
@@ -6,13 +6,15 @@ import {
   AccountDTO,
   AllState,
   emptyAllState,
-  isTransaction,
-  Posting,
   PostingEx,
   QuoteConfig,
-  Transaction
+  Transaction, TreeTableDTO
 } from '../lib/models'
-import {flatten} from 'lodash'
+import {GlobalPricer} from 'src/lib/pricer';
+import {AllStateEx} from 'src/lib/AllStateEx';
+import { includes, keys, mergeWith } from 'lodash'
+import {balanceTreeTable} from 'src/lib/TreeTable';
+import {LocalDate} from '@js-joda/core';
 
 Vue.use(Vuex);
 
@@ -24,22 +26,26 @@ export interface TimeSeries {
 
 export interface MyState {
   allState: AllState,
+  dateOverride?: LocalDate
   count: number,
   quoteConfig: QuoteConfig[],
   balances: AccountBalances,
   parseState: Record<string, unknown>,
   gainstrackText: string,
-  quotes: Record<string, TimeSeries>
+  quotes: Record<string, TimeSeries>,
+  conversion: string
 }
 
 const initState: MyState = {
   allState: emptyAllState,
+  dateOverride: undefined,
   count: 0,
   quoteConfig: [],
   balances: {},
   parseState: { errors: [] },
   gainstrackText: '',
-  quotes: {}
+  quotes: {},
+  conversion: 'parent',
 };
 
 type FXConverterWrapper = ((fx: SingleFXConversion) => SingleFXConverter)
@@ -88,55 +94,88 @@ export default function () {
       quotesUpserted (state: MyState, data: { key: string, series: TimeSeries }) {
         Vue.set(state.quotes, data.key, data.series)
         // state.quotes[data.key] = data.series;
+      },
+      multiQuotesUpserted(state: MyState, data: { key: string, series: TimeSeries }[]) {
+        data.forEach(row => {
+          Vue.set(state.quotes, row.key, row.series);
+        })
+      },
+      conversionApplied(state: MyState, conversion: string) {
+        state.conversion = conversion;
+      },
+      dateOverriden(state: MyState, dt: LocalDate) {
+        state.dateOverride = dt;
       }
     },
     actions: {
       increment (context) {
         context.commit('increment')
       },
-      balances (context) {
+      async balances (context) {
+        const getters = context.getters;
+        const localCompute = true;
         if (!context.state.balances.Assets) {
-          return axios.get('/api/balances/')
-            .then(response => {
-              context.commit('balances', response.data);
-              return response
-            })
+          if (localCompute) {
+            const state:MyState = context.state;
+            const conversion = state.conversion;
+            const today = state.dateOverride ?? LocalDate.now();
+            const forCategory = (cat:string) => balanceTreeTable(cat, today, getters.baseCcy, conversion,
+              state.allState.accounts, getters.allPostingsEx, getters.fxConverter)
+            const foo: AccountBalances = {
+              Assets: forCategory('Assets'),
+              Liabilities: forCategory('Liabilities'),
+              Expenses: forCategory('Expenses'),
+              Income: forCategory('Income'),
+              Equities: forCategory('Equity')
+            }
+            context.commit('balances', foo);
+            return foo
+          } else {
+            const response = await axios.get('/api/balances/')
+            context.commit('balances', response.data);
+            return response
+
+          }
         }
       },
-      async loadQuotes (context, ccy: string): Promise<TimeSeries> {
-        const ccyToSymbol = (ccy:string):string => {
-          const allState = context.state.allState;
-          if (allState.fxMapper[ccy]) {
-            return allState.fxMapper[ccy]
-          } else if (allState.proxyMapper[ccy]) {
-            return allState.proxyMapper[ccy]
-          } else {
-            return ccy;
-          }
-        };
+      async loadMultiQuotes(context, ccys: string[]): Promise<TimeSeries[]> {
+        const quoteDeps = context.getters.quoteDeps;
+        const reqs = ccys.map(ccy => {
+          const deps = quoteDeps[ccy];
 
-        const key = ccyToSymbol(ccy);
-        // Only obtain from lowest date
-        const allPostingsEx: PostingEx[] = context.getters.allPostingsEx;
-        const dts = allPostingsEx.filter(p => p.value.ccy === ccy).map(p => p.date).sort();
-        const fromDate = dts[0];
-        const arg = {key, fromDate};
-        return await context.dispatch('loadQuotesEx', arg);
+          // All posting ccys that depend on this ccy
+          const depFilter = (p:PostingEx) => includes(deps, p.value.ccy);
+          // Only obtain from lowest date
+          const allPostingsEx: PostingEx[] = context.getters.allPostingsEx;
+          const dts = allPostingsEx.filter(depFilter).map(p => p.date).sort();
+          const fromDate = dts[0];
+          return {name: ccy, fromDate};
+        });
+        // To prevent stampeding horde and repeated requests to not-exists
+        const blanks = reqs.map(req => {return { key: req.name, series: { x: [], y: [], name: req.name }}});
+        context.commit('multiQuotesUpserted', blanks);
+
+        const response = await axios.post('/api/quotes/tickers', {quotes: reqs});
+        const multiSeries: TimeSeries[] = response.data;
+        context.commit('multiQuotesUpserted', multiSeries.map(row => {return {key:row.name, series: row}}));
+        return multiSeries;
       },
-      async loadQuotesEx (context, args: {key: string, fromDate: string}): Promise<TimeSeries> {
-        const {key, fromDate} = args;
-        if (context.state.quotes[key]) {
+      async loadQuotes (context, ccy: string): Promise<TimeSeries> {
+        const quoteDeps = context.getters.quoteDeps;
+        const key = quoteDeps[ccy];
+        if (key && context.state.quotes[key]) {
           return context.state.quotes[key]
         } else {
-          // Commit a placeholder first to prevent stampeding horde
-          console.log(`Loading quotes for ${key}`);
-          context.commit('quotesUpserted', { key, series: { x: [], y: [], name: key } });
-          const params = {fromDate};
-          const response = await axios.get('/api/quotes/ticker/' + key, {params});
-          const series: TimeSeries = response.data;
-          context.commit('quotesUpserted', { key, series });
-          console.log(`Applied quotes for ${key}`);
-          return series
+          const multi = await context.dispatch('loadMultiQuotes', [ccy]);
+          return multi[0];
+        }
+      },
+      async loadQuotesRaw (context, key: string): Promise<TimeSeries> {
+        if (key && context.state.quotes[key]) {
+          return context.state.quotes[key]
+        } else {
+          const multi = await context.dispatch('loadMultiQuotes', [key]);
+          return multi[0];
         }
       },
       async gainstrackText (context) {
@@ -153,6 +192,7 @@ export default function () {
       },
       async conversion (context, c: string) {
         await axios.post('/api/state/conversion', { conversion: c });
+        context.commit('conversionApplied', c);
         return await this.dispatch('reload')
       },
       async reload (context) {
@@ -161,33 +201,37 @@ export default function () {
 
         const quotesConfig = await axios.get('/api/quotes/config');
         await context.commit('reloadedQuotesConfig', quotesConfig.data);
-        // Since components don't know to retrigger this if already on display, let's get it for them
-        await context.dispatch('balances');
         return response
       },
       async loadAllState (context) {
         const response = await axios.get('/api/allState');
         await context.commit('allStateLoaded', response.data);
-        const ccys: string[] = response.data.priceState.ccys;
-        // NOTE: These are all async calls being ignored
-        ccys.forEach(ccy => {
-          this.dispatch('loadQuotes', ccy);
-        });
+        const quoteDeps = context.getters.quoteDeps;
+        const quotesToLoad = keys(quoteDeps);
+        console.log(`Pre-load quotes for ${quotesToLoad.join(',')}`);
+        // for (const i in quotesToLoad) {
+        //   //console.log(`before ${quotesToLoad[i]}`);
+        //   await this.dispatch('loadQuotes', quotesToLoad[i]);
+        //   //console.log(`after ${quotesToLoad[i]}`);
+        // }
+        await this.dispatch('loadMultiQuotes', quotesToLoad);
+        console.log('Pre-load of quotes complete');
+
+        await context.dispatch('balances');
 
         return response
       },
       async dateOverride (context, d: string) {
         await axios.post('/api/state/dateOverride', { dateOverride: d });
-        return this.dispatch('reload')
+        context.commit('dateOverriden', LocalDate.parse(d))
+
+        await context.dispatch('balances');
       },
       async login (context, data: Record<string, unknown>) {
         const summary = await axios.post('/api/authn/login', data);
         // await context.commit('reloaded', summary.data);
 
         await context.dispatch('loadAllState');
-
-        // Get stuff in background
-        await context.dispatch('balances');
 
         return summary
       },
@@ -203,8 +247,8 @@ export default function () {
 
         const summary = await axios.post('/api/authn/login', {});
         // Get stuff in background
-        await context.dispatch('balances');
         await context.dispatch('loadAllState');
+
         return summary
       },
       async logout (context, data: Record<string, any>) {
@@ -218,6 +262,9 @@ export default function () {
       }
     },
     getters: {
+      allStateEx: state => {
+        return new AllStateEx(state.allState);
+      },
       accountIds: state => {
         return state.allState.accounts.map(x => x.accountId);
       },
@@ -251,13 +298,10 @@ export default function () {
       baseCcy: state => {
         return state.allState.baseCcy
       },
-      tradeFxConverter: state => {
+      tradeFxConverter: (state, getters) => {
         const allState = state.allState;
         if (allState) {
-          const tradeFxData: { baseCcy: string; data: Record<string, { ks: string[]; vs: number[] }> } | undefined = allState.tradeFx;
-          if (tradeFxData) {
-            return SingleFXConversion.fromDTO(tradeFxData.data, tradeFxData.baseCcy)
-          }
+          return getters.allStateEx.tradeFxConverter()
         }
         return SingleFXConversion.empty()
       },
@@ -269,34 +313,35 @@ export default function () {
         const marketFx = SingleFXConversion.fromQuotes(quotes);
         const wrapped = wrapper(marketFx);
 
-        return new FXChain([
-          new FXMapped(allState.fxMapper, wrapped),
-          new FXProxy(allState.proxyMapper, tradeFxConverter, wrapped),
-          tradeFxConverter
-        ])
+        return new GlobalPricer(allState.commands, allState.ccys, tradeFxConverter, wrapped)
+        //
+        // return new FXChain([
+        //   new FXMapped(allState.fxMapper, wrapped),
+        //   new FXProxy(allState.proxyMapper, tradeFxConverter, wrapped),
+        //   tradeFxConverter
+        // ])
       },
       fxConverter: (state, getters) => {
         const identity: FXConverterWrapper = x => x;
         const curried = getters.customFxConverter;
         return curried(identity)
       },
-      allTxs: (state):Transaction[] => {
-        return state.allState.txs.filter(isTransaction);
+      quoteDeps: (state, getters) => {
+        const pricer:GlobalPricer = getters.fxConverter;
+        const assets = state.allState.assetState;
+        const reducer = (prev:Record<string, string[]>, item: Record<string, string[]>) => mergeWith(prev, item, (x,y) => (x||[]).concat(y));
+        const allDeps = assets.map(asset => pricer.quotesRequired(asset));
+        const quoteDeps = allDeps.reduce(reducer, {});
+        return quoteDeps;
       },
-      allPostings: (state) => {
-        const allTxPostings : Posting[][] = state.allState.txs.map(tx => isTransaction(tx) ?  tx.postings : []);
-        const allPostings = flatten(allTxPostings);
-        return allPostings;
+      allTxs: (state, getters):Transaction[] => {
+        return getters.allStateEx.allTxs()
+      },
+      allPostings: (state, getters) => {
+        return getters.allStateEx.allPostings()
       },
       allPostingsEx: (state, getters): PostingEx[] => {
-        const ret:PostingEx[] = [];
-        const allTxs: Transaction[] = getters.allTxs;
-        allTxs.forEach(tx => {
-          tx.postings.forEach(p => {
-            ret.push({...p, date: tx.postDate, originIndex: tx.originIndex})
-          });
-        });
-        return ret;
+        return getters.allStateEx.allPostingsEx()
       }
     }
   });
@@ -304,9 +349,9 @@ export default function () {
 }
 
 interface AccountBalances {
-  Assets?: any;
-  Liabilities?: any;
-  Equities?: any;
-  Income?: any;
-  Expenses?: any;
+  Assets?: TreeTableDTO;
+  Liabilities?: TreeTableDTO;
+  Equities?: TreeTableDTO;
+  Income?: TreeTableDTO;
+  Expenses?: TreeTableDTO;
 }

@@ -1,5 +1,4 @@
-import differenceInDays from 'date-fns/differenceInDays';
-import {LocalDate} from 'src/lib/fx';
+import {ChronoUnit, LocalDate} from '@js-joda/core';
 
 export interface InterpolationOption {
   empty?: boolean
@@ -10,12 +9,7 @@ export interface InterpolationOption {
 }
 
 export class SortedColumnMap {
-  ks: IntDate[];
-  vs: number[];
-
-  constructor(ks: IntDate[], vs: number[]) {
-    this.ks = ks;
-    this.vs = vs;
+  constructor(readonly ks: IntDate[], readonly vs: number[]) {
   }
 
   iota(key: IntDate): number {
@@ -58,37 +52,29 @@ export class SortedColumnMap {
 
 export type IntDate = number
 
-export function isoToIntDate(iso: LocalDate): IntDate {
+export function isoToIntDate(iso: string): IntDate {
   const bits = iso.split('-');
   return parseInt(bits[0]) * 10000 + parseInt(bits[1]) * 100 + parseInt(bits[2]);
 }
 
-export function fromIntDate(dt?: IntDate): Date | undefined {
+export function localDateToIntDate(iso: LocalDate): IntDate {
+  return iso.year() * 10000 + iso.monthValue() * 100 + iso.dayOfMonth();
+}
+
+export function fromIntDate(dt?: IntDate): LocalDate | undefined {
   if (dt) {
     const days = dt % 100;
     const monthLeft = (dt - days) / 100;
     const months = monthLeft % 100;
     const years = (monthLeft - months) / 100;
-    const ret = Date.UTC(years, months - 1, days);
-    return new Date(ret);
+    return LocalDate.of(years, months, days);
   } else {
     return undefined;
   }
 }
 
 export function intDateToIsoDate(dt?: IntDate): LocalDate | undefined {
-  if (dt) {
-    return (fromIntDate(dt) as Date).toISOString().substr(0, 10)
-  }
-}
-
-export function fromISO(dt?: LocalDate): Date | undefined {
-  const s = dt ? dt.split(/\D/).map(x => parseInt(x)) : [];
-  if (s[0] && s[1] && s[2]) {
-    return new Date(+s[0], --s[1], +s[2], 0, 0, 0, 0)
-  } else {
-    return undefined
-  }
+  return fromIntDate(dt)
 }
 
 export function linearInterpolateValue(int: { before: { k: IntDate; v: number }; after: { k: IntDate; v: number } }, key: IntDate) {
@@ -96,8 +82,8 @@ export function linearInterpolateValue(int: { before: { k: IntDate; v: number };
   const afterDate = fromIntDate(int.after.k);
   const keyDate = fromIntDate(key);
   if (keyDate && beforeDate && afterDate) {
-    const all = differenceInDays(beforeDate, afterDate);
-    const n = differenceInDays(beforeDate, keyDate);
+    const all = beforeDate.until(afterDate, ChronoUnit.DAYS);
+    const n =  beforeDate.until(keyDate, ChronoUnit.DAYS);
     const ratio = n / all;
     const diff = int.after.v - int.before.v;
     const ret = (diff * ratio) + int.before.v;

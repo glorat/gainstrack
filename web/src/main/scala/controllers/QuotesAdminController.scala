@@ -1,9 +1,9 @@
 package controllers
 
-import com.gainstrack.core.{AssetId, SortedColumnMap}
+import com.gainstrack.core.{AssetId, GainstrackJsonSerializers, SortedColumnMap}
 import com.gainstrack.quotes.av.Main.{infDur, theStore}
 import com.gainstrack.quotes.av.{QuoteConfig, QuotesMergeResult, SyncUp}
-import com.gainstrack.web.{GainstrackJsonSerializers, TimingSupport}
+import com.gainstrack.web.TimingSupport
 import org.json4s.Formats
 import org.scalatra.json.JacksonJsonSupport
 import org.scalatra.{AsyncResult, FutureSupport, NotFound, ScalatraServlet}

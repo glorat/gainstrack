@@ -43,7 +43,7 @@ object QuotesFileStore extends QuoteStore {
     actual.foreach(x => {
       // FIXME: double comparison is not accurate
       if (orig.get(x._1).map(_ != x._2).getOrElse(true)) {
-        logger.info(s"${symbol} ${x._1} updated to ${x._2}")
+        logger.info(s"${symbol} ${x._1} updated from ${orig(x._1)} to ${x._2}")
         // Value exists and is different
         toUpdate = toUpdate.updated(x._1, x._2)
         updateCount += 1

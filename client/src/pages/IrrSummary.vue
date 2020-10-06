@@ -25,24 +25,43 @@
 </template>
 
 <script>
-    import axios from 'axios';
-    import numbro from 'numbro';
+  import numbro from 'numbro'
+  import { apiIrrSummary } from 'src/lib/apiFacade'
+  import { mapGetters } from 'vuex'
 
-    export default {
-        name: 'IrrSummary',
-        data() {
-            return {info: []}
-        },
-        filters: {
-          numeral: (value, format) => numbro(value).format(format)
-        },
-        mounted() {
-            const notify = this.$notify;
-            axios.get('/api/irr/')
-                .then(response => this.info = response.data)
-                .catch(error => notify.error(error))
-        },
+  export default {
+    name: 'IrrSummary',
+    data () {
+      return { info: [] }
+    },
+    filters: {
+      numeral: (value, format) => numbro(value).format(format)
+    },
+    methods: {
+      async refresh () {
+        const notify = this.$notify;
+        try {
+          this.info = await apiIrrSummary(this.$store)
+        } catch (error) {
+          console.error(error);
+          notify.error(error)
+        }
+      }
+    },
+    computed: {
+      ...mapGetters([,
+        'fxConverter',
+      ]),
+    },
+    watch: {
+      fxConverter () {
+        this.refresh()
+      }
+    },
+    mounted () {
+      this.refresh();
     }
+  }
 </script>
 
 <style scoped>

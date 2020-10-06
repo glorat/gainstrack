@@ -113,10 +113,11 @@
 </template>
 
 <script>
-    import axios from 'axios';
     import {DatePicker, Link} from 'element-ui';
 
     import HelpTip from '../components/HelpTip';
+    import { mapGetters } from 'vuex';
+    import { apiPnlExplainMonthly } from '../lib/apiFacade';
 
 
     export default {
@@ -127,19 +128,28 @@
             'el-link': Link
         },
         computed: {
+          ...mapGetters([
+            'baseCcy',
+            'allPostingsEx',
+            'fxConverter',
+          ]),
             latestDate() {
                 return this.$store.state.allState.latestDate;
             },
         },
         mounted() {
-            const notify = this.$notify;
-            axios.get('/api/pnlexplain/monthly')
-                .then(response => {
-                    this.explains = response.data;
-                })
-                .catch(error => notify.error(error));
+            this.refresh()
         },
         methods: {
+          async refresh() {
+            const notify = this.$notify;
+            try {
+              this.explains = await apiPnlExplainMonthly(this.$store);
+            } catch (error) {
+              console.error(error);
+              notify.error(error);
+            }
+          },
             onColumnClick(explain) {
                 if (explain.fromDate && explain.toDate) {
                     this.$router.push({name: 'pnldetail', params: {fromDate: explain.fromDate, toDate: explain.toDate}});

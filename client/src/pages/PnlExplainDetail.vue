@@ -1,12 +1,12 @@
 <template>
-    <my-page padding v-if="explains.length>0">
+    <my-page padding >
         <h5>P&L Explain</h5>
         <!--            Map("actual" -> actualPnl, "explained" -> explained, "unexplained" -> unexplained,-->
         <!--            "newActivityPnl" -> newActivityPnl,-->
         <!--            "totalEquity" -> totalEquity, "totalIncome" -> totalIncome, "totalExpense" -> totalExpense, "totalDeltaExplain" -> totalDeltaExplain-->
         <!--            // , "delta" -> deltaExplain-->
         <!--            )-->
-        <table class="sortable">
+        <table class="sortable" v-if="explains.length>0">
             <tbody>
             <tr>
                 <td class="datecell" colspan="2">
@@ -132,17 +132,20 @@
 </template>
 
 <script>
-    import axios from 'axios';
-    import {mapGetters} from 'vuex';
-    import CommandDateEditor from '../components/CommandDateEditor'
+  import { mapGetters } from 'vuex'
+  import CommandDateEditor from '../components/CommandDateEditor'
+  import { apiPnlExplainDetail } from 'src/lib/apiFacade'
 
-    export default {
+  export default {
         name: 'PnlExplainDetail',
         props: ['fromDate', 'toDate'],
         components: {CommandDateEditor},
         computed: {
             ...mapGetters([
                 'baseCcy',
+              'allPostingsEx',
+              'fxConverter',
+              'allStateEx',
             ]),
             explainData() {
                 return this.explains[0]
@@ -162,23 +165,31 @@
             toDateChanged(ev) {
                 this.$router.push({name: 'pnldetail', params: {fromDate: this.explainData.fromDate, toDate: ev}});
             },
-            refresh(args) {
+            async refresh(args) {
                 const notify = this.$notify;
-                axios.post('/api/pnlexplain', args)
-                    .then(response => {
-                        this.explains = response.data;
-                    })
-                    .catch(error => notify.error(error.response));
+                const params = args ?? this.$props;
+                if (!params) debugger;
+                try {
+                  const {fromDate, toDate} = params;
+                  if (!fromDate) debugger;
+                  this.explains = await apiPnlExplainDetail(this.$store, {fromDate, toDate})
+                }
+                catch(error) {
+                  console.error(error);
+                  notify.error(error.response)
+                }
             },
         },
-        mounted() {
-            const args = {
-                fromDate: this.fromDate,
-                toDate: this.toDate
-            };
-            this.refresh(args);
-        },
-        data() {
+    watch: {
+      fxConverter () {
+        this.refresh()
+      }
+    },
+    mounted () {
+      console.error('pnld mounted');
+      this.refresh()
+    },
+    data() {
             return {
                 explains: [],
             }

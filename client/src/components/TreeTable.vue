@@ -17,34 +17,36 @@
                     <span v-for="x in node.assetBalance">{{x.number.toFixed(2)}} {{x.ccy}} <br /></span>
                 </span>
             </p>
-            <tree-table-node v-bind:node="node" depth="1"></tree-table-node>
+            <tree-table-node v-bind:node="node" :depth="1"></tree-table-node>
         </li>
 
 
     </ol>
 </template>
 
-<script>
-    import TreeTableNode from './TreeTableNode';
+<script lang="ts">
+    import Vue from 'vue';
+    import TreeTableNode from './TreeTableNode.vue';
+    import { TreeTableDTO } from 'src/lib/models';
 
-    export default {
+    export default Vue.extend({
         name: 'TreeTable',
-        props: {node: Object},
+        props: {node: Object as () => TreeTableDTO},
         data() {
             return {
                 depth: 0,
             }
         },
         computed: {
-            classObject() {
-                const ret = {};
+            classObject(): Record<string, any> {
+                const ret:Record<string, any> = {};
                 ret['depth-' + this.depth] = true;
                 ret['has-children'] = this.node.children && this.node.children.length > 0;
                 return ret;
             }
         },
         components: {TreeTableNode}
-    }
+    })
 </script>
 
 <style>

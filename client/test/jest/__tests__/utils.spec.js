@@ -3,11 +3,10 @@
  * @jest-environment jsdom
  */
 
-import { mount, createLocalVue, shallowMount } from '@vue/test-utils'
 import { parentAccountIdOf, postingsToPositionSet } from 'src/lib/utils'
 
-
 describe('Utils', () => {
+
   describe('postingsToPositionSet', () => {
     it('handles nothing', () => {
       const ps = [];

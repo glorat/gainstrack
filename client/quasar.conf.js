@@ -226,7 +226,7 @@ module.exports = configure(function (ctx) {
       builder: {
         // https://www.electron.build/configuration/configuration
 
-        appId: 'quasar-ts2'
+        appId: 'gainstrack'
       },
 
       // More info: https://quasar.dev/quasar-cli/developing-electron-apps/node-integration

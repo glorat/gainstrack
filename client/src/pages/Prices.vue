@@ -33,6 +33,7 @@
   import { MyState, TimeSeries } from '../store';
   import axios from 'axios';
   import Vue from 'vue';
+  import {LocalDate} from '@js-joda/core';
 
   interface Price {
     name: string
@@ -77,7 +78,7 @@
         const fx = this.fxConverter();
         this.prices.forEach(price => {
           const cvalues2 = price.dates.map(dt => {
-            const val = fx.getFX(price.name.split('/')[0], price.name.split('/')[1], dt);
+            const val = fx.getFX(price.name.split('/')[0], price.name.split('/')[1], LocalDate.parse(dt));
             return val ? Math.round(val*100)/100: undefined;
           });
           this.$set(price, 'cvalues2', cvalues2);

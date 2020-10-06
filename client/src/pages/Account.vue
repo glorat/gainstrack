@@ -39,25 +39,27 @@
 </template>
 
 <script lang="ts">
-  import axios from 'axios'
   import Vue from 'vue';
   import JournalTable from '../components/JournalTable.vue'
   import ConversionSelect from '../components/ConversionSelect.vue'
   import AccountGraph from '../components/AccountGraph.vue'
   import AccountJournal from '../components/AccountJournal.vue'
   import AssetView from '../components/AssetView.vue'
-  import { mapGetters } from 'vuex'
-  import { matAccountBalance, matAssignment, matEdit } from '@quasar/extras/material-icons'
+  import {mapGetters} from 'vuex'
+  import {matAccountBalance, matAssignment, matEdit} from '@quasar/extras/material-icons'
   import AssetBalance from '../components/AssetBalance.vue'
-  import { MyState } from 'src/store'
+  import {MyState} from 'src/store'
   import {
-    postingsByCommand,
     commandPostingsWithBalance,
     CommandPostingsWithBalance,
-    displayConvertedPositionSet, isSubAccountOf
+    displayConvertedPositionSet,
+    isSubAccountOf,
+    postingsByCommand
   } from 'src/lib/utils';
-  import {AccountDTO, Posting} from 'src/lib/models';
-  import EventBus from "src/event-bus";
+  import {AccountDTO, NetworthByAsset, Posting} from 'src/lib/models';
+  import {LocalDate} from '@js-joda/core';
+  import EventBus from 'src/event-bus';
+  import {apiAssetsReport} from 'src/lib/apiFacade';
 
   export default Vue.extend({
     name: 'Account',
@@ -70,11 +72,12 @@
       AssetBalance,
     },
     props: ['accountId'],
-    data () {
+    data() {
       return {
         assetResponse: {
-          rows: [],
-          columns: []
+          rows: [] as NetworthByAsset[],
+          columns: [] as Record<string, any>[],
+          totals: [] as NetworthByAsset[],
         },
         tab: 'assets',
         matAssignment,
@@ -91,14 +94,15 @@
         'allTxs',
         'fxConverter',
         'tradeFxConverter',
+        'allPostingsEx',
       ]),
-      myAccount (): AccountDTO|undefined {
+      myAccount(): AccountDTO | undefined {
         return this.findAccount(this.accountId)
       },
-      hasJournal ():boolean {
+      hasJournal(): boolean {
         return this.mainAccounts.includes(this.accountId)
       },
-      conversion (): string {
+      conversion(): string {
         return this.$store.state.allState.conversion
       },
       entries(): CommandPostingsWithBalance[] {
@@ -107,48 +111,58 @@
         const txs = this.allTxs;
         const cmds = state.allState.commands;
         // const baseCcy = state.allState.baseCcy;
-        const res = postingsByCommand(txs, cmds, (p:Posting) => isSubAccountOf(p.account, this.accountId));
+        const res = postingsByCommand(txs, cmds, (p: Posting) => isSubAccountOf(p.account, this.accountId));
         return commandPostingsWithBalance(res);
       },
       displayEntries(): any {
         return [...this.entries].reverse().map(cp => {
           const postings = cp.postings;
           const conversion = this.conversion;
-          const date = cp.cmd.date; // FIXME: tx dates may differ from cmd date!
+          const date = LocalDate.parse(cp.cmd.date); // FIXME: tx dates may differ from cmd date!
           const change = displayConvertedPositionSet(cp.delta, this.baseCcy, conversion, date, this.myAccount, this.tradeFxConverter);
           const position = displayConvertedPositionSet(cp.balance, this.baseCcy, conversion, date, this.myAccount, this.tradeFxConverter);
-          return {date: cp.cmd.date, cmdType: cp.cmd.commandType, description: cp.cmd.description, change, position, postings};
+          return {
+            date: cp.cmd.date,
+            cmdType: cp.cmd.commandType,
+            description: cp.cmd.description,
+            change,
+            position,
+            postings
+          };
         })
       }
     },
     watch: {
-      conversion () {
-        this.refresh(this.accountId)
+      conversion() {
+        this.refresh()
       },
       reloadCounter() {
-        this.refresh(this.accountId)
+        this.refresh()
+      },
+      fxConverter() {
+        this.refresh()
       }
     },
     methods: {
       onTabPanelChanged() {
         EventBus.$emit('account-tab-changed', this.tab);
       },
-      async refresh (path: string) {
+      async refresh (props?: Record<string, any>) {
         try {
-          const res2 = await axios.get('/api/assets/' + path)
-          this.assetResponse = res2.data
+          this.assetResponse = await apiAssetsReport(this.$store, props ?? this.$props);
         } catch (error) {
+          console.error(error)
           this.$notify.error(error)
         }
       }
     },
-    mounted () {
-      this.refresh(this.accountId)
+    mounted(): void {
+      this.refresh();
     },
-    beforeRouteUpdate (to, from, next) {
+    beforeRouteUpdate(to, from, next) {
       // react to route changes...
       // don't forget to call next()
-      this.refresh(to.params.accountId)
+      this.refresh(to.params)
       next()
     }
   })

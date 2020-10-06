@@ -1,7 +1,8 @@
 import numbro from 'numbro';
 import {AccountCommandDTO, AccountDTO, Posting, PostingEx, Transaction} from 'src/lib/models';
-import {LocalDate, SingleFXConverter} from 'src/lib/fx';
+import {SingleFXConverter} from 'src/lib/fx';
 import {flatMap, groupBy, keys, sum, uniq, reduce, mergeWith, stubTrue, mapValues, omitBy, flatten} from 'lodash';
+import { LocalDate } from '@js-joda/core';
 
 export function formatNumber(val: unknown) {
   return numbro(val).format({thousandSeparated: true, mantissa: 2});
@@ -26,7 +27,12 @@ export function isSubAccountOf(accountId: string, parentId: string): boolean {
   return (accountId === parentId) || (accountId.startsWith(parentId + ':'))
 }
 
-export function assetRowsFromPostings(myPostings: Posting[], fx: SingleFXConverter, valueCcy: string, today: string) {
+export function convertAccountType(accountId: string, aType: string): string {
+  const prefix = accountId.split(':')[0] ?? '__Undefined__';
+  return accountId.replace(`${prefix}:`, `${aType}:`)
+}
+
+export function assetRowsFromPostings(myPostings: Posting[], fx: SingleFXConverter, valueCcy: string, today: LocalDate) {
   const byAsset: Record<string, Posting[]> = groupBy(myPostings, p => p.value.ccy);
   const assetRows: AssetRow[] = keys(byAsset).sort().map(key => {
     const ps = byAsset[key];
@@ -125,7 +131,7 @@ export function positionSetFx(positions: Record<string, number>, baseCcy: string
   return sum(toCcy);
 }
 
-export function convertedPositionSet(pos: Record<string, number>, baseCcy: string, conversion: string, date: string, account: AccountDTO | undefined, fxConverter: SingleFXConverter) {
+export function convertedPositionSet(pos: Record<string, number>, baseCcy: string, conversion: string, date: LocalDate, account: AccountDTO | undefined, fxConverter: SingleFXConverter): Record<string, number> {
   if (conversion == 'units') {
     return pos;
   } else {
@@ -142,7 +148,7 @@ export function convertedPositionSet(pos: Record<string, number>, baseCcy: strin
 }
 
 
-export function displayConvertedPositionSet(pos: Record<string, number>, baseCcy: string, conversion: string, date: string, account: AccountDTO | undefined, fxConverter: SingleFXConverter) {
+export function displayConvertedPositionSet(pos: Record<string, number>, baseCcy: string, conversion: string, date: LocalDate, account: AccountDTO | undefined, fxConverter: SingleFXConverter) {
   if (conversion == 'units') {
     return keys(pos).map(ccy => `${pos[ccy].toFixed(2)} ${ccy}`).join(' ');
   } else {
@@ -165,7 +171,7 @@ export function journalEntries(mktConvert: SingleFXConverter, txs: Transaction[]
     const pnlPostings = postings.filter(p => p.account.match('^(Assets|Liabilities)'));
     const txPnl = sum(pnlPostings.map(posting => {
       // FIXME: pull date from tx.date in case some BalAdj is off by one? or myTxs[0].date?
-      const fx = mktConvert.getFX(posting.value.ccy, baseCcy, cmd.date) || 0.0;
+      const fx = mktConvert.getFX(posting.value.ccy, baseCcy, LocalDate.parse(cmd.date)) || 0.0;
       return fx * posting.value.number;
     }));
 
@@ -186,5 +192,5 @@ export interface AssetRow {
   valueNumber: number
   valueCcy: string
   price?: number
-  priceDate?: string
+  priceDate?: LocalDate
 }

@@ -64,13 +64,16 @@ case class GainstrackGenerator(originalCommands:Seq[AccountCommand])  {
   def allState:Map[String, Any] = {
     Map(
       "commands" -> originalCommands.map(_.toDTO),
+      "accounts" -> acctState.withInterpolatedAccounts.accounts.toSeq.map(_.toAccountDTO),
       "balances" -> balanceState.balances,
       "txs" -> txDTOs,
       "priceState" -> priceState,
-      "assetState" -> assetState,
+      "assetState" -> assetState.toDTO,
       "tradeFx" -> tradeFXConversion,
       "fxMapper" -> fxMapper, // Should be redundant one day
-      "proxyMapper" -> proxyMapper // Also should become redundant
+      "proxyMapper" -> proxyMapper, // Also should become redundant
+      "baseCcy" -> acctState.baseCurrency,
+      "ccys" -> priceState.ccys.toSeq.sorted
     )
   }
 

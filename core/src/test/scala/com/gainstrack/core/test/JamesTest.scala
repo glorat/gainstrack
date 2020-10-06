@@ -1,8 +1,12 @@
 package com.gainstrack.core.test
 
+import java.nio.charset.StandardCharsets
+import java.nio.file.{Files, Paths}
+
 import com.gainstrack.command.GainstrackParser
 import com.gainstrack.core._
 import com.gainstrack.report.{AccountInvestmentReport, AccountState, AssetChainMap, BalanceState, GainstrackGenerator, PLExplain, PriceFXConverter, SingleFXConverter, TransactionState}
+import org.json4s.Formats
 import org.scalatest.flatspec.AnyFlatSpec
 
 class JamesTest extends AnyFlatSpec {
@@ -17,6 +21,15 @@ class JamesTest extends AnyFlatSpec {
 
   it should "generate gainstrack" in {
     bg = new GainstrackGenerator(parser.getCommands)
+  }
+
+  it should "generate json allstate" in {
+    import org.json4s._
+    import org.json4s.jackson.Serialization.write
+    implicit val jsonFormats: Formats = org.json4s.DefaultFormats ++ GainstrackJsonSerializers.all addKeySerializers GainstrackJsonSerializers.allKeys
+    val str = write(bg.allState)
+    val filename = "/tmp/james.json"
+    Files.write(Paths.get(filename), str.getBytes(StandardCharsets.UTF_8))
   }
 
   it should "have 122,500 GBP net assets on 1 Jan 19" in {

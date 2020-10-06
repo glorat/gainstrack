@@ -13,9 +13,9 @@
     postingsToPositionSet
   } from 'src/lib/utils';
   import {PostingEx} from 'src/lib/models';
-  import {date} from 'quasar';
   import { mapValues } from 'lodash';
   import {reduce} from 'lodash';
+  import { LocalDate } from '@js-joda/core';
 
   export default Vue.extend({
     name: 'NetworthSunburst',
@@ -66,7 +66,7 @@
         let ids:string[] = [];
         let parents:string[] = [];
         let values:number[] = [];
-        const myDate = date.formatDate(Date.now(), 'YYYY-MM-DD');
+        const myDate = LocalDate.now();
         const pSetMap = this.positionsPerAccount;
         acctIds.forEach(acctId => {
           const subAccountIds = acctIds.filter(subId => isSubAccountOf(subId, acctId));

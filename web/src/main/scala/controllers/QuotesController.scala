@@ -2,9 +2,9 @@ package controllers
 
 import java.time.LocalDate
 
-import com.gainstrack.core.AssetId
+import com.gainstrack.core.{AssetId, GainstrackJsonSerializers}
 import com.gainstrack.quotes.av.QuoteConfig
-import com.gainstrack.web.{GainstrackJsonSerializers, TimingSupport}
+import com.gainstrack.web.TimingSupport
 import org.json4s.Formats
 import org.scalatra.json.JacksonJsonSupport
 import org.scalatra.{ContentEncodingSupport, NotFound, ScalatraServlet}
@@ -39,10 +39,16 @@ class QuotesController(implicit val ec :ExecutionContext)
     fx.data.get(AssetId(ticker))
       .map ( data => {
         fromDateOpt.map(fromDate => {
-          val mask = data.ks.map(!_.isBefore(fromDate))
-          val ks = data.ks.zip(mask).filter(_._2).map(_._1)
-          val vs = data.vs.zip(mask).filter(_._2).map(_._1)
-          Map("x" -> ks, "y" -> vs, "name" -> ticker)
+          val idx = data.iota(fromDate)
+          if (idx>=0) {
+            Map("x" -> data.ks.drop(idx), "y" -> data.vs.drop(idx), "name" -> ticker)
+          } else {
+            Map("x" -> Seq(data.ks.last), "y" -> Seq(data.vs.last), "name" -> ticker)
+          }
+//          val mask = data.ks.map(!_.isBefore(fromDate))
+//          val ks = data.ks.zip(mask).filter(_._2).map(_._1)
+//          val vs = data.vs.zip(mask).filter(_._2).map(_._1)
+//          Map("x" -> ks, "y" -> vs, "name" -> ticker)
         }).getOrElse(Map("x" -> data.ks, "y" -> data.vs, "name" -> ticker))
 
     }).getOrElse(
@@ -51,4 +57,28 @@ class QuotesController(implicit val ec :ExecutionContext)
     )
   }
 
+  post ("/tickers") {
+    val body = parsedBody.extract[QuotesRequest]
+
+    val fx = ServerQuoteSource.db.priceFXConverter
+    val res = body.quotes.flatMap(req => {
+      val ticker = req.name
+      fx.data.get(AssetId(ticker)).flatMap(data => {
+        req.fromDate.map(fromDate => {
+          val idx = data.iota(fromDate)
+          if (idx>=0) {
+            Map("x" -> data.ks.drop(idx), "y" -> data.vs.drop(idx), "name" -> ticker)
+          } else {
+            Map("x" -> Seq(data.ks.last), "y" -> Seq(data.vs.last), "name" -> ticker)
+          }
+        })
+      })
+    })
+    res
+
+  }
+
 }
+
+case class QuoteRequestConfig(name: String, fromDate: Option[LocalDate])
+case class QuotesRequest(quotes: Seq[QuoteRequestConfig])

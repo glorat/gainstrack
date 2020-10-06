@@ -3,7 +3,7 @@ package controllers
 import com.gainstrack.command.{CommodityCommand, GainstrackParser, ParserMessage}
 import com.gainstrack.core._
 import com.gainstrack.report.{BalanceReport, GainstrackGenerator, SingleFXConverter}
-import com.gainstrack.web.{AuthenticationSupport, GainstrackJsonSerializers, GainstrackSupport, TimingSupport}
+import com.gainstrack.web.{AuthenticationSupport, GainstrackSupport, TimingSupport}
 import org.json4s.{Formats, JValue}
 import org.scalatra.{InternalServerError, ScalatraServlet}
 import org.scalatra.json.JacksonJsonSupport

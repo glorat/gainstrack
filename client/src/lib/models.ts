@@ -43,6 +43,7 @@ export interface AccountDTO {
 export interface AccountCommandDTO {
     accountId: string
     date: string
+    asset?: string
     change?: Amount
     balance?: Amount
     price?: Amount
@@ -63,7 +64,7 @@ export interface NetworthByAsset {
     assetId: string
     value: number
     price: number
-    priceDate: string
+    priceDate?: string
     priceMoves: Record<string, number>
 }
 
@@ -123,15 +124,9 @@ export interface AssetOptions extends Record<string, any> {
 }
 
 export interface AssetDTO {
-    date: string,
+    // date: string,
     asset: string,
     options: AssetOptions
-}
-
-export interface AssetState {
-    allAssets: AssetDTO[]
-    assetToTags: Record<string, string[]>
-    tagToAssets: Record<string, string[]>
 }
 
 export interface BalanceStateSeries {
@@ -157,8 +152,9 @@ export interface StateSummaryDTO {
 }
 
 export interface AllState extends StateSummaryDTO {
+  accounts: AccountDTO[]
   commands: AccountCommandDTO[]
-  assetState: AssetState
+  assetState: AssetDTO[]
   balances: Record<string, BalanceStateSeries>
   txs: (Transaction | AccountCommandDTO)[]
   priceState: PriceState
@@ -172,7 +168,7 @@ export const emptyAllState: AllState = {
   authentication: {username: ''},
   baseCcy: '', ccys: [],
   commands: [],
-  assetState: {allAssets:[], assetToTags:{}, tagToAssets:{}},
+  assetState: [],
   balances: {},
   txs: [],
   priceState: {ccys:[], prices:{} },
@@ -180,6 +176,13 @@ export const emptyAllState: AllState = {
   fxMapper: {},
   proxyMapper:{}
 };
+
+export interface TreeTableDTO {
+  name: string
+  shortName: string
+  children: TreeTableDTO[]
+  assetBalance: { ccy: string, number: number }[]
+}
 
 export function isTransaction(tx: AccountCommandDTO|Transaction):tx is Transaction {
   return (tx as Transaction).postings !== undefined;

@@ -28,20 +28,39 @@
 </template>
 
 <script>
-    import axios from 'axios';
+  import { mapGetters } from 'vuex'
+  import { apiIrrDetail } from 'src/lib/apiFacade'
 
-    export default {
+  export default {
         name: 'IrrDetail',
         props: ['accountId'],
         data() {
             return {detail: []}
         },
-        mounted() {
-            const notify = this.$notify;
-            axios.get('/api/irr/' + this.accountId)
-                .then(response => this.detail = response.data)
-                .catch(error => notify.error(error))
-        },
+      methods: {
+        async refresh() {
+          const notify = this.$notify;
+          try {
+            this.detail = await apiIrrDetail(this.$store, this.$props);
+          } catch (error) {
+            console.log(error);
+            notify.error(error);
+          }
+        }
+      },
+      computed: {
+        ...mapGetters([
+          'baseCcy',
+          'allPostingsEx',
+          'allTxs',
+          'fxConverter',
+          'mainAccounts',
+          'mainAssetAccounts',
+        ]),
+      },
+      mounted() {
+        this.refresh()
+      },
     }
 </script>
 

@@ -20,34 +20,40 @@
 </template>
 
 
-<script>
+<script lang="ts">
+    import Vue from 'vue';
     import { mapGetters } from 'vuex';
+    import {TreeTableDTO} from 'src/lib/models';
 
-    export default {
+    export default Vue.extend({
         name: 'TreeTableNode',
-        props: ['node', 'depth'],
-        data() {
-            return {
-                toggled: this.node.children.reduce((map, obj) => {
+        props: {
+          node: Object as () => TreeTableDTO,
+          depth: Number
+        },
+        data(): {toggled: Record<string, boolean>} {
+          const ret: {toggled: Record<string, boolean>} = {
+                toggled: this.node.children.reduce((map: Record<string, boolean>, obj) => {
                     map[obj.name] = this.$store.getters.mainAccounts.includes(obj.name);
                     return map;
                 }, {}),
-            }
+            };
+          return ret;
         },
         computed: {
-            classObject() {
-                const ret = {};
+            classObject(): Record<string, any> {
+                const ret: Record<string, any> = {};
                 ret['depth-' + this.depth] = true;
                 return ret;
             },
             ...mapGetters(['mainAccounts']),
         },
         methods: {
-            onToggle(acct) {
+            onToggle(acct: TreeTableDTO) {
                 this.$set(this.toggled, acct.name, !this.toggled[acct.name]);
             }
         }
-    }
+    })
 </script>
 
 <style scoped>
