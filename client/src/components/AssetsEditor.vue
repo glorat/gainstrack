@@ -78,7 +78,7 @@
   import {AccountCommandDTO} from 'src/lib/models';
   import {mapGetters} from 'vuex';
   import {LocalDate} from '@js-joda/core';
-  import {formatNumber} from "src/lib/utils";
+  import {formatNumber} from 'src/lib/utils';
 
   export default Vue.extend({
     name: 'AssetsEditor',

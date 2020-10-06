@@ -186,7 +186,6 @@
       }
     },
     mounted () {
-      console.error('pnld mounted');
       this.refresh()
     },
     data() {

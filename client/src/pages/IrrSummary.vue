@@ -49,7 +49,7 @@
       }
     },
     computed: {
-      ...mapGetters([,
+      ...mapGetters([
         'fxConverter',
       ]),
     },
