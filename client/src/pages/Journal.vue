@@ -31,7 +31,7 @@
     mounted () {
       const state: MyState = this.$store.state;
       const fxConverter: SingleFXConverter = this.fxConverter
-      const txs = this.allTxs;
+      const txs = this.allTxs.reverse();
       const cmds = state.allState.commands;
       const baseCcy = state.allState.baseCcy;
 

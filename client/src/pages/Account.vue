@@ -156,6 +156,9 @@
         }
       }
     },
+    mounted(): void {
+      this.refresh();
+    },
     beforeRouteUpdate(to, from, next) {
       // react to route changes...
       // don't forget to call next()
