@@ -33,7 +33,7 @@
       options(): { value: string, label: string }[] {
         return this.accounts.map(acctId => {
           return {value: acctId, label: acctId};
-        });
+        }).sort();
 
       }
     },

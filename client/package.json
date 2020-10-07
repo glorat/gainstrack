@@ -30,11 +30,11 @@
     "lodash": "^4.17.20",
     "numbro": "^2.3.1",
     "plotly.js-dist": "^1.55.2",
-    "quasar": "^1.14.0"
+    "quasar": "^1.14.1"
   },
   "devDependencies": {
     "@babel/preset-typescript": "^7.10.4",
-    "@quasar/app": "^2.1.0",
+    "@quasar/app": "^2.1.1",
     "@quasar/quasar-app-extension-dotenv": "^1.0.5",
     "@quasar/quasar-app-extension-testing": "^1.0.0",
     "@quasar/quasar-app-extension-testing-unit-jest": "^2.0.0",

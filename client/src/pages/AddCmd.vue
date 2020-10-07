@@ -1,21 +1,31 @@
 <template>
-  <div class="add-cmd">
-    <div v-if="!success">
+  <q-card class="add-cmd q-dialog-plugin">
+    <q-card-section v-if="title">
+      <div class="text-h6">{{ title }}</div>
+    </q-card-section>
+    <q-card-section v-if="!success">
       <command-editor :input="c" v-on:command-changed="commandChanged"
                       v-on:gainstrack-changed="gainstrackChange($event)"></command-editor>
       <div>
         <pre>{{ commandStr }}</pre>
       </div>
-      <button class="c-cancel" type="button" v-on:click="cancel" v-if="hasCancel">Cancel</button>
-      <button class="c-add" :disabled="result.errors.length || !commandStr || adding" type="button"
-              v-on:click="addCommand">Add
-      </button>
-    </div>
-    <div v-if="result.errors.length>0">
-      <source-errors :errs="result.errors"></source-errors>
-    </div>
+    </q-card-section>
+
     <hr>
-    <div v-if="result.added[0]">
+    <q-card-actions v-if="!success" align="right">
+      <q-btn class="c-cancel" color="primary" type="button" v-on:click="cancel" v-if="hasCancel">Cancel</q-btn>
+      <q-btn class="c-add" color="primary" :disable="result.errors.length || !commandStr || adding || testing"
+             @click="addCommand">Add
+      </q-btn>
+      <!--        <q-btn flat label="Cancel" v-close-popup/>-->
+      <!--        <q-btn flat label="Submit" @click="onOKClick" />-->
+    </q-card-actions>
+
+    <q-card-section v-if="result.errors.length>0">
+      <source-errors :errs="result.errors"></source-errors>
+    </q-card-section>
+
+    <q-card-section v-if="result.added[0] && !hideChanges">
       <!--            <router-link v-if="added[0]" :to="{name:'account', params:{accountId:added[0].accountId}}">{{added[0].accountId}}</router-link>-->
       <h4>Balance changes</h4>
       <table class="queryresults sortable">
@@ -47,8 +57,10 @@
         <h4>Journal additions</h4>
         <command-table :cmds="added" :columns="commandColumns"></command-table>
       </template>
-    </div>
-  </div>
+    </q-card-section>
+
+
+  </q-card>
 </template>
 
 <script>
@@ -69,7 +81,14 @@
       SourceErrors
     },
     props: {
+      title: {
+        type: String
+      },
       hideJournal: {
+        type: Boolean,
+        default: false,
+      },
+      hideChanges: {
         type: Boolean,
         default: false,
       },
@@ -156,6 +175,7 @@
               this.success = true
               this.$notify.success(`${this.added.length} entries added`)
               this.$store.dispatch('reload')
+              this.$emit('command-added', str)
               EventBus.$emit('command-added', str)
             }
 

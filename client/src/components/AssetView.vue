@@ -35,7 +35,7 @@
     import {matEdit} from '@quasar/extras/material-icons';
     import UnitEditorDialog from 'components/CommandEditorDialog.vue';
     import {mapGetters} from 'vuex';
-    import {LocalDate} from "app/node_modules/@js-joda/core";
+    import {LocalDate} from '@js-joda/core';
 
     interface Mode {
         name: string
@@ -118,14 +118,16 @@
         },
       methods: {
         onUnitsEdit(props: any) {
-          const today = LocalDate.now().toString();
+          const today = LocalDate.now();
           const row: NetworthByAsset = props.row;
+          // const ccy = this.baseCcy; // FIXME: Determine default ccy for row.assetId
+          // const price = this.fxConverter.getFX(row.assetId, ccy, today);
           const cmd = {
             commandType: 'unit',
             accountId: this.accountId,
-            date: today,
+            date: today.toString(),
             balance: {number:row.units, ccy: row.assetId},
-            price: {number:row.price, ccy: this.baseCcy},
+            // price: {number:price, ccy: ccy},
 
           };
 
@@ -149,7 +151,7 @@
         }
       },
         computed: {
-          ...mapGetters(['mainAccounts', 'baseCcy']),
+          ...mapGetters(['mainAccounts', 'baseCcy', 'fxConverter']),
           canEdit(): boolean {
             // TODO: Check that accountId is a mainAccount
             return !!this.accountId && this.mainAccounts.find( (x:string) => x===this.accountId);

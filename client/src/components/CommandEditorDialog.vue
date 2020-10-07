@@ -1,20 +1,11 @@
 <template>
   <q-dialog ref="dialog" @hide="onDialogHide">
-    <q-card style="min-width: 350px">
-      <q-card-section>
-        <div class="text-h6">Edit Balance</div>
-      </q-card-section>
-
-      <q-card-section class="q-pt-none">
-<!--        <command-editor :input="cmd" v-on:gainstrack-changed="onGainstrackChanged"></command-editor>-->
-        <add-cmd :input="cmd" @cancel="onDialogHide" @command-added="onOKClick" ></add-cmd>
-      </q-card-section>
-
-      <q-card-actions align="right" class="text-primary">
-        <q-btn flat label="Cancel" v-close-popup/>
-        <q-btn flat label="Submit" @click="onOKClick" />
-      </q-card-actions>
-    </q-card>
+    <add-cmd :input="cmd" @cancel="onDialogHide" @command-added="onOKClick"
+             title="Edit Balance"
+             hide-journal
+             has-cancel
+             hide-changes
+    ></add-cmd>
   </q-dialog>
 </template>
 
