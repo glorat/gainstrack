@@ -37,7 +37,7 @@ Proxy the mysql instance as localhost with this
 
 `MYSQL_PASS` - Password to MySQL database
 
-`MYSQL_URL` - (Optional) custom JDBC connect string. Examples include
+`MYSQL_URL` - (Optional) custom JDBC connect string. Examples include (check region carefully)
 - `jdbc:mysql:///cloudsql/gainstrack:asia-east2:gainstrack-hk`
 - `jdbc:mysql://google/quotes?cloudSqlInstance=gainstrack:asia-east2:gainstrack-hk&socketFactory=com.google.cloud.sql.mysql.SocketFactory`
 
@@ -51,13 +51,41 @@ Proxy the mysql instance as localhost with this
 
 ### Build instructions
 
-Front end client build can be buit and submitted with
+Front end client build can be built locally with
 ```bash
 cd client
 quasar build
-firebase deploy --only hosting
 ```
+
 
 Backend app server image can be built and submitted with
 `gcloud builds submit --config cloudbuild.yaml`
+This will also update the latest image in the container registry
 
+### Deployment
+
+App server
+```bash
+gcloud run deploy appserver \
+          --region asia-northeast1 \
+          --image gcr.io/gainstrack/gainstrack \
+          --platform managed \
+          --allow-unauthenticated \
+          --project gainstrack
+```
+TODO: After deployment, the FX cache in the server needs priming or the first wave of calls will timeout with a 429 HTTP error
+
+Quotes server
+```bash
+gcloud run deploy quotes \
+          --region asia-northeast1 \
+          --image gcr.io/gainstrack/gainstrack \
+          --platform managed \
+          --allow-unauthenticated \
+          --project gainstrack
+```
+Front-end
+```bash
+cd client
+quasar build & firebase deploy --only hosting
+```
