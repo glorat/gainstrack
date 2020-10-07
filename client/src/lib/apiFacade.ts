@@ -45,6 +45,19 @@ export async function apiIrrDetail(store: Store<MyState>, props: Record<string, 
   return doGeneric(store, props, localCompute, ax => ax.get('/api/irr/' + props.accountId), apiLocalIrrDetail)
 }
 
+// Type safe command functions
+export interface CmdTestResponse {
+  added: string[]
+  accountChanges: unknown[]
+  errors: string[]
+}
+
+export async function apiCmdTest(store: Store<MyState>, props: Record<string, any>): Promise<CmdTestResponse> {
+  const stub : (store: Store<MyState>, args:Record<string, any>) => CmdTestResponse = apiStub
+  return doGeneric(store, props, false, ax => ax.post('/api/post/test', props), stub);
+}
+
+
 // The keyhole invoker to manage execution strategies
 async function doGeneric<ARG,RES>(store: Store<MyState>, args:ARG, localCompute:boolean, axiosFn:(ax:AxiosInstance)=>AxiosPromise<RES>, fn: (store: Store<MyState>, args:ARG) => RES) {
   if (!localCompute) {
@@ -119,4 +132,8 @@ function postProcessIrrDetail(report: { accountId: any; balance?: number; start?
   const description = cfs.map(cf => cf.source)
   const detail = {name, units, dates, values, cvalues, description};
   return detail;
+}
+
+function apiStub<RES>():RES {
+  throw new Error('No local implementation available')
 }

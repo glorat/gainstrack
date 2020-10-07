@@ -63,6 +63,7 @@ export interface AuthenticationDTO {
 export interface NetworthByAsset {
     assetId: string
     value: number
+    units: number
     price: number
     priceDate?: string
     priceMoves: Record<string, number>

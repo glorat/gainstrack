@@ -35,6 +35,7 @@
     import {matEdit} from '@quasar/extras/material-icons';
     import UnitEditorDialog from 'components/CommandEditorDialog.vue';
     import {mapGetters} from 'vuex';
+    import {LocalDate} from "app/node_modules/@js-joda/core";
 
     interface Mode {
         name: string
@@ -117,14 +118,14 @@
         },
       methods: {
         onUnitsEdit(props: any) {
-          // FIXME: TZ bug
-          const today = new Date(Date.now()).toISOString().substr(0, 10);
+          const today = LocalDate.now().toString();
+          const row: NetworthByAsset = props.row;
           const cmd = {
             commandType: 'unit',
             accountId: this.accountId,
             date: today,
-            balance: {number:0, ccy: props.row.assetId},
-            price: {number:0, ccy: 'USD'},
+            balance: {number:row.units, ccy: row.assetId},
+            price: {number:row.price, ccy: this.baseCcy},
 
           };
 
@@ -138,16 +139,17 @@
             cmd: cmd
             // ...more.props...
           }).onOk(() => {
-            console.log('OK')
+            // console.log('OK');
+            // console.error(data.gainstrack);
           }).onCancel(() => {
-            console.log('Cancel')
+            // console.log('Cancel')
           }).onDismiss(() => {
-            console.log('Called on OK or Cancel')
+            // console.log('Called on OK or Cancel');
           })
         }
       },
         computed: {
-          ...mapGetters(['mainAccounts']),
+          ...mapGetters(['mainAccounts', 'baseCcy']),
           canEdit(): boolean {
             // TODO: Check that accountId is a mainAccount
             return !!this.accountId && this.mainAccounts.find( (x:string) => x===this.accountId);

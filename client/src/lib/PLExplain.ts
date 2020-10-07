@@ -161,6 +161,7 @@ function dividePnlExplain(p: PLExplainDTO, n: number):PLExplainDTO {
     totalIncome: p.totalIncome/n,
     totalExpense: p.totalExpense/n,
     totalDeltaExplain: p.totalDeltaExplain/n,
-    delta: [] // not supported
+    delta: [], // not supported,
+    tenor: 'avg', // that's why we do a division
   }
 }

@@ -1,6 +1,7 @@
 import {SingleFXConverter} from 'src/lib/fx';
 import {LocalDate} from '@js-joda/core';
 import {maxBy} from 'lodash';
+import {AssetResponse} from "src/lib/models";
 
 function assetReportRows(pSet: Record<string, number>, pricer: SingleFXConverter, baseCcy: string, date: LocalDate) {
   const rows = Object.entries(pSet).map(([assetId, units]) => {
@@ -15,7 +16,7 @@ function assetReportRows(pSet: Record<string, number>, pricer: SingleFXConverter
   return rows;
 }
 
-export function assetReport(pSet: Record<string, number> , pricer: SingleFXConverter, baseCcy: string, date: LocalDate) {
+export function assetReport(pSet: Record<string, number> , pricer: SingleFXConverter, baseCcy: string, date: LocalDate): AssetResponse{
   // Compute our report
   const rows = assetReportRows(pSet, pricer, baseCcy, date);
 

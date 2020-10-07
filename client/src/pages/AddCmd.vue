@@ -59,6 +59,7 @@
   import { debounce } from 'lodash'
   import EventBus from '../event-bus'
   import { mapGetters } from 'vuex'
+  import { apiCmdTest } from 'src/lib/apiFacade'
 
   export default {
     name: 'AddCmd',
@@ -125,21 +126,21 @@
       cancel () {
         this.$emit('cancel')
       },
-      testCommand: debounce(function () {
+      testCommand: debounce(async function () {
         const str = this.commandStr
         const notify = this.$notify
         if (str) {
           this.testing = true
-          axios.post('/api/post/test', { str })
-            .then(response => {
-              this.added = response.data.added
-              this.accountChanges = response.data.accountChanges
-              this.errors = response.data.errors
-              this.result = response.data
-
-            })
-            .catch(error => notify.error(error))
-            .finally(() => this.testing = false)
+          try {
+            this.result = await apiCmdTest(this.$store, {str})
+          }
+          catch (error) {
+            console.error(error);
+            notify.error(error);
+          }
+          finally {
+            this.testing = false;
+          }
         }
       }, 1000),
       addCommand () {
