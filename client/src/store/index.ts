@@ -193,7 +193,9 @@ export default function () {
       async conversion (context, c: string) {
         await axios.post('/api/state/conversion', { conversion: c });
         context.commit('conversionApplied', c);
-        return await this.dispatch('reload')
+        context.commit('balances', {});
+        await context.dispatch('balances');
+        return;
       },
       async reload (context) {
         // TODO: These next two can run in parallel
