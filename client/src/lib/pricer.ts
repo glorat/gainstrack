@@ -84,8 +84,12 @@ export class GlobalPricer implements SingleFXConverter {
     if (asset) {
       const pricer = this.modelFor(asset);
       const price = pricer?.getPrice(asset, fx2, date);
-      return GlobalPricer.trim(price);
+      return price;
     }
+  }
+
+  getFXTrimmed(fx1: string, fx2: string, date: LocalDate): number | undefined {
+   return GlobalPricer.trim(this.getFX(fx1, fx2, date))
   }
 
   latestDate(fx1: string, fx2: string, date: LocalDate): LocalDate | undefined {

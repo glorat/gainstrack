@@ -57,7 +57,7 @@
 
               if (c.balance.ccy && c.price.ccy && c.date) {
                 const dt = LocalDate.parse(c.date);
-                this.c.price.number = fxConverter.getFX(c.balance.ccy, c.price.ccy, dt);
+                this.c.price.number = fxConverter.getFXTrimmed(c.balance.ccy, c.price.ccy, dt);
               }
             }
           }

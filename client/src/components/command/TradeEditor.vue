@@ -47,7 +47,7 @@
             if (underCcy) {
               this.c.price.ccy = underCcy;
               const date = LocalDate.parse(this.c.date);
-              const price = this.fxConverter.getFX(this.c.change.ccy, underCcy, date);
+              const price = this.fxConverter.getFXTrimmed(this.c.change.ccy, underCcy, date);
               if (price) {
                 this.c.price.number = price;
               }
