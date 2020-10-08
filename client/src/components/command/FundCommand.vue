@@ -4,11 +4,9 @@
             <command-date-editor v-model="c.date"></command-date-editor>
         </div>
         <div>
-            Fund:
-            <account-selector class="c-account-id" v-model="c.accountId" v-on:input="accountIdChanged" :account-list="fundableAccounts"></account-selector>
+            <account-selector placeholder="Account to fund" class="c-account-id" v-model="c.accountId" v-on:input="accountIdChanged" :account-list="fundableAccounts"></account-selector>
         </div>
         <div>
-            Amount
             <balance-editor class="c-change" v-model="c.change" v-on:input="inputChanged()"></balance-editor>
         </div>
         <div>

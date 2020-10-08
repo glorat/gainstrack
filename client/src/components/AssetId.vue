@@ -1,6 +1,6 @@
 <template>
   <q-select
-    :label="label"
+    :label="label || 'Asset'"
     :value="value"
     @input-value="onSelectChanged"
     use-input
@@ -8,9 +8,9 @@
     fill-input
     input-debounce="0"
     :options="filteredOptions"
-    hint="Asset/Ccy"
     @filter="filterFn"
   ></q-select>
+<!--  hint="Asset/Ccy"-->
 </template>
 
 <script lang="ts">

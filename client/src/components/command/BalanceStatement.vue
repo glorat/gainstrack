@@ -1,20 +1,17 @@
 <template>
     <div>
         <div>
-            Date of balance observation:
           <command-date-editor v-model="c.date"></command-date-editor>
         </div>
         <div>
-            Account:
             <account-selector class="c-account-id" v-model="c.accountId" v-on:input="accountIdChanged" :account-list="balanceableAccounts"></account-selector>
         </div>
         <div>
-            Balance:
-            <balance-editor class="c-balance" v-model="c.balance"></balance-editor>
+            <balance-editor label="Balance" class="c-balance" v-model="c.balance"></balance-editor>
         </div>
         <div>
-            <help-tip tag="balOtherAccount"></help-tip> Adjustment Account:
-            <account-selector class="c-other-account" v-model="c.otherAccount" :account-list="mainAccounts"></account-selector>
+            <help-tip tag="balOtherAccount"></help-tip>
+            <account-selector class="c-other-account" placeholder="Adjustment Account" v-model="c.otherAccount" :account-list="mainAccounts"></account-selector>
         </div>
     </div>
 </template>

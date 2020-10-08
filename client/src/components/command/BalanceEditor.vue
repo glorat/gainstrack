@@ -1,6 +1,6 @@
 <template>
     <div class="row items-start">
-      <q-input @focus="$event.target.select()" type="number" v-model.number="value.number" v-on:input="onChanged()"></q-input>
+      <q-input :label="label || 'Amount'" @focus="$event.target.select()" type="number" v-model.number="value.number" v-on:input="onChanged()"></q-input>
       <asset-id v-model="value.ccy" v-on:input="onCcyChanged()"></asset-id>
     </div>
 </template>
@@ -13,7 +13,7 @@
         components: {
             AssetId
         },
-        props: {value: Object},
+        props: {value: Object, label: String},
         methods: {
           onCcyChanged() {
             this.$emit('ccyChanged', this.value.ccy);

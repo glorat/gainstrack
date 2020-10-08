@@ -103,7 +103,9 @@
                 mode: 'value',
                 modes,
                 pagination: {
-                    rowsPerPage: 10
+                  rowsPerPage: 10,
+                  sortBy: 'value',
+                  descending: true,
                 },
                 columns,
               matEdit,
