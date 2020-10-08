@@ -130,7 +130,7 @@ function totalPnlExplain(exps: PLExplainDTO[]):PLExplainDTO {
   const toNetworth = exps[exps.length-1].toNetworth;
   const networthChange = sum(exps.map(e => e.actual))/toNetworth;
   return {
-    fromDate: exps[0].fromDate, toDate: exps[exps.length-1].toDate,
+    fromDate: exps[exps.length-1].fromDate, toDate: exps[0].toDate,
     toNetworth: 0, //undefined
     networthChange,
     actual: sum(exps.map(e => e.actual)),
