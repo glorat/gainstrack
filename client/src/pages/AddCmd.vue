@@ -1,25 +1,28 @@
 <template>
-  <q-card class="add-cmd q-dialog-plugin">
+  <q-card class="add-cmd">
     <q-card-section v-if="title">
       <div class="text-h6">{{ title }}</div>
     </q-card-section>
     <q-card-section v-if="!success">
       <command-editor :input="c" v-on:command-changed="commandChanged"
-                      v-on:gainstrack-changed="gainstrackChange($event)"></command-editor>
-      <div>
-        <pre>{{ commandStr }}</pre>
-      </div>
+                      v-on:gainstrack-changed="gainstrackChange($event)"
+                      :options="options"
+      ></command-editor>
     </q-card-section>
 
     <hr>
     <q-card-actions v-if="!success" align="right">
       <q-btn class="c-cancel" color="primary" type="button" v-on:click="cancel" v-if="hasCancel">Cancel</q-btn>
-      <q-btn class="c-add" color="primary" :disable="result.errors.length || !commandStr || adding || testing"
+      <q-btn class="c-add" color="primary" :disable=" (result.errors.length>0) || !commandStr || adding || testing"
              @click="addCommand">Add
       </q-btn>
       <!--        <q-btn flat label="Cancel" v-close-popup/>-->
       <!--        <q-btn flat label="Submit" @click="onOKClick" />-->
     </q-card-actions>
+
+    <q-card-section>
+        <pre>{{ commandStr }}</pre>
+    </q-card-section>
 
     <q-card-section v-if="result.errors.length>0">
       <source-errors :errs="result.errors"></source-errors>
@@ -92,6 +95,9 @@
         type: Boolean,
         default: false,
       },
+      options: {
+        type: Object,
+      },
       input: Object,
       commandColumns: {
         type: Array,
@@ -137,6 +143,7 @@
       gainstrackChange (ev) {
         this.commandStr = ev
         this.errors = []
+        this.testing = true
         this.testCommand()
       },
       commandChanged (cmd) {
