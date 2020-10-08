@@ -9,7 +9,7 @@
         </div>
         <div>
             <help-tip tag="tradeChange"></help-tip> Purchase
-            <balance-editor class="c-change" v-model="c.change"></balance-editor>
+            <balance-editor class="c-change" v-model="c.change" @ccyChanged="changeCcyChanged"></balance-editor>
         </div>
         <div>
             <help-tip tag="tradePrice"></help-tip> Price
@@ -28,6 +28,7 @@
     import {CommandEditorMixin} from '../../mixins/CommandEditorMixin';
     import AccountSelector from '../AccountSelector';
     import CommandDateEditor from '../CommandDateEditor';
+    import { LocalDate } from '@js-joda/core'
 
     export default {
         name: 'TradeEditor',
@@ -41,6 +42,20 @@
                     this.c.commission.ccy = acct.ccy;
                 }
             },
+          changeCcyChanged() {
+            const underCcy = this.allStateEx.underlyingCcy(this.c.change.ccy, this.c.accountId);
+            if (underCcy) {
+              this.c.price.ccy = underCcy;
+              const date = LocalDate.parse(this.c.date);
+              const price = this.fxConverter.getFX(this.c.change.ccy, underCcy, date);
+              if (price) {
+                this.c.price.number = price;
+              }
+
+            }
+
+          }
+
         },
         computed: {
             isValid() {

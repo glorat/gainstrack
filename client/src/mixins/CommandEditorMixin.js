@@ -62,6 +62,8 @@ export const CommandEditorMixin = {
             'findAccount',
             'mainAccounts',
             'mainAssetAccounts',
+            'fxConverter',
+          'allStateEx',
         ]),
         accountId() {return this.c.accountId},
     },

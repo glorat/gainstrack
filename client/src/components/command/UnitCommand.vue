@@ -48,17 +48,17 @@
           defaultStuff() {
               const c = this.c;
               // TODO: Consider finding prev by Tx to cover both trade and unit commands
-            const cmds = this.$store.state.allState.commands;
-            const prev = cmds.reverse().find(cmd =>  cmd.accountId === this.c.accountId && cmd.commandType === 'unit' && cmd.balance.ccy === this.c.balance.ccy);
-            const fxConverter = this.fxConverter;
-            if (!fxConverter) debugger;
-            if (prev) {
-              this.c.balance.number = prev.balance.number;
-              // this.c.price.number = prev.price.number;
-              this.c.price.ccy = prev.price.ccy;
-            }
-            if (c.balance.ccy && c.price.ccy && c.date) {
-              this.c.price.number = fxConverter.getFX(c.balance.ccy, c.price.ccy, LocalDate.parse(c.date));
+            const underCcy = this.allStateEx.underlyingCcy(this.c.balance.ccy, this.c.accountId);
+            if (underCcy) {
+              const fxConverter = this.fxConverter
+
+              // this.c.balance.number = prev.balance.number // FIXME: get current balance
+              this.c.price.ccy = underCcy;
+
+              if (c.balance.ccy && c.price.ccy && c.date) {
+                const dt = LocalDate.parse(c.date);
+                this.c.price.number = fxConverter.getFX(c.balance.ccy, c.price.ccy, dt);
+              }
             }
           }
         },

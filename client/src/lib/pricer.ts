@@ -83,7 +83,8 @@ export class GlobalPricer implements SingleFXConverter {
     const asset = this.findAsset(fx1);
     if (asset) {
       const pricer = this.modelFor(asset);
-      return pricer?.getPrice(asset, fx2, date);
+      const price = pricer?.getPrice(asset, fx2, date);
+      return GlobalPricer.trim(price);
     }
   }
 
@@ -94,6 +95,13 @@ export class GlobalPricer implements SingleFXConverter {
       return pricer?.latestDate(asset, fx2, date);
     }
   }
+
+  // Round off to 6dp, carefully dealing with some fp issues
+  private static trim(num: number|undefined): number|undefined {
+    if (num === undefined) return undefined;
+    return Math.round((num + Number.EPSILON) * 1000000) / 1000000
+  }
+
 }
 
 

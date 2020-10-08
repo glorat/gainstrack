@@ -1,7 +1,7 @@
 <template>
     <div class="row items-start">
       <q-input @focus="$event.target.select()" type="number" v-model.number="value.number" v-on:input="onChanged()"></q-input>
-      <asset-id v-model="value.ccy" v-on:input="onChanged()"></asset-id>
+      <asset-id v-model="value.ccy" v-on:input="onCcyChanged()"></asset-id>
     </div>
 </template>
 
@@ -15,6 +15,10 @@
         },
         props: {value: Object},
         methods: {
+          onCcyChanged() {
+            this.$emit('ccyChanged', this.value.ccy);
+            this.onChanged();
+          },
             onChanged() {
                 this.$emit('input', this.value);
             }

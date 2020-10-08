@@ -1,4 +1,4 @@
-import {AllState, isTransaction, Posting, PostingEx, Transaction} from 'src/lib/models';
+import {AccountCommandDTO, AllState, isTransaction, Posting, PostingEx, Transaction} from 'src/lib/models';
 import {flatten} from 'lodash';
 import {SingleFXConversion} from 'src/lib/fx';
 
@@ -31,5 +31,18 @@ export class AllStateEx {
   tradeFxConverter() {
     const tradeFxData: { baseCcy: string; data: Record<string, { ks: string[]; vs: number[] }> } | undefined = this.state.tradeFx;
     return SingleFXConversion.fromDTO(tradeFxData.data, tradeFxData.baseCcy)
+  }
+
+  underlyingCcy(assetId: string, accountId: string|undefined): string|undefined {
+    const cmds = this.state.commands;
+    const unitFilter = (cmd:AccountCommandDTO) => cmd.commandType === 'unit' && cmd.balance?.ccy === assetId;
+    const tradeFilter = (cmd:AccountCommandDTO) => cmd.commandType === 'trade' && cmd.change?.ccy === assetId;
+    const acctFilter = (cmd:AccountCommandDTO) => cmd.accountId === accountId;
+    const reversed = [...cmds].reverse(); // Don't mutate!
+    let prev = reversed.find(cmd => acctFilter(cmd) && (unitFilter(cmd) || tradeFilter(cmd)));
+    if (!prev) prev = reversed.find(cmd => (unitFilter(cmd) || tradeFilter(cmd)));
+    if (prev && prev.commandType === 'unit') return prev.price?.ccy;
+    if (prev && prev.commandType === 'trade') return prev.price?.ccy;
+    return undefined;
   }
 }
