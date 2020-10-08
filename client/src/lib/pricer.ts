@@ -219,7 +219,7 @@ export class ProxyPricer implements Pricer {
     const proxyTicker = asset.options.proxy;
 
     if (proxyTicker) {
-      return this.tradeFx.latestDate(proxyTicker, fx2, date)
+      return this.marketFx.latestDate(proxyTicker, fx2, date)
     } else {
       return undefined
     }
