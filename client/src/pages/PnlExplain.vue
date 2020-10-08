@@ -1,20 +1,5 @@
 <template>
     <my-page padding>
-        <div class="block">
-            <span class="demonstration">P&L Explain Date Range: </span>
-            <el-date-picker
-                    v-model="selectedRange"
-                    type="daterange"
-                    align="right"
-                    unlink-panels
-                    range-separator="To"
-                    start-placeholder="Start date"
-                    end-placeholder="End date"
-                    value-format="yyyy-MM-dd"
-                    :picker-options="pickerOptions">
-            </el-date-picker>
-            <button @click="submit" :disabled="selectedRange==null">Go</button>
-        </div>
         <div class="block" v-if="explains.length>0">
             <h5>P&L Explanation</h5>
 <!--            Map("actual" -> actualPnl, "explained" -> explained, "unexplained" -> unexplained,-->
@@ -27,8 +12,10 @@
                 <tr>
                     <td></td>
                     <td class="description" v-for="explainData in explains">
-                        <el-link
-                            v-if="explainData.fromDate" @click.prevent="onColumnClick(explainData)" icon="el-icon-data-analysis">{{ explainData.tenor}}</el-link><span v-else>{{ explainData.tenor}}</span></td>
+                      <q-btn flat no-caps color="primary" padding="xs" class="full-width"
+                             v-if="explainData.fromDate" :icon="matAnalytics" @click="onColumnClick(explainData)"
+                      >{{ explainData.tenor }}</q-btn>
+                    </td>
                 </tr>
                 <tr>
                     <td>From Date</td>
@@ -113,19 +100,16 @@
 </template>
 
 <script>
-    import {DatePicker, Link} from 'element-ui';
-
     import HelpTip from '../components/HelpTip';
     import { mapGetters } from 'vuex';
     import { apiPnlExplainMonthly } from '../lib/apiFacade';
+    import { matAnalytics } from '@quasar/extras/material-icons'
 
 
     export default {
         name: 'PnlExplain',
         components: {
             HelpTip,
-            'el-date-picker': DatePicker,
-            'el-link': Link
         },
         computed: {
           ...mapGetters([
@@ -155,13 +139,6 @@
                     this.$router.push({name: 'pnldetail', params: {fromDate: explain.fromDate, toDate: explain.toDate}});
                 }
             },
-            submit() {
-                const args = {
-                    fromDate: this.selectedRange[0],
-                    toDate: this.selectedRange[1]
-                };
-                this.$router.push({name: 'pnldetail', params: args});
-            },
             percChange(explainData) {
                 const denom = explainData.toNetworth ? explainData.toNetworth - explainData.actual : 0.0;
                 return (denom === 0.0) ? 0.0 : explainData.actual / denom;
@@ -176,47 +153,7 @@
             const self = this;
             return {
                 explains: [],
-                pickerOptions: {
-                    shortcuts: [{
-                        text: 'Last week',
-                        onClick(picker) {
-                            const end = new Date(self.latestDate);
-                            const start = new Date();
-                            start.setTime(end.getTime() - 3600 * 1000 * 24 * 7);
-                            picker.$emit('pick', [start, end]);
-                        }
-                    }, {
-                        text: 'Last month',
-                        onClick(picker) {
-                            const end = new Date(self.latestDate);
-                            const start = new Date();
-                            start.setTime(end.getTime());
-                            start.setMonth(start.getMonth() - 1);
-                            // start.setTime(end.getTime() - 3600 * 1000 * 24 * 30);
-                            picker.$emit('pick', [start, end]);
-                        }
-                    }, {
-                        text: 'Last 12 months',
-                        onClick(picker) {
-                            const end = new Date(self.latestDate);
-                            const start = new Date();
-                            start.setTime(end.getTime());
-                            start.setMonth(start.getMonth() - 12);
-                            picker.$emit('pick', [start, end]);
-                        }
-                    }, {
-                        text: 'Year to date',
-                        onClick(picker) {
-                            const end = new Date(self.latestDate);
-                            const start = new Date();
-                            start.setTime(end.getTime());
-                            start.setMonth(0);
-                            start.setDate(1);
-                            picker.$emit('pick', [start, end]);
-                        }
-                    }]
-                },
-                selectedRange: null,
+              matAnalytics,
             };
 
         }

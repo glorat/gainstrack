@@ -28,11 +28,11 @@ const qnotify: MyNotify = {
     }
 };
 
-// declare module 'vue/types/vue' {
-//   interface Vue {
-//     $notify: MyNotify;
-//   }
-// }
+declare module 'vue/types/vue' {
+  interface Vue {
+    $notify: MyNotify;
+  }
+}
 
 Vue.prototype.$notify = qnotify;
 
