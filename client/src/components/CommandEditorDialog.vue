@@ -5,6 +5,7 @@
              hide-journal
              has-cancel
              hide-changes
+             :options="options"
     ></add-cmd>
   </q-dialog>
 </template>
@@ -53,6 +54,11 @@
         // then hiding dialog
         this.hide()
       },
+    },
+    computed: {
+      options() {
+        return {hideAccount:true};
+      }
     }
   })
 </script>

@@ -5,7 +5,7 @@ import CommandDateEditor from '../components/CommandDateEditor';
 
 export const CommandEditorMixin = {
     inheritAttrs: false,
-    props: {cmd: Object},
+    props: {cmd: Object, options:Object},
     components: {CommandDateEditor, HelpTip},
     data() {
         let c = {};
@@ -66,5 +66,8 @@ export const CommandEditorMixin = {
           'allStateEx',
         ]),
         accountId() {return this.c.accountId},
+      hideAccount() {
+          return this.options && this.options.hideAccount;
+      }
     },
 };

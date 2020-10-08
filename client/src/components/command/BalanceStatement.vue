@@ -3,7 +3,7 @@
         <div>
           <command-date-editor v-model="c.date"></command-date-editor>
         </div>
-        <div>
+        <div v-if="!hideAccount">
             <account-selector class="c-account-id" v-model="c.accountId" v-on:input="accountIdChanged" :account-list="balanceableAccounts"></account-selector>
         </div>
         <div>
