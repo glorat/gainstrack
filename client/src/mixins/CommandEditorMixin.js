@@ -34,9 +34,9 @@ export const CommandEditorMixin = {
     },
     mounted() {
         // Initiate immediate defaulting
-        if (this.c.accountId && this.accountIdChanged) {
-            this.accountIdChanged();
-        }
+        // if (this.c.accountId && this.accountIdChanged) {
+        //     this.accountIdChanged();
+        // }
 
         const str = this.toGainstrack;
         this.$emit('gainstrack-changed', str);
@@ -44,8 +44,8 @@ export const CommandEditorMixin = {
     watch: {
         c: {
             handler() {
-                EventBus.$emit('command-changed', this.c);
-                this.$emit('command-changed', this.c);
+                EventBus.$emit('command-changed', this.dc);
+                this.$emit('command-changed', this.dc);
                 this.$emit('input', this.c);
             },
             deep: true,
@@ -65,9 +65,12 @@ export const CommandEditorMixin = {
             'fxConverter',
           'allStateEx',
         ]),
-        accountId() {return this.c.accountId},
+        accountId() {return this.dc.accountId},
       hideAccount() {
           return this.options && this.options.hideAccount;
+      },
+      dc() {
+          return this.c; // Override me to handle defaulting!
       }
     },
 };

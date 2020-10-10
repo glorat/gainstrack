@@ -101,7 +101,7 @@ export class GlobalPricer implements SingleFXConverter {
   }
 
   // Round off to 6dp, carefully dealing with some fp issues
-  private static trim(num: number|undefined): number|undefined {
+  static trim(num: number|undefined): number|undefined {
     if (num === undefined) return undefined;
     return Math.round((num + Number.EPSILON) * 1000000) / 1000000
   }

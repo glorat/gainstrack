@@ -12,16 +12,16 @@
     ></trade-editor>
   </div>
   <div v-else-if="type === 'unit'">
-    <unit-command :cmd="input" v-on:input="inputChanged()"
+    <balance-or-unit :cmd="input" v-on:input="inputChanged()"
                   v-on:gainstrack-changed="gainstrackChanged($event)"
                   :options="options"
-    ></unit-command>
+    ></balance-or-unit>
   </div>
   <div v-else-if="type === 'bal'">
-    <balance-statement :cmd="input" v-on:input="inputChanged()"
+    <balance-or-unit :cmd="input" v-on:input="inputChanged()"
                        v-on:gainstrack-changed="gainstrackChanged($event)"
                        :options="options"
-    ></balance-statement>
+    ></balance-or-unit>
   </div>
   <div v-else-if="type === 'fund'">
     <fund-command :cmd="input" v-on:input="inputChanged()"
@@ -71,6 +71,7 @@
   import EarnEditor from './command/EarnEditor'
   import YieldEditor from './command/YieldEditor'
   import SpendEditor from '../components/command/SpendEditor'
+  import BalanceOrUnit from 'components/command/BalanceOrUnit'
 
   export default {
     name: 'CommandEditor',
@@ -83,7 +84,8 @@
       BalanceStatement,
       TradeEditor,
       Transfer,
-      AccountCreation
+      AccountCreation,
+      BalanceOrUnit
     },
     methods: {
       gainstrackChanged (str) {

@@ -3,7 +3,12 @@
     :value="value"
     v-on:input="onQSelectChanged($event)"
     :options="options"
-    :label="resolvedPlaceholder"/>
+    :label="resolvedPlaceholder"
+    :input-class="selectClass"
+    use-input
+    fill-input
+    hide-selected
+  />
 </template>
 
 <script lang="ts">
@@ -14,6 +19,7 @@
     name: 'AccountSelector',
     props: {
       value: String,
+      original: {},
       accountList: Array as () => string[],
       placeholder: String
     },
@@ -35,7 +41,11 @@
           return {value: acctId, label: acctId};
         }).sort();
 
-      }
+      },
+      selectClass(): any {
+        const defaulted = this.value !== this.original;
+        return {'defaulted-input': defaulted}
+      },
     },
     methods: {
       onChanged(ev: any) {
@@ -44,7 +54,8 @@
       onQSelectChanged(ev: { label: string, value: string }) {
         this.$emit('input', ev.value);
       },
-    }
+    },
+
   });
 </script>
 

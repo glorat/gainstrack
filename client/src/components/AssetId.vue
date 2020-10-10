@@ -2,13 +2,14 @@
   <q-select
     :label="label || 'Asset'"
     :value="value"
-    @input-value="onSelectChanged"
+    @input="onSelectChanged"
     use-input
     hide-selected
     fill-input
     input-debounce="0"
     :options="filteredOptions"
     @filter="filterFn"
+    :input-class="inputClass"
   ></q-select>
 <!--  hint="Asset/Ccy"-->
 </template>
@@ -25,7 +26,7 @@
 
   export default Vue.extend({
     name: 'AssetId',
-    props: {value: String, label: String},
+    props: {value: String, label: String, inputClass: {}},
     data() {
       return {
         filteredOptions: [] as MyOpt[]
@@ -48,8 +49,8 @@
           this.filteredOptions = this.options.filter(v => v.value.toUpperCase().indexOf(needle) > -1)
         })
       },
-      onSelectChanged(ev: string) {
-        this.$emit('input', ev.toUpperCase());
+      onSelectChanged(ev: {value:string, label:string}) {
+        this.$emit('input', ev.value.toUpperCase());
       },
     }
   })

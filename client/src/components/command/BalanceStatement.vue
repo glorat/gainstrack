@@ -42,7 +42,7 @@
                 if (acct) {
                     this.c.balance.ccy = acct.ccy;
                 }
-                const allCmds /*: AccountCommandDTO[]*/ = this.$store.state.allState.commands;
+                const allCmds /*: AccountCommandDTO[]*/ = [...this.$store.state.allState.commands].reverse();
                 const prev = allCmds.find(
                     x => x.accountId === this.c.accountId && x.commandType === 'bal');
                 if (prev) {

@@ -571,3 +571,10 @@ kbd {
   color: #999;
 }
 
+/*
+For defaulting in CommandInputs
+ */
+
+.defaulted-input {
+  font-style: italic;
+}
