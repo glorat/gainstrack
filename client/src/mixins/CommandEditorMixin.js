@@ -40,6 +40,7 @@ export const CommandEditorMixin = {
 
         const str = this.toGainstrack;
         this.$emit('gainstrack-changed', str);
+      EventBus.$emit('command-changed', this.dc);
     },
     watch: {
         c: {
