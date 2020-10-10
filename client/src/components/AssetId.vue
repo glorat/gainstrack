@@ -36,7 +36,8 @@
       options(): MyOpt[] {
         const state = this.$store.state;
         const summary: StateSummaryDTO = state.allState;
-        const ccys = summary.ccys.length>0 ? summary.ccys : ['USD'];
+        const ccys = (summary.ccys.length>0 ? summary.ccys : ['USD']);
+        ccys.unshift('');
         return ccys.map(ccy => {
           return {value: ccy, label: ccy};
         });
@@ -47,6 +48,12 @@
         update(() => {
           const needle = val.toUpperCase();
           this.filteredOptions = this.options.filter(v => v.value.toUpperCase().indexOf(needle) > -1)
+        },
+          (ref:any) => {
+          if (val !== '' && ref.options.length > 0) {
+            ref.setOptionIndex(-1) // reset optionIndex in case there is something selected
+            ref.moveOptionSelection(1, true) // focus the first selectable option and do not update the input-value
+          }
         })
       },
       onSelectChanged(ev: {value:string, label:string}) {

@@ -4,11 +4,14 @@
             <command-date-editor v-model="c.date"></command-date-editor>
         </div>
         <div v-if="!hideAccount">
-            <account-selector class="c-account-id" v-model="c.accountId" :account-list="earnableAccounts" @input="accountIdChanged"></account-selector>
+          <account-selector
+            placeholder="Earning Source"
+            class="c-account-id" :value="dc.accountId" :original="c.accountId"
+            @input="c.accountId=$event" :account-list="earnableAccounts"
+          ></account-selector>
         </div>
         <div>
-            Earnings
-            <balance-editor class="c-change" v-model="c.change"></balance-editor>
+          <balance-editor label="Earned Amount" class="c-change" :value="dc.change" :original="c.change" @input="c.change=$event"></balance-editor>
         </div>
     </div>
 </template>
@@ -23,26 +26,31 @@
         components: {AccountSelector, BalanceEditor},
         mixins: [CommandEditorMixin],
         methods: {
-            accountIdChanged() {
-                const acct = this.findAccount(this.c.accountId)
-                if (acct) {
-                    this.c.change.ccy = acct.ccy;
-                }
-            },
         },
         computed: {
+          dc() {
+            const dc = {...this.c};
+            const acct = this.findAccount(this.c.accountId);
+            if (acct && !dc.change.ccy) {
+              dc.change = {...dc.change, ccy: acct.ccy};
+            }
+            // Would need some serious AI to predict the default earned amount!
+            return dc;
+          },
             earnableAccounts() {
                 return this.mainAccounts.filter(x => x.startsWith('Income:'));
             },
             isValid() {
-                return !!this.c.accountId
-                    && this.c.change.number
-                    && this.c.change.ccy;
+              const c /*: AccountCommandDTO*/ = this.dc;
+                return !!c.accountId
+                    && c.change.number
+                    && c.change.ccy;
             },
             toGainstrack() {
+              const c /*: AccountCommandDTO*/ = this.dc;
                 if (this.isValid) {
-                    const tag = this.c.accountId.substring(7);
-                    return `${this.c.date} earn ${tag} ${this.c.change.number} ${this.c.change.ccy}`;
+                    const tag = c.accountId.substring(7);
+                    return `${c.date} earn ${tag} $c.change.number} ${c.change.ccy}`;
                 } else {
                     return '';
                 }

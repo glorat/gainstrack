@@ -9,7 +9,7 @@
 <script lang="ts">
     import Vue from 'vue';
     import AssetId from '../AssetId.vue';
-    import {Amount} from "src/lib/models";
+    import {Amount} from 'src/lib/models';
     export default Vue.extend({
         name: 'BalanceEditor',
         components: {

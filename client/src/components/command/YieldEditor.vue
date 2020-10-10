@@ -4,15 +4,17 @@
             <command-date-editor v-model="c.date"></command-date-editor>
         </div>
         <div v-if="!hideAccount">
-            <account-selector v-model="c.accountId" :account-list="assetAccounts" @input="accountIdChanged"></account-selector>
-        </div>
+          <account-selector
+            placeholder="Yield Source Account"
+            class="c-account-id" :value="dc.accountId" :original="c.accountId"
+            @input="c.accountId=$event" :account-list="assetAccounts"
+          ></account-selector>        </div>
         <div v-if="multiAsset">
-            Asset that is yielding
-            <asset-id v-model="c.asset" @input="assetChanged"></asset-id>
+          <!-- TODO: Restrict this asset list to whatever is in this account -->
+            <asset-id label="Asset that is yielding" v-model="c.asset" @input="assetChanged"></asset-id>
         </div>
         <div>
-            Dividend/Interest
-            <balance-editor v-model="c.change"></balance-editor>
+          <balance-editor label="Dividend/Interest/Yield" class="change" :value="dc.change" :original="c.change" @input="c.change=$event"></balance-editor>
         </div>
     </div>
 </template>
@@ -29,29 +31,40 @@
         components: {AssetId, AccountSelector, BalanceEditor, CommandDateEditor},
         mixins: [CommandEditorMixin],
         methods: {
-            accountIdChanged() {
-                const acct = this.findAccount(this.c.accountId);
-                if (acct && acct.options.fundingAccount) {
-                    const fundAcct = this.findAccount(acct.options.fundingAccount);
-                    if (fundAcct) {
-                        // TODO: A test case would show that the PP account would yield GBP
-                        this.c.change.ccy = fundAcct.ccy;
-                    }
-                } else if (acct) {
-                    // TODO: A test case would show that a GBP savings account would yield GBP
-                    this.c.change.ccy = acct.ccy;
-                }
-            },
-            assetChanged() {
-                // TODO: A test case of VWRL yielding USD instead of GBP
-                const cmds = this.$store.state.allState.commands;
-                const prev = cmds.reverse().find(cmd => cmd.commandType === 'yield' && cmd.asset === this.c.asset);
-                if (prev) {
-                    this.c.change.ccy = prev.change.ccy
-                }
-            },
+          inferredChangeCcy(asset) {
+            const acct = this.findAccount(this.c.accountId);
+            if (acct.options.multiAsset && asset) {
+              const cmds = this.$store.state.allState.commands;
+              const prev = cmds.reverse().find(cmd => cmd.commandType === 'yield' && cmd.asset === asset);
+              if (prev) {
+                return prev.change.ccy
+              } else {
+                const under = this.allStateEx.underlyingCcy(asset, this.c.accountId)
+                if (under) return under;
+              }
+            }
+
+            if (acct && acct.options.fundingAccount) {
+              const fundAcct = this.findAccount(acct.options.fundingAccount);
+              if (fundAcct) {
+                // TODO: A test case would show that the PP account would yield GBP
+                return fundAcct.ccy;
+              }
+            } else if (acct) {
+              // TODO: A test case would show that a GBP savings account would yield GBP
+              return acct.ccy;
+            }
+          }
         },
         computed: {
+          dc() {
+            const dc = {...this.c};
+            if (!dc.change.ccy) {
+              const changeCcy = this.inferredChangeCcy(dc.asset);
+              dc.change = {...dc.change, ccy: changeCcy};
+            }
+            return dc;
+          },
             multiAsset() {
                 const acct = this.findAccount(this.c.accountId);
                 return acct && acct.options.multiAsset;
@@ -60,17 +73,19 @@
                 return this.mainAssetAccounts;
             },
             isValid() {
-                return !!this.c.accountId
-                    && this.c.change.number
-                    && this.c.change.ccy
-                    && (this.c.asset || !this.c.multiAsset);
+              const c /*: AccountCommandDTO*/ = this.dc;
+                return !!c.accountId
+                    && c.change.number
+                    && c.change.ccy
+                    && (c.asset || !c.multiAsset);
             },
             toGainstrack() {
+              const c /*: AccountCommandDTO*/ = this.dc;
                 if (this.isValid) {
                     if (this.multiAsset) {
-                        return `${this.c.date} yield ${this.c.accountId} ${this.c.asset} ${this.c.change.number} ${this.c.change.ccy}`;
+                        return `${c.date} yield ${c.accountId} ${c.asset} ${c.change.number} ${c.change.ccy}`;
                     } else {
-                        return `${this.c.date} yield ${this.c.accountId} ${this.c.change.number} ${this.c.change.ccy}`
+                        return `${c.date} yield ${c.accountId} ${c.change.number} ${c.change.ccy}`
                     }
                 } else {
                     return '';

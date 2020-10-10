@@ -2,12 +2,14 @@
   <q-select
     :value="value"
     v-on:input="onQSelectChanged($event)"
-    :options="options"
+    :options="filteredOptions"
     :label="resolvedPlaceholder"
     :input-class="selectClass"
     use-input
     fill-input
     hide-selected
+    input-debounce="0"
+    @filter="filterFn"
   />
 </template>
 
@@ -25,6 +27,7 @@
     },
     data() {
       return {
+        filteredOptions: [] as {value: string, label:string}[]
         // items: this.$store.state.summary.accountIds
       };
     },
@@ -53,6 +56,18 @@
       },
       onQSelectChanged(ev: { label: string, value: string }) {
         this.$emit('input', ev.value);
+      },
+      filterFn(val: string, update: any) {
+        update(() => {
+            const needle = val.toUpperCase();
+            this.filteredOptions = this.options.filter(v => v.value.toUpperCase().indexOf(needle) > -1)
+          },
+          (ref:any) => {
+            if (val !== '' && ref.options.length > 0) {
+              ref.setOptionIndex(-1) // reset optionIndex in case there is something selected
+              ref.moveOptionSelection(1, true) // focus the first selectable option and do not update the input-value
+            }
+          })
       },
     },
 
