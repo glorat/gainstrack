@@ -2,7 +2,7 @@
   <q-select
     :label="label || 'Asset'"
     :value="value"
-    @input="onSelectChanged"
+    @input-value="onSelectChanged"
     use-input
     hide-selected
     fill-input
@@ -29,20 +29,29 @@
     props: {value: String, label: String, inputClass: {}},
     data() {
       return {
-        filteredOptions: [] as MyOpt[]
+        filteredOptions: [] as MyOpt[],
+        moreOptions: [] as string[]
       }
     },
     computed: {
       options(): MyOpt[] {
         const state = this.$store.state;
         const summary: StateSummaryDTO = state.allState;
-        const ccys = ['',...(summary.ccys.length>0 ? summary.ccys : ['USD'])];
+        const ccys:string[] = ['', ...this.moreOptions, ...(summary.ccys.length>0 ? summary.ccys : ['USD'])];
         return ccys.map(ccy => {
           return {value: ccy, label: ccy};
         });
       },
     },
     methods: {
+      createValue(val: string, done: any) {
+        if (val.length > 0) {
+          if (!this.moreOptions.includes(val)) {
+            this.moreOptions.push(val)
+          }
+          done(val, 'toggle')
+        }
+      },
       filterFn(val: string, update: any) {
         update(() => {
           const needle = val.toUpperCase();
@@ -57,8 +66,8 @@
           }
         })
       },
-      onSelectChanged(ev: {value:string, label:string}) {
-        this.$emit('input', ev.value.toUpperCase());
+      onSelectChanged(ev: string) {
+        this.$emit('input', ev.toUpperCase());
       },
     }
   })
