@@ -36,8 +36,7 @@
       options(): MyOpt[] {
         const state = this.$store.state;
         const summary: StateSummaryDTO = state.allState;
-        const ccys = (summary.ccys.length>0 ? summary.ccys : ['USD']);
-        ccys.unshift('');
+        const ccys = ['',...(summary.ccys.length>0 ? summary.ccys : ['USD'])];
         return ccys.map(ccy => {
           return {value: ccy, label: ccy};
         });
@@ -47,6 +46,8 @@
       filterFn(val: string, update: any) {
         update(() => {
           const needle = val.toUpperCase();
+          // FIXME: Support start of string matching first
+          // FIXME: Also support matching blank
           this.filteredOptions = this.options.filter(v => v.value.toUpperCase().indexOf(needle) > -1)
         },
           (ref:any) => {

@@ -64,9 +64,7 @@
 <script>
   import Transfer from './command/Transfer'
   import TradeEditor from './command/TradeEditor'
-  import BalanceStatement from './command/BalanceStatement'
   import FundCommand from './command/FundCommand'
-  import UnitCommand from './command/UnitCommand'
   import AccountCreation from './command/AccountCreation'
   import EarnEditor from './command/EarnEditor'
   import YieldEditor from './command/YieldEditor'
@@ -79,9 +77,7 @@
       YieldEditor,
       SpendEditor,
       EarnEditor,
-      UnitCommand,
       FundCommand,
-      BalanceStatement,
       TradeEditor,
       Transfer,
       AccountCreation,
