@@ -16,6 +16,11 @@
               {{ props.value }} <q-icon :name="matEdit"></q-icon>
             </q-td>
           </template>
+          <template v-slot:body-cell-price="props" v-if="canEdit">
+            <q-td :props="props" @click="onAssetEdit(props)">
+              {{ props.value }} <q-icon :name="matEdit"></q-icon>
+            </q-td>
+          </template>
         </q-table>
         <q-table :data="totalRows"
                  :columns="allColumns"
@@ -36,6 +41,7 @@
     import UnitEditorDialog from 'components/CommandEditorDialog.vue';
     import {mapGetters} from 'vuex';
     import {LocalDate} from '@js-joda/core';
+    import AssetEditorDialog from 'components/AssetEditorDialog.vue';
 
     interface Mode {
         name: string
@@ -122,33 +128,27 @@
         onUnitsEdit(props: any) {
           const today = LocalDate.now();
           const row: NetworthByAsset = props.row;
-          // const ccy = this.baseCcy; // FIXME: Determine default ccy for row.assetId
-          // const price = this.fxConverter.getFX(row.assetId, ccy, today);
           const cmd = {
             commandType: 'unit',
             accountId: this.accountId,
             date: today.toString(),
             balance: {number:row.units, ccy: row.assetId},
-            // price: {number:price, ccy: ccy},
-
           };
 
           this.$q.dialog({
             component: UnitEditorDialog,
-
             parent: this,
-
-            // props forwarded to component
-            // (everything except "component" and "parent" props above):
             cmd: cmd
             // ...more.props...
-          }).onOk(() => {
-            // console.log('OK');
-            // console.error(data.gainstrack);
-          }).onCancel(() => {
-            // console.log('Cancel')
-          }).onDismiss(() => {
-            // console.log('Called on OK or Cancel');
+          })
+        },
+        onAssetEdit(props: any) {
+          const row: NetworthByAsset = props.row;
+          this.$q.dialog({
+            component: AssetEditorDialog,
+            parent: this,
+            assetId: row.assetId
+            // ...more.props...
           })
         }
       },

@@ -79,6 +79,7 @@
   import {mapGetters} from 'vuex';
   import {LocalDate} from '@js-joda/core';
   import {formatNumber} from 'src/lib/utils';
+  import {toCommodityGainstrack} from "src/lib/CommandGenerator";
 
   export default Vue.extend({
     name: 'AssetsEditor',
@@ -146,16 +147,7 @@
         });
       },
       toGainstrack (asset: AccountCommandDTO) {
-        let str = `1900-01-01 commodity ${asset.asset}`
-        const options = asset.options || {};
-        for (const [key, value] of Object.entries(options)) {
-          if (key === 'tags' && value.length > 0) {
-            str += `\n tags: ${value.join(',')}`
-          } else if (value) {
-            str += `\n  ${key}: ${value}`
-          }
-        }
-        return str
+        return toCommodityGainstrack(asset)
       },
       assetSave (asset: AccountCommandDTO) {
         const str = this.toGainstrack(asset)
