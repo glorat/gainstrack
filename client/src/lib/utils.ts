@@ -1,6 +1,6 @@
 import numbro from 'numbro';
-import {AccountCommandDTO, AccountDTO, Posting, PostingEx, Transaction} from 'src/lib/models';
-import {SingleFXConverter} from 'src/lib/fx';
+import {AccountCommandDTO, AccountDTO, Posting, PostingEx, Transaction} from '../lib/models';
+import {SingleFXConverter} from '../lib/fx';
 import {flatMap, groupBy, keys, sum, uniq, reduce, mergeWith, stubTrue, mapValues, omitBy, flatten} from 'lodash';
 import { LocalDate } from '@js-joda/core';
 

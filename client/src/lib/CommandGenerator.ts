@@ -1,4 +1,4 @@
-import {AccountCommandDTO, AssetDTO} from 'src/lib/models';
+import {AccountCommandDTO, AssetDTO} from '../lib/models';
 
 export function toCommodityGainstrack(asset: AccountCommandDTO | AssetDTO) {
   let str = `1900-01-01 commodity ${asset.asset}`

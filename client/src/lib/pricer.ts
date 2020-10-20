@@ -1,6 +1,6 @@
-import {SingleFXConversion, SingleFXConverter} from 'src/lib/fx';
-import {AccountCommandDTO, AssetDTO} from 'src/lib/models';
-import {intDateToIsoDate, Interpolator, linearInterpolateValue} from 'src/lib/SortedColumnMap';
+import {SingleFXConversion, SingleFXConverter} from '../lib/fx';
+import {AccountCommandDTO, AssetDTO} from '../lib/models';
+import {intDateToIsoDate, Interpolator, linearInterpolateValue} from '../lib/SortedColumnMap';
 import {LocalDate} from '@js-joda/core';
 
 type AssetId = string

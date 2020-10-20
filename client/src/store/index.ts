@@ -1,6 +1,5 @@
 import {SingleFXConversion, SingleFXConverter} from '../lib/fx'
 import axios, {AxiosRequestConfig} from 'axios'
-import Vue from 'vue'
 import Vuex from 'vuex'
 import {
   AccountDTO,
@@ -10,14 +9,13 @@ import {
   QuoteConfig,
   Transaction, TreeTableDTO
 } from '../lib/models'
-import {GlobalPricer} from 'src/lib/pricer';
-import {AllStateEx} from 'src/lib/AllStateEx';
+import {GlobalPricer} from '../lib/pricer';
+import {AllStateEx} from '../lib/AllStateEx';
 import {cloneDeep, includes, keys, mergeWith} from 'lodash'
-import {balanceTreeTable} from 'src/lib/TreeTable';
+import {balanceTreeTable} from '../lib/TreeTable';
 import {LocalDate} from '@js-joda/core';
-import {toCommodityGainstrack} from 'src/lib/CommandGenerator';
-
-Vue.use(Vuex);
+import {toCommodityGainstrack} from '../lib/CommandGenerator';
+import { store } from 'quasar/wrappers'
 
 export interface TimeSeries {
   x: string[]
@@ -51,7 +49,8 @@ const initState: MyState = {
 
 type FXConverterWrapper = ((fx: SingleFXConversion) => SingleFXConverter)
 
-export default function () {
+export default store(function ({ Vue }) {
+  Vue.use(Vuex);
 
   let requestPreprocessor = async (config:AxiosRequestConfig):Promise<AxiosRequestConfig> => {
     return config;
@@ -363,7 +362,7 @@ export default function () {
     }
   });
   return Store
-}
+})
 
 interface AccountBalances {
   Assets?: TreeTableDTO;

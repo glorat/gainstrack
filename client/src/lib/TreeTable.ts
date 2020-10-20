@@ -1,12 +1,12 @@
-import {AccountCommandDTO, AccountDTO, PostingEx, TreeTableDTO} from 'src/lib/models';
+import {AccountCommandDTO, AccountDTO, PostingEx, TreeTableDTO} from '../lib/models';
 import { LocalDate } from '@js-joda/core';
-import {SingleFXConverter} from 'src/lib/fx';
+import {SingleFXConverter} from '../lib/fx';
 import {
   convertedPositionSet,
   isSubAccountOf,
   parentAccountIdOf,
   postingsToPositionSet
-} from 'src/lib/utils';
+} from '../lib/utils';
 
 function shortAccountId(accountId: string) {
   const bits = accountId.split(':')

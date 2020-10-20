@@ -1,6 +1,6 @@
-import {AccountCommandDTO, AllState, isTransaction, Posting, PostingEx, Transaction} from 'src/lib/models';
+import {AccountCommandDTO, AllState, isTransaction, Posting, PostingEx, Transaction} from '../lib/models';
 import {flatten} from 'lodash';
-import {SingleFXConversion} from 'src/lib/fx';
+import {SingleFXConversion} from '../lib/fx';
 
 export class AllStateEx {
 

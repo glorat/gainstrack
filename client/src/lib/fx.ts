@@ -6,7 +6,7 @@ import {
   isoToIntDate,
   linear, localDateToIntDate,
   SortedColumnMap
-} from 'src/lib/SortedColumnMap';
+} from '../lib/SortedColumnMap';
 import {LocalDate} from '@js-joda/core';
 
 type AssetId = string
