@@ -4,7 +4,7 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 import {
   AccountDTO,
-  AllState,
+  AllState, AssetDTO,
   emptyAllState,
   PostingEx,
   QuoteConfig,
@@ -12,9 +12,10 @@ import {
 } from '../lib/models'
 import {GlobalPricer} from 'src/lib/pricer';
 import {AllStateEx} from 'src/lib/AllStateEx';
-import { includes, keys, mergeWith } from 'lodash'
+import {cloneDeep, includes, keys, mergeWith} from 'lodash'
 import {balanceTreeTable} from 'src/lib/TreeTable';
 import {LocalDate} from '@js-joda/core';
+import {toCommodityGainstrack} from 'src/lib/CommandGenerator';
 
 Vue.use(Vuex);
 
@@ -105,6 +106,13 @@ export default function () {
       },
       dateOverriden(state: MyState, dt: LocalDate) {
         state.dateOverride = dt;
+      },
+      assetUpserted(state: MyState, asset: AssetDTO) {
+        const originalAssets = state.allState.assetState;
+        const orig = originalAssets.find(x => x.asset === asset.asset)
+        if (orig === undefined) throw new Error('Invariant violation in assetSave')
+        const idx = originalAssets.indexOf(orig)
+        Object.assign(originalAssets[idx], cloneDeep(asset))
       }
     },
     actions: {
@@ -228,6 +236,13 @@ export default function () {
         context.commit('dateOverriden', LocalDate.parse(d))
 
         await context.dispatch('balances');
+      },
+      async upsertAsset(context, asset: AssetDTO) {
+        const str = toCommodityGainstrack(asset)
+        const res = await axios.post('/api/post/asset', { str })
+        context.commit('assetUpserted', asset)
+        return res
+
       },
       async login (context, data: Record<string, unknown>) {
         const summary = await axios.post('/api/authn/login', data);

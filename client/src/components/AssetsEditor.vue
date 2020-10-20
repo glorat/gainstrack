@@ -79,7 +79,7 @@
   import {mapGetters} from 'vuex';
   import {LocalDate} from '@js-joda/core';
   import {formatNumber} from 'src/lib/utils';
-  import {toCommodityGainstrack} from "src/lib/CommandGenerator";
+  import {toCommodityGainstrack} from 'src/lib/CommandGenerator';
 
   export default Vue.extend({
     name: 'AssetsEditor',

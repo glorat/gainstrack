@@ -3,6 +3,7 @@
     <asset-editor
       :asset-id="assetId"
       @cancel="onDialogHide"
+      @ok="onOKClick"
     >
     </asset-editor>
 <!--    <add-cmd :input="cmd" @cancel="onDialogHide" @command-added="onOKClick"-->
@@ -20,6 +21,7 @@
 
   import {QDialog} from 'quasar';
   import AssetEditor from 'components/AssetEditor.vue';
+  import {AssetDTO} from 'src/lib/models';
 
   export default Vue.extend({
     name: 'AssetEditorDialog',
@@ -48,11 +50,11 @@
         this.$emit('hide')
       },
 
-      onOKClick () {
+      onOKClick (asset:AssetDTO) {
         // on OK, it is REQUIRED to
         // emit "ok" event (with optional payload)
         // before hiding the QDialog
-        this.$emit('ok', this.$data);
+        this.$emit('ok', asset);
         // or with payload: this.$emit('ok', { ... })
 
         // then hiding dialog

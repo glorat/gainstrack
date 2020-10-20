@@ -12,8 +12,7 @@
       </q-card-section>
       <q-card-actions align="right">
         <q-btn class="c-cancel" color="primary" type="button" v-on:click="cancel">Cancel</q-btn>
-        <q-btn class="c-add" color="primary">Okay
-        </q-btn>
+        <q-btn class="c-add" color="primary" @click="onSubmit" :disable="upserting">Submit</q-btn>
         <!--        <q-btn flat label="Cancel" v-close-popup/>-->
         <!--        <q-btn flat label="Submit" @click="onOKClick" />-->
       </q-card-actions>
@@ -38,12 +37,28 @@ export default Vue.extend({
   },
   data() {
     return {
-      asset: {asset: this.assetId, options: {}} as AssetDTO
+      asset: {asset: this.assetId, options: {}} as AssetDTO,
+      upserting: false
     }
   },
   methods: {
     originalAssetFor(assetId: string) {
       return this.allState.assetState.find( x => x.asset === assetId);
+    },
+    async onSubmit() {
+      try {
+        this.upserting = true
+        await this.$store.dispatch('upsertAsset', this.asset)
+        this.$emit('ok', this.asset)
+      }
+      catch (error) {
+        this.$notify.error('Failed to add/update asset')
+        console.log(error)
+      }
+      finally {
+        this.upserting = false;
+      }
+
     },
     cancel () {
       this.$emit('cancel')
