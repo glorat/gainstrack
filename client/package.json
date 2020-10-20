@@ -1,10 +1,9 @@
 {
-  "name": "Gainstrack",
-  "version": "0.10.0",
+  "name": "@glorat/gainstrack",
+  "version": "2.0.1",
   "description": "Gainstrack wealth",
   "productName": "Gainstrack wealth",
   "author": "Kevin Tam <kevin@glorat.net>",
-  "private": true,
   "scripts": {
     "build": "quasar build",
     "quasar": "quasar dev",
@@ -77,5 +76,8 @@
     "node": ">= 10.18.1",
     "npm": ">= 6.13.4",
     "yarn": ">= 1.21.1"
+  },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
   }
 }

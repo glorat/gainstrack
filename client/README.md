@@ -38,3 +38,9 @@ to output the files to `/your/path` which can then be served by your webserver
 
 ### Customize the configuration
 See [Configuring quasar.conf.js](https://quasar.dev/quasar-cli/quasar-conf-js).
+
+### Consuming as a library
+```bash
+npm login --registry=https://npm.pkg.github.com --scope=@glorat
+npm install @glorat/gainstrack
+```
