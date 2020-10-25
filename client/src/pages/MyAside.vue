@@ -22,7 +22,7 @@
       </div>
       <q-separator/>
     </q-list>
-    <q-list>
+    <q-list v-if="!hideLogin">
       <q-item>
         <login-form></login-form>
       </q-item>
@@ -39,7 +39,9 @@
   import {appRoutes, navBar} from 'src/router/routes';
 
   export default Vue.extend({
-
+    props: {
+      hideLogin: Boolean
+    },
     data() {
       return {
         menuItemsList: navBar.map(ss => {

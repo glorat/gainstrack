@@ -21,6 +21,9 @@ import Add from 'pages/Add.vue';
 import AddCmd from 'pages/AddCmd.vue';
 import PnlExplainDetail from 'pages/PnlExplainDetail.vue';
 import Account from 'pages/Account.vue';
+import {AsyncComponent} from 'vue';
+import BogleTools from 'pages/BogleTools.vue';
+import BogleTwoFund from 'pages/BogleTwoFund.vue';
 
 const gainstrackRoutes: RouteConfig[] = [
   {path: '/add', component: Add, meta: {title: 'Add Record', icon: matAddCircleOutline}},
@@ -92,19 +95,19 @@ const gainstrackNavBar = [
   ['help', 'faq']
 ];
 
-const gainstrackMode = {appRoutes:gainstrackRoutes, navBar: gainstrackNavBar};
+const gainstrackMode = {appRoutes:gainstrackRoutes, navBar: gainstrackNavBar, layout: ()=>import('../layouts/GainstrackCom.vue')};
 
 const simpleRoutes: RouteConfig[] = [
-  {path: '/*', component: Markdown,
-    props: {page: 'welcome.md'},  meta: {title: 'Welcome'}},
+  {path: '/play', component: BogleTwoFund},
+  {path: '/*', component: BogleTools},
   ];
 const simpleNavBar: string[][] = [
 
 ];
 
-const simpleMode = {appRoutes: simpleRoutes, navBar: simpleNavBar}
+const simpleMode = {appRoutes: simpleRoutes, navBar: simpleNavBar, layout: () => import('../layouts/BoglebotCom.vue')}
 
-export const {appRoutes, navBar} : {appRoutes:RouteConfig[], navBar: string[][]} = (() => {
+export const {appRoutes, navBar, layout} : {appRoutes:RouteConfig[], navBar: string[][], layout: AsyncComponent} = (() => {
   const host = window.location.hostname;
   if (host.match('gainstrack')) {
     return gainstrackMode;
@@ -113,7 +116,7 @@ export const {appRoutes, navBar} : {appRoutes:RouteConfig[], navBar: string[][]}
   } else {
     // Default to gainstrack for unknown host
     // Can change this during development. Should not hit this in production
-    return gainstrackMode;
+    return simpleMode;
 
   }
 })()
@@ -121,7 +124,7 @@ export const {appRoutes, navBar} : {appRoutes:RouteConfig[], navBar: string[][]}
 const routes: RouteConfig[] = [
   {
     path: '/',
-    component: () => import('../pages/MyLayout.vue'),
+    component: layout,
     children: appRoutes
   }
 ]

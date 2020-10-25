@@ -1,0 +1,3 @@
+[submodule "client/boglebot"]
+	path = client/boglebot
+	url = git@github.com:glorat/boglebot.git

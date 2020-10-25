@@ -33,7 +33,7 @@
 </template>
 
 <script>
-    import MyAside from './MyAside';
+    import MyAside from '../pages/MyAside';
     import FilterForm from '../components/FilterForm';
     import { matMenu } from '@quasar/extras/material-icons';
     import { Tour } from '../lib/loader'
