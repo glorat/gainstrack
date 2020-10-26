@@ -98,11 +98,14 @@ const gainstrackNavBar = [
 const gainstrackMode = {appRoutes:gainstrackRoutes, navBar: gainstrackNavBar, layout: ()=>import('../layouts/GainstrackCom.vue')};
 
 const simpleRoutes: RouteConfig[] = [
-  {path: '/play', component: BogleTwoFund},
+  // boglebot.com specific routes
+  {path: '/play', component: BogleTwoFund, meta: {title: '2-Fund Guide'}},
+  {path: '/investments', component: Account, props:{accountId: 'Assets:Investments'}, meta: {title: 'Investment Assets'}},
+  {path: '/', component: BogleTools, meta: {title: 'Home'}},
   {path: '/*', component: BogleTools},
   ];
 const simpleNavBar: string[][] = [
-
+  ['', 'play', 'investments'],
 ];
 
 const simpleMode = {appRoutes: simpleRoutes, navBar: simpleNavBar, layout: () => import('../layouts/BoglebotCom.vue')}
