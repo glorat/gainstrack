@@ -100,7 +100,7 @@ const gainstrackMode = {appRoutes:gainstrackRoutes, navBar: gainstrackNavBar, la
 const simpleRoutes: RouteConfig[] = [
   // boglebot.com specific routes
   {path: '/play', component: BogleTwoFund, meta: {title: '2-Fund Guide'}},
-  {path: '/investments', component: Account, props:{accountId: 'Assets:Investments'}, meta: {title: 'Investment Assets'}},
+  {path: '/investments', component: Account, props:{accountId: 'Assets:Investment'}, meta: {title: 'Investment Assets'}},
   {path: '/', component: BogleTools, meta: {title: 'Home'}},
   {path: '/*', component: BogleTools},
   ];

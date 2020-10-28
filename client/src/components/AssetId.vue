@@ -17,14 +17,14 @@
 <script lang="ts">
   // eslint-disable-next-line no-unused-vars
   import {StateSummaryDTO} from '../lib/models';
-  import Vue from 'vue';
+  import { defineComponent } from '@vue/composition-api'
 
   interface MyOpt {
     value: string
     label: string
   }
 
-  export default Vue.extend({
+  export default defineComponent({
     name: 'AssetId',
     props: {value: String, label: String, inputClass: {}},
     data() {

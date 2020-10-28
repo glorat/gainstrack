@@ -30,6 +30,7 @@
                  hide-bottom
         >
         </q-table>
+      <q-btn color="primary" :icon="matAdd" @click="onUnitsEdit({row: {units:0, assetId:''}})"></q-btn>
     </div>
 </template>
 
@@ -37,7 +38,7 @@
     import Vue from 'vue';
     import { date } from 'quasar';
     import {NetworthByAsset, AssetColumn, AssetResponse} from '../lib/models';
-    import {matEdit} from '@quasar/extras/material-icons';
+    import {matEdit, matAdd} from '@quasar/extras/material-icons';
     import UnitEditorDialog from 'components/CommandEditorDialog.vue';
     import {mapGetters} from 'vuex';
     import {LocalDate} from '@js-joda/core';
@@ -115,6 +116,7 @@
                 },
                 columns,
               matEdit,
+              matAdd,
             };
         },
         props: {
@@ -125,9 +127,9 @@
             loading: Boolean,
         },
       methods: {
-        onUnitsEdit(props: any) {
+        onUnitsEdit(props: { row: {units: number, assetId: string} }) {
           const today = LocalDate.now();
-          const row: NetworthByAsset = props.row;
+          const row/*: NetworthByAsset*/ = props.row;
           const cmd = {
             commandType: 'unit',
             accountId: this.accountId,
