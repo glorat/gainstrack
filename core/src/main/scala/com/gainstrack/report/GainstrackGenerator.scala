@@ -73,6 +73,7 @@ case class GainstrackGenerator(originalCommands:Seq[AccountCommand])  {
       "fxMapper" -> fxMapper, // Should be redundant one day
       "proxyMapper" -> proxyMapper, // Also should become redundant
       "baseCcy" -> acctState.baseCurrency,
+      // FIXME: It is possible to have commands that don't register in priceState, particularly in base currency only!
       "ccys" -> priceState.ccys.toSeq.sorted
     )
   }

@@ -5,6 +5,8 @@ import {positionUnderAccount, convertedPositionSet} from 'src/lib/utils';
 import { LocalDate } from '@js-joda/core';
 import {pnlExplainMonthly} from 'src/lib/PLExplain';
 import {balanceTreeTable} from 'src/lib/TreeTable';
+import {GlobalPricer} from "src/lib/pricer";
+import {SingleFXConversion} from "src/lib/fx";
 
 describe('First', () => {
   describe('State', () => {
@@ -68,6 +70,32 @@ describe('First', () => {
       const tree = balanceTreeTable('Assets', today, 'GBP', 'global', allState.accounts, allStateEx.allPostingsEx(), allStateEx.tradeFxConverter())
       expect(tree).toMatchSnapshot();
     })
+
+    describe('global pricer', () => {
+      const tradeFxConverter = allStateEx.tradeFxConverter()
+      const pricer = new GlobalPricer(allState.commands, allState.ccys, tradeFxConverter, tradeFxConverter)
+
+      test('should handle base ccy', () => {
+        const one = pricer.getFX('GBP', 'GBP', today)
+        expect(one).toBe(1)
+      })
+    })
+
+    test('should handle base ccy with no fx', () => {
+      const emptyFx = SingleFXConversion.fromDTO({}, 'USD')
+      const pricer = new GlobalPricer([], [], emptyFx, emptyFx)
+      const one = pricer.getFX('USD', 'USD', today)
+      expect(one).toBe(1)
+    })
+
+    test('should handle base ccy with one fx', () => {
+      const emptyFx = SingleFXConversion.fromDTO({}, 'USD')
+      const pricer = new GlobalPricer([], ['USD'], emptyFx, emptyFx)
+      const one = pricer.getFX('USD', 'USD', today)
+      expect(one).toBe(1)
+    })
+
+
   })
 
 });

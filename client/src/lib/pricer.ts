@@ -80,6 +80,9 @@ export class GlobalPricer implements SingleFXConverter {
   }
 
   getFX(fx1: string, fx2: string, date: LocalDate): number | undefined {
+    // Shortcut since sometimes asset will not be findable
+    if (fx1 == fx2) return 1.0;
+
     const asset = this.findAsset(fx1);
     if (asset) {
       const pricer = this.modelFor(asset);
