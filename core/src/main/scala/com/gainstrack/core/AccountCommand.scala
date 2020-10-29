@@ -23,6 +23,9 @@ trait AccountCommand extends Command with DomainEvent  {
   def usesAccount(accountId: AccountId) : Boolean = involvedAccounts.contains(accountId) ||  mainAccount == Some(accountId)
   def usesSubAccountOf(parentId: AccountId) : Boolean = involvedAccounts.find(a => a.isSubAccountOf(parentId)).isDefined
 
+  def mergedWith(that: AccountCommand): MergeStrategy = {
+    if (this == that) MergeConcat else MergeConcat
+  }
 
   def compare(that: AccountCommand): Int = {
     val ord = this.toOrderValue.compare(that.toOrderValue)
@@ -73,3 +76,11 @@ object AccountCommand {
     }).map(_._1)
   }
 }
+
+sealed trait MergeStrategy
+// Okay to merge command to set
+case object MergeConcat extends MergeStrategy
+// User error
+case object MergeConflict extends MergeStrategy
+// Replace old command with this
+case object MergeReplace extends MergeStrategy
