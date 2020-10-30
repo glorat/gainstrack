@@ -109,6 +109,10 @@ export class GlobalPricer implements SingleFXConverter {
     return Math.round((num + Number.EPSILON) * 1000000) / 1000000
   }
 
+  static isIso(ccy: string) {
+    // A temporary shortcut until we load a proper list
+    return ccy.length === 3;
+  }
 }
 
 
@@ -123,15 +127,10 @@ class FXPricer implements Pricer {
     this.baseCcy = singleFXConversion.baseCcy;
   }
 
-  static isIso(ccy: string) {
-    // A temporary shortcut until we load a proper list
-    return ccy.length === 3;
-  }
-
   quotesRequired(asset:AssetDTO): string[] {
     if (asset.options.ticker) {
       return [asset.options.ticker]
-    } else if (FXPricer.isIso(asset.asset)) {
+    } else if (GlobalPricer.isIso(asset.asset)) {
       return [asset.asset]
     } else {
       return [];
@@ -142,7 +141,7 @@ class FXPricer implements Pricer {
     // TODO: Or is an ISO symbol
     // const eligible = (!!asset.options.ticker) || (FXPricer.isIso(asset.asset));
     const tickerEligible = () => (!!asset.options.ticker) && (this.singleFXConverter.getFX(asset.options.ticker, this.baseCcy, LocalDate.MAX) !== undefined)
-    const isoEligible = () => (FXPricer.isIso(asset.asset) && this.singleFXConverter.getFX(asset.asset, this.baseCcy, LocalDate.MAX) !== undefined)
+    const isoEligible = () => (GlobalPricer.isIso(asset.asset) && this.singleFXConverter.getFX(asset.asset, this.baseCcy, LocalDate.MAX) !== undefined)
     return tickerEligible() || isoEligible();
 
   }

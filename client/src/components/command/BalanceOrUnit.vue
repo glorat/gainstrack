@@ -74,13 +74,17 @@
         // Take care to use copy-on-write pattern in this function
         const dc = {...this.c};
         const acct = this.findAccount(dc.accountId);
-        if (!dc.commandType) {
-          dc.commandType = 'bal'; // FIXME: make intelligent
-        }
 
         if (acct) {
           if (!dc.balance.ccy) {dc.balance = {...dc.balance, ccy : acct.ccy}}
 
+          if (!dc.commandType || !/^(bal|unit)$/.test(dc.commandType)) {
+            if (GlobalPricer.isIso(dc.balance.ccy) || dc.balance.ccy == acct.ccy) {
+              dc.commandType = 'bal'
+            } else {
+              dc.commandType = 'unit'
+            }
+          }
           if (!dc.balance.number) {
             const stateEx = this.allStateEx;
             const pex = stateEx.allPostingsEx();
@@ -107,6 +111,10 @@
             } else {
               dc.otherAccount = 'Equity:Opening'
             }
+          }
+
+          if (!dc.commandType) {
+            dc.commandType = 'bal';
           }
 
         }

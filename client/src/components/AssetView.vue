@@ -131,7 +131,7 @@
           const today = LocalDate.now();
           const row/*: NetworthByAsset*/ = props.row;
           const cmd = {
-            commandType: 'unit',
+            commandType: 'balunit',
             accountId: this.accountId,
             date: today.toString(),
             balance: {number:row.units, ccy: row.assetId},

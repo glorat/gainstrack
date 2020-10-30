@@ -11,16 +11,11 @@
                   :options="options"
     ></trade-editor>
   </div>
-  <div v-else-if="type === 'unit'">
+  <!-- Not a strict string match so that components can provide an ambiguous type -->
+  <div v-else-if="type.match('unit|bal')">
     <balance-or-unit :cmd="input" v-on:input="inputChanged()"
                   v-on:gainstrack-changed="gainstrackChanged($event)"
                   :options="options"
-    ></balance-or-unit>
-  </div>
-  <div v-else-if="type === 'bal'">
-    <balance-or-unit :cmd="input" v-on:input="inputChanged()"
-                       v-on:gainstrack-changed="gainstrackChanged($event)"
-                       :options="options"
     ></balance-or-unit>
   </div>
   <div v-else-if="type === 'fund'">
