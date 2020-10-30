@@ -5,8 +5,8 @@ import {positionUnderAccount, convertedPositionSet} from 'src/lib/utils';
 import { LocalDate } from '@js-joda/core';
 import {pnlExplainMonthly} from 'src/lib/PLExplain';
 import {balanceTreeTable} from 'src/lib/TreeTable';
-import {GlobalPricer} from "src/lib/pricer";
-import {SingleFXConversion} from "src/lib/fx";
+import {GlobalPricer} from 'src/lib/pricer';
+import {SingleFXConversion} from 'src/lib/fx';
 
 describe('First', () => {
   describe('State', () => {
