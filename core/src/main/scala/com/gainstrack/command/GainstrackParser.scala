@@ -1,11 +1,14 @@
 package com.gainstrack.command
 
 import com.gainstrack.core.{AccountCommand, MergeConcat}
+import org.slf4j.LoggerFactory
 
 import scala.collection.immutable.SortedSet
 import scala.io.{BufferedSource, Source}
 
 class GainstrackParser {
+  private val logger =  LoggerFactory.getLogger(getClass)
+
   // We start with just the global state
   private var globalCommand:Option[GlobalCommand] = None
   private var commands:Seq[AccountCommand] = Seq()
@@ -146,7 +149,8 @@ class GainstrackParser {
   private def parseBuffer(src: Source) = {
     src.getLines().foreach(this.parseLine)
     if (this.errors.length > 0) {
-      throw new Exception("There were parsing errors")
+      this.errors.foreach(e => logger.error(e.message))
+      throw new Exception(s"There were ${this.errors.length} parsing errors")
     }
   }
 }

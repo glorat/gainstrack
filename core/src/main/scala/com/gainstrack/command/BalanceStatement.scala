@@ -25,7 +25,7 @@ case class BalanceStatement(
 
   override def mergedWith(that: AccountCommand): MergeStrategy = {
     that match {
-      case t:BalanceStatement if t==that => MergeConflict
+      case t:BalanceStatement if t==this => MergeConflict
       case t:UnitTrustBalance if this.date == t.date && this.accountId == t.accountId && this.balance.ccy == t.security.ccy => {
         MergeReplace
       }
