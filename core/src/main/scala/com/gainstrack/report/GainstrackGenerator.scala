@@ -91,11 +91,22 @@ case class GainstrackGenerator(originalCommands:Seq[AccountCommand])  {
   //      machine.applyChange(cmd)
   //    })
   //    machine
-  def addCommand(cmd:AccountCommand) : GainstrackGenerator = {
+  def addCommand(newCmd:AccountCommand) : GainstrackGenerator = {
+    // Check for merge conflict and resolution
+    val newCmds = Seq.newBuilder[AccountCommand]
+    originalCommands.foreach(cmd => {
+      cmd.mergedWith(newCmd) match {
+        case MergeConcat => newCmds +=cmd
+        case MergeReplace => ()
+        case MergeConflict => throw new IllegalArgumentException(s"Conflicts with ${cmd.toGainstrack}")
+      }
+    })
+    val resolved = newCmds.result
+
     // Cannot use .contains because that seems to use a ref equals
     // whereas we want a value object equals
-    require(!originalCommands.exists(_ == cmd), "command already exists. Duplicates not allowed")
-    GainstrackGenerator( AccountCommand.sorted(originalCommands :+ cmd))
+    require(!resolved.exists(_ == newCmd), "command already exists. Duplicates not allowed") // Redundant due to earlier merge checks
+    GainstrackGenerator( AccountCommand.sorted(resolved :+ newCmd))
   }
 
   def removeCommand(cmd:AccountCommand): GainstrackGenerator = {

@@ -12,7 +12,6 @@ import com.gainstrack.report.AccountState
   * @param accountId
   * @param date
   * @param security
-  * @param units
   * @param price
   */
 case class UnitTrustBalance(
@@ -101,6 +100,19 @@ case class UnitTrustBalance(
     val incomeAcctBase = baseAcct.copy(key = AccountKey(accountId.convertType(Income), baseAcct.key.assetId ),
       options = AccountOptions(multiAsset = true, generatedAccount = true))
     Seq(cashAcct, incomeAcct, expenseAcct, expenseAcctBase, incomeAcctBase)
+  }
+
+  override def mergedWith(that: AccountCommand): MergeStrategy = {
+    that match {
+      case t:UnitTrustBalance if this==t => MergeConflict
+      case t:UnitTrustBalance if this.date == t.date && this.accountId == t.accountId && this.security.ccy == t.security.ccy => {
+        MergeReplace
+      }
+      case b:BalanceStatement if this.date == b.date && this.accountId == b.accountId && this.security.ccy == b.balance.ccy => {
+        MergeReplace
+      }
+      case _ => super.mergedWith(that)
+    }
   }
 
   def toGainstrack : Seq[String] = {

@@ -11,7 +11,6 @@
 2004-10-14 fund Assets:Pension:Barclays Equity:Opening 500 GBP
 2004-10-15 unit Assets:Pension:Barclays 500 BGIL @2 GBP
 2019-04-18 unit Assets:Pension:Barclays 600 BGIL @5 GBP
-2019-04-19 adj Assets:Pension:Barclays 600 BGIL Expenses:Pension:Barclays
 
 2004-10-14 open Assets:ISA:London GBP
     fundingAccount: Assets:Bank:England

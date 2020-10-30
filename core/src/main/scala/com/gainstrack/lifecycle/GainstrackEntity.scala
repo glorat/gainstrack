@@ -4,10 +4,12 @@ import com.gainstrack.command.{CommodityCommand, GainstrackParser}
 import com.gainstrack.core._
 import com.gainstrack.report.GainstrackGenerator
 import net.glorat.cqrs._
+import org.slf4j.LoggerFactory
 
 import scala.io.BufferedSource
 
 class GainstrackEntity extends AggregateRoot {
+  val logger =  LoggerFactory.getLogger(getClass)
 
   override protected var state : AggregateRootState = GainstrackEntityState(id = java.util.UUID.randomUUID(), cmdStrs=Seq())
   def getState : GainstrackEntityState = state.asInstanceOf[GainstrackEntityState]
@@ -64,10 +66,19 @@ class GainstrackEntity extends AggregateRoot {
 }
 
 case class GainstrackEntityState(id: GUID, cmdStrs: Seq[Seq[String]]) extends AggregateRootState {
+  val logger =  LoggerFactory.getLogger(getClass)
   private val parser = new GainstrackParser
 
   lazy val cmds: Seq[AccountCommand] = {
-    parser.parseLines(cmdStrs.toSeq.flatten)
+    try {
+      parser.parseLines(cmdStrs.toSeq.flatten)
+    }
+    catch {
+      case e:Exception => {
+        logger.error(s"Gainstrack entity ${id} has invalid records: ${parser.parserErrors.map(_.message).mkString(",")}")
+      }
+    }
+
     parser.getCommands
   }
 

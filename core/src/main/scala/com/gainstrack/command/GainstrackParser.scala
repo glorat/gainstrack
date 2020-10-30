@@ -1,9 +1,8 @@
 package com.gainstrack.command
 
-import com.gainstrack.core.AccountCommand
+import com.gainstrack.core.{AccountCommand, MergeConcat}
 
 import scala.collection.immutable.SortedSet
-
 import scala.io.{BufferedSource, Source}
 
 class GainstrackParser {
@@ -50,6 +49,17 @@ class GainstrackParser {
   private val CommentLine = "[;#].*".r
   private val IgnoreLine = "^\\w*$".r
 
+  final class MergeConflictException(val message: String) extends RuntimeException {
+    override def getMessage = message
+  }
+
+  def checkForConflict(newCmd: AccountCommand) = {
+    val conflictOpt = commands.find(_.mergedWith(newCmd) != MergeConcat)
+    conflictOpt.map (conflict => {
+      throw new MergeConflictException(s"${newCmd.toGainstrack.head} conflicts with ${conflict.toGainstrack.head}")
+    })
+  }
+
   private def tryParseLine(fullLine:String) : Unit = {
     lineCount += 1
 
@@ -60,12 +70,16 @@ class GainstrackParser {
         if (parsers.contains(prefix)) {
           try {
             val newCmd = parsers(prefix).parse(line)
+            checkForConflict(newCmd)
             commands = commands :+ newCmd
             commandToLocation = commandToLocation + (newCmd -> lineCount)
           }
           catch {
             case m: MatchError => {
               errors = errors :+ ParserMessage(s"${prefix} command cannot be parsed", lineCount, line)
+            }
+            case m: MergeConflictException => {
+              errors = errors :+ ParserMessage(m.getMessage, lineCount, line)
             }
           }
 
@@ -114,7 +128,7 @@ class GainstrackParser {
   def parseLines(lines:IterableOnce[String]) : Unit = {
     lines.iterator.foreach(tryParseLine)
     if (this.errors.length > 0) {
-      throw new Exception("There were parsing errors")
+      throw new Exception(s"There were ${this.errors.length} parsing errors")
     }
   }
 

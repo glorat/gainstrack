@@ -23,6 +23,19 @@ case class BalanceStatement(
 
   def toTransfers(accts: Set[AccountCreation], oldValue: Amount): Seq[Transfer] = adjustment.toTransfers(accts, oldValue)
 
+  override def mergedWith(that: AccountCommand): MergeStrategy = {
+    that match {
+      case t:BalanceStatement if t==that => MergeConflict
+      case t:UnitTrustBalance if this.date == t.date && this.accountId == t.accountId && this.balance.ccy == t.security.ccy => {
+        MergeReplace
+      }
+      case b:BalanceStatement if this.date == b.date && this.accountId == b.accountId && this.balance.ccy == b.balance.ccy => {
+        MergeReplace
+      }
+      case _ => super.mergedWith(that)
+    }
+  }
+
   def toGainstrack : Seq[String] = {
     Seq(s"${date} bal ${accountId.toGainstrack} ${balance} ${adjAccount.toGainstrack}")
   }

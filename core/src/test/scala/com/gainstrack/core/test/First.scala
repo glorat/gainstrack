@@ -11,7 +11,9 @@ import scala.collection.SortedSet
 
 class First extends AnyFlatSpec {
   val parser = new GainstrackParser
+
   import scala.io.Source
+
   parser.parseLines(Source.fromResource("src.gainstrack").getLines())
 
   val cmds = parser.getCommands
@@ -53,7 +55,7 @@ class First extends AnyFlatSpec {
   "transfer" should "calc fx rate" in {
     val fx = tx.fxRate
     assert(fx == 0.12712275)
-    assert (fx.denominatorIsValidLong)
+    assert(fx.denominatorIsValidLong)
     //assert ((1/fx) == 7.8664)
     assert(tx.toTransaction.isBalanced)
   }
@@ -84,7 +86,7 @@ class First extends AnyFlatSpec {
   }
 
   // First pass for accounts
-  lazy val acctState:AccountState = bg.acctState
+  lazy val acctState: AccountState = bg.acctState
 
   "cmds" should "process" in {
     acctState
@@ -92,7 +94,7 @@ class First extends AnyFlatSpec {
 
   it should "handle related accounts" in {
     val acct = acctState.accounts.find(x => x.name == AccountId("Assets:Investment:IBUSD")).getOrElse(fail("Missing account"))
-    assert (acct.options.expenseAccount == Some(AccountId("Expenses:Investment:IBUSD:USD")))
+    assert(acct.options.expenseAccount == Some(AccountId("Expenses:Investment:IBUSD:USD")))
   }
 
   it should "fill in intermediate accounts" in {
@@ -106,7 +108,7 @@ class First extends AnyFlatSpec {
   it should "generate asset conversion chains" in {
     val assetChainMap = bg.assetChainMap
     assert(assetChainMap(AccountId("Assets")) == Seq(AssetId("GBP")))
-    assert(assetChainMap(AccountId("Assets:Investment:IBUSD:VWRD")).map(_.symbol) == Seq("VWRD","USD","GBP"))
+    assert(assetChainMap(AccountId("Assets:Investment:IBUSD:VWRD")).map(_.symbol) == Seq("VWRD", "USD", "GBP"))
   }
 
   val bg = GainstrackGenerator(cmds)
@@ -120,7 +122,7 @@ class First extends AnyFlatSpec {
 
   it should "generate sane beancount string" in {
     val str = bg.toGainstrack
-    assert (str.startsWith("option \"operating_currency\" \"GBP\"\n\n2000-01-01 open Assets:Bank:HSBCUK GBP\n\n2000-01-01 open Assets:Bank:Nationwide GBP"))
+    assert(str.startsWith("option \"operating_currency\" \"GBP\"\n\n2000-01-01 open Assets:Bank:HSBCUK GBP\n\n2000-01-01 open Assets:Bank:Nationwide GBP"))
   }
 
   it should "pass bean-check" in {
@@ -128,7 +130,7 @@ class First extends AnyFlatSpec {
     import java.nio.file.{Paths, Files}
     val bcFile = "/tmp/gainstrack.beancount"
     var stdout = scala.collection.mutable.ListBuffer[String]()
-    val logger = ProcessLogger(line => stdout.+=(line), line=>stdout+=line )
+    val logger = ProcessLogger(line => stdout.+=(line), line => stdout += line)
     val exitCode = s"bean-check ${bcFile}" ! logger
 
     if (exitCode != 0) {
@@ -137,9 +139,9 @@ class First extends AnyFlatSpec {
       val orig = bg.toBeancount
       errLines.foreach(line => {
         line match {
-          case BcParse(lineNumber,message) => {
-            println(orig(parseNumber(lineNumber).toInt-1).origin.toGainstrack)
-            println (message)
+          case BcParse(lineNumber, message) => {
+            println(orig(parseNumber(lineNumber).toInt - 1).origin.toGainstrack)
+            println(message)
           }
         }
 
@@ -161,8 +163,8 @@ class First extends AnyFlatSpec {
     Files.write(Paths.get(filename), str.getBytes(StandardCharsets.UTF_8))
   }
 
-  lazy val priceState : PriceState = bg.priceState
-  lazy val priceFXConverter : PriceFXConverter = bg.priceFXConverter
+  lazy val priceState: PriceState = bg.priceState
+  lazy val priceFXConverter: PriceFXConverter = bg.priceFXConverter
 
   {
     val bp = bg.balanceState
@@ -186,36 +188,34 @@ class First extends AnyFlatSpec {
 
         println(s"${account.accountId}: ${value.toDouble} ${account.key.assetId.symbol} ${toGbp}")
 
-              })
+      })
     }
 
     it should "sum all asset balances to a position set" in {
-      val assets = acctState.accounts.filter(_.name.accountType == Assets).foldLeft(PositionSet())((ps,account) => {
-        val value:Fraction = bp.getAccountValue(account.accountId, today)
-         ps + Amount(value, account.key.assetId.symbol)
+      val assets = acctState.accounts.filter(_.name.accountType == Assets).foldLeft(PositionSet())((ps, account) => {
+        val value: Fraction = bp.getAccountValue(account.accountId, today)
+        ps + Amount(value, account.key.assetId.symbol)
       }).assetBalance
 
       assert(assets(AssetId("USD")) == -52857.23)
 
     }
 
-        /*
-    it should "aggregate a tree of position sets" in {
-      // Aggregate assets up the tree...
-      var accountsToReduce = accountMap.keys
-      var current = acctState.accounts.filter(_.name.startsWith("Assets:")).foldLeft(PositionSet())((ps,account) => {
-        val value:Fraction = bp.getState.getBalance(account.accountId, today).getOrElse(zeroFraction)
-        ps + Balance(value, account.key.assetId.symbol)
-      }).assetBalance
-      while (accountsToReduce.size > 0) {
-        val parents = accountsToReduce.map(accountId => accountMap.get(accountId))
+    /*
+it should "aggregate a tree of position sets" in {
+  // Aggregate assets up the tree...
+  var accountsToReduce = accountMap.keys
+  var current = acctState.accounts.filter(_.name.startsWith("Assets:")).foldLeft(PositionSet())((ps,account) => {
+    val value:Fraction = bp.getState.getBalance(account.accountId, today).getOrElse(zeroFraction)
+    ps + Balance(value, account.key.assetId.symbol)
+  }).assetBalance
+  while (accountsToReduce.size > 0) {
+    val parents = accountsToReduce.map(accountId => accountMap.get(accountId))
 
-      }
-    }
-    */
   }
-
-
+}
+*/
+  }
 
 
   "price collector" should "process" in {
@@ -226,25 +226,25 @@ class First extends AnyFlatSpec {
 
   it should "infer prices from transfers" in {
 
-    assert(priceState.prices(AssetPair(AssetId("USD"),AssetId("HKD")))
-      == Map(parseDate("2019-01-02")-> 7.866412581540283))
+    assert(priceState.prices(AssetPair(AssetId("USD"), AssetId("HKD")))
+      == Map(parseDate("2019-01-02") -> 7.866412581540283))
 
-    assert(priceState.prices(AssetPair(AssetId("VTI"),AssetId("USD"))) == Map(
-      parseDate("2019-01-02") ->127.63,
+    assert(priceState.prices(AssetPair(AssetId("VTI"), AssetId("USD"))) == Map(
+      parseDate("2019-01-02") -> 127.63,
       parseDate("2019-03-15") -> 144.62,
       parseDate("2019-03-26") -> 143.83)
     )
   }
 
   it should "include directly observed prices" in {
-    assert(priceState.prices(AssetPair(AssetId("GBP"),AssetId("USD")))
-      == Map(parseDate("2019-01-01")-> 1.2752))
+    assert(priceState.prices(AssetPair(AssetId("GBP"), AssetId("USD")))
+      == Map(parseDate("2019-01-01") -> 1.2752))
   }
 
   it should "provide interpolated prices" in {
-    val fx = priceFXConverter.getFX(AssetId("VTI"),AssetId("USD"), parseDate("2019-02-01"))
+    val fx = priceFXConverter.getFX(AssetId("VTI"), AssetId("USD"), parseDate("2019-02-01"))
     // Interp between 127 and 144
-    assert(fx.get ==  161651.0/1200.0) //134.709166666
+    assert(fx.get == 161651.0 / 1200.0) //134.709166666
   }
 
   it should "have a list of all ccys" in {
@@ -283,14 +283,14 @@ class First extends AnyFlatSpec {
     val irr = accountReport.irr
     val npv = accountReport.npv(irr)
     assert(npv < 0.000001)
-    assert( Math.abs(irr - 0.04278473708136136) < 0.01)
+    assert(Math.abs(irr - 0.04278473708136136) < 0.01)
   }
 
   "BalanceReport" should "project balances" in {
     // Values in these assertions match higher up values
-    val fn:AccountId=>Fraction = bg.balanceState.totalPosition(_, bg.latestDate).assetBalance(AssetId("USD"))
+    val fn: AccountId => Fraction = bg.balanceState.totalPosition(_, bg.latestDate).assetBalance(AssetId("USD"))
     assert(fn("Assets:Investment:IBUSD:USD") == 172.05)
-    assert(fn("Expenses:Investment:IBUSD:USD")== 18.87)
+    assert(fn("Expenses:Investment:IBUSD:USD") == 18.87)
     assert(fn("Assets") == -52857.23)
 
   }
@@ -299,11 +299,11 @@ class First extends AnyFlatSpec {
     val balanceReport = BalanceReport(bg.txState.cmds)
     val dailyReport = new DailyBalance(bg.balanceState)
 
-    val testMeStrategy:( String)=>(String, String, Int)=>Unit = (strategy) => (acctId, ccyStr, expected) => {
+    val testMeStrategy: (String) => (String, String, Int) => Unit = (strategy) => (acctId, ccyStr, expected) => {
       val ps = dailyReport.convertedPosition(acctId, today, strategy)(bg.acctState, assetChainMap = bg.assetChainMap, bg.tradeFXConversion)
       val ps2 = balanceReport.getState.convertedPosition(acctId, today, strategy)(bg.assetChainMap, bg.acctState, bg.priceFXConverter, bg.tradeFXConversion)
 
-//      if (ps != ps2) {
+      //      if (ps != ps2) {
       ////        assert(ps == ps2)
       ////      }
 
@@ -315,7 +315,7 @@ class First extends AnyFlatSpec {
       assert(actual2 == expected)
     }
 
-    val testMe:(String, String, Int)=>Unit = testMeStrategy("parent")
+    val testMe: (String, String, Int) => Unit = testMeStrategy("parent")
 
     testMe("Assets:Investment:IBUSD:USD", "USD", 172)
     testMe("Expenses:Investment:IBUSD:USD", "USD", 19)
@@ -326,7 +326,7 @@ class First extends AnyFlatSpec {
     testMe("Assets:Investment", "GBP", 433653)
     testMe("Assets", "GBP", 625582)
 
-    val testMe2:(String, String, Int)=>Unit = testMeStrategy("GBP")
+    val testMe2: (String, String, Int) => Unit = testMeStrategy("GBP")
 
     testMe2("Assets:Investment:IBUSD:USD", "GBP", 135)
     testMe2("Assets", "GBP", 625582)
@@ -346,7 +346,7 @@ class First extends AnyFlatSpec {
     //val equities = bg.assetState.tagToAssets("equity")
     val equities = bg.assetState.assetsForTags(Set("equity"))
     implicit val singleFXConversion = bg.tradeFXConversion
-//    val equityValue = dailyReport.positionOfAssets(equities, bg.acctState, bg.priceFXConverter, bg.assetChainMap, today)
+    //    val equityValue = dailyReport.positionOfAssets(equities, bg.acctState, bg.priceFXConverter, bg.assetChainMap, today)
     //
     //    assert(equityValue.getBalance(AssetId("GBP")).number.round == 22211)
 
@@ -379,7 +379,7 @@ class First extends AnyFlatSpec {
   it should "generate monthly time series of balances" in {
     val dailyReport = new DailyBalance(bg.balanceState)
     val start = YearMonth.from(bg.acctState.accounts.map(_.date).min)
-    val it =Iterator.iterate(start)(_.plusMonths(1)).takeWhile(!_.isAfter(YearMonth.now))
+    val it = Iterator.iterate(start)(_.plusMonths(1)).takeWhile(!_.isAfter(YearMonth.now))
     val dates = for (ym <- it) yield ym.atDay(1)
     val acct = AccountId("Assets")
 
@@ -393,8 +393,8 @@ class First extends AnyFlatSpec {
     assert(asset.options.options("arbitrary") == "hello world")
   }
 
-  it should "map to tickers" in  {
-    assert(bg.fxMapper(AssetId("VWRD")) == AssetId("VWRD.LON") )
+  it should "map to tickers" in {
+    assert(bg.fxMapper(AssetId("VWRD")) == AssetId("VWRD.LON"))
   }
 
   "Networth Report" should "report per asset" in {
@@ -411,4 +411,33 @@ class First extends AnyFlatSpec {
     assert(iuaa.value.round == 4097)
   }
 
+  "GainstrackGenerator" should "allow adding of new commands" in {
+    val str = "2019-01-05 unit Assets:Investment:Zurich 75297.0 FTSE @2.1 GBP"
+    val parser = new GainstrackParser
+    parser.parseString(str)
+    val cmds = parser.getCommands
+    val bg2 = cmds.foldLeft(bg)(_.addCommand(_))
+    assert(bg2.originalCommands.length == bg.originalCommands.length + 1)
+  }
+
+  it should "reject adding duplicates" in {
+    val str = "2019-01-01 unit Assets:Investment:Zurich 75296.0 FTSE @2.1 GBP"
+    val parser = new GainstrackParser
+    parser.parseString(str)
+    val cmds = parser.getCommands
+    assertThrows[IllegalArgumentException] {
+      val bg2 = cmds.foldLeft(bg)(_.addCommand(_))
+    }
+  }
+
+  it should "merge adding conflicts" in {
+    val str = "2019-01-01 unit Assets:Investment:Zurich 1000.0 FTSE @1.1 GBP"
+    val parser = new GainstrackParser
+    parser.parseString(str)
+    val cmds = parser.getCommands
+
+    val bg2 = cmds.foldLeft(bg)(_.addCommand(_))
+
+    assert(bg2.originalCommands.length == bg.originalCommands.length)
+  }
 }
