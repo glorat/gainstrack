@@ -9,6 +9,7 @@ import com.gainstrack.report.GainstrackGenerator
 import com.typesafe.config.ConfigFactory
 import javax.servlet.http.HttpServletRequest
 import net.glorat.cqrs.{CommittedEvent, RepositoryWithEntityStream}
+import org.scalatra.auth.Scentry
 import org.scalatra.{ContentEncodingSupport, ScalatraBase}
 import org.slf4j.LoggerFactory
 
@@ -21,6 +22,7 @@ trait GainstrackSupport extends ContentEncodingSupport {
   // dependency here in case, for example, it needs mocking out
   protected def isAuthenticated(implicit request: HttpServletRequest): Boolean
   protected def user(implicit request: HttpServletRequest): GUser
+  protected def scentry(implicit request: HttpServletRequest): Scentry[GUser]
   protected implicit val ec: ExecutionContext
 
   private val logger =  LoggerFactory.getLogger(getClass)
@@ -117,10 +119,11 @@ trait GainstrackSupport extends ContentEncodingSupport {
       val newId = java.util.UUID.randomUUID()
       logger.info(s"Generating anonymous session for ${newId}")
       cookies += (AnonAuthStrategy.ANON_KEY -> newId.toString)
-      newId
+      scentry.user = GUser.anonymous(newId.toString)
+      scentry.user.uuid
     }
 
-    logger.info(s"Saving updates to ${user.username} ${id}")
+    logger.info(s"Saving updates to ${id}")
     val ent = repo.getByIdOpt(id, new GainstrackEntity()).getOrElse(GainstrackEntity.defaultBase(id))
     ent.source(bg.originalCommands)
 
