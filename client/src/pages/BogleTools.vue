@@ -1,8 +1,11 @@
 <template>
-  <q-page padding>
-    <q-card><q-card-section>Hello</q-card-section></q-card>
-    <q-card v-for="tool in tools" :key="tool.target" @click="onClick(tool)" style="cursor: pointer;">
-      <q-card-section>{{ tool.title }}</q-card-section>
+  <q-page padding class="q-pa-md row items-start q-gutter-md">
+    <q-card v-for="tool in tools" :key="tool.target" @click="onClick(tool)" class="my-card">
+      <q-card-section>
+        <div class="text-h6">{{ tool.title }}</div>
+        <div class="text-subtitle1" v-if="tool.subtitle">{{ tool.subtitle }}</div>
+      </q-card-section>
+      <q-separator></q-separator>
       <q-card-section>{{ tool.description }}</q-card-section>
     </q-card>
   </q-page>
@@ -12,8 +15,9 @@
   import {defineComponent} from '@vue/composition-api';
 
   interface Tool {
-    target: string,
+    target: string
     title: string
+    subtitle?: string
     description: string
   }
 
@@ -29,13 +33,17 @@
     },
     data() {
       const tools: Tool[] = [
-        {target: 'play', title: 'Two Fund', description: ''}
+        {target: 'play', title: 'Two Fund Portfolio Guide', description: 'Giving you options on implementing an international flavour of the Boglehead inspired "two fund portfolio"'},
+        {target: 'investments', title: 'Portfolio Tools', subtitle: 'Under development!', description: 'Tools for helping you manage your portfolio of investments'}
       ];
       return {tools};
     }
   })
 </script>
 
-<style scoped>
-
+<style lang="sass" scoped>
+.my-card
+  width: 100%
+  max-width: 250px
+  cursor: pointer
 </style>
