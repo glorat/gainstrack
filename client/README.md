@@ -44,3 +44,15 @@ See [Configuring quasar.conf.js](https://quasar.dev/quasar-cli/quasar-conf-js).
 npm login --registry=https://npm.pkg.github.com --scope=@glorat
 npm install @glorat/gainstrack
 ```
+
+### Regenerating icons
+Generate a high-res PNG from the SVG input then use icongenie to generate the rest
+```bash
+svgexport boglebot.svg boglebot.png 1024:1024
+icongenie generate -i boglebot.png
+rm boglebot.png
+```
+If needed, you'll need to install pre-requisites
+```bash
+npm install -g svgexport @quasar/icongenie
+```
