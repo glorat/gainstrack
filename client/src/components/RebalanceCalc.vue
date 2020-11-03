@@ -40,11 +40,11 @@
       >
         Target
         <div v-for="row in entries" :key="row.assetId" class="row">
-          <div class="col-2"><q-field stack-label>        <template v-slot:control>
+          <div class="col-2"><q-field stack-label readonly>        <template v-slot:control>
             <div class="self-center full-width no-outline" tabindex="0">{{row.assetId}}</div>
           </template></q-field></div>
           <div class="col-2"><q-field stack-label>        <template v-slot:control>
-            <div class="self-center full-width no-outline" tabindex="0">{{ formatPerc(row.value / assets.totals[0].value) }}</div>
+            <div class="self-center full-width no-outline" tabindex="0">{{ formatPerc(row.value / totalOriginalValue) }}</div>
           </template></q-field></div>
           <div class="col-2"><q-input label="Target" suffix="%" type="number" v-model.number="row.target">
           </q-input></div>
@@ -55,8 +55,16 @@
           </div>
         </div>
         <q-stepper-navigation>
-          <q-btn @click="step = 3" color="primary" label="Continue" :disable="!canCalculate" />
+          <q-btn @click="calculate" color="primary" label="Continue" :disable="!canCalculate" />
         </q-stepper-navigation>
+      </q-step>
+
+      <q-step
+        :name="3"
+        title="Result"
+        :done="step > 3"
+      >
+        <contribution-calculator-result-view :data="results"></contribution-calculator-result-view>
       </q-step>
     </q-stepper>
   </div>
@@ -70,10 +78,12 @@ import {difference, includes, sum} from 'lodash';
 import {formatPerc} from 'src/lib/utils';
 import BalanceEditor from 'components/command/BalanceEditor.vue';
 import {mapGetters} from 'vuex';
-
-interface Entries extends NetworthByAsset {
-  target?: number
-}
+import {
+  ContributionCalculator,
+  ContributionCalculatorEntries,
+  ContributionCalculatorInput
+} from 'src/lib/ContributionCalculator';
+import ContributionCalculatorResultView from "components/ContributionCalculatorResultView.vue";
 
 function trim(num: number|undefined): number|undefined {
   if (num === undefined) return undefined;
@@ -87,13 +97,15 @@ export default defineComponent({
   },
   components: {
     BalanceEditor,
+    ContributionCalculatorResultView,
   },
   data() {
     return {
       step: 1,
       assets: {rows:[], columns:[], totals:[]} as AssetResponse,
       assetsToBalance: [],
-      entries: [] as Entries[],
+      entries: [] as ContributionCalculatorInput[],
+      results: [] as ContributionCalculatorEntries[],
       contribution: {number: 0, ccy: ''} as Amount,
       formatPerc
     }
@@ -112,11 +124,16 @@ export default defineComponent({
       }
     },
     selectAssets():void {
-      const total = this.assets.totals[0].value;
-
+      const total = sum(this.rowsToBalance.map(row => row.value));
       this.entries = this.rowsToBalance.map(row => {return {...row, target: trim(100*row.value/total)}})
       this.step = 2
     },
+    calculate(): void {
+      const calc = new ContributionCalculator(this.entries, this.contribution.ccy)
+      calc.contribute(this.contribution.number)
+      this.results = calc.entries
+      this.step = 3
+    }
   },
   computed: {
     ...mapGetters([
@@ -129,11 +146,14 @@ export default defineComponent({
     rowsToBalance(): NetworthByAsset[] {
       return this.assets.rows.filter(row => includes(this.assetsToBalance, row.assetId))
     },
+    totalOriginalValue(): number {
+      return sum(this.entries.map(e => e.value))
+    },
     totalTargetPerc():number {
       return sum(this.entries.map(row => row.target || 0))
     },
     canCalculate(): boolean {
-      return this.totalTargetPerc === 100;
+      return this.totalTargetPerc === 100 && this.contribution.number>0.0;
     }
   },
   mounted(): void {
