@@ -38,22 +38,10 @@
         title="Target Allocations"
         :done="step > 2"
       >
-        Target
-        <div v-for="row in entries" :key="row.assetId" class="row">
-          <div class="col-2"><q-field stack-label readonly>        <template v-slot:control>
-            <div class="self-center full-width no-outline" tabindex="0">{{row.assetId}}</div>
-          </template></q-field></div>
-          <div class="col-2"><q-field stack-label>        <template v-slot:control>
-            <div class="self-center full-width no-outline" tabindex="0">{{ formatPerc(row.value / totalOriginalValue) }}</div>
-          </template></q-field></div>
-          <div class="col-2"><q-input label="Target" suffix="%" type="number" v-model.number="row.target">
-          </q-input></div>
-        </div>
-        <div class="row">
-          <div class="col-12">
-            <balance-editor v-model="contribution" label="Contribution"></balance-editor>
-          </div>
-        </div>
+        <contribution-calculator-input-editor
+          :entries="entries"
+          :contribution="contribution"
+        ></contribution-calculator-input-editor>
         <q-stepper-navigation>
           <q-btn @click="calculate" color="primary" label="Continue" :disable="!canCalculate" />
         </q-stepper-navigation>
@@ -83,7 +71,8 @@ import {
   ContributionCalculatorEntries,
   ContributionCalculatorInput
 } from 'src/lib/ContributionCalculator';
-import ContributionCalculatorResultView from "components/ContributionCalculatorResultView.vue";
+import ContributionCalculatorResultView from 'components/ContributionCalculatorResultView.vue';
+import ContributionCalculatorInputEditor from 'components/ContributionCalculatorInputEditor.vue';
 
 function trim(num: number|undefined): number|undefined {
   if (num === undefined) return undefined;
@@ -98,6 +87,7 @@ export default defineComponent({
   components: {
     BalanceEditor,
     ContributionCalculatorResultView,
+    ContributionCalculatorInputEditor,
   },
   data() {
     return {
@@ -139,13 +129,6 @@ export default defineComponent({
     ...mapGetters([
       'findAccount'
     ]),
-    remainingAssets():string[] {
-      const allAssets = this.assets.rows.map(row => row.assetId)
-      return difference(allAssets, this.assetsToBalance)
-    },
-    rowsToBalance(): NetworthByAsset[] {
-      return this.assets.rows.filter(row => includes(this.assetsToBalance, row.assetId))
-    },
     totalOriginalValue(): number {
       return sum(this.entries.map(e => e.value))
     },
@@ -154,7 +137,14 @@ export default defineComponent({
     },
     canCalculate(): boolean {
       return this.totalTargetPerc === 100 && this.contribution.number>0.0;
-    }
+    },
+    remainingAssets():string[] {
+      const allAssets = this.assets.rows.map(row => row.assetId)
+      return difference(allAssets, this.assetsToBalance)
+    },
+    rowsToBalance(): NetworthByAsset[] {
+      return this.assets.rows.filter(row => includes(this.assetsToBalance, row.assetId))
+    },
   },
   mounted(): void {
     this.refresh();
