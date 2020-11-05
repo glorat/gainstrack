@@ -42,6 +42,8 @@
           </template>
         </q-table>
       <q-btn color="primary" :icon="matAdd" @click="onUnitsEdit({row: {units:0, assetId:''}})" label="Add Asset"></q-btn>
+
+      <q-btn color="secondary" @click="onRebalance" v-if="networthByAsset.length>1" label="Rebalance Calculator"></q-btn>
     </div>
 </template>
 
@@ -133,6 +135,10 @@
             assetId: row.assetId
             // ...more.props...
           })
+        },
+        onRebalance():void {
+          this.$router.push({name: 'rebalance', params: {accountId: this.accountId }});
+
         }
       },
         computed: {

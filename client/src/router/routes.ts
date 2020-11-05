@@ -68,6 +68,7 @@ const gainstrackRoutes: RouteConfig[] = [
     name: 'account', props: true,
     meta: {title: 'Account'}
   },
+  {path: '/rebalance/:accountId', component: RebalanceCalc, name: 'rebalance', props: true},
   {path: '/command', component: CommandSummary, meta: {title: 'Accounts', icon: matEdit}},
   {path: '/command/:accountId', component: Command, name: 'command', props: true},
   {
@@ -102,7 +103,7 @@ const simpleRoutes: RouteConfig[] = [
   // boglebot.com specific routes
   {path: '/play', component: BogleTwoFund, meta: {title: '2-Fund Guide'}},
   {path: '/investments', component: Account, props:{accountId: 'Assets:Investment'}, meta: {title: 'Investment Assets'}},
-  {path: '/contribute', component: RebalanceCalc, props:{accountId: 'Assets:Investment'}, meta: {title: 'Contribution Calculator'}},
+  {path: '/contribute', component: RebalanceCalc, props:{accountId: 'Assets:Investment'}, meta: {title: 'Contribution Calculator'}, name: 'rebalance'},
   {path: '/', component: BogleTools, meta: {title: 'Home'}},
   {path: '/*', component: BogleTools},
   ];
@@ -121,7 +122,7 @@ export const {appRoutes, navBar, layout} : {appRoutes:RouteConfig[], navBar: str
   } else {
     // Default to gainstrack for unknown host
     // Can change this during development. Should not hit this in production
-    return simpleMode;
+    return gainstrackMode;
 
   }
 })()
