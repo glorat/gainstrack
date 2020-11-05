@@ -4,7 +4,6 @@
       <q-tab name="assets" :icon="matAssignment" label="Balance"></q-tab>
       <q-tab name="statement" :icon="matAccountBalance" label="Statements"></q-tab>
       <q-tab name="journal" :icon="matEdit" label="Journal" v-if="hasJournal" class="account-tab-journal"></q-tab>
-      <q-tab name="more" :icon="matAssignment" label="More" v-if="hasJournal"></q-tab>
     </q-tabs>
 
     <q-tab-panels v-model="tab" animated>
@@ -28,9 +27,6 @@
         <asset-view :assetResponse="assetResponse" :loading="false" :account-id="accountId"></asset-view>
       </q-tab-panel>
 
-      <q-tab-panel name="more">
-        <asset-balance :account-id="accountId"></asset-balance>
-      </q-tab-panel>
 
     </q-tab-panels>
 
@@ -47,7 +43,6 @@
   import AssetView from '../components/AssetView.vue'
   import {mapGetters} from 'vuex'
   import {matAccountBalance, matAssignment, matEdit} from '@quasar/extras/material-icons'
-  import AssetBalance from '../components/AssetBalance.vue'
   import {MyState} from 'src/store'
   import {
     commandPostingsWithBalance,
@@ -69,7 +64,6 @@
       JournalTable,
       AccountJournal,
       AssetView,
-      AssetBalance,
     },
     props: ['accountId'],
     data() {

@@ -32,20 +32,6 @@ export function convertAccountType(accountId: string, aType: string): string {
   return accountId.replace(`${prefix}:`, `${aType}:`)
 }
 
-export function assetRowsFromPostings(myPostings: Posting[], fx: SingleFXConverter, valueCcy: string, today: LocalDate) {
-  const byAsset: Record<string, Posting[]> = groupBy(myPostings, p => p.value.ccy);
-  const assetRows: AssetRow[] = keys(byAsset).sort().map(key => {
-    const ps = byAsset[key];
-    const unitNumber = sum(ps.map(p => p.value.number));
-    const unitCcy = ps[0].value.ccy;
-    const price = fx.getFX(unitCcy, valueCcy, today);
-    const valueNumber = (price || 0.0) * unitNumber;
-    const priceDate = fx.latestDate(unitCcy, valueCcy, today);
-    return {unitNumber, unitCcy, valueNumber, valueCcy, price, priceDate};
-  });
-  return assetRows;
-}
-
 export interface AccountTxDTO {
   date: string,
   cmdType: string,
@@ -184,13 +170,4 @@ export function journalEntries(mktConvert: SingleFXConverter, txs: Transaction[]
     };
   });
   return rows;
-}
-
-export interface AssetRow {
-  unitNumber: number
-  unitCcy: string
-  valueNumber: number
-  valueCcy: string
-  price?: number
-  priceDate?: LocalDate
 }

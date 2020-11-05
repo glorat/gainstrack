@@ -9,6 +9,9 @@
                 :visible-columns="visibleColumns"
                 :loading="loading"
                 :pagination.sync="pagination"
+                row-key="assetId"
+                :selection="selection"
+                :selected.sync="selected"
                 dense
                 v-if="networthByAsset.length>0 || loading"
         >
@@ -22,15 +25,21 @@
               {{ props.value }} <q-icon :name="matEdit"></q-icon>
             </q-td>
           </template>
-        </q-table>
-        <q-table :data="totalRows"
-                 :columns="allColumns"
-                 :visible-columns="visibleColumns"
-                 :loading="loading"
-                 dense
-                 hide-bottom
-                 v-if="networthByAsset.length>0"
-        >
+          <template v-slot:bottom-row>
+            <q-tr>
+              <q-td v-if="selection"/>
+              <q-td>
+                Total:
+              </q-td>
+              <q-td>
+              </q-td>
+              <q-td class="num">
+                {{ totalValueStr }}
+              </q-td>
+              <q-td />
+              <q-td />
+            </q-tr>
+          </template>
         </q-table>
       <q-btn color="primary" :icon="matAdd" @click="onUnitsEdit({row: {units:0, assetId:''}})" label="Add Asset"></q-btn>
     </div>
@@ -45,6 +54,8 @@
     import {mapGetters} from 'vuex';
     import {LocalDate} from '@js-joda/core';
     import AssetEditorDialog from 'components/AssetEditorDialog.vue';
+    import {sum} from 'lodash';
+    import {formatNumber, formatPerc} from 'src/lib/utils';
 
     interface Mode {
         name: string
@@ -62,7 +73,7 @@
                 {
                     name: 'value',
                     label: 'Current Value',
-                    columns: ['assetId', 'units', 'value', 'price', 'priceDate'],
+                    columns: ['assetId', 'units', 'value', 'valuePerc', 'price', 'priceDate'],
                     moreColumns: '',
                     filter: nw => nw.value !== 0.0
                 },
@@ -75,39 +86,6 @@
                 }
             ];
 
-            const columns: AssetColumn[] = [{
-                name: 'assetId',
-                label: 'Asset',
-                field: 'assetId',
-                align: 'left',
-                sortable: true
-            }, {
-                name: 'units',
-                field: 'units',
-                label: 'Units',
-                classes: ['num'],
-                format: (val: number) => `${val.toFixed(2)}`
-            }, {
-                name: 'value',
-                field: 'value',
-                label: this.$store.getters.baseCcy + ' Value',
-                classes: ['num'],
-                sortable: true,
-                format: (val: number) => `${val.toFixed(2)}`
-            }, {
-                name: 'price',
-                field: 'price',
-                label: 'Price',
-                classes: ['num'],
-                format: (val: number) => `${val.toFixed(2)}`
-            }, {
-                name: 'priceDate',
-                field: 'priceDate',
-                label: 'Last Price Date',
-                sortable: true,
-                classes: ['num']
-            }];
-
             return {
                 mode: 'value',
                 modes,
@@ -116,7 +94,8 @@
                   sortBy: 'value',
                   descending: true,
                 },
-                columns,
+              selection: 'multiple',
+              selected: [],
               matEdit,
               matAdd,
             };
@@ -158,9 +137,56 @@
       },
         computed: {
           ...mapGetters(['mainAccounts', 'baseCcy', 'fxConverter']),
+          columns(): AssetColumn[] {
+            return [{
+              name: 'assetId',
+              label: 'Asset',
+              field: 'assetId',
+              align: 'left',
+              sortable: true
+            }, {
+              name: 'units',
+              field: 'units',
+              label: 'Units',
+              classes: ['num'],
+              format: formatNumber
+            }, {
+              name: 'value',
+              field: 'value',
+              label: this.$store.getters.baseCcy + ' Value',
+              classes: ['num'],
+              sortable: true,
+              format: formatNumber
+            }, {
+              name: 'valuePerc',
+              label: '%',
+              classes: ['num'],
+              field: (row:NetworthByAsset) => row.value / this.totalValue,
+              format:formatPerc
+            }, {
+              name: 'price',
+              field: 'price',
+              label: 'Price',
+              classes: ['num'],
+              format: formatNumber
+            }, {
+              name: 'priceDate',
+              field: 'priceDate',
+              label: 'Last Price Date',
+              sortable: true,
+              classes: ['num']
+            }];
+          },
           canEdit(): boolean {
             // TODO: Check that accountId is a mainAccount
             return !!this.accountId && this.mainAccounts.find( (x:string) => x===this.accountId);
+          },
+          totalValue():number {
+            const allVals = this.filteredAssets.map(row => row.value);
+            return sum(allVals);
+          },
+          totalValueStr():string {
+            return formatNumber(this.totalValue);
           },
             currentMode(): Mode {
                 const mode = this.modes.find(m => m.name === this.mode);
