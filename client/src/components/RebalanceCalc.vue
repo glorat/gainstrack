@@ -6,30 +6,35 @@
       color="primary"
       animated
       header-nav
-      >
+    >
       <q-step
         :name="1"
         title="Select Assets"
         :done="step > 1"
-        >
-        <div>
-          Select your assets...
-          <q-chip
-            v-for="a in remainingAssets" :key="a" :label="a" color="primary" text-color="white" clickable
-            @click="assetsToBalance.push(a)"
-          >
-          </q-chip>
-        </div>
-        <div>
-          Chosen:
-          <q-chip
-            v-for="a in assetsToBalance" :key="a" :label="a" color="primary" text-color="white" clickable
-            @click="assetsToBalance = assetsToBalance.filter(asset => asset!==a)"
-          ></q-chip>
-        </div>
+      >
+        <template v-if="assets.rows.length>2">
+          <div>
+            Select your assets...
+            <q-chip
+              v-for="a in remainingAssets" :key="a" :label="a" color="primary" text-color="white" clickable
+              @click="assetsToBalance.push(a)"
+            >
+            </q-chip>
+          </div>
+          <div>
+            Chosen:
+            <q-chip
+              v-for="a in assetsToBalance" :key="a" :label="a" color="primary" text-color="white" clickable
+              @click="assetsToBalance = assetsToBalance.filter(asset => asset!==a)"
+            ></q-chip>
+          </div>
+        </template>
+        <template v-else>
+          Your investment portfolio needs to have at least 2-assets to perform balancing
+        </template>
         <q-stepper-navigation>
-          <q-btn @click="refresh" color="secondary" label="Reset" />
-          <q-btn @click="selectAssets" color="primary" label="Continue" />
+          <q-btn @click="refresh" color="secondary" label="Reset"/>
+          <q-btn @click="selectAssets" color="primary" label="Continue" :disable="assetsToBalance.length<2"/>
         </q-stepper-navigation>
       </q-step>
 
@@ -43,7 +48,7 @@
           :contribution="contribution"
         ></contribution-calculator-input-editor>
         <q-stepper-navigation>
-          <q-btn @click="calculate" color="primary" label="Continue" :disable="!canCalculate" />
+          <q-btn @click="calculate" color="primary" label="Continue" :disable="!canCalculate"/>
         </q-stepper-navigation>
       </q-step>
 
@@ -52,7 +57,7 @@
         title="Result"
         :done="step > 3"
       >
-        <contribution-calculator-result-view :data="results"></contribution-calculator-result-view>
+        <contribution-calculator-result-view :data="results" :base-ccy="baseCcy"></contribution-calculator-result-view>
       </q-step>
     </q-stepper>
   </div>
@@ -62,7 +67,7 @@
 import {defineComponent} from '@vue/composition-api';
 import {AccountDTO, Amount, AssetResponse, NetworthByAsset} from '../lib/models';
 import {apiAssetsReport} from 'src/lib/apiFacade';
-import {difference, includes, sum} from 'lodash';
+import {difference, includes, sum, sortBy} from 'lodash';
 import {formatPerc} from 'src/lib/utils';
 import BalanceEditor from 'components/command/BalanceEditor.vue';
 import {mapGetters} from 'vuex';
@@ -74,8 +79,8 @@ import {
 import ContributionCalculatorResultView from 'components/ContributionCalculatorResultView.vue';
 import ContributionCalculatorInputEditor from 'components/ContributionCalculatorInputEditor.vue';
 
-function trim(num: number|undefined): number|undefined {
-  if (num === undefined) return undefined;
+function trim(num: number | undefined): number {
+  if (num === undefined) return 0;
   return Math.round((num + Number.EPSILON) * 10) / 10
 }
 
@@ -92,7 +97,7 @@ export default defineComponent({
   data() {
     return {
       step: 1,
-      assets: {rows:[], columns:[], totals:[]} as AssetResponse,
+      assets: {rows: [], columns: [], totals: []} as AssetResponse,
       assetsToBalance: [],
       entries: [] as ContributionCalculatorInput[],
       results: [] as ContributionCalculatorEntries[],
@@ -101,21 +106,23 @@ export default defineComponent({
     }
   },
   methods: {
-    async refresh(props?: Record<string, any>):Promise<void> {
+    async refresh(props?: Record<string, any>): Promise<void> {
 
-      const acct:AccountDTO|undefined = this.$store.getters.findAccount(this.accountId);
+      const acct: AccountDTO | undefined = this.$store.getters.findAccount(this.accountId);
       try {
         this.assets = await apiAssetsReport(this.$store, props ?? this.$props);
         this.assetsToBalance = [];
-        this.contribution = {number:0, ccy: acct?.ccy ?? 'USD'}
+        this.contribution = {number: 0, ccy: acct?.ccy ?? 'USD'}
       } catch (error) {
         console.error(error)
         this.$notify.error(error)
       }
     },
-    selectAssets():void {
+    selectAssets(): void {
       const total = sum(this.rowsToBalance.map(row => row.value));
-      this.entries = this.rowsToBalance.map(row => {return {...row, target: trim(100*row.value/total)}})
+      this.entries = sortBy(this.rowsToBalance.map(row => {
+        return {...row, target: trim(100 * row.value / total)}
+      }), row => -row.value)
       this.step = 2
     },
     calculate(): void {
@@ -129,16 +136,19 @@ export default defineComponent({
     ...mapGetters([
       'findAccount'
     ]),
+    baseCcy(): string {
+      return this.contribution.ccy
+    },
     totalOriginalValue(): number {
       return sum(this.entries.map(e => e.value))
     },
-    totalTargetPerc():number {
+    totalTargetPerc(): number {
       return sum(this.entries.map(row => row.target || 0))
     },
     canCalculate(): boolean {
-      return this.totalTargetPerc === 100 && this.contribution.number>0.0;
+      return this.totalTargetPerc === 100 && this.contribution.number > 0.0;
     },
-    remainingAssets():string[] {
+    remainingAssets(): string[] {
       const allAssets = this.assets.rows.map(row => row.assetId)
       return difference(allAssets, this.assetsToBalance)
     },

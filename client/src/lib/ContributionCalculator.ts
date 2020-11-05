@@ -3,9 +3,10 @@ import {sortBy, sum} from 'lodash';
 export interface ContributionCalculatorInput {
   assetId: string
   value: number
-  units: number
-  price: number
   target: number
+  units?: number
+  price?: number
+
 }
 export interface ContributionCalculatorEntries extends ContributionCalculatorInput {
   targetValue: number
@@ -21,7 +22,6 @@ export class ContributionCalculator {
     const total = sum(networthByAsset.map(a => a.value))
     this.total = total;
     this.entries = networthByAsset.map(row => {
-      const ratio = row.value/total
       // Beware the target conversion from % to ratio
       return {...row, target: row.target/100, targetValue: row.value, deviation: 0}
     })
@@ -36,9 +36,8 @@ export class ContributionCalculator {
 
     for (let i=0; i<this.entries.length-1; i++) {
       const toAdjust = this.entries.slice(0,i+1);
-      const currentDev = this.entries[i].deviation
+      // const currentDev = this.entries[i].deviation
       const targetDev = this.entries[i+1].deviation
-      const deltaRatio = targetDev - currentDev
       const maxMovement = sum(toAdjust.map(e => (e.target*targetDev*this.total)-e.targetValue ))
       if (maxMovement+this.currentTotal() >= this.total) {
         // Final adjustment
