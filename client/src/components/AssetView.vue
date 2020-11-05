@@ -1,6 +1,6 @@
 <template>
     <div>
-        <div>
+        <div v-if="networthByAsset.length>0">
             <q-radio v-for="m in modes" :key="m.name" v-model="mode" :val="m.name" :label="m.label"/>
         </div>
         <q-table
@@ -10,6 +10,7 @@
                 :loading="loading"
                 :pagination.sync="pagination"
                 dense
+                v-if="networthByAsset.length>0 || loading"
         >
           <template v-slot:body-cell-units="props" v-if="canEdit">
             <q-td :props="props" @click="onUnitsEdit(props)">
@@ -28,9 +29,10 @@
                  :loading="loading"
                  dense
                  hide-bottom
+                 v-if="networthByAsset.length>0"
         >
         </q-table>
-      <q-btn color="primary" :icon="matAdd" @click="onUnitsEdit({row: {units:0, assetId:''}})"></q-btn>
+      <q-btn color="primary" :icon="matAdd" @click="onUnitsEdit({row: {units:0, assetId:''}})" label="Add Asset"></q-btn>
     </div>
 </template>
 

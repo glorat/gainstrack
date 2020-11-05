@@ -140,9 +140,9 @@
         // lint-ignore
         // FIXME: Or price
         if (c.commandType === 'bal')
-          return c.accountId && c.date && c.balance && c.balance.ccy && c.otherAccount;
+          return c.accountId && c.date && c.balance && c.balance.number!==undefined && c.balance.ccy && c.otherAccount;
         else
-          return c.accountId && c.date && c.balance && c.balance.ccy && c.price?.ccy && c.price?.number;
+          return c.accountId && c.date && c.balance && c.balance.number!==undefined && c.balance.ccy && c.price?.ccy && c.price?.number;
       },
       toGainstrack() /*: string*/ {
         if (this.isValid) {
