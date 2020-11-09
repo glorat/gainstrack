@@ -1,5 +1,17 @@
 {
   "projects": {
-    "default": "gainstrack"
+    "default": "poc"
+  },
+  "targets": {
+    "gainstrack": {
+      "hosting": {
+        "prod": [
+          "gainstrack-prod"
+        ],
+        "poc": [
+          "gainstrack"
+        ]
+      }
+    }
   }
 }

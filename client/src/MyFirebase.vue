@@ -9,15 +9,16 @@
     // Add the Firebase services that you want to use
     import 'firebase/analytics';
     const firebaseConfig = {
-        apiKey: 'AIzaSyCeQ9DEdajlDGPxz1yLYnnn51AtS671ZPA',
-        authDomain: 'gainstrack-poc.firebaseapp.com',
-        databaseURL: 'https://gainstrack-poc.firebaseio.com',
-        projectId: 'gainstrack-poc',
-        storageBucket: 'gainstrack-poc.appspot.com',
-        messagingSenderId: '975553518995',
-        appId: '1:975553518995:web:ef5ae5f93fbc0295131c66',
-        measurementId: 'G-KGML8QWTGL'
+      apiKey: 'AIzaSyBFgCa2tMUSuAWxiyAPa5U90peuqAJNNBo',
+      authDomain: 'gainstrack.firebaseapp.com',
+      databaseURL: 'https://gainstrack.firebaseio.com',
+      projectId: 'gainstrack',
+      storageBucket: 'gainstrack.appspot.com',
+      messagingSenderId: '248761590066',
+      appId: '1:248761590066:web:dcd7d7a8e1028f7b1bf72b',
+      measurementId: 'G-H8SQPQVX1S'
     };
+
     // Initialize Firebase
     firebase.initializeApp(firebaseConfig);
     Vue.prototype.$analytics = firebase.analytics();
