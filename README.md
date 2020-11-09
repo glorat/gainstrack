@@ -87,5 +87,9 @@ gcloud run deploy quotes \
 Front-end
 ```bash
 cd client
-quasar build && firebase deploy --only hosting
+quasar build && firebase deploy --only hosting:poc
+```
+And for production
+```bash
+firebase deploy --only hosting:prod
 ```

@@ -48,7 +48,7 @@ npm install @glorat/gainstrack
 ### Regenerating icons
 Generate a high-res PNG from the SVG input then use icongenie to generate the rest
 ```bash
-svgexport boglebot.svg boglebot.png 1024:1024
+svgexport public/icons/boglebot.svg boglebot.png 1024:1024
 icongenie generate -i boglebot.png
 rm boglebot.png
 ```
