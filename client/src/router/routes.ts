@@ -97,23 +97,23 @@ const gainstrackNavBar = [
   ['help', 'faq']
 ];
 
-const gainstrackMode = {appRoutes:gainstrackRoutes, navBar: gainstrackNavBar, layout: ()=>import(/* webpackChunkName: "GainstrackCom" */ '../layouts/GainstrackCom.vue')};
+const gainstrackMode = {appTitle: 'Gainstrack', appRoutes:gainstrackRoutes, navBar: gainstrackNavBar, layout: ()=>import(/* webpackChunkName: "GainstrackCom" */ '../layouts/GainstrackCom.vue')};
 
 const simpleRoutes: RouteConfig[] = [
   // boglebot.com specific routes
   {path: '/play', component: BogleTwoFund, meta: {title: '2-Fund Guide'}},
   {path: '/investments', component: Account, props:{accountId: 'Assets:Investment'}, meta: {title: 'Investment Assets'}},
   {path: '/contribute', component: RebalanceCalc, props:{accountId: 'Assets:Investment'}, meta: {title: 'Contribution Calculator'}, name: 'rebalance'},
-  {path: '/', component: BogleTools, meta: {title: 'Home'}},
+  {path: '/', component: BogleTools, meta: {title: 'Boglebot Home'}},
   {path: '/*', component: BogleTools},
   ];
 const simpleNavBar: string[][] = [
   ['', 'play', 'investments', 'contribute'],
 ];
 
-const simpleMode = {appRoutes: simpleRoutes, navBar: simpleNavBar, layout: () => import(/* webpackChunkName: "BoglebotCom" */ '../layouts/BoglebotCom.vue')}
+const simpleMode = {appTitle: 'Boglebot', appRoutes: simpleRoutes, navBar: simpleNavBar, layout: () => import(/* webpackChunkName: "BoglebotCom" */ '../layouts/BoglebotCom.vue')}
 
-export const {appRoutes, navBar, layout} : {appRoutes:RouteConfig[], navBar: string[][], layout: AsyncComponent} = (() => {
+export const {appRoutes, navBar, layout, appTitle} : {appRoutes:RouteConfig[], navBar: string[][], layout: AsyncComponent, appTitle: string} = (() => {
   const host = window.location.hostname;
   if (host.match('gainstrack')) {
     return gainstrackMode;
@@ -122,7 +122,7 @@ export const {appRoutes, navBar, layout} : {appRoutes:RouteConfig[], navBar: str
   } else {
     // Default to gainstrack for unknown host
     // Can change this during development. Should not hit this in production
-    return gainstrackMode;
+    return simpleMode;
 
   }
 })()
