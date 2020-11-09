@@ -1,13 +1,25 @@
 <template>
   <q-page padding class="q-pa-md row items-start q-gutter-md">
     <q-card v-for="tool in tools" :key="tool.target" @click="onClick(tool)" class="my-card">
-      <q-card-section>
-        <div class="text-h6">{{ tool.title }}</div>
-        <div class="text-subtitle1" v-if="tool.subtitle">{{ tool.subtitle }}</div>
+      <q-card-section horizontal class="items-center" style="min-height: 100px">
+        <q-card-section class="col-3">
+          <q-img class="" src="/icons/boglebot.svg"></q-img>
+        </q-card-section>
+        <q-card-section class="col-9">
+          <div class="text-h6">{{ tool.title }}</div>
+          <div class="text-subtitle1" v-if="tool.subtitle">{{ tool.subtitle }}</div>
+        </q-card-section>
       </q-card-section>
+
       <q-separator></q-separator>
-      <q-card-section>{{ tool.description }}</q-card-section>
+
+
+      <q-card-section>
+        {{ tool.description }}
+      </q-card-section>
     </q-card>
+
+
   </q-page>
 </template>
 
@@ -44,6 +56,7 @@
 <style lang="sass" scoped>
 .my-card
   width: 100%
-  max-width: 250px
+  max-width: 300px
+  min-height: 200px
   cursor: pointer
 </style>
