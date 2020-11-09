@@ -1,7 +1,7 @@
 import { route } from 'quasar/wrappers'
 import VueRouter from 'vue-router'
 import {MyState} from '../store'
-import routes, { appTitle } from './routes'
+import routes, { appTitle, appDescription } from './routes'
 
 /*
  * If not building with SSR mode, you can
@@ -24,6 +24,10 @@ export default route<MyState>(function ({ Vue }) {
 
   Router.afterEach((to) => {
     document.title = (to.meta.title || appTitle);
+    document
+      .getElementsByTagName('meta')
+      .namedItem('description')?.setAttribute('content',to.meta.description || appDescription)
+
   });
 
   return Router

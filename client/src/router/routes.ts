@@ -97,7 +97,13 @@ const gainstrackNavBar = [
   ['help', 'faq']
 ];
 
-const gainstrackMode = {appTitle: 'Gainstrack', appRoutes:gainstrackRoutes, navBar: gainstrackNavBar, layout: ()=>import(/* webpackChunkName: "GainstrackCom" */ '../layouts/GainstrackCom.vue')};
+const gainstrackMode: AppMode = {
+  appTitle: 'Gainstrack',
+  appDescription: 'Gainstrack Wealth',
+  appRoutes: gainstrackRoutes,
+  navBar: gainstrackNavBar,
+  layout: () => import(/* webpackChunkName: "GainstrackCom" */ '../layouts/GainstrackCom.vue')
+};
 
 const simpleRoutes: RouteConfig[] = [
   // boglebot.com specific routes
@@ -111,9 +117,24 @@ const simpleNavBar: string[][] = [
   ['', 'play', 'investments', 'contribute'],
 ];
 
-const simpleMode = {appTitle: 'Boglebot', appRoutes: simpleRoutes, navBar: simpleNavBar, layout: () => import(/* webpackChunkName: "BoglebotCom" */ '../layouts/BoglebotCom.vue')}
+const simpleMode: AppMode =
+  {
+    appTitle: 'Boglebot',
+    appDescription: 'Free tools to help Bogleheads implement low-cost index fund portfolios',
+    appRoutes: simpleRoutes,
+    navBar: simpleNavBar,
+    layout: () => import(/* webpackChunkName: "BoglebotCom" */ '../layouts/BoglebotCom.vue')
+  }
 
-export const {appRoutes, navBar, layout, appTitle} : {appRoutes:RouteConfig[], navBar: string[][], layout: AsyncComponent, appTitle: string} = (() => {
+interface AppMode {
+  appRoutes:RouteConfig[]
+  navBar: string[][]
+  layout: AsyncComponent
+  appTitle: string
+  appDescription: string
+}
+
+export const {appRoutes, navBar, layout, appTitle, appDescription} : AppMode = (() => {
   const host = window.location.hostname;
   if (host.match('gainstrack')) {
     return gainstrackMode;

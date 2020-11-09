@@ -1,8 +1,8 @@
 {
   "name": "@glorat/gainstrack",
   "version": "2.0.1",
-  "description": "Gainstrack wealth",
-  "productName": "Gainstrack wealth",
+  "description": "Gainstrack",
+  "productName": "Gainstrack",
   "author": "Kevin Tam <kevin@glorat.net>",
   "scripts": {
     "build": "quasar build",
