@@ -27,7 +27,6 @@
     },
     computed: {
       ...mapGetters([
-        'findAccount',
         'allTxs',
         'fxConverter',
         'baseCcy',
