@@ -14,6 +14,8 @@ class FirebaseStrategy (protected override val app: ScalatraBase)
 
   val logger = LoggerFactory.getLogger(getClass)
 
+  override def name: String = this.getClass.getName
+
   override def authenticate()(implicit request: HttpServletRequest, response: HttpServletResponse): Option[GUser] = {
 
     val header = request.getHeader("Authorization")

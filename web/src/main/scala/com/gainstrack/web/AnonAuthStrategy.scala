@@ -16,15 +16,20 @@ class AnonAuthStrategy (protected override val app: ScalatraBase)
 
   val logger = LoggerFactory.getLogger(getClass)
 
+  override def name: String = this.getClass.getName
+
   override def isValid(implicit request: HttpServletRequest): Boolean = {
 
     val header = request.getHeader("Authorization")
     if (header != null && header.startsWith("Bearer")) {
       // If there is a token, can't be an anonymous attempt
       // This does mean a user with a broken bearer token will have a broken app
+      logger.debug("Bearer token exists so cannot be anon")
       false
     } else {
-      request.cookies.get(AnonAuthStrategy.ANON_KEY).isDefined
+      val copt = request.cookies.get(AnonAuthStrategy.ANON_KEY)
+      logger.debug(s"${AnonAuthStrategy.ANON_KEY}: ${copt.getOrElse("undefined")}")
+      copt.isDefined
     }
   }
 

@@ -18,4 +18,6 @@
     <logger name="slick.jdbc.JdbcBackend" level="info"/>
     <logger name="slick.jdbc.StatementInvoker" level="info"/>
     <logger name="slick" level="debug"/>
+    <logger name="org.scalatra.auth" level="debug"/>
+    <logger name="com.gainstrack.web" level="debug"/>
 </configuration>

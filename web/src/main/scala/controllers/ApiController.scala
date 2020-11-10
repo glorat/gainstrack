@@ -21,9 +21,9 @@ class ApiController (implicit val ec :ExecutionContext)
     with AuthenticationSupport
     with GainstrackSupport
     with TimingSupport {
-  val logger =  LoggerFactory.getLogger(getClass)
 
   protected implicit val jsonFormats: Formats = org.json4s.DefaultFormats ++ GainstrackJsonSerializers.all addKeySerializers GainstrackJsonSerializers.allKeys
+  val logger =  LoggerFactory.getLogger(getClass)
 
   private def currentDate: LocalDate = {
     // TODO: Pull the clock from the user's profile timezone
@@ -35,7 +35,7 @@ class ApiController (implicit val ec :ExecutionContext)
 
   before() {
     val user = scentry.authenticate()
-    logger.info(user.map(u => s"authenticated ${u.username} - ${u.uuid}").getOrElse("unauthenticated requested"))
+    logger.info(user.map(u => s"authenticated ${u.username} - ${u.uuid}").getOrElse(s"unauthenticated requested ${scentry.strategies.size}"))
     contentType = formats("json")
   }
 
