@@ -138,7 +138,7 @@ export default store(function ({ Vue }) {
             context.commit('balances', foo);
             return foo
           } else {
-            const response = await axios.get('/api/balances/')
+            const response = await axios.post('/api/balances/')
             context.commit('balances', response.data);
             return response
 
@@ -187,7 +187,7 @@ export default store(function ({ Vue }) {
       },
       async gainstrackText (context) {
         if (!context.state.gainstrackText) {
-          return await axios.get('/api/editor/')
+          return await axios.post('/api/editor/')
             .then(response => {
               const source = response.data.source;
               context.commit('gainstrackText', source);
@@ -213,7 +213,7 @@ export default store(function ({ Vue }) {
         return response
       },
       async loadAllState (context) {
-        const response = await axios.get('/api/allState');
+        const response = await axios.post('/api/allState');
         await context.commit('allStateLoaded', response.data);
         const quoteDeps = context.getters.quoteDeps;
         const quotesToLoad = keys(quoteDeps);

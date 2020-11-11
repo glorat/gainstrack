@@ -26,7 +26,7 @@
           }
         },
         mounted() {
-            axios.get('/api/history')
+            axios.post('/api/history')
                 .then(response => this.commits = response.data)
                 .catch(error => this.$notify.error(error))
         },

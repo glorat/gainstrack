@@ -105,8 +105,6 @@
     async mounted() {
       const notify = this.$notify;
       try {
-        const response = await axios.get('/api/prices/');
-        this.prices = response.data;
         this.reloadQuotes();
 
       } catch (error) {

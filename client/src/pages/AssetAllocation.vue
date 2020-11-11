@@ -50,7 +50,7 @@
         mounted() {
             const notify = this.$notify;
 
-            axios.get('/api/aa/tree')
+            axios.post('/api/aa/tree')
                 .then(response => {
                     const data = response.data;
 
@@ -74,7 +74,7 @@
 
 
 
-            axios.get('/api/aa/table')
+            axios.post('/api/aa/table')
                 .then(response => {
                     this.tables = response.data;
                 })

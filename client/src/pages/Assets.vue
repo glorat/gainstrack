@@ -47,7 +47,7 @@
             const assetResponse = assetReport(pSet, pricer, baseCcy, date);
             this.assetResponse = assetResponse;
           } else {
-            const response = await axios.get('/api/assets/networth')
+            const response = await axios.post('/api/assets/networth')
             const assetResponse: AssetResponse = response.data;
             this.assetResponse = assetResponse;
           }

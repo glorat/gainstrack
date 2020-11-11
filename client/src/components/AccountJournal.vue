@@ -45,7 +45,7 @@
     },
     methods: {
       refresh(): void {
-        axios.get('/api/command/' + this.accountId)
+        axios.post('/api/command/' + this.accountId)
           .then(response => this.info = response.data)
           .catch(error => this.$notify.error(error));
       },

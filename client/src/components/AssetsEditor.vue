@@ -163,7 +163,7 @@
           .catch(error => this.$notify.error(error.response.data))
       },
       async reloadAll (): Promise<void> {
-        await axios.get('/api/assets')
+        await axios.post('/api/assets')
           .then(response => {
             this.originalAssets = response.data.commands // TODO:Get from vuex
             this.positions = response.data.positions
