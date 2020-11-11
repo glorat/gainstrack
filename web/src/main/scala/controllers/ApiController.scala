@@ -9,7 +9,7 @@ import com.gainstrack.quotes.av.{DbState, Main, QuoteConfig}
 import com.gainstrack.report.{AccountInvestmentReport, AssetAllocation, BalanceReport, DailyBalance, FXChain, FXMapped, GainstrackGenerator, IrrSummary, NetworthReport, PLExplain, PLExplainDTO, TimeSeries}
 import com.gainstrack.web.{AuthenticationSupport, BalanceTreeTable, GainstrackSupport, StateSummaryDTO, TimingSupport}
 import org.json4s.{DefaultFormats, Formats, JValue}
-import org.scalatra.{NotFound, ScalatraServlet}
+import org.scalatra.{Get, NotFound, Post, Route, RouteTransformer, ScalatraServlet}
 import org.scalatra.json._
 import org.slf4j.LoggerFactory
 
@@ -51,6 +51,12 @@ class ApiController (implicit val ec :ExecutionContext)
 
     keys.map(key => key -> treeTable.toTreeTable(AccountId(key))).toMap
   }
+
+  def any(transformers: RouteTransformer*)(action: => Any): Route = {
+    addRoute(Get, transformers, action)
+    addRoute(Post, transformers, action)
+  }
+
 
   get ("/balances/") {
     //contentType
@@ -98,7 +104,7 @@ class ApiController (implicit val ec :ExecutionContext)
   }
 
 
-  get("/assets/:accountId") {
+  any("/assets/:accountId") {
     val bg = getGainstrack
     val mktConvert = bg.liveFxConverter(ServerQuoteSource.db.priceFXConverter)
     val accountId = params("accountId")
@@ -121,7 +127,7 @@ class ApiController (implicit val ec :ExecutionContext)
 
 
 
-  get("/irr/") {
+  any("/irr/") {
     val bg = getGainstrack
 
     var fromDate = defaultFromDate
@@ -138,7 +144,7 @@ class ApiController (implicit val ec :ExecutionContext)
     irr.toSummaryDTO
   }
 
-  get("/irr/:accountId") {
+  any("/irr/:accountId") {
     val bg = getGainstrack
 
     val mktConvert = bg.liveFxConverter(ServerQuoteSource.db.priceFXConverter)
@@ -156,14 +162,14 @@ class ApiController (implicit val ec :ExecutionContext)
     }).getOrElse(NotFound(s"${accountId} account not found"))
   }
 
-  get("/editor/") {
+  any("/editor/") {
     val bg = getGainstrack
 
     val source = bg.toGainstrack
     Map("source" -> source, "short_title" -> "Editor")
   }
 
-  get("/account/:accountId") {
+  any("/account/:accountId") {
     val bg = getGainstrack
 
     val conversionStrategy = session.get("conversion").map(_.toString).getOrElse("parent")
@@ -206,7 +212,7 @@ class ApiController (implicit val ec :ExecutionContext)
     AccountTxSummaryDTO(accountId.toString, rows)
   }
 
-  get("/account/:accountId/graph") {
+  any("/account/:accountId/graph") {
     val bg = getGainstrack
     val mktConvert = bg.liveFxConverter(ServerQuoteSource.db.priceFXConverter)
 
@@ -224,7 +230,7 @@ class ApiController (implicit val ec :ExecutionContext)
     // dailyBalance.txSeries(accountId, conversionStrategy, startDate, toDate, bg.acctState, bg.priceFXConverter, bg.assetChainMap, mktConvert, bg.txState)
   }
 
-  get ("/journal/") {
+  any ("/journal/") {
     val bg = getGainstrack
     val mktConvert = bg.liveFxConverter(ServerQuoteSource.db.priceFXConverter)
 
@@ -240,7 +246,7 @@ class ApiController (implicit val ec :ExecutionContext)
     JournalDTO(rows)
   }
 
-  get ("/command/") {
+  any ("/command/") {
     val bg = getGainstrack
 
     val mainAccountIds:Set[AccountId] = bg.finalCommands.flatMap(_.mainAccount).toSet
@@ -249,7 +255,7 @@ class ApiController (implicit val ec :ExecutionContext)
     mainAccounts
   }
 
-  get ("/command/:accountId") {
+  any ("/command/:accountId") {
     val bg = getGainstrack
 
     val accountId = params("accountId")
@@ -266,11 +272,11 @@ class ApiController (implicit val ec :ExecutionContext)
     }).getOrElse(NotFound(s"${accountId} account not found"))
   }
 
-  get ("/state/summary") {
+  any ("/state/summary") {
     this.getSummary
   }
 
-  get("/allState") {
+  any("/allState") {
     this.getAllState
   }
 
@@ -294,7 +300,7 @@ class ApiController (implicit val ec :ExecutionContext)
     }
   }
 
-  get ("/aa/tree") {
+  any ("/aa/tree") {
     val bg = getGainstrack
     val mktConvert = bg.liveFxConverter(ServerQuoteSource.db.priceFXConverter)
     val queryDate = currentDate
@@ -304,7 +310,7 @@ class ApiController (implicit val ec :ExecutionContext)
     aa.toDTO(bg.acctState.baseCurrency, queryDate, mktConvert)
   }
 
-  get("/aa") {
+  any("/aa") {
     val bg = getGainstrack
     implicit val singleFXConversion = bg.tradeFXConversion
     val mktConvert = bg.liveFxConverter(ServerQuoteSource.db.priceFXConverter)
@@ -347,7 +353,7 @@ class ApiController (implicit val ec :ExecutionContext)
     tables
   }
 
-  get("/pnlexplain") {
+  any("/pnlexplain") {
     val bg = getGainstrack
 
     val mktConvert = bg.liveFxConverter(ServerQuoteSource.db.priceFXConverter)
@@ -371,7 +377,7 @@ class ApiController (implicit val ec :ExecutionContext)
     pnls
   }
 
-  get("/pnlexplain/monthly") {
+  any("/pnlexplain/monthly") {
     val bg = getGainstrack
 
     val mktConvert = bg.liveFxConverter(ServerQuoteSource.db.priceFXConverter)
@@ -403,7 +409,7 @@ class ApiController (implicit val ec :ExecutionContext)
     Seq(pnl.toDTO)
   }
 
-  get("/history") {
+  any("/history") {
     getHistory
   }
 
