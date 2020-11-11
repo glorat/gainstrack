@@ -58,9 +58,25 @@ quasar build
 ```
 
 
-Backend app server image can be built and submitted with
+Full single build of backend app server image can be built and submitted with
 `gcloud builds submit --config cloudbuild.yaml`
 This will also update the latest image in the container registry
+
+#### Faster build isntructions
+A newer build system allows the creation of base images to speed the build of the final image
+
+Base images should be regenerated when dependencies change
+```bash
+gcloud builds submit --config nodebase.cloudbuild.yaml
+gcloud builds submit --config scalabase.cloudbuild.yaml
+gcloud builds submit --config runtime.cloudbuild.yaml
+```
+
+The incremental gainstrack image can be built (with a faster CPU) as follows
+```bash
+gcloud builds submit --machine-type=N1_HIGHCPU_8 --config fast.cloudbuild.yaml
+```
+which will update the latest image in the container registry
 
 ### Deployment
 

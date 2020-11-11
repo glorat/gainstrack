@@ -1,0 +1,11 @@
+steps:
+- name: 'docker'
+  args:
+  - build
+  - -t
+  - gcr.io/gainstrack/nodebase
+  - -f
+  - nodebase.Dockerfile
+  - .
+images: ['gcr.io/gainstrack/nodebase']
+timeout: 1200s

@@ -1,0 +1,11 @@
+steps:
+- name: 'docker'
+  args:
+  - build
+  - -t
+  - gcr.io/gainstrack/gainstrack
+  - -f
+  - fast.Dockerfile
+  - .
+images: ['gcr.io/gainstrack/gainstrack']
+timeout: 1200s
