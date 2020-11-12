@@ -31,7 +31,6 @@
   import { SingleFXConversion, SingleFXConverter } from '../lib/fx';
   // eslint-disable-next-line no-unused-vars
   import { MyState, TimeSeries } from '../store';
-  import axios from 'axios';
   import Vue from 'vue';
   import {LocalDate} from '@js-joda/core';
 

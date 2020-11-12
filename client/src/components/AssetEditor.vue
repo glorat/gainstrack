@@ -12,7 +12,12 @@
       </q-card-section>
       <q-card-actions align="right">
         <q-btn class="c-cancel" color="primary" type="button" v-on:click="cancel">Cancel</q-btn>
-        <q-btn class="c-add" color="primary" @click="onSubmit" :disable="upserting">Submit</q-btn>
+        <q-btn class="c-add" color="primary" @click="onSubmit" :disable="upserting" :loading="upserting">
+          Submit
+          <template v-slot:loading>
+            <q-spinner />
+          </template>
+        </q-btn>
         <!--        <q-btn flat label="Cancel" v-close-popup/>-->
         <!--        <q-btn flat label="Submit" @click="onOKClick" />-->
       </q-card-actions>

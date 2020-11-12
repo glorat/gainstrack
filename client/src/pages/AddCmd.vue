@@ -13,8 +13,13 @@
     <hr>
     <q-card-actions v-if="!success" align="right">
       <q-btn class="c-cancel" color="primary" type="button" v-on:click="cancel" v-if="hasCancel">Cancel</q-btn>
-      <q-btn class="c-add" color="primary" :disable=" (result.errors.length>0) || !commandStr || adding || testing"
+      <q-btn class="c-add" color="primary"
+             :disable=" (result.errors.length>0) || !commandStr || adding || testing"
+             :loading="adding || testing"
              @click="addCommand">Add
+        <template v-slot:loading>
+          <q-spinner v-if="adding" /><q-spinner-grid v-else/>
+        </template>
       </q-btn>
       <!--        <q-btn flat label="Cancel" v-close-popup/>-->
       <!--        <q-btn flat label="Submit" @click="onOKClick" />-->
