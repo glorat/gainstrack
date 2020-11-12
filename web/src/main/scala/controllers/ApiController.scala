@@ -34,9 +34,9 @@ class ApiController (implicit val ec :ExecutionContext)
 
 
   before() {
+    contentType = formats("json")
     val user = scentry.authenticate()
     logger.info(user.map(u => s"authenticated ${u.username} - ${u.uuid}").getOrElse(s"unauthenticated requested ${scentry.strategies.size}"))
-    contentType = formats("json")
   }
 
   protected override def transformRequestBody(body: JValue): JValue = body.camelizeKeys
