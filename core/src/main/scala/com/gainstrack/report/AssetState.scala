@@ -1,7 +1,7 @@
 package com.gainstrack.report
 
 import com.gainstrack.command.{AccountCreation, CommandNeedsAccounts, CommodityCommand, SecurityPurchase, UnitTrustBalance}
-import com.gainstrack.core.AssetId
+import com.gainstrack.core.{AccountCommand, AssetId}
 import net.glorat.cqrs.{AggregateRootState, DomainEvent}
 
 case class AssetState(
@@ -29,8 +29,15 @@ case class AssetState(
       case c: AccountCreation => handle(c)
       case c: SecurityPurchase => handle(c)
       case c: UnitTrustBalance => handle(c)
+      case c: AccountCommand => handleGeneric(c)
       case _ => this
     }
+  }
+
+  def handleGeneric(e: AccountCommand): AssetState = {
+    val dto = e.toPartialDTO
+    val ccyOpts = Seq(dto.asset, dto.balance.map(_.ccy), dto.change.map(_.ccy))
+    ccyOpts.flatten.foldLeft(this)(_.handleDefault(_))
   }
 
   def handle(e:AccountCreation): AssetState = {

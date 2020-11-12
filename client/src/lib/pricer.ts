@@ -53,8 +53,9 @@ export class GlobalPricer implements SingleFXConverter {
     ]
   }
 
-  protected findAsset(asset: string) : AssetDTO|undefined {
-    return this.assetCommands.find(a => a.asset === asset)
+  protected findAsset(asset: string) : AssetDTO {
+    const ret = this.assetCommands.find(a => a.asset === asset)
+    return ret ?? {asset, options:{tags:[]}}
   }
 
   quotesRequired(asset:AssetDTO): Record<string, string[]> {
@@ -76,7 +77,7 @@ export class GlobalPricer implements SingleFXConverter {
 
   modelForAssetId(assetId: AssetId): Pricer | undefined {
     const asset = this.findAsset(assetId);
-    return asset ? this.modelFor(asset) : undefined;
+    return this.modelFor(asset);
   }
 
   getFX(fx1: string, fx2: string, date: LocalDate): number | undefined {
@@ -84,11 +85,9 @@ export class GlobalPricer implements SingleFXConverter {
     if (fx1 == fx2) return 1.0;
 
     const asset = this.findAsset(fx1);
-    if (asset) {
-      const pricer = this.modelFor(asset);
-      const price = pricer?.getPrice(asset, fx2, date);
-      return price;
-    }
+    const pricer = this.modelFor(asset);
+    const price = pricer?.getPrice(asset, fx2, date);
+    return price;
   }
 
   getFXTrimmed(fx1: string, fx2: string, date: LocalDate): number | undefined {
@@ -97,10 +96,8 @@ export class GlobalPricer implements SingleFXConverter {
 
   latestDate(fx1: string, fx2: string, date: LocalDate): LocalDate | undefined {
     const asset = this.findAsset(fx1);
-    if (asset) {
-      const pricer = this.modelFor(asset);
-      return pricer?.latestDate(asset, fx2, date);
-    }
+    const pricer = this.modelFor(asset);
+    return pricer?.latestDate(asset, fx2, date);
   }
 
   // Round off to 6dp, carefully dealing with some fp issues
