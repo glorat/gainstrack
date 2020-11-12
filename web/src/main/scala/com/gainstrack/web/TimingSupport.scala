@@ -19,6 +19,6 @@ trait TimingSupport {
   after() {
     val endTime = Instant.now
     val duration = Duration.between(lastStart, endTime)
-    logger.info(s"${request.getPathInfo} processed in ${duration.toMillis}ms")
+    logger.info(s"${request.getPathInfo} processed ${response.getContentType} in ${duration.toMillis}ms")
   }
 }

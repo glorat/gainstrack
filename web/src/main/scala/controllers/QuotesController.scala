@@ -68,8 +68,10 @@ class QuotesController(implicit val ec :ExecutionContext)
           val idx = data.iota(fromDate)
           if (idx>=0) {
             Map("x" -> data.ks.drop(idx), "y" -> data.vs.drop(idx), "name" -> ticker)
-          } else {
+          } else if (data.ks.length>0) {
             Map("x" -> Seq(data.ks.last), "y" -> Seq(data.vs.last), "name" -> ticker)
+          } else {
+            Map("x" -> Seq(), "y" -> Seq(), "name" -> ticker)
           }
         })
       })
