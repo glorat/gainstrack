@@ -57,6 +57,7 @@
         title="Result"
         :done="step > 3"
       >
+        <vue-plotly :data="sankey"></vue-plotly>
         <contribution-calculator-result-view :data="results" :base-ccy="baseCcy"></contribution-calculator-result-view>
       </q-step>
     </q-stepper>
@@ -70,6 +71,7 @@ import {apiAssetsReport} from 'src/lib/apiFacade';
 import {difference, includes, sum, sortBy} from 'lodash';
 import {formatPerc} from 'src/lib/utils';
 import BalanceEditor from 'components/command/BalanceEditor.vue';
+import { VuePlotly } from '../lib/loader'
 import {mapGetters} from 'vuex';
 import {
   ContributionCalculator,
@@ -93,6 +95,7 @@ export default defineComponent({
     BalanceEditor,
     ContributionCalculatorResultView,
     ContributionCalculatorInputEditor,
+    VuePlotly,
   },
   data() {
     return {
@@ -102,6 +105,7 @@ export default defineComponent({
       entries: [] as ContributionCalculatorInput[],
       results: [] as ContributionCalculatorEntries[],
       contribution: {number: 0, ccy: ''} as Amount,
+      sankey: {},
       formatPerc
     }
   },
@@ -114,7 +118,7 @@ export default defineComponent({
         this.assetsToBalance = [];
         this.contribution = {number: 0, ccy: acct?.ccy ?? 'USD'}
       } catch (error) {
-        console.error(error)
+        console.error(error);
         this.$notify.error(error)
       }
     },
@@ -122,14 +126,15 @@ export default defineComponent({
       const total = sum(this.rowsToBalance.map(row => row.value));
       this.entries = sortBy(this.rowsToBalance.map(row => {
         return {...row, target: trim(100 * row.value / total)}
-      }), row => -row.value)
+      }), row => -row.value);
       this.step = 2
     },
     calculate(): void {
-      const calc = new ContributionCalculator(this.entries, this.contribution.ccy)
-      calc.contribute(this.contribution.number)
-      this.results = calc.entries
-      this.step = 3
+      const calc = new ContributionCalculator(this.entries, this.contribution.ccy);
+      calc.contribute(this.contribution.number);
+      this.results = calc.entries;
+      this.step = 3;
+      this.sankey = [calc.makeSankeyData()];
     }
   },
   computed: {
@@ -149,7 +154,7 @@ export default defineComponent({
       return this.totalTargetPerc === 100 && this.contribution.number > 0.0;
     },
     remainingAssets(): string[] {
-      const allAssets = this.assets.rows.map(row => row.assetId)
+      const allAssets = this.assets.rows.map(row => row.assetId);
       return difference(allAssets, this.assetsToBalance)
     },
     rowsToBalance(): NetworthByAsset[] {
