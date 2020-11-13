@@ -26,7 +26,7 @@
     </q-card-actions>
 
     <q-card-section>
-        <pre>{{ commandStr }}</pre>
+        <pre style="font-size: xx-small">{{ commandStr }}</pre>
     </q-card-section>
 
     <q-card-section v-if="result.errors.length>0">
