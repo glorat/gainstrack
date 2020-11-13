@@ -33,22 +33,10 @@
     data() {
       return {
         c: {} as AccountCommandDTO,
-        info: {
-          account: 'Loading...',
-          commands: [] as AccountCommandDTO[]
-        },
         commandStr: '',
       };
     },
-    mounted() {
-      this.refresh();
-    },
     methods: {
-      refresh(): void {
-        axios.post('/api/command/' + this.accountId)
-          .then(response => this.info = response.data)
-          .catch(error => this.$notify.error(error));
-      },
       setupCommand(cmd: CommandConfig): void {
         const c = {accountId: this.accountId, commandType: cmd.prefix};
 
@@ -56,7 +44,6 @@
       },
       addCancel(): void {
         this.c = {} as AccountCommandDTO;
-        this.refresh();
       },
       gainstrackChange(ev: string): void {
         this.commandStr = ev;
