@@ -11,7 +11,7 @@ import org.scalatra.servlet.ServletApiImplicits
 import org.slf4j.LoggerFactory
 
 class AnonAuthStrategy (protected override val app: ScalatraBase)
-                       (implicit request: HttpServletRequest, response: HttpServletResponse, jsonFormats: Formats)
+                       (implicit request: HttpServletRequest, response: HttpServletResponse)
   extends ScentryStrategy[GUser] with ServletApiImplicits {
 
   val logger = LoggerFactory.getLogger(getClass)

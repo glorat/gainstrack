@@ -42,10 +42,19 @@ trait GainstrackSupport extends ContentEncodingSupport {
     }
   }
 
-  private def bgDefault = {
+  private def bgDefault:GainstrackGenerator = {
+    if (isAuthenticated && !user.isAnonymous) {
+      // Try to default from anon saved data
+      val migrateOpt = migratedAnonData
+      if (migrateOpt.isDefined) {
+        val ent =  migrateOpt.get
+        return GtCache.get(ent.getState.cmds)
+      }
+    }
 
+    // Use a sensible starting point
+    // TODO: Generalise cacheing to work here too
     val start:Instant = Instant.now
-
     val ent = GainstrackEntity.defaultBase(java.util.UUID.randomUUID())
     val orderedCmds = ent.getState.cmds
     val ret = GainstrackGenerator(orderedCmds)
@@ -53,9 +62,24 @@ trait GainstrackSupport extends ContentEncodingSupport {
     val duration = Duration.between(start, endTime)
     logger.info(s"bgDefault generation in ${ret.generationDuration.toMillis}ms")
     logger.info(s"bgDefault total in ${duration.toMillis}ms")
-
-
     ret
+  }
+
+  private def migratedAnonData = {
+    require(!user.isAnonymous, "can ony migrate to non anonymous")
+
+    val anon = new AnonAuthStrategy(this)
+    val anonUserOpt = anon.authenticate()
+    anonUserOpt.flatMap(anonUser => {
+      val entOpt = anonRepo.getByIdOpt(anonUser.uuid, new GainstrackEntity())
+      entOpt.map(ent => {
+        val cmds = ent.getState.cmds
+        val ret = new GainstrackEntity(user.uuid)
+        ret.source(cmds)
+        logger.warn(s"Transferring data from anon ${anonUser.uuid} to ${user.uuid}")
+        ret
+      })
+    })
   }
 
   protected def bgFromFile = {
@@ -64,18 +88,20 @@ trait GainstrackSupport extends ContentEncodingSupport {
       val start:Instant = Instant.now
 
       val id = user.uuid
-      val ent = repo.getByIdOpt(id, new GainstrackEntity()).getOrElse(GainstrackEntity.defaultBase(id))
-      val cmds = ent.getState.cmds
-      // val ret = GainstrackGenerator(cmds)
-      val midTime = Instant.now
-      val ret = GtCache.get(cmds)
-      val endTime = Instant.now
-      val fhDuration = Duration.between(start, midTime)
-      val shDuration = Duration.between(midTime, endTime)
-      val duration = Duration.between(start, endTime)
-      logger.info(s"bgFromFile original generation in ${ret.generationDuration.toMillis}ms")
-      logger.info(s"bgFromFile ${fhDuration.toMillis}+${shDuration.toMillis} = total in ${duration.toMillis}ms")
-      Some(GainstrackGenerator(cmds))
+      val entOpt = repo.getByIdOpt(id, new GainstrackEntity())
+      entOpt.map(ent => {
+        val cmds = ent.getState.cmds
+        // val ret = GainstrackGenerator(cmds)
+        val midTime = Instant.now
+        val ret = GtCache.get(cmds)
+        val endTime = Instant.now
+        val fhDuration = Duration.between(start, midTime)
+        val shDuration = Duration.between(midTime, endTime)
+        val duration = Duration.between(start, endTime)
+        logger.info(s"bgFromFile original generation in ${ret.generationDuration.toMillis}ms")
+        logger.info(s"bgFromFile ${fhDuration.toMillis}+${shDuration.toMillis} = total in ${duration.toMillis}ms")
+        GainstrackGenerator(cmds)
+      })
     }
     catch {
       case e:Exception => {
@@ -93,6 +119,7 @@ trait GainstrackSupport extends ContentEncodingSupport {
 
   def getGainstrack = {
     val gt = if (isAuthenticated) {
+
       bgFromFile.getOrElse(bgDefault)
 //      session.get("gainstrack").map(_.asInstanceOf[GainstrackGenerator])
 //        .orElse(bgFromFile)
