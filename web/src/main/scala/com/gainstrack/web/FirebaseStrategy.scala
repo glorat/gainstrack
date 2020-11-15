@@ -39,6 +39,11 @@ class FirebaseStrategy (protected override val app: ScalatraBase)
           logger.error(s"Attempt to login with Firebase failed with ${e.getMessage}")
           None
         }
+        case e: IllegalStateException => {
+          logger.error(s"FirebaseAuth illegal setup state: ${e.getMessage}")
+          logger.error(e.toString);
+          None
+        }
       }
 
     }
