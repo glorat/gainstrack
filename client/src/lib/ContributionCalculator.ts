@@ -17,14 +17,14 @@ export interface ContributionCalculatorEntries extends ContributionCalculatorInp
 export class ContributionCalculator {
   entries:ContributionCalculatorEntries[];
   private originalTotal:number;
-  private total: number;
+  private targetTotal: number;
   private contrib = 0;
 
   // Isn't total just sum of all assets with some currency?
   constructor(networthByAsset: ContributionCalculatorInput[], readonly baseCcy: string) {
     const total = sum(networthByAsset.map(a => a.value));
     this.originalTotal = total;
-    this.total = total;
+    this.targetTotal = total;
     this.entries = networthByAsset.map(row => {
       // Beware the target conversion from % to ratio
       return {...row, target: row.target/100, targetValue: row.value, deviation: 0}
@@ -32,21 +32,25 @@ export class ContributionCalculator {
     this.updateDeviation() // for sorting
   }
 
+  get total(): number {
+    return this.targetTotal;
+  }
+
   /** Updates entries.totalValue with additional contrib */
   contribute(contrib: number) {
     // assert contrib > 0
     this.contrib = contrib;
-    this.total += contrib;
+    this.targetTotal += contrib;
     this.updateDeviation();
 
     for (let i=0; i<this.entries.length-1; i++) {
       const toAdjust = this.entries.slice(0,i+1);
       // const currentDev = this.entries[i].deviation
       const targetDev = this.entries[i+1].deviation;
-      const maxMovement = sum(toAdjust.map(e => (e.target*targetDev*this.total)-e.targetValue ));
-      if (maxMovement+this.currentTotal() >= this.total) {
+      const maxMovement = sum(toAdjust.map(e => (e.target*targetDev*this.targetTotal)-e.targetValue ));
+      if (maxMovement+this.currentTotal() >= this.targetTotal) {
         // Final adjustment
-        const toAllocate = (this.total-this.currentTotal());
+        const toAllocate = (this.targetTotal-this.currentTotal());
 
         const totalAdjRatio = sum(toAdjust.map(e => e.target));
         toAdjust.forEach(e => {
@@ -58,14 +62,14 @@ export class ContributionCalculator {
       } else {
         // Perform max adjustment and iterate
         for (let j=0; j<=i; j++) {
-          this.entries[j].targetValue = (this.entries[j].target*targetDev*this.total)
+          this.entries[j].targetValue = (this.entries[j].target*targetDev*this.targetTotal)
         }
         this.updateDeviation()
       }
     }
     // If we naturally left the loop, everything needs to move
     this.entries.forEach(e => {
-      e.targetValue = this.total * e.target
+      e.targetValue = this.targetTotal * e.target
     });
     this.updateDeviation();
 
@@ -78,7 +82,7 @@ export class ContributionCalculator {
 
   updateDeviation() {
     this.entries.forEach(e => {
-      e.deviation = (e.targetValue / this.total)/e.target
+      e.deviation = (e.targetValue / this.targetTotal)/e.target
       // => e.target*dev*total = e.targetValue
     });
     this.entries = sortBy(this.entries, e => e.deviation)
@@ -96,7 +100,7 @@ export class ContributionCalculator {
       customdata.push(`${formatNumber(entry.value)} ${this.baseCcy}`)
     });
     this.entries.forEach(entry => {
-      label.push(`${entry.assetId} ${formatPerc(entry.targetValue/this.total)}`);
+      label.push(`${entry.assetId} ${formatPerc(entry.targetValue/this.targetTotal)}`);
       color.push('green');
       customdata.push(`${formatNumber(entry.targetValue)} ${this.baseCcy}`)
     });
