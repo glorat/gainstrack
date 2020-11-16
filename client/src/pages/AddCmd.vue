@@ -146,10 +146,9 @@
     },
     methods: {
       gainstrackChange (ev) {
-        this.commandStr = ev
-        this.errors = []
-        this.testing = true
-        this.testCommand()
+        this.commandStr = ev;
+        this.errors = [];
+        this.testCommand();
       },
       commandChanged (cmd) {
         this.$emit('input', cmd)
@@ -158,21 +157,20 @@
         this.$emit('cancel')
       },
       testCommand: debounce(async function () {
-        const str = this.commandStr
+        const str = this.commandStr;
         const notify = this.$notify
-        if (str) {
-          this.testing = true
-          try {
-            this.result = await apiCmdTest(this.$store, {str})
+        try {
+          if (str) {
+            this.testing = true;
+            this.result = await apiCmdTest(this.$store, {str});
           }
-          catch (error) {
-            console.error(error);
-            notify.error(error);
-          }
-          finally {
-            this.testing = false;
-          }
+        } catch (error) {
+          console.error(error);
+          notify.error(error);
+        } finally {
+          this.testing = false;
         }
+
       }, 1000),
       addCommand () {
         const str = this.commandStr
