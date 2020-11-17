@@ -42,7 +42,8 @@
             </q-tr>
           </template>
         </q-table>
-      <q-btn color="primary" v-if="canEdit" :icon="matAdd" @click="onUnitsEdit({row: {units:0, assetId:''}})" label="Add Asset"></q-btn>
+      <q-btn color="primary" v-if="canEdit" :icon="matAdd" @click="onUnitsEdit({row: {units:0, assetId:''}})" label="Add Known Asset"></q-btn>
+      <q-btn color="primary" v-if="canEdit" :icon="matAdd" @click="onNewAsset" label="Add New Asset"></q-btn>
 
       <q-btn color="secondary" @click="onRebalance" v-if="networthByAsset.length>1" label="Rebalance Calculator"></q-btn>
     </div>
@@ -59,6 +60,7 @@
     import AssetEditorDialog from 'components/AssetEditorDialog.vue';
     import {sum} from 'lodash';
     import {formatNumber, formatPerc} from 'src/lib/utils';
+    import NewAssetDialog from "components/NewAssetDialog.vue";
 
     interface Mode {
         name: string
@@ -146,6 +148,12 @@
             parent: this,
             cmd: cmd
             // ...more.props...
+          })
+        },
+        onNewAsset(props: any) {
+          this.$q.dialog({
+            component: NewAssetDialog,
+            parent: this,
           })
         },
         onAssetEdit(props: any) {

@@ -107,7 +107,7 @@ export class ContributionCalculator {
     label.push(this.baseCcy);
     color.push('purple');
     customdata.push(`${this.contrib} ${this.baseCcy}`);
-    const hovertemplate = `%{label}<br>%{customdata}`;
+    const hovertemplate = '%{label}<br>%{customdata}';
     const node = {label, color, hovertemplate, customdata};
     const link = this.makeSankeyLinks();
     const data = {type: 'sankey', node, link};

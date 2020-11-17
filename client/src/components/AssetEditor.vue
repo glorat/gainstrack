@@ -33,10 +33,11 @@ import Vue from 'vue';
 import {AllState, AssetDTO} from '../lib/models';
 import { keys, cloneDeep } from 'lodash';
 import {toCommodityGainstrack} from 'src/lib/commandDefaulting';
+import FieldEditor from 'components/field/FieldEditor.vue';
 
 export default Vue.extend({
   name: 'AssetEditor',
-  components: {AssetId},
+  components: {AssetId, FieldEditor},
   props: {
     assetId: String
   },
