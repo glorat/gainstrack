@@ -30,7 +30,13 @@
 import {defineComponent} from '@vue/composition-api';
 import FieldEditor from './field/FieldEditor.vue';
 import {keys} from 'lodash';
-import {AssetProperty, createAssetFromProps, schemaFor, validPropertiesForAsset} from 'src/lib/AssetSchema';
+import {
+  AssetProperty,
+  availablePropertiesForAsset,
+  createAssetFromProps,
+  schemaFor,
+  validPropertiesForAsset
+} from 'src/lib/AssetSchema';
 import {AssetDTO} from 'src/lib/models';
 import {GlobalPricer} from 'src/lib/pricer';
 import {LocalDate} from '@js-joda/core';
@@ -57,9 +63,6 @@ export default defineComponent({
     }
   },
   computed: {
-    baseCcy(): string {
-      return this.$store.getters.baseCcy;
-    },
     globalPricer (): GlobalPricer {
       return this.$store.getters.fxConverter;
     },
@@ -71,7 +74,7 @@ export default defineComponent({
       return nms.map(schemaFor)
     },
     availableTags(): AssetProperty[] {
-      return validPropertiesForAsset(this.properties, {editing: false})
+      return availablePropertiesForAsset(this.properties, {editing: false})
     },
     generatedAsset(): AssetDTO {
       return createAssetFromProps(this.properties)

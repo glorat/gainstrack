@@ -37,7 +37,7 @@ import FieldEditor from 'components/field/FieldEditor.vue';
 
 export default Vue.extend({
   name: 'AssetEditor',
-  components: {AssetId, FieldEditor},
+  components: {AssetId},
   props: {
     assetId: String
   },
