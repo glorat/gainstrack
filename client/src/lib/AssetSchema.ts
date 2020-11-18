@@ -55,7 +55,7 @@ export function createAssetFromProps(props: Record<string, any>): AssetDTO{
     }
   })
   return {
-    asset: props['name'],
+    asset: props['name'] ?? 'undefined',
     options
   }
 }

@@ -28,13 +28,13 @@
 
 <script lang="ts">
 import {defineComponent} from '@vue/composition-api';
-import FieldEditor from "./field/FieldEditor.vue";
+import FieldEditor from './field/FieldEditor.vue';
 import {keys} from 'lodash';
-import {AssetProperty, createAssetFromProps, schemaFor, validPropertiesForAsset} from "src/lib/AssetSchema";
-import {AccountCommandDTO, AssetDTO} from "src/lib/models";
-import {GlobalPricer} from "src/lib/pricer";
-import {LocalDate} from "@js-joda/core";
-import {formatNumber} from "src/lib/utils";
+import {AssetProperty, createAssetFromProps, schemaFor, validPropertiesForAsset} from 'src/lib/AssetSchema';
+import {AssetDTO} from 'src/lib/models';
+import {GlobalPricer} from 'src/lib/pricer';
+import {LocalDate} from '@js-joda/core';
+import {formatNumber} from 'src/lib/utils';
 
 export default defineComponent({
   name: 'NewAssetEditor',
@@ -47,14 +47,19 @@ export default defineComponent({
   },
   methods: {
     onFieldUpdate(field:string, newValue: any) {
-      console.error(`setting ${field} to ${newValue}`);
       this.$set(this.properties, field, newValue);
+      if (newValue && schemaFor(field).schema==='ticker') {
+        this.$store.dispatch('loadQuotes', newValue);
+      }
     },
     onRemove(propType: AssetProperty) {
       this.$delete(this.properties, propType.name);
     }
   },
   computed: {
+    baseCcy(): string {
+      return this.$store.getters.baseCcy;
+    },
     globalPricer (): GlobalPricer {
       return this.$store.getters.fxConverter;
     },
@@ -74,8 +79,9 @@ export default defineComponent({
     assetPrice():string {
       const asset = this.generatedAsset;
       const pricer = this.globalPricer;
+      const baseCcy:string = this.baseCcy;
       const today = LocalDate.now();
-      const price = pricer.getFX(asset.asset??'', this.baseCcy, today);
+      const price = pricer.getPrice(asset, baseCcy, today);
       return formatNumber(price);
     },
   }
