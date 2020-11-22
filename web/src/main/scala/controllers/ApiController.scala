@@ -85,7 +85,7 @@ class ApiController (implicit val ec :ExecutionContext)
 
   }
 
-  get ("/assets") {
+  any ("/assets") {
     val bg = getGainstrack
     val mktConvert = bg.liveFxConverter(ServerQuoteSource.db.priceFXConverter)
 
