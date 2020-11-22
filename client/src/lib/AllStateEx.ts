@@ -1,4 +1,4 @@
-import {AccountCommandDTO, AllState, isTransaction, Posting, PostingEx, Transaction} from '../lib/models';
+import {AccountCommandDTO, AccountDTO, AllState, isTransaction, Posting, PostingEx, Transaction} from '../lib/models';
 import {flatten} from 'lodash';
 import {SingleFXConversion} from '../lib/fx';
 
@@ -44,5 +44,11 @@ export class AllStateEx {
     if (prev && prev.commandType === 'unit') return prev.price?.ccy;
     if (prev && prev.commandType === 'trade') return prev.price?.ccy;
     return undefined;
+  }
+
+  findAccount(accountId: string) {
+    const all: AccountDTO[] = this.state.accounts;
+    const acct = all.find(x => x.accountId === accountId);
+    return acct
   }
 }

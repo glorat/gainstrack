@@ -67,7 +67,9 @@
         })
       },
       onSelectChanged(ev: string) {
-        this.$emit('input', ev.toUpperCase());
+        if (ev !== this.value) {
+          this.$emit('input', ev.toUpperCase());
+        }
       },
     }
   })

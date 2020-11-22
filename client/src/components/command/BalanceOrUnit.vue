@@ -34,14 +34,13 @@
   import {CommandEditorMixin} from '../../mixins/CommandEditorMixin';
   import AccountSelector from '../AccountSelector.vue';
   import Vue from 'vue';
-  import { positionUnderAccount } from 'src/lib/utils'
-  import { LocalDate } from '@js-joda/core'
-  import { GlobalPricer } from 'src/lib/pricer'
+  import {commandIsValid, defaultedBalanceOrUnit} from 'src/lib/commandDefaulting';
 
 
   // interface MyData {
   //     c: AccountCommandDTO
   // }
+
 
   export default Vue.extend({
     name: 'BalanceOrUnit',
@@ -72,52 +71,10 @@
     computed: {
       dc() {
         // Take care to use copy-on-write pattern in this function
-        const dc = {...this.c};
-        const acct = this.findAccount(dc.accountId);
-
-        if (acct) {
-          if (!dc.balance.ccy) {dc.balance = {...dc.balance, ccy : acct.ccy}}
-
-          if (!dc.commandType || !/^(bal|unit)$/.test(dc.commandType)) {
-            if (GlobalPricer.isIso(dc.balance.ccy) || dc.balance.ccy == acct.ccy) {
-              dc.commandType = 'bal'
-            } else {
-              dc.commandType = 'unit'
-            }
-          }
-          if (!dc.balance.number) {
-            const stateEx = this.allStateEx;
-            const pex = stateEx.allPostingsEx();
-            const pos = positionUnderAccount(pex, dc.accountId);
-            const number = GlobalPricer.trim(pos[dc.balance.ccy]);
-            dc.balance = {...dc.balance, number}
-          }
-
-          const underCcy = this.allStateEx.underlyingCcy(dc.balance.ccy, dc.accountId);
-          if (!dc.price.ccy && !dc.price.number && underCcy) {
-            const fxConverter = this.fxConverter
-            const dt = LocalDate.parse(dc.date);
-            const priceNumber = fxConverter.getFXTrimmed(dc.balance.ccy, underCcy, dt);
-
-            dc.price = {ccy: underCcy, number: priceNumber};
-          }
-
-          if (dc.commandType === 'bal' && !dc.otherAccount) {
-            const allCmds /*: AccountCommandDTO[]*/ = [...this.$store.state.allState.commands].reverse();
-            const prev = allCmds.find(
-              x => x.accountId === dc.accountId && x.commandType === 'bal');
-            if (prev) {
-              dc.otherAccount = prev.otherAccount;
-            } else {
-              dc.otherAccount = 'Equity:Opening'
-            }
-          }
-
-          if (!dc.commandType) {
-            dc.commandType = 'bal';
-          }
-
-        }
+        const c = this.c;
+        const stateEx = this.allStateEx;
+        const fxConverter = this.fxConverter
+        const dc = defaultedBalanceOrUnit(c, stateEx, fxConverter);
         return dc;
       },
       mainAccount() {
@@ -137,12 +94,8 @@
       },
       isValid() /*: boolean*/ {
         const c = this.dc;
+        return commandIsValid(c);
         // lint-ignore
-        // FIXME: Or price
-        if (c.commandType === 'bal')
-          return c.accountId && c.date && c.balance && c.balance.number!==undefined && c.balance.ccy && c.otherAccount;
-        else
-          return c.accountId && c.date && c.balance && c.balance.number!==undefined && c.balance.ccy && c.price?.ccy && c.price?.number;
       },
       toGainstrack() /*: string*/ {
         if (this.isValid) {
