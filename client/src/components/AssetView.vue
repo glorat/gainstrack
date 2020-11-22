@@ -60,7 +60,7 @@
     import AssetEditorDialog from 'components/AssetEditorDialog.vue';
     import {sum} from 'lodash';
     import {formatNumber, formatPerc} from 'src/lib/utils';
-    import NewAssetDialog from "components/NewAssetDialog.vue";
+    import NewAssetDialog from 'components/NewAssetDialog.vue';
 
     interface Mode {
         name: string
@@ -150,10 +150,11 @@
             // ...more.props...
           })
         },
-        onNewAsset(props: any) {
+        onNewAsset() {
           this.$q.dialog({
             component: NewAssetDialog,
             parent: this,
+            accountId: this.accountId
           })
         },
         onAssetEdit(props: any) {

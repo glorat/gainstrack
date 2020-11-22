@@ -1,5 +1,5 @@
 import {AssetDTO, AssetOptions} from 'src/lib/models';
-import { without, keys, includes } from 'lodash';
+import { keys, includes } from 'lodash';
 
 export interface AssetProperty {
   name: string
@@ -15,8 +15,11 @@ export const assetCategories = [
   {value: 'property', label: 'Property', description: 'Tangible things you own like houses, cars'},
   {value: 'cash', label: 'Cash', description: 'Cash or equivalent deposited in an account'},
 ]
+
+const categoryProperty = {name: 'category', label: 'Category', description: 'Category or type of asset', schema: 'category'};
+
 const assetProperties:AssetProperty[] = [
-  {name: 'category', label: 'Category', description: 'Category or type of asset', schema: 'category'},
+  categoryProperty,
   {name: 'ticker', label: 'Ticker', description: 'Ticker symbol for listed quotes', schema: 'ticker',
     valid: (props) => props['category'] === 'investment'
   },
@@ -35,11 +38,17 @@ const newAssetProperties: AssetProperty[] = [
     valid: (props) => props['category'] !== 'cash'},
 ]
 
-const allProperties = [...assetProperties, ...newAssetProperties]
+const mandatoryProperties: AssetProperty[] = [nameProperty, categoryProperty];
+const optionalProperties = [...assetProperties, ...newAssetProperties].filter(p => !includes(mandatoryProperties, p))
+const allProperties = [...mandatoryProperties, ...optionalProperties];
 
 export function schemaFor(name: string): AssetProperty {
   const ret = allProperties.find(x => x.name === name);
   return ret ?? unknownProperty(name);
+}
+
+export function selectedPropertiesForAsset(props: Record<string, any>): AssetProperty[] {
+  return allProperties.filter(p => Object.prototype.hasOwnProperty.call(props, p.name))
 }
 
 export function validPropertiesForAsset(props: Record<string, any>, opts: {editing: boolean}): AssetProperty[] {

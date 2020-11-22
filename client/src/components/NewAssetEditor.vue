@@ -3,7 +3,7 @@
     <q-card-section>Define New Asset</q-card-section>
     <q-card-section>
       <div v-for="schema in schemas" :key="schema.label">
-        <q-chip color="primary" text-color="white" :label="schema.name"
+        <q-chip color="primary" text-color="white" :label="schema.label"
                 removable
                 @remove="onRemove(schema)"
         ></q-chip>
@@ -21,34 +21,55 @@
               clickable @click="$set(properties, tag.name, undefined)"></q-chip>
     </q-card-section>
     <q-card-section>
-      {{ assetPrice }}
+      <p>Price: <pre>{{ assetPrice }} {{baseCcy}}</pre></p>
+      <p v-if="commandGainstrack"><pre>{{ commandGainstrack }}</pre></p>
     </q-card-section>
+    <q-card-actions align="right">
+      <q-btn class="c-cancel" color="primary" type="button" v-on:click="cancel" v-close-popup>Cancel</q-btn>
+      <q-btn class="c-add" color="primary"
+             :disable=" !canAdd"
+             @click="addAsset">Add
+        <template v-slot:loading>
+          <q-spinner v-if="adding" /><q-spinner-grid v-else/>
+        </template>
+      </q-btn>
+    </q-card-actions>
   </q-card>
 </template>
 
 <script lang="ts">
 import {defineComponent} from '@vue/composition-api';
 import FieldEditor from './field/FieldEditor.vue';
-import {keys} from 'lodash';
 import {
   AssetProperty,
   availablePropertiesForAsset,
   createAssetFromProps,
-  schemaFor,
-  validPropertiesForAsset
+  schemaFor, selectedPropertiesForAsset,
 } from 'src/lib/AssetSchema';
-import {AssetDTO} from 'src/lib/models';
+import {AccountCommandDTO, AssetDTO} from 'src/lib/models';
 import {GlobalPricer} from 'src/lib/pricer';
 import {LocalDate} from '@js-joda/core';
 import {formatNumber} from 'src/lib/utils';
+import {defaultedBalanceOrUnit, toGainstrack} from "src/lib/commandDefaulting";
+import {AllStateEx} from "src/lib/AllStateEx";
 
 export default defineComponent({
   name: 'NewAssetEditor',
   components: {FieldEditor},
+  props: {
+    accountId: {
+      type: String,
+    }
+  },
   data() {
-    const properties: Record<string, any> = {}
+    const properties: Record<string, any> = {};
+    // if (this.accountId) {
+    //   properties['accountId'] = this.accountId;
+    // }
+    const adding = false;
     return {
-      properties
+      properties,
+      adding
     }
   },
   methods: {
@@ -60,18 +81,30 @@ export default defineComponent({
     },
     onRemove(propType: AssetProperty) {
       this.$delete(this.properties, propType.name);
-    }
+    },
+    addAsset() {
+      // const asset = this.generatedAsset;
+
+    },
+    cancel () {
+      this.$emit('cancel')
+    },
   },
   computed: {
+    canAdd(): boolean {
+      return true; // TODO
+    },
+    baseCcy(): string {
+      return this.$store.getters.baseCcy;
+    },
+    allStateEx(): AllStateEx {
+      return this.$store.getters.allStateEx;
+    },
     globalPricer (): GlobalPricer {
       return this.$store.getters.fxConverter;
     },
-    baseCcy (): string {
-      return this.$store.getters.baseCcy;
-    },
     schemas(): AssetProperty[] {
-      const nms = keys(this.properties).sort();
-      return nms.map(schemaFor)
+      return selectedPropertiesForAsset(this.properties);
     },
     availableTags(): AssetProperty[] {
       return availablePropertiesForAsset(this.properties, {editing: false})
@@ -87,6 +120,28 @@ export default defineComponent({
       const price = pricer.getPrice(asset, baseCcy, today);
       return formatNumber(price);
     },
+    commandGainstrack(): string {
+      if (this.accountId) {
+        const asset = this.generatedAsset;
+        const today = this.properties['date'] || LocalDate.now();
+        const cmd:AccountCommandDTO = {
+          commandType: 'balunit',
+          accountId: this.accountId,
+          date: today.toString(),
+          balance: {number: this.properties['units'] ?? 1, ccy: asset.asset},
+        };
+        if (this.properties['price']) {
+          cmd.price = this.properties['price']
+        }
+
+        const dcmd = defaultedBalanceOrUnit(cmd, this.allStateEx, this.globalPricer);
+        const gainstrack = toGainstrack(dcmd);
+        return gainstrack;
+      } else {
+        return '';
+      }
+
+    }
   }
 })
 </script>

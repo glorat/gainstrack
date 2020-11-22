@@ -1,6 +1,7 @@
 <template>
   <q-dialog ref="dialog" @hide="onDialogHide">
     <new-asset-editor
+      :account-id="accountId"
       @cancel="onDialogHide"
       @ok="onOKClick"
     >
@@ -25,6 +26,9 @@ import {AssetDTO} from 'src/lib/models';
 export default Vue.extend({
   name: 'NewAssetDialog',
   components: {NewAssetEditor},
+  props: {
+    accountId: String
+  },
   methods: {
     // following method is REQUIRED
     // (don't change its name --> "show")
