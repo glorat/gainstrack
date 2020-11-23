@@ -21,9 +21,10 @@ const categoryProperty = {name: 'category', label: 'Category', description: 'Cat
 const assetProperties:AssetProperty[] = [
   categoryProperty,
   {name: 'ticker', label: 'Ticker', description: 'Ticker symbol for listed quotes', schema: 'ticker',
-    valid: (props) => props['category'] === 'investment'
+    valid: (props) => props['category'] === 'investment' && !propDefined(props,'benchmark')
   },
-  {name: 'proxy', label: 'Benchmark', description: 'Ticker symbol of benchmark that the asset tracks', schema: 'ticker'},
+  {name: 'proxy', label: 'Benchmark', description: 'Ticker symbol of benchmark that the asset tracks', schema: 'ticker',
+  valid: (props) => !propDefined(props,'ticker')},
 ]
 
 const nameProperty ={name: 'name', label: 'Short Name', description: 'Short name for you to identify the asset', schema: 'asset'}
@@ -42,18 +43,25 @@ const mandatoryProperties: AssetProperty[] = [nameProperty, categoryProperty];
 const optionalProperties = [...assetProperties, ...newAssetProperties].filter(p => !includes(mandatoryProperties, p))
 const allProperties = [...mandatoryProperties, ...optionalProperties];
 
+function propDefined(props: Record<string, any>, name: string):boolean {
+  // Avoid Object prototype pollution as a defensive measure
+  return Object.prototype.hasOwnProperty.call(props, name)
+}
+
 export function schemaFor(name: string): AssetProperty {
   const ret = allProperties.find(x => x.name === name);
   return ret ?? unknownProperty(name);
 }
 
 export function selectedPropertiesForAsset(props: Record<string, any>): AssetProperty[] {
-  return allProperties.filter(p => Object.prototype.hasOwnProperty.call(props, p.name))
+  return allProperties.filter(p => propDefined(props, p.name))
 }
 
 export function validPropertiesForAsset(props: Record<string, any>, opts: {editing: boolean}): AssetProperty[] {
   if (!props['name']) {
     return [nameProperty]
+  } else if (!props['category']) {
+    return [categoryProperty]
   }
   const inScope = opts.editing ? assetProperties : allProperties;
   return inScope.filter(p => !p.valid || p.valid(props))
@@ -65,6 +73,7 @@ export function availablePropertiesForAsset(props: Record<string, any>, opts: {e
   return valid.filter(v => !includes(current, v.name))
 }
 
+const defaultCommodityDate = '1900-01-01'
 
 export function createAssetFromProps(props: Record<string, any>): AssetDTO{
   const options: AssetOptions = {tags: []}
@@ -73,8 +82,12 @@ export function createAssetFromProps(props: Record<string, any>): AssetDTO{
       options[p.name] = props[p.name]
     }
   })
-  return {
+
+  const asset = {
+    commandType: 'commodity',
+    date: defaultCommodityDate,
     asset: props['name'] ?? 'undefined',
     options
   }
+  return asset;
 }

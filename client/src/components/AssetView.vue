@@ -52,7 +52,7 @@
 <script lang="ts">
     import Vue from 'vue';
     import { date } from 'quasar';
-    import {NetworthByAsset, AssetColumn, AssetResponse} from '../lib/models';
+    import {NetworthByAsset, AssetColumn, AssetResponse, AssetDTO} from '../lib/models';
     import {matEdit, matAdd, matAddCircleOutline ,matSwapHoriz} from '@quasar/extras/material-icons';
     import CommandEditorDialog from 'components/CommandEditorDialog.vue';
     import {mapGetters} from 'vuex';
@@ -155,6 +155,9 @@
             component: NewAssetDialog,
             parent: this,
             accountId: this.accountId
+          }).onOk((asset:AssetDTO) => {
+            // Since we've created the asset, let's do a command right away
+            this.onUnitsEdit({row: {units:1, assetId: asset.asset}})
           })
         },
         onAssetEdit(props: any) {

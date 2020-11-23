@@ -6,13 +6,6 @@
       @ok="onOKClick"
     >
     </new-asset-editor>
-    <!--    <add-cmd :input="cmd" @cancel="onDialogHide" @command-added="onOKClick"-->
-    <!--             title="Edit Balance"-->
-    <!--             hide-journal-->
-    <!--             has-cancel-->
-    <!--             hide-changes-->
-    <!--             :options="options"-->
-    <!--    ></add-cmd>-->
   </q-dialog>
 </template>
 

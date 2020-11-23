@@ -21,8 +21,9 @@
               clickable @click="$set(properties, tag.name, undefined)"></q-chip>
     </q-card-section>
     <q-card-section>
-      <p>Price: <pre>{{ assetPrice }} {{baseCcy}}</pre></p>
-      <p v-if="commandGainstrack"><pre>{{ commandGainstrack }}</pre></p>
+      <div>Price: <pre>{{ assetPrice }} {{baseCcy}}</pre></div>
+      <div v-if="assetGainstrack"><pre>{{ assetGainstrack }}</pre></div>
+      <div v-if="commandGainstrack"><pre>{{ commandGainstrack }}</pre></div>
     </q-card-section>
     <q-card-actions align="right">
       <q-btn class="c-cancel" color="primary" type="button" v-on:click="cancel" v-close-popup>Cancel</q-btn>
@@ -50,8 +51,10 @@ import {AccountCommandDTO, AssetDTO} from 'src/lib/models';
 import {GlobalPricer} from 'src/lib/pricer';
 import {LocalDate} from '@js-joda/core';
 import {formatNumber} from 'src/lib/utils';
-import {defaultedBalanceOrUnit, toGainstrack} from "src/lib/commandDefaulting";
-import {AllStateEx} from "src/lib/AllStateEx";
+import {defaultedBalanceOrUnit, toGainstrack} from 'src/lib/commandDefaulting';
+import {AllStateEx} from 'src/lib/AllStateEx';
+import axios from 'axios';
+
 
 export default defineComponent({
   name: 'NewAssetEditor',
@@ -63,9 +66,6 @@ export default defineComponent({
   },
   data() {
     const properties: Record<string, any> = {};
-    // if (this.accountId) {
-    //   properties['accountId'] = this.accountId;
-    // }
     const adding = false;
     return {
       properties,
@@ -83,7 +83,17 @@ export default defineComponent({
       this.$delete(this.properties, propType.name);
     },
     addAsset() {
-      // const asset = this.generatedAsset;
+      const str = this.assetGainstrack;
+      if (str) {
+
+        axios.post('/api/post/asset', { str })
+          .then(response => {
+            this.$notify.success(response.data)
+            this.$emit('ok', this.generatedAsset);
+          })
+          .catch(error => this.$notify.error(error.response.data))
+
+      }
 
     },
     cancel () {
@@ -107,10 +117,13 @@ export default defineComponent({
       return selectedPropertiesForAsset(this.properties);
     },
     availableTags(): AssetProperty[] {
-      return availablePropertiesForAsset(this.properties, {editing: false})
+      return availablePropertiesForAsset(this.properties, {editing: true})
     },
     generatedAsset(): AssetDTO {
       return createAssetFromProps(this.properties)
+    },
+    generatedAssetCommand(): AccountCommandDTO {
+      return {...this.generatedAsset, commandType: 'commodity', accountId: '', date: '1900-01-01'}
     },
     assetPrice():string {
       const asset = this.generatedAsset;
@@ -119,6 +132,9 @@ export default defineComponent({
       const today = LocalDate.now();
       const price = pricer.getPrice(asset, baseCcy, today);
       return formatNumber(price);
+    },
+    assetGainstrack(): string {
+      return toGainstrack(this.generatedAssetCommand)
     },
     commandGainstrack(): string {
       if (this.accountId) {
