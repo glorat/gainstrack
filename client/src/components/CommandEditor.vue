@@ -6,10 +6,10 @@
     ></transfer>
   </div>
   <div v-else-if="type === 'trade'">
-    <trade-editor :cmd="input" v-on:input="inputChanged()"
+    <balance-or-unit :cmd="input" v-on:input="inputChanged()"
                   v-on:gainstrack-changed="gainstrackChanged($event)"
                   :options="options"
-    ></trade-editor>
+    ></balance-or-unit>
   </div>
   <!-- Not a strict string match so that components can provide an ambiguous type -->
   <div v-else-if="type.match('unit|bal')">

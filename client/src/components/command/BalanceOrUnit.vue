@@ -7,10 +7,13 @@
       <account-selector class="c-account-id" :value="dc.accountId" :original="c.accountId"
                         @input="c.accountId=$event" :account-list="balanceableAccounts"></account-selector>
     </div>
-    <div>
+    <div v-if="showBalance">
       <balance-editor label="Balance" class="c-balance" :value="dc.balance" :original="c.balance" @input="c.balance=$event"></balance-editor>
     </div>
-    <div v-if="canUnit">
+    <div v-if="showChange">
+      <balance-editor label="Change" class="c-change" :value="dc.change" :original="c.change" @input="c.change=$event"></balance-editor>
+    </div>
+    <div v-if="canBalanceOrUnit">
       <q-radio :value="dc.commandType" @input="c.commandType=$event" val="bal" label="Simple Balance" />
       <q-radio :value="dc.commandType" @input="c.commandType=$event" val="unit" label="With Cost" />
     </div>
@@ -21,9 +24,13 @@
                         :value="dc.otherAccount" :original="c.otherAccount"
                         @input="c.otherAccount=$event" :account-list="mainAccounts"></account-selector>
     </div>
-    <div v-if="dc.commandType==='unit'">
-      Price
-      <balance-editor :value="dc.price" :original="c.price" @input="c.price=$event"></balance-editor>
+    <div v-if="showPrice">
+      <balance-editor label="Price" :value="dc.price" :original="c.price" @input="c.price=$event"></balance-editor>
+    </div>
+    <div v-if="showCommission">
+      <help-tip tag="tradeCommission"></help-tip>
+      <balance-editor label="Commission" class="c-commission"
+                      :value="dc.commission" :original="c.commission" @input="c.commission=$event"></balance-editor>
     </div>
   </div>
 </template>
@@ -34,7 +41,12 @@
   import {CommandEditorMixin} from '../../mixins/CommandEditorMixin';
   import AccountSelector from '../AccountSelector.vue';
   import Vue from 'vue';
-  import {commandIsValid, defaultedBalanceOrUnit} from 'src/lib/commandDefaulting';
+  import {
+    commandIsValid,
+    defaultedCommand,
+    propDefined,
+    toGainstrack
+  } from 'src/lib/commandDefaulting'
 
 
   // interface MyData {
@@ -74,7 +86,7 @@
         const c = this.c;
         const stateEx = this.allStateEx;
         const fxConverter = this.fxConverter
-        const dc = defaultedBalanceOrUnit(c, stateEx, fxConverter);
+        const dc = defaultedCommand(c, stateEx, fxConverter);
         return dc;
       },
       mainAccount() {
@@ -87,7 +99,21 @@
           return (acct.options.generatedAccount === false) && t
         }).map( a => a.accountId).sort()
       },
-      canUnit() {
+      showBalance() {
+        return propDefined(this.dc, 'balance');
+      },
+      showChange() {
+        return propDefined(this.dc, 'change');
+      },
+      showCommission() {
+        return propDefined(this.dc, 'commission');
+      },
+      showPrice() {
+        if (this.dc.commandType==='bal') return false;
+        return propDefined(this.dc, 'price')
+      },
+      canBalanceOrUnit() {
+        if (!this.dc.commandType?.match('bal|unit')) return false;
         const acct = this.mainAccount;
         if (!acct) return false;
         return acct.options.multiAsset;
@@ -98,19 +124,7 @@
         // lint-ignore
       },
       toGainstrack() /*: string*/ {
-        if (this.isValid) {
-          const c /*: AccountCommandDTO*/ = this.dc;
-          if (c.commandType === 'bal') {
-            return `${c.date} bal ${c.accountId} ${c.balance.number} ${c.balance.ccy} ${c.otherAccount}`;
-          } else if (c.commandType === 'unit') {
-            return `${c.date} unit ${c.accountId} ${c.balance.number} ${c.balance.ccy} @${c.price.number} ${c.price.ccy}`;
-          } else {
-            throw new Error ('Unknown commandType')
-          }
-
-        } else {
-          return '';
-        }
+        return toGainstrack(this.dc)
       }
     },
 

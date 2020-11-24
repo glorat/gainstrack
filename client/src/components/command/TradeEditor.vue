@@ -30,7 +30,7 @@
     import {CommandEditorMixin} from '../../mixins/CommandEditorMixin';
     import AccountSelector from '../AccountSelector';
     import CommandDateEditor from '../CommandDateEditor';
-    import { LocalDate } from '@js-joda/core'
+    import { commandIsValid, defaultedTradeCommand, toGainstrack } from 'src/lib/commandDefaulting'
 
     export default {
         name: 'TradeEditor',
@@ -40,53 +40,20 @@
         },
         computed: {
           dc() {
-            const dc = {...this.c};
-            const acct = this.findAccount(this.c.accountId);
-            if (!dc.price.ccy) {
-              const underCcy = this.allStateEx.underlyingCcy(this.c.change.ccy, this.c.accountId);
-              if (underCcy) {
-                dc.price = {...dc.price, ccy: underCcy}
-                if (!dc.commission.ccy) dc.commission = {...dc.price, ccy: underCcy}
-              }
-            }
-
-            if (acct) {
-              if (!dc.price.ccy) dc.price = {...dc.price, ccy: acct.ccy}
-              if (!dc.commission.ccy) dc.commission = {...dc.price, ccy: acct.ccy}
-            }
-
-            if (!dc.price.number && dc.price.ccy) {
-              const date = LocalDate.parse(this.c.date);
-              const number = this.fxConverter.getFXTrimmed(this.c.change.ccy, dc.price.ccy, date);
-              if (number) {
-                dc.price = {...dc.price, number}
-              }
-            }
-
+            const c = this.c;
+            const stateEx = this.allStateEx;
+            const fxConverter = this.fxConverter;
+            const dc = defaultedTradeCommand(c, stateEx, fxConverter)
             return dc;
 
           },
-            isValid() {
-            const c = this.dc;
-                return !!c.accountId
-                    && c.change.number
-                    && c.change.ccy
-                    && c.price.number
-                    && c.price.ccy;
-            },
-            toGainstrack() {
-                if (this.isValid) {
-                  const c = this.dc;
-                    let baseStr = `${c.date} trade ${c.accountId} ${c.change.number} ${c.change.ccy} @${c.price.number} ${c.price.ccy}`;
-                    if (c.commission.number && c.commission.ccy) {
-                        baseStr += ` C${c.commission.number} ${c.commission.ccy}`
-                    }
-                    return baseStr
-                } else {
-                    return undefined;
-                }
-
-            }
+          isValid () {
+            const c = this.dc
+            return commandIsValid(c)
+          },
+          toGainstrack () {
+            return toGainstrack(this.dc)
+          }
         },
     }
 </script>

@@ -4,6 +4,12 @@ import {LocalDate} from '@js-joda/core';
 import {AccountCommandDTO, AssetDTO} from 'src/lib/models';
 import {AllStateEx} from 'src/lib/AllStateEx';
 
+
+export function propDefined(props: Record<string, any>, name: string): boolean {
+  // Avoid Object prototype pollution as a defensive measure
+  return Object.prototype.hasOwnProperty.call(props, name)
+}
+
 // Typescript can't link the commandIsValid checks to the toGainstrack we we liberally use non-null-assertions
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 export function commandIsValid(c: AccountCommandDTO):boolean {
@@ -20,7 +26,7 @@ export function commandIsValid(c: AccountCommandDTO):boolean {
       && !!c.change.number
       && !!c.change.ccy
       && !!c.otherAccount;
-  else if (c.commandType === 'trade')
+  else if (c.commandType === 'tfr')
     return c.accountId
       && c.otherAccount
       && c.change
@@ -34,6 +40,14 @@ export function commandIsValid(c: AccountCommandDTO):boolean {
       && !!c.change
       && !!c.change.number
       && !!c.change.ccy
+  else if (c.commandType === 'trade')
+    return !!c.accountId
+        && !!c.change
+        && !!c.change.number
+        && !!c.change.ccy
+        && !!c.price
+        && !!c.price.number
+        && !!c.price.ccy;
   else
     return false; // Unsupported type for central checking
 
@@ -83,6 +97,12 @@ export function toGainstrack(c: AccountCommandDTO) {
       } else {
         return `${c.date} yield ${c.accountId} ${c.change!.number} ${c.change!.ccy}`
       }
+    } else if (c.commandType === 'trade') {
+      let baseStr = `${c.date} trade ${c.accountId} ${c.change!.number} ${c.change!.ccy} @${c.price!.number} ${c.price!.ccy}`;
+      if (c.commission && c.commission.number && c.commission.ccy) {
+        baseStr += ` C${c.commission.number} ${c.commission.ccy}`
+      }
+      return baseStr
     } else {
       throw new Error ('Unknown commandType')
     }
@@ -93,8 +113,73 @@ export function toGainstrack(c: AccountCommandDTO) {
 
 }
 
+export function defaultedCommand(c: AccountCommandDTO, stateEx: AllStateEx, fxConverter: GlobalPricer): AccountCommandDTO {
+  if (c.commandType === 'trade') {
+    return defaultedTradeCommand(c, stateEx, fxConverter)
+  }
+  else if (c.commandType?.match('unit|bal')) {
+    return defaultedBalanceOrUnit(c, stateEx, fxConverter)
+  } else {
+    throw new Error(`${c.commandType} is an unknown command to default`)
+  }
+}
+
+export function defaultedTradeCommand (c: AccountCommandDTO, stateEx: AllStateEx, fxConverter: GlobalPricer): AccountCommandDTO {
+  const dc = {...c};
+  const acct = stateEx.findAccount(dc.accountId);
+  if (!dc.price) dc.price = {number: 0, ccy: ''};
+  if (!dc.change) dc.change = {number: 0, ccy: ''};
+  if (!dc.commission) dc.commission = {number: 0, ccy: ''};
+  delete (dc.balance);
+
+  if (!dc.price.ccy) {
+    const underCcy = stateEx.underlyingCcy(dc.change.ccy, dc.accountId);
+    if (underCcy) {
+      dc.price = {
+        ...dc.price,
+        ccy: underCcy
+      };
+      if (!dc.commission.ccy) {
+        dc.commission = {
+          ...dc.commission,
+          ccy: underCcy
+        }
+      }
+    }
+  }
+
+  if (acct) {
+    if (!dc.price.ccy) {
+      dc.price = {
+        ...dc.price,
+        ccy: acct.ccy
+      }
+    }
+    if (!dc.commission.ccy) {
+      dc.commission = {
+        ...dc.commission,
+        ccy: acct.ccy
+      }
+    }
+  }
+
+  if (!dc.price.number && dc.price.ccy) {
+    const date = LocalDate.parse(dc.date)
+    const number = fxConverter.getFXTrimmed(dc.change.ccy, dc.price.ccy, date)
+    if (number) {
+      dc.price = {
+        ...dc.price,
+        number
+      }
+    }
+  }
+  return dc
+}
+
 export function defaultedBalanceOrUnit(c: AccountCommandDTO, stateEx: AllStateEx, fxConverter: GlobalPricer): AccountCommandDTO {
   const dc = {...c};
+  delete dc.change;
+
   const acct = stateEx.findAccount(dc.accountId);
 
 
