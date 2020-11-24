@@ -1,6 +1,6 @@
 <template>
   <q-card>
-    <q-card-section>Define New Asset</q-card-section>
+    <q-card-section class="text-h6">Define Asset</q-card-section>
     <q-card-section>
       <div v-for="schema in schemas" :key="schema.label">
         <q-chip color="primary" text-color="white" :label="schema.label"
@@ -20,11 +20,6 @@
               :key="tag.name" color="primary" text-color="white" :label="tag.label"
               clickable @click="$set(properties, tag.name, undefined)"></q-chip>
     </q-card-section>
-    <q-card-section>
-      <div>Price: <pre>{{ assetPrice }} {{baseCcy}}</pre></div>
-      <div v-if="assetGainstrack"><pre>{{ assetGainstrack }}</pre></div>
-      <div v-if="commandGainstrack"><pre>{{ commandGainstrack }}</pre></div>
-    </q-card-section>
     <q-card-actions align="right">
       <q-btn class="c-cancel" color="primary" type="button" v-on:click="cancel" v-close-popup>Cancel</q-btn>
       <q-btn class="c-add" color="primary"
@@ -35,6 +30,11 @@
         </template>
       </q-btn>
     </q-card-actions>
+    <q-card-section>
+      <div v-if="assetGainstrack"><pre>{{ assetGainstrack }}</pre></div>
+      <div v-if="commandGainstrack"><pre>{{ commandGainstrack }}</pre></div>
+      <div v-if="assetPrice">Price: <pre>{{ assetPrice }} {{baseCcy}}</pre></div>
+    </q-card-section>
   </q-card>
 </template>
 
@@ -65,7 +65,7 @@ export default defineComponent({
     }
   },
   data() {
-    const properties: Record<string, any> = {};
+    const properties: Record<string, any> = {name: '', category:''};
     const adding = false;
     return {
       properties,
@@ -102,7 +102,7 @@ export default defineComponent({
   },
   computed: {
     canAdd(): boolean {
-      return true; // TODO
+      return !!this.assetGainstrack;
     },
     baseCcy(): string {
       return this.$store.getters.baseCcy;

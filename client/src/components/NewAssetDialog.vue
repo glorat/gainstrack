@@ -1,5 +1,5 @@
 <template>
-  <q-dialog ref="dialog" @hide="onDialogHide">
+  <q-dialog ref="dialog" @hide="onDialogHide" full-width full-height>
     <new-asset-editor
       :account-id="accountId"
       @cancel="onDialogHide"
