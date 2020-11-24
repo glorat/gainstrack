@@ -5,7 +5,7 @@ import IrrDetail from '../pages/IrrDetail.vue';
 import IrrSummary from '../pages/IrrSummary.vue';
 import Journal from '../pages/Journal.vue';
 import Prices from '../pages/Prices.vue';
-import { matAddCircleOutline, matEdit } from '@quasar/extras/material-icons';
+import {matAddCircleOutline, matEdit, matHome} from '@quasar/extras/material-icons';
 import {RouteConfig} from 'vue-router';
 import Markdown from 'pages/Markdown.vue';
 import Assets from 'pages/Assets.vue';
@@ -107,10 +107,14 @@ const gainstrackMode: AppMode = {
 
 const simpleRoutes: RouteConfig[] = [
   // boglebot.com specific routes
-  {path: '/play', component: BogleTwoFund, meta: {title: '2-Fund Guide'}},
-  {path: '/investments', component: Account, props:{accountId: 'Assets:Investment'}, meta: {title: 'Investment Assets'}},
+  {path: '/play', component: BogleTwoFund,
+    meta: {title: '2-Fund Guide', icon: 'img:icons/boglebot.svg'}
+    },
+  {path: '/investments', component: Account, props:{accountId: 'Assets:Investment'},
+    meta: {title: 'Investment Assets'}
+    },
   {path: '/contribute', component: RebalanceCalc, props:{accountId: 'Assets:Investment'}, meta: {title: 'Contribution Calculator'}, name: 'rebalance'},
-  {path: '/', component: BogleTools, meta: {title: 'Boglebot Home'}},
+  {path: '/', component: BogleTools, meta: {title: 'Boglebot Home', icon: matHome}},
   {path: '/*', component: BogleTools},
   ];
 const simpleNavBar: string[][] = [

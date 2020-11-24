@@ -3,7 +3,7 @@
     <q-card v-for="tool in tools" :key="tool.target" @click="onClick(tool)" class="my-card">
       <q-card-section horizontal class="items-center" style="min-height: 100px">
         <q-card-section class="col-3">
-          <q-img class="" src="/icons/boglebot.svg"></q-img>
+          <q-icon size="xl" :name="tool.icon"></q-icon>
         </q-card-section>
         <q-card-section class="col-9">
           <div class="text-h6">{{ tool.title }}</div>
@@ -25,12 +25,14 @@
 
 <script lang="ts">
   import {defineComponent} from '@vue/composition-api';
+  import {mdiAlert} from "@quasar/extras/mdi-v5";
 
   interface Tool {
     target: string
     title: string
     subtitle?: string
     description: string
+    icon: string
   }
 
   export default defineComponent({
@@ -45,8 +47,14 @@
     },
     data() {
       const tools: Tool[] = [
-        {target: 'play', title: 'Two Fund Portfolio Guide', description: 'Giving you options on implementing an international flavour of the Boglehead inspired "two fund portfolio"'},
-        {target: 'investments', title: 'Portfolio Tools', subtitle: 'Under development!', description: 'Tools for helping you manage your portfolio of investments'}
+        {target: 'play', title: 'Two Fund Portfolio Guide',
+          description: 'Giving you options on implementing an international flavour of the Boglehead inspired "two fund portfolio"',
+          icon: 'img:icons/boglebot.svg'
+        },
+        {target: 'investments', title: 'Portfolio Tools', subtitle: 'Under development!',
+          description: 'Tools for helping you manage your portfolio of investments',
+          icon: mdiAlert
+        }
       ];
       return {tools};
     }
