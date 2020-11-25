@@ -14,7 +14,7 @@ import {AllStateEx} from '../lib/AllStateEx';
 import {cloneDeep, includes, keys, mergeWith} from 'lodash'
 import {balanceTreeTable} from '../lib/TreeTable';
 import {LocalDate} from '@js-joda/core';
-import {toCommodityGainstrack} from '../lib/CommandGenerator';
+import {toCommodityGainstrack} from '../lib/commandDefaulting';
 import { store } from 'quasar/wrappers'
 
 export interface TimeSeries {

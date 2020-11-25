@@ -3,17 +3,22 @@
         <div>
             <command-date-editor v-model="c.date"></command-date-editor>
         </div>
-        <div v-if="!hideAccount">
-            <account-selector placeholder="Account to fund" class="c-account-id" v-model="c.accountId" v-on:input="accountIdChanged" :account-list="fundableAccounts"></account-selector>
-        </div>
-        <div>
-            <balance-editor class="c-change" v-model="c.change" v-on:input="inputChanged()"></balance-editor>
-        </div>
+      <div v-if="!hideAccount">
+        <account-selector class="c-account-id" :value="dc.accountId" :original="c.accountId"
+                          @input="c.accountId=$event" :account-list="fundableAccounts"
+                          placeholder="Account to fund"
+        ></account-selector>
+      </div>
+      <div>
+        <balance-editor class="c-change" label="Funding Amount" :value="dc.change" :original="c.change" @input="c.change=$event"></balance-editor>
+      </div>
         <div>
             Override funding source (optional) <help-tip tag="fundOtherAccount"></help-tip>
-            <account-selector class="c-other-account" v-model="c.otherAccount" v-on:input="otherAccountChanged" :placeholder="defaultFundingAccount"></account-selector>
+          <account-selector class="c-other-account" placeholder="Funding Account"
+                            :value="dc.otherAccount" :original="c.otherAccount"
+                            @input="c.otherAccount=$event"
+          ></account-selector>
         </div>
-
     </div>
 </template>
 
@@ -21,6 +26,7 @@
     import BalanceEditor from './BalanceEditor.vue';
     import {CommandEditorMixin} from '../../mixins/CommandEditorMixin';
     import AccountSelector from '../AccountSelector';
+    import {commandIsValid, defaultedFundCommand, toGainstrack} from 'src/lib/commandDefaulting';
 
     export default {
         name: 'FundCommand',
@@ -30,58 +36,27 @@
             AccountSelector,
         },
         methods: {
-            accountIdChanged() {
-                const acct = this.findAccount(this.c.accountId);
-                if (acct) {
-                    this.c.change.ccy = acct.ccy;
-                }
-            },
-            otherAccountChanged() {
-                const acct = this.findAccount(this.c.otherAccount);
-                if (acct) {
-                    this.c.change.ccy = acct.ccy;
-                }
-            },
+
         },
         computed: {
-            mainAccount() {
-                return this.findAccount(this.c.accountId);
-                // const all = this.$store.state.summary.accounts;
-                // const acct = all.find(x => x.accountId === this.c.accountId);
-                // return acct;
-            },
+          dc() {
+            const c = this.c;
+            const stateEx = this.allStateEx;
+            const fxConverter = this.fxConverter
+            const dc = defaultedFundCommand(c, stateEx, fxConverter);
+            return dc;
+          },
             fundableAccounts() {
                 const all = this.$store.state.allState.accounts;
                 const acctMatch = /^(Assets|Liabilities)/;
                 const scope = all.filter(x => acctMatch.test(x.accountId) && !x.options.generatedAccount);
                 return scope.map(x => x.accountId).sort();
             },
-            defaultFundingAccount() {
-                const acct = this.mainAccount;
-                if (acct) {
-                    return acct.options.fundingAccount;
-                } else {
-                    return 'Equity:Opening';
-                }
-            },
             isValid() {
-                const c = this.c;
-                return c.date
-                    && c.accountId
-                    && c.change.number
-                    && c.change.ccy
-                    && ( (this.c.otherAccount) || this.defaultFundingAccount);
+              return commandIsValid(this.dc)
             },
             toGainstrack() {
-                if (this.isValid) {
-                    if (this.c.otherAccount) {
-                        return `${this.c.date} fund ${this.c.accountId} ${this.c.otherAccount} ${this.c.change.number} ${this.c.change.ccy}`;
-                    } else {
-                        return `${this.c.date} fund ${this.c.accountId} ${this.c.change.number} ${this.c.change.ccy}`;
-                    }
-                } else {
-                    return '';
-                }
+              return toGainstrack(this.dc);
             }
         }
 

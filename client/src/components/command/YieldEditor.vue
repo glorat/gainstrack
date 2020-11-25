@@ -11,10 +11,10 @@
           ></account-selector>        </div>
         <div v-if="multiAsset">
           <!-- TODO: Restrict this asset list to whatever is in this account -->
-            <asset-id label="Asset that is yielding" v-model="c.asset" @input="assetChanged"></asset-id>
+            <asset-id label="Asset that is yielding" :value="dc.asset" :original="c.asset" @input="$set(c, 'asset', $event)"></asset-id>
         </div>
         <div>
-          <balance-editor label="Dividend/Interest/Yield" class="change" :value="dc.change" :original="c.change" @input="c.change=$event"></balance-editor>
+          <balance-editor label="Dividend/Interest/Yield" class="change" :value="dc.change" :original="c.change" @input="$set(c, 'change', $event)"></balance-editor>
         </div>
     </div>
 </template>
@@ -25,44 +25,20 @@
     import CommandDateEditor from '../CommandDateEditor';
     import {CommandEditorMixin} from '../../mixins/CommandEditorMixin';
     import AssetId from '../AssetId';
+    import {defaultedYieldCommand, toGainstrack} from 'src/lib/commandDefaulting';
 
     export default {
         name: 'YieldEditor',
         components: {AssetId, AccountSelector, BalanceEditor, CommandDateEditor},
         mixins: [CommandEditorMixin],
         methods: {
-          inferredChangeCcy(asset) {
-            const acct = this.findAccount(this.c.accountId);
-            if (acct.options.multiAsset && asset) {
-              const cmds = this.$store.state.allState.commands;
-              const prev = cmds.reverse().find(cmd => cmd.commandType === 'yield' && cmd.asset === asset);
-              if (prev) {
-                return prev.change.ccy
-              } else {
-                const under = this.allStateEx.underlyingCcy(asset, this.c.accountId)
-                if (under) return under;
-              }
-            }
 
-            if (acct && acct.options.fundingAccount) {
-              const fundAcct = this.findAccount(acct.options.fundingAccount);
-              if (fundAcct) {
-                // TODO: A test case would show that the PP account would yield GBP
-                return fundAcct.ccy;
-              }
-            } else if (acct) {
-              // TODO: A test case would show that a GBP savings account would yield GBP
-              return acct.ccy;
-            }
-          }
         },
         computed: {
           dc() {
-            const dc = {...this.c};
-            if (!dc.change.ccy) {
-              const changeCcy = this.inferredChangeCcy(dc.asset);
-              dc.change = {...dc.change, ccy: changeCcy};
-            }
+            const stateEx = this.allStateEx;
+            const fxConverter = this.fxConverter
+            const dc = defaultedYieldCommand(this.c, stateEx, fxConverter);
             return dc;
           },
             multiAsset() {
@@ -77,19 +53,10 @@
                 return !!c.accountId
                     && c.change.number
                     && c.change.ccy
-                    && (c.asset || !c.multiAsset);
+                    && (c.asset || !this.multiAsset);
             },
             toGainstrack() {
-              const c /*: AccountCommandDTO*/ = this.dc;
-                if (this.isValid) {
-                    if (this.multiAsset) {
-                        return `${c.date} yield ${c.accountId} ${c.asset} ${c.change.number} ${c.change.ccy}`;
-                    } else {
-                        return `${c.date} yield ${c.accountId} ${c.change.number} ${c.change.ccy}`
-                    }
-                } else {
-                    return '';
-                }
+              return toGainstrack(this.dc)
             }
         }
     }

@@ -21,6 +21,16 @@
     import BalanceEditor from './BalanceEditor';
     import {CommandEditorMixin} from '../../mixins/CommandEditorMixin';
 
+    function defaultedEarnCommand(c, stateEx) {
+      const dc = {...c};
+      const acct = stateEx.findAccount(dc.accountId);
+      if (acct && !dc.change.ccy) {
+        dc.change = {...dc.change, ccy: acct.ccy};
+      }
+      // Would need some serious AI to predict the default earned amount!
+      return dc;
+    }
+
     export default {
         name: 'EarnEditor',
         components: {AccountSelector, BalanceEditor},
@@ -29,13 +39,9 @@
         },
         computed: {
           dc() {
-            const dc = {...this.c};
-            const acct = this.findAccount(this.c.accountId);
-            if (acct && !dc.change.ccy) {
-              dc.change = {...dc.change, ccy: acct.ccy};
-            }
-            // Would need some serious AI to predict the default earned amount!
-            return dc;
+            const c = this.c;
+            const stateEx = this.allStateEx;
+            return defaultedEarnCommand(c, stateEx);
           },
             earnableAccounts() {
                 return this.mainAccounts.filter(x => x.startsWith('Income:'));

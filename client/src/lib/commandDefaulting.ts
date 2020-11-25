@@ -1,7 +1,7 @@
 import {GlobalPricer} from 'src/lib/pricer';
 import {positionUnderAccount} from 'src/lib/utils';
 import {LocalDate} from '@js-joda/core';
-import {AccountCommandDTO} from 'src/lib/models';
+import {AccountCommandDTO, AssetDTO} from 'src/lib/models';
 import {AllStateEx} from 'src/lib/AllStateEx';
 
 // Typescript can't link the commandIsValid checks to the toGainstrack we we liberally use non-null-assertions
@@ -11,6 +11,29 @@ export function commandIsValid(c: AccountCommandDTO):boolean {
     return !!c.accountId && !!c.date && !!c.balance && c.balance.number!==undefined && !!c.balance.ccy && !!c.otherAccount;
   else if (c.commandType === 'unit')
     return !!c.accountId && !!c.date && !!c.balance && c.balance.number!==undefined && !!c.balance.ccy && !!c.price?.ccy && !!c.price?.number;
+  else if (c.commandType === 'commodity')
+    return !!c.asset;
+  else if (c.commandType === 'fund')
+    return !!c.date
+      && !!c.accountId
+      && !!c.change
+      && !!c.change.number
+      && !!c.change.ccy
+      && !!c.otherAccount;
+  else if (c.commandType === 'trade')
+    return c.accountId
+      && c.otherAccount
+      && c.change
+      && c.change.number
+      && c.change.ccy
+      && c.options
+      && c.options.targetChange.number
+      && c.options.targetChange.ccy;
+  else if (c.commandType === 'yield')
+    return !!c.accountId
+      && !!c.change
+      && !!c.change.number
+      && !!c.change.ccy
   else
     return false; // Unsupported type for central checking
 
@@ -20,6 +43,18 @@ function balValid(c: AccountCommandDTO): boolean {
   return !!c.accountId && !!c.date && !!c.balance && c.balance.number!==undefined && !!c.balance.ccy && !!c.otherAccount;
 }
 
+export function toCommodityGainstrack(asset: AccountCommandDTO | AssetDTO) {
+  let str = `1900-01-01 commodity ${asset.asset}`
+  const options = asset.options || {};
+  for (const [key, value] of Object.entries(options)) {
+    if (key === 'tags' && Array.isArray(value) && value.length > 0) {
+      str += `\n tags: ${value.join(',')}`
+    } else if (value && !Array.isArray(value)) { // isScalar
+      str += `\n  ${key}: ${value}`
+    }
+  }
+  return str
+}
 
 export function toGainstrack(c: AccountCommandDTO) {
   if (commandIsValid(c)) {
@@ -27,6 +62,27 @@ export function toGainstrack(c: AccountCommandDTO) {
       return `${c.date} bal ${c.accountId} ${c.balance!.number} ${c.balance!.ccy} ${c.otherAccount}`;
     } else if (c.commandType === 'unit') {
       return `${c.date} unit ${c.accountId} ${c.balance!.number} ${c.balance!.ccy} @${c.price!.number} ${c.price!.ccy}`;
+    } else if (c.commandType === 'commodity') {
+      return toCommodityGainstrack(c)
+    } else if (c.commandType === 'fund') {
+      if (c.otherAccount) {
+        return `${c.date} fund ${c.accountId} ${c.otherAccount} ${c.change!.number} ${c.change!.ccy}`;
+      } else {
+        return `${c.date} fund ${c.accountId} ${c.change!.number} ${c.change!.ccy}`;
+      }
+    } else if (c.commandType === 'tfr') {
+      let baseStr = `${c.date} tfr ${c.accountId} ${c.otherAccount} ${c.change!.number} ${c.change!.ccy}`;
+      if (c.change!.number !== c.options!.targetChange.number
+        || c.change!.ccy !== c.options!.targetChange.ccy) {
+        baseStr += ` ${c.options!.targetChange.number} ${c.options!.targetChange.ccy}`;
+      }
+      return baseStr;
+    } else if (c.commandType === 'yield') {
+      if (c.asset) { // FIXME: Use propDefined
+        return `${c.date} yield ${c.accountId} ${c.asset} ${c.change!.number} ${c.change!.ccy}`;
+      } else {
+        return `${c.date} yield ${c.accountId} ${c.change!.number} ${c.change!.ccy}`
+      }
     } else {
       throw new Error ('Unknown commandType')
     }
@@ -92,6 +148,97 @@ export function defaultedBalanceOrUnit(c: AccountCommandDTO, stateEx: AllStateEx
       dc.commandType = 'bal';
     }
 
+  }
+  return dc;
+}
+
+
+function inferredYieldCcy(dc: AccountCommandDTO, stateEx: AllStateEx):string {
+
+  const asset = dc.asset;
+
+  const acct = stateEx.findAccount(dc.accountId);
+  if (acct && acct.options.multiAsset && asset) {
+    const cmds = stateEx.state.commands;
+    const prev = cmds.reverse().find(cmd => cmd.commandType === 'yield' && cmd.asset === asset);
+    if (prev && prev.change) {
+      return prev.change.ccy
+    } else {
+      const under = stateEx.underlyingCcy(asset, dc.accountId)
+      if (under) return under;
+    }
+  }
+
+  if (acct && acct.options.fundingAccount) {
+    const fundAcct = stateEx.findAccount(acct.options.fundingAccount);
+    if (fundAcct) {
+      // TODO: A test case would show that the PP account would yield GBP
+      return fundAcct.ccy;
+    }
+  } else if (acct) {
+    // TODO: A test case would show that a GBP savings account would yield GBP
+    return acct.ccy;
+  }
+  // Nothing
+  return '';
+}
+
+export function defaultedYieldCommand(c: AccountCommandDTO, stateEx: AllStateEx) {
+  const dc = {...c};
+  const acct = stateEx.findAccount(dc.accountId);
+  if (dc.change && !dc.change.ccy) {
+    const changeCcy = inferredYieldCcy(dc, stateEx);
+    dc.change = {...dc.change, ccy: changeCcy};
+  }
+  if (acct) {
+    if (acct.options.multiAsset) {
+      dc.asset = dc.asset || acct.ccy
+    } else {
+      dc.asset = ''
+    }
+  }
+  return dc;
+}
+
+export function defaultedTransferCommand(c: AccountCommandDTO, stateEx: AllStateEx, fxConverter: GlobalPricer) {
+  const dc = {...c};
+  const acct = stateEx.findAccount(dc.accountId);
+  if (!dc.change) dc.change = {number:0, ccy: ''}
+  if (acct) {
+    if (!dc.change.ccy) dc.change = {...dc.change, ccy: acct.ccy}
+  }
+  const other = stateEx.findAccount(dc.otherAccount);
+
+  if (!dc.options || !dc.options.targetChange) {
+    dc.options = {targetChange: {number: 0, ccy: ''}};
+  }
+
+  if (other) {
+    if (!dc.options.targetChange.ccy) dc.options.targetChange = {...dc.options.targetChange, ccy: other.ccy}
+  }
+
+  if (!dc.options.targetChange.number) {
+    const dt = LocalDate.parse(dc.date);
+    const fx = fxConverter.getFXTrimmed(dc.change.ccy, dc.options.targetChange.ccy, dt);
+    const number = (fx??0) * dc.change.number;
+    dc.options.targetChange = {...dc.options.targetChange, number}
+  }
+  return dc;
+}
+
+export function defaultedFundCommand(c: AccountCommandDTO, stateEx: AllStateEx) {
+  const dc = {...c};
+  const acct = stateEx.findAccount(dc.accountId);
+  if (!dc.change) dc.change = {number:0, ccy: ''}
+  if (acct) {
+    if (!dc.change.ccy) dc.change = {...dc.change, ccy: acct.ccy}
+  }
+  if (!dc.otherAccount) {
+    if (acct) {
+      dc.otherAccount = acct.options.fundingAccount;
+    } else {
+      dc.otherAccount = 'Equity:Opening'; // Un-hardcode???
+    }
   }
   return dc;
 }

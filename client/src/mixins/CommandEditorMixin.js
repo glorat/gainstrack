@@ -20,6 +20,7 @@ export const CommandEditorMixin = {
         c.accountId = c.accountId || '';
         c.otherAccount = c.otherAccount || '';
         c.options = c.options || {};
+        c.asset = c.asset || '';
         return {c};
     },
     methods: {

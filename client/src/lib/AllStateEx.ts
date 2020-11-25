@@ -46,7 +46,7 @@ export class AllStateEx {
     return undefined;
   }
 
-  findAccount(accountId: string) {
+  findAccount(accountId: string|undefined) {
     const all: AccountDTO[] = this.state.accounts;
     const acct = all.find(x => x.accountId === accountId);
     return acct

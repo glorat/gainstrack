@@ -32,7 +32,7 @@ import AssetId from './AssetId.vue';
 import Vue from 'vue';
 import {AllState, AssetDTO} from '../lib/models';
 import { keys, cloneDeep } from 'lodash';
-import {toCommodityGainstrack} from 'src/lib/CommandGenerator';
+import {toCommodityGainstrack} from 'src/lib/commandDefaulting';
 
 export default Vue.extend({
   name: 'AssetEditor',
