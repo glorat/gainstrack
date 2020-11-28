@@ -32,27 +32,24 @@
       <balance-editor label="Commission" class="c-commission"
                       :value="dc.commission" :original="c.commission" @input="c.commission=$event"></balance-editor>
     </div>
+    <div>
+      <q-btn color="secondary" v-if="canConvertToTrade" @click="convertToTrade">Convert to Trade</q-btn>
+    </div>
   </div>
 </template>
 
 <script>
-  // import {AccountCommandDTO, AccountDTO} from '@/models';
   import BalanceEditor from './BalanceEditor.vue';
   import {CommandEditorMixin} from '../../mixins/CommandEditorMixin';
   import AccountSelector from '../AccountSelector.vue';
   import Vue from 'vue';
   import {
-    commandIsValid,
+    canConvertToTrade,
+    commandIsValid, convertToTrade,
     defaultedCommand,
     propDefined,
     toGainstrack
   } from 'src/lib/commandDefaulting'
-
-
-  // interface MyData {
-  //     c: AccountCommandDTO
-  // }
-
 
   export default Vue.extend({
     name: 'BalanceOrUnit',
@@ -63,22 +60,17 @@
       AccountSelector,
     },
     methods: {
-      accountIdChanged() {
-        // const acct = this.findAccount(this.c.accountId);
-        // if (acct) {
-        //   this.c.balance.ccy = acct.ccy;
-        // }
-        // const allCmds /*: AccountCommandDTO[]*/ = this.$store.state.allState.commands;
-        // const prev = allCmds.find(
-        //   x => x.accountId === this.c.accountId && x.commandType === 'bal');
-        // if (prev) {
-        //   this.c.otherAccount = prev.otherAccount;
-        //   // A better than nothing heurstic - using the actual balance of this date would be better
-        //   this.c.balance.number = prev.balance.number;
-        // } else {
-        //   this.c.otherAccount = 'Equity:Opening'
-        // }
-      },
+
+      convertToTrade() {
+
+        const c = this.c;
+        const stateEx = this.allStateEx;
+        const fxConverter = this.fxConverter;
+        const newc = convertToTrade(c, stateEx, fxConverter)
+
+        this.c = newc;
+
+      }
     },
     computed: {
       dc() {
@@ -125,7 +117,13 @@
       },
       toGainstrack() /*: string*/ {
         return toGainstrack(this.dc)
-      }
+      },
+      canConvertToTrade() {
+        const c = this.c;
+        const stateEx = this.allStateEx;
+        const fxConverter = this.fxConverter;
+        return canConvertToTrade(c, stateEx, fxConverter)
+      },
     },
 
   });

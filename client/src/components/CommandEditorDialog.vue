@@ -1,7 +1,7 @@
 <template>
   <q-dialog ref="dialog" @hide="onDialogHide">
     <add-cmd :input="cmd" @cancel="onDialogHide" @command-added="onOKClick"
-             title="Edit Balance"
+             title="Edit Record"
              hide-journal
              has-cancel
              hide-changes

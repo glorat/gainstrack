@@ -1,5 +1,5 @@
 import {GlobalPricer} from 'src/lib/pricer';
-import {positionUnderAccount} from 'src/lib/utils';
+import {isSubAccountOf, positionUnderAccount, postingsToPositionSet} from 'src/lib/utils';
 import {LocalDate} from '@js-joda/core';
 import {AccountCommandDTO, AssetDTO} from 'src/lib/models';
 import {AllStateEx} from 'src/lib/AllStateEx';
@@ -39,7 +39,7 @@ export function commandIsValid(c: AccountCommandDTO):boolean {
     return !!c.accountId
       && !!c.change
       && !!c.change.number
-      && !!c.change.ccy
+      && !!c.change.ccy;
   else if (c.commandType === 'trade')
     return !!c.accountId
         && !!c.change
@@ -58,7 +58,7 @@ function balValid(c: AccountCommandDTO): boolean {
 }
 
 export function toCommodityGainstrack(asset: AccountCommandDTO | AssetDTO) {
-  let str = `1900-01-01 commodity ${asset.asset}`
+  let str = `1900-01-01 commodity ${asset.asset}`;
   const options = asset.options || {};
   for (const [key, value] of Object.entries(options)) {
     if (key === 'tags' && Array.isArray(value) && value.length > 0) {
@@ -164,8 +164,8 @@ export function defaultedTradeCommand (c: AccountCommandDTO, stateEx: AllStateEx
   }
 
   if (!dc.price.number && dc.price.ccy) {
-    const date = LocalDate.parse(dc.date)
-    const number = fxConverter.getFXTrimmed(dc.change.ccy, dc.price.ccy, date)
+    const date = LocalDate.parse(dc.date);
+    const number = fxConverter.getFXTrimmed(dc.change.ccy, dc.price.ccy, date);
     if (number) {
       dc.price = {
         ...dc.price,
@@ -179,6 +179,7 @@ export function defaultedTradeCommand (c: AccountCommandDTO, stateEx: AllStateEx
 export function defaultedBalanceOrUnit(c: AccountCommandDTO, stateEx: AllStateEx, fxConverter: GlobalPricer): AccountCommandDTO {
   const dc = {...c};
   delete dc.change;
+  delete dc.commission;
 
   const acct = stateEx.findAccount(dc.accountId);
 
@@ -201,6 +202,7 @@ export function defaultedBalanceOrUnit(c: AccountCommandDTO, stateEx: AllStateEx
     if (!dc.balance.number) {
 
       const pex = stateEx.allPostingsEx();
+      // FIXME: Apply date on the filter
       const pos = positionUnderAccount(pex, dc.accountId);
       const number = GlobalPricer.trim(pos[dc.balance.ccy]) ?? 0;
       dc.balance = {...dc.balance, number}
@@ -249,7 +251,7 @@ function inferredYieldCcy(dc: AccountCommandDTO, stateEx: AllStateEx):string {
     if (prev && prev.change) {
       return prev.change.ccy
     } else {
-      const under = stateEx.underlyingCcy(asset, dc.accountId)
+      const under = stateEx.underlyingCcy(asset, dc.accountId);
       if (under) return under;
     }
   }
@@ -288,7 +290,7 @@ export function defaultedYieldCommand(c: AccountCommandDTO, stateEx: AllStateEx)
 export function defaultedTransferCommand(c: AccountCommandDTO, stateEx: AllStateEx, fxConverter: GlobalPricer) {
   const dc = {...c};
   const acct = stateEx.findAccount(dc.accountId);
-  if (!dc.change) dc.change = {number:0, ccy: ''}
+  if (!dc.change) dc.change = {number:0, ccy: ''};
   if (acct) {
     if (!dc.change.ccy) dc.change = {...dc.change, ccy: acct.ccy}
   }
@@ -314,7 +316,7 @@ export function defaultedTransferCommand(c: AccountCommandDTO, stateEx: AllState
 export function defaultedFundCommand(c: AccountCommandDTO, stateEx: AllStateEx) {
   const dc = {...c};
   const acct = stateEx.findAccount(dc.accountId);
-  if (!dc.change) dc.change = {number:0, ccy: ''}
+  if (!dc.change) dc.change = {number:0, ccy: ''};
   if (acct) {
     if (!dc.change.ccy) dc.change = {...dc.change, ccy: acct.ccy}
   }
@@ -326,4 +328,35 @@ export function defaultedFundCommand(c: AccountCommandDTO, stateEx: AllStateEx) 
     }
   }
   return dc;
+}
+
+export function canConvertToTrade(c: AccountCommandDTO, stateEx: AllStateEx, fxConverter: GlobalPricer):boolean {
+
+  const dc = defaultedCommand(c, stateEx, fxConverter);
+  if (dc.commandType !== 'unit') return false;
+  // FIXME: more checks
+  return true;
+}
+
+export function convertToTrade (c: AccountCommandDTO, stateEx: AllStateEx, fxConverter: GlobalPricer): AccountCommandDTO {
+  const dc = defaultedCommand(c, stateEx, fxConverter);
+
+  const accountId = dc.accountId;
+  const dateAfter = LocalDate.parse(dc.date);
+
+  const pex = stateEx.allPostingsEx()
+      .filter(p => isSubAccountOf(p.account, accountId))
+      .filter(p => dateAfter.isAfter(LocalDate.parse(p.date)));
+  const pSet = postingsToPositionSet(pex);
+
+  const balance = dc.balance!;
+  const currentBalance = pSet[balance.ccy];
+  const changeBalance = balance.number - currentBalance;
+  const newc = { ...c };
+  newc.change = {
+    number: changeBalance,
+    ccy: balance.ccy
+  };
+  newc.commandType = 'trade';
+  return newc
 }
