@@ -56,7 +56,7 @@
               const c /*: AccountCommandDTO*/ = this.dc;
                 if (this.isValid) {
                     const tag = c.accountId.substring(7);
-                    return `${c.date} earn ${tag} $c.change.number} ${c.change.ccy}`;
+                    return `${c.date} earn ${tag} ${c.change.number} ${c.change.ccy}`;
                 } else {
                     return '';
                 }
