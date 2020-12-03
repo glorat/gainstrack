@@ -1,7 +1,7 @@
 <template>
 <!--  font-style: italic; -->
     <div class="row items-start">
-      <q-input :input-class="amountClass" :label="label || 'Amount'" @focus="$event.target.select()" type="number" v-model.number="v.number" v-on:input="onChanged($event)"></q-input>
+      <q-input :input-class="amountClass" :label="label || 'Amount'" @focus="$event.target.select && $event.target.select()" type="number" v-model.number="v.number" v-on:input="onChanged($event)" clearable></q-input>
       <asset-id :input-class="ccyClass" v-model="v.ccy" v-on:input="onCcyChanged()"></asset-id>
     </div>
 </template>
@@ -15,7 +15,13 @@
         components: {
             AssetId
         },
-        props: {value: Object as () => AmountEditing, label: String, original: Object as () => AmountEditing|undefined},
+        props: {
+          value: {
+            type: Object as () => AmountEditing,
+            default: () => {return {number:undefined, ccy: undefined} as AmountEditing}
+          },
+          label: String,
+          original: Object as () => AmountEditing|undefined},
       // data() {
       //   return {v: {...this.value}}
       // },
