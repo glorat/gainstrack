@@ -16,8 +16,9 @@
                 v-if="networthByAsset.length>0 || loading"
         >
           <template v-slot:body-cell-units="props" v-if="canEdit">
-            <q-td :props="props" @click="onUnitsEdit(props)">
-              {{ props.value }} <q-icon :name="matEdit"></q-icon>
+            <q-td :props="props">
+              {{ props.value }} <q-icon :name="matEdit" @click="onUnitsEdit(props)"></q-icon>
+              <q-icon v-if="canTrade" :name="matAddCircleOutline" @click="onUnitsTrade(props)"></q-icon>
             </q-td>
           </template>
           <template v-slot:body-cell-price="props" v-if="canEdit">
@@ -51,8 +52,8 @@
     import Vue from 'vue';
     import { date } from 'quasar';
     import {NetworthByAsset, AssetColumn, AssetResponse} from '../lib/models';
-    import {matEdit, matAdd} from '@quasar/extras/material-icons';
-    import UnitEditorDialog from 'components/CommandEditorDialog.vue';
+    import {matEdit, matAdd, matAddCircleOutline ,matSwapHoriz} from '@quasar/extras/material-icons';
+    import CommandEditorDialog from 'components/CommandEditorDialog.vue';
     import {mapGetters} from 'vuex';
     import {LocalDate} from '@js-joda/core';
     import AssetEditorDialog from 'components/AssetEditorDialog.vue';
@@ -100,6 +101,9 @@
               selected: [],
               matEdit,
               matAdd,
+              matSwapHoriz,
+              matAddCircleOutline,
+
             };
         },
         props: {
@@ -121,7 +125,24 @@
           };
 
           this.$q.dialog({
-            component: UnitEditorDialog,
+            component: CommandEditorDialog,
+            parent: this,
+            cmd: cmd
+            // ...more.props...
+          })
+        },
+        onUnitsTrade(props: { row: {units: number, assetId: string} }) {
+          const today = LocalDate.now();
+          const row/*: NetworthByAsset*/ = props.row;
+          const cmd = {
+            commandType: 'trade',
+            accountId: this.accountId,
+            date: today.toString(),
+            change: {number: 0, ccy: row.assetId},
+          };
+
+          this.$q.dialog({
+            component: CommandEditorDialog,
             parent: this,
             cmd: cmd
             // ...more.props...
@@ -184,8 +205,11 @@
             }];
           },
           canEdit(): boolean {
-            // TODO: Check that accountId is a mainAccount
             return !!this.accountId && this.mainAccounts.find( (x:string) => x===this.accountId);
+          },
+          canTrade(): boolean {
+            // TODO: Exclude account baseccy?
+            return this.canEdit;
           },
           totalValue():number {
             const allVals = this.filteredAssets.map(row => row.value);
