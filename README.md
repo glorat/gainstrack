@@ -87,7 +87,8 @@ gcloud run deploy appserver \
           --image gcr.io/gainstrack/gainstrack \
           --platform managed \
           --allow-unauthenticated \
-          --project gainstrack
+          --project gainstrack && \
+gcloud run services update-traffic appserver --platform managed --region asia-northeast1 --to-latest
 ```
 TODO: After deployment, the FX cache in the server needs priming or the first wave of calls will timeout with a 429 HTTP error
 
