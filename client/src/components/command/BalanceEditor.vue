@@ -9,13 +9,13 @@
 <script lang="ts">
     import Vue from 'vue';
     import AssetId from '../AssetId.vue';
-    import {Amount} from 'src/lib/models';
+    import {AmountEditing} from 'src/lib/models';
     export default Vue.extend({
         name: 'BalanceEditor',
         components: {
             AssetId
         },
-        props: {value: Object as () => Amount, label: String, original: Object as () => Amount|undefined},
+        props: {value: Object as () => AmountEditing, label: String, original: Object as () => AmountEditing|undefined},
       // data() {
       //   return {v: {...this.value}}
       // },
@@ -29,7 +29,7 @@
             }
         },
       computed: {
-        v():Amount {
+        v():AmountEditing {
           return this.value;
         },
         amountClass(): any {

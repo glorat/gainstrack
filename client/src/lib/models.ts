@@ -29,6 +29,11 @@ export interface Amount {
     ccy: string
 }
 
+export interface AmountEditing {
+  number: number|undefined
+  ccy: string|undefined
+}
+
 export interface QuoteConfig {
     avSymbol: string
     actualCcy: string
@@ -54,6 +59,22 @@ export interface AccountCommandDTO {
     commission?: Amount
   description?: string
 }
+
+export interface AccountCommandEditing {
+  accountId: string // TODO: Make this defaultable too one day?
+  date?: string
+  asset?: string
+  change?: AmountEditing
+  balance?: AmountEditing
+  price?: AmountEditing
+  otherAccount?: string
+  options?: Record<string, any>
+  commandType?: string
+  // TODO: Put this in options or make it official
+  commission?: AmountEditing
+  description?: string
+}
+
 
 export interface AuthenticationDTO {
     username: string

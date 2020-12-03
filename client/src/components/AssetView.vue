@@ -138,7 +138,7 @@
             commandType: 'trade',
             accountId: this.accountId,
             date: today.toString(),
-            change: {number: 0, ccy: row.assetId},
+            change: {number: undefined, ccy: row.assetId},
           };
 
           this.$q.dialog({

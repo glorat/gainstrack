@@ -1,7 +1,7 @@
 import {GlobalPricer} from 'src/lib/pricer';
 import {isSubAccountOf, positionUnderAccount, postingsToPositionSet} from 'src/lib/utils';
 import {LocalDate} from '@js-joda/core';
-import {AccountCommandDTO, AssetDTO} from 'src/lib/models';
+import {AccountCommandDTO, AssetDTO, AccountCommandEditing} from 'src/lib/models';
 import {AllStateEx} from 'src/lib/AllStateEx';
 
 
@@ -12,7 +12,7 @@ export function propDefined(props: Record<string, any>, name: string): boolean {
 
 // Typescript can't link the commandIsValid checks to the toGainstrack we we liberally use non-null-assertions
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
-export function commandIsValid(c: AccountCommandDTO):boolean {
+export function commandIsValid(c: AccountCommandEditing):boolean {
   if (c.commandType === 'bal')
     return !!c.accountId && !!c.date && !!c.balance && c.balance.number!==undefined && !!c.balance.ccy && !!c.otherAccount;
   else if (c.commandType === 'unit')
@@ -53,10 +53,6 @@ export function commandIsValid(c: AccountCommandDTO):boolean {
 
 }
 
-function balValid(c: AccountCommandDTO): boolean {
-  return !!c.accountId && !!c.date && !!c.balance && c.balance.number!==undefined && !!c.balance.ccy && !!c.otherAccount;
-}
-
 export function toCommodityGainstrack(asset: AccountCommandDTO | AssetDTO) {
   let str = `1900-01-01 commodity ${asset.asset}`;
   const options = asset.options || {};
@@ -72,7 +68,7 @@ export function toCommodityGainstrack(asset: AccountCommandDTO | AssetDTO) {
 
 export function toGainstrack(c: AccountCommandDTO) {
   if (commandIsValid(c)) {
-    if (c.commandType === 'bal' && balValid(c)) {
+    if (c.commandType === 'bal') {
       return `${c.date} bal ${c.accountId} ${c.balance!.number} ${c.balance!.ccy} ${c.otherAccount}`;
     } else if (c.commandType === 'unit') {
       return `${c.date} unit ${c.accountId} ${c.balance!.number} ${c.balance!.ccy} @${c.price!.number} ${c.price!.ccy}`;
@@ -176,24 +172,26 @@ export function defaultedTradeCommand (c: AccountCommandDTO, stateEx: AllStateEx
   return dc
 }
 
-export function defaultedBalanceOrUnit(c: AccountCommandDTO, stateEx: AllStateEx, fxConverter: GlobalPricer): AccountCommandDTO {
+export function defaultedBalanceOrUnit(c: AccountCommandEditing, stateEx: AllStateEx, fxConverter: GlobalPricer): AccountCommandDTO {
   const dc = {...c};
   delete dc.change;
   delete dc.commission;
 
   const acct = stateEx.findAccount(dc.accountId);
+  if (!dc.date) dc.date = LocalDate.now().toString();
 
-
-  if (acct) {
+  if (dc.accountId && acct) {
     if (!dc.balance) {
       dc.balance = {ccy: acct.ccy, number: 0}
     }
+
+    const ccy = dc.balance.ccy || acct.ccy;
     if (!dc.balance.ccy) {
       dc.balance = {...dc.balance, ccy: acct.ccy}
     }
 
     if (!dc.commandType || !/^(bal|unit)$/.test(dc.commandType)) {
-      if (GlobalPricer.isIso(dc.balance.ccy) || dc.balance.ccy == acct.ccy) {
+      if (GlobalPricer.isIso(ccy) || dc.balance.ccy == acct.ccy) {
         dc.commandType = 'bal'
       } else {
         dc.commandType = 'unit'
@@ -204,18 +202,18 @@ export function defaultedBalanceOrUnit(c: AccountCommandDTO, stateEx: AllStateEx
       const pex = stateEx.allPostingsEx();
       // FIXME: Apply date on the filter
       const pos = positionUnderAccount(pex, dc.accountId);
-      const number = GlobalPricer.trim(pos[dc.balance.ccy]) ?? 0;
+      const number = GlobalPricer.trim(pos[ccy]) ?? 0;
       dc.balance = {...dc.balance, number}
     }
 
-    const underCcy = stateEx.underlyingCcy(dc.balance.ccy, dc.accountId);
+    const underCcy = stateEx.underlyingCcy(ccy, dc.accountId);
     if (!dc.price) {
       dc.price = {ccy: acct.ccy, number: 0} // Does this ever happen?
     }
     if (!dc.price.ccy && !dc.price.number && underCcy) {
 
       const dt = LocalDate.parse(dc.date);
-      const priceNumber = fxConverter.getFXTrimmed(dc.balance.ccy, underCcy, dt) ?? 0;
+      const priceNumber = fxConverter.getFXTrimmed(ccy, underCcy, dt) ?? 0;
 
       dc.price = {ccy: underCcy, number: priceNumber};
     }
@@ -236,11 +234,11 @@ export function defaultedBalanceOrUnit(c: AccountCommandDTO, stateEx: AllStateEx
     }
 
   }
-  return dc;
+  return dc as AccountCommandDTO;
 }
 
 
-function inferredYieldCcy(dc: AccountCommandDTO, stateEx: AllStateEx):string {
+function inferredYieldCcy(dc: AccountCommandEditing, stateEx: AllStateEx):string {
 
   const asset = dc.asset;
 
@@ -270,7 +268,7 @@ function inferredYieldCcy(dc: AccountCommandDTO, stateEx: AllStateEx):string {
   return '';
 }
 
-export function defaultedYieldCommand(c: AccountCommandDTO, stateEx: AllStateEx) {
+export function defaultedYieldCommand(c: AccountCommandEditing, stateEx: AllStateEx) {
   const dc = {...c};
   const acct = stateEx.findAccount(dc.accountId);
   if (dc.change && !dc.change.ccy) {
@@ -287,10 +285,11 @@ export function defaultedYieldCommand(c: AccountCommandDTO, stateEx: AllStateEx)
   return dc;
 }
 
-export function defaultedTransferCommand(c: AccountCommandDTO, stateEx: AllStateEx, fxConverter: GlobalPricer) {
+export function defaultedTransferCommand(c: AccountCommandEditing, stateEx: AllStateEx, fxConverter: GlobalPricer) {
   const dc = {...c};
+  if (!dc.date) dc.date = LocalDate.now().toString();
   const acct = stateEx.findAccount(dc.accountId);
-  if (!dc.change) dc.change = {number:0, ccy: ''};
+  if (!dc.change) dc.change = {number:undefined, ccy: undefined};
   if (acct) {
     if (!dc.change.ccy) dc.change = {...dc.change, ccy: acct.ccy}
   }
@@ -304,7 +303,7 @@ export function defaultedTransferCommand(c: AccountCommandDTO, stateEx: AllState
     if (!dc.options.targetChange.ccy) dc.options.targetChange = {...dc.options.targetChange, ccy: other.ccy}
   }
 
-  if (!dc.options.targetChange.number) {
+  if (!dc.options.targetChange.number && dc.change.ccy && dc.change.number) {
     const dt = LocalDate.parse(dc.date);
     const fx = fxConverter.getFXTrimmed(dc.change.ccy, dc.options.targetChange.ccy, dt);
     const number = (fx??0) * dc.change.number;
@@ -313,7 +312,7 @@ export function defaultedTransferCommand(c: AccountCommandDTO, stateEx: AllState
   return dc;
 }
 
-export function defaultedFundCommand(c: AccountCommandDTO, stateEx: AllStateEx) {
+export function defaultedFundCommand(c: AccountCommandEditing, stateEx: AllStateEx) {
   const dc = {...c};
   const acct = stateEx.findAccount(dc.accountId);
   if (!dc.change) dc.change = {number:0, ccy: ''};
