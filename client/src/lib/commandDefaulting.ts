@@ -206,7 +206,7 @@ export function defaultedBalanceOrUnit(c: AccountCommandEditing, stateEx: AllSta
       dc.balance = {...dc.balance, number}
     }
 
-    const underCcy = stateEx.underlyingCcy(ccy, dc.accountId);
+    const underCcy = stateEx.underlyingCcy(ccy, dc.accountId) ?? acct.ccy;
     if (!dc.price) {
       dc.price = {ccy: acct.ccy, number: 0} // Does this ever happen?
     }

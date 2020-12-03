@@ -155,7 +155,7 @@ export default store(function ({ Vue }) {
           // Only obtain from lowest date
           const allPostingsEx: PostingEx[] = context.getters.allPostingsEx;
           const dts = allPostingsEx.filter(depFilter).map(p => p.date).sort();
-          const fromDate = dts[0];
+          const fromDate = dts[0] ?? LocalDate.now(); // Default today better?
           return {name: ccy, fromDate};
         });
         // To prevent stampeding horde and repeated requests to not-exists

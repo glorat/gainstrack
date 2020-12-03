@@ -90,6 +90,12 @@ export class GlobalPricer implements SingleFXConverter {
     return price;
   }
 
+  getPrice(asset:AssetDTO, fx2: AssetId, date: LocalDate): number|undefined {
+    const pricer = this.modelFor(asset);
+    const price = pricer?.getPrice(asset, fx2, date);
+    return price;
+  }
+
   getFXTrimmed(fx1: string, fx2: string, date: LocalDate): number | undefined {
    return GlobalPricer.trim(this.getFX(fx1, fx2, date))
   }
