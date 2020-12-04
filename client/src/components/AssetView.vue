@@ -159,7 +159,6 @@
         },
         onRebalance():void {
           this.$router.push({name: 'rebalance', params: {accountId: this.accountId }});
-
         }
       },
         computed: {
@@ -205,7 +204,7 @@
             }];
           },
           canEdit(): boolean {
-            return !!this.accountId && this.mainAccounts.find( (x:string) => x===this.accountId);
+            return !!this.accountId && this.mainAccounts.find( (x:string) => x===this.accountId) && !!this.accountId.match('^(Assets|Liabilities)');
           },
           canTrade(): boolean {
             // TODO: Exclude account baseccy?

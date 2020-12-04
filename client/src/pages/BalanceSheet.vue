@@ -2,7 +2,7 @@
     <my-page padding>
         <div>
 <!--            <account-graph :key="conversion" accountId="Assets"></account-graph>-->
-          <networth-sunburst :height="250" :key="conversion"></networth-sunburst>
+          <networth-sunburst :height="200" :key="conversion"></networth-sunburst>
         </div>
         <div>
             <conversion-select></conversion-select>

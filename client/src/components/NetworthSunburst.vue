@@ -14,7 +14,7 @@
   } from 'src/lib/utils';
   import {PostingEx} from 'src/lib/models';
   import { mapValues } from 'lodash';
-  import {reduce} from 'lodash';
+  import {reduce, some} from 'lodash';
   import { LocalDate } from '@js-joda/core';
 
   export default Vue.extend({
@@ -34,7 +34,8 @@
         'allPostingsEx',
       ]),
       myAccountIds():string[] {
-        const networthAccountFilter : ((acctId:string)=>boolean) = acctId => isSubAccountOf(acctId, 'Assets') || isSubAccountOf(acctId, 'Liabilities');
+        const mainAccounts = ['Assets', 'Liabilities'];
+        const networthAccountFilter : ((acctId:string)=>boolean) = acctId => some(mainAccounts, ma => isSubAccountOf(acctId, ma));
         const filter:((acctId:string)=>boolean) = this.accountId ? (acctId => isSubAccountOf(acctId, this.accountId)) : networthAccountFilter;
 
         return this.accountIds
