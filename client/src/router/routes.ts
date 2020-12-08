@@ -80,6 +80,8 @@ const gainstrackRoutes: RouteConfig[] = [
   {path: '/pnlexplain', component: () => import(/* webpackChunkName: "PnlExplain" */ '../pages/PnlExplain.vue'), meta: {title: ' P&L Explain'}},
   {path: '/pnlexplain/:fromDate/:toDate', component: PnlExplainDetail,
     name: 'pnldetail', meta: {title: ' P&L Explain'}, props: true},
+  {path: '/assetdb', meta: {title:'Asset DB'}, component: () => import('../pages/AssetDb.vue')},
+  {path: '/quotesdb/:id', name: 'quoteSource', meta: {title: 'Quotes DB'}, props: true, component: () => import('../pages/QuoteSource.vue')},
   {path: '/help', component: Markdown,
     props: {page: 'help.md'},  meta: {title: 'Help'}},
   {path: '/faq', component: Markdown,
@@ -92,7 +94,7 @@ const gainstrackNavBar = [
   ['add', 'command'],
   ['balance_sheet', 'assets', 'income_statement', 'journal'],
   ['irr', 'aa', 'pnlexplain'],
-  ['prices', 'quotes', 'settings'],
+  ['prices', 'quotes', 'settings', 'assetdb'],
   ['port', 'editor', 'history'],
   ['help', 'faq']
 ];
@@ -147,7 +149,7 @@ export const {appRoutes, navBar, layout, appTitle, appDescription} : AppMode = (
   } else {
     // Default to gainstrack for unknown host
     // Can change this during development. Should not hit this in production
-    return simpleMode;
+    return gainstrackMode;
 
   }
 })()
