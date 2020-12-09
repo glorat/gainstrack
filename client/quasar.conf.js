@@ -146,7 +146,7 @@ module.exports = configure(function (ctx) {
       /* optional; @quasar/app v1.4.2+;
     disables vendor chunk: */
       // disable: true,
-      remove: ['plotly.js-dist', 'element-ui', 'marked', '@sentry', 'codemirror', 'vue-tour', '@js-joda'],
+      remove: ['plotly.js-dist', 'element-ui', 'marked', '@sentry', 'codemirror', 'vue-tour', '@js-joda', '@firebase'],
     },
 
     // https://quasar.dev/quasar-cli/developing-ssr/configuring-ssr
