@@ -81,6 +81,7 @@ const gainstrackRoutes: RouteConfig[] = [
   {path: '/pnlexplain/:fromDate/:toDate', component: PnlExplainDetail,
     name: 'pnldetail', meta: {title: ' P&L Explain'}, props: true},
   {path: '/assetdb', meta: {title:'Asset DB'}, component: () => import('../pages/AssetDb.vue')},
+  {path: '/quotesdb/new', name: 'quoteSourceNew', meta: {title: 'Quotes DB'}, component: () => import('../pages/QuoteSource.vue')},
   {path: '/quotesdb/:id', name: 'quoteSource', meta: {title: 'Quotes DB'}, props: true, component: () => import('../pages/QuoteSource.vue')},
   {path: '/help', component: Markdown,
     props: {page: 'help.md'},  meta: {title: 'Help'}},

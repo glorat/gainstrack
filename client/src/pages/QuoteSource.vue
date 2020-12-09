@@ -5,8 +5,9 @@
       color="primary"
       size="3em"
     />
-    <div v-else-if="data">
+    <div v-if="data">
       <quote-source-editor :qsrc="editingData"></quote-source-editor>
+      <q-btn :disable="!canSaveQuoteSource" @click="saveQuoteSource" label="Save" color="primary"></q-btn>
     </div>
     <div v-else>
       Not found
@@ -16,7 +17,7 @@
 
 <script lang="ts">
   import Vue from 'vue';
-  import {getQuoteSource, QuoteSource} from 'src/lib/assetDb';
+  import {emptyQuoteSource, getQuoteSource, QuoteSource, upsertQuoteSource} from 'src/lib/assetDb';
   import QuoteSourceEditor from 'components/QuoteSourceEditor.vue';
   import { extend } from 'quasar'
 
@@ -24,7 +25,10 @@
     name: 'QuoteSource',
     components: {QuoteSourceEditor},
     props: {
-      id: String
+      id: {
+        type: String,
+        required: false,
+      }
     },
     data() {
       const data = undefined as QuoteSource|undefined;
@@ -37,7 +41,12 @@
         const args = props ?? this.$props;
         const id = args.id;
         try {
-          const doc = await getQuoteSource(id);
+          let doc;
+          if (id) {
+            doc = await getQuoteSource(id);
+          } else {
+            doc = emptyQuoteSource('')
+          }
           this.editingData = extend(true, {}, doc);
           this.data = doc;
         } catch (error) {
@@ -46,6 +55,26 @@
         } finally {
           this.loading = false;
         }
+      },
+      async saveQuoteSource() {
+        try {
+          this.loading = true;
+          if (this.editingData && this.editingData.id) {
+            await upsertQuoteSource(this.editingData);
+          }
+        }
+        catch (error) {
+          console.error(error);
+          this.$notify.error(error);
+        }
+        finally {
+          this.loading = false
+        }
+      }
+    },
+    computed: {
+      canSaveQuoteSource(): boolean {
+        return !!this.editingData.id;
       }
     },
     mounted(): void {

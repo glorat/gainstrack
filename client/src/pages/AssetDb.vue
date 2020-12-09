@@ -25,25 +25,26 @@
         this.quoteSources = await getAllQuoteSources()
       },
       createNew() {
-        this.$q.dialog({
-          title: 'Create new quote source',
-          message: 'What is the name of the observable?',
-          prompt: {
-            model: '',
-            type: 'text' // optional
-          },
-          cancel: true,
-          persistent: true
-        }).onOk(async (data:string) => {
-          try {
-            /*const newSrc = */ await createQuoteSource(data);
-            this.refresh(); // Or could just manually append...
-          }
-          catch(e) {
-            this.$notify.error(e);
-          }
-
-        })
+        this.$router.push({name: 'quoteSourceNew'});
+        // this.$q.dialog({
+        //   title: 'Create new quote source',
+        //   message: 'What is the name of the observable?',
+        //   prompt: {
+        //     model: '',
+        //     type: 'text' // optional
+        //   },
+        //   cancel: true,
+        //   persistent: true
+        // }).onOk(async (data:string) => {
+        //   try {
+        //     /*const newSrc = */ await createQuoteSource(data);
+        //     this.refresh(); // Or could just manually append...
+        //   }
+        //   catch(e) {
+        //     this.$notify.error(e);
+        //   }
+        //
+        // })
       },
       quoteRowClick(qsrc: QuoteSource) {
         if (qsrc.id) {
