@@ -57,12 +57,12 @@
       }
     },
     computed: {
-      autoId() : string|undefined {
+      autoId() : string {
         const qsrc = this.qsrc;
         if (qsrc.ticker && qsrc.marketRegion) {
           return `${qsrc.ticker.toUpperCase()}.${qsrc.marketRegion.toUpperCase()}`;
         }
-        return undefined;
+        return '';
       }
     },
     watch: {

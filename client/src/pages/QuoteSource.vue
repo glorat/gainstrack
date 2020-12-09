@@ -74,7 +74,7 @@
     },
     computed: {
       canSaveQuoteSource(): boolean {
-        return !!this.editingData.id;
+        return !!this.editingData && !!this.editingData.id;
       }
     },
     mounted(): void {
