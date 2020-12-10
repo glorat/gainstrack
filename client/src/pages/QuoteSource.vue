@@ -7,7 +7,7 @@
     />
     <div v-if="data">
       <quote-source-editor :qsrc="editingData"></quote-source-editor>
-      <q-btn :disable="!canSaveQuoteSource" @click="saveQuoteSource" label="Save" color="primary"></q-btn>
+      <q-btn :disable="!canSaveQuoteSource" @click="saveQuoteSource" :label="saveLabel" color="primary"></q-btn>
     </div>
     <div v-else>
       Not found
@@ -75,6 +75,9 @@
     computed: {
       canSaveQuoteSource(): boolean {
         return !!this.editingData && !!this.editingData.id;
+      },
+      saveLabel(): string {
+        return 'Save' + (this.canSaveQuoteSource ? ' ' + this.editingData!.id : '');
       }
     },
     mounted(): void {

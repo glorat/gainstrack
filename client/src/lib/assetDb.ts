@@ -116,6 +116,7 @@ const stockExchanges = [
 ]
 
 export const marketRegions = [
+  {value: 'GLOBAL', description: 'Global Market'},
   {value: 'LN', description: 'London'},
   {value: 'SH', description: 'Shanghai'},
   {value: 'EU', description: 'European Cities'},
@@ -123,6 +124,7 @@ export const marketRegions = [
   {value: 'TK', description: 'Tokyo'},
   {value: 'HK', description: 'Hong Kong'},
   {value: 'SG', description: 'Singapore'},
+  {value: 'CA', description: 'Canada'},
 ]
 
 export const quoteSourceTypes = [

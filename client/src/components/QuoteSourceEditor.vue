@@ -53,7 +53,11 @@
       autoId() : string {
         const qsrc = this.qsrc;
         if (qsrc.ticker && qsrc.marketRegion) {
-          return `${qsrc.ticker.toUpperCase()}.${qsrc.marketRegion.toUpperCase()}`;
+          if (qsrc.marketRegion === 'GLOBAL') {
+            return qsrc.ticker.toUpperCase()
+          } else {
+            return `${qsrc.ticker.toUpperCase()}.${qsrc.marketRegion.toUpperCase()}`;
+          }
         }
         return '';
       }

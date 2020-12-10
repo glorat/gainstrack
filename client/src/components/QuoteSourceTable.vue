@@ -1,5 +1,7 @@
 <template>
-  <q-table :columns="columns" :data="quoteSources" @row-click="onRowClick">
+  <q-table :columns="columns" :data="quoteSources" :pagination="pagination"
+           dense
+           @row-click="onRowClick">
 
   </q-table>
 </template>
@@ -8,7 +10,7 @@
   import Vue from 'vue';
   import {QuoteSource} from 'src/lib/assetDb';
 
-  const defaultColumn= (col: {name:string}) => ({field: col.name, align: 'left'})
+  const defaultColumn= (col: {name:string}) => ({field: col.name, align: 'left', sortable: true})
   const columns = [
     {name: 'id', label: 'Id'},
     {name: 'ticker', label: 'Ticker'},
@@ -25,8 +27,12 @@
       }
     },
     data() {
+      const pagination = {
+        rowsPerPage: 20
+      }
       return {
         columns,
+        pagination,
       }
     },
     methods: {
