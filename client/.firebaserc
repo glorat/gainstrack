@@ -1,6 +1,6 @@
 {
   "projects": {
-    "default": "poc"
+    "default": "gainstrack"
   },
   "targets": {
     "gainstrack": {
