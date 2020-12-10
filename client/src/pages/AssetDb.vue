@@ -8,7 +8,7 @@
 
 <script lang="ts">
   import Vue from 'vue';
-  import {QuoteSource, getAllQuoteSources, createQuoteSource} from 'src/lib/assetDb';
+  import {QuoteSource, getAllQuoteSources} from 'src/lib/assetDb';
   import QuoteSourceTable from 'components/QuoteSourceTable.vue';
 
   export default Vue.extend({

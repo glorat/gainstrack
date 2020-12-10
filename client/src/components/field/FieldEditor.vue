@@ -28,7 +28,21 @@
           <q-item-label caption>{{ scope.opt.description }}</q-item-label>
         </q-item-section>
       </q-item>
-
+    </template>
+  </q-select>
+  <q-select
+    v-else-if="typeIsEnum"
+    :value="modelValue" @input="inputChanged($event.value)"
+    :label="label"
+    :options="enumOptions" emit-value
+  >
+    <template v-slot:option="scope">
+      <q-item v-bind="scope.itemProps" v-on="scope.itemEvents">
+        <q-item-section>
+          <q-item-label>{{ scope.opt.value }}</q-item-label>
+          <q-item-label caption>{{ scope.opt.description }}</q-item-label>
+        </q-item-section>
+      </q-item>
     </template>
   </q-select>
   <div v-else>UNKNOWN TYPE {{ type }}</div>
@@ -54,6 +68,10 @@ export default defineComponent({
     schema: {
       type: (Object as unknown) as PropType<AssetProperty>,
       required: true,
+    },
+    label: {
+      type: String,
+      required: false,
     }
   },
   data() {

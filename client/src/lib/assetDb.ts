@@ -7,7 +7,7 @@ export interface QuoteSource {
   name: string
   exchange: string
   ccy: string
-  sources: {sourceType: string, ref: string}[]
+  sources: {sourceType: string, ref: string, meta: string}[]
 }
 
 export function emptyQuoteSource(name:string): QuoteSource {
@@ -18,7 +18,7 @@ export function emptyQuoteSource(name:string): QuoteSource {
     marketRegion: '',
     exchange: '',
     ccy: 'USD',
-    sources: []
+    sources: [{sourceType: '', ref: '', meta: ''}]
   }
 }
 
@@ -122,6 +122,7 @@ export const marketRegions = [
   {value: 'NY', description: 'New York'},
   {value: 'TK', description: 'Tokyo'},
   {value: 'HK', description: 'Hong Kong'},
+  {value: 'SG', description: 'Singapore'},
 ]
 
 export const quoteSourceTypes = [

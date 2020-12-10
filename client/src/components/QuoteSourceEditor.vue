@@ -8,25 +8,15 @@
 <!--      </q-field>-->
       <q-input v-model="qsrc.name" label="Name"></q-input>
       <q-input v-model="qsrc.ticker" label="Ticker"></q-input>
-      <q-select v-model="qsrc.marketRegion" label="Market Region"
-                :options="marketRegions" emit-value
-      >
-        <template v-slot:option="scope">
-          <q-item v-bind="scope.itemProps" v-on="scope.itemEvents">
-            <q-item-section>
-              <q-item-label>{{ scope.opt.value }}</q-item-label>
-              <q-item-label caption>{{ scope.opt.description }}</q-item-label>
-            </q-item-section>
-          </q-item>
-        </template>
-      </q-select>
+      <enum-select v-model="qsrc.marketRegion" label="Source Market Region" :options="marketRegions"></enum-select>
     </q-card-section>
     <q-separator></q-separator>
-    <q-card-section title="asdf">
+    <q-card-section >
       <div>External quote sources</div>
       <div v-for="src in qsrc.sources">
-        <q-input v-model="src.sourceType" label="Source Type"></q-input>
+        <enum-select v-model="src.sourceType" label="Source Type" :options="quoteSourceTypes"></enum-select>
         <q-input v-model="src.ref" label="Symbol/Ref"></q-input>
+        <q-input v-model="src.meta" label="Additional Params"></q-input>
       </div>
       <q-btn @click="qsrc.sources.push({sourceType:'', ref: ''})" color="primary" label="+"></q-btn>
     </q-card-section>
@@ -44,16 +34,19 @@
 
 <script lang="ts">
   import Vue from 'vue';
-  import {marketRegions, QuoteSource, upsertQuoteSource} from 'src/lib/assetDb';
+  import {marketRegions, QuoteSource, quoteSourceTypes} from 'src/lib/assetDb';
+  import EnumSelect from 'components/field/EnumSelect.vue';
 
   export default Vue.extend({
     name: 'QuoteSourceEditor',
+    components: {EnumSelect},
     props: {
       qsrc: Object as () => QuoteSource
     },
     data() {
       return {
-        marketRegions
+        marketRegions,
+        quoteSourceTypes
       }
     },
     computed: {
