@@ -163,12 +163,19 @@ object SyncUp {
       logger.info(s"Skipping $outFile for ${delay.formatted("%.1f")} hrs")
     }
 
-    // Quick and dirty heuristic corruption check (e.g. throttle limit hit)
-    //    val size = java.nio.file.Files.size(path)
-    //    if (size < 500) {
-    //      scala.io.Source.fromFile(outFile).getLines().foreach(println(_))
-    //      Files.delete(path)
-    //    }
+//     Quick and dirty heuristic corruption check (e.g. throttle limit hit)
+    val size = java.nio.file.Files.size(path)
+    if (size < 500) {
+      val lines = scala.io.Source.fromFile(outFile).getLines();
+      val one = lines.mkString("\n")
+      if (one.contains("API call frequency")) {
+        println("API call frequency hit")
+        Files.delete(path)
+      } else {
+        println(one)
+      }
+
+    }
   }
 
 
