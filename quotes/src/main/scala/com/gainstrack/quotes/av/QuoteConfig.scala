@@ -20,7 +20,7 @@ case class QuoteConfig(avSymbol:String, actualCcy:String, domainCcy:String, asse
 
   def toQuoteSource: QuoteSource = {
     val marketRegion = if (assetType == "FX") "GLOBAL" else exchange.symbol
-    QuoteSource(avSymbol, name = avSymbol, ticker= ticker, marketRegion = marketRegion, sources = Seq(QuoteSourceSource("av", avSymbol, domainCcy)))
+    QuoteSource(avSymbol, name = avSymbol, ticker= ticker, marketRegion = marketRegion, ccy = actualCcy, sources = Seq(QuoteSourceSource("av", avSymbol, domainCcy)))
   }
 }
 
