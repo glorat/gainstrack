@@ -17,6 +17,11 @@ case class QuoteConfig(avSymbol:String, actualCcy:String, domainCcy:String, asse
       QuoteExchange(bits(1))
     }
   }
+
+  def toQuoteSource: QuoteSource = {
+    val marketRegion = if (assetType == "FX") "GLOBAL" else exchange.symbol
+    QuoteSource(avSymbol, name = avSymbol, ticker= ticker, marketRegion = marketRegion, sources = Seq(QuoteSourceSource("av", avSymbol, domainCcy)))
+  }
 }
 
 object QuoteConfig {
@@ -24,7 +29,7 @@ object QuoteConfig {
     QuoteConfig(avSymbol, actualCcy, domainCcy, "Stock")
   }
 
-  val allConfigs:Seq[QuoteConfig] = Seq(
+  val allConfigs:Seq[QuoteSource] = Seq(
     Tuple3("VWRD.LON", "USD", "LSEUSD"),
     Tuple3("VDEV.LON", "USD", "LSEUSD"),
     Tuple3("VDEM.LON", "USD", "LSEUSD"),
@@ -53,10 +58,10 @@ object QuoteConfig {
     Tuple3("XIU.TRT", "CAD", "CAD"),
     Tuple3("GOOG", "USD", "USD"),
     Tuple3("DAX", "USD", "USD")
-  ).map((QuoteConfig.create _).tupled)
+  ).map((QuoteConfig.create _).tupled).map(_.toQuoteSource)
 
   // A shortcut implementation for now. One day, let's get a list of ISOs
   def allCcys = Seq("GBP", "EUR", "HKD", "CAD", "AUD", "NZD", "CNY", "SGD", "JPY", "SEK", "XAU")
 
-  val allConfigsWithCcy = allConfigs ++ allCcys.map(ccy => QuoteConfig(ccy, ccy, ccy, "FX"))
+  val allConfigsWithCcy = allConfigs ++ allCcys.map(ccy => QuoteConfig(ccy, ccy, ccy, "FX").toQuoteSource)
 }

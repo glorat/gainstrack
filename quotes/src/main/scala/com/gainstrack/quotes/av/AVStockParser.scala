@@ -27,39 +27,40 @@ object AVStockParser {
   implicit object DoubleParser extends FractionalParser {
     def parse(s:String) = s.toDouble
   }
+//
+//  def parseIntradayRefQuote(config: QuoteSource)(implicit fractionalParser:FractionalParser): Option[N] = {
+//    val symbol = config.avSymbol
+//
+//    try {
+//      val intraday = parseSymbol(config.copy(avSymbol = s"intraday.$symbol"))
+//      Some(intraday.liveQuote)
+//    }
+//    catch {
+//      case e: IllegalArgumentException => None
+//      case e: Exception => {
+//        logger.error(s"Intraday ${symbol} failed with ${e.toString}")
+//        None
+//      }
+//    }
+//
+//  }
 
-  def parseIntradayRefQuote(config: QuoteConfig)(implicit fractionalParser:FractionalParser): Option[N] = {
-    val symbol = config.avSymbol
-
-    try {
-      val intraday = parseSymbol(config.copy(avSymbol = s"intraday.$symbol"))
-      Some(intraday.liveQuote)
-    }
-    catch {
-      case e: IllegalArgumentException => None
-      case e: Exception => {
-        logger.error(s"Intraday ${symbol} failed with ${e.toString}")
-        None
-      }
-    }
-
-  }
-
-  def tryParseSymbol(cfg: QuoteConfig)(implicit fractionalParser: FractionalParser): Option[StockParseResult] = {
+  def tryParseSymbol(cfg: QuoteSource)(implicit fractionalParser: FractionalParser): Option[StockParseResult] = {
     try {
       val res = AVStockParser.parseSymbol(cfg)
       Some(res)
     }
     catch {
       case e: Exception => {
-        logger.error(s"Symbol ${cfg.avSymbol} failed with ${e.toString}")
+        logger.error(s"Symbol ${cfg.name} failed with ${e.toString}")
         None
       }
     }
   }
 
-  def parseSymbol(config: QuoteConfig)(implicit fractionalParser: FractionalParser):StockParseResult = {
-    val symbol = config.avSymbol
+  def parseSymbol(config: QuoteSource)(implicit fractionalParser: FractionalParser):StockParseResult = {
+    val symbol = config.sources.find(x => x.sourceType == "av").map(_.ref).getOrElse(config.name)
+
     val path = Paths.get(s"db/av/${symbol}.csv")
     if (!Files.exists(path))
       throw new IllegalArgumentException(s"${symbol} file does not exist")
@@ -95,7 +96,7 @@ object AVStockParser {
 
 }
 
-case class StockParseResult(series:SortedMap[LocalDate, Double], liveQuote:Double, config: QuoteConfig, sourceCcy:Option[AssetId]) {
+case class StockParseResult(series:SortedMap[LocalDate, Double], liveQuote:Double, config: QuoteSource, sourceCcy:Option[AssetId]) {
   type N = Double
 
   def fixupLSE(lseCcy:String, actualCcy:AssetId, priceState: SingleFXConversion) : StockParseResult = {

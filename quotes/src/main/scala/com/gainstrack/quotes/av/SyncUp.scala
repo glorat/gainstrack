@@ -61,27 +61,27 @@ object SyncUp {
   }
 
   def googlePublishAllSyncs(implicit ec: ExecutionContext):Future[String] = {
-    val symbols = QuoteConfig.allCcys ++ QuoteConfig.allConfigs.map(_.avSymbol)
+    val symbols = QuoteConfig.allCcys ++ QuoteConfig.allConfigs.map(_.name)
     logger.info(s"Publishing requests for " + symbols.mkString(","))
     googlePublishOneSync(symbols.mkString(","))
 
   }
 
   def syncOneSymbol(symbol: String)(implicit ec: ExecutionContext): Future[QuotesMergeResult] = {
-    QuoteConfig.allConfigsWithCcy.find(_.avSymbol == symbol).map(quoteConfig => {
+    QuoteConfig.allConfigsWithCcy.find(_.name == symbol).map(quoteConfig => {
       this.downloadForQuote(quoteConfig, forceDownload = true)
 
       // Always need EUR & GBP for LSE fixup
-      val fxData = Main.isoCcyPriceFxConverterData(Set(quoteConfig.actualCcy, "GBP", "EUR").toSeq)
+      val fxData = Main.isoCcyPriceFxConverterData(Set(quoteConfig.ccy, "GBP", "EUR").toSeq)
       val priceFXConverter = SingleFXConversion(fxData, AssetId("USD"))
 
       AVStockParser.tryParseSymbol(quoteConfig)
         .map(res => {
           val cfg = res.config
-          val srcCcy = res.sourceCcy.map(_.symbol).getOrElse(cfg.domainCcy)
-          val fixed = res.fixupLSE(srcCcy, AssetId(cfg.actualCcy), priceFXConverter)
-          val mergeRes = theStore.readQuotes(cfg.avSymbol).flatMap(orig => {
-            theStore.mergeQuotes(cfg.avSymbol, orig, fixed.series)
+          val srcCcy = res.sourceCcy.map(_.symbol).getOrElse(cfg.avConfig.meta)
+          val fixed = res.fixupLSE(srcCcy, AssetId(cfg.ccy), priceFXConverter)
+          val mergeRes = theStore.readQuotes(cfg.name).flatMap(orig => {
+            theStore.mergeQuotes(cfg.name, orig, fixed.series)
           })
           mergeRes
         }).getOrElse(Future.successful(QuotesMergeResult(0, 0, Some("Could not obtain AV results"))))
@@ -105,8 +105,8 @@ object SyncUp {
     })
   }
 
-  private def downloadForQuote(cfg: QuoteConfig, forceDownload: Boolean) = {
-    if (cfg.exchange == QuoteExchange("LON")) {
+  private def downloadForQuote(cfg: QuoteSource, forceDownload: Boolean) = {
+    if (cfg.marketRegion == "LN") {
       downloadQuoteFromInvestPy(cfg, forceDownload)
     } else {
       downloadQuoteFromAlphaVantage(cfg, forceDownload)
@@ -114,19 +114,19 @@ object SyncUp {
 
   }
 
-  private def downloadQuoteFromInvestPy(cfg: QuoteConfig, forceDownload: Boolean) = {
-    val symbol = cfg.avSymbol
-    val ticker = cfg.ticker
+  private def downloadQuoteFromInvestPy(qs: QuoteSource, forceDownload: Boolean) = {
+    val symbol = qs.id
+    val ticker = qs.ticker
 
     val outFile = s"db/av/$symbol.csv"
     val cmd = s"""python3 python/quotes.py ${ticker}"""
     goGetIt(outFile, cmd, stdoutResult = true, forceDownload = forceDownload)
   }
 
-  private def downloadQuoteFromAlphaVantage(cfg: QuoteConfig, forceDownload: Boolean) = {
-    val symbol = cfg.avSymbol
+  private def downloadQuoteFromAlphaVantage(cfg: QuoteSource, forceDownload: Boolean) = {
+    val symbol = cfg.name
     val outFile = s"db/av/$symbol.csv"
-    val cmdDaily = if (cfg.assetType == "FX") {
+    val cmdDaily = if (cfg.marketRegion == "GLOBAL") {
       s"""wget -O $outFile https://www.alphavantage.co/query?function=FX_DAILY&from_symbol=$symbol&to_symbol=USD&outputsize=full&datatype=csv&apikey=$apikey"""
     } else {
       s"""wget -O $outFile https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=$symbol&outputsize=full&datatype=csv&apikey=$apikey"""
@@ -177,7 +177,7 @@ object SyncUp {
     val isoCcys = QuoteConfig.allCcys
     // First sort out all the ISO currencies
     val data: Map[AssetId, SortedColumnMap[LocalDate, Double]] = isoCcys.flatMap(fxCcy => {
-      AVStockParser.tryParseSymbol(QuoteConfig(fxCcy, "USD", "USD", "FX")).map(res => {
+      AVStockParser.tryParseSymbol(QuoteConfig(fxCcy, "USD", "USD", "FX").toQuoteSource).map(res => {
         val series: SortedMap[LocalDate, Double] = res.series
         val fxFut = theStore.readQuotes(fxCcy).map(orig => {
           theStore.mergeQuotes(fxCcy, orig, series)
@@ -198,10 +198,14 @@ object SyncUp {
       .flatMap(cfg => AVStockParser.tryParseSymbol(cfg))
       .map(res => {
         val cfg = res.config
-        val srcCcy = res.sourceCcy.map(_.symbol).getOrElse(cfg.domainCcy)
-        val fixed = res.fixupLSE(srcCcy, AssetId(cfg.actualCcy), priceFXConverter)
-        theStore.readQuotes(cfg.avSymbol).map(orig => {
-          theStore.mergeQuotes(cfg.avSymbol, orig, fixed.series)
+        val avConfig = cfg.avConfig
+        val domainCcy = avConfig.meta
+        val actualCcy = cfg.ccy
+        val srcCcy = res.sourceCcy.map(_.symbol).getOrElse(domainCcy)
+        val avSymbol = avConfig.ref
+        val fixed = res.fixupLSE(srcCcy, AssetId(actualCcy), priceFXConverter)
+        theStore.readQuotes(avSymbol).map(orig => {
+          theStore.mergeQuotes(avSymbol, orig, fixed.series)
         })
       })
     Future.sequence(reses)
