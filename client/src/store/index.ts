@@ -6,7 +6,6 @@ import {
   AllState, AssetDTO,
   emptyAllState,
   PostingEx,
-  QuoteConfig,
   Transaction, TreeTableDTO
 } from '../lib/models'
 import {GlobalPricer} from '../lib/pricer';
@@ -16,6 +15,7 @@ import {balanceTreeTable} from '../lib/TreeTable';
 import {LocalDate} from '@js-joda/core';
 import {toCommodityGainstrack} from '../lib/commandDefaulting';
 import { store } from 'quasar/wrappers'
+import {QuoteSource} from 'src/lib/assetDb';
 
 export interface TimeSeries {
   x: string[]
@@ -27,7 +27,7 @@ export interface MyState {
   allState: AllState,
   dateOverride?: LocalDate
   count: number,
-  quoteConfig: QuoteConfig[],
+  quoteConfig: QuoteSource[],
   balances: AccountBalances,
   parseState: Record<string, unknown>,
   gainstrackText: string,

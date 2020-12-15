@@ -8,5 +8,8 @@
       "jest"
     ],
     "esModuleInterop": true
-  }
+  },
+  "exclude": [
+    "functions"
+  ]
 }

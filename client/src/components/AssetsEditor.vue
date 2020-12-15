@@ -110,7 +110,7 @@
       allTickers (): string[] {
         const state: MyState = this.$store.state;
         let cfgs = state.quoteConfig;
-        return uniq(cfgs.map(cfg => cfg.avSymbol)).sort()
+        return uniq(cfgs.map(cfg => cfg.id)).sort()
       },
     },
     methods: {

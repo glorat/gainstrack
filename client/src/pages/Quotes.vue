@@ -13,16 +13,16 @@
 </template>
 
 <script lang="ts">
-  import {QuoteConfig} from '../lib/models';
   import Vue from 'vue';
   import {VuePlotly} from 'src/lib/loader';
+  import {QuoteSource} from 'src/lib/assetDb';
 
   interface MyData {
     pagination: unknown,
     selected: unknown[],
     columns: Record<string, unknown>[],
-    quoteConfig: QuoteConfig,
-    currentRow?: QuoteConfig,
+    quoteConfig: QuoteSource,
+    currentRow?: QuoteSource,
     series: Record<string, unknown>[],
     layout: Record<string, unknown>,
     options: Record<string, unknown>
