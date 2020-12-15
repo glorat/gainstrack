@@ -79,7 +79,7 @@ class SyncUp(implicit ec: ExecutionContext) {
       AVStockParser.tryParseSymbol(quoteConfig)
         .map(res => {
           val cfg = res.config
-          val domainCcy = if (cfg.avConfig.meta == "") cfg.ccy else cfg.avConfig.meta
+          val domainCcy = cfg.avConfigOpt.map(_.meta).flatMap(x => if (x=="") None else Some(x)).getOrElse(cfg.ccy)
           val srcCcy = res.sourceCcy.map(_.symbol).getOrElse(domainCcy)
           val fixed = res.fixupLSE(srcCcy, AssetId(cfg.ccy), priceFXConverter)
           val mergeRes = theStore.readQuotes(cfg.id).flatMap(orig => {
@@ -230,7 +230,7 @@ class SyncUp(implicit ec: ExecutionContext) {
         val cfg = res.config
         val result = cfg.avConfigOpt.map(avConfig => {
           val actualCcy = cfg.ccy
-          val domainCcy = if (avConfig.meta == "") actualCcy else avConfig.meta
+          val domainCcy = cfg.avConfigOpt.map(_.meta).flatMap(x => if (x=="") None else Some(x)).getOrElse(cfg.ccy)
           val srcCcy = res.sourceCcy.map(_.symbol).getOrElse(domainCcy)
           val avSymbol = avConfig.ref
           val fixed = res.fixupLSE(srcCcy, AssetId(actualCcy), priceFXConverter)

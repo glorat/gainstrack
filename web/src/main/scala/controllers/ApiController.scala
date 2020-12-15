@@ -337,7 +337,7 @@ class ApiController (implicit val ec :ExecutionContext)
 
   }
 
-  get ("/aa/table") {
+  any ("/aa/table") {
     val bg = getGainstrack
 
     val toDate = currentDate
