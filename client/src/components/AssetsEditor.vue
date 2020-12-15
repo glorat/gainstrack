@@ -140,9 +140,9 @@
           const state: MyState = this.$store.state;
           let cfgs = state.quoteConfig
           if (queryString) {
-            cfgs = cfgs.filter(x => x.avSymbol.indexOf(queryString.toUpperCase()) > -1)
+            cfgs = cfgs.filter(x => x.id.indexOf(queryString.toUpperCase()) > -1)
           }
-          const elems = cfgs.map(cfg => cfg.avSymbol);
+          const elems = cfgs.map(cfg => cfg.id);
           this.tickerOptions = elems;
         });
       },

@@ -15,13 +15,13 @@ object QuotesMigrator {
     val all = db.allConfigsWithCcy
       //     .filter(_.avSymbol == "XAU")
       .map(cfg => {
-        val orig = Await.result(fromDb.readQuotes(cfg.name), infDur)
-        fromDb.readQuotes(cfg.name).flatMap(actual => {
-          inFlight += cfg.name -> 1
-          logger.info(s"Merging quotes for ${cfg.name}. In-flight: (${inFlight.size}) ${inFlight.keys.mkString(",")}")
-          toDb.mergeQuotes(cfg.name, orig, actual).map(x => {
-            inFlight.remove(cfg.name)
-            logger.info(s"Merging complete for ${cfg.name}. In-flight: (${inFlight.size}) ${inFlight.keys.mkString(",")}")
+        val orig = Await.result(fromDb.readQuotes(cfg.id), infDur)
+        fromDb.readQuotes(cfg.id).flatMap(actual => {
+          inFlight += cfg.id -> 1
+          logger.info(s"Merging quotes for ${cfg.id}. In-flight: (${inFlight.size}) ${inFlight.keys.mkString(",")}")
+          toDb.mergeQuotes(cfg.id, orig, actual).map(x => {
+            inFlight.remove(cfg.id)
+            logger.info(s"Merging complete for ${cfg.id}. In-flight: (${inFlight.size}) ${inFlight.keys.mkString(",")}")
           })
 
         })

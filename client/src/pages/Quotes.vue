@@ -8,7 +8,7 @@
 
     <vue-plotly :data="series" :layout="layout" :options="options" auto-resize></vue-plotly>
 
-    <q-table dense row-key="avSymbol" :columns="columns" :pagination.sync="pagination" :selected.sync="selected" selection="single" :data="quoteConfig"></q-table>
+    <q-table dense row-key="id" :columns="columns" :pagination.sync="pagination" :selected.sync="selected" selection="single" :data="quoteConfig"></q-table>
   </my-page>
 </template>
 
@@ -35,15 +35,17 @@
     },
     data(): MyData {
       const cfg = this.$store.state.quoteConfig;
-      const columns = [{
-        name: 'avSymbol',
-        field: 'avSymbol',
-        label: 'Symbol',
-        sortable: true,
-        align: 'left',
-      }, {
 
-      }];
+      const defaultColumn= (col: {name:string}) => ({field: col.name, align: 'left', sortable: true})
+      const columns = [
+        {name: 'id', label: 'Id'},
+        {name: 'ticker', label: 'Ticker'},
+        {name: 'marketRegion', label: 'Region'},
+        {name: 'name', label: 'Name', align: 'left'},
+        {name: 'ccy', label: 'Ccy'},
+      ].map(col => ({...defaultColumn(col), ...col}))
+
+
       return {
         pagination: {
           rowsPerPage: 50
@@ -78,14 +80,14 @@
       };
     },
     watch: {
-      selected(val:QuoteConfig[]) {
+      selected(val:QuoteSource[]) {
         this.handleCurrentChange(val[0])
       }
     },
     methods: {
-      async handleCurrentChange(val: QuoteConfig) {
+      async handleCurrentChange(val: QuoteSource) {
         this.currentRow = val;
-        const response = {data: await this.$store.dispatch('loadQuotes', val.avSymbol)};
+        const response = {data: await this.$store.dispatch('loadQuotes', val.id)};
         // const response = await axios.get('/api/quotes/ticker/' + val.avSymbol);
         const series = {
           ...response.data,

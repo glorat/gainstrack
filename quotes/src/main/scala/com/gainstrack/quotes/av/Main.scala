@@ -61,7 +61,7 @@ object Main {
     val finalState = db
       .allConfigs
       .foldLeft(data)((dataSoFar, cfg) => {
-        val series = Await.result(theStore.readQuotes(cfg.name), infDur)
+        val series = Await.result(theStore.readQuotes(cfg.id), infDur)
         val usdSeries = series.flatMap(kv => {
           val fxOpt = priceFXConverter.getFX(cfg.ccy, "USD", kv._1)
 
@@ -74,7 +74,7 @@ object Main {
           })
         })
         val fastUsd = SortedColumnMap.from(usdSeries)
-        dataSoFar.updated(AssetId(cfg.name), fastUsd)
+        dataSoFar.updated(AssetId(cfg.id), fastUsd)
       })
 
     DbState(SingleFXConversion(finalState, AssetId("USD")))

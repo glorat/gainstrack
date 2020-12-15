@@ -224,7 +224,7 @@ class SyncUp(implicit ec: ExecutionContext) {
 
     val reses: Seq[Future[Any]] = quoteConfigDB
       .allConfigs
-      .filter(_.id == "BRK-B.NY") // Uncomment here for debugging
+      // .filter(_.id == "BRK-B.NY") // Uncomment here for debugging
       .flatMap(cfg => AVStockParser.tryParseSymbol(cfg))
       .map(res => {
         val cfg = res.config
