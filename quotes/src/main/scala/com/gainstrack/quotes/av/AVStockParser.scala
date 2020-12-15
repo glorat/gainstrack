@@ -58,7 +58,7 @@ object AVStockParser {
   }
 
   def parseSymbol(config: QuoteSource)(implicit fractionalParser: FractionalParser):StockParseResult = {
-    val symbol = config.sources.find(x => x.sourceType == "av").map(_.ref).getOrElse(config.id)
+    val symbol = config.id
 
     val path = Paths.get(s"db/av/${symbol}.csv")
     if (!Files.exists(path))
