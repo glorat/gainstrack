@@ -3,9 +3,10 @@ package com.gainstrack.quotes.av
 import java.time.{Duration, Instant}
 
 import com.gainstrack.core._
-import com.gainstrack.quotes.av.SyncUp.{logger, theStore}
+import com.gainstrack.quotes.av.SyncUp
 import com.gainstrack.report.{AssetChainMap, AssetPair, FXConverter, PriceFXConverter, PriceState, SingleFXConversion}
 import com.typesafe.config.ConfigFactory
+import org.slf4j.LoggerFactory
 
 import scala.collection.SortedMap
 import scala.concurrent.{Await, ExecutionContext}
@@ -13,6 +14,8 @@ import scala.concurrent.{Await, ExecutionContext}
 object Main {
   implicit val ec:ExecutionContext = ExecutionContext.global
   val infDur = scala.concurrent.duration.Duration.Inf
+  val logger = LoggerFactory.getLogger(getClass)
+
 
   // Flip this to decide where the web server should get quotes from!
   val config = ConfigFactory.load()
@@ -51,10 +54,11 @@ object Main {
   }
 
   def doTheWork:DbState = {
-    val data:Map[AssetId, SortedColumnMap[LocalDate, Double]] = isoCcyPriceFxConverterData(QuoteConfig.allCcys)
+    val db = new QuoteConfigDB()
+    val data:Map[AssetId, SortedColumnMap[LocalDate, Double]] = isoCcyPriceFxConverterData(db.allCcys)
     val priceFXConverter = SingleFXConversion(data, AssetId("USD"))
 
-    val finalState = QuoteConfig
+    val finalState = db
       .allConfigs
       .foldLeft(data)((dataSoFar, cfg) => {
         val series = Await.result(theStore.readQuotes(cfg.name), infDur)

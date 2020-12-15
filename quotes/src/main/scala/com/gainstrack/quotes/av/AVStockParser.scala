@@ -4,7 +4,6 @@ import java.nio.file.{Files, Paths}
 
 import com.gainstrack.command.PriceObservation
 import com.gainstrack.core._
-import com.gainstrack.quotes.av.SyncUp.getClass
 import com.gainstrack.report.{AssetPair, FXConverter, PriceState, SingleFXConversion}
 import org.slf4j.LoggerFactory
 
@@ -52,14 +51,14 @@ object AVStockParser {
     }
     catch {
       case e: Exception => {
-        logger.error(s"Symbol ${cfg.name} failed with ${e.toString}")
+        logger.error(s"Symbol ${cfg.id} failed with ${e.toString}")
         None
       }
     }
   }
 
   def parseSymbol(config: QuoteSource)(implicit fractionalParser: FractionalParser):StockParseResult = {
-    val symbol = config.sources.find(x => x.sourceType == "av").map(_.ref).getOrElse(config.name)
+    val symbol = config.sources.find(x => x.sourceType == "av").map(_.ref).getOrElse(config.id)
 
     val path = Paths.get(s"db/av/${symbol}.csv")
     if (!Files.exists(path))
@@ -152,7 +151,7 @@ case class StockParseResult(series:SortedMap[LocalDate, Double], liveQuote:Doubl
           gbp
         }
         case ccy => {
-          priceState.getFX(ccy, actualCcy.symbol, date).getOrElse(0.0) * amount
+          priceState.getFX(ccy, actualCcy.symbol, date).getOrElse(1.0) * amount
         }
       }
 

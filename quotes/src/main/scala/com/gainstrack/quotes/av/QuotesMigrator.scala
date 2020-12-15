@@ -11,8 +11,8 @@ object QuotesMigrator {
   private val inFlight = scala.collection.concurrent.TrieMap[String, Int]()
 
   def migrateFileToDB(fromDb:QuoteStore, toDb:QuoteStore)(implicit ec: ExecutionContext) = {
-
-    val all = QuoteConfig.allConfigsWithCcy
+    val db = new QuoteConfigDB()
+    val all = db.allConfigsWithCcy
       //     .filter(_.avSymbol == "XAU")
       .map(cfg => {
         val orig = Await.result(fromDb.readQuotes(cfg.name), infDur)

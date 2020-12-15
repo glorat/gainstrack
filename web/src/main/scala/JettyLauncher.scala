@@ -82,11 +82,12 @@ object JettyLauncher { // this is my entry object as specified in sbt project de
 
     val scheduler = Executors.newScheduledThreadPool(1)
     implicit val ec = ExecutionContext.fromExecutor(scheduler)
+    val syncUp = new SyncUp()
 
     val quoteSyncThread = new Runnable() {
       override def run(): Unit = {
         try {
-          SyncUp.batchSyncAll.map( _ => {
+          syncUp.batchSyncAll.map( _ => {
             ServerQuoteSource.updateDB
           })
         }

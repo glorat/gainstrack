@@ -17,7 +17,7 @@ import scala.collection.immutable.SortedMap
 import scala.concurrent.duration.Duration
 import scala.concurrent.{Await, ExecutionContext, Future}
 
-object SyncUp {
+class SyncUp(implicit ec: ExecutionContext) {
   val logger = LoggerFactory.getLogger(getClass)
 
 
@@ -26,6 +26,7 @@ object SyncUp {
   private val infDur = scala.concurrent.duration.Duration.Inf
   private val alphaVantageTimeGap = java.time.Duration.ofSeconds(12) // 12 second throttle
   private var lastAlphaVantageDownload: Instant = Instant.now().minusSeconds(5) // It took 5 secs to start up since last crash
+  private val quoteConfigDB = new QuoteConfigDB()
 
   Files.createDirectories(Paths.get("db/av"))
   Files.createDirectories(Paths.get("db/quotes"))
@@ -36,13 +37,13 @@ object SyncUp {
   logger.info(s"SyncUp using QuoteStore of type ${theStore.getClass.getSimpleName}")
   def apikey = config.getString("quotes.avApiKey")
 
-  def batchSyncAll(implicit ec: ExecutionContext) = {
+  def batchSyncAll = {
     val forceDownload = false
     downloadFromAlphaVantage(forceDownload)
     normaliseTheQuotes
   }
 
-  private def googlePublishOneSync(publisher: Publisher, symbol: String)(implicit ec: ExecutionContext) = {
+  private def googlePublishOneSync(publisher: Publisher, symbol: String) = {
     val data = com.google.protobuf.ByteString.copyFromUtf8(symbol)
     val pubsubMessage = PubsubMessage.newBuilder().setData(data).build
     val fut = publisher.publish(pubsubMessage)
@@ -52,7 +53,7 @@ object SyncUp {
       messageId
     }
   }
-  def googlePublishOneSync(symbol:String)(implicit ec:ExecutionContext):Future[String] = {
+  def googlePublishOneSync(symbol:String):Future[String] = {
     val publisher = Publisher.newBuilder(TopicName.of("gainstrack", "quoteSync")).build()
     googlePublishOneSync(publisher, symbol).map(x => {
       publisher.shutdown()
@@ -60,15 +61,15 @@ object SyncUp {
     })
   }
 
-  def googlePublishAllSyncs(implicit ec: ExecutionContext):Future[String] = {
-    val symbols = QuoteConfig.allCcys ++ QuoteConfig.allConfigs.map(_.name)
+  def googlePublishAllSyncs():Future[String] = {
+    val symbols = quoteConfigDB.allCcys ++ quoteConfigDB.allConfigs.map(_.id)
     logger.info(s"Publishing requests for " + symbols.mkString(","))
     googlePublishOneSync(symbols.mkString(","))
 
   }
 
-  def syncOneSymbol(symbol: String)(implicit ec: ExecutionContext): Future[QuotesMergeResult] = {
-    QuoteConfig.allConfigsWithCcy.find(_.name == symbol).map(quoteConfig => {
+  def syncOneSymbol(symbol: String): Future[QuotesMergeResult] = {
+    quoteConfigDB.allConfigsWithCcy.find(_.id == symbol).map(quoteConfig => {
       this.downloadForQuote(quoteConfig, forceDownload = true)
 
       // Always need EUR & GBP for LSE fixup
@@ -78,10 +79,11 @@ object SyncUp {
       AVStockParser.tryParseSymbol(quoteConfig)
         .map(res => {
           val cfg = res.config
-          val srcCcy = res.sourceCcy.map(_.symbol).getOrElse(cfg.avConfig.meta)
+          val domainCcy = if (cfg.avConfig.meta == "") cfg.ccy else cfg.avConfig.meta
+          val srcCcy = res.sourceCcy.map(_.symbol).getOrElse(domainCcy)
           val fixed = res.fixupLSE(srcCcy, AssetId(cfg.ccy), priceFXConverter)
-          val mergeRes = theStore.readQuotes(cfg.name).flatMap(orig => {
-            theStore.mergeQuotes(cfg.name, orig, fixed.series)
+          val mergeRes = theStore.readQuotes(cfg.id).flatMap(orig => {
+            theStore.mergeQuotes(cfg.id, orig, fixed.series)
           })
           mergeRes
         }).getOrElse(Future.successful(QuotesMergeResult(0, 0, Some("Could not obtain AV results"))))
@@ -89,7 +91,7 @@ object SyncUp {
   }
 
   private def downloadFromAlphaVantage(forceDownload: Boolean) = {
-    def allCcys = QuoteConfig.allCcys
+    def allCcys = quoteConfigDB.allCcys
 
     allCcys.foreach(ccy => {
       val outFile = s"db/av/$ccy.csv"
@@ -100,36 +102,50 @@ object SyncUp {
 
     })
 
-    QuoteConfig.allConfigs.foreach(cfg => {
+    quoteConfigDB.allConfigs.foreach(cfg => {
       downloadForQuote(cfg, forceDownload)
     })
   }
 
   private def downloadForQuote(cfg: QuoteSource, forceDownload: Boolean) = {
-    if (cfg.marketRegion == "LN") {
-      downloadQuoteFromInvestPy(cfg, forceDownload)
-    } else {
-      downloadQuoteFromAlphaVantage(cfg, forceDownload)
+    // TODO: Try first and if it fails, iterate to next
+    cfg.sources match {
+      case QuoteSourceSource("av", _ , _)::_ => downloadQuoteFromAlphaVantage(cfg, forceDownload)
+      case QuoteSourceSource("investpy", _ , _)::_ => downloadQuoteFromInvestPy(cfg, forceDownload)
+      case _ => ()
     }
+
 
   }
 
   private def downloadQuoteFromInvestPy(qs: QuoteSource, forceDownload: Boolean) = {
     val symbol = qs.id
-    val ticker = qs.ticker
+    val icfg = qs.investPyConfig
+    val ticker = if (icfg.ref != "") icfg.ref else qs.ticker
+    val marketRegion = qs.marketRegion
+
+    val country = marketRegion match {
+      case "LN" => "united kingdom"
+      case "NY" => "united states"
+      case "HK" => "hong kong"
+      case "CA" => "canada"
+      case "SG" => "singapore"
+      case "EU" => "netherlands" // Arbitrary choice here!
+    }
 
     val outFile = s"db/av/$symbol.csv"
-    val cmd = s"""python3 python/quotes.py ${ticker}"""
+    val cmd = s"""python3 python/quotes.py ${ticker} "${country}""""
     goGetIt(outFile, cmd, stdoutResult = true, forceDownload = forceDownload)
   }
 
   private def downloadQuoteFromAlphaVantage(cfg: QuoteSource, forceDownload: Boolean) = {
-    val symbol = cfg.name
+    val symbol = cfg.id
     val outFile = s"db/av/$symbol.csv"
+    val avSymbol = cfg.avConfig.ref
     val cmdDaily = if (cfg.marketRegion == "GLOBAL") {
-      s"""wget -O $outFile https://www.alphavantage.co/query?function=FX_DAILY&from_symbol=$symbol&to_symbol=USD&outputsize=full&datatype=csv&apikey=$apikey"""
+      s"""wget -O $outFile https://www.alphavantage.co/query?function=FX_DAILY&from_symbol=$avSymbol&to_symbol=USD&outputsize=full&datatype=csv&apikey=$apikey"""
     } else {
-      s"""wget -O $outFile https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=$symbol&outputsize=full&datatype=csv&apikey=$apikey"""
+      s"""wget -O $outFile https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=$avSymbol&outputsize=full&datatype=csv&apikey=$apikey"""
     }
 
     goGetIt(outFile, cmdDaily, stdoutResult = false, forceDownload = forceDownload)
@@ -147,7 +163,8 @@ object SyncUp {
     val duration = java.time.Duration.ofHours(24)
     val lastModified: Instant = if (exists) Files.getLastModifiedTime(path).toInstant else now.plus(java.time.Duration.ofDays(100))
     if (!exists || forceDownload || lastModified.plus(duration).isBefore(Instant.now)) {
-      val timeToSleep = java.time.Duration.between(Instant.now, lastAlphaVantageDownload).minus(alphaVantageTimeGap)
+      val timeToSleep = java.time.Duration.between(lastAlphaVantageDownload, Instant.now).minus(alphaVantageTimeGap).negated()
+      logger.info(s"timeToSleep: ${timeToSleep.toMillis}")
       if (throttleRequests && cmd.contains("alphavantage") && !timeToSleep.isNegative) {
         logger.info(s"Sleeping for ${timeToSleep.toMillis}ms to throttle alphavantage requests")
         Thread.sleep(timeToSleep.toMillis)
@@ -171,6 +188,12 @@ object SyncUp {
       if (one.contains("API call frequency")) {
         println("API call frequency hit")
         Files.delete(path)
+      } else if (one.contains("Invalid API call")) {
+        println("Invalid API call")
+        Files.delete(path)
+      } else if (size == 0) {
+        println("Nothing downloaded")
+        Files.delete(path)
       } else {
         println(one)
       }
@@ -180,8 +203,8 @@ object SyncUp {
 
 
   // Read quotes from sources like av and put it into standard form
-  def normaliseTheQuotes(implicit ec: ExecutionContext) = {
-    val isoCcys = QuoteConfig.allCcys
+  def normaliseTheQuotes = {
+    val isoCcys = quoteConfigDB.allCcys
     // First sort out all the ISO currencies
     val data: Map[AssetId, SortedColumnMap[LocalDate, Double]] = isoCcys.flatMap(fxCcy => {
       AVStockParser.tryParseSymbol(QuoteConfig(fxCcy, "USD", "USD", "FX").toQuoteSource).map(res => {
@@ -199,20 +222,25 @@ object SyncUp {
     // We need a converter in order to fixup borked quotes
     val priceFXConverter = SingleFXConversion(data, AssetId("USD"))
 
-    val reses: Seq[Future[Any]] = QuoteConfig
+    val reses: Seq[Future[Any]] = quoteConfigDB
       .allConfigs
-      // .filter(_.avSymbol == "VWRL.LON") // Uncomment here for debugging
+      .filter(_.id == "BRK-B.NY") // Uncomment here for debugging
       .flatMap(cfg => AVStockParser.tryParseSymbol(cfg))
       .map(res => {
         val cfg = res.config
-        val avConfig = cfg.avConfig
-        val domainCcy = avConfig.meta
-        val actualCcy = cfg.ccy
-        val srcCcy = res.sourceCcy.map(_.symbol).getOrElse(domainCcy)
-        val avSymbol = avConfig.ref
-        val fixed = res.fixupLSE(srcCcy, AssetId(actualCcy), priceFXConverter)
-        theStore.readQuotes(avSymbol).map(orig => {
-          theStore.mergeQuotes(avSymbol, orig, fixed.series)
+        val result = cfg.avConfigOpt.map(avConfig => {
+          val actualCcy = cfg.ccy
+          val domainCcy = if (avConfig.meta == "") actualCcy else avConfig.meta
+          val srcCcy = res.sourceCcy.map(_.symbol).getOrElse(domainCcy)
+          val avSymbol = avConfig.ref
+          val fixed = res.fixupLSE(srcCcy, AssetId(actualCcy), priceFXConverter)
+          fixed
+        }).getOrElse(res)
+
+        val id = cfg.id
+
+        theStore.readQuotes(id).map(orig => {
+          theStore.mergeQuotes(id, orig, result.series)
         })
       })
     Future.sequence(reses)

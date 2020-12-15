@@ -1,5 +1,7 @@
 package com.gainstrack.quotes.av
 
+import scala.concurrent.ExecutionContext
+
 case class QuoteExchange(symbol: String)
 
 case class QuoteConfig(avSymbol:String, actualCcy:String, domainCcy:String, assetType:String) {
@@ -25,11 +27,12 @@ case class QuoteConfig(avSymbol:String, actualCcy:String, domainCcy:String, asse
 }
 
 object QuoteConfig {
-  def create(avSymbol:String, actualCcy:String, domainCcy:String):QuoteConfig = {
+  def create(avSymbol: String, actualCcy: String, domainCcy: String): QuoteConfig = {
     QuoteConfig(avSymbol, actualCcy, domainCcy, "Stock")
   }
-
-  val allConfigs:Seq[QuoteSource] = Seq(
+}
+class QuoteConfigDB(implicit ec: ExecutionContext) {
+  val allConfigsHardcoded:Seq[QuoteSource] = Seq(
     Tuple3("VWRD.LON", "USD", "LSEUSD"),
     Tuple3("VDEV.LON", "USD", "LSEUSD"),
     Tuple3("VDEM.LON", "USD", "LSEUSD"),
@@ -59,6 +62,8 @@ object QuoteConfig {
     Tuple3("GOOG", "USD", "USD"),
     Tuple3("DAX", "USD", "USD")
   ).map((QuoteConfig.create _).tupled).map(_.toQuoteSource)
+
+  val allConfigs = QuoteSource.getAllQuoteSources()
 
   // A shortcut implementation for now. One day, let's get a list of ISOs
   def allCcys = Seq("GBP", "EUR", "HKD", "CAD", "AUD", "NZD", "CNY", "SGD", "JPY", "SEK", "XAU")

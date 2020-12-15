@@ -3,7 +3,7 @@ package controllers
 import java.time.LocalDate
 
 import com.gainstrack.core.{AssetId, GainstrackJsonSerializers}
-import com.gainstrack.quotes.av.QuoteConfig
+import com.gainstrack.quotes.av.{QuoteConfig, QuoteConfigDB}
 import com.gainstrack.web.TimingSupport
 import org.json4s.Formats
 import org.scalatra.json.JacksonJsonSupport
@@ -28,7 +28,8 @@ class QuotesController(implicit val ec :ExecutionContext)
   }
 
   get("/config") {
-    QuoteConfig.allConfigsWithCcy
+    // Cache this?
+    new QuoteConfigDB().allConfigsWithCcy
   }
 
   get("/ticker/:ticker") {

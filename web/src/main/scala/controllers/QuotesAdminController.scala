@@ -2,7 +2,7 @@ package controllers
 
 import com.gainstrack.core.{AssetId, GainstrackJsonSerializers, SortedColumnMap}
 import com.gainstrack.quotes.av.Main.{infDur, theStore}
-import com.gainstrack.quotes.av.{QuoteConfig, QuotesMergeResult, SyncUp}
+import com.gainstrack.quotes.av.{QuoteConfig, QuoteConfigDB, QuotesMergeResult, SyncUp}
 import com.gainstrack.web.TimingSupport
 import org.json4s.Formats
 import org.scalatra.json.JacksonJsonSupport
@@ -14,6 +14,7 @@ import scala.concurrent.{Await, ExecutionContext, Future}
 class QuotesAdminController(implicit val executor :ExecutionContext)
   extends ScalatraServlet with JacksonJsonSupport with TimingSupport with FutureSupport {
   val logger =  LoggerFactory.getLogger(getClass)
+  val syncUp = new SyncUp()
 
   protected implicit val jsonFormats: Formats = org.json4s.DefaultFormats ++ GainstrackJsonSerializers.all
   logger.info("QuotesAdminController enabled in server")
@@ -23,14 +24,16 @@ class QuotesAdminController(implicit val executor :ExecutionContext)
   }
 
   get("/config") {
-    QuoteConfig.allConfigsWithCcy
+    // Cache this?
+    new QuoteConfigDB().allConfigsWithCcy
   }
+
 
   get("/ticker/:ticker") {
     new AsyncResult() {
       override val is: Future[_] = {
         val ticker = params("ticker")
-        SyncUp.syncOneSymbol(ticker)
+        syncUp.syncOneSymbol(ticker)
       }
     }
 
@@ -49,14 +52,14 @@ class QuotesAdminController(implicit val executor :ExecutionContext)
             case Nil => Future.successful(QuotesMergeResult(0,0,None))
             case symbol :: Nil => {
               logger.info(s"Requested to sync one symbol ${symbol}")
-              SyncUp.syncOneSymbol(symbol)
+              syncUp.syncOneSymbol(symbol)
             }
             case symbol :: tail => {
               logger.info(s"Requested to sync one symbol ${symbol}")
-              SyncUp.syncOneSymbol(symbol).map(res => {
+              syncUp.syncOneSymbol(symbol).map(res => {
                 val rest = tail.mkString(",")
                 logger.info(s"Queuing up: ${rest}")
-                SyncUp.googlePublishOneSync(rest).map(_ => {
+                syncUp.googlePublishOneSync(rest).map(_ => {
                   res
                 })
               })
@@ -82,7 +85,7 @@ class QuotesAdminController(implicit val executor :ExecutionContext)
       override val is: Future[_] = {
         try {
           logger.info(request.body)
-          SyncUp.googlePublishAllSyncs.map(_ => "OK")
+          syncUp.googlePublishAllSyncs.map(_ => "OK")
         } catch {
           case e: Exception => {
             logger.error("syncall dropping error: " + e.toString)
