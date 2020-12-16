@@ -124,17 +124,8 @@ class SyncUp(implicit ec: ExecutionContext) {
     val ticker = if (icfg.ref != "") icfg.ref else qs.ticker
     val marketRegion = qs.marketRegion
 
-    val country = marketRegion match {
-      case "LN" => "united kingdom"
-      case "NY" => "united states"
-      case "HK" => "hong kong"
-      case "CA" => "canada"
-      case "SG" => "singapore"
-      case "EU" => "netherlands" // Arbitrary choice here!
-    }
-
     val outFile = s"db/av/$symbol.csv"
-    val cmd = s"""python3 python/quotes.py ${ticker} "${country}""""
+    val cmd = s"""python3 python/quotes.py ${ticker} "${marketRegion}""""
     goGetIt(outFile, cmd, stdoutResult = true, forceDownload = forceDownload)
   }
 
