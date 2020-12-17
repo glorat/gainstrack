@@ -18,3 +18,4 @@ dlstore
 data/
 *.swp
 db/
+gainstrack*.json
