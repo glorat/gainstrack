@@ -110,3 +110,11 @@ And for production
 ```bash
 firebase deploy --only hosting:prod
 ```
+
+#### Functions (TBD)
+```bash
+gcloud functions deploy investpy --runtime python38 --trigger-http --allow-unauthenticated --region=asia-northeast1
+```
+Test with:
+
+https://asia-northeast1-gainstrack.cloudfunctions.net/investpy?ticker=VWRD&marketRegion=LN
