@@ -27,6 +27,7 @@
     "@vue/composition-api": "^0.6.4",
     "axios": "^0.18.1",
     "core-js": "^3.6.5",
+    "firebaseui": "^4.7.1",
     "lodash": "^4.17.20",
     "numbro": "^2.3.1",
     "plotly.js-dist": "^1.55.2",

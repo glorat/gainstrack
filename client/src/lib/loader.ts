@@ -6,3 +6,4 @@ export const MyFirebase = () => import(/* webpackChunkName: "MyFirebase" */'../M
 export const MarkdownRender = () => import(/* webpackChunkName: "MarkdownRender" */ '../components/MarkdownRender.vue');
 export const Tour = () => import (/* webpackChunkName: "Tour" */ '../Tour.vue');
 export const codemirror = () => import (/* webpackChunkName: "CodeMirror" */  '../components/CodeMirror.vue');
+export const FirebaseLogin = () => import(/* webpackChunkName: "FirebaseLogin" */ '../components/FirebaseLogin.vue');

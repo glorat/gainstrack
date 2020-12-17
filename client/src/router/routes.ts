@@ -25,6 +25,7 @@ import {AsyncComponent} from 'vue';
 import BogleTools from 'pages/BogleTools.vue';
 import BogleTwoFund from 'pages/BogleTwoFund.vue';
 import RebalanceCalc from 'components/RebalanceCalc.vue';
+import Login from 'pages/Login.vue';
 
 const gainstrackRoutes: RouteConfig[] = [
   {path: '/add', component: Add, meta: {title: 'Add Record', icon: matAddCircleOutline}},
@@ -87,6 +88,7 @@ const gainstrackRoutes: RouteConfig[] = [
     props: {page: 'help.md'},  meta: {title: 'Help'}},
   {path: '/faq', component: Markdown,
     props: {page: 'faq.md'},  meta: {title: 'FAQ'}},
+  {path: '/login', component: Login,  meta: {title: 'Login'}},
   {path: '/*', component: Markdown,
     props: {page: 'welcome.md'},  meta: {title: 'Welcome'}},
 ];
@@ -97,7 +99,7 @@ const gainstrackNavBar = [
   ['irr', 'aa', 'pnlexplain'],
   ['prices', 'quotes', 'settings', 'assetdb'],
   ['port', 'editor', 'history'],
-  ['help', 'faq']
+  ['help', 'faq','login']
 ];
 
 const gainstrackMode: AppMode = {

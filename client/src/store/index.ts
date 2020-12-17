@@ -16,6 +16,7 @@ import {LocalDate} from '@js-joda/core';
 import {toCommodityGainstrack} from '../lib/commandDefaulting';
 import { store } from 'quasar/wrappers'
 import {QuoteSource} from 'src/lib/assetDb';
+import firebase from 'firebase';
 
 export interface TimeSeries {
   x: string[]
@@ -33,6 +34,7 @@ export interface MyState {
   gainstrackText: string,
   quotes: Record<string, TimeSeries>,
   conversion: string
+  user?: firebase.User
 }
 
 const initState: MyState = {
@@ -44,7 +46,7 @@ const initState: MyState = {
   parseState: { errors: [] },
   gainstrackText: '',
   quotes: {},
-  conversion: 'parent',
+  conversion: 'parent'
 };
 
 type FXConverterWrapper = ((fx: SingleFXConversion) => SingleFXConverter)
@@ -112,11 +114,17 @@ export default store(function ({ Vue }) {
         if (orig === undefined) throw new Error('Invariant violation in assetSave')
         const idx = originalAssets.indexOf(orig)
         Object.assign(originalAssets[idx], cloneDeep(asset))
+      },
+      userChanged (state: MyState, userData: firebase.User) {
+        state.user = userData
       }
     },
     actions: {
       increment (context) {
         context.commit('increment')
+      },
+      changeUser (context, userData: firebase.User) {
+        context.commit('userChanged', userData)
       },
       async balances (context) {
         const getters = context.getters;

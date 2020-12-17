@@ -3,6 +3,7 @@ import * as firebase from 'firebase/app';
 // Add the Firebase services that you want to use
 import 'firebase/analytics';
 import 'firebase/firestore';
+import 'firebase/auth';
 
 let inited = false;
 
@@ -35,4 +36,9 @@ export function myFirestore() {
 export function myAnalytics() {
   initFirebase()
   return firebase.analytics();
+}
+
+export function myAuth() {
+  initFirebase()
+  return firebase.auth();
 }
