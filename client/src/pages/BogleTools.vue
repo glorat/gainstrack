@@ -54,6 +54,10 @@
         {target: 'investments', title: 'Portfolio Tools', subtitle: 'Under development!',
           description: 'Tools for helping you manage your portfolio of investments',
           icon: mdiAlert
+        },
+        {target: 'assetdb', title: 'Investment DB', subtitle: 'Under development!',
+          description: 'Crowd-sourced database of ETFs and other investment assets',
+          icon: mdiAlert
         }
       ];
       return {tools};

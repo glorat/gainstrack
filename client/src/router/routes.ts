@@ -27,7 +27,15 @@ import BogleTwoFund from 'pages/BogleTwoFund.vue';
 import RebalanceCalc from 'components/RebalanceCalc.vue';
 import Login from 'pages/Login.vue';
 
+const commonRoutes: RouteConfig[] = [
+  {path: '/assetdb', meta: {title:'Asset DB'}, component: () => import('../pages/AssetDb.vue')},
+  {path: '/quotesdb/new', name: 'quoteSourceNew', meta: {title: 'Quotes DB'}, component: () => import('../pages/QuoteSource.vue')},
+  {path: '/quotesdb/:id', name: 'quoteSource', meta: {title: 'Quotes DB'}, props: true, component: () => import('../pages/QuoteSource.vue')},
+  {path: '/login', component: Login,  meta: {title: 'Login'}},
+];
+
 const gainstrackRoutes: RouteConfig[] = [
+  ...commonRoutes,
   {path: '/add', component: Add, meta: {title: 'Add Record', icon: matAddCircleOutline}},
   {path: '/add/cmd', name: 'addcmd', component: AddCmd, meta: {title: 'Add Record'}},
   {
@@ -81,14 +89,10 @@ const gainstrackRoutes: RouteConfig[] = [
   {path: '/pnlexplain', component: () => import(/* webpackChunkName: "PnlExplain" */ '../pages/PnlExplain.vue'), meta: {title: ' P&L Explain'}},
   {path: '/pnlexplain/:fromDate/:toDate', component: PnlExplainDetail,
     name: 'pnldetail', meta: {title: ' P&L Explain'}, props: true},
-  {path: '/assetdb', meta: {title:'Asset DB'}, component: () => import('../pages/AssetDb.vue')},
-  {path: '/quotesdb/new', name: 'quoteSourceNew', meta: {title: 'Quotes DB'}, component: () => import('../pages/QuoteSource.vue')},
-  {path: '/quotesdb/:id', name: 'quoteSource', meta: {title: 'Quotes DB'}, props: true, component: () => import('../pages/QuoteSource.vue')},
   {path: '/help', component: Markdown,
     props: {page: 'help.md'},  meta: {title: 'Help'}},
   {path: '/faq', component: Markdown,
     props: {page: 'faq.md'},  meta: {title: 'FAQ'}},
-  {path: '/login', component: Login,  meta: {title: 'Login'}},
   {path: '/*', component: Markdown,
     props: {page: 'welcome.md'},  meta: {title: 'Welcome'}},
 ];
@@ -111,6 +115,7 @@ const gainstrackMode: AppMode = {
 };
 
 const simpleRoutes: RouteConfig[] = [
+  ...commonRoutes,
   // boglebot.com specific routes
   {path: '/play', component: BogleTwoFund,
     meta: {title: '2-Fund Guide', icon: 'img:icons/boglebot.svg'}
@@ -123,7 +128,11 @@ const simpleRoutes: RouteConfig[] = [
   {path: '/*', component: BogleTools},
   ];
 const simpleNavBar: string[][] = [
-  ['', 'play', 'investments', 'contribute'],
+  [''],
+  ['play'],
+  ['investments', 'contribute'],
+  ['assetdb'],
+  ['login'],
 ];
 
 const simpleMode: AppMode =
@@ -152,7 +161,7 @@ export const {appRoutes, navBar, layout, appTitle, appDescription} : AppMode = (
   } else {
     // Default to gainstrack for unknown host
     // Can change this during development. Should not hit this in production
-    return gainstrackMode;
+    return simpleMode;
 
   }
 })()

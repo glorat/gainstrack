@@ -65,7 +65,7 @@
         }
         catch (error) {
           console.error(error);
-          this.$notify.error(error);
+          this.$notify.error(error.message);
         }
         finally {
           this.loading = false
