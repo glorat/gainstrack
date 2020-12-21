@@ -25,7 +25,7 @@
 
 <script lang="ts">
   import {defineComponent} from '@vue/composition-api';
-  import {mdiAlert} from "@quasar/extras/mdi-v5";
+  import {mdiAlert} from '@quasar/extras/mdi-v5';
 
   interface Tool {
     target: string

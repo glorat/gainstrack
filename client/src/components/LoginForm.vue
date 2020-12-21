@@ -1,31 +1,25 @@
 <template>
     <div>
-        <div v-if="!$auth.loading">
-            <button class="login" v-if="!$auth.isAuthenticated" @click="auth0login">Sign Up/Log in</button>
-            <button v-if="false" @click="auth0validate">Test</button>
-        </div>
-        <q-separator />
-<!--        <form @submit.prevent="login()" v-if="!authentication.username">-->
-<!--            <input type="text" name="username" placeholder="Username" v-model="username" pattern="\w*" title="Only lowercase">-->
-<!--            <input type="password" name="password" v-model="password">-->
-<!--            <input type="submit" name="login" value="Admin Login" :disabled="loading">-->
-<!--        </form>-->
-        <div v-if="authentication.username">
-            Logged in as <em>{{$auth.isAuthenticated ? $auth.user.name : authentication.username}}</em>
-            <form @submit.prevent="logout()">
-                <input type="submit" name="logout" value="Logout" :disabled="loading || $auth.loading" >
+
+        <div v-if="isAuthenticated">
+            Logged in as <em>{{  authName }}</em>
+            <form @submit.prevent="logout()" v-if="auth0authned">
+              <input type="submit" name="logout" value="Logout" :disabled="loading || $auth.loading" >
             </form>
         </div>
+      <div v-else>
+        <button class="login" v-if="!$auth.loading" @click="auth0login">Sign Up/Log in</button>
+      </div>
     </div>
 </template>
 
 <script>
-    import Vue from 'vue';
+import Vue from 'vue';
 
-    // Import the plugin here
-    import {Auth0Plugin} from '../auth';
+// Import the plugin here
+import {Auth0Plugin} from '../auth';
 
-    Vue.use(Auth0Plugin, {
+Vue.use(Auth0Plugin, {
         domain: process.env.VUE_APP_AUTH0_ID + '.auth0.com',
         clientId: process.env.VUE_APP_AUTH0_CLIENT,
         audience: process.env.VUE_APP_AUTH0_AUDIENCE,
@@ -43,18 +37,29 @@
         name: 'LoginForm',
         data() {
             return {
-                username: '',
-                password: '',
                 loading: false,
             }
         },
         computed: {
-            authentication() {
-                return this.$store.state.allState.authentication;
-            },
-            auth0authned() {
-                return this.$auth.isAuthenticated
-            },
+          auth0authned() {
+            return this.$auth.isAuthenticated
+          },
+          firebaseAuthed() {
+            return !!this.$store.state.user;
+          },
+          isAuthenticated() {
+            const state = this.$store.state;
+            return this.auth0authned || this.firebaseAuthed;
+          },
+          authName() {
+            if (this.auth0authned) {
+              return this.$auth.user.name
+            } else if (this.firebaseAuthed) {
+              return this.$store.state.user.displayName
+            } else {
+              return 'Unknown'
+            }
+          }
         },
         watch: {
             auth0authned(val) {
@@ -64,27 +69,7 @@
             }
         },
         methods: {
-            async login() {
-                const notify = this.$notify;
-                this.loading = true;
-                const summary = await this.$store.dispatch('login', {username: this.username, password: this.password})
-                    .then(response => {
-                        this.$analytics.logEvent('login');
-                        return response.data;
-                    })
-                    .catch(error => notify.error(error.response.data))
-                    .finally(() => this.loading = false);
-                if (summary.authentication.error) {
-                    notify.warning(summary.authentication.error);
-                }
-            },
             async logout() {
-                const notify = this.$notify;
-                this.loading = true;
-                await this.$store.dispatch('logout')
-                    .then(response => response.data)
-                    .catch(error => notify.error(error.response.data))
-                    .finally(() => this.loading = false);
                 if (this.$auth.isAuthenticated) {
                     this.$auth.logout({
                         returnTo: window.location.origin
@@ -96,47 +81,27 @@
                 this.$auth.loginWithRedirect();
             },
             async loginWithToken(auth) {
+              this.loading = true;
                 const notify = this.$notify;
                 const getToken = async () => await auth.getTokenSilently();
-                const summary = await this.$store.dispatch('loginWithToken', getToken)
-                    .then(response => {
-                        this.$analytics.logEvent('login');
-                        return response.data;
-                    })
-                    .catch(error => {
-                        notify.error(`Auth token rejected by server: ${error.response.data}`);
-                        this.$store.dispatch('logout');
-                    })
-                    .finally(() => this.loading = false);
-                if (summary.authentication.error) {
-                    notify.warning(summary.authentication.error);
+                try {
+                  await this.$store.dispatch('loginWithToken', getToken)
                 }
+                catch (error) {
+                  notify.error('Auth token rejected by server');
+                  console.error(error);
+                  this.$store.dispatch('logout');
+                }
+                finally {
+                  this.loading = false
+                }
+
             },
             async auth0validate() {
-                await this.$auth.getTokenSilently();
-                this.loading = true;
                 await this.loginWithToken(this.$auth)
 
             },
-            async autoLogin() {
-                const notify = this.$notify;
-                try {
-                    await this.$auth.auth0ClientPromise;
-                    const token = await this.$auth.getTokenSilently();
-                    if (token) {
-                        notify.success('Welcome Back!');
-                        await this.loginWithToken(this.$auth);
-                    }
-                } catch (e) {
-                    // eslint-disable-next-line
-                    console.error(e)
-                }
-
-            }
         },
-        mounted() {
-            this.autoLogin();
-        }
     }
 </script>
 

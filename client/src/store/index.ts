@@ -34,7 +34,7 @@ export interface MyState {
   gainstrackText: string,
   quotes: Record<string, TimeSeries>,
   conversion: string
-  user?: firebase.User
+  user: firebase.User|undefined
 }
 
 const initState: MyState = {
@@ -46,7 +46,8 @@ const initState: MyState = {
   parseState: { errors: [] },
   gainstrackText: '',
   quotes: {},
-  conversion: 'parent'
+  conversion: 'parent',
+  user: undefined
 };
 
 type FXConverterWrapper = ((fx: SingleFXConversion) => SingleFXConverter)
@@ -115,7 +116,7 @@ export default store(function ({ Vue }) {
         const idx = originalAssets.indexOf(orig)
         Object.assign(originalAssets[idx], cloneDeep(asset))
       },
-      userChanged (state: MyState, userData: firebase.User) {
+      userChanged (state: MyState, userData: firebase.User|undefined) {
         state.user = userData
       }
     },
@@ -123,7 +124,7 @@ export default store(function ({ Vue }) {
       increment (context) {
         context.commit('increment')
       },
-      changeUser (context, userData: firebase.User) {
+      changeUser (context, userData?: firebase.User|undefined) {
         context.commit('userChanged', userData)
       },
       async balances (context) {
@@ -269,17 +270,13 @@ export default store(function ({ Vue }) {
           return config;
         }
 
-        const summary = await axios.post('/api/authn/login', {});
         // Get stuff in background
-        await context.dispatch('loadAllState');
-
-        return summary
+        return await context.dispatch('loadAllState');
       },
-      async logout (context, data: Record<string, any>) {
-        const summary = await axios.post('/api/authn/logout', data);
+      async logout (context) {
         requestPreprocessor = async (config) => config;
-        await context.dispatch('loadAllState');
-        return summary
+        return await context.dispatch('loadAllState');
+
       },
       parseState (context, data) {
         context.commit('parseState', data)

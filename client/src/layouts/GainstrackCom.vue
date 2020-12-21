@@ -47,10 +47,6 @@
                 this.pageTitle = (to.meta.title || 'Gainstrack');
             });
             this.pageTitle = this.$router.currentRoute.meta.title;
-
-            // Get some state on startup
-            this.$store.dispatch('reload');
-
         },
         data () {
             return {

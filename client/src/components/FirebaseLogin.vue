@@ -24,6 +24,7 @@ export default Vue.extend({
     async logout(): Promise<void> {
       const fauth = firebase.auth()
       await fauth.signOut()
+      await this.$store.dispatch('logout')
     }
   },
   computed: {
