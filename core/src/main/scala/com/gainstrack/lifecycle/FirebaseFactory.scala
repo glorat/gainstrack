@@ -1,6 +1,7 @@
 package com.gainstrack.lifecycle
 
 import com.google.auth.oauth2.GoogleCredentials
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.{FirebaseApp, FirebaseOptions}
 import net.glorat.ledger.{FirestoreLedger, FirestoreLedgerConfig}
 import org.json4s.{DefaultFormats, ShortTypeHints}
@@ -32,4 +33,8 @@ object FirebaseFactory {
   def createRepo(implicit ec: ExecutionContext) = new FirestoreLedger(firestoreConfig)
 
   def createAnonRepo(implicit ec: ExecutionContext) = new FirestoreLedger(anonFirestoreConfig)
+
+  def firebaseAuth() = {
+    FirebaseAuth.getInstance
+  }
 }

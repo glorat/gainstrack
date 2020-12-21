@@ -1,5 +1,6 @@
 package com.gainstrack.web
 
+import com.auth0.jwk.SigningKeyNotFoundException
 import com.auth0.jwt.exceptions.{JWTVerificationException, TokenExpiredException}
 import javax.servlet.http.{HttpServletRequest, HttpServletResponse}
 import org.json4s.Formats
@@ -51,6 +52,10 @@ class Auth0Strategy (protected override val app: ScalatraBase)
       catch {
         case e: JWTVerificationException => {
           logger.error(s"Attempt to login failed with ${e.getMessage}")
+          None
+        }
+        case e: SigningKeyNotFoundException => {
+          logger.warn(s"kid of bearer token is not one of ours")
           None
         }
       }

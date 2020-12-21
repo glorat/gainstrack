@@ -259,10 +259,10 @@ export default store(function ({ Vue }) {
 
         return summary
       },
-      async loginWithToken (context, auth) {
+      async loginWithToken (context, getToken: () => Promise<string>) {
 
         requestPreprocessor = async (config) => {
-          const token = await auth.getTokenSilently();
+          const token = await getToken();
           config.headers.common = {
             Authorization: `Bearer ${token}` // send the access token through the 'Authorization' header
           };

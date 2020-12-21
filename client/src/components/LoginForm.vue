@@ -97,7 +97,8 @@
             },
             async loginWithToken(auth) {
                 const notify = this.$notify;
-                const summary = await this.$store.dispatch('loginWithToken', auth)
+                const getToken = async () => await auth.getTokenSilently();
+                const summary = await this.$store.dispatch('loginWithToken', getToken)
                     .then(response => {
                         this.$analytics.logEvent('login');
                         return response.data;

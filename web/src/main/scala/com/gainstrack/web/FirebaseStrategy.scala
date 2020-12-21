@@ -26,9 +26,7 @@ class FirebaseStrategy (protected override val app: ScalatraBase)
       // Restrict this to dev only once we are done testing
       logger.info(s"Handle bearer token ${token}")
       try {
-        import com.google.firebase.auth.FirebaseAuth
-        import com.google.firebase.auth.FirebaseToken
-        val decodedToken = FirebaseAuth.getInstance.verifyIdToken(token)
+        val decodedToken = FirebaseFactory.firebaseAuth.verifyIdToken(token)
         val uid = decodedToken.getUid
 
         logger.info(s"Validated firebase bearer token for ${uid}")

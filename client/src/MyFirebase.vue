@@ -27,6 +27,16 @@
           console.log('firebase auth')
           myAnalytics().setUserId(user.uid)
           console.log(user)
+          const summary = await this.$store.dispatch('loginWithToken', () => user.getIdToken(false))
+            .then(response => {
+              // console.log('firebase auth accepted by backend');
+              // this.$analytics.logEvent('login');
+            })
+            .catch(error => {
+              console.error(`Auth token rejected by server: ${error}`);
+              this.$store.dispatch('logout');
+            })
+            .finally(() => {console.log('login flow done')});
         } else {
           console.log('firebase not auth')
         }
