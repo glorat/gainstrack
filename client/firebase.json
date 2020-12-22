@@ -17,7 +17,7 @@
           }
         },
         {
-          "source": "/functions/auth",
+          "source": "/functions/auth/**",
           "function": "auth"
         },
         {

@@ -1,4 +1,5 @@
 import * as functions from 'firebase-functions';
+import {RequestHandler} from "express";
 
 const {createHash} = require('crypto');
 
@@ -55,12 +56,12 @@ const jwtCheck = jwt({
 });
 
 
-function javaHash(input:string) {
+function javaHash(input: string) {
   const md5Bytes = createHash('md5').update(input).digest();
-  md5Bytes[6]  &= 0x0f;  /* clear version        */
-  md5Bytes[6]  |= 0x30;  /* set to version 3     */
-  md5Bytes[8]  &= 0x3f;  /* clear variant        */
-  md5Bytes[8]  |= 0x80;  /* set to IETF variant  */
+  md5Bytes[6] &= 0x0f;  /* clear version        */
+  md5Bytes[6] |= 0x30;  /* set to version 3     */
+  md5Bytes[8] &= 0x3f;  /* clear variant        */
+  md5Bytes[8] |= 0x80;  /* set to IETF variant  */
   const hex = md5Bytes.toString('hex')
   const uuid = hex.replace(/(\w{8})(\w{4})(\w{4})(\w{4})(\w{12})/, "$1-$2-$3-$4-$5");
   return uuid;
@@ -68,7 +69,7 @@ function javaHash(input:string) {
 
 const app = express();
 
-app.post('/firebase', jwtCheck, async (req, res) => {
+const firebaseHandler: RequestHandler = async (req, res) => {
   // Create UID from authenticated Auth0 user
   // @ts-ignore
   const uid = req.user.sub;
@@ -85,7 +86,10 @@ app.post('/firebase', jwtCheck, async (req, res) => {
       error: err,
     })
   }
-});
+};
+
+app.post('/firebase', jwtCheck, firebaseHandler);
+app.post('/functions/auth/firebase', jwtCheck, firebaseHandler);
 
 
 export const auth = functions
