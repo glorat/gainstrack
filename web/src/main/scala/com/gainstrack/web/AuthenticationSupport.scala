@@ -2,53 +2,54 @@ package com.gainstrack.web
 
 import javax.servlet.http.{HttpServletRequest, HttpServletResponse}
 import org.scalatra.ScalatraBase
-import org.scalatra.auth.ScentryAuthStore.ScentryAuthStore
-import org.scalatra.auth.{Scentry, ScentryConfig, ScentrySupport}
 import org.scalatra.json.JacksonJsonSupport
 import org.slf4j.LoggerFactory
 
-trait AuthenticationSupport extends ScentrySupport[GUser] {
+trait AuthenticationSupport  {
   self: ScalatraBase with JacksonJsonSupport =>
   private val logger =  LoggerFactory.getLogger(getClass)
-  protected def fromSession = { case username: String => GUser(username)  }
-  protected def toSession   = { case usr: GUser => usr.username }
 
-  protected val scentryConfig = (new ScentryConfig {}).asInstanceOf[ScentryConfiguration]
+  private val authKey = "com.gainstrack.authuser"
 
-  this.cookies
-/**
- * If an unauthenticated user attempts to access a route which is protected by Scentry
- * */
-  override protected def configureScentry() = {
-    // This is commented out because it is pointless
-//    scentry.unauthenticated {
-//      scentry.strategies("SimpleAuthStrategy").unauthenticated()
-//    }
+  // These methods can be found on AuthenticationSupport but we maintain a narrow
+  // dependency here in case, for example, it needs mocking out
+  protected def isAuthenticated(implicit request: HttpServletRequest): Boolean = {
+    request.get(authKey).isDefined
+  }
+  protected def user(implicit request: HttpServletRequest): GUser = {
+    request(authKey).asInstanceOf[GUser]
   }
 
-  /**
-   * Register auth strategies with Scentry. Any controller with this trait mixed in will attempt to
-   * progressively use all registered strategies to log the user in, falling back if necessary.
-   */
-  override protected def registerAuthStrategies() = {
-    scentry.register("SimpleAuthStrategy", app => new SimpleAuthStrategy(app))
-    scentry.register("Auth0Strategy", app => new Auth0Strategy(app))
-    scentry.register("FirebaseStrategy", app => new FirebaseStrategy(app))
-    scentry.register("AnonyAuthStrategy", app => new AnonAuthStrategy(app))
+  def user_=(v: GUser)(implicit request: HttpServletRequest, response: HttpServletResponse) = {
+    request(authKey) = v
+  }
 
-    scentry.store = new ScentryAuthStore {
-      val myKey = Scentry.scentryAuthKey + ".token"
-      override def get(implicit request: HttpServletRequest, response: HttpServletResponse): String = {
-        request.get(myKey).map(_.asInstanceOf[String]).orNull
-      }
+  protected def authenticate():Option[GUser] = {
+    val opt = parseUser()
+    opt.map(user => {
+      this.user = user
+      user
+    })
+  }
 
-      override def set(value: String)(implicit request: HttpServletRequest, response: HttpServletResponse): Unit = {
-        request.setAttribute(myKey, value)
-      }
+  private def parseUser():Option[GUser] = {
+    val header = request.getHeader("Authorization")
+    val anon = new AnonAuthStrategy(this)
+    val simple = new SimpleAuthStrategy(this) // Deprecated
+    val oauth2 = new OAuthStrategy(this)
 
-      override def invalidate()(implicit request: HttpServletRequest, response: HttpServletResponse): Unit = {
-
-      }
+    if (request.contains(authKey)) {
+      Some(this.user)
+    }
+    else if (oauth2.isValid) {
+      oauth2.authenticate()
+    } else if (simple.isValid) {
+      simple.authenticate()
+    } else if (anon.isValid) {
+      // Anonymous
+      anon.authenticate()
+    } else {
+      None
     }
   }
 

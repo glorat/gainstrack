@@ -24,14 +24,6 @@ class DebugController(implicit val ec :ExecutionContext)
     headers
   }
 
-  get("/authn") {
-    val user = scentry.authenticate()
-    val authn = (user.map(u => s"authenticated ${u.username} - ${u.uuid}").getOrElse("unauthenticated requested"))
-    val strats = s"There are ${scentry.strategies.size} authentication strategies"
-    contentType = "text/plain"
-    Seq(authn, strats).mkString("\n")
-  }
-
   get("/cookies") {
     contentType = "text/plain"
     request.getCookies.map(cookie => s"${cookie.getName}: ${cookie.getValue}").mkString("\n")

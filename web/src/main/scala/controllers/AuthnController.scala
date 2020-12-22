@@ -21,7 +21,7 @@ class AuthnController(implicit val ec: ExecutionContext)
   protected implicit val jsonFormats: Formats = org.json4s.DefaultFormats ++ GainstrackJsonSerializers.all
 
   post("/login") {
-    scentry.authenticate().map(user => {
+    this.authenticate().map(user => {
       val msg = s"Login occurred for ${user.username} ${user.uuid}"
       logger.info(msg)
       // If we have a file, then flush session to pick up file
@@ -39,7 +39,9 @@ class AuthnController(implicit val ec: ExecutionContext)
   }
 
   post("/logout") {
-    scentry.logout()
+    // Nothing doing anymore since we are token based. Deprecate me
+//    scentry.logout()
+
     getSummary
   }
 }

@@ -8,6 +8,7 @@ import com.auth0.jwt.JWT
 import com.auth0.jwt.algorithms.Algorithm
 import com.auth0.jwt.interfaces.DecodedJWT
 import com.fasterxml.jackson.databind.ObjectMapper
+import org.slf4j.LoggerFactory
 
 class Auth0JWTVerifier(config: Auth0Config) {
   val issuer = s"https://${config.domain}/"
@@ -17,6 +18,11 @@ class Auth0JWTVerifier(config: Auth0Config) {
 
   def validate(token: String): DecodedJWT = {
     val decoded = JWT.decode(token)
+    validate(decoded)
+  }
+
+  def validate(decoded: DecodedJWT): DecodedJWT = {
+    //val decoded = JWT.decode(token)
     val keyId = decoded.getKeyId
     // UrlJwkProvider goes to the internet for latest keys which may not be desirable
     // Auth0SavedJwkProvider hardcodes the public key
@@ -30,9 +36,8 @@ class Auth0JWTVerifier(config: Auth0Config) {
       .withAudience(config.audience)
       .build
 
-    val jwt = verifier.verify(token)
+    val jwt = verifier.verify(decoded)
     jwt
-
   }
 }
 
@@ -66,6 +71,26 @@ class Auth0SavedJwkProvider(issuer: String) extends UrlJwkProvider(issuer) {
     }
     jwks
 
+  }
+
+}
+
+case class Auth0Config(domain: String, audience: String)
+
+object Auth0Config {
+  val logger = LoggerFactory.getLogger(getClass)
+
+  val cfg = Auth0Config()
+
+  logger.info(s"Auth0 validation for audience ${cfg.audience} domain ${cfg.domain}")
+
+  val validator = new Auth0JWTVerifier(cfg)
+
+
+  def apply(): Auth0Config = {
+    val domain = sys.env.get("AUTH0_DOMAIN").getOrElse("dev-q-172al0.auth0.com")
+    val audience = sys.env.get("AUTH0_AUDIENCE").getOrElse("http://localhost:8080")
+    Auth0Config(domain, audience)
   }
 
 }

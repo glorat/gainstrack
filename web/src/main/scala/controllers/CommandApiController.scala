@@ -21,7 +21,7 @@ class CommandApiController(implicit val ec: ExecutionContext)
   val logger =  LoggerFactory.getLogger(getClass)
 
   before() {
-    scentry.authenticate()
+    this.authenticate()
     contentType = formats("json")
   }
 
