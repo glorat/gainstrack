@@ -75,33 +75,4 @@ object JettyLauncher { // this is my entry object as specified in sbt project de
     interp.interpValueDouble(timeSeries2, today())
   }
 
-  private def scheduleAVDownload() = {
-    import java.util.concurrent.Executors
-    import java.util.concurrent.TimeUnit._
-
-
-    val scheduler = Executors.newScheduledThreadPool(1)
-    implicit val ec = ExecutionContext.fromExecutor(scheduler)
-    val syncUp = new SyncUp()
-
-    val quoteSyncThread = new Runnable() {
-      override def run(): Unit = {
-        try {
-          syncUp.batchSyncAll.map( _ => {
-            ServerQuoteSource.updateDB
-          })
-        }
-        catch {
-          case e:Exception => {
-            Console.err.println("QuoteSyncUp failed this time")
-            Console.err.println(e.toString)
-          }
-        }
-      }
-    }
-
-    val sixHours = 6*60*60
-    val beeperHandle = scheduler.scheduleAtFixedRate(quoteSyncThread, 10, sixHours, SECONDS)
-
-  }
 }

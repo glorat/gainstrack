@@ -1,5 +1,7 @@
 package com.gainstrack.quotes.av
 
+import org.slf4j.LoggerFactory
+
 import scala.concurrent.duration.{Duration, MINUTES}
 import scala.concurrent.{Await, ExecutionContext, Future}
 
@@ -28,6 +30,8 @@ case class QuoteSource(
 case class Asset(name: String, assetType: String)
 
 object QuoteSource {
+  val logger = LoggerFactory.getLogger(getClass)
+
   def getAllQuoteSourcesAsync()(implicit ec: ExecutionContext): Future[Seq[QuoteSource]] = {
     import sttp.client3._
     import sttp.client3.json4s._
@@ -37,7 +41,7 @@ object QuoteSource {
 
     val backend = AsyncHttpClientFutureBackend()
 //    val baseUrl = "http://localhost:5001/gainstrack/asia-northeast1"
-    val baseUrl = "https://asia-northeast1-gainstrack.cloudfunctions.net/getAllQuoteSources"
+    val baseUrl = "https://us-central1-gainstrack.cloudfunctions.net/getAllQuoteSources"
 
     val response = basicRequest
       .get(uri"$baseUrl/getAllQuoteSources")
@@ -48,7 +52,10 @@ object QuoteSource {
       val foo: Either[ResponseException[String, Exception], Seq[QuoteSource]] = res.body
       backend.close()
       val qs = foo match {
-        case Left(ex) => throw ex
+        case Left(ex) => {
+          logger.error(ex.toString)
+          throw ex
+        }
         case Right(value) => value
       }
       qs
