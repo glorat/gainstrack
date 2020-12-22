@@ -8,7 +8,7 @@ import org.scalatra.ScalatraBase
 import org.scalatra.auth.ScentryStrategy
 import org.slf4j.LoggerFactory
 
-case class Auth0Config(domain: String, audience: String, client_id: String)
+case class Auth0Config(domain: String, audience: String)
 
 object Auth0Config {
   val logger = LoggerFactory.getLogger(getClass)
@@ -23,8 +23,7 @@ object Auth0Config {
   def apply(): Auth0Config = {
     val domain = sys.env.get("AUTH0_DOMAIN").getOrElse("dev-q-172al0.auth0.com")
     val audience = sys.env.get("AUTH0_AUDIENCE").getOrElse("http://localhost:8080")
-    val client_id = sys.env.get("AUTH0_CLIENT").getOrElse("UuT7elqE26W3gsAXmcuDjeVisyoGcBoV")
-    Auth0Config(domain, audience, client_id)
+    Auth0Config(domain, audience)
   }
 
 }
