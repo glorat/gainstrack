@@ -93,6 +93,15 @@ module.exports = configure(function (ctx) {
         '/api' : {
           target: 'http://localhost:9050',
           secure: false
+        },
+        '/gainstrack' : {
+          target: 'http://localhost:5001',
+          secure: false
+        },
+        '/functions' : {
+          target: 'http://localhost:5001',
+          pathRewrite: {'^/functions' : '/gainstrack/us-central1'},
+          secure: false
         }
       }
     },

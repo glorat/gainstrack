@@ -49,6 +49,27 @@ Proxy the mysql instance as localhost with this
 `AUTH0_AUDIENCE` - e.g. https://poc.gainstrack.com
 `AUTH0_CLIENT` - e.g. UjVvEmeNTbgIEU6g60h1xvvvBPL4vJqi
 
+### Development instructions
+The following all need to be running
+#### Back-end
+Open the project in IntelliJ or other IDE and run JettyLauncher. Set environment variables as needed by application.conf or override application.conf
+
+#### Cloud functions
+```bash
+export DEV=true
+export GOOGLE_APPLICATION_CREDENTIALS=...
+cd client/functions
+npm run serve
+```
+
+#### Front-end
+```bash
+cd client
+npm run serve
+```
+Or open `client` in your IDE and run `npm serve` from there
+
+
 ### Build instructions
 
 Front end client build can be built locally with
@@ -62,7 +83,7 @@ Full single build of backend app server image can be built and submitted with
 `gcloud builds submit --config cloudbuild.yaml`
 This will also update the latest image in the container registry
 
-#### Faster build isntructions
+#### Faster build instructions
 A newer build system allows the creation of base images to speed the build of the final image
 
 Base images should be regenerated when dependencies change
@@ -109,6 +130,12 @@ quasar build && firebase deploy --only hosting:poc
 And for production
 ```bash
 firebase deploy --only hosting:prod
+```
+
+#### Functions
+```bash
+cd client/functions
+firebase deploy --only functions
 ```
 
 #### Functions (TBD)

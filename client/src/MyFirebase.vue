@@ -6,6 +6,7 @@
   import Vue from 'vue';
   import {myAnalytics, myAuth} from 'src/lib/myfirebase';
   import {Store} from 'vuex';
+  import axios from 'axios';
 
   async function fbAuthStateChanged (user: firebase.User|null, $store: Store<unknown>) {
     if (user) {
@@ -18,12 +19,30 @@
   export default Vue.extend({
     name: 'MyFirebase',
 
+    computed: {
+      auth0token() {
+        return this.$store.state.auth0token
+      },
+    },
+    watch: {
+      async auth0token(val) {
+        if (val) {
+          const res = await axios.post('/functions/auth/firebase')
+          if (res.data?.firebaseToken) {
+            const fbToken = res.data.firebaseToken
+            const cred = await myAuth().signInWithCustomToken(fbToken)
+            console.log(`Fb tokin login for`);
+            console.error(cred);
+          }
+        }
+      }
+    },
     created(): void {
       this.$router.afterEach((to) => {
         myAnalytics().logEvent('page_view', {page_path: to.path})
       });
       myAuth().onAuthStateChanged(async user => {
-        if (user) {
+        if (user && !this.auth0token) {
           console.log('firebase auth')
           myAnalytics().setUserId(user.uid)
           console.log(user)

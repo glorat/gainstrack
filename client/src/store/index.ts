@@ -35,6 +35,7 @@ export interface MyState {
   quotes: Record<string, TimeSeries>,
   conversion: string
   user: firebase.User|undefined
+  auth0token: string|undefined
 }
 
 const initState: MyState = {
@@ -47,7 +48,8 @@ const initState: MyState = {
   gainstrackText: '',
   quotes: {},
   conversion: 'parent',
-  user: undefined
+  user: undefined,
+  auth0token: undefined
 };
 
 type FXConverterWrapper = ((fx: SingleFXConversion) => SingleFXConverter)
@@ -70,6 +72,9 @@ export default store(function ({ Vue }) {
   const Store = new Vuex.Store<MyState>({
     state: initState,
     mutations: {
+      auth0token(state: MyState, token) {
+        state.auth0token = token
+      },
       increment (state: MyState) {
         state.count++
       },
@@ -270,11 +275,16 @@ export default store(function ({ Vue }) {
           return config;
         }
 
+        // Snapshot the token
+        const token = await getToken();
+        context.commit('auth0token', token);
+
         // Get stuff in background
         return await context.dispatch('loadAllState');
       },
       async logout (context) {
         requestPreprocessor = async (config) => config;
+        context.commit('auth0token', undefined);
         return await context.dispatch('loadAllState');
 
       },

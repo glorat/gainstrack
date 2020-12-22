@@ -17,6 +17,14 @@
           }
         },
         {
+          "source": "/functions/auth",
+          "function": "auth"
+        },
+        {
+          "source": "/functions/getAllQuoteSources",
+          "function": "getAllQuoteSources"
+        },
+        {
           "source": "**",
           "destination": "/index.html"
         }
