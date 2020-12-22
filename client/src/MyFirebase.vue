@@ -27,12 +27,19 @@
     watch: {
       async auth0token(val) {
         if (val) {
-          const res = await axios.post('/functions/auth/firebase')
+          const res = await axios.post('/functions/auth/firebase');
           if (res.data?.firebaseToken) {
-            const fbToken = res.data.firebaseToken
-            const cred = await myAuth().signInWithCustomToken(fbToken)
-            console.log(`Fb tokin login for`);
-            console.error(cred);
+            const fbToken = res.data.firebaseToken;
+            try {
+              const cred = await myAuth().signInWithCustomToken(fbToken);
+              console.log(`Fb tokin login for`);
+              console.error(cred);
+            }
+            catch(e) {
+              console.error('Unable to convert auth0 token to firebase');
+              console.error(e)
+            }
+
           }
         }
       }
