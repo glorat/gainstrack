@@ -14,7 +14,7 @@
       :breakpoint="500"
       content-class="bg-grey-3"
     >
-      <my-aside hide-login></my-aside>
+      <my-aside></my-aside>
     </q-drawer>
 
     <q-page-container>

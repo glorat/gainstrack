@@ -103,7 +103,7 @@ const gainstrackNavBar = [
   ['irr', 'aa', 'pnlexplain'],
   ['prices', 'quotes', 'settings', 'assetdb'],
   ['port', 'editor', 'history'],
-  ['help', 'faq','login']
+  ['help', 'faq']
 ];
 
 const gainstrackMode: AppMode = {
@@ -131,8 +131,7 @@ const simpleNavBar: string[][] = [
   [''],
   ['play'],
   ['investments', 'contribute'],
-  ['assetdb'],
-  ['login'],
+  ['assetdb']
 ];
 
 const simpleMode: AppMode =
@@ -161,7 +160,7 @@ export const {appRoutes, navBar, layout, appTitle, appDescription} : AppMode = (
   } else {
     // Default to gainstrack for unknown host
     // Can change this during development. Should not hit this in production
-    return gainstrackMode;
+    return simpleMode;
 
   }
 })()
