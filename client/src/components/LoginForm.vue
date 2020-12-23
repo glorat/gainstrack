@@ -48,7 +48,6 @@ Vue.use(Auth0Plugin, {
             return !!this.$store.state.user;
           },
           isAuthenticated() {
-            const state = this.$store.state;
             return this.auth0authned || this.firebaseAuthed;
           },
           authName() {
@@ -62,6 +61,7 @@ Vue.use(Auth0Plugin, {
           }
         },
         watch: {
+          // FIXME: Is this relying on a race condition to be invoked on startup??
             auth0authned(val) {
                 if (val) {
                     this.auth0validate();

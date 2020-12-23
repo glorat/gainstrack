@@ -8,9 +8,9 @@
   import {Store} from 'vuex';
   import axios from 'axios';
 
-  async function fbAuthStateChanged (user: firebase.User|null, $store: Store<unknown>) {
+  async function fbAuthStateChanged(user: firebase.User | null, $store: Store<unknown>) {
     if (user) {
-      await $store.dispatch('changeUser', { uid: user.uid, displayName: user.displayName, email: user.email })
+      await $store.dispatch('changeUser', {uid: user.uid, displayName: user.displayName, email: user.email})
     } else {
       await $store.dispatch('changeUser', undefined)
     }
@@ -18,7 +18,21 @@
 
   export default Vue.extend({
     name: 'MyFirebase',
-
+    methods: {
+      async refreshFirebaseToken() {
+        try {
+          const res = await axios.post('/functions/auth/firebase');
+          if (res.data?.firebaseToken) {
+            const fbToken = res.data.firebaseToken;
+            await myAuth().signInWithCustomToken(fbToken);
+            console.log('Fb tokin login from auth0');
+          }
+        } catch (e) {
+          console.error('Unable to convert auth0 token to firebase');
+          console.error(e)
+        }
+      }
+    },
     computed: {
       auth0token() {
         return this.$store.state.auth0token
@@ -27,24 +41,16 @@
     watch: {
       async auth0token(val) {
         if (val) {
-          const res = await axios.post('/functions/auth/firebase');
-          if (res.data?.firebaseToken) {
-            const fbToken = res.data.firebaseToken;
-            try {
-              const cred = await myAuth().signInWithCustomToken(fbToken);
-              console.log(`Fb tokin login for`);
-              console.error(cred);
-            }
-            catch(e) {
-              console.error('Unable to convert auth0 token to firebase');
-              console.error(e)
-            }
-
-          }
+          await this.refreshFirebaseToken()
         }
       }
+
     },
     created(): void {
+      if (this.auth0token) {
+        console.log('auth0ed on startup so getting firebase now')
+        this.refreshFirebaseToken() // async
+      }
       this.$router.afterEach((to) => {
         myAnalytics().logEvent('page_view', {page_path: to.path})
       });
@@ -57,8 +63,7 @@
 
           try {
             await this.$store.dispatch('loginWithToken', () => user.getIdToken(false))
-          }
-          catch (error) {
+          } catch (error) {
             // notify.error('Auth token rejected by server');
             console.error(error);
             await this.$store.dispatch('logout');

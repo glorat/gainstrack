@@ -17,6 +17,7 @@ import {toCommodityGainstrack} from '../lib/commandDefaulting';
 import { store } from 'quasar/wrappers'
 import {QuoteSource} from 'src/lib/assetDb';
 import firebase from 'firebase';
+import {Notify} from 'quasar';
 
 export interface TimeSeries {
   x: string[]
@@ -66,6 +67,25 @@ export default store(function ({ Vue }) {
   }, function (error) {
     // Do something with request error
     return Promise.reject(error);
+  });
+
+  axios.interceptors.response.use(res => res, function (error) {
+    if (error.response.status === 401) {
+      // Same origin authenticated requests handling
+      if (error.request.responseURL.startsWith (window.location.origin)) {
+        Notify.create({
+          message: 'Please log out and in again!',
+          type: 'negative'
+        });
+        // store.dispatch('logout')
+        // router.push('/login')
+        return Promise.reject(error)
+      } else {
+        return error; // Let the caller sort it out
+      }
+
+
+    }
   });
 
 
