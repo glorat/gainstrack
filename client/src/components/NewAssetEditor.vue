@@ -42,10 +42,9 @@
 import {defineComponent} from '@vue/composition-api';
 import FieldEditor from './field/FieldEditor.vue';
 import {
-  AssetProperty,
-  availablePropertiesForAsset,
+  AssetProperty, AssetSchema,
   createAssetFromProps,
-  schemaFor, selectedPropertiesForAsset,
+  schemaFor, userAssetSchema,
 } from 'src/lib/AssetSchema';
 import {AccountCommandDTO, AssetDTO} from 'src/lib/models';
 import {GlobalPricer} from 'src/lib/pricer';
@@ -62,6 +61,10 @@ export default defineComponent({
   props: {
     accountId: {
       type: String,
+    },
+    schema: {
+      type: Object as () => AssetSchema,
+      default: () => userAssetSchema
     }
   },
   data() {
@@ -75,7 +78,7 @@ export default defineComponent({
   methods: {
     onFieldUpdate(field:string, newValue: any) {
       this.$set(this.properties, field, newValue);
-      if (newValue && schemaFor(field).schema==='ticker') {
+      if (newValue && schemaFor(field).fieldType==='ticker') {
         this.$store.dispatch('loadQuotes', newValue);
       }
     },
@@ -88,7 +91,7 @@ export default defineComponent({
 
         axios.post('/api/post/asset', { str })
           .then(response => {
-            this.$notify.success(response.data)
+            this.$notify.success(response.data);
             this.$emit('ok', this.generatedAsset);
           })
           .catch(error => this.$notify.error(error.response.data))
@@ -114,10 +117,10 @@ export default defineComponent({
       return this.$store.getters.fxConverter;
     },
     schemas(): AssetProperty[] {
-      return selectedPropertiesForAsset(this.properties);
+      return this.schema.selectedPropertiesForAsset(this.properties);
     },
     availableTags(): AssetProperty[] {
-      return availablePropertiesForAsset(this.properties, {editing: true})
+      return this.schema.availablePropertiesForAsset(this.properties)
     },
     generatedAsset(): AssetDTO {
       return createAssetFromProps(this.properties)

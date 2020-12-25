@@ -28,26 +28,29 @@
       <q-input v-model="qsrc.exchange" label="Exchange"></q-input>
 
     </q-card-section>
-
-
+    <property-editor v-model="qsrc.asset" :schema="investmentAssetSchema"></property-editor>
   </q-card>
 </template>
 
 <script lang="ts">
   import Vue from 'vue';
-  import {marketRegions, QuoteSource, quoteSourceTypes} from 'src/lib/assetDb';
+  import {QuoteSource} from 'src/lib/assetDb';
   import EnumSelect from 'components/field/EnumSelect.vue';
+  import PropertyEditor from 'components/PropertyEditor.vue';
+  import {investmentAssetSchema} from 'src/lib/AssetSchema';
+  import {marketRegions, quoteSourceTypes} from 'src/lib/enums';
 
   export default Vue.extend({
     name: 'QuoteSourceEditor',
-    components: {EnumSelect},
+    components: {EnumSelect, PropertyEditor},
     props: {
       qsrc: Object as () => QuoteSource
     },
     data() {
       return {
         marketRegions,
-        quoteSourceTypes
+        quoteSourceTypes,
+        investmentAssetSchema
       }
     },
     methods: {

@@ -8,6 +8,7 @@ export interface QuoteSource {
   exchange: string
   ccy: string
   sources: {sourceType: string, ref: string, meta: string}[]
+  asset: Record<string, any>
 }
 
 export function emptyQuoteSource(name:string): QuoteSource {
@@ -18,7 +19,8 @@ export function emptyQuoteSource(name:string): QuoteSource {
     marketRegion: '',
     exchange: '',
     ccy: 'USD',
-    sources: [{sourceType: '', ref: '', meta: ''}]
+    sources: [{sourceType: '', ref: '', meta: ''}],
+    asset: {}
   }
 }
 
@@ -65,12 +67,19 @@ export async function getAllQuoteSources(): Promise<QuoteSource[]> {
   const snapshot = await quoteSourceDb().get();
   const ret:QuoteSource[] = [];
   snapshot.forEach(doc => {
-    const pSeries = doc.data() as QuoteSource;
-    pSeries.id = doc.id;
-    ret.push(pSeries as QuoteSource);
+    const data = doc.data();
+    data.id = doc.id;
+    const qs = sanitiseQuoteSource(data);
+    ret.push(qs);
   });
   allQuoteSources = ret;
   return ret;
+}
+
+function sanitiseQuoteSource(qs: any): QuoteSource {
+  // TODO: Do a robust version of this function
+  if (!qs.asset) qs.asset = {};
+  return qs as QuoteSource
 }
 
 export async function getQuoteSource(id: string): Promise<QuoteSource|undefined> {
@@ -82,9 +91,7 @@ export async function getQuoteSource(id: string): Promise<QuoteSource|undefined>
 export interface AssetEntry {
   id: string
   name?: string
-  exchange?: string
   isin?: string
-  refs?: string[]
   sedol?: string
   sources: any
   ticker: string
@@ -104,30 +111,3 @@ export async function getAllAssets(): Promise<AssetEntry[]> {
   return ret;
 }
 
-// https://en.wikipedia.org/wiki/List_of_stock_exchanges
-const stockExchanges = [
-  {acronym: 'NYSE', name: 'New York Stock Exchange', region: 'United States', city: 'New York'},
-  {acronym: 'LSE', name: 'London Stock Exchange', region: 'United Kingdom', mic: 'XLON', city: 'London'},
-  {acronym: 'NASDAQ', name: 'Nasdaq', region: 'United States', city: 'New York'},
-  {acronym: 'JPX', name: 'Japan Exchange Group', region: 'Japan', mic: 'XJPX', city: 'Tokyo'},
-  {acronym: 'SSE', name: 'Shanghai Stock Exchange', region: 'China', city: 'Shanghai'},
-  {acronym: 'SEHK', name: 'Hong Kong Stock Exchange', region: 'Hong Kong'},
-  {acronym: '', name: 'Euronext', region: 'European Union', mic: 'XPAR', city: 'Paris'},
-]
-
-export const marketRegions = [
-  {value: 'GLOBAL', description: 'Global Market'},
-  {value: 'LN', description: 'London'},
-  {value: 'SH', description: 'Shanghai'},
-  {value: 'EU', description: 'European Cities'},
-  {value: 'NY', description: 'New York'},
-  {value: 'TK', description: 'Tokyo'},
-  {value: 'HK', description: 'Hong Kong'},
-  {value: 'SG', description: 'Singapore'},
-  {value: 'CA', description: 'Canada'},
-]
-
-export const quoteSourceTypes = [
-  {value: 'av', description: 'Alpha Vantage ticker'},
-  {value: 'investpy', description: 'investpy name'},
-]

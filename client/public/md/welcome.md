@@ -27,6 +27,13 @@ For online use
 
 
 ### Release notes
+###### v2.4.0
+Dec
+Auth0 login glitches cleanted up
+
+###### v2.3.0
+Asset database
+
 ###### v1.3.0
 Sep
 - Refactored auth0 login integration for better stability

@@ -17,6 +17,7 @@
     {name: 'marketRegion', label: 'Region'},
     {name: 'name', label: 'Name', align: 'left'},
     {name: 'ccy', label: 'Ccy'},
+    {name: 'type', label: 'Type', field: (row:QuoteSource) => row.asset?.type}
   ].map(col => ({...defaultColumn(col), ...col}))
 
   export default Vue.extend({

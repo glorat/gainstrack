@@ -15,36 +15,23 @@
     v-else-if="type==='number'"
     :value="modelValue" @input="inputChanged($event)" type="number"
     ></q-input>
-  <q-select
+  <q-input
+    v-else-if="type==='string'"
+    :value="modelValue" @input="inputChanged($event)" :label="schema.label"
+  ></q-input>
+  <enum-select
     v-else-if="type==='category'"
     :options="assetCategories"
-    :value="modelValue" @input="inputChanged($event.value)"
-    :display-value="modelValue"
+    :model-value="modelValue" @input="inputChanged($event)"
     >
-    <template v-slot:option="scope">
-      <q-item v-bind="scope.itemProps" v-on="scope.itemEvents">
-        <q-item-section>
-          <q-item-label>{{ scope.opt.label }}</q-item-label>
-          <q-item-label caption>{{ scope.opt.description }}</q-item-label>
-        </q-item-section>
-      </q-item>
-    </template>
-  </q-select>
-  <q-select
-    v-else-if="typeIsEnum"
-    :value="modelValue" @input="inputChanged($event.value)"
-    :label="label"
-    :options="enumOptions" emit-value
+  </enum-select>
+  <enum-select
+    v-else-if="type==='enum'"
+    :model-value="modelValue" @input="inputChanged($event)"
+    :label="schema.label"
+    :options="schema.fieldMeta"
   >
-    <template v-slot:option="scope">
-      <q-item v-bind="scope.itemProps" v-on="scope.itemEvents">
-        <q-item-section>
-          <q-item-label>{{ scope.opt.value }}</q-item-label>
-          <q-item-label caption>{{ scope.opt.description }}</q-item-label>
-        </q-item-section>
-      </q-item>
-    </template>
-  </q-select>
+  </enum-select>
   <div v-else>UNKNOWN TYPE {{ type }}</div>
 </template>
 
@@ -53,12 +40,14 @@ import {defineComponent, PropType} from '@vue/composition-api';
 import CommandDateEditor from '../CommandDateEditor.vue';
 import BalanceEditor from 'components/command/BalanceEditor.vue';
 import AssetId from 'components/AssetId.vue';
-import {assetCategories, AssetProperty} from 'src/lib/AssetSchema';
+import {AssetProperty} from 'src/lib/AssetSchema';
 import TickerSelect from 'components/field/TickerSelect.vue';
+import {assetCategories} from 'src/lib/enums';
+import EnumSelect from 'components/field/EnumSelect.vue';
 
 export default defineComponent({
   name: 'FieldEditor',
-  components: {CommandDateEditor, BalanceEditor, AssetId, TickerSelect},
+  components: {CommandDateEditor, BalanceEditor, AssetId, TickerSelect, EnumSelect},
   // Forward looking for vue-3
   model: {
     prop: 'modelValue',
@@ -87,7 +76,7 @@ export default defineComponent({
   computed: {
     type():string {
       const s:AssetProperty = this.schema;
-      return s.schema
+      return s.fieldType
     }
   }
 })

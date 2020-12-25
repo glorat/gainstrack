@@ -2,6 +2,7 @@
   <q-select :value="modelValue" @input="$emit('input', $event)" :label="label"
             :options="displayOptions" emit-value
             use-input @filter="filterFn"
+            :display-value="displayValue"
   >
     <template v-slot:option="scope">
       <q-item v-bind="scope.itemProps" v-on="scope.itemEvents">
@@ -16,6 +17,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import {EnumEntry} from 'src/lib/enums';
 
 export default Vue.extend({
   name: 'EnumSelect',
@@ -25,11 +27,11 @@ export default Vue.extend({
   },
   props: {
     modelValue: String,
-    options: Array as () => {value: string, description: string}[],
+    options: Array as () => EnumEntry[],
     label: String,
   },
   data() {
-    const displayOptions: {value: string, description: string}[] = this.options
+    const displayOptions: EnumEntry[] = this.options
     return {
       displayOptions,
     }
@@ -41,6 +43,11 @@ export default Vue.extend({
         this.displayOptions = this.options.filter(v => v.value.toLowerCase().indexOf(needle) > -1)
       })
     }
+  },
+  computed: {
+    displayValue(): string|undefined {
+      return this.options.find(x => x.value === this.modelValue)?.label
+    },
   }
 })
 </script>
