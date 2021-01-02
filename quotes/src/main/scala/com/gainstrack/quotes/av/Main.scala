@@ -27,9 +27,7 @@ object Main {
     doTheWork
 
     val startTime = Instant.now
-    val res: DbState = doTheWork
-    val baseCcySymbol = "USD"
-    val singleFXConversion = res.singleFxConverter(AssetId(baseCcySymbol))
+    val singleFXConversion = doTheWork
     val endTime = Instant.now
     val duration = Duration.between(startTime, endTime)
 
@@ -53,7 +51,7 @@ object Main {
     data
   }
 
-  def doTheWork:DbState = {
+  def doTheWork:SingleFXConversion = {
     val db = new QuoteConfigDB()
     val data:Map[AssetId, SortedColumnMap[LocalDate, Double]] = isoCcyPriceFxConverterData(db.allCcys)
     val priceFXConverter = SingleFXConversion(data, AssetId("USD"))
@@ -77,16 +75,7 @@ object Main {
         dataSoFar.updated(AssetId(cfg.id), fastUsd)
       })
 
-    DbState(SingleFXConversion(finalState, AssetId("USD")))
+    SingleFXConversion(finalState, AssetId("USD"))
   }
 
-}
-
-
-
-case class DbState(priceFXConverter: SingleFXConversion) {
-
-  def singleFxConverter(baseCurrency:AssetId): SingleFXConversion = {
-    priceFXConverter
-  }
 }

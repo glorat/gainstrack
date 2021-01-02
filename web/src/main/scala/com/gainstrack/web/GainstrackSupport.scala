@@ -118,7 +118,7 @@ trait GainstrackSupport extends ContentEncodingSupport {
     session.get("dateOverride").map(_.asInstanceOf[LocalDate])
   }
 
-  def getGainstrack = {
+  lazy val getGainstrack = {
     val gt = if (isAuthenticated) {
 
       bgFromFile.getOrElse(bgDefault)

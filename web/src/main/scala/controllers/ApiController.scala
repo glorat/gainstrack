@@ -5,8 +5,8 @@ import java.time.format.DateTimeParseException
 
 import com.gainstrack.command.{AccountCreation, GainstrackParser, ParserMessage}
 import com.gainstrack.core._
-import com.gainstrack.quotes.av.{DbState, Main, QuoteConfig}
-import com.gainstrack.report.{AccountInvestmentReport, AssetAllocation, BalanceReport, DailyBalance, FXChain, FXMapped, GainstrackGenerator, IrrSummary, NetworthReport, PLExplain, PLExplainDTO, TimeSeries}
+import com.gainstrack.quotes.av.{Main, QuoteConfig}
+import com.gainstrack.report.{AccountInvestmentReport, AssetAllocation, BalanceReport, DailyBalance, FXChain, FXMapped, GainstrackGenerator, IrrSummary, NetworthReport, PLExplain, PLExplainDTO, SingleFXConversion, TimeSeries}
 import com.gainstrack.web.{AuthenticationSupport, BalanceTreeTable, GainstrackSupport, StateSummaryDTO, TimingSupport}
 import org.json4s.{DefaultFormats, Formats, JValue}
 import org.scalatra.{Get, NotFound, Post, Route, RouteTransformer, ScalatraServlet}
@@ -32,6 +32,10 @@ class ApiController (implicit val ec :ExecutionContext)
 
   val defaultFromDate = parseDate("1900-01-01")
 
+  protected def globalPricer = {
+    getGainstrack.liveFxConverter(ServerQuoteSource.db)
+  }
+
 
   before() {
     contentType = formats("json")
@@ -43,7 +47,7 @@ class ApiController (implicit val ec :ExecutionContext)
   def tables(keys:Seq[String]) = {
     val bg = getGainstrack
     val conversionStrategy = session.get("conversion").map(_.toString).getOrElse("parent")
-    val mktConvert = bg.liveFxConverter(ServerQuoteSource.db.priceFXConverter)
+    val mktConvert = globalPricer
 
     val toDate = currentDate
     val treeTable = new BalanceTreeTable(toDate, conversionStrategy, _=>true)(bg.acctState, bg.priceFXConverter, bg.assetChainMap, bg.dailyBalances, mktConvert)
@@ -78,7 +82,7 @@ class ApiController (implicit val ec :ExecutionContext)
     val bg = getGainstrack
 
     val priceState = bg.priceState
-    val mktConvert = bg.liveFxConverter(ServerQuoteSource.db.priceFXConverter)
+    val mktConvert = globalPricer
 
     priceState.toDTOWithQuotes(mktConvert)
 
@@ -86,7 +90,7 @@ class ApiController (implicit val ec :ExecutionContext)
 
   any ("/assets") {
     val bg = getGainstrack
-    val mktConvert = bg.liveFxConverter(ServerQuoteSource.db.priceFXConverter)
+    val mktConvert = globalPricer
 
     val nw = bg.networth(currentDate)
     val assets = bg.assetState.toDTO.sortBy(_.asset.map(_.symbol).getOrElse(""))
@@ -105,7 +109,7 @@ class ApiController (implicit val ec :ExecutionContext)
 
   any("/assets/:accountId") {
     val bg = getGainstrack
-    val mktConvert = bg.liveFxConverter(ServerQuoteSource.db.priceFXConverter)
+    val mktConvert = globalPricer
     val accountId = params("accountId")
 
     val fromDate = defaultFromDate
@@ -119,7 +123,7 @@ class ApiController (implicit val ec :ExecutionContext)
 
   get ("/assets/networth") {
     val bg = getGainstrack
-    val mktConvert = bg.liveFxConverter(ServerQuoteSource.db.priceFXConverter)
+    val mktConvert = globalPricer
     val nwByAsset = NetworthReport.byAsset(currentDate, bg.acctState.baseCurrency)(bg.acctState, bg.balanceState, bg.assetState, mktConvert)
     nwByAsset.withPriceMoves(bg.acctState.baseCurrency, mktConvert)
   }
@@ -137,7 +141,7 @@ class ApiController (implicit val ec :ExecutionContext)
       toDate = fromDate.plusYears(1)
     }
 
-    val mktConvert = bg.liveFxConverter(ServerQuoteSource.db.priceFXConverter)
+    val mktConvert = globalPricer
     val irr = IrrSummary(bg.finalCommands, fromDate, toDate, bg.acctState, bg.balanceState, bg.txState, mktConvert)
 
     irr.toSummaryDTO
@@ -146,7 +150,7 @@ class ApiController (implicit val ec :ExecutionContext)
   any("/irr/:accountId") {
     val bg = getGainstrack
 
-    val mktConvert = bg.liveFxConverter(ServerQuoteSource.db.priceFXConverter)
+    val mktConvert = globalPricer
 
     val accountId = params("accountId")
     val fromDate = defaultFromDate
@@ -213,7 +217,7 @@ class ApiController (implicit val ec :ExecutionContext)
 
   any("/account/:accountId/graph") {
     val bg = getGainstrack
-    val mktConvert = bg.liveFxConverter(ServerQuoteSource.db.priceFXConverter)
+    val mktConvert = globalPricer
 
     val conversionStrategy = session.get("conversion").map(_.toString).getOrElse("parent")
     val toDate = currentDate
@@ -231,7 +235,7 @@ class ApiController (implicit val ec :ExecutionContext)
 
   any ("/journal/") {
     val bg = getGainstrack
-    val mktConvert = bg.liveFxConverter(ServerQuoteSource.db.priceFXConverter)
+    val mktConvert = globalPricer
 
     val txs = bg.txState.allTransactions
     val commands = txs.map(_.origin).distinct.reverse
@@ -301,7 +305,7 @@ class ApiController (implicit val ec :ExecutionContext)
 
   any ("/aa/tree") {
     val bg = getGainstrack
-    val mktConvert = bg.liveFxConverter(ServerQuoteSource.db.priceFXConverter)
+    val mktConvert = globalPricer
     val queryDate = currentDate
 
     val nw = bg.networth(currentDate)
@@ -312,7 +316,7 @@ class ApiController (implicit val ec :ExecutionContext)
   any("/aa") {
     val bg = getGainstrack
     implicit val singleFXConversion = bg.tradeFXConversion
-    val mktConvert = bg.liveFxConverter(ServerQuoteSource.db.priceFXConverter)
+    val mktConvert = globalPricer
 
     val queryDate = currentDate
 
@@ -355,7 +359,7 @@ class ApiController (implicit val ec :ExecutionContext)
   any("/pnlexplain") {
     val bg = getGainstrack
 
-    val mktConvert = bg.liveFxConverter(ServerQuoteSource.db.priceFXConverter)
+    val mktConvert = globalPricer
 
     val baseDate = currentDate
 
@@ -379,7 +383,7 @@ class ApiController (implicit val ec :ExecutionContext)
   any("/pnlexplain/monthly") {
     val bg = getGainstrack
 
-    val mktConvert = bg.liveFxConverter(ServerQuoteSource.db.priceFXConverter)
+    val mktConvert = globalPricer
 
     val baseDate = currentDate
 
@@ -402,7 +406,7 @@ class ApiController (implicit val ec :ExecutionContext)
   post("/pnlexplain") {
     val body = parsedBody.extract[PNLExplainRequest]
     val bg = getGainstrack
-    val mktConvert = bg.liveFxConverter(ServerQuoteSource.db.priceFXConverter)
+    val mktConvert = globalPricer
 
     val pnl = new PLExplain(body.fromDate, body.toDate)(bg.acctState, bg.txState, bg.balanceState, bg.priceFXConverter, bg.assetChainMap, mktConvert)
     Seq(pnl.toDTO)
@@ -423,11 +427,11 @@ class ApiController (implicit val ec :ExecutionContext)
 object ServerQuoteSource {
   val logger =  LoggerFactory.getLogger(getClass)
 
-  private var _db: DbState = updateDB
+  private var _db: SingleFXConversion = updateDB
 
   def db = _db
 
-  def updateDB:DbState = {
+  def updateDB:SingleFXConversion = {
     val start = Instant.now()
     try {
       val ret = Main.doTheWork

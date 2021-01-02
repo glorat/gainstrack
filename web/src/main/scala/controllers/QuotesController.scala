@@ -33,7 +33,7 @@ class QuotesController(implicit val ec :ExecutionContext)
   }
 
   get("/ticker/:ticker") {
-    val fx = ServerQuoteSource.db.priceFXConverter
+    val fx = ServerQuoteSource.db
     val ticker = params("ticker")
     val fromDateOpt: Try[LocalDate] = Try(LocalDate.parse(this.params("fromDate")))
 
@@ -61,7 +61,7 @@ class QuotesController(implicit val ec :ExecutionContext)
   post ("/tickers") {
     val body = parsedBody.extract[QuotesRequest]
 
-    val fx = ServerQuoteSource.db.priceFXConverter
+    val fx = ServerQuoteSource.db
     val res = body.quotes.flatMap(req => {
       val ticker = req.name
       fx.data.get(AssetId(ticker)).flatMap(data => {
