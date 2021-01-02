@@ -1,32 +1,28 @@
 import * as functions from 'firebase-functions';
-import {RequestHandler} from "express";
-
-const {createHash} = require('crypto');
-
 const admin = require('firebase-admin');
 admin.initializeApp();
-
-// Start writing Firebase Functions
-// https://firebase.google.com/docs/functions/typescript
-
-export const getAllQuoteSources = functions
-  // .region('asia-northeast1')
-  .https
-  .onRequest(async (req, res) => {
-    const x = await admin.firestore().collection('quoteSources').get();
-    const ret = x.docs.map((doc: any) => {
-      const data = doc.data();
-      data.id = doc.id;
-      return data;
-    });
-    res.json(ret);
-  });
-
 import jwt = require('express-jwt');
 
 import jwks = require('jwks-rsa');
 
 import express = require('express');
+import {firebaseHandler} from "./auth";
+import {quoteSourcesHandler} from "./queries";
+import * as cors from 'cors';
+import {Request} from "firebase-functions/lib/providers/https";
+
+const whitelist = ['https://www.bogleheads.org', 'https://poc.gainstrack.com'];
+const corsOptions: cors.CorsOptions = {
+  origin: function (origin, callback) {
+    if (origin && whitelist.indexOf(origin) !== -1) {
+      callback(null, true)
+    } else {
+      callback(new Error('Not allowed by CORS'))
+    }
+  },
+};
+
+const corsHandler = cors(corsOptions);
 
 
 const devConfig = {
@@ -56,40 +52,43 @@ const jwtCheck = jwt({
 });
 
 
-function javaHash(input: string) {
-  const md5Bytes = createHash('md5').update(input).digest();
-  md5Bytes[6] &= 0x0f;  /* clear version        */
-  md5Bytes[6] |= 0x30;  /* set to version 3     */
-  md5Bytes[8] &= 0x3f;  /* clear variant        */
-  md5Bytes[8] |= 0x80;  /* set to IETF variant  */
-  const hex = md5Bytes.toString('hex')
-  const uuid = hex.replace(/(\w{8})(\w{4})(\w{4})(\w{4})(\w{12})/, "$1-$2-$3-$4-$5");
-  return uuid;
-}
+// Start writing Firebase Functions
+// https://firebase.google.com/docs/functions/typescript
+
+const allQs:(req: Request, resp: express.Response) => void | Promise<void>  = async (req, res) => {
+  const x = await admin.firestore().collection('quoteSources').get();
+  const ret = x.docs.map((doc: any) => {
+    const data = doc.data();
+    data.id = doc.id;
+    return data;
+  });
+  res.json(ret);
+};
+export const getAllQuoteSources = functions
+  .https
+  .onRequest(allQs);
+
+export const fastGetAllQuoteSources = functions
+  .region('asia-northeast1')
+  .https
+  .onRequest(allQs);
+
+
+const qsHandler: (req: Request, resp: express.Response) => void | Promise<void>
+  = (req,res) => corsHandler(req, res, () => quoteSourcesHandler(admin.firestore())(req,res) )
+export const quoteSources = functions
+  .https.onRequest(qsHandler);
+
+export const fastQuoteSources = functions
+  .region('asia-northeast1')
+  .https
+  .onRequest(qsHandler)
 
 const app = express();
 
-const firebaseHandler: RequestHandler = async (req, res) => {
-  // Create UID from authenticated Auth0 user
-  // @ts-ignore
-  const uid = req.user.sub;
-  // Mint token
-  try {
-    // Convert the provider free string uid to a uuid in the same way the official backend does
-    const uuid = javaHash(uid);
-    const customToken = await admin.auth().createCustomToken(uuid);
 
-    res.json({firebaseToken: customToken, uuid})
-  } catch (err) {
-    res.status(500).send({
-      message: 'Something went wrong acquiring a Firebase token.',
-      error: err,
-    })
-  }
-};
-
-app.post('/firebase', jwtCheck, firebaseHandler);
-app.post('/functions/auth/firebase', jwtCheck, firebaseHandler);
+app.post('/firebase', jwtCheck, firebaseHandler(admin.auth()));
+app.post('/functions/auth/firebase', jwtCheck, firebaseHandler(admin.auth()));
 
 
 export const auth = functions
