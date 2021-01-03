@@ -38,28 +38,46 @@ export const marketRegions = [
 export const quoteSourceTypes = [
   {value: 'av', label: 'Alpha Vantage'},
   {value: 'investpy', label: 'investpy'},
+  {value: 'ft', label: 'ft.com symbol'},
 ].map(cleanUp);
 
 export const investmentAssetTypes = [
-  {value: 'stock', label: 'Stock'},
-  {value: 'etf', label: 'ETF', description: 'Exchange Trade Fund (ETF)'},
-  {value: 'fund', label: 'Mutual Fund'},
-  {value: 'index', label: 'Index', description: 'Index or Benchmark'},
+  {value: 'Stock', label: 'Stock'},
+  {value: 'ETF', label: 'ETF', description: 'Exchange Trade Fund (ETF)'},
+  {value: 'Fund', label: 'Mutual Fund / OEIC'},
+  {value: 'Index', label: 'Index', description: 'Index or Benchmark'},
 ].map(cleanUp);
 
 export const assetCategories = [
-  {value: 'investment', label: 'Investment', description: 'Stocks, ETFs and other intangible assets'},
-  {value: 'realestate', label: 'Real Estate', description: 'Real estate, homes, land, buildings'},
-  {value: 'property', label: 'Property', description: 'Tangible things you own like houses, cars'},
-  {value: 'cash', label: 'Cash', description: 'Cash or equivalent deposited in an account'},
+  {value: 'Investment', description: 'Stocks, ETFs and other intangible assets'},
+  {value: 'Real Estate', description: 'Real estate, homes, land, buildings'},
+  {value: 'Property', description: 'Tangible things you own like houses, cars'},
+  {value: 'Cash', description: 'Cash or equivalent deposited in an account'},
 ].map(cleanUp);
 
 export const fundManagement = [
-  {value: 'passive', label: 'Passive', description: 'Passively managed fund'},
-  {value: 'active', label: 'Active', description: 'Actively managed fund'}
+  {value: 'Passive', description: 'Passively managed fund'},
+  {value: 'Active', description: 'Actively managed fund'}
 ].map(cleanUp);
 
 export const incomeTreatment = [
-  {value: 'accumulation', label: 'Accumulation', description: 'Dividends or income reinvested back into fund'},
-  {value: 'distribution', label: 'Distribution', description: 'Dividends paid out as cash'}
+  {value: 'Accumulation', description: 'Dividends or income reinvested back into fund'},
+  {value: 'Distribution', description: 'Dividends paid out as cash'}
+].map(cleanUp);
+
+export const geography = [
+  {value: 'UK'},
+  {value: 'Global'},
+  {value: 'North America'},
+  {value: 'Asia Pacific'},
+  {value: 'Asia Pacific Excluding Japan'},
+  {value: 'Japan'},
+  {value: 'China/Greater China'},
+  {value: 'Europe Excluding UK'},
+  {value: 'Europe'},
+  {value: 'US'},
+  {value: 'Global Excluding US'},
+  {value: 'Global Excluding UK'},
+  {value: 'Developed World'},
+  {value: 'Emerging Markets'},
 ].map(cleanUp);

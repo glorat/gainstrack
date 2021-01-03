@@ -578,3 +578,15 @@ For defaulting in CommandInputs
 .defaulted-input {
   font-style: italic;
 }
+/*
+Disable all number spinners
+ */
+
+input[type="number"]::-webkit-outer-spin-button, input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type="number"] {
+  -moz-appearance: textfield;
+}

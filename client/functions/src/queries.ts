@@ -18,15 +18,8 @@ function applyQueries(col: FirebaseFirestore.CollectionReference, queries: any[]
   return ret;
 }
 
-/*
-curl --header "Content-Type: application/json" \
-  --request POST \
-  --data '{"query":[{"where":["asset.type","==","etf"]}]}' \
-  http://localhost:5001/gainstrack/us-central1/quoteSources
-*/
-
 export const quoteSourcesHandler:(db: FirebaseFirestore.Firestore) => (req: Request, resp: Response) => void | Promise<void> = (db) => async(req, res) => {
-  const qry = req.body.query ?? [{"where":["asset.type","==","etf"]}];
+  const qry = req.body.query ?? [{"where":["asset.type","==","ETF"]}];
   const col = db.collection('quoteSources');
   const filtered = applyQueries(col, qry);
   const x = await filtered.get();

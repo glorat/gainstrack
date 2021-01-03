@@ -88,7 +88,7 @@ Vue.use(Auth0Plugin, {
                   await this.$store.dispatch('loginWithToken', getToken)
                 }
                 catch (error) {
-                  notify.error('Auth token rejected by server');
+                  notify.error('Something went wrong logging in');
                   console.error(error);
                   this.$store.dispatch('logout');
                 }

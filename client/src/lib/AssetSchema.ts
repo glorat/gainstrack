@@ -1,6 +1,6 @@
 import {AssetDTO, AssetOptions} from 'src/lib/models';
 import {includes, keys} from 'lodash';
-import {EnumEntry, fundManagement, incomeTreatment, investmentAssetTypes} from 'src/lib/enums';
+import {EnumEntry, fundManagement, geography, incomeTreatment, investmentAssetTypes} from 'src/lib/enums';
 
 export interface AssetProperty {
   name: string
@@ -23,16 +23,22 @@ export const userAssetProperties:AssetProperty[] = [
 ];
 
 export const investmentAssetProperties: AssetProperty[] = [
-  {name: 'isin', label: 'ISIN', description: 'ISIN', fieldType: 'string'},
+  {name: 'isin', label: 'ISIN', description: 'ISIN', fieldType: 'string',
+  valid: props => includes(['ETF', 'Fund', 'Stock'], props['type'])
+  },
   {name: 'type', label: 'Type', description: 'Stock/ETF/Fund', fieldType: 'enum', fieldMeta: investmentAssetTypes},
   {name: 'fundManagement', label: 'Fund Management', description: 'Active vs Passive managed funds', fieldType: 'enum', fieldMeta: fundManagement,
-  valid: props => includes(['etf','fund'], props['type'])},
+  valid: props => includes(['ETF','Fund'], props['type'])},
   {name: 'incomeTreatment', label: 'Income Treatment', description: 'Accumulation vs Distribution', fieldType: 'enum', fieldMeta: incomeTreatment,
-    valid: props => includes(['etf','fund'], props['type'])},
-  {name: 'geography', label: 'Geography', description: 'Region the ETF/Fund covers', fieldType: 'string',
-    valid: (props) => includes(['etf','fund','index'], props['type'])
+    valid: props => includes(['ETF','Fund'], props['type'])},
+  {name: 'geography', label: 'Geography', description: 'Region the ETF/Fund covers', fieldType: 'enum', fieldMeta: geography,
+    valid: (props) => includes(['ETF','Fund','Index'], props['type'])
   },
-  {name: 'domicile', label: 'Domicile', description: 'Domicile of asset', fieldType: 'string'}
+  {name: 'domicile', label: 'Domicile', description: 'Domicile of asset', fieldType: 'string',
+    valid: (props) => includes(['ETF','Fund','Stock'], props['type'])
+  },
+  {name: 'ter', label: 'TER/OCF', description: 'Total Expense Ratio or Ongoing Charge. Annual %', fieldType: 'percentage',
+  valid: props => includes(['ETF','Fund'], props['type'])}
 ];
 
 const nameProperty ={name: 'name', label: 'Short Name', description: 'Short name for you to identify the asset', fieldType: 'asset'}

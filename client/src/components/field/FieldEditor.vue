@@ -13,8 +13,17 @@
     :value="modelValue" @input="inputChanged($event)"></ticker-select>
   <q-input
     v-else-if="type==='number'"
-    :value="modelValue" @input="inputChanged($event)" type="number"
+    :value="modelValue" type="number"
+    :clearable="clearable"
+    @clear="cleared" @input="inputChanged($event)"
     ></q-input>
+  <q-input
+    v-else-if="type==='percentage'"
+    :value="modelValue" type="number"
+    suffix="%"
+    :clearable="clearable"
+    @clear="cleared" @input="inputChanged($event)"
+  ></q-input>
   <q-input
     v-else-if="type==='string'"
     :value="modelValue" :label="schema.label"
