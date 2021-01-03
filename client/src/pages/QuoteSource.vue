@@ -5,8 +5,9 @@
       color="primary"
       size="3em"
     />
-    <div v-if="data">
+    <div v-else-if="data">
       <quote-source-editor :qsrc="editingData"></quote-source-editor>
+      <q-btn @click="refresh()" label="Reset" color="warning"></q-btn>
       <q-btn :disable="!canSaveQuoteSource" @click="saveQuoteSource" :label="saveLabel" color="primary"></q-btn>
     </div>
     <div v-else>

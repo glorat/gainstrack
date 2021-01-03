@@ -17,19 +17,25 @@
     ></q-input>
   <q-input
     v-else-if="type==='string'"
-    :value="modelValue" @input="inputChanged($event)" :label="schema.label"
+    :value="modelValue" :label="schema.label"
+    :clearable="clearable"
+    @clear="cleared" @input="inputChanged($event)"
   ></q-input>
   <enum-select
     v-else-if="type==='category'"
     :options="assetCategories"
-    :model-value="modelValue" @input="inputChanged($event)"
+    :model-value="modelValue"
+    :clearable="clearable"
+    @clear="cleared" @input="inputChanged($event)"
     >
   </enum-select>
   <enum-select
     v-else-if="type==='enum'"
-    :model-value="modelValue" @input="inputChanged($event)"
+    :model-value="modelValue"
     :label="schema.label"
     :options="schema.fieldMeta"
+    :clearable="clearable"
+    @clear="cleared" @input="inputChanged($event)"
   >
   </enum-select>
   <div v-else>UNKNOWN TYPE {{ type }}</div>
@@ -61,7 +67,8 @@ export default defineComponent({
     label: {
       type: String,
       required: false,
-    }
+    },
+    clearable: Boolean,
   },
   data() {
     return {
@@ -72,6 +79,9 @@ export default defineComponent({
     inputChanged($event:any) {
       this.$emit('input', $event)
     },
+    cleared() {
+      this.$emit('clear')
+    }
   },
   computed: {
     type():string {

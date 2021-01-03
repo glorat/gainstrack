@@ -1,6 +1,6 @@
 import {AssetDTO, AssetOptions} from 'src/lib/models';
 import {includes, keys} from 'lodash';
-import {EnumEntry, fundManagement, investmentAssetTypes} from 'src/lib/enums';
+import {EnumEntry, fundManagement, incomeTreatment, investmentAssetTypes} from 'src/lib/enums';
 
 export interface AssetProperty {
   name: string
@@ -27,9 +27,12 @@ export const investmentAssetProperties: AssetProperty[] = [
   {name: 'type', label: 'Type', description: 'Stock/ETF/Fund', fieldType: 'enum', fieldMeta: investmentAssetTypes},
   {name: 'fundManagement', label: 'Fund Management', description: 'Active vs Passive managed funds', fieldType: 'enum', fieldMeta: fundManagement,
   valid: props => includes(['etf','fund'], props['type'])},
+  {name: 'incomeTreatment', label: 'Income Treatment', description: 'Accumulation vs Distribution', fieldType: 'enum', fieldMeta: incomeTreatment,
+    valid: props => includes(['etf','fund'], props['type'])},
   {name: 'geography', label: 'Geography', description: 'Region the ETF/Fund covers', fieldType: 'string',
     valid: (props) => includes(['etf','fund','index'], props['type'])
   },
+  {name: 'domicile', label: 'Domicile', description: 'Domicile of asset', fieldType: 'string'}
 ];
 
 const nameProperty ={name: 'name', label: 'Short Name', description: 'Short name for you to identify the asset', fieldType: 'asset'}

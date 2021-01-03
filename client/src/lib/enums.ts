@@ -58,3 +58,8 @@ export const fundManagement = [
   {value: 'passive', label: 'Passive', description: 'Passively managed fund'},
   {value: 'active', label: 'Active', description: 'Actively managed fund'}
 ].map(cleanUp);
+
+export const incomeTreatment = [
+  {value: 'accumulation', label: 'Accumulation', description: 'Dividends or income reinvested back into fund'},
+  {value: 'distribution', label: 'Distribution', description: 'Dividends paid out as cash'}
+].map(cleanUp);

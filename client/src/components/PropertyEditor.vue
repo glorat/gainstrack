@@ -1,15 +1,12 @@
 <template>
   <q-card-section>
     <div v-for="schema in assetProperties" :key="schema.label">
-      <q-chip color="primary" text-color="white" :label="schema.label"
-              removable
-              @remove="onRemove(schema)"
-      ></q-chip>
-      <span>{{ schema.description }}</span>
       <field-editor
         :schema="schema"
         :model-value="value[schema.name]"
+        clearable
         @input="onFieldUpdate(schema.name, $event)"
+        @clear="onFieldCleared(schema.name)"
       ></field-editor>
     </div>
     <q-chip v-for="tag in availableTags"
@@ -45,6 +42,9 @@
         // if (newValue && schemaFor(field).schema==='ticker') {
         //   this.$store.dispatch('loadQuotes', newValue);
         // }
+      },
+      onFieldCleared(field: string) {
+        this.$delete(this.value, field);
       },
       onRemove(propType: AssetProperty) {
         this.$delete(this.value, propType.name);
