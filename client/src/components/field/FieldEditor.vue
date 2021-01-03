@@ -47,6 +47,22 @@
     @clear="cleared" @input="inputChanged($event)"
   >
   </enum-select>
+  <div
+    v-else-if="type==='array'"
+  >
+    {{ schema.label }} <q-btn label="+" color="secondary" @click="arrayAdd"></q-btn>
+    <field-editor
+      v-for="(sub, idx) in modelValue"
+      :key="idx"
+      :schema="schema.fieldMeta" :model-value="sub"
+      :clearable="clearable"
+      @clear="arrayCleared(idx)"
+      @input="arrayInput(idx, $event)"
+    >
+
+    </field-editor>
+
+  </div>
   <div v-else>UNKNOWN TYPE {{ type }}</div>
 </template>
 
@@ -90,6 +106,26 @@ export default defineComponent({
     },
     cleared() {
       this.$emit('clear')
+    },
+    arrayCleared(idx: number) {
+      const orig:any = this.modelValue;
+      if (orig.length>1) {
+        orig.splice(idx, 1);
+        this.$emit('input', orig);
+      } else {
+        // Last element cleared, remove the whole lot
+        this.$emit('clear');
+      }
+
+    },
+    arrayInput(idx: number, ev: any) {
+      const orig:any = this.modelValue; // To clone or not to clone???
+      this.$set(orig, idx, ev);
+      this.$emit('input', orig);
+    },
+    arrayAdd() {
+      const orig:any = this.modelValue ?? [];
+      this.$emit('input', [...orig, undefined]);
     }
   },
   computed: {

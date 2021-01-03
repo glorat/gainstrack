@@ -1,6 +1,13 @@
 import {AssetDTO, AssetOptions} from 'src/lib/models';
 import {includes, keys} from 'lodash';
-import {EnumEntry, fundManagement, geography, incomeTreatment, investmentAssetTypes} from 'src/lib/enums';
+import {
+  assetCategories,
+  EnumEntry,
+  fundManagement,
+  geography,
+  incomeTreatment,
+  investmentAssetTypes
+} from 'src/lib/enums';
 
 export interface AssetProperty {
   name: string
@@ -11,7 +18,7 @@ export interface AssetProperty {
   valid?: (props: Record<string,any>) => boolean
 }
 
-const categoryProperty = {name: 'category', label: 'Category', description: 'Category or type of asset', fieldType: 'category'};
+const categoryProperty = {name: 'category', label: 'Category', description: 'Category or type of asset', fieldType: 'enum', fieldMeta: assetCategories};
 
 export const userAssetProperties:AssetProperty[] = [
   categoryProperty,
@@ -21,6 +28,10 @@ export const userAssetProperties:AssetProperty[] = [
   {name: 'proxy', label: 'Benchmark', description: 'Ticker symbol of benchmark that the asset tracks', fieldType: 'ticker',
   valid: (props) => !propDefined(props,'ticker')},
 ];
+
+const externalReference: AssetProperty = {
+  name: 'reference', label: 'Reference', description: 'URL to a website', fieldType: 'string'
+};
 
 export const investmentAssetProperties: AssetProperty[] = [
   {name: 'isin', label: 'ISIN', description: 'ISIN', fieldType: 'string',
@@ -38,8 +49,11 @@ export const investmentAssetProperties: AssetProperty[] = [
     valid: (props) => includes(['ETF','Fund','Stock'], props['type'])
   },
   {name: 'ter', label: 'TER/OCF', description: 'Total Expense Ratio or Ongoing Charge. Annual %', fieldType: 'percentage',
-  valid: props => includes(['ETF','Fund'], props['type'])}
+  valid: props => includes(['ETF','Fund'], props['type'])},
+  {name: 'references', label: 'External Reference', description: 'External reference websites', fieldType: 'array', fieldMeta: externalReference},
 ];
+
+
 
 const nameProperty ={name: 'name', label: 'Short Name', description: 'Short name for you to identify the asset', fieldType: 'asset'}
 const unknownProperty = (name: string) => {return {name, label: `UNKNOWN ${name}`, description: 'Internal error', fieldType: 'unknown'}}

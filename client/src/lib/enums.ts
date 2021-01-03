@@ -25,6 +25,7 @@ function cleanUp(row:any):EnumEntry {
 
 export const marketRegions = [
   {value: 'GLOBAL', label: 'Global Market'},
+  {value: 'IND', label: 'Global Index'},
   {value: 'LN', label: 'London'},
   {value: 'SH', label: 'Shanghai'},
   {value: 'EU', label: 'European Cities'},
