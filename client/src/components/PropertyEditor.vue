@@ -19,7 +19,7 @@
   import Vue from 'vue';
   import FieldEditor from 'components/field/FieldEditor.vue';
   import {
-    AssetProperty, AssetSchema,
+    FieldProperty, AssetSchema,
     userAssetSchema
   } from 'src/lib/AssetSchema';
 
@@ -46,15 +46,15 @@
       onFieldCleared(field: string) {
         this.$delete(this.value, field);
       },
-      onRemove(propType: AssetProperty) {
+      onRemove(propType: FieldProperty) {
         this.$delete(this.value, propType.name);
       },
     },
     computed: {
-      assetProperties(): AssetProperty[] {
+      assetProperties(): FieldProperty[] {
         return this.schema.selectedPropertiesForAsset(this.value);
       },
-      availableTags(): AssetProperty[] {
+      availableTags(): FieldProperty[] {
         return this.schema.availablePropertiesForAsset(this.value)
       },
     }

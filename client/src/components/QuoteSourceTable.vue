@@ -14,7 +14,7 @@
   const columns = [
     {name: 'id', label: 'Id'},
     {name: 'ticker', label: 'Ticker'},
-    {name: 'marketRegion', label: 'Region'},
+    {name: 'marketRegion', label: 'Market'},
     {name: 'name', label: 'Name', align: 'left'},
     {name: 'ccy', label: 'Ccy'},
     {name: 'type', label: 'Type', field: (row:QuoteSource) => row.asset?.type}

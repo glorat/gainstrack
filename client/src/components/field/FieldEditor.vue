@@ -71,7 +71,7 @@ import {defineComponent, PropType} from '@vue/composition-api';
 import CommandDateEditor from '../CommandDateEditor.vue';
 import BalanceEditor from 'components/command/BalanceEditor.vue';
 import AssetId from 'components/AssetId.vue';
-import {AssetProperty} from 'src/lib/AssetSchema';
+import {FieldProperty} from 'src/lib/AssetSchema';
 import TickerSelect from 'components/field/TickerSelect.vue';
 import {assetCategories} from 'src/lib/enums';
 import EnumSelect from 'components/field/EnumSelect.vue';
@@ -86,12 +86,8 @@ export default defineComponent({
   props: {
     modelValue: {},
     schema: {
-      type: (Object as unknown) as PropType<AssetProperty>,
+      type: (Object as unknown) as PropType<FieldProperty>,
       required: true,
-    },
-    label: {
-      type: String,
-      required: false,
     },
     clearable: Boolean,
   },
@@ -130,7 +126,7 @@ export default defineComponent({
   },
   computed: {
     type():string {
-      const s:AssetProperty = this.schema;
+      const s:FieldProperty = this.schema;
       return s.fieldType
     }
   }

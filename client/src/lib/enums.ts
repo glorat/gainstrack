@@ -82,3 +82,11 @@ export const geography = [
   {value: 'Developed World'},
   {value: 'Emerging Markets'},
 ].map(cleanUp);
+
+export const whereOps:EnumEntry[] = [
+  {value: '==', description: 'Equals'},
+  {value: '<=', description: 'Greater or equals'},
+  {value: '>=', description: 'Less or equals'},
+  {value: '<', description: 'Less than'},
+  {value: '>', description: 'Greater than'},
+].map(cleanUp)

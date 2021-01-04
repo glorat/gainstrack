@@ -42,7 +42,7 @@
 import {defineComponent} from '@vue/composition-api';
 import FieldEditor from './field/FieldEditor.vue';
 import {
-  AssetProperty, AssetSchema,
+  FieldProperty, AssetSchema,
   createAssetFromProps,
   schemaFor, userAssetSchema,
 } from 'src/lib/AssetSchema';
@@ -82,7 +82,7 @@ export default defineComponent({
         this.$store.dispatch('loadQuotes', newValue);
       }
     },
-    onRemove(propType: AssetProperty) {
+    onRemove(propType: FieldProperty) {
       this.$delete(this.properties, propType.name);
     },
     addAsset() {
@@ -116,10 +116,10 @@ export default defineComponent({
     globalPricer (): GlobalPricer {
       return this.$store.getters.fxConverter;
     },
-    schemas(): AssetProperty[] {
+    schemas(): FieldProperty[] {
       return this.schema.selectedPropertiesForAsset(this.properties);
     },
-    availableTags(): AssetProperty[] {
+    availableTags(): FieldProperty[] {
       return this.schema.availablePropertiesForAsset(this.properties)
     },
     generatedAsset(): AssetDTO {

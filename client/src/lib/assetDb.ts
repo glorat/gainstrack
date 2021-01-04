@@ -1,4 +1,8 @@
 import {myFirestore} from 'src/lib/myfirebase';
+import firebase from 'firebase';
+import CollectionReference = firebase.firestore.CollectionReference;
+import Query = firebase.firestore.Query;
+
 
 export interface QuoteSource {
   id: string
@@ -10,6 +14,7 @@ export interface QuoteSource {
   sources: {sourceType: string, ref: string, meta: string}[]
   asset: Record<string, any>
 }
+
 
 export function emptyQuoteSource(name:string): QuoteSource {
   return {
@@ -61,10 +66,11 @@ export async function upsertQuoteSource(qsrc: QuoteSource): Promise<void> {
   }
 }
 
-export async function getAllQuoteSources(): Promise<QuoteSource[]> {
-  if (allQuoteSources) return allQuoteSources;
+export async function getAllQuoteSources(filter?: (col:CollectionReference) => Query|CollectionReference): Promise<QuoteSource[]> {
+  const dataRef = quoteSourceDb();
+  const filteredRef = filter? filter(dataRef) : dataRef;
 
-  const snapshot = await quoteSourceDb().get();
+  const snapshot = await filteredRef.get();
   const ret:QuoteSource[] = [];
   snapshot.forEach(doc => {
     const data = doc.data();

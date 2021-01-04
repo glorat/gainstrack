@@ -6,10 +6,10 @@ import {
   fundManagement,
   geography,
   incomeTreatment,
-  investmentAssetTypes
+  investmentAssetTypes, marketRegions, quoteSourceTypes
 } from 'src/lib/enums';
 
-export interface AssetProperty {
+export interface FieldProperty {
   name: string
   label: string
   description: string
@@ -18,9 +18,11 @@ export interface AssetProperty {
   valid?: (props: Record<string,any>) => boolean
 }
 
+export const unknownFieldProperty: FieldProperty = {name: '???', label: '', fieldType: 'string', description: 'unknown field property'};
+
 const categoryProperty = {name: 'category', label: 'Category', description: 'Category or type of asset', fieldType: 'enum', fieldMeta: assetCategories};
 
-export const userAssetProperties:AssetProperty[] = [
+export const userAssetProperties:FieldProperty[] = [
   categoryProperty,
   {name: 'ticker', label: 'Ticker', description: 'Ticker symbol for listed quotes', fieldType: 'ticker',
     valid: (props) => props['category'] === 'investment' && !propDefined(props,'benchmark')
@@ -29,11 +31,11 @@ export const userAssetProperties:AssetProperty[] = [
   valid: (props) => !propDefined(props,'ticker')},
 ];
 
-const externalReference: AssetProperty = {
+const externalReference: FieldProperty = {
   name: 'reference', label: 'Reference', description: 'URL to a website', fieldType: 'string'
 };
 
-export const investmentAssetProperties: AssetProperty[] = [
+export const investmentAssetProperties: FieldProperty[] = [
   {name: 'isin', label: 'ISIN', description: 'ISIN', fieldType: 'string',
   valid: props => includes(['ETF', 'Fund', 'Stock'], props['type'])
   },
@@ -58,7 +60,7 @@ export const investmentAssetProperties: AssetProperty[] = [
 const nameProperty ={name: 'name', label: 'Short Name', description: 'Short name for you to identify the asset', fieldType: 'asset'}
 const unknownProperty = (name: string) => {return {name, label: `UNKNOWN ${name}`, description: 'Internal error', fieldType: 'unknown'}}
 
-const newAssetProperties: AssetProperty[] = [
+const newAssetProperties: FieldProperty[] = [
   nameProperty,
   {name: 'units', label: 'Units or Quantity', description: 'Number of this asset you own', fieldType: 'number'},
   {name: 'date', label: 'Purchase Date', description: 'When asset was procured', fieldType: 'date',
@@ -69,13 +71,48 @@ const newAssetProperties: AssetProperty[] = [
 
 
 
-const mandatoryProperties: AssetProperty[] = [nameProperty, categoryProperty];
+const mandatoryProperties: FieldProperty[] = [nameProperty, categoryProperty];
 const optionalProperties = [...userAssetProperties, ...newAssetProperties].filter(p => !includes(mandatoryProperties, p))
 const allProperties = [...mandatoryProperties, ...optionalProperties];
 
+
+
+const quoteSourceSourceFieldProperties: FieldProperty[] = [
+  {name: 'sourceType', fieldType: 'enum', label: 'Source', description: 'Source Type', fieldMeta: quoteSourceTypes},
+  {name: 'ref', fieldType: 'string', label: 'Symbol', description: 'Source specific symbol or ticker'},
+  {name: 'meta', fieldType: 'string', label: 'Meta', description: 'Additional sourcing specific information required'},
+]
+
+export const quoteSourceFieldProperties: FieldProperty[] = [
+  {name: 'id', fieldType: 'string', label: 'Id', description: 'System Id'},
+  {name: 'name', fieldType: 'string', label: 'Name', description: 'Descriptive name of asset'},
+  {name: 'ticker', fieldType: 'string', label: 'Ticker', description: 'Ticker symbol'},
+  {name: 'marketRegion', fieldType: 'enum', fieldMeta: marketRegions, label: 'Market Region', description: 'Market Region, or IND for indices, or Global'},
+  {name: 'exchange', fieldType: 'string', label: 'Exchange', description: 'Exchange code where quotes for this asset are sourced'},
+  {name: 'ccy', fieldType: 'string', label: 'Currency', description: 'Currency in which this quote is traded'},
+  {name: 'sources', fieldType: 'array', label: 'Quote Sources', description: 'Quote sourcing details', fieldMeta: quoteSourceSourceFieldProperties},
+  {name: 'asset', fieldType: 'object', label: 'Asset', description: 'Asset details', fieldMeta: investmentAssetProperties},
+]
+
+export function getFieldNameList(props: FieldProperty[], prefix = '') : EnumEntry[] {
+  const ret:EnumEntry[] = [];
+  props.forEach(prop => {
+    if (prop.fieldType === 'array') {
+      // Skip for now
+    } else if (prop.fieldType === 'object') {
+      const subs = getFieldNameList(prop.fieldMeta as FieldProperty[], `${prefix}${prop.name}.`);
+      ret.push(...subs)
+    } else {
+      ret.push( {value: `${prefix}${prop.name}`, label: prop.label, description: prop.description} )
+    }
+  });
+
+  return ret;
+}
+
 interface AssetSchemaConfig {
-  properties: AssetProperty[]
-  validPropertiesForAsset(fields: Record<string, any>):AssetProperty[]
+  properties: FieldProperty[]
+  validPropertiesForAsset(fields: Record<string, any>):FieldProperty[]
 }
 
 export class AssetSchema {
@@ -92,12 +129,12 @@ export class AssetSchema {
   }
 
 
-   selectedPropertiesForAsset(props: Record<string, any>): AssetProperty[] {
+   selectedPropertiesForAsset(props: Record<string, any>): FieldProperty[] {
     return this.properties.filter(p => propDefined(props, p.name))
   }
 
   /** valid and not yet in props */
-  availablePropertiesForAsset(props: Record<string, any>): AssetProperty[] {
+  availablePropertiesForAsset(props: Record<string, any>): FieldProperty[] {
     const current = keys(props);
     const valid = this.validPropertiesForAsset(props);
     return valid.filter(v => !includes(current, v.name))
@@ -120,7 +157,7 @@ export const userAssetSchema: AssetSchema = new AssetSchema({
 
 export const investmentAssetSchema: AssetSchema = new AssetSchema({
   properties: investmentAssetProperties,
-  validPropertiesForAsset(fields: Record<string, any>): AssetProperty[] {
+  validPropertiesForAsset(fields: Record<string, any>): FieldProperty[] {
     return this.properties.filter(p => !p.valid || p.valid(fields))
   }
 });
@@ -130,7 +167,7 @@ function propDefined(props: Record<string, any>, name: string):boolean {
   return Object.prototype.hasOwnProperty.call(props ?? {}, name)
 }
 
-export function schemaFor(name: string): AssetProperty {
+export function schemaFor(name: string): FieldProperty {
   const ret = allProperties.find(x => x.name === name);
   return ret ?? unknownProperty(name);
 }
