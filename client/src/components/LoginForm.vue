@@ -48,7 +48,7 @@ Vue.use(Auth0Plugin, {
             return !!this.$store.state.user;
           },
           isAuthenticated() {
-            return this.auth0authned || this.firebaseAuthed;
+            return this.auth0authned;
           },
           authName() {
             if (this.auth0authned) {

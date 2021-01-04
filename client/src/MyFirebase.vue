@@ -57,17 +57,22 @@
       myAuth().onAuthStateChanged(async user => {
         if (user && !this.auth0token) {
           console.log('firebase auth')
-          myAnalytics().setUserId(user.uid)
-          console.log(user)
-          await this.$store.dispatch('loginWithToken', () => user.getIdToken(false))
+          // Disabled because
+          // 1) Firebase auth is not in effect since we use auth0
+          // 2) This goes bad if the auth0 token expires but the firebase custom minted token is still in effect
+          // The latter could be fixed by checking the properites of the IdToken
 
-          try {
-            await this.$store.dispatch('loginWithToken', () => user.getIdToken(false))
-          } catch (error) {
-            // notify.error('Auth token rejected by server');
-            console.error(error);
-            await this.$store.dispatch('logout');
-          }
+          // myAnalytics().setUserId(user.uid)
+          // console.log(user)
+          // await this.$store.dispatch('loginWithToken', () => user.getIdToken(false))
+          //
+          // try {
+          //   await this.$store.dispatch('loginWithToken', () => user.getIdToken(false))
+          // } catch (error) {
+          //   // notify.error('Auth token rejected by server');
+          //   console.error(error);
+          //   await this.$store.dispatch('logout');
+          // }
 
         } else {
           console.log('firebase not auth')
