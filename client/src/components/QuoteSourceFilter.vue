@@ -59,10 +59,14 @@ function findProperty(path: string, rootProps: FieldProperty[]): FieldProperty {
 export default Vue.extend({
   name: 'QuoteSourceFilter',
   components: {FieldEditor},
+  props: {
+    query: {
+      type: Array,
+      default: () => [] as any[]
+    }
+  },
   data() {
-    const query: any[] = [];
     return {
-      query,
       whereOps,
       matSearch
     }
