@@ -7,7 +7,7 @@ import jwks = require('jwks-rsa');
 
 import express = require('express');
 import {firebaseHandler} from "./auth";
-import {quoteSourcesHandler} from "./queries";
+import {quoteSourcesHandler, quoteSourcesQueryHandler} from "./queries";
 import * as cors from 'cors';
 import {Request} from "firebase-functions/lib/providers/https";
 
@@ -83,6 +83,17 @@ export const fastQuoteSources = functions
   .region('asia-northeast1')
   .https
   .onRequest(qsHandler)
+
+const qsqHandler: (req: Request, resp: express.Response) => void | Promise<void>
+  = (req,res) => corsHandler(req, res, () => quoteSourcesQueryHandler(admin.firestore())(req,res) )
+export const quoteSourceQuery = functions
+  .https.onRequest(qsqHandler);
+
+export const fastQuoteSourceQuery = functions
+  .region('asia-northeast1')
+  .https
+  .onRequest(qsqHandler)
+
 
 const app = express();
 
