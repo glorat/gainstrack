@@ -62,9 +62,9 @@ export default Vue.extend({
   name: 'QuoteSourceFilter',
   components: {FieldEditor},
   props: {
-    query: {
-      type: Array,
-      default: () => [] as any[]
+    params: {
+      type: Object,
+      default: () => ({} as any)
     },
     selectedColumns: {
       type: Array as () => string[],
@@ -80,6 +80,9 @@ export default Vue.extend({
     }
   },
   computed: {
+    query(): any[] {
+      return this.params.query;
+    },
     fieldList(): EnumEntry[] {
       return getFieldNameList(quoteSourceFieldProperties)
     },
@@ -87,13 +90,15 @@ export default Vue.extend({
       return this.fieldList.filter(en => !includes(this.selectedColumns, en.value))
     },
     queryFieldProperties(): FieldProperty[] {
-      const names: string[] = this.query.map(row => row.where[0])
+      const names: string[] = this.params.query.map((row:any) => row.where[0]);
       return names.map(nm => findProperty(nm ?? '', quoteSourceFieldProperties))
     }
   },
   methods: {
     onSearch() {
-      this.$emit('search', this.query)
+      const params = {...this.params};
+      params.fields = this.selectedColumns;
+      this.$emit('search', params);
       this.$emit('update:column-editing', false)
     }
   }

@@ -1,6 +1,6 @@
 <template>
   <my-page padding>
-    <quote-source-filter :query="params.query"
+    <quote-source-filter :params="params"
                          :selected-columns="selectedColumns" @update:selected-columns="selectedColumns = $event"
                          :column-editing="columnEditing" @update:column-editing="columnEditing = $event"
                          @search="onSearch" ></quote-source-filter>
@@ -76,6 +76,10 @@ export default Vue.extend({
       this.params = params;
       const query = params.query;
       try {
+        if (params.fields && params.fields.length>0) {
+          this.selectedColumns = params.fields;
+        }
+
         if (query && query.length && query[0].where) {
           const filter = (col: CollectionReference) => applyQueries(col, query)
           this.quoteSources = await getAllQuoteSources(filter)
@@ -89,12 +93,8 @@ export default Vue.extend({
       }
 
     },
-    onSearch(query: any) {
-      const args = {
-        query,
-        // TODO: fields, headers
-      }
-      this.$router.push({query: {args: JSON.stringify(args)}})
+    onSearch(params: any) {
+      this.$router.push({query: {args: JSON.stringify(params)}})
     },
     createNew() {
       this.$router.push({name: 'quoteSourceNew'});
