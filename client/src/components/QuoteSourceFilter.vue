@@ -15,6 +15,8 @@
     <div class="row">
       <div class="col-6">
         <q-btn color="secondary" label="Add Filter" @click="query.push({where:['','==','']})"></q-btn>
+        <q-select v-if="columnEditing" label="Add Column" :options="fieldsToAdd" value="" @input="$emit('update:selected-columns', [...selectedColumns, $event.value] )"></q-select>
+        <q-btn v-if="!columnEditing" color="secondary" label="Edit Columns" @click="$emit('update:column-editing', true)"></q-btn>
       </div>
       <div class="col-6">
         <q-btn color="primary" label="Search" :icon="matSearch" @click="onSearch"></q-btn>
@@ -30,7 +32,7 @@ import {FieldProperty, getFieldNameList, quoteSourceFieldProperties, unknownFiel
 import {EnumEntry, whereOps} from 'src/lib/enums';
 import {matSearch} from '@quasar/extras/material-icons';
 import FieldEditor from 'components/field/FieldEditor.vue';
-import {find} from 'lodash';
+import {find, includes} from 'lodash';
 
 function findProperty(path: string, rootProps: FieldProperty[]): FieldProperty {
   if (!path.split) {debugger;}
@@ -63,6 +65,12 @@ export default Vue.extend({
     query: {
       type: Array,
       default: () => [] as any[]
+    },
+    selectedColumns: {
+      type: Array as () => string[],
+    },
+    columnEditing: {
+      type: Boolean
     }
   },
   data() {
@@ -75,6 +83,9 @@ export default Vue.extend({
     fieldList(): EnumEntry[] {
       return getFieldNameList(quoteSourceFieldProperties)
     },
+    fieldsToAdd(): EnumEntry[] {
+      return this.fieldList.filter(en => !includes(this.selectedColumns, en.value))
+    },
     queryFieldProperties(): FieldProperty[] {
       const names: string[] = this.query.map(row => row.where[0])
       return names.map(nm => findProperty(nm ?? '', quoteSourceFieldProperties))
@@ -82,8 +93,8 @@ export default Vue.extend({
   },
   methods: {
     onSearch() {
-      // TODO: stash the query in vue state for future reuse
       this.$emit('search', this.query)
+      this.$emit('update:column-editing', false)
     }
   }
 })

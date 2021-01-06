@@ -1,7 +1,15 @@
 <template>
   <my-page padding>
-    <quote-source-filter :query="params.query" @search="onSearch"></quote-source-filter>
-    <quote-source-table :quote-sources="quoteSources" @row-click="quoteRowClick"></quote-source-table>
+    <quote-source-filter :query="params.query"
+                         :selected-columns="selectedColumns" @update:selected-columns="selectedColumns = $event"
+                         :column-editing="columnEditing" @update:column-editing="columnEditing = $event"
+                         @search="onSearch" ></quote-source-filter>
+    <quote-source-table :quote-sources="quoteSources"
+                        :selected-columns="selectedColumns" @update:selected-columns="selectedColumns = $event"
+                        :column-editing="columnEditing"
+                        :loading="loading"
+                        @row-click="quoteRowClick" >
+    </quote-source-table>
 
     <q-btn color="primary" label="Create New..." @click="createNew"></q-btn>
   </my-page>
@@ -56,11 +64,15 @@ export default Vue.extend({
   data() {
     const quoteSources = [] as QuoteSource[];
     const params: any = {};
-    return {quoteSources, params};
+    const loading = false;
+    const selectedColumns = undefined;
+    const columnEditing = false;
+    return {quoteSources, params, loading, selectedColumns, columnEditing};
   },
 
   methods: {
     async refresh(params: any) {
+      this.loading = true;
       this.params = params;
       const query = params.query;
       try {
@@ -72,6 +84,8 @@ export default Vue.extend({
         }
       } catch (e) {
         this.$notify.error(e.message)
+      } finally {
+        this.loading = false;
       }
 
     },
