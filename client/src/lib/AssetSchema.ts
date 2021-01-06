@@ -1,5 +1,5 @@
 import {AssetDTO, AssetOptions} from 'src/lib/models';
-import {includes, keys} from 'lodash';
+import {includes, keys, find, get} from 'lodash';
 import {
   assetCategories,
   EnumEntry,
@@ -93,6 +93,38 @@ export const quoteSourceFieldProperties: FieldProperty[] = [
   {name: 'sources', fieldType: 'array', label: 'Quote Sources', description: 'Quote sourcing details', fieldMeta: quoteSourceSourceFieldProperties},
   {name: 'asset', fieldType: 'object', label: 'Asset', description: 'Asset details', fieldMeta: investmentAssetProperties},
 ]
+
+
+const unknownColumn = (path:string) => ({label: path, name: path, field: () => 'N/A'})
+function pathToFieldProperty(props: FieldProperty[], paths: string[]): FieldProperty|undefined {
+  const path = paths.shift();
+  const prop = find(props, x => x.name === path);
+  if (prop === undefined) {
+    return undefined;
+  } else if (paths.length>0 && prop.fieldType==='object') {
+    return pathToFieldProperty(prop.fieldMeta as FieldProperty[], paths);
+  } else {
+    return prop;
+  }
+}
+
+// Returns a object suitable for use in a QTable column
+export function pathToTableColumn(props: FieldProperty[], path: string) {
+  const prop = pathToFieldProperty(props, path.split('.'));
+  if (prop) {
+    const align = includes(['number', 'percentage'], prop.fieldType) ? 'right' : 'left';
+    return {
+      name: path,
+      label: prop.label,
+      field: (row:undefined) => get(row, path),
+      align, // a sensible default based on type
+      fieldType: prop.fieldType // For potential convienince
+    }
+  } else {
+    return unknownColumn(path);
+  }
+}
+
 
 export function getFieldNameList(props: FieldProperty[], prefix = '') : EnumEntry[] {
   const ret:EnumEntry[] = [];

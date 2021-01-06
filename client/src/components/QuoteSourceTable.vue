@@ -9,16 +9,22 @@
 <script lang="ts">
   import Vue from 'vue';
   import {QuoteSource} from 'src/lib/assetDb';
+  import {pathToTableColumn, quoteSourceFieldProperties} from "src/lib/AssetSchema";
 
-  const defaultColumn= (col: {name:string}) => ({field: col.name, align: 'left', sortable: true})
-  const columns = [
-    {name: 'id', label: 'Id'},
-    {name: 'ticker', label: 'Ticker'},
-    {name: 'marketRegion', label: 'Market'},
-    {name: 'name', label: 'Name', align: 'left'},
-    {name: 'ccy', label: 'Ccy'},
-    {name: 'type', label: 'Type', field: (row:QuoteSource) => row.asset?.type}
-  ].map(col => ({...defaultColumn(col), ...col}))
+  const defaultColumn= (col: {name:string}) => ({field: col.name, align: 'left', sortable: true});
+
+  const selectedColumns = ['id', 'ticker', 'marketRegion', 'name', 'ccy', 'asset.type'];
+
+
+
+  // const columns = [
+  //   {name: 'id', label: 'Id'},
+  //   {name: 'ticker', label: 'Ticker'},
+  //   {name: 'marketRegion', label: 'Market'},
+  //   {name: 'name', label: 'Name', align: 'left'},
+  //   {name: 'ccy', label: 'Ccy'},
+  //   {name: 'type', label: 'Type', field: (row:QuoteSource) => row.asset?.type}
+  // ].map(col => ({...defaultColumn(col), ...col}))
 
   export default Vue.extend({
     name: 'QuoteSourceTable',
@@ -30,15 +36,20 @@
     data() {
       const pagination = {
         rowsPerPage: 20
-      }
+      };
       return {
-        columns,
+        // columns,
         pagination,
       }
     },
     methods: {
       onRowClick(ev: any, data: QuoteSource) {
         this.$emit('row-click', data)
+      }
+    },
+    computed: {
+      columns() {
+        return selectedColumns.map(col => pathToTableColumn(quoteSourceFieldProperties, col));
       }
     }
   })
