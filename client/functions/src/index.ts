@@ -119,15 +119,15 @@ export const upsertQuoteSource = functions.firestore
       // Annotate the projection with history reference
       toSave.lastUpdate = {
         timestamp: snap.createTime.toMillis(),
-        user: snapData.user,
+        uid: snapData.uid,
         revision: (toSave.lastUpdate?.revision ?? 0) + 1,
         history: historyId,
       };
 
       const id = toSave?.id;
       const doc = await admin.firestore().collection('quoteSources').doc(id).get();
-      if (doc.exists && toSave.revision) {
-        if (doc.revision === toSave.revision) {
+      if (doc.exists && toSave.lastUpdate?.revision) {
+        if (doc.lastUpdate?.revision === toSave.lastUpdate?.revision) {
           await admin.firestore().collection('quoteSources').doc(id).set(toSave);
         } else {
           // Revision mismatch - dump it

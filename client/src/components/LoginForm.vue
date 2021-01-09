@@ -8,7 +8,7 @@
             </form>
         </div>
       <div v-else>
-        <button class="login" v-if="!$auth.loading" @click="auth0login">Sign Up/Log in</button>
+        <button class="login" :disabled="$auth.loading" @click="auth0login">Sign Up/Log in</button>
       </div>
     </div>
 </template>

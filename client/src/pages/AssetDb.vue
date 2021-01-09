@@ -21,7 +21,7 @@ import {getAllQuoteSources, QuoteSource} from 'src/lib/assetDb';
 import QuoteSourceTable from 'components/QuoteSourceTable.vue';
 import QuoteSourceFilter from 'components/QuoteSourceFilter.vue';
 
-import firebase from 'firebase';
+import firebase from 'firebase/app';
 import CollectionReference = firebase.firestore.CollectionReference;
 import Query = firebase.firestore.Query;
 

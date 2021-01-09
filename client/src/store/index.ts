@@ -16,7 +16,7 @@ import {LocalDate} from '@js-joda/core';
 import {toCommodityGainstrack} from '../lib/commandDefaulting';
 import { store } from 'quasar/wrappers'
 import {QuoteSource} from 'src/lib/assetDb';
-import firebase from 'firebase';
+import firebase from 'firebase/app';
 import {Notify} from 'quasar';
 
 export interface TimeSeries {

@@ -1,5 +1,5 @@
 import {myAuth, myFirestore} from 'src/lib/myfirebase';
-import firebase from 'firebase';
+import firebase from 'firebase/app';
 import CollectionReference = firebase.firestore.CollectionReference;
 import Query = firebase.firestore.Query;
 import FieldValue = firebase.firestore.FieldValue;
@@ -69,7 +69,7 @@ export async function upsertQuoteSource(qsrc: QuoteSource): Promise<void> {
     payload: safeQsrc,
     action: 'upsert',
     createTime: FieldValue.serverTimestamp(),
-    user: myAuth().currentUser?.uid,
+    uid: myAuth().currentUser?.uid,
   };
   await quoteSourceHistoryDb().add(data);
 
