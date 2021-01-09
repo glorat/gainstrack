@@ -17,7 +17,7 @@
     "concurrently:dev:jest": "concurrently \"quasar dev\" \"jest --watch\""
   },
   "dependencies": {
-    "@auth0/auth0-spa-js": "^1.12.0",
+    "@auth0/auth0-spa-js": "^1.13.6",
     "@glorat/boglebot": "^1.0.0",
     "@js-joda/core": "^3.1.0",
     "@quasar/extras": "^1.9.5",
@@ -25,7 +25,7 @@
     "@types/lodash": "^4.14.161",
     "@types/marked": "^1.1.0",
     "@vue/composition-api": "^0.6.4",
-    "axios": "^0.18.1",
+    "axios": "^0.21.1",
     "core-js": "^3.6.5",
     "firebaseui": "^4.7.1",
     "lodash": "^4.17.20",
