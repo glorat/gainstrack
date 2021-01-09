@@ -118,18 +118,18 @@ trait GainstrackSupport extends ContentEncodingSupport {
     session.get("dateOverride").map(_.asInstanceOf[LocalDate])
   }
 
-  lazy val getGainstrack = {
-    val gt = if (isAuthenticated) {
-
-      bgFromFile.getOrElse(bgDefault)
-//      session.get("gainstrack").map(_.asInstanceOf[GainstrackGenerator])
-//        .orElse(bgFromFile)
-//        .getOrElse(bgDefault)
+  def getGainstrack = {
+    val GGKEY = "com.gainstrack.GainstrackGenerator"
+    if (!request.get(GGKEY).isDefined) {
+      val gt = if (isAuthenticated) {
+        bgFromFile.getOrElse(bgDefault)
+      }
+      else {
+        bgDefault
+      }
+      request(GGKEY) = gt
     }
-    else {
-      bgDefault
-    }
-    gt
+    request(GGKEY).asInstanceOf[GainstrackGenerator]
   }
 
   def getHistory:Seq[CommittedEvent] = {
