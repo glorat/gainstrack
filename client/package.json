@@ -53,14 +53,14 @@
     "eslint-config-standard": "^14.1.0",
     "eslint-loader": "^3.0.3",
     "eslint-plugin-import": "^2.22.0",
+    "eslint-plugin-jest": "^23.8.2",
     "eslint-plugin-node": "^11.0.0",
     "eslint-plugin-promise": "^4.0.1",
     "eslint-plugin-standard": "^4.0.0",
     "eslint-plugin-vue": "^6.1.2",
-    "firebase": "^7.20.0",
+    "firebase": "^8.2.2",
     "marked": "^0.7.0",
-    "vue-tour": "git://github.com/glorat/vue-tour.git#popper2",
-    "eslint-plugin-jest": "^23.8.2"
+    "vue-tour": "git://github.com/glorat/vue-tour.git#popper2"
   },
   "browserslist": [
     "ie >= 11",

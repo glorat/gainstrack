@@ -106,3 +106,42 @@ export const auth = functions
   // .region('asia-northeast1')
   .https
   .onRequest(app)
+
+export const upsertQuoteSource = functions.firestore
+  .document('quoteSourceHistory/{historyId}')
+  .onCreate(async (snap, context) => {
+    // Get an object representing the document
+    const historyId = context.params.historyId;
+    const snapData = snap.data();
+    const toSave = snapData.payload;
+
+    try {
+      // Annotate the projection with history reference
+      toSave.lastUpdate = {
+        timestamp: snap.createTime.toMillis(),
+        user: snapData.user,
+        revision: (toSave.lastUpdate?.revision ?? 0) + 1,
+        history: historyId,
+      };
+
+      const id = toSave?.id;
+      const doc = await admin.firestore().collection('quoteSources').doc(id).get();
+      if (doc.exists && toSave.revision) {
+        if (doc.revision === toSave.revision) {
+          await admin.firestore().collection('quoteSources').doc(id).set(toSave);
+        } else {
+          // Revision mismatch - dump it
+          throw new Error('Revision mismatch');
+        }
+      } else {
+        await admin.firestore().collection('quoteSources').doc(id).set(toSave);
+      }
+    } catch (e) {
+      snapData.error = e.toString()
+      await admin.firestore().collection('quoteSourceErrors').doc(historyId).add(snapData);
+    }
+
+
+
+
+  });

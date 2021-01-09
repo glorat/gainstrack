@@ -1,4 +1,4 @@
-import * as firebase from 'firebase/app';
+import firebase from 'firebase/app';
 
 // Add the Firebase services that you want to use
 import 'firebase/analytics';
@@ -23,8 +23,13 @@ function initFirebase() {
   if (!inited) {
     inited = true;
     // Initialize Firebase
+
     firebase.initializeApp(firebaseConfig);
-    console.log('Firebase initialised')
+    console.log('Firebase initialised');
+
+    if (location.hostname === 'localhost') {
+      firebase.firestore().useEmulator('localhost', 8091);
+    }
   }
 }
 
@@ -39,6 +44,6 @@ export function myAnalytics() {
 }
 
 export function myAuth() {
-  initFirebase()
+  initFirebase();
   return firebase.auth();
 }

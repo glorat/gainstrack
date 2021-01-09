@@ -1,8 +1,14 @@
-import {myFirestore} from 'src/lib/myfirebase';
+import {myAuth, myFirestore} from 'src/lib/myfirebase';
 import firebase from 'firebase';
 import CollectionReference = firebase.firestore.CollectionReference;
 import Query = firebase.firestore.Query;
+import FieldValue = firebase.firestore.FieldValue;
 
+interface QuoteSourceProvider {
+  sourceType: string
+  ref: string
+  meta: string
+}
 
 export interface QuoteSource {
   id: string
@@ -11,7 +17,8 @@ export interface QuoteSource {
   name: string
   exchange: string
   ccy: string
-  sources: {sourceType: string, ref: string, meta: string}[]
+  sources: {sourceType: string, ref: string, meta: string}[] // deprecated
+  providers: Record<string, {sourceType: string, ref: string, meta: string}>
   asset: Record<string, any>
 }
 
@@ -25,11 +32,14 @@ export function emptyQuoteSource(name:string): QuoteSource {
     exchange: '',
     ccy: 'USD',
     sources: [{sourceType: '', ref: '', meta: ''}],
+    providers: {},
     asset: {}
   }
 }
 
 const quoteSourceDb = () => myFirestore().collection('quoteSources');
+const quoteSourceHistoryDb = () => myFirestore().collection('quoteSourceHistory');
+
 let allQuoteSources: QuoteSource[] | undefined = undefined;
 
 export async function createQuoteSource(name: string): Promise<QuoteSource> {
@@ -52,16 +62,24 @@ export async function upsertQuoteSource(qsrc: QuoteSource): Promise<void> {
     throw new Error('QuoteSource must have ticker and marketRegion')
   }
 
-  // One day this should be a cloud function or cloud run handler to perform validation first
-  await quoteSourceDb().doc(id).set(qsrc);
+
+  const safeQsrc = prepareQuoteSourceForSave(qsrc);
+
+  const data = {
+    payload: safeQsrc,
+    action: 'upsert',
+    createTime: FieldValue.serverTimestamp(),
+    user: myAuth().currentUser?.uid,
+  };
+  await quoteSourceHistoryDb().add(data);
 
   // Update local cache without server side sync
   if (allQuoteSources) {
     const idx = allQuoteSources.findIndex(x => x.id === id);
     if (idx>=0) {
-      allQuoteSources[idx] = qsrc
+      allQuoteSources[idx] = safeQsrc
     } else {
-      allQuoteSources = [...allQuoteSources, qsrc];
+      allQuoteSources = [...allQuoteSources, safeQsrc];
     }
   }
 }
@@ -85,7 +103,26 @@ export async function getAllQuoteSources(filter?: (col:CollectionReference) => Q
 function sanitiseQuoteSource(qs: any): QuoteSource {
   // TODO: Do a robust version of this function
   if (!qs.asset) qs.asset = {};
+  if (!qs.providers && qs.sources) {
+    // Version convert sources from array to map
+    qs.providers = {};
+    qs.sources.forEach((src:any) => {
+      qs.providers[src.sourceType] = src
+    })
+  }
+
+  // if (qs.ddd)
   return qs as QuoteSource
+}
+
+function prepareQuoteSourceForSave(qs: QuoteSource) {
+  const providers:Record<string, any> = {}
+  qs.sources.forEach(src => {
+    if (src.sourceType) {
+      providers[src.sourceType] = src
+    }
+  });
+  return {...qs, providers};
 }
 
 export async function getQuoteSource(id: string): Promise<QuoteSource|undefined> {

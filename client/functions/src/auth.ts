@@ -24,6 +24,7 @@ export const firebaseHandler:  ((fbauth:Auth) => RequestHandler)= (fbauth) => as
   try {
     // Convert the provider free string uid to a uuid in the same way the official backend does
     const uuid = javaHash(uid);
+    // TODO: Port the auth0 claims to fb in the second argument
     const customToken = await fbauth.createCustomToken(uuid);
 
     res.json({firebaseToken: customToken, uuid})

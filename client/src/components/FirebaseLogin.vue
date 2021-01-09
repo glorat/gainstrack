@@ -10,7 +10,7 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import * as firebase from 'firebase/app'
+import firebase from 'firebase/app'
 import 'firebase/auth'
 // For login screen styling
 import 'firebaseui/dist/firebaseui.css'
