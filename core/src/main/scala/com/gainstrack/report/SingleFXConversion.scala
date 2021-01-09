@@ -69,7 +69,7 @@ object SingleFXConversion {
         val ccyChainOpt = fxChainMap.get(ccy)
 
         ccyChainOpt
-          .filter(_.last == baseCurrency) // If we can't convert, we must drop
+          .filter(x => x.length>0 && x.last == baseCurrency) // If we can't convert, we must drop
           .map(ccyChain => {
             require(ccyChain.last == baseCurrency)
             // FIXME: This needs to consider every pair in the chain
