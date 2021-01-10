@@ -84,9 +84,9 @@ export const geography = [
 ].map(cleanUp);
 
 export const whereOps:EnumEntry[] = [
-  {value: '==', description: 'Equals'},
-  {value: '<=', description: 'Greater or equals'},
-  {value: '>=', description: 'Less or equals'},
-  {value: '<', description: 'Less than'},
-  {value: '>', description: 'Greater than'},
+  {value: '==', description: 'Equals', meta: 'EQ'},
+  {value: '<=', description: 'Greater or equals', meta: 'LE'},
+  {value: '>=', description: 'Less or equals', meta: 'GE'},
+  {value: '<', description: 'Less than', meta: 'LT'},
+  {value: '>', description: 'Greater than', meta: 'GT'},
 ].map(cleanUp)

@@ -7,7 +7,7 @@ import jwks = require('jwks-rsa');
 
 import express = require('express');
 import {firebaseHandler} from "./auth";
-import {quoteSourcesHandler, quoteSourcesQueryHandler} from "./queries";
+import {quoteSourcesHandler, quoteSourcesTableHandler} from "./queries";
 import * as cors from 'cors';
 import {Request} from "firebase-functions/lib/providers/https";
 
@@ -84,16 +84,26 @@ export const fastQuoteSources = functions
   .https
   .onRequest(qsHandler)
 
-const qsqHandler: (req: Request, resp: express.Response) => void | Promise<void>
-  = (req,res) => corsHandler(req, res, () => quoteSourcesQueryHandler(admin.firestore())(req,res) )
-export const quoteSourceQuery = functions
-  .https.onRequest(qsqHandler);
+// const qsqHandler: (req: Request, resp: express.Response) => void | Promise<void>
+//   = (req,res) => corsHandler(req, res, () => quoteSourcesQueryHandler(admin.firestore())(req,res) )
+// export const quoteSourceQuery = functions
+//   .https.onRequest(qsqHandler);
+//
+// export const fastQuoteSourceQuery = functions
+//   .region('asia-northeast1')
+//   .https
+//   .onRequest(qsqHandler)
 
-export const fastQuoteSourceQuery = functions
+
+const qstHandler: (req: Request, resp: express.Response) => void | Promise<void>
+  = (req,res) => corsHandler(req, res, () => quoteSourcesTableHandler(admin.firestore())(req,res) )
+export const quoteSourceTableQuery = functions
+  .https.onRequest(qstHandler);
+
+export const fastQuoteSourceTableQuery = functions
   .region('asia-northeast1')
   .https
-  .onRequest(qsqHandler)
-
+  .onRequest(qstHandler)
 
 const app = express();
 

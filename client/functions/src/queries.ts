@@ -1,6 +1,9 @@
 import {Response} from "express";
 import {Request} from "firebase-functions/lib/providers/https";
 
+import {findProperty, quoteSourceFieldProperties} from './lib/AssetSchema';
+import {get} from 'lodash';
+
 export function applyQueries(col: FirebaseFirestore.CollectionReference, queries: any[]): FirebaseFirestore.Query|FirebaseFirestore.CollectionReference {
   let ret:FirebaseFirestore.Query|FirebaseFirestore.CollectionReference = col;
 
@@ -57,4 +60,30 @@ export const quoteSourcesQueryHandler:(db: FirebaseFirestore.Firestore) => (req:
   const args = queryArgsToObj(query.args);
   const rows = await doQuoteSourceQuery(db, args.query);
   res.json({rows});
+};
+
+export const quoteSourcesTableHandler:(db: FirebaseFirestore.Firestore) => (req: Request, resp: Response) => void | Promise<void> = (db) => async(req, res) => {
+  const query = req.query;
+  const args = queryArgsToObj(query.args);
+  const rows = await doQuoteSourceQuery(db, args.query);
+
+  const fields:string[] = args.fields;
+  const headers = fields.map(field => findProperty(field, quoteSourceFieldProperties).label);
+
+  const tds = rows.map(row => {
+    let td:Record<string,any> = {};
+    // Mandatory fields
+    td['id'] = row['id'];
+    td['name']  = row['name'];
+    fields.forEach(field => {
+      const value = get(row, field)
+      if (value) {
+        td[field] = value;
+      }
+    });
+    return td;
+  });
+
+
+  res.json({rows: tds, fields, headers});
 };

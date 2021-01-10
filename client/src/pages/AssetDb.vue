@@ -31,11 +31,11 @@ function queryArgsToObj(args: string | (string | null)[]) {
       const params = JSON.parse(args);
       return params;
     } else {
-      return {};
+      return undefined;
     }
   } catch (e) {
     console.error(e);
-    return {};
+    return undefined;
   }
 }
 
@@ -63,7 +63,7 @@ export default Vue.extend({
   components: {QuoteSourceTable, QuoteSourceFilter},
   data() {
     const quoteSources = [] as QuoteSource[];
-    const params: any = {};
+    const params: any = undefined;
     const loading = false;
     const selectedColumns = undefined;
     const columnEditing = false;
@@ -74,9 +74,9 @@ export default Vue.extend({
     async refresh(params: any) {
       this.loading = true;
       this.params = params;
-      const query = params.query;
+      const query = params?.query;
       try {
-        if (params.fields && params.fields.length>0) {
+        if (params?.fields && params.fields.length>0) {
           this.selectedColumns = params.fields;
         }
 

@@ -1,13 +1,15 @@
-import {AssetDTO, AssetOptions} from 'src/lib/models';
-import {includes, keys, find, get} from 'lodash';
+import {AssetDTO, AssetOptions} from './models';
+import {find, get, includes, keys} from 'lodash';
 import {
   assetCategories,
   EnumEntry,
   fundManagement,
   geography,
   incomeTreatment,
-  investmentAssetTypes, marketRegions, quoteSourceTypes
-} from 'src/lib/enums';
+  investmentAssetTypes,
+  marketRegions,
+  quoteSourceTypes
+} from './enums';
 
 export interface FieldProperty {
   name: string
@@ -221,4 +223,30 @@ export function createAssetFromProps(props: Record<string, any>): AssetDTO{
     options
   }
   return asset;
+}
+
+export function findProperty(path: string, rootProps: FieldProperty[]): FieldProperty {
+  if (!path.split) {
+    debugger;
+  }
+
+  const bits = path.split('.');
+  let prop: FieldProperty | undefined = undefined
+  let props = rootProps;
+
+  while (bits.length > 0) {
+    const top = bits.shift();
+    prop = find(props, p => p.name === top)
+    if (prop === undefined) {
+      return unknownFieldProperty;
+    } else if (prop.fieldType === 'object') {
+      props = prop.fieldMeta as FieldProperty[];
+    } else if (bits.length > 0) {
+      debugger;
+      return unknownFieldProperty; // Sub path but not object
+      // TODO: Add array clause?
+    }
+  }
+
+  return prop ?? unknownFieldProperty;
 }

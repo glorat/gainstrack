@@ -28,35 +28,11 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import {FieldProperty, getFieldNameList, quoteSourceFieldProperties, unknownFieldProperty} from 'src/lib/AssetSchema';
+import {FieldProperty, findProperty, getFieldNameList, quoteSourceFieldProperties} from 'src/lib/AssetSchema';
 import {EnumEntry, whereOps} from 'src/lib/enums';
 import {matSearch} from '@quasar/extras/material-icons';
 import FieldEditor from 'components/field/FieldEditor.vue';
-import {find, includes} from 'lodash';
-
-function findProperty(path: string, rootProps: FieldProperty[]): FieldProperty {
-  if (!path.split) {debugger;}
-
-  let bits = path.split('.')
-  let prop: FieldProperty|undefined = undefined
-  let props = rootProps;
-
-  while (bits.length>0) {
-    const top = bits.shift();
-    prop = find(props, p => p.name === top)
-    if (prop === undefined) {
-      return unknownFieldProperty;
-    } else if (prop.fieldType === 'object') {
-      props = prop.fieldMeta as FieldProperty[];
-    } else if (bits.length > 0) {
-      debugger;
-      return unknownFieldProperty; // Sub path but not object
-      // TODO: Add array clause?
-    }
-  }
-
-  return prop ?? unknownFieldProperty;
-}
+import {includes} from 'lodash';
 
 export default Vue.extend({
   name: 'QuoteSourceFilter',
