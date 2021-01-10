@@ -5,7 +5,7 @@ import IrrDetail from '../pages/IrrDetail.vue';
 import IrrSummary from '../pages/IrrSummary.vue';
 import Journal from '../pages/Journal.vue';
 import Prices from '../pages/Prices.vue';
-import {matAddCircleOutline, matEdit, matHome} from '@quasar/extras/material-icons';
+import {matAccountBalance, matAddCircleOutline, matEdit, matHome} from '@quasar/extras/material-icons';
 import {RouteConfig} from 'vue-router';
 import Markdown from 'pages/Markdown.vue';
 import Assets from 'pages/Assets.vue';
@@ -46,7 +46,7 @@ const gainstrackRoutes: RouteConfig[] = [
   {
     path: '/assets',
     component: Assets,
-    meta: {title: 'Assets'}
+    meta: {title: 'Assets', icon: matAccountBalance}
   },
   {path: '/income_statement', component: IncomeStatement, meta: {title: 'Income Statement'}},
   {path: '/journal', component: Journal, meta: {title: 'Journal'}},
@@ -91,6 +91,8 @@ const gainstrackRoutes: RouteConfig[] = [
     name: 'pnldetail', meta: {title: ' P&L Explain'}, props: true},
   {path: '/help', component: Markdown,
     props: {page: 'help.md'},  meta: {title: 'Help'}},
+  {path: '/releases', component: Markdown,
+    props: {page: 'releases.md'},  meta: {title: 'Release Notes'}},
   {path: '/faq', component: Markdown,
     props: {page: 'faq.md'},  meta: {title: 'FAQ'}},
   {path: '/*', component: Markdown,
@@ -98,12 +100,12 @@ const gainstrackRoutes: RouteConfig[] = [
 ];
 
 const gainstrackNavBar = [
-  ['add', 'command'],
-  ['balance_sheet', 'assets', 'income_statement', 'journal'],
-  ['irr', 'aa', 'pnlexplain'],
+  ['assets', 'command'],
+  ['balance_sheet', 'income_statement', 'journal'],
+  ['pnlexplain', 'irr', 'aa'],
   ['prices', 'quotes', 'settings', 'assetdb'],
-  ['port', 'editor', 'history'],
-  ['help', 'faq']
+  ['port', 'editor', 'add', 'history'],
+  ['help', 'faq', 'releases']
 ];
 
 const gainstrackMode: AppMode = {
@@ -160,7 +162,7 @@ export const {appRoutes, navBar, layout, appTitle, appDescription} : AppMode = (
   } else {
     // Default to gainstrack for unknown host
     // Can change this during development. Should not hit this in production
-    return simpleMode;
+    return gainstrackMode;
 
   }
 })()
