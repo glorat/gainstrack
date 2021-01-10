@@ -14,7 +14,7 @@
 
     <div class="row">
       <div class="col-6">
-        <q-btn color="secondary" label="Add Filter" @click="query.push({where:['','==','']})"></q-btn>
+        <q-btn color="secondary" label="Add Filter" @click="params.query.push({where:['','==','']})"></q-btn>
         <q-select v-if="columnEditing" label="Add Column" :options="fieldsToAdd" value="" @input="$emit('update:selected-columns', [...selectedColumns, $event.value] )"></q-select>
         <q-btn v-if="!columnEditing" color="secondary" label="Edit Columns" @click="$emit('update:column-editing', true)"></q-btn>
       </div>
@@ -64,7 +64,7 @@ export default Vue.extend({
   props: {
     params: {
       type: Object,
-      default: () => ({} as any)
+      default: () => ({query: []} as any)
     },
     selectedColumns: {
       type: Array as () => string[],
