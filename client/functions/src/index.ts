@@ -136,7 +136,7 @@ export const upsertQuoteSource = functions.firestore
 
       const id = toSave?.id;
       const doc = await admin.firestore().collection('quoteSources').doc(id).get();
-      if (doc.exists && toSave.lastUpdate?.revision) {
+      if (doc.exists && doc.lastUpdate?.revision) {
         if (doc.lastUpdate?.revision === toSave.lastUpdate?.revision) {
           await admin.firestore().collection('quoteSources').doc(id).set(toSave);
         } else {
@@ -147,8 +147,9 @@ export const upsertQuoteSource = functions.firestore
         await admin.firestore().collection('quoteSources').doc(id).set(toSave);
       }
     } catch (e) {
+      console.error(e);
       snapData.error = e.toString()
-      await admin.firestore().collection('quoteSourceErrors').doc(historyId).add(snapData);
+      await admin.firestore().collection('quoteSourceErrors').add(snapData);
     }
 
 
