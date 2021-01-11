@@ -56,6 +56,26 @@ export const assetCategories = [
   {value: 'Cash', description: 'Cash or equivalent deposited in an account'},
 ].map(cleanUp);
 
+export const assetClass = [
+  {value: 'Fixed Income', description: 'Bonds etc'},
+  {value: 'Equity'},
+  {value: 'Commodity'},
+  {value: 'Real Estate'},
+  {value: 'Multi-Asset'},
+  {value: 'Alternatives'},
+];
+
+export const issuerBrand = [
+  {value: 'Vanguard'},
+  {value: 'iShares', description:'ETFs managed by BlackRock'},
+  {value: 'SPDR', label: 'State Street SPDR', description: 'ETFs managed by State Street'},
+  {value: 'Invesco'},
+  {value: 'Schwab'},
+  {value: 'HSBC'},
+  {value: 'L&G', label: 'Legal & General'},
+  {value: 'Fidelity'},
+];
+
 export const fundManagement = [
   {value: 'Passive', description: 'Passively managed fund'},
   {value: 'Active', description: 'Actively managed fund'}

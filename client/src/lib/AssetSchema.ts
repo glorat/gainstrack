@@ -1,8 +1,8 @@
 import {AssetDTO, AssetOptions} from './models';
 import {find, get, includes, keys} from 'lodash';
 import {
-  assetCategories,
-  EnumEntry,
+  assetCategories, assetClass,
+  EnumEntry, issuerBrand,
   fundManagement,
   geography,
   incomeTreatment,
@@ -42,6 +42,10 @@ export const investmentAssetProperties: FieldProperty[] = [
   valid: props => includes(['ETF', 'Fund', 'Stock'], props['type'])
   },
   {name: 'type', label: 'Type', description: 'Stock/ETF/Fund', fieldType: 'enum', fieldMeta: investmentAssetTypes},
+  {name: 'assetClass', label: 'Asset Class', description: 'Asset Class', fieldType: 'enum', fieldMeta: assetClass,
+    valid: props => includes(['ETF','Fund','Index'], props['type'])},
+  {name: 'issuerBrand', label: 'Issuer', description: 'Issuer Brand', fieldType: 'enum', fieldMeta: issuerBrand,
+    valid: props => includes(['ETF','Fund'], props['type'])},
   {name: 'fundManagement', label: 'Fund Management', description: 'Active vs Passive managed funds', fieldType: 'enum', fieldMeta: fundManagement,
   valid: props => includes(['ETF','Fund'], props['type'])},
   {name: 'incomeTreatment', label: 'Income Treatment', description: 'Accumulation vs Distribution', fieldType: 'enum', fieldMeta: incomeTreatment,
