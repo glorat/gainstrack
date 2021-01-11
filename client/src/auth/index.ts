@@ -19,7 +19,7 @@ export const getInstance = () => instance;
 interface MyData {
   loading: boolean,
   isAuthenticated: boolean,
-  user: Record<string, unknown>,
+  user: Record<string, unknown>|undefined,
   auth0ClientPromise: Promise<Auth0Client>,
   auth0Client: Auth0Client,
   popupOpen: boolean,
@@ -68,7 +68,8 @@ export const useAuth0= ({
         }
 
         this.user = await this.auth0Client.getUser();
-        this.isAuthenticated = true;
+        this.isAuthenticated = await this.auth0Client.isAuthenticated();
+
       },
       /** Handles the callback when logging in using a redirect */
       async handleRedirectCallback() {
@@ -76,7 +77,7 @@ export const useAuth0= ({
         try {
           await this.auth0Client.handleRedirectCallback();
           this.user = await this.auth0Client.getUser();
-          this.isAuthenticated = true;
+          this.isAuthenticated = await this.auth0Client.isAuthenticated();
         } catch (e) {
           this.error = e;
         } finally {
@@ -115,18 +116,24 @@ export const useAuth0= ({
       };
 
       // Create a new instance of the SDK client using members of the given options object
-      this.auth0ClientPromise = createAuth0Client({
-        domain: options.domain,
-        client_id: options.clientId,
-        audience: options.audience,
-        redirect_uri: redirectUri,
-        ...moreOpts
-      }).then(client => {
-        this.auth0Client = client;
-        return client;
-      });
-
-      const client = await this.auth0ClientPromise;
+      let client : Auth0Client|undefined = undefined;
+      try {
+        this.auth0ClientPromise = createAuth0Client({
+          domain: options.domain,
+          client_id: options.clientId,
+          audience: options.audience,
+          redirect_uri: redirectUri,
+          ...moreOpts
+        }).then(client => {
+          this.auth0Client = client;
+          return client;
+        });
+        client = await this.auth0ClientPromise;
+      } catch (e) {
+        console.error(e);
+        this.loading = false;
+        return instance;
+      }
 
       try {
         // If the user is returning to the app after authentication..
