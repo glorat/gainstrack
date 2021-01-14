@@ -150,6 +150,7 @@ export const upsertQuoteSource = functions.firestore
       console.error(e);
       snapData.error = e.toString()
       await admin.firestore().collection('quoteSourceErrors').add(snapData);
+      await snap.ref.delete();
     }
 
 

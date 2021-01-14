@@ -6,9 +6,25 @@
       size="3em"
     />
     <div v-else-if="data">
-      <quote-source-editor :qsrc="editingData"></quote-source-editor>
-      <q-btn @click="refresh()" label="Reset" color="warning"></q-btn>
-      <q-btn :disable="!canSaveQuoteSource" @click="saveQuoteSource" :label="saveLabel" color="primary"></q-btn>
+      <q-tabs v-model="tab" >
+        <q-tab name="view" label="View"></q-tab>
+        <q-tab name="edit" label="Edit"></q-tab>
+        <q-tab name="history" label="History"></q-tab>
+      </q-tabs>
+      <q-tab-panels :value="displayTab" animated>
+        <q-tab-panel name="view">
+          View
+        </q-tab-panel>
+        <q-tab-panel name="edit">
+          <quote-source-editor :qsrc="editingData"></quote-source-editor>
+          <q-btn @click="refresh()" label="Reset" color="warning"></q-btn>
+          <q-btn :disable="!canSaveQuoteSource" @click="saveQuoteSource" :label="saveLabel" color="primary"></q-btn>
+        </q-tab-panel>
+        <q-tab-panel name="history">
+          <quote-source-history-view :qsrc="editingData"></quote-source-history-view>
+        </q-tab-panel>
+      </q-tab-panels>
+
     </div>
     <div v-else>
       Not found
@@ -21,10 +37,11 @@
   import {emptyQuoteSource, getQuoteSource, QuoteSource, upsertQuoteSource} from 'src/lib/assetDb';
   import QuoteSourceEditor from 'components/QuoteSourceEditor.vue';
   import { extend } from 'quasar'
+  import QuoteSourceHistoryView from 'components/QuoteSourceHistoryView.vue';
 
   export default Vue.extend({
     name: 'QuoteSource',
-    components: {QuoteSourceEditor},
+    components: {QuoteSourceEditor, QuoteSourceHistoryView},
     props: {
       id: {
         type: String,
@@ -35,7 +52,8 @@
       const data = undefined as QuoteSource|undefined;
       const editingData = undefined as QuoteSource|undefined;
       const loading = true;
-      return {data, editingData, loading}
+      const tab = 'view';
+      return {data, editingData, loading, tab}
     },
     methods: {
       async refresh (props?: Record<string, any>) {
@@ -80,6 +98,10 @@
       saveLabel(): string {
         /* eslint-disable @typescript-eslint/no-non-null-assertion */
         return 'Save' + (this.canSaveQuoteSource ? ' ' + this.editingData!.id : '');
+      },
+      displayTab(): string {
+        // Don't have a ready view tab yet
+        return this.tab==='view' ? 'edit' : this.tab;
       }
     },
     mounted(): void {

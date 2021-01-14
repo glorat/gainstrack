@@ -10,6 +10,11 @@ interface QuoteSourceProvider {
   meta: string
 }
 
+export interface LastUpdate {
+  timestamp: number
+  revision: number
+}
+
 export interface QuoteSource {
   id: string
   ticker: string
@@ -20,8 +25,15 @@ export interface QuoteSource {
   sources: {sourceType: string, ref: string, meta: string}[] // deprecated
   providers: Record<string, {sourceType: string, ref: string, meta: string}>
   asset: Record<string, any>
+  lastUpdate?: LastUpdate
 }
 
+export interface QuoteSourceHistory{
+  id: string;
+  createTime: any
+  uid: string
+  payload: QuoteSource
+}
 
 export function emptyQuoteSource(name:string): QuoteSource {
   return {
@@ -130,6 +142,21 @@ export async function getQuoteSource(id: string): Promise<QuoteSource|undefined>
   return all.find(x => x.id === id)
 }
 
+export async function getQuoteSourceHistory(id: string): Promise<QuoteSourceHistory[]> {
+  const ref = quoteSourceHistoryDb()
+    .where('payload.id', '==', id)
+    .orderBy('payload.lastUpdate.timestamp', 'desc'); // orderBy createTime
+  const snapshot = await ref.get()
+  const ret:QuoteSourceHistory[] = [];
+  snapshot.forEach(doc => {
+    const data = doc.data();
+    data.id = doc.id;
+    // const qsh = sanitiseQuoteSourceHistory(data);
+    const qsh = data as QuoteSourceHistory
+    ret.push(qsh);
+  });
+  return ret;
+}
 
 export interface AssetEntry {
   id: string
