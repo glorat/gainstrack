@@ -144,7 +144,7 @@ module.exports = configure(function (ctx) {
       ],
 
       // Quasar plugins
-      plugins: ['Notify', 'LoadingBar', 'Dialog']
+      plugins: ['Notify', 'LoadingBar', 'Dialog', 'Meta']
     },
 
     // animations: 'all', // --- includes all animations

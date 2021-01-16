@@ -56,6 +56,18 @@
       const tab = 'view';
       return {data, editingData, loading, tab}
     },
+    meta (): any {
+      // Meta plug-in doesn't make type info available so this is a workaround
+      const self = this as unknown as {data: QuoteSource|undefined};
+      const data = self.data;
+      const name = data?.name ?? 'AssetDB';
+      const id = data?.id ?? 'Loading...';
+      const title = `${name} | ${id}`;
+
+      return {
+        title
+      }
+    },
     methods: {
       async refresh (props?: Record<string, any>) {
         const args = props ?? this.$props;
