@@ -63,9 +63,11 @@
       const name = data?.name ?? 'AssetDB';
       const id = data?.id ?? 'Loading...';
       const title = `${name} | ${id}`;
+      const description = `Key facts for ${name}`;
 
       return {
-        title
+        title,
+        description
       }
     },
     methods: {
