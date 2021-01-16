@@ -6,14 +6,14 @@
       size="3em"
     />
     <div v-else-if="data">
-      <q-tabs v-model="tab" >
+      <q-tabs v-model="tab" class="bg-secondary text-white">
         <q-tab name="view" label="View"></q-tab>
         <q-tab name="edit" label="Edit"></q-tab>
         <q-tab name="history" label="History"></q-tab>
       </q-tabs>
       <q-tab-panels :value="displayTab" animated>
         <q-tab-panel name="view">
-          View
+          <quote-source-view :qsrc="data"></quote-source-view>
         </q-tab-panel>
         <q-tab-panel name="edit">
           <quote-source-editor :qsrc="editingData"></quote-source-editor>
@@ -38,10 +38,11 @@
   import QuoteSourceEditor from 'components/QuoteSourceEditor.vue';
   import { extend } from 'quasar'
   import QuoteSourceHistoryView from 'components/QuoteSourceHistoryView.vue';
+  import QuoteSourceView from 'components/QuoteSourceView.vue';
 
   export default Vue.extend({
     name: 'QuoteSource',
-    components: {QuoteSourceEditor, QuoteSourceHistoryView},
+    components: {QuoteSourceEditor, QuoteSourceHistoryView, QuoteSourceView},
     props: {
       id: {
         type: String,
@@ -101,7 +102,8 @@
       },
       displayTab(): string {
         // Don't have a ready view tab yet
-        return this.tab==='view' ? 'edit' : this.tab;
+        // return this.tab==='view' ? 'edit' : this.tab;
+        return this.tab;
       }
     },
     mounted(): void {

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <q-table :data="history" :columns="columns" :expanded.sync="expanded">
+    <q-table :data="history" :columns="columns" :expanded.sync="expanded" :loading="loading">
       <template v-slot:body="props">
           <q-tr :props="props" @click="props.expand = !props.expand" style="cursor: pointer">
           <q-td
