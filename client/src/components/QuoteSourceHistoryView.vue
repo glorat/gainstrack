@@ -2,7 +2,7 @@
   <div>
     <q-table :data="history" :columns="columns" :expanded.sync="expanded" :loading="loading">
       <template v-slot:body="props">
-          <q-tr :props="props" @click="props.expand = !props.expand" style="cursor: pointer">
+        <q-tr :props="props" @click="props.expand = !props.expand" style="cursor: pointer">
           <q-td
             v-for="col in props.cols"
             :key="col.name"
@@ -14,9 +14,7 @@
         <q-tr v-if="props.expand" :props="props">
           <q-td colspan="100%">
             <div class="text-left q-gutter-sm">
-              <q-icon color="red" :name="mdiAlert" style="font-size: large"></q-icon> Under development
-              <q-btn color="primary" disable label="Compare with current" ></q-btn>
-              <q-btn color="primary" disable label="Changes"></q-btn>
+              <q-table :data="props.row.diffs"></q-table>
               <q-btn color="warning" disable label="Revert To This"></q-btn>
             </div>
           </q-td>
@@ -30,6 +28,43 @@
   import Vue from 'vue';
   import {getDisplayNames, getQuoteSourceHistory, QuoteSource, QuoteSourceHistory} from 'src/lib/assetDb';
   import {mdiAlert} from '@quasar/extras/mdi-v5';
+  import {getFieldNameList, quoteSourceFieldProperties} from 'src/lib/AssetSchema';
+  import {get} from 'lodash';
+
+  interface DiffRow {
+    path: string,
+    label: string,
+    before: any,
+    after: any,
+  }
+
+  interface QuoteSourceHistoryEx extends QuoteSourceHistory {
+    diffs: DiffRow[]
+  }
+
+  function diffQuoteSource(q1: QuoteSource, q2: QuoteSource): DiffRow[] {
+    const flds = getFieldNameList(quoteSourceFieldProperties);
+    const ret:DiffRow[] = [];
+    flds.forEach(fld => {
+      const path = fld.value;
+      const v1 = get(q1, path);
+      const v2 = get(q2, path);
+      if (v1 !== v2) {
+        ret.push({path, label: fld.label,before: v1, after: v2})
+      }
+    });
+    return ret;
+  }
+
+  function enrichQuoteSourceHistory(history: QuoteSourceHistory[]): QuoteSourceHistoryEx[] {
+    const rows = history.map(row => {
+      const nowRevision = (row.payload.lastUpdate?.revision ?? 0);
+      const before = history.find(x => x.payload.lastUpdate?.revision === nowRevision-1);
+      const diffs = diffQuoteSource(before?.payload ?? ({} as QuoteSource), row.payload);
+      return {...row, diffs}
+    });
+    return rows;
+  }
 
   export default Vue.extend({
     name: 'QuoteSourceHistoryView',
@@ -37,10 +72,10 @@
       qsrc: Object as () => QuoteSource
     },
     data() {
-      const expanded:string[] = [];
-      const history:QuoteSourceHistory[] = [];
+      const expanded: string[] = [];
+      const history: QuoteSourceHistoryEx[] = [];
       const loading = false;
-      const displayNameMap: Record<string, string|undefined> = {};
+      const displayNameMap: Record<string, string | undefined> = {};
       return {
         mdiAlert,
         history,
@@ -54,7 +89,7 @@
         this.loading = true;
         try {
           const history = await getQuoteSourceHistory(this.qsrc.id);
-          this.history = history;
+          this.history = enrichQuoteSourceHistory(history);
           this.displayNameMap = await getDisplayNames(history.map(x => x.uid));
 
         } catch (e) {
@@ -71,9 +106,18 @@
       },
       columns(): any[] {
         return [
-          {name: 'revision', label: 'Revision', field: (row:QuoteSourceHistory) => row.payload.lastUpdate?.revision },
-          {name: 'timestamp', label: 'Timestamp', field: (row:QuoteSourceHistory) => row.payload.lastUpdate?.timestamp, format: (x:number) => new Date(x).toLocaleString() },
-          {name: 'author', label: 'Author Id', field: (row:QuoteSourceHistory) => this.displayNameMap[row.uid] ?? row.uid },
+          {name: 'revision', label: 'Revision', field: (row: QuoteSourceHistory) => row.payload.lastUpdate?.revision},
+          {
+            name: 'timestamp',
+            label: 'Timestamp',
+            field: (row: QuoteSourceHistory) => row.payload.lastUpdate?.timestamp,
+            format: (x: number) => new Date(x).toLocaleString()
+          },
+          {
+            name: 'author',
+            label: 'Author Id',
+            field: (row: QuoteSourceHistory) => this.displayNameMap[row.uid] ?? row.uid
+          },
         ];
       }
     },

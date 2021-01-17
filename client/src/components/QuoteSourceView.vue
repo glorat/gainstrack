@@ -31,7 +31,7 @@
         </q-card-section>
         <q-separator></q-separator>
         <q-card-section>
-          <a v-for="href in qsrc.asset.references" :href="href">{{ hostnameFor(href) }}</a><br>
+          <p v-for="href in qsrc.asset.references"><a :href="href">{{ hostnameFor(href) }}</a></p>
         </q-card-section>
       </q-card>
     </div>
