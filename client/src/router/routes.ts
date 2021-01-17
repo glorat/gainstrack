@@ -26,12 +26,15 @@ import BogleTools from 'pages/BogleTools.vue';
 import BogleTwoFund from 'pages/BogleTwoFund.vue';
 import RebalanceCalc from 'components/RebalanceCalc.vue';
 import Login from 'pages/Login.vue';
+import UserProfile from 'pages/UserProfile.vue';
 
 const commonRoutes: RouteConfig[] = [
   {path: '/assetdb', meta: {title:'Asset DB'}, component: () => import('../pages/AssetDb.vue')},
   {path: '/quotesdb/new', name: 'quoteSourceNew', meta: {title: 'Quotes DB'}, component: () => import('../pages/QuoteSource.vue')},
   {path: '/quotesdb/:id', name: 'quoteSource', meta: {title: 'Quotes DB'}, props: true, component: () => import('../pages/QuoteSource.vue')},
   {path: '/login', component: Login,  meta: {title: 'Login'}},
+  {path: '/user_profile', component: UserProfile, meta: {title: 'User Profile'}, props: true},
+  {path: '/user_profile/:id', name: 'userProfile', component: UserProfile, meta: {title: 'User Profile'}, props: true},
 ];
 
 const gainstrackRoutes: RouteConfig[] = [
@@ -103,7 +106,7 @@ const gainstrackNavBar = [
   ['assets', 'command'],
   ['balance_sheet', 'income_statement', 'journal'],
   ['pnlexplain', 'irr', 'aa'],
-  ['prices', 'quotes', 'settings', 'assetdb'],
+  ['prices', 'quotes', 'settings', 'user_profile', 'assetdb'],
   ['port', 'editor', 'add', 'history'],
   ['help', 'faq', 'releases']
 ];
@@ -133,7 +136,8 @@ const simpleNavBar: string[][] = [
   [''],
   ['play'],
   ['investments', 'contribute'],
-  ['assetdb']
+  ['assetdb'],
+  ['user_profile'],
 ];
 
 const simpleMode: AppMode =

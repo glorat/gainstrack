@@ -1,4 +1,10 @@
 import * as functions from 'firebase-functions';
+import {firebaseHandler} from "./auth";
+import {quoteSourcesHandler, quoteSourcesTableHandler} from "./queries";
+import * as cors from 'cors';
+import {Request} from "firebase-functions/lib/providers/https";
+import {quoteSourceHistoryCreateHandler} from "./writes";
+
 const admin = require('firebase-admin');
 admin.initializeApp();
 import jwt = require('express-jwt');
@@ -6,10 +12,6 @@ import jwt = require('express-jwt');
 import jwks = require('jwks-rsa');
 
 import express = require('express');
-import {firebaseHandler} from "./auth";
-import {quoteSourcesHandler, quoteSourcesTableHandler} from "./queries";
-import * as cors from 'cors';
-import {Request} from "firebase-functions/lib/providers/https";
 
 const whitelist = ['https://www.bogleheads.org', 'https://poc.gainstrack.com'];
 const corsOptions: cors.CorsOptions = {
@@ -119,41 +121,54 @@ export const auth = functions
 
 export const upsertQuoteSource = functions.firestore
   .document('quoteSourceHistory/{historyId}')
-  .onCreate(async (snap, context) => {
-    // Get an object representing the document
-    const historyId = context.params.historyId;
-    const snapData = snap.data();
-    const toSave = snapData.payload;
+  .onCreate(quoteSourceHistoryCreateHandler(admin.firestore()));
 
-    try {
-      // Annotate the projection with history reference
-      toSave.lastUpdate = {
-        timestamp: snap.createTime.toMillis(),
-        uid: snapData.uid,
-        revision: (toSave.lastUpdate?.revision ?? 0) + 1,
-        history: historyId,
-      };
+export const setDisplayName = functions.https.onCall(async(data,context) => {
+  const db = admin.firestore();
+  const displayNames = db.collection('displayNames');
+  const userRoles = db.collection('userRoles');
 
-      const id = toSave?.id;
-      const doc = await admin.firestore().collection('quoteSources').doc(id).get();
-      if (doc.exists && doc.lastUpdate?.revision) {
-        if (doc.lastUpdate?.revision === toSave.lastUpdate?.revision) {
-          await admin.firestore().collection('quoteSources').doc(id).set(toSave);
-        } else {
-          // Revision mismatch - dump it
-          throw new Error('Revision mismatch');
-        }
-      } else {
-        await admin.firestore().collection('quoteSources').doc(id).set(toSave);
-      }
-    } catch (e) {
-      console.error(e);
-      snapData.error = e.toString()
-      await admin.firestore().collection('quoteSourceErrors').add(snapData);
-      await snap.ref.delete();
+
+  const uid = context.auth?.uid
+  if (uid) {
+    const displayName = data.displayName.trim();
+    if (!(typeof displayName === 'string') || displayName.length <= 3) {
+      // Throwing an HttpsError so that the client gets the error details.
+      throw new functions.https.HttpsError('invalid-argument', 'Missing displayName');
     }
 
+    let unameRef: FirebaseFirestore.DocumentReference = displayNames.doc(displayName);
+    let userRef: FirebaseFirestore.DocumentReference = userRoles.doc(uid);
+
+    return await db.runTransaction(async (tx: FirebaseFirestore.Transaction) => {
+      const unameDoc: FirebaseFirestore.DocumentSnapshot<FirebaseFirestore.DocumentData> = await tx.get(unameRef);
+      // check if usernmae is already assigned to the current user
+      if (unameDoc.exists && unameDoc.data()!.uid === uid) {
+        throw new functions.https.HttpsError('failed-precondition', 'Username already owned by requestor')
+      }
+      // if its not assigned and exists someone else owns it
+      if (unameDoc.exists) {
+        throw new functions.https.HttpsError('failed-precondition', 'Username already taken');
+      }
+
+      // check if user already has one
+      const userDoc = await tx.get(userRef);
+      const existingName = userDoc.data()?.displayName;
+      if (existingName) {
+        throw new functions.https.HttpsError('failed-precondition', 'Cannot change your display name');
+      }
+
+      // All checks passed! Let's update all
+
+      // assign the username to the authenticated user
+      await tx.set(unameRef, { uid }, {merge:true});
+      await tx.set(userRef, {displayName}, {merge:true});
+
+      return {displayName, message:'success'};
+    })
 
 
-
-  });
+  } else {
+    throw new functions.https.HttpsError('failed-precondition', 'Not logged in')
+  }
+});

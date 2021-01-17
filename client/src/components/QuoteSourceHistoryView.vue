@@ -28,7 +28,7 @@
 
 <script lang="ts">
   import Vue from 'vue';
-  import {getQuoteSourceHistory, QuoteSource, QuoteSourceHistory} from 'src/lib/assetDb';
+  import {getDisplayNames, getQuoteSourceHistory, QuoteSource, QuoteSourceHistory} from 'src/lib/assetDb';
   import {mdiAlert} from '@quasar/extras/mdi-v5';
 
   export default Vue.extend({
@@ -40,11 +40,13 @@
       const expanded:string[] = [];
       const history:QuoteSourceHistory[] = [];
       const loading = false;
+      const displayNameMap: Record<string, string|undefined> = {};
       return {
         mdiAlert,
         history,
         loading,
         expanded,
+        displayNameMap,
       }
     },
     methods: {
@@ -53,6 +55,8 @@
         try {
           const history = await getQuoteSourceHistory(this.qsrc.id);
           this.history = history;
+          this.displayNameMap = await getDisplayNames(history.map(x => x.uid));
+
         } catch (e) {
           console.error(e)
         } finally {
@@ -69,7 +73,7 @@
         return [
           {name: 'revision', label: 'Revision', field: (row:QuoteSourceHistory) => row.payload.lastUpdate?.revision },
           {name: 'timestamp', label: 'Timestamp', field: (row:QuoteSourceHistory) => row.payload.lastUpdate?.timestamp, format: (x:number) => new Date(x).toLocaleString() },
-          {name: 'author', label: 'Author Id', field: (row:QuoteSourceHistory) => row.uid },
+          {name: 'author', label: 'Author Id', field: (row:QuoteSourceHistory) => this.displayNameMap[row.uid] ?? row.uid },
         ];
       }
     },

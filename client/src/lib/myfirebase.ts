@@ -4,6 +4,7 @@ import firebase from 'firebase/app';
 import 'firebase/analytics';
 import 'firebase/firestore';
 import 'firebase/auth';
+import 'firebase/functions';
 
 let inited = false;
 
@@ -28,7 +29,8 @@ function initFirebase() {
     console.log('Firebase initialised');
 
     if (location.hostname === 'localhost') {
-      firebase.firestore().useEmulator('localhost', 8091);
+      //firebase.firestore().useEmulator('localhost', 8091);
+      //firebase.functions().useEmulator('localhost', 5001);
     }
   }
 }
@@ -46,4 +48,9 @@ export function myAnalytics() {
 export function myAuth() {
   initFirebase();
   return firebase.auth();
+}
+
+export function myFunctions() {
+  initFirebase();
+  return firebase.functions();
 }

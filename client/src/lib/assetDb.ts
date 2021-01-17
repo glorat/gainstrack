@@ -3,6 +3,7 @@ import firebase from 'firebase/app';
 import CollectionReference = firebase.firestore.CollectionReference;
 import Query = firebase.firestore.Query;
 import FieldValue = firebase.firestore.FieldValue;
+import { uniq, pick } from 'lodash';
 
 interface QuoteSourceProvider {
   sourceType: string
@@ -51,8 +52,37 @@ export function emptyQuoteSource(name:string): QuoteSource {
 
 const quoteSourceDb = () => myFirestore().collection('quoteSources');
 const quoteSourceHistoryDb = () => myFirestore().collection('quoteSourceHistory');
+const userRolesDb = () => myFirestore().collection('userRoles');
 
 let allQuoteSources: QuoteSource[] | undefined = undefined;
+
+const displayNameMap: Record<string, string|undefined> = {}; // uid -> displayName
+export async function getDisplayNames(uids: string[]): Promise<Record<string,(string|undefined)>> {
+  const missing = uniq(uids.filter(uid => !displayNameMap[uid]));
+  if (missing.length > 0) {
+    // Populate cache with missing entries
+    const missingDocsPromises = missing.map(async m => (await userRolesDb().doc(m).get()).data());
+    const missingDocs = await Promise.all(missingDocsPromises);
+    missingDocs.forEach( (doc,idx) => {
+      displayNameMap[missing[idx]] = doc?.displayName;
+    })
+  }
+  // Assume cache is all populated now
+  return pick(displayNameMap, uids);
+
+}
+
+export async function getUserRole(uid: string): Promise<firebase.firestore.DocumentData | undefined> {
+  const ret = await userRolesDb().doc(uid).get();
+  return ret.data();
+}
+
+export async function setDisplayName(displayName: string) {
+  const fn = firebase.functions().httpsCallable('setDisplayName');
+  const result = await fn({ displayName });
+  return result.data;
+
+}
 
 export async function createQuoteSource(name: string): Promise<QuoteSource> {
   const doc = emptyQuoteSource(name)
