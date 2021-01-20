@@ -9,7 +9,7 @@
       <q-tabs v-model="tab" class="bg-secondary text-white">
         <q-tab name="view" label="View"></q-tab>
         <q-tab name="edit" label="Edit"></q-tab>
-        <q-tab name="history" label="History"></q-tab>
+        <q-tab v-if="id" name="history" label="History"></q-tab>
       </q-tabs>
       <q-tab-panels :value="displayTab" animated>
         <q-tab-panel name="view">
@@ -34,7 +34,7 @@
 
 <script lang="ts">
   import Vue from 'vue';
-  import {emptyQuoteSource, getQuoteSource, QuoteSource, upsertQuoteSource} from 'src/lib/assetDb';
+  import {emptyQuoteSource, QuoteSource, quoteSourceDb, upsertQuoteSource} from 'src/lib/assetDb';
   import QuoteSourceEditor from 'components/QuoteSourceEditor.vue';
   import { extend } from 'quasar'
   import QuoteSourceHistoryView from 'components/QuoteSourceHistoryView.vue';
@@ -54,7 +54,8 @@
       const editingData = undefined as QuoteSource|undefined;
       const loading = true;
       const tab = 'view';
-      return {data, editingData, loading, tab}
+      const subscribeId: string|null = null;
+      return {data, editingData, loading, tab, unsubscribe: null as null|(()=>void), subscribeId}
     },
     meta (): any {
       // Meta plug-in doesn't make type info available so this is a workaround
@@ -75,26 +76,54 @@
         const args = props ?? this.$props;
         const id = args.id;
         try {
-          let doc;
-          if (id) {
-            doc = await getQuoteSource(id);
-          } else {
-            doc = emptyQuoteSource('')
+          if (id !== this.subscribeId) {
+            // Subscribing to something new
+
+            // First clear existing subscription
+            const existingSub = this.unsubscribe;
+            if (existingSub !== null) {
+              await existingSub()
+            }
+
+            // Subscribe to new thing
+            this.subscribeId = id;
+            if (id) {
+              this.loading = true;
+              this.unsubscribe = quoteSourceDb().where('id', '==', id).onSnapshot(items => {
+                this.loading = false
+                const item = items.docs[0];
+                const doc = item.data();
+                this.data = doc as QuoteSource; // TODO: sanitise inputs
+                this.editingData = extend(true, {}, doc);
+              });
+            } else {
+              // No id, new record
+              const doc = emptyQuoteSource('');
+              this.data = doc;
+              this.editingData = extend(true, {}, doc);
+              this.tab = 'edit';
+              this.loading = false;
+            }
+
+
           }
-          this.editingData = extend(true, {}, doc);
-          this.data = doc;
         } catch (error) {
           console.error(error)
           this.$notify.error(error)
         } finally {
-          this.loading = false;
+          // this.loading = false;
         }
       },
       async saveQuoteSource() {
         try {
           this.loading = true;
-          if (this.editingData && this.editingData.id) {
-            await upsertQuoteSource(this.editingData);
+          const editing = this.editingData;
+          if (editing && editing.id) {
+            await upsertQuoteSource(editing);
+            if (editing.id !== this.subscribeId) {
+              // Probably added something new
+              await this.$router.push('/assetdb');
+            }
           }
         }
         catch (error) {
@@ -122,6 +151,12 @@
     },
     mounted(): void {
       this.refresh();
+    },
+    beforeDestroy() {
+      const unsub = this.unsubscribe;
+      if (unsub) {
+        unsub();
+      }
     },
     beforeRouteUpdate(to, from, next) {
       // react to route changes...

@@ -5,7 +5,9 @@
         {{ fld.label}}
         <q-tooltip>{{ fld.description}}</q-tooltip>
       </div>
-      <div class="col-6 text-right">{{ object[fld.name] }}</div>
+      <div class="col-6 text-right">
+        {{ fieldString(object, fld) }}
+      </div>
     </template>
   </div>
 </template>
@@ -24,6 +26,16 @@
       object: {
         type: Object as () => Record<string, unknown>,
         required: true,
+      }
+    },
+    methods: {
+      fieldString(object: Record<string, any>, field: FieldProperty) {
+        const val = object[field.name];
+        if (field.fieldType === 'multiEnum') {
+          return Object.keys(val??[]).join(', ');
+        } else {
+          return val;
+        }
       }
     },
     computed: {

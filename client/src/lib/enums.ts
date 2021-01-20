@@ -12,6 +12,10 @@ function cleanUp(row:any):EnumEntry {
   return row;
 }
 
+export function simpleEnumEntry(value: string):EnumEntry {
+  return cleanUp({value})
+}
+
 // https://en.wikipedia.org/wiki/List_of_stock_exchanges
 // const stockExchanges = [
 //   {acronym: 'NYSE', name: 'New York Stock Exchange', region: 'United States', city: 'New York'},
@@ -63,7 +67,15 @@ export const assetClass = [
   {value: 'Real Estate'},
   {value: 'Multi-Asset'},
   {value: 'Alternatives'},
-];
+].map(cleanUp);
+
+export const fixedIncomeTypes = [
+  {value: 'Government'},
+  {value: 'Inflation', label: 'Inflation Linked'},
+  {value: 'Corporate'},
+  {value: 'Investment', label: 'Investment Grade'},
+  {value: 'Junk'},
+].map(cleanUp);
 
 export const issuerBrand = [
   {value: 'Vanguard'},

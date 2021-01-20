@@ -8,7 +8,7 @@ import {
   incomeTreatment,
   investmentAssetTypes,
   marketRegions,
-  quoteSourceTypes
+  quoteSourceTypes, fixedIncomeTypes
 } from './enums';
 
 export interface FieldProperty {
@@ -59,6 +59,9 @@ export const investmentAssetProperties: FieldProperty[] = [
   {name: 'ter', label: 'TER/OCF', description: 'Total Expense Ratio or Ongoing Charge. Annual %', fieldType: 'percentage',
   valid: props => includes(['ETF','Fund'], props['type'])},
   {name: 'references', label: 'External Reference', description: 'External reference websites', fieldType: 'array', fieldMeta: externalReference},
+  {name: 'fixedIncomeSubclass', label: 'Fixed Income Subclass', description: 'Fixed Income Subclass', fieldType: 'multiEnum', fieldMeta: fixedIncomeTypes,
+    valid: (props) => props['assetClass'] == 'Fixed Income'
+  }
 ];
 
 

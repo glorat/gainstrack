@@ -50,7 +50,7 @@ export function emptyQuoteSource(name:string): QuoteSource {
   }
 }
 
-const quoteSourceDb = () => myFirestore().collection('quoteSources');
+export const quoteSourceDb = () => myFirestore().collection('quoteSources');
 const quoteSourceHistoryDb = () => myFirestore().collection('quoteSourceHistory');
 const userRolesDb = () => myFirestore().collection('userRoles');
 
@@ -126,6 +126,12 @@ export async function upsertQuoteSource(qsrc: QuoteSource): Promise<void> {
   }
 }
 
+//
+// export async function getQuoteSource(id: string): Promise<QuoteSource|undefined> {
+//   const all = await getAllQuoteSources();
+//   return all.find(x => x.id === id)
+// }
+
 export async function getAllQuoteSources(filter?: (col:CollectionReference) => Query|CollectionReference): Promise<QuoteSource[]> {
   const dataRef = quoteSourceDb();
   const filteredRef = filter? filter(dataRef) : dataRef;
@@ -158,8 +164,8 @@ function sanitiseQuoteSource(qs: any): QuoteSource {
 }
 
 function prepareQuoteSourceForSave(qs: QuoteSource) {
-  const providers:Record<string, any> = {}
-  qs.sources.forEach(src => {
+  const providers:Record<string, any> = {};
+  (qs.sources ?? []).forEach(src => {
     if (src.sourceType) {
       providers[src.sourceType] = src
     }
@@ -167,15 +173,11 @@ function prepareQuoteSourceForSave(qs: QuoteSource) {
   return {...qs, providers};
 }
 
-export async function getQuoteSource(id: string): Promise<QuoteSource|undefined> {
-  const all = await getAllQuoteSources();
-  return all.find(x => x.id === id)
-}
 
 export async function getQuoteSourceHistory(id: string): Promise<QuoteSourceHistory[]> {
   const ref = quoteSourceHistoryDb()
     .where('payload.id', '==', id)
-    .orderBy('payload.lastUpdate.timestamp', 'desc'); // orderBy createTime
+    .orderBy('createTime', 'desc'); // orderBy createTime
   const snapshot = await ref.get()
   const ret:QuoteSourceHistory[] = [];
   snapshot.forEach(doc => {

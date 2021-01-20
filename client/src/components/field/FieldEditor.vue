@@ -47,6 +47,15 @@
     @clear="cleared" @input="inputChanged($event)"
   >
   </enum-select>
+  <multi-enum-select
+    v-else-if="type==='multiEnum'"
+    :model-value="modelValue"
+    :label="schema.label"
+    :options="schema.fieldMeta"
+    :clerable="clearable"
+    @clear="cleared" @input="inputChanged($event)"
+  >
+  </multi-enum-select>
   <div
     v-else-if="type==='array'"
   >
@@ -75,10 +84,11 @@ import {FieldProperty} from 'src/lib/AssetSchema';
 import TickerSelect from 'components/field/TickerSelect.vue';
 import {assetCategories} from 'src/lib/enums';
 import EnumSelect from 'components/field/EnumSelect.vue';
+import MultiEnumSelect from 'components/field/MultiEnumSelect.vue';
 
 export default defineComponent({
   name: 'FieldEditor',
-  components: {CommandDateEditor, BalanceEditor, AssetId, TickerSelect, EnumSelect},
+  components: {CommandDateEditor, BalanceEditor, AssetId, TickerSelect, EnumSelect, MultiEnumSelect},
   // Forward looking for vue-3
   model: {
     prop: 'modelValue',
