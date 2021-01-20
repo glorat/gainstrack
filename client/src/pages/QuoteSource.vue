@@ -120,6 +120,7 @@
           const editing = this.editingData;
           if (editing && editing.id) {
             await upsertQuoteSource(editing);
+            this.$notify.success(`Save submitted for ${editing.id}. It will appear in a minute`);
             if (editing.id !== this.subscribeId) {
               // Probably added something new
               await this.$router.push('/assetdb');
