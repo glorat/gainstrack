@@ -3,7 +3,7 @@
             :options="displayOptions"
             multiple use-chips
             use-input @filter="filterFn"
-            :clearable="clearable"
+            :clearable="clearable" :dense="dense"
             @clear="$emit('clear')"
   >
     <template v-slot:option="scope">
@@ -32,6 +32,7 @@
       options: Array as () => EnumEntry[],
       label: String,
       clearable: Boolean,
+      dense: Boolean,
     },
     data() {
       const displayOptions: EnumEntry[] = this.options

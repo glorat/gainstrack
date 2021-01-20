@@ -14,27 +14,27 @@
   <q-input
     v-else-if="type==='number'"
     :value="modelValue" type="number"
-    :clearable="clearable"
+    :clearable="clearable" :dense="dense"
     @clear="cleared" @input="inputChanged($event)"
     ></q-input>
   <q-input
     v-else-if="type==='percentage'"
     :value="modelValue" type="number"
     suffix="%"
-    :clearable="clearable"
+    :clearable="clearable" :dense="dense"
     @clear="cleared" @input="inputChanged($event)"
   ></q-input>
   <q-input
     v-else-if="type==='string'"
     :value="modelValue" :label="schema.label"
-    :clearable="clearable"
+    :clearable="clearable" :dense="dense"
     @clear="cleared" @input="inputChanged($event)"
   ></q-input>
   <enum-select
     v-else-if="type==='category'"
     :options="assetCategories"
     :model-value="modelValue"
-    :clearable="clearable"
+    :clearable="clearable" :dense="dense"
     @clear="cleared" @input="inputChanged($event)"
     >
   </enum-select>
@@ -43,7 +43,7 @@
     :model-value="modelValue"
     :label="schema.label"
     :options="schema.fieldMeta"
-    :clearable="clearable"
+    :clearable="clearable" :dense="dense"
     @clear="cleared" @input="inputChanged($event)"
   >
   </enum-select>
@@ -52,7 +52,7 @@
     :model-value="modelValue"
     :label="schema.label"
     :options="schema.fieldMeta"
-    :clerable="clearable"
+    :clerable="clearable" :dense="dense"
     @clear="cleared" @input="inputChanged($event)"
   >
   </multi-enum-select>
@@ -64,7 +64,7 @@
       v-for="(sub, idx) in modelValue"
       :key="idx"
       :schema="schema.fieldMeta" :model-value="sub"
-      :clearable="clearable"
+      :clearable="clearable" :dense="dense"
       @clear="arrayCleared(idx)"
       @input="arrayInput(idx, $event)"
     >
@@ -100,6 +100,7 @@ export default defineComponent({
       required: true,
     },
     clearable: Boolean,
+    dense: Boolean,
   },
   data() {
     return {

@@ -4,13 +4,14 @@
       <field-editor
         :schema="schema"
         :model-value="value[schema.name]"
-        clearable
+        clearable :dense="dense"
         @input="onFieldUpdate(schema.name, $event)"
         @clear="onFieldCleared(schema.name)"
       ></field-editor>
     </div>
     <q-chip v-for="tag in availableTags"
             :key="tag.name" color="primary" text-color="white" :label="tag.label"
+            size="sm"
             clickable @click="$set(value, tag.name, undefined)"></q-chip>
   </q-card-section>
 </template>
@@ -34,7 +35,8 @@
       value: {
         type: Object as () => Record<string, any>,
         default: () => ({} as Record<string, any>)
-      }
+      },
+      dense: Boolean,
     },
     methods: {
       onFieldUpdate(field:string, newValue: any) {

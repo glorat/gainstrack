@@ -3,7 +3,7 @@
             :options="displayOptions" emit-value
             use-input @filter="filterFn"
             :display-value="displayValue"
-            :clearable="clearable"
+            :clearable="clearable" :dense="dense"
             @clear="$emit('clear')"
   >
     <template v-slot:option="scope">
@@ -32,6 +32,7 @@ export default Vue.extend({
     options: Array as () => EnumEntry[],
     label: String,
     clearable: Boolean,
+    dense: Boolean,
   },
   data() {
     const displayOptions: EnumEntry[] = this.options
