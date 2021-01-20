@@ -140,6 +140,8 @@ export function getFieldNameList(props: FieldProperty[], prefix = '') : EnumEntr
   props.forEach(prop => {
     if (prop.fieldType === 'array') {
       // Skip for now
+    } else if (prop.fieldType === 'multiEnum') {
+      // Also skip for now
     } else if (prop.fieldType === 'object') {
       const subs = getFieldNameList(prop.fieldMeta as FieldProperty[], `${prefix}${prop.name}.`);
       ret.push(...subs)
