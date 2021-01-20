@@ -59,7 +59,7 @@
   function enrichQuoteSourceHistory(history: QuoteSourceHistory[]): QuoteSourceHistoryEx[] {
     const rows = history.map(row => {
       const nowRevision = (row.payload.lastUpdate?.revision ?? 0);
-      const before = history.find(x => x.payload.lastUpdate?.revision === nowRevision-1);
+      const before = history.find(x => (x.payload.lastUpdate?.revision ?? 0) === nowRevision-1);
       const diffs = diffQuoteSource(before?.payload ?? ({} as QuoteSource), row.payload);
       return {...row, diffs}
     });
@@ -106,11 +106,11 @@
       },
       columns(): any[] {
         return [
-          {name: 'revision', label: 'Revision', field: (row: QuoteSourceHistory) => row.payload.lastUpdate?.revision},
+          {name: 'revision', label: 'Revision', field: (row: QuoteSourceHistory) => 1 + (row.payload.lastUpdate?.revision??0)},
           {
             name: 'timestamp',
             label: 'Timestamp',
-            field: (row: QuoteSourceHistory) => row.payload.lastUpdate?.timestamp,
+            field: (row: QuoteSourceHistory) => row.createTime.seconds*1000,
             format: (x: number) => new Date(x).toLocaleString()
           },
           {
