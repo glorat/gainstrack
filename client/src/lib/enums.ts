@@ -77,6 +77,15 @@ export const fixedIncomeTypes = [
   {value: 'Junk'},
 ].map(cleanUp);
 
+export const equityCapSizes = [
+  {value: 'Small', label: 'Small Cap'},
+  {value: 'MidSmall', label: 'Mid/Small Cap'},
+  {value: 'Mid', label: 'Mid Cap'},
+  {value: 'LargeMid', label: 'Large/Mid Cap'},
+  {value: 'Large', label: 'Large Cap'},
+  {value: 'All', label: 'All Cap'},
+].map(cleanUp);
+
 export const issuerBrand = [
   {value: 'Vanguard'},
   {value: 'iShares', description:'ETFs managed by BlackRock'},

@@ -8,7 +8,7 @@ import {
   incomeTreatment,
   investmentAssetTypes,
   marketRegions,
-  quoteSourceTypes, fixedIncomeTypes
+  quoteSourceTypes, fixedIncomeTypes, equityCapSizes
 } from './enums';
 
 export interface FieldProperty {
@@ -18,6 +18,7 @@ export interface FieldProperty {
   fieldType: string // enum
   fieldMeta?: EnumEntry[] | unknown
   valid?: (props: Record<string,any>) => boolean
+  searchValid?: (props: Record<string,any>) => boolean
 }
 
 export const unknownFieldProperty: FieldProperty = {name: '???', label: '', fieldType: 'string', description: 'unknown field property'};
@@ -44,25 +45,31 @@ export const investmentAssetProperties: FieldProperty[] = [
   {name: 'type', label: 'Type', description: 'Stock/ETF/Fund', fieldType: 'enum', fieldMeta: investmentAssetTypes},
   {name: 'assetClass', label: 'Asset Class', description: 'Asset Class', fieldType: 'enum', fieldMeta: assetClass,
     valid: props => includes(['ETF','Fund','Index'], props['type'])},
+  {name: 'fixedIncomeSubclass', label: 'Fixed Income Subclass', description: 'Fixed Income Subclass', fieldType: 'multiEnum', fieldMeta: fixedIncomeTypes,
+    valid: (props) => props['assetClass'] == 'Fixed Income'
+  },
+  {name: 'geography', label: 'Geography', description: 'Region the ETF/Fund covers', fieldType: 'enum', fieldMeta: geography,
+    valid: (props) => includes(['ETF','Fund','Index'], props['type'])
+  },
+  {name: 'equityCapSize', label: 'Market Cap Size', description: 'Equity Market Cap Size (Small/Mid/Large)', fieldType: 'enum', fieldMeta: equityCapSizes,
+    valid: (props) => props['assetClass'] == 'Equity' && includes(['ETF', 'Fund', 'Index'], props['type'])
+  },
   {name: 'issuerBrand', label: 'Issuer', description: 'Issuer Brand', fieldType: 'enum', fieldMeta: issuerBrand,
     valid: props => includes(['ETF','Fund'], props['type'])},
   {name: 'fundManagement', label: 'Fund Management', description: 'Active vs Passive managed funds', fieldType: 'enum', fieldMeta: fundManagement,
   valid: props => includes(['ETF','Fund'], props['type'])},
   {name: 'incomeTreatment', label: 'Income Treatment', description: 'Accumulation vs Distribution', fieldType: 'enum', fieldMeta: incomeTreatment,
     valid: props => includes(['ETF','Fund'], props['type'])},
-  {name: 'geography', label: 'Geography', description: 'Region the ETF/Fund covers', fieldType: 'enum', fieldMeta: geography,
-    valid: (props) => includes(['ETF','Fund','Index'], props['type'])
-  },
   {name: 'domicile', label: 'Domicile', description: 'Domicile of asset', fieldType: 'string',
     valid: (props) => includes(['ETF','Fund','Stock'], props['type'])
   },
   {name: 'ter', label: 'TER/OCF', description: 'Total Expense Ratio or Ongoing Charge. Annual %', fieldType: 'percentage',
   valid: props => includes(['ETF','Fund'], props['type'])},
+  {name: 'hedgeCurrency', label: 'Hedged Currency', description: 'Currency to which fund is hedged to', fieldType: 'string',
+    valid: props => includes(['ETF','Fund'], props['type'])
+  },
   {name: 'references', label: 'External Reference', description: 'External reference websites', fieldType: 'array', fieldMeta: externalReference},
-  {name: 'fixedIncomeSubclass', label: 'Fixed Income Subclass', description: 'Fixed Income Subclass', fieldType: 'multiEnum', fieldMeta: fixedIncomeTypes,
-    valid: (props) => props['assetClass'] == 'Fixed Income'
-  }
-];
+  ];
 
 
 
@@ -94,12 +101,12 @@ const quoteSourceSourceFieldProperties: FieldProperty[] = [
 
 export const quoteSourceFieldProperties: FieldProperty[] = [
   {name: 'id', fieldType: 'string', label: 'Id', description: 'System Id'},
-  {name: 'name', fieldType: 'string', label: 'Name', description: 'Descriptive name of asset'},
+  {name: 'name', fieldType: 'string', label: 'Name', description: 'Descriptive name of asset', searchValid: () => false},
   {name: 'ticker', fieldType: 'string', label: 'Ticker', description: 'Ticker symbol'},
   {name: 'marketRegion', fieldType: 'enum', fieldMeta: marketRegions, label: 'Market Region', description: 'Market Region, or IND for indices, or Global'},
   {name: 'exchange', fieldType: 'string', label: 'Exchange', description: 'Exchange code where quotes for this asset are sourced'},
   {name: 'ccy', fieldType: 'string', label: 'Currency', description: 'Currency in which this quote is traded'},
-  {name: 'sources', fieldType: 'array', label: 'Quote Sources', description: 'Quote sourcing details', fieldMeta: quoteSourceSourceFieldProperties},
+  {name: 'sources', fieldType: 'unknown', label: 'Quote Sources', description: 'Quote sourcing details', fieldMeta: quoteSourceSourceFieldProperties},
   {name: 'asset', fieldType: 'object', label: 'Asset', description: 'Asset details', fieldMeta: investmentAssetProperties},
 ]
 
@@ -200,6 +207,13 @@ export const userAssetSchema: AssetSchema = new AssetSchema({
 
 export const investmentAssetSchema: AssetSchema = new AssetSchema({
   properties: investmentAssetProperties,
+  validPropertiesForAsset(fields: Record<string, any>): FieldProperty[] {
+    return this.properties.filter(p => !p.valid || p.valid(fields))
+  }
+});
+
+export const quoteSourceSchema: AssetSchema = new AssetSchema({
+  properties: quoteSourceFieldProperties,
   validPropertiesForAsset(fields: Record<string, any>): FieldProperty[] {
     return this.properties.filter(p => !p.valid || p.valid(fields))
   }
