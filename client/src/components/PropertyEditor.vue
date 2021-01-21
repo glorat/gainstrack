@@ -12,7 +12,9 @@
     <q-chip v-for="tag in availableTags"
             :key="tag.name" color="primary" text-color="white" :label="tag.label"
             size="sm"
-            clickable @click="$set(value, tag.name, undefined)"></q-chip>
+            clickable @click="$set(value, tag.name, undefined)">
+      <q-tooltip>{{ tag.description}}</q-tooltip>
+    </q-chip>
   </q-card-section>
 </template>
 
