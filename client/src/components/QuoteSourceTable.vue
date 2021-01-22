@@ -29,6 +29,10 @@
         </q-th>
       </q-tr>
     </template>
+
+    <template v-slot:bottom v-if="previewing">
+      <em>Previewing top 10 results. Press search for full results</em>
+    </template>
   </q-table>
 </template>
 
@@ -51,7 +55,8 @@
           return d;
         }
       },
-      columnEditing: Boolean
+      columnEditing: Boolean,
+      previewing: Boolean,
     },
     data() {
       const pagination = {

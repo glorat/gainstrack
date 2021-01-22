@@ -9,6 +9,7 @@
                         :selected-columns="selectedColumns" @update:selected-columns="selectedColumns = $event"
                         :column-editing="columnEditing"
                         :loading="loading"
+                        :previewing="previewing"
                         @row-click="quoteRowClick" >
     </quote-source-table>
 
@@ -61,26 +62,36 @@ function applyQueries(col: CollectionReference, queries: any[]): Query | Collect
   return ret;
 }
 
+const defaultParams = () => ({query:[], searchObj:{}, fields: []});
+
 export default Vue.extend({
   name: 'AssetDb',
   components: {QuoteSourceTable, QuoteSourceFilter},
   data() {
     const quoteSources = [] as QuoteSource[];
-    const params: any = undefined;
+    const params: any = defaultParams();
     const previewQuery: any = undefined;
     const loading = false;
     const selectedColumns = undefined;
     const columnEditing = false;
-    return {quoteSources, params, loading, selectedColumns, columnEditing, previewQuery};
+    const previewing = false;
+    return {quoteSources, params, loading, selectedColumns, columnEditing, previewQuery, previewing};
   },
 
   methods: {
     async refresh(params: any) {
+      // Perform some sanitising/defaulting
+      if (!params) params = defaultParams();
+      if (!params.query) params.query = [];
+      if (!params.searchObj) params.searchObj = {asset:{}};
+      if (!params.fields) params.fields = [];
+
       this.params = params;
 
       if (params?.fields && params.fields.length > 0) {
         this.selectedColumns = params.fields;
       }
+      this.previewing = false;
       await this.applyQuery(params);
 
     },
@@ -113,6 +124,7 @@ export default Vue.extend({
     },
     doPreview: debounce(async function(this:any) {
       await this.applyQuery(this.previewQuery, 10);
+      this.previewing = true;
     },1000),
     createNew() {
       this.$router.push({name: 'quoteSourceNew'});
@@ -124,7 +136,7 @@ export default Vue.extend({
     }
   },
   mounted() {
-    const params = queryArgsToObj(this.$route.query.args)
+    const params = queryArgsToObj(this.$route.query.args);
     this.refresh(params);
 
   },

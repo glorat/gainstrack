@@ -57,7 +57,7 @@ export default Vue.extend({
   props: {
     params: {
       type: Object,
-      default: () => ({query: []} as any)
+      required: true,
     },
     selectedColumns: {
       type: Array as () => string[],
@@ -103,11 +103,14 @@ export default Vue.extend({
     }
   },
   watch: {
-    searchObjToQuery() {
+    searchObjToQuery(newVal, oldVal) {
       const params = {...this.params};
       params.fields = this.selectedColumns;
-
-      this.$emit('preview', params)
+      if (oldVal.length > 0) {
+        this.$emit('preview', params)
+      } else {
+        debugger;
+      }
     },
     step(newVal: number) {
       if (newVal === 3) {
@@ -146,16 +149,17 @@ export default Vue.extend({
       if (!this.columnEditing) {
         // Automatically determine columns
         const columnCount = 8; // How many to have... a sensible hardcoded number
-        const searchObj = this.params?.searchObj ?? {};
+        const searchObj = this.params.searchObj;
+        const name = 'name'; // mandatory
         const one = quoteSourceSearchSchema.availablePropertiesForAsset(searchObj).map(x => x.name);
         let final;
         if (one.length >= columnCount) {
-          final = one.slice(0, columnCount);
+          final = [name, ...one.slice(0, columnCount)];
         } else {
           const two = investmentAssetSearchSchema.availablePropertiesForAsset(searchObj.asset)
             .slice(0, columnCount-one.length)
             .map( x => `asset.${x.name}`);
-          final = [...one, ...two];
+          final = [name, ...one, ...two];
         }
         this.selectedColumns.splice(0, this.selectedColumns.length, ...final);
 
