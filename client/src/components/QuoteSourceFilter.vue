@@ -28,7 +28,8 @@
         </div>
       </q-step>
       <q-step :name="4" title="Search" :icon="matSearch" color="primary">
-        <q-btn color="primary" label="Search" :icon="matSearch" @click="onSearch"></q-btn>
+        <p>You can save this search by bookmarking or copying the URL</p>
+        <q-btn color="primary" label="Refresh" :icon="matSearch" @click="onSearch"></q-btn>
       </q-step>
     </q-stepper>
   </div>
@@ -66,14 +67,12 @@ export default Vue.extend({
     }
   },
   data() {
-    const searchObj:Record<string, any> = {asset:{}};
     const step = 1;
     return {
       step,
       whereOps,
       matSearch,
       matFilterAlt,
-      searchObj,
       investmentAssetSearchSchema,
       quoteSourceSearchSchema,
 
@@ -82,6 +81,9 @@ export default Vue.extend({
   computed: {
     query(): any[] {
       return this.params.query;
+    },
+    searchObj(): any {
+      return this.params.searchObj;
     },
     fieldList(): EnumEntry[] {
       return getFieldNameList(quoteSourceFieldProperties)
@@ -94,7 +96,7 @@ export default Vue.extend({
       return names.map(nm => findProperty(nm ?? '', quoteSourceFieldProperties))
     },
     searchObjToQuery(): any[] {
-      const obj = this.searchObj;
+      const obj = this.params?.searchObj || {};
       const ret = searchObjToQuery(obj);
 
       return ret;
@@ -104,7 +106,6 @@ export default Vue.extend({
     searchObjToQuery() {
       const params = {...this.params};
       params.fields = this.selectedColumns;
-      params.searchObj = this.searchObj;
 
       this.$emit('preview', params)
     },
@@ -122,8 +123,6 @@ export default Vue.extend({
     onSearch() {
       const params = {...this.params};
       params.fields = this.selectedColumns;
-      params.searchObj = this.searchObj;
-      // params.query = this.searchObjToQuery; // FIXME: This is a testing override!!
       this.$emit('search', params);
       this.$emit('update:column-editing', false)
     },
@@ -147,12 +146,13 @@ export default Vue.extend({
       if (!this.columnEditing) {
         // Automatically determine columns
         const columnCount = 8; // How many to have... a sensible hardcoded number
-        const one = quoteSourceSearchSchema.availablePropertiesForAsset(this.searchObj).map(x => x.name);
+        const searchObj = this.params?.searchObj ?? {};
+        const one = quoteSourceSearchSchema.availablePropertiesForAsset(searchObj).map(x => x.name);
         let final;
         if (one.length >= columnCount) {
           final = one.slice(0, columnCount);
         } else {
-          const two = investmentAssetSearchSchema.availablePropertiesForAsset(this.searchObj.asset)
+          const two = investmentAssetSearchSchema.availablePropertiesForAsset(searchObj.asset)
             .slice(0, columnCount-one.length)
             .map( x => `asset.${x.name}`);
           final = [...one, ...two];
