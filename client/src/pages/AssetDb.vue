@@ -3,6 +3,7 @@
     <quote-source-filter :params="params"
                          :selected-columns="selectedColumns" @update:selected-columns="selectedColumns = $event"
                          :column-editing="columnEditing" @update:column-editing="columnEditing = $event"
+                         @preview="onPreview"
                          @search="onSearch" ></quote-source-filter>
     <quote-source-table :quote-sources="quoteSources"
                         :selected-columns="selectedColumns" @update:selected-columns="selectedColumns = $event"
@@ -24,6 +25,8 @@ import QuoteSourceFilter from 'components/QuoteSourceFilter.vue';
 import firebase from 'firebase/app';
 import CollectionReference = firebase.firestore.CollectionReference;
 import Query = firebase.firestore.Query;
+import {debounce} from 'quasar';
+import { searchObjToQuery } from 'src/lib/AssetSchema';
 
 function queryArgsToObj(args: string | (string | null)[]) {
   try {
@@ -54,7 +57,7 @@ function applyQueries(col: CollectionReference, queries: any[]): Query | Collect
       const orderBy = qry.orderBy;
       ret = ret.orderBy(orderBy[0], orderBy[1])
     }
-  })
+  });
   return ret;
 }
 
@@ -64,24 +67,33 @@ export default Vue.extend({
   data() {
     const quoteSources = [] as QuoteSource[];
     const params: any = undefined;
+    const previewQuery: any = undefined;
     const loading = false;
     const selectedColumns = undefined;
     const columnEditing = false;
-    return {quoteSources, params, loading, selectedColumns, columnEditing};
+    return {quoteSources, params, loading, selectedColumns, columnEditing, previewQuery};
   },
 
   methods: {
     async refresh(params: any) {
-      this.loading = true;
       this.params = params;
-      const query = params?.query;
-      try {
-        if (params?.fields && params.fields.length>0) {
-          this.selectedColumns = params.fields;
-        }
 
-        if (query && query.length && query[0].where) {
-          const filter = (col: CollectionReference) => applyQueries(col, query)
+      if (params?.fields && params.fields.length > 0) {
+        this.selectedColumns = params.fields;
+      }
+      await this.applyQuery(params);
+
+    },
+    async applyQuery(params: any, limit?: number) {
+      try {
+        this.loading = true;
+        const {query, searchObj} = params ?? {};
+        const advancedQuery = query ?? [];
+        const searchObjQuery = searchObjToQuery(searchObj ?? {});
+        const cq = [...advancedQuery, ...searchObjQuery];
+
+        if (cq && cq.length && cq[0].where) {
+          const filter = limit ? (col: CollectionReference) => applyQueries(col, cq).limit(limit) : (col: CollectionReference) => applyQueries(col, cq)
           this.quoteSources = await getAllQuoteSources(filter)
         } else {
           this.quoteSources = await getAllQuoteSources()
@@ -91,11 +103,17 @@ export default Vue.extend({
       } finally {
         this.loading = false;
       }
-
     },
     onSearch(params: any) {
       this.$router.push({query: {args: JSON.stringify(params)}})
     },
+    onPreview(params: any) {
+      this.previewQuery = params;
+      this.doPreview();
+    },
+    doPreview: debounce(async function(this:any) {
+      await this.applyQuery(this.previewQuery, 10);
+    },1000),
     createNew() {
       this.$router.push({name: 'quoteSourceNew'});
     },

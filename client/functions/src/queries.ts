@@ -1,7 +1,7 @@
 import {Response} from "express";
 import {Request} from "firebase-functions/lib/providers/https";
 
-import {findProperty, quoteSourceFieldProperties} from './lib/AssetSchema';
+import {findProperty, quoteSourceFieldProperties, searchObjToQuery} from './lib/AssetSchema';
 import {get} from 'lodash';
 
 export function applyQueries(col: FirebaseFirestore.CollectionReference, queries: any[]): FirebaseFirestore.Query|FirebaseFirestore.CollectionReference {
@@ -47,27 +47,32 @@ async function doQuoteSourceQuery(db: FirebaseFirestore.Firestore, query: any) {
   return rows;
 }
 
+function requestToSearchQuery(req: Request) {
+  const queryParams = req.query;
+  const args = queryArgsToObj(queryParams.args); // Serialised JSON in args param
+  const advancedQuery = args.query ?? [];
+  const searchObjQuery = searchObjToQuery(args.searchObj ?? {});
+  return {query: [...advancedQuery, ...searchObjQuery], fields: args.fields};
+}
 
 export const quoteSourcesHandler:(db: FirebaseFirestore.Firestore) => (req: Request, resp: Response) => void | Promise<void> = (db) => async(req, res) => {
   const qry = req.body.query ?? [{"where":["asset.type","==","ETF"]}];
-  const rows = await doQuoteSourceQuery(db, qry);
+  const rows = await doQuoteSourceQuery(db, qry.query);
   res.json({rows});
 };
 
 
 export const quoteSourcesQueryHandler:(db: FirebaseFirestore.Firestore) => (req: Request, resp: Response) => void | Promise<void> = (db) => async(req, res) => {
-  const query = req.query;
-  const args = queryArgsToObj(query.args);
-  const rows = await doQuoteSourceQuery(db, args.query);
+  const qry = requestToSearchQuery(req);
+  const rows = await doQuoteSourceQuery(db, qry.query);
   res.json({rows});
 };
 
 export const quoteSourcesTableHandler:(db: FirebaseFirestore.Firestore) => (req: Request, resp: Response) => void | Promise<void> = (db) => async(req, res) => {
-  const query = req.query;
-  const args = queryArgsToObj(query.args);
-  const rows = await doQuoteSourceQuery(db, args.query);
+  const qry = requestToSearchQuery(req);
+  const rows = await doQuoteSourceQuery(db, qry.query);
 
-  const fields:string[] = args.fields;
+  const fields:string[] = qry.fields ?? [];
   const headers = fields.map(field => findProperty(field, quoteSourceFieldProperties).label);
 
   const tds = rows.map(row => {

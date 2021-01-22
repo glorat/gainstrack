@@ -28,7 +28,7 @@
       <q-input v-model="qsrc.exchange" label="Exchange"></q-input>
 
     </q-card-section>
-    <property-editor v-model="qsrc.asset" :schema="investmentAssetSchema"></property-editor>
+    <property-editor v-model="qsrc.asset" :schema="investmentAssetSchema" dense></property-editor>
   </q-card>
 </template>
 

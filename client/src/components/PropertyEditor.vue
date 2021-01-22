@@ -12,7 +12,7 @@
     <q-chip v-for="tag in availableTags"
             :key="tag.name" color="primary" text-color="white" :label="tag.label"
             size="sm"
-            clickable @click="$set(value, tag.name, undefined)">
+            clickable @click="onFieldAdd(tag.name)">
       <q-tooltip>{{ tag.description}}</q-tooltip>
     </q-chip>
   </q-card-section>
@@ -49,6 +49,11 @@
       },
       onFieldCleared(field: string) {
         this.$delete(this.value, field);
+        this.$emit('property-removed', field);
+      },
+      onFieldAdd(name: string) {
+        this.$set(this.value, name, undefined);
+        this.$emit('property-added', name);
       },
       onRemove(propType: FieldProperty) {
         this.$delete(this.value, propType.name);

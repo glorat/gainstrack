@@ -39,9 +39,6 @@ const externalReference: FieldProperty = {
 };
 
 export const investmentAssetProperties: FieldProperty[] = [
-  {name: 'isin', label: 'ISIN', description: 'ISIN', fieldType: 'string',
-  valid: props => includes(['ETF', 'Fund', 'Stock'], props['type'])
-  },
   {name: 'type', label: 'Type', description: 'Stock/ETF/Fund', fieldType: 'enum', fieldMeta: investmentAssetTypes},
   {name: 'assetClass', label: 'Asset Class', description: 'Asset Class', fieldType: 'enum', fieldMeta: assetClass,
     valid: props => includes(['ETF','Fund','Index'], props['type'])},
@@ -68,7 +65,12 @@ export const investmentAssetProperties: FieldProperty[] = [
   {name: 'hedgeCurrency', label: 'Hedged Currency', description: 'Currency to which fund is hedged to', fieldType: 'string',
     valid: props => includes(['ETF','Fund'], props['type'])
   },
-  {name: 'references', label: 'External Reference', description: 'External reference websites', fieldType: 'array', fieldMeta: externalReference},
+  {name: 'isin', label: 'ISIN', description: 'ISIN', fieldType: 'string',
+    valid: props => includes(['ETF', 'Fund', 'Stock'], props['type'])
+  },
+  {name: 'references', label: 'External Reference', description: 'External reference websites', fieldType: 'array', fieldMeta: externalReference,
+    searchValid: () => false
+  },
   ];
 
 
@@ -219,6 +221,32 @@ export const quoteSourceSchema: AssetSchema = new AssetSchema({
   }
 });
 
+export const quoteSourceSearchSchema: AssetSchema = new AssetSchema({
+  properties: quoteSourceFieldProperties,
+  validPropertiesForAsset(fields: Record<string, any>): FieldProperty[] {
+    const def = (p:FieldProperty) => () => !includes(['array', 'object', 'unknown'], p.fieldType);
+    const ret = this.properties.filter(p => {
+      const fn = p.searchValid ?? p.valid ?? def(p);
+      return fn(fields)
+    });
+    return ret;
+  }
+});
+
+export const investmentAssetSearchSchema: AssetSchema = new AssetSchema({
+  properties: investmentAssetProperties,
+  validPropertiesForAsset(fields: Record<string, any>): FieldProperty[] {
+    const def = (p:FieldProperty) => () => !includes(['array', 'object', 'unknown'], p.fieldType);
+    const ret = this.properties.filter(p => {
+      const fn = p.searchValid ?? p.valid ?? def(p);
+      return fn(fields)
+    });
+    return ret;
+  }
+});
+
+
+
 function propDefined(props: Record<string, any>, name: string):boolean {
   // Avoid Object prototype pollution as a defensive measure
   return Object.prototype.hasOwnProperty.call(props ?? {}, name)
@@ -272,4 +300,24 @@ export function findProperty(path: string, rootProps: FieldProperty[]): FieldPro
   }
 
   return prop ?? unknownFieldProperty;
+}
+
+// TODO: make a generic one of these based on schema
+export function searchObjToQuery(obj:any) {
+  const ret: any[] = [];
+
+  const searchableSelected = (fld: FieldProperty): boolean => fld.fieldType !== 'object';
+
+  quoteSourceSearchSchema.selectedPropertiesForAsset(obj).filter(searchableSelected).forEach(fld => {
+    if (obj[fld.name] !== '' && obj[fld.name] !== undefined) {
+      ret.push({where: [fld.name, '==', obj[fld.name]]})
+    }
+  });
+
+  investmentAssetSearchSchema.selectedPropertiesForAsset(obj['asset']).filter(searchableSelected).forEach(fld => {
+    if (obj.asset[fld.name] !== '' && obj.asset[fld.name] !== undefined) {
+      ret.push({where: [`asset.${fld.name}`, '==', obj.asset[fld.name]]})
+    }
+  });
+  return ret;
 }

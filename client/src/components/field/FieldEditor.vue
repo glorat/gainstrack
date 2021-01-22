@@ -72,6 +72,7 @@
     </field-editor>
 
   </div>
+  <div v-else-if="type==='object'"></div>
   <div v-else>UNKNOWN TYPE {{ type }}</div>
 </template>
 
