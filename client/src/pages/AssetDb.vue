@@ -62,7 +62,7 @@ function applyQueries(col: CollectionReference, queries: any[]): Query | Collect
   return ret;
 }
 
-const defaultParams = () => ({query:[], searchObj:{}, fields: []});
+const defaultParams = () => ({query:[], searchObj:{asset:{}}, fields: []});
 
 export default Vue.extend({
   name: 'AssetDb',

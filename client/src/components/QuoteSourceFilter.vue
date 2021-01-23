@@ -43,7 +43,6 @@ import {
   getFieldNameList,
   investmentAssetSearchSchema,
   quoteSourceFieldProperties, quoteSourceSearchSchema,
-  searchObjToQuery
 } from 'src/lib/AssetSchema';
 import {EnumEntry, whereOps} from 'src/lib/enums';
 import {matSearch, matFilterAlt} from '@quasar/extras/material-icons';
@@ -95,23 +94,8 @@ export default Vue.extend({
       const names: string[] = this.params.query.map((row:any) => row.where[0]);
       return names.map(nm => findProperty(nm ?? '', quoteSourceFieldProperties))
     },
-    searchObjToQuery(): any[] {
-      const obj = this.params?.searchObj || {};
-      const ret = searchObjToQuery(obj);
-
-      return ret;
-    }
   },
   watch: {
-    searchObjToQuery(newVal, oldVal) {
-      const params = {...this.params};
-      params.fields = this.selectedColumns;
-      if (oldVal.length > 0) {
-        this.$emit('preview', params)
-      } else {
-        debugger;
-      }
-    },
     step(newVal: number) {
       if (newVal === 3) {
         this.$emit('update:column-editing', true)
