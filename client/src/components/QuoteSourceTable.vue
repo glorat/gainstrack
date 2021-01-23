@@ -51,7 +51,7 @@
       selectedColumns: {
         type: Array as () => string[],
         default: ():string[] => {
-          const d = ['id', 'ticker', 'marketRegion', 'name', 'ccy', 'asset.type'];
+          const d = ['name', 'ticker', 'marketRegion', 'ccy', 'asset.type'];
           return d;
         }
       },

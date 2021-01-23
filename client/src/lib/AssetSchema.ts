@@ -102,7 +102,7 @@ const quoteSourceSourceFieldProperties: FieldProperty[] = [
 ]
 
 export const quoteSourceFieldProperties: FieldProperty[] = [
-  {name: 'id', fieldType: 'string', label: 'Id', description: 'System Id'},
+  {name: 'id', fieldType: 'string', label: 'Id', description: 'System Id', searchValid: () => false},
   {name: 'name', fieldType: 'string', label: 'Name', description: 'Descriptive name of asset', searchValid: () => false},
   {name: 'ticker', fieldType: 'string', label: 'Ticker', description: 'Ticker symbol'},
   {name: 'marketRegion', fieldType: 'enum', fieldMeta: marketRegions, label: 'Market Region', description: 'Market Region, or IND for indices, or Global'},
