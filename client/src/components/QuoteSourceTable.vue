@@ -2,7 +2,19 @@
   <q-table :columns="columns" :data="quoteSources" :pagination="pagination"
            dense
            :loading="loading"
+           title="Assets"
            @row-click="onRowClick">
+
+    <template v-slot:top-right>
+      <q-btn
+        size="sm"
+        color="primary"
+        :icon-right="matArchive"
+        label="Export CSV"
+        no-caps
+        @click="exportTable"
+      />
+    </template>
 
     <template v-slot:header="props">
       <q-tr :props="props">
@@ -40,6 +52,9 @@
   import Vue from 'vue';
   import {QuoteSource} from 'src/lib/assetDb';
   import {pathToTableColumn, quoteSourceFieldProperties} from 'src/lib/AssetSchema';
+  import {matArchive} from '@quasar/extras/material-icons';
+  import stringify from 'csv-stringify/lib/sync';
+  import {exportFile} from 'quasar';
 
   export default Vue.extend({
     name: 'QuoteSourceTable',
@@ -65,6 +80,7 @@
       return {
         // columns,
         pagination,
+        matArchive,
       }
     },
     methods: {
@@ -80,6 +96,34 @@
         Vue.set(this.selectedColumns, idx, this.selectedColumns[idx-1]);
         Vue.set(this.selectedColumns, idx-1, tmp);
         this.$emit('update:selected-columns', this.selectedColumns);
+      },
+      exportTable() {
+        const tableColumns = this.columns;
+
+        const records = this.quoteSources.map( (qs:Record<string, any>) => {
+          const row:Record<string, any> = {};
+          tableColumns.forEach(col => {
+            row[col.label] = col.field ? col.field(qs) : qs[col.name]
+          });
+          return row;
+        });
+        const columns = tableColumns.map(col => col.label ?? col.name);
+        const options = {columns, header: true};
+        const data = stringify(records, options);
+
+        const status = exportFile(
+          'table-export.csv',
+          data,
+          'text/csv'
+        );
+
+        if (status !== true) {
+          this.$q.notify({
+            message: 'Browser denied file download...',
+            color: 'negative',
+            icon: 'warning'
+          })
+        }
       }
     },
     computed: {
