@@ -19,6 +19,7 @@ export interface FieldProperty {
   fieldMeta?: EnumEntry[] | unknown
   valid?: (props: Record<string,any>) => boolean
   searchValid?: (props: Record<string,any>) => boolean
+  searchLevel?: number
 }
 
 export const unknownFieldProperty: FieldProperty = {name: '???', label: '', fieldType: 'string', description: 'unknown field property'};
@@ -39,13 +40,13 @@ const externalReference: FieldProperty = {
 };
 
 export const investmentAssetProperties: FieldProperty[] = [
-  {name: 'type', label: 'Type', description: 'Stock/ETF/Fund', fieldType: 'enum', fieldMeta: investmentAssetTypes},
-  {name: 'assetClass', label: 'Asset Class', description: 'Asset Class', fieldType: 'enum', fieldMeta: assetClass,
+  {name: 'type', label: 'Type', description: 'Stock/ETF/Fund', fieldType: 'enum', fieldMeta: investmentAssetTypes, searchLevel: 1},
+  {name: 'assetClass', label: 'Asset Class', description: 'Asset Class', fieldType: 'enum', fieldMeta: assetClass, searchLevel: 1,
     valid: props => includes(['ETF','Fund','Index'], props['type'])},
   {name: 'fixedIncomeSubclass', label: 'Fixed Income Subclass', description: 'Fixed Income Subclass', fieldType: 'multiEnum', fieldMeta: fixedIncomeTypes,
     valid: (props) => props['assetClass'] == 'Fixed Income'
   },
-  {name: 'geography', label: 'Geography', description: 'Region the ETF/Fund covers', fieldType: 'enum', fieldMeta: geography,
+  {name: 'geography', label: 'Geography', description: 'Region the ETF/Fund covers', fieldType: 'enum', fieldMeta: geography, searchLevel: 1,
     valid: (props) => includes(['ETF','Fund','Index'], props['type'])
   },
   {name: 'equityCapSize', label: 'Market Cap Size', description: 'Equity Market Cap Size (Small/Mid/Large)', fieldType: 'enum', fieldMeta: equityCapSizes,
@@ -56,13 +57,16 @@ export const investmentAssetProperties: FieldProperty[] = [
   {name: 'fundManagement', label: 'Fund Management', description: 'Active vs Passive managed funds', fieldType: 'enum', fieldMeta: fundManagement,
   valid: props => includes(['ETF','Fund'], props['type'])},
   {name: 'incomeTreatment', label: 'Income Treatment', description: 'Accumulation vs Distribution', fieldType: 'enum', fieldMeta: incomeTreatment,
+    searchLevel: 2,
     valid: props => includes(['ETF','Fund'], props['type'])},
   {name: 'domicile', label: 'Domicile', description: 'Domicile of asset', fieldType: 'string',
+    searchLevel: 1,
     valid: (props) => includes(['ETF','Fund','Stock'], props['type'])
   },
   {name: 'ter', label: 'TER/OCF', description: 'Total Expense Ratio or Ongoing Charge. Annual %', fieldType: 'percentage',
   valid: props => includes(['ETF','Fund'], props['type'])},
   {name: 'hedgeCurrency', label: 'Hedged Currency', description: 'Currency to which fund is hedged to', fieldType: 'string',
+    searchLevel: 2,
     valid: props => includes(['ETF','Fund'], props['type'])
   },
   {name: 'isin', label: 'ISIN', description: 'ISIN', fieldType: 'string',
@@ -221,30 +225,24 @@ export const quoteSourceSchema: AssetSchema = new AssetSchema({
   }
 });
 
-export const quoteSourceSearchSchema: AssetSchema = new AssetSchema({
-  properties: quoteSourceFieldProperties,
-  validPropertiesForAsset(fields: Record<string, any>): FieldProperty[] {
-    const def = (p:FieldProperty) => () => !includes(['array', 'object', 'unknown'], p.fieldType);
-    const ret = this.properties.filter(p => {
-      const fn = p.searchValid ?? p.valid ?? def(p);
-      return fn(fields)
-    });
-    return ret;
-  }
-});
 
-export const investmentAssetSearchSchema: AssetSchema = new AssetSchema({
-  properties: investmentAssetProperties,
-  validPropertiesForAsset(fields: Record<string, any>): FieldProperty[] {
-    const def = (p:FieldProperty) => () => !includes(['array', 'object', 'unknown'], p.fieldType);
-    const ret = this.properties.filter(p => {
-      const fn = p.searchValid ?? p.valid ?? def(p);
-      return fn(fields)
-    });
-    return ret;
-  }
-});
+function makeSearchSchema(fieldProps: FieldProperty[]) {
+  return new AssetSchema({
+    properties: fieldProps,
+    validPropertiesForAsset(fields: Record<string, any>): FieldProperty[] {
+      const def = (p:FieldProperty) => () => !includes(['array', 'object', 'unknown'], p.fieldType);
+      const ret = this.properties.filter(p => {
+        const fn = p.searchValid ?? p.valid ?? def(p);
+        return fn(fields)
+      });
+      return ret;
+    }
+  });
+}
 
+export const quoteSourceSearchSchema: AssetSchema = makeSearchSchema(quoteSourceFieldProperties);
+
+export const investmentAssetSearchSchema: AssetSchema = makeSearchSchema(investmentAssetProperties);
 
 
 function propDefined(props: Record<string, any>, name: string):boolean {
@@ -301,22 +299,25 @@ export function findProperty(path: string, rootProps: FieldProperty[]): FieldPro
 
   return prop ?? unknownFieldProperty;
 }
-
-// TODO: make a generic one of these based on schema
-export function searchObjToQuery(obj:any) {
+export function searchObjToQuery(obj:any, fieldProps: FieldProperty[], prefix = '') {
   const ret: any[] = [];
 
-  const searchableSelected = (fld: FieldProperty): boolean => fld.fieldType !== 'object';
+  const searchableSelected = (fld: FieldProperty): boolean => fld.fieldType !== 'object'; // arrays etc?
 
-  quoteSourceSearchSchema.selectedPropertiesForAsset(obj).filter(searchableSelected).forEach(fld => {
+  const schema = makeSearchSchema(fieldProps);
+
+  schema.selectedPropertiesForAsset(obj).filter(searchableSelected).forEach(fld => {
     if (obj[fld.name] !== '' && obj[fld.name] !== undefined) {
-      ret.push({where: [fld.name, '==', obj[fld.name]]})
+      ret.push({where: [`${prefix}${fld.name}`, '==', obj[fld.name]]})
     }
   });
 
-  investmentAssetSearchSchema.selectedPropertiesForAsset(obj['asset']).filter(searchableSelected).forEach(fld => {
-    if (obj.asset[fld.name] !== '' && obj.asset[fld.name] !== undefined) {
-      ret.push({where: [`asset.${fld.name}`, '==', obj.asset[fld.name]]})
+  const nestedSchema = (fld: FieldProperty): boolean => fld.fieldType === 'object';
+  schema.selectedPropertiesForAsset(obj).filter(nestedSchema).forEach(fld => {
+    if (obj[fld.name] !== undefined) {
+      const nestedProps = fld.fieldMeta as FieldProperty[];
+      const more = searchObjToQuery(obj[fld.name], nestedProps, `${prefix}${fld.name}.`);
+      ret.push(...more)
     }
   });
   return ret;

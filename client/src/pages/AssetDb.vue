@@ -27,7 +27,7 @@ import firebase from 'firebase/app';
 import CollectionReference = firebase.firestore.CollectionReference;
 import Query = firebase.firestore.Query;
 import {debounce} from 'quasar';
-import { searchObjToQuery } from 'src/lib/AssetSchema';
+import {quoteSourceFieldProperties, searchObjToQuery} from 'src/lib/AssetSchema';
 
 function queryArgsToObj(args: string | (string | null)[]) {
   try {
@@ -100,7 +100,7 @@ export default Vue.extend({
         this.loading = true;
         const {query, searchObj} = params ?? {};
         const advancedQuery = query ?? [];
-        const searchObjQuery = searchObjToQuery(searchObj ?? {});
+        const searchObjQuery = searchObjToQuery(searchObj ?? {}, quoteSourceFieldProperties);
         const cq = [...advancedQuery, ...searchObjQuery];
 
         if (cq && cq.length && cq[0].where) {
