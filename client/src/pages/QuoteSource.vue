@@ -34,7 +34,7 @@
 
 <script lang="ts">
   import Vue from 'vue';
-  import {emptyQuoteSource, QuoteSource, quoteSourceDb, upsertQuoteSource} from 'src/lib/assetDb';
+  import {emptyQuoteSource, QuoteSource, quoteSourceDb, sanitiseQuoteSource, upsertQuoteSource} from 'src/lib/assetDb';
   import QuoteSourceEditor from 'components/QuoteSourceEditor.vue';
   import { extend } from 'quasar'
   import QuoteSourceHistoryView from 'components/QuoteSourceHistoryView.vue';
@@ -90,10 +90,10 @@
             if (id) {
               this.loading = true;
               this.unsubscribe = quoteSourceDb().where('id', '==', id).onSnapshot(items => {
-                this.loading = false
+                this.loading = false;
                 const item = items.docs[0];
                 const doc = item.data();
-                this.data = doc as QuoteSource; // TODO: sanitise inputs
+                this.data = sanitiseQuoteSource(doc);
                 this.editingData = extend(true, {}, doc);
               });
             } else {

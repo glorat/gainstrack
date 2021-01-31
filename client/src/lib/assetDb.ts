@@ -148,7 +148,7 @@ export async function getAllQuoteSources(filter?: (col:CollectionReference) => Q
   return ret;
 }
 
-function sanitiseQuoteSource(qs: any): QuoteSource {
+export function sanitiseQuoteSource(qs: any): QuoteSource {
   // TODO: Do a robust version of this function
   if (!qs.asset) qs.asset = {};
   if (!qs.providers && qs.sources) {
