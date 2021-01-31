@@ -47,12 +47,30 @@ async function doQuoteSourceQuery(db: FirebaseFirestore.Firestore, query: any) {
   return rows;
 }
 
-function requestToSearchQuery(req: Request) {
+async function searchRelatedById(db: FirebaseFirestore.Firestore, id: string) {
+  const src = await db.collection('quoteSources').doc(id).get();
+  if (src.exists) {
+    const qs = src.data();
+    const level = 1;
+    const query = searchObjToQuery(qs, quoteSourceFieldProperties, fld => fld.searchLevel?fld.searchLevel<=level:false);
+    const fields = (()=>{throw new Error('TODO')})();
+    return {query, fields}
+  } else {
+    throw new Error('404');// TODO
+  }
+}
+
+async function requestToSearchQuery(db: FirebaseFirestore.Firestore, req: Request) {
   const queryParams = req.query;
-  const args = queryArgsToObj(queryParams.args); // Serialised JSON in args param
-  const advancedQuery = args.query ?? [];
-  const searchObjQuery = searchObjToQuery(args.searchObj ?? {});
-  return {query: [...advancedQuery, ...searchObjQuery], fields: args.fields};
+  if (queryParams.like) {
+    return searchRelatedById(db, queryParams.like.toString())
+  } else {
+    const args = queryArgsToObj(queryParams.args); // Serialised JSON in args param
+    const advancedQuery = args.query ?? [];
+    const searchObjQuery = searchObjToQuery(args.searchObj ?? {}, quoteSourceFieldProperties);
+    return {query: [...advancedQuery, ...searchObjQuery], fields: args.fields};
+
+  }
 }
 
 export const quoteSourcesHandler:(db: FirebaseFirestore.Firestore) => (req: Request, resp: Response) => void | Promise<void> = (db) => async(req, res) => {
@@ -63,13 +81,13 @@ export const quoteSourcesHandler:(db: FirebaseFirestore.Firestore) => (req: Requ
 
 
 export const quoteSourcesQueryHandler:(db: FirebaseFirestore.Firestore) => (req: Request, resp: Response) => void | Promise<void> = (db) => async(req, res) => {
-  const qry = requestToSearchQuery(req);
+  const qry = await requestToSearchQuery(db, req);
   const rows = await doQuoteSourceQuery(db, qry.query);
   res.json({rows});
 };
 
 export const quoteSourcesTableHandler:(db: FirebaseFirestore.Firestore) => (req: Request, resp: Response) => void | Promise<void> = (db) => async(req, res) => {
-  const qry = requestToSearchQuery(req);
+  const qry = await requestToSearchQuery(db, req);
   const rows = await doQuoteSourceQuery(db, qry.query);
 
   const fields:string[] = qry.fields ?? [];
