@@ -25,9 +25,8 @@ import QuoteSourceFilter from 'components/QuoteSourceFilter.vue';
 
 import firebase from 'firebase/app';
 import CollectionReference = firebase.firestore.CollectionReference;
-import Query = firebase.firestore.Query;
 import {debounce} from 'quasar';
-import {quoteSourceFieldProperties, searchObjToQuery} from 'src/lib/AssetSchema';
+import {applyQueries, quoteSourceFieldProperties, searchObjToQuery} from 'src/lib/AssetSchema';
 
 function queryArgsToObj(args: string | (string | null)[]) {
   try {
@@ -41,25 +40,6 @@ function queryArgsToObj(args: string | (string | null)[]) {
     console.error(e);
     return undefined;
   }
-}
-
-// The code and logic is copy/pasted from the cloud functions section -
-// but somewhat necessarily since different types are in use in web client sdk vs admin sdk
-function applyQueries(col: CollectionReference, queries: any[]): Query | CollectionReference {
-  let ret: Query | CollectionReference = col;
-
-  queries.forEach(qry => {
-    if (qry.where) {
-      const where = qry.where;
-      if (where.length === 3) {
-        ret = ret.where(where[0], where[1], where[2])
-      }
-    } else if (qry.orderBy) {
-      const orderBy = qry.orderBy;
-      ret = ret.orderBy(orderBy[0], orderBy[1])
-    }
-  });
-  return ret;
 }
 
 const defaultParams = () => ({query:[], searchObj:{asset:{}}, fields: []});

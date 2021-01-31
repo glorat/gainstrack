@@ -10,6 +10,9 @@ import {
   marketRegions,
   quoteSourceTypes, fixedIncomeTypes, equityCapSizes
 } from './enums';
+import firebase from 'firebase';
+import CollectionReference = firebase.firestore.CollectionReference;
+import Query = firebase.firestore.Query;
 
 export interface FieldProperty {
   name: string
@@ -299,14 +302,14 @@ export function findProperty(path: string, rootProps: FieldProperty[]): FieldPro
 
   return prop ?? unknownFieldProperty;
 }
-export function searchObjToQuery(obj:any, fieldProps: FieldProperty[], prefix = '') {
+export function searchObjToQuery(obj:any, fieldProps: FieldProperty[], fldFilter: (fld:FieldProperty)=>boolean = () => true,  prefix = '') {
   const ret: any[] = [];
 
   const searchableSelected = (fld: FieldProperty): boolean => fld.fieldType !== 'object'; // arrays etc?
 
   const schema = makeSearchSchema(fieldProps);
 
-  schema.selectedPropertiesForAsset(obj).filter(searchableSelected).forEach(fld => {
+  schema.selectedPropertiesForAsset(obj).filter(searchableSelected).filter(fldFilter).forEach(fld => {
     if (obj[fld.name] !== '' && obj[fld.name] !== undefined) {
       ret.push({where: [`${prefix}${fld.name}`, '==', obj[fld.name]]})
     }
@@ -316,8 +319,27 @@ export function searchObjToQuery(obj:any, fieldProps: FieldProperty[], prefix = 
   schema.selectedPropertiesForAsset(obj).filter(nestedSchema).forEach(fld => {
     if (obj[fld.name] !== undefined) {
       const nestedProps = fld.fieldMeta as FieldProperty[];
-      const more = searchObjToQuery(obj[fld.name], nestedProps, `${prefix}${fld.name}.`);
+      const more = searchObjToQuery(obj[fld.name], nestedProps, fldFilter, `${prefix}${fld.name}.`);
       ret.push(...more)
+    }
+  });
+  return ret;
+}
+
+// The code and logic is copy/pasted from the cloud functions section -
+// but somewhat necessarily since different types are in use in web client sdk vs admin sdk
+export function applyQueries(col: CollectionReference, queries: any[]): Query | CollectionReference {
+  let ret: Query | CollectionReference = col;
+
+  queries.forEach(qry => {
+    if (qry.where) {
+      const where = qry.where;
+      if (where.length === 3) {
+        ret = ret.where(where[0], where[1], where[2])
+      }
+    } else if (qry.orderBy) {
+      const orderBy = qry.orderBy;
+      ret = ret.orderBy(orderBy[0], orderBy[1])
     }
   });
   return ret;

@@ -1,4 +1,5 @@
 import {
+  FieldProperty,
   getFieldNameList,
   quoteSourceFieldProperties,
   quoteSourceSchema,
@@ -45,5 +46,13 @@ describe ('Asset Schema', ()=>{
     expect(flds).toEqual(['id', 'name', 'ticker', 'marketRegion', 'sources', 'asset.type', 'asset.assetClass', 'asset.geography', 'asset.references']);
   });
 
+  test('searchObjToQuery for related', () => {
+    const flt = (fld:FieldProperty):boolean => (fld.searchLevel!==undefined) ? (fld.searchLevel <= 1) : false;
+    const qry = searchObjToQuery(sample, quoteSourceFieldProperties, flt);
+    expect(qry.length).toStrictEqual(3);
+    const flds = qry.map(x => x['where'][0]);
+    expect(flds).toEqual(['asset.type', 'asset.assetClass', 'asset.geography']);
+
+  })
 
 });
