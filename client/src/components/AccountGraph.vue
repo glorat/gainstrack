@@ -6,7 +6,7 @@
     import Vue from 'vue';
     import { VuePlotly } from '../lib/loader'
     import {mapGetters} from 'vuex';
-    import {AccountDTO, Posting} from 'src/lib/models';
+    import {AccountDTO, Posting} from 'src/lib/assetdb/models';
     import {
       convertedPositionSet,
       postingsByDate,

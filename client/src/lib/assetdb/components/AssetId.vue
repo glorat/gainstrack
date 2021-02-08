@@ -15,8 +15,6 @@
 </template>
 
 <script lang="ts">
-  // eslint-disable-next-line no-unused-vars
-  import {StateSummaryDTO} from '../lib/models';
   import { defineComponent } from '@vue/composition-api'
 
   interface MyOpt {
@@ -24,6 +22,9 @@
     label: string
   }
 
+  /**
+   * Depends on $store.getters.allCcys: string[]
+   */
   export default defineComponent({
     name: 'AssetId',
     props: {value: String, label: String, inputClass: {}},
@@ -35,9 +36,8 @@
     },
     computed: {
       options(): MyOpt[] {
-        const state = this.$store.state;
-        const summary: StateSummaryDTO = state.allState;
-        const ccys:string[] = ['', ...this.moreOptions, ...(summary.ccys.length>0 ? summary.ccys : ['USD'])];
+        const stateCcys: string[] = this.$store.getters.allCcys;
+        const ccys:string[] = ['', ...this.moreOptions, ...(stateCcys.length>0 ? stateCcys : ['USD'])];
         return ccys.map(ccy => {
           return {value: ccy, label: ccy};
         });

@@ -13,7 +13,7 @@
 <script lang="ts">
   import Vue from 'vue';
   import {PropType} from '@vue/composition-api';
-  import {AccountCommandDTO} from 'src/lib/models';
+  import {AccountCommandDTO} from 'src/lib/assetdb/models';
   import {QDialog} from 'quasar';
   import AddCmd from 'pages/AddCmd.vue';
 

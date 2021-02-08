@@ -1,5 +1,5 @@
 import axios, {AxiosInstance, AxiosPromise} from 'axios';
-import {PostingEx} from 'src/lib/models';
+import {PostingEx} from 'src/lib/assetdb/models';
 import {SingleFXConverter} from 'src/lib/fx';
 import {LocalDate} from 'app/node_modules/@js-joda/core';
 import {convertedPositionSet, formatNumber, isSubAccountOf, positionUnderAccount} from 'src/lib/utils';

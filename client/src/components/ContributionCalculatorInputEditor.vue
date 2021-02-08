@@ -23,10 +23,10 @@
 <script lang="ts">
 import {defineComponent, PropType} from '@vue/composition-api';
 import {ContributionCalculatorInput} from '../lib/ContributionCalculator';
-import BalanceEditor from 'components/command/BalanceEditor.vue';
+import BalanceEditor from 'src/lib/assetdb/components/BalanceEditor.vue';
 import {formatNumber, formatPerc} from 'src/lib/utils';
 import {sum} from 'lodash';
-import {Amount} from 'src/lib/models';
+import {Amount} from 'src/lib/assetdb/models';
 
 export default defineComponent({
   name: 'ContributionCalculatorInputEditor',

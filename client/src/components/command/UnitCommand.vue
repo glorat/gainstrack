@@ -23,7 +23,7 @@
     import {CommandEditorMixin} from '../../mixins/CommandEditorMixin';
     import Vue from 'vue';
     import AccountSelector from '../AccountSelector';
-    import BalanceEditor from './BalanceEditor';
+    import BalanceEditor from '../../lib/assetdb/components/BalanceEditor';
     import { mapGetters } from 'vuex'
     import { LocalDate } from '@js-joda/core'
 

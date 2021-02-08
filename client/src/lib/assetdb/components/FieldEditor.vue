@@ -78,14 +78,14 @@
 
 <script lang="ts">
 import {defineComponent, PropType} from '@vue/composition-api';
-import CommandDateEditor from '../CommandDateEditor.vue';
-import BalanceEditor from 'components/command/BalanceEditor.vue';
-import AssetId from 'components/AssetId.vue';
-import {FieldProperty} from 'src/lib/AssetSchema';
-import TickerSelect from 'components/field/TickerSelect.vue';
-import {assetCategories} from 'src/lib/enums';
-import EnumSelect from 'components/field/EnumSelect.vue';
-import MultiEnumSelect from 'components/field/MultiEnumSelect.vue';
+import CommandDateEditor from 'components/CommandDateEditor.vue';
+import BalanceEditor from './BalanceEditor.vue';
+import AssetId from './AssetId.vue';
+import TickerSelect from './TickerSelect.vue';
+import {assetCategories} from 'src/lib/assetdb/enums';
+import EnumSelect from './EnumSelect.vue';
+import MultiEnumSelect from './MultiEnumSelect.vue';
+import {FieldProperty} from '../schema';
 
 export default defineComponent({
   name: 'FieldEditor',

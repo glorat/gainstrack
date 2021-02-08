@@ -28,9 +28,9 @@
 </template>
 
 <script lang="ts">
-import AssetId from './AssetId.vue';
+import AssetId from '../lib/assetdb/components/AssetId.vue';
 import Vue from 'vue';
-import {AllState, AssetDTO} from '../lib/models';
+import {AllState, AssetDTO} from '../lib/assetdb/models';
 import { keys, cloneDeep } from 'lodash';
 import {toCommodityGainstrack} from 'src/lib/commandDefaulting';
 

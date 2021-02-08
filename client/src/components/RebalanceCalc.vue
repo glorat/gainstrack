@@ -66,11 +66,11 @@
 
 <script lang="ts">
 import {defineComponent} from '@vue/composition-api';
-import {AccountDTO, Amount, AssetResponse, NetworthByAsset} from '../lib/models';
+import {AccountDTO, Amount, AssetResponse, NetworthByAsset} from '../lib/assetdb/models';
 import {apiAssetsReport} from 'src/lib/apiFacade';
 import {difference, includes, sum, sortBy} from 'lodash';
 import {formatPerc} from 'src/lib/utils';
-import BalanceEditor from 'components/command/BalanceEditor.vue';
+import BalanceEditor from 'src/lib/assetdb/components/BalanceEditor.vue';
 import { VuePlotly } from '../lib/loader'
 import {mapGetters} from 'vuex';
 import {

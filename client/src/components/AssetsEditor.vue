@@ -75,7 +75,7 @@
   import Vue from 'vue';
   import {GlobalPricer} from 'src/lib/pricer';
   import {MyState} from 'src/store';
-  import {AccountCommandDTO} from 'src/lib/models';
+  import {AccountCommandDTO} from 'src/lib/assetdb/models';
   import {mapGetters} from 'vuex';
   import {LocalDate} from '@js-joda/core';
   import {formatNumber} from 'src/lib/utils';

@@ -1,6 +1,6 @@
 import {LocalDate} from '@js-joda/core';
 
-import {AccountCommandDTO, PostingEx} from 'src/lib/models';
+import {AccountCommandDTO, PostingEx} from 'src/lib/assetdb/models';
 import {
   isSubAccountOf,
   positionSetFx,

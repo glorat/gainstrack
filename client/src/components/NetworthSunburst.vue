@@ -12,7 +12,7 @@
     positionSetFx,
     postingsToPositionSet
   } from 'src/lib/utils';
-  import {PostingEx} from 'src/lib/models';
+  import {PostingEx} from 'src/lib/assetdb/models';
   import { mapValues } from 'lodash';
   import {reduce, some} from 'lodash';
   import { LocalDate } from '@js-joda/core';

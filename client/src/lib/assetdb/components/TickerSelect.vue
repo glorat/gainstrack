@@ -11,8 +11,11 @@
 
 <script lang="ts">
 import {defineComponent} from '@vue/composition-api';
-import {MyState} from '../../store';
+import {QuoteSource} from '../assetDb';
 
+/**
+ * Depends on $store.state.quoteConfig: QuoteSource[]
+ */
 export default defineComponent({
   name: 'TickerSelect',
   props: {
@@ -27,8 +30,7 @@ export default defineComponent({
     tickerSearch (queryString: string, update: any) {
 
       update(() => {
-        const state: MyState = this.$store.state;
-        let cfgs = state.quoteConfig
+        let cfgs:QuoteSource[] = this.$store.state.quoteConfig;
         if (queryString) {
           cfgs = cfgs.filter(x => x.id.indexOf(queryString.toUpperCase()) > -1)
         }

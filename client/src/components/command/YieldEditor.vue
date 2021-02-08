@@ -21,10 +21,10 @@
 
 <script>
     import AccountSelector from '../AccountSelector';
-    import BalanceEditor from './BalanceEditor';
+    import BalanceEditor from '../../lib/assetdb/components/BalanceEditor';
     import CommandDateEditor from '../CommandDateEditor';
     import {CommandEditorMixin} from '../../mixins/CommandEditorMixin';
-    import AssetId from '../AssetId';
+    import AssetId from '../../lib/assetdb/components/AssetId';
     import {defaultedYieldCommand, toGainstrack} from 'src/lib/commandDefaulting';
 
     export default {

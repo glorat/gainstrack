@@ -14,8 +14,8 @@
 
 <script lang="ts">
   import Vue from 'vue';
-  import {FieldProperty} from 'src/lib/AssetSchema';
   import {includes} from 'lodash';
+  import {FieldProperty} from '../schema';
 
   export default Vue.extend({
     name: 'ObjectFieldView',

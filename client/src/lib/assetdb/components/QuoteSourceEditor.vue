@@ -34,11 +34,11 @@
 
 <script lang="ts">
   import Vue from 'vue';
-  import {QuoteSource} from 'src/lib/assetDb';
-  import EnumSelect from 'components/field/EnumSelect.vue';
-  import PropertyEditor from 'components/PropertyEditor.vue';
-  import {investmentAssetSchema} from 'src/lib/AssetSchema';
-  import {marketRegions, quoteSourceTypes} from 'src/lib/enums';
+  import {QuoteSource} from '../assetDb';
+  import EnumSelect from './EnumSelect.vue';
+  import PropertyEditor from './PropertyEditor.vue';
+  import {investmentAssetSchema} from '../AssetSchema';
+  import {marketRegions, quoteSourceTypes} from '../enums';
 
   export default Vue.extend({
     name: 'QuoteSourceEditor',

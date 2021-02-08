@@ -52,7 +52,7 @@
 <script lang="ts">
     import Vue from 'vue';
     import { date } from 'quasar';
-    import {NetworthByAsset, AssetColumn, AssetResponse, AssetDTO} from '../lib/models';
+    import {NetworthByAsset, AssetColumn, AssetResponse, AssetDTO} from '../lib/assetdb/models';
     import {matEdit, matAdd, matAddCircleOutline ,matSwapHoriz} from '@quasar/extras/material-icons';
     import CommandEditorDialog from 'components/CommandEditorDialog.vue';
     import {mapGetters} from 'vuex';

@@ -36,12 +36,12 @@ function initFirebase() {
 }
 
 export function myFirestore() {
-  initFirebase()
+  initFirebase();
   return firebase.firestore();
 }
 
 export function myAnalytics() {
-  initFirebase()
+  initFirebase();
   return firebase.analytics();
 }
 

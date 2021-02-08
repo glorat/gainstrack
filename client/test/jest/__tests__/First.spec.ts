@@ -1,5 +1,5 @@
 import fs from 'fs';
-import {AllState} from 'src/lib/models';
+import {AllState} from 'src/lib/assetdb/models';
 import {AllStateEx} from 'src/lib/AllStateEx';
 import {positionUnderAccount, convertedPositionSet} from 'src/lib/utils';
 import { LocalDate } from '@js-joda/core';

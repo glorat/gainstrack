@@ -26,7 +26,7 @@
 
 <script>
   import { CommandEditorMixin } from '../../mixins/CommandEditorMixin'
-  import AssetId from '../AssetId'
+  import AssetId from '../../lib/assetdb/components/AssetId'
 
   export default {
     name: 'AccountCreation',

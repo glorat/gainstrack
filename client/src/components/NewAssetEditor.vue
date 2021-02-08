@@ -40,19 +40,19 @@
 
 <script lang="ts">
 import {defineComponent} from '@vue/composition-api';
-import FieldEditor from './field/FieldEditor.vue';
+import FieldEditor from '../lib/assetdb/components/FieldEditor.vue';
 import {
-  FieldProperty, AssetSchema,
   createAssetFromProps,
   schemaFor, userAssetSchema,
-} from 'src/lib/AssetSchema';
-import {AccountCommandDTO, AssetDTO} from 'src/lib/models';
+} from 'src/lib/assetdb/AssetSchema';
+import {AccountCommandDTO, AssetDTO} from 'src/lib/assetdb/models';
 import {GlobalPricer} from 'src/lib/pricer';
 import {LocalDate} from '@js-joda/core';
 import {formatNumber} from 'src/lib/utils';
 import {defaultedBalanceOrUnit, toGainstrack} from 'src/lib/commandDefaulting';
 import {AllStateEx} from 'src/lib/AllStateEx';
 import axios from 'axios';
+import {FieldProperty, Schema} from 'src/lib/assetdb/schema';
 
 
 export default defineComponent({
@@ -63,7 +63,7 @@ export default defineComponent({
       type: String,
     },
     schema: {
-      type: Object as () => AssetSchema,
+      type: Object as () => Schema,
       default: () => userAssetSchema
     }
   },

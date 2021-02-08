@@ -34,11 +34,9 @@
 
 <script lang="ts">
   import Vue from 'vue';
-  import {emptyQuoteSource, QuoteSource, quoteSourceDb, sanitiseQuoteSource, upsertQuoteSource} from 'src/lib/assetDb';
-  import QuoteSourceEditor from 'components/QuoteSourceEditor.vue';
+  import {emptyQuoteSource, QuoteSource, quoteSourceDb, sanitiseQuoteSource, upsertQuoteSource} from 'src/lib/assetdb/assetDb';
   import { extend } from 'quasar'
-  import QuoteSourceHistoryView from 'components/QuoteSourceHistoryView.vue';
-  import QuoteSourceView from 'components/QuoteSourceView.vue';
+  import {QuoteSourceEditor, QuoteSourceHistoryView, QuoteSourceView} from 'src/lib/assetdb';
 
   export default Vue.extend({
     name: 'QuoteSource',

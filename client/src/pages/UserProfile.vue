@@ -29,7 +29,7 @@
   import Vue from 'vue';
   import {MyState} from 'src/store';
   import firebase from 'firebase';
-  import {getUserRole, setDisplayName} from 'src/lib/assetDb';
+  import {getUserRole, setDisplayName} from 'src/lib/assetdb/assetDb';
   import DocumentData = firebase.firestore.DocumentData;
   import {matLogin} from '@quasar/extras/material-icons';
 

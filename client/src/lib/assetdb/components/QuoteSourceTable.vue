@@ -50,11 +50,12 @@
 
 <script lang="ts">
   import Vue from 'vue';
-  import {QuoteSource} from 'src/lib/assetDb';
-  import {pathToTableColumn, quoteSourceFieldProperties} from 'src/lib/AssetSchema';
+  import {QuoteSource} from '../assetDb';
+  import {quoteSourceFieldProperties} from '../AssetSchema';
   import {matArchive} from '@quasar/extras/material-icons';
   import stringify from 'csv-stringify/lib/sync';
   import {exportFile} from 'quasar';
+  import {pathToTableColumn} from '../schema';
 
   export default Vue.extend({
     name: 'QuoteSourceTable',

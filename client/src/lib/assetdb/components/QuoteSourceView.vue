@@ -64,16 +64,15 @@
 
 <script lang="ts">
   import Vue from 'vue';
-  import {getAllQuoteSources, QuoteSource} from 'src/lib/assetDb';
+  import {getAllQuoteSources, QuoteSource} from '../assetDb';
   import {
-    applyQueries,
     investmentAssetProperties,
-    quoteSourceFieldProperties,
-    searchObjToQuery
-  } from 'src/lib/AssetSchema';
-  import ObjectFieldView from 'components/ObjectFieldView.vue';
+    quoteSourceFieldProperties
+  } from '../AssetSchema';
+  import ObjectFieldView from './ObjectFieldView.vue';
   import firebase from 'firebase';
   import CollectionReference = firebase.firestore.CollectionReference;
+  import {applyQueries, searchObjToQuery} from '../schema';
 
   export default Vue.extend({
     name: 'QuoteSourceView',

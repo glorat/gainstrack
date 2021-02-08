@@ -33,7 +33,7 @@
 </template>
 
 <script lang="ts">
-  import {AccountCommandDTO, Amount} from '../lib/models';
+  import {AccountCommandDTO, Amount} from '../lib/assetdb/models';
   import Vue, {PropType} from 'vue';
 
     export default Vue.extend({

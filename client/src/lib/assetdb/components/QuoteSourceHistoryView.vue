@@ -26,10 +26,11 @@
 
 <script lang="ts">
   import Vue from 'vue';
-  import {getDisplayNames, getQuoteSourceHistory, QuoteSource, QuoteSourceHistory} from 'src/lib/assetDb';
+  import {getDisplayNames, getQuoteSourceHistory, QuoteSource, QuoteSourceHistory} from '../assetDb';
   import {mdiAlert} from '@quasar/extras/mdi-v5';
-  import {getFieldNameList, quoteSourceFieldProperties} from 'src/lib/AssetSchema';
+  import {quoteSourceFieldProperties} from '../AssetSchema';
   import {get} from 'lodash';
+  import {getFieldNameList} from '../schema';
 
   interface DiffRow {
     path: string,

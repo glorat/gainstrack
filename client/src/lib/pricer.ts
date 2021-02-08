@@ -1,5 +1,5 @@
 import {SingleFXConversion, SingleFXConverter} from '../lib/fx';
-import {AccountCommandDTO, AssetDTO} from '../lib/models';
+import {AccountCommandDTO, AssetDTO} from './assetdb/models';
 import {intDateToIsoDate, Interpolator, linearInterpolateValue} from '../lib/SortedColumnMap';
 import {LocalDate} from '@js-joda/core';
 

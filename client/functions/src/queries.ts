@@ -1,8 +1,9 @@
 import {Response} from "express";
 import {Request} from "firebase-functions/lib/providers/https";
 
-import {findProperty, quoteSourceFieldProperties, searchObjToQuery} from './lib/AssetSchema';
+import {quoteSourceFieldProperties} from '../../src/lib/assetdb/AssetSchema';
 import {get} from 'lodash';
+import {findProperty, searchObjToQuery} from './assetdb/schema';
 
 export function applyQueries(col: FirebaseFirestore.CollectionReference, queries: any[]): FirebaseFirestore.Query|FirebaseFirestore.CollectionReference {
   let ret:FirebaseFirestore.Query|FirebaseFirestore.CollectionReference = col;

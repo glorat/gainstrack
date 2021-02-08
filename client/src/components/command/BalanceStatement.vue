@@ -18,7 +18,7 @@
 
 <script>
     // import {AccountCommandDTO, AccountDTO} from '@/models';
-    import BalanceEditor from './BalanceEditor.vue';
+    import BalanceEditor from '../../lib/assetdb/components/BalanceEditor.vue';
     import {CommandEditorMixin} from '../../mixins/CommandEditorMixin';
     import AccountSelector from '../AccountSelector.vue';
     import Vue from 'vue';

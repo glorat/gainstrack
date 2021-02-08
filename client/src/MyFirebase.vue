@@ -4,7 +4,9 @@
 
 <script lang="ts">
   import Vue from 'vue';
-  import {myAnalytics, myAuth} from 'src/lib/myfirebase';
+  import {myfirebase} from 'src/lib/assetdb';
+  import myAnalytics = myfirebase.myAnalytics;
+  import myAuth = myfirebase.myAuth;
   import {Store} from 'vuex';
   import axios from 'axios';
   import firebase from 'firebase/app';

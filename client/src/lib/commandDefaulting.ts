@@ -1,7 +1,7 @@
 import {GlobalPricer} from 'src/lib/pricer';
 import {isSubAccountOf, positionUnderAccount, postingsToPositionSet} from 'src/lib/utils';
 import {LocalDate} from '@js-joda/core';
-import {AccountCommandDTO, AssetDTO, AccountCommandEditing} from 'src/lib/models';
+import {AccountCommandDTO, AssetDTO, AccountCommandEditing} from 'src/lib/assetdb/models';
 import {AllStateEx} from 'src/lib/AllStateEx';
 
 

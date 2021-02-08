@@ -20,18 +20,18 @@
 
 <script lang="ts">
   import Vue from 'vue';
-  import FieldEditor from 'components/field/FieldEditor.vue';
+  import FieldEditor from './FieldEditor.vue';
   import {
-    FieldProperty, AssetSchema,
     userAssetSchema
-  } from 'src/lib/AssetSchema';
+  } from '../AssetSchema';
+  import {FieldProperty, Schema} from '../schema';
 
   export default Vue.extend({
     name: 'PropertyEditor',
     components: {FieldEditor},
     props: {
       schema: {
-        type: Object as () => AssetSchema,
+        type: Object as () => Schema,
         default: () => userAssetSchema
       },
       value: {

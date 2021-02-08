@@ -9,7 +9,7 @@
   import Vue from 'vue';
   import axios from 'axios';
   // eslint-disable-next-line no-unused-vars
-  import {AssetResponse, PostingEx} from '../lib/models';
+  import {AssetResponse, PostingEx} from '../lib/assetdb/models';
   import {SingleFXConverter} from 'src/lib/fx';
   import {LocalDate} from '@js-joda/core';
   import {assetReport} from 'src/lib/assetReport';

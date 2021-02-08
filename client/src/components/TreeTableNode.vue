@@ -23,7 +23,7 @@
 <script lang="ts">
     import Vue from 'vue';
     import { mapGetters } from 'vuex';
-    import {TreeTableDTO} from 'src/lib/models';
+    import {TreeTableDTO} from 'src/lib/assetdb/models';
 
     export default Vue.extend({
         name: 'TreeTableNode',

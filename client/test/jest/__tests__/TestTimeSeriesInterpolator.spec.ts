@@ -6,7 +6,7 @@
 import {SortedColumnMap, linear, fromIntDate} from '../../../src/lib/SortedColumnMap';
 import {SingleFXConversion} from 'src/lib/fx';
 import {ProxyPricer} from 'src/lib/pricer';
-import {AssetDTO} from 'src/lib/models';
+import {AssetDTO} from 'src/lib/assetdb/models';
 import {LocalDate} from '@js-joda/core';
 
 describe('TestTimeSeriesInterpolator', () => {

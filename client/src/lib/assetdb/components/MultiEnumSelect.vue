@@ -19,7 +19,7 @@
 
 <script lang="ts">
   import Vue from 'vue';
-  import {EnumEntry, simpleEnumEntry} from 'src/lib/enums';
+  import {EnumEntry, simpleEnumEntry} from 'src/lib/assetdb/enums';
 
   export default Vue.extend({
     name: 'MultiEnumSelect',

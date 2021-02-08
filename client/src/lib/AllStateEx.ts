@@ -1,4 +1,4 @@
-import {AccountCommandDTO, AccountDTO, AllState, isTransaction, Posting, PostingEx, Transaction} from '../lib/models';
+import {AccountCommandDTO, AccountDTO, AllState, isTransaction, Posting, PostingEx, Transaction} from './assetdb/models';
 import {flatten} from 'lodash';
 import {SingleFXConversion} from '../lib/fx';
 

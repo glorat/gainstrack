@@ -1,4 +1,4 @@
-import {AccountCommandDTO, AccountDTO, PostingEx, TreeTableDTO} from '../lib/models';
+import {AccountCommandDTO, AccountDTO, PostingEx, TreeTableDTO} from './assetdb/models';
 import { LocalDate } from '@js-joda/core';
 import {SingleFXConverter} from '../lib/fx';
 import {

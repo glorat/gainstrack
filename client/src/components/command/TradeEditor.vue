@@ -26,7 +26,7 @@
 </template>
 
 <script>
-    import BalanceEditor from './BalanceEditor.vue';
+    import BalanceEditor from '../../lib/assetdb/components/BalanceEditor.vue';
     import {CommandEditorMixin} from '../../mixins/CommandEditorMixin';
     import AccountSelector from '../AccountSelector';
     import CommandDateEditor from '../CommandDateEditor';

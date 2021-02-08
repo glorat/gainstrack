@@ -19,7 +19,7 @@
 
 <script>
     import AccountSelector from '../AccountSelector';
-    import BalanceEditor from './BalanceEditor';
+    import BalanceEditor from '../../lib/assetdb/components/BalanceEditor';
     import {CommandEditorMixin} from '../../mixins/CommandEditorMixin';
 
     export default {

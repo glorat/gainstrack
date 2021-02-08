@@ -19,14 +19,16 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import {getAllQuoteSources, QuoteSource} from 'src/lib/assetDb';
-import QuoteSourceTable from 'components/QuoteSourceTable.vue';
-import QuoteSourceFilter from 'components/QuoteSourceFilter.vue';
+import {getAllQuoteSources, QuoteSource} from 'src/lib/assetdb/assetDb';
+// import QuoteSourceTable from 'src/lib/assetdb/components/QuoteSourceTable.vue';
+// import QuoteSourceFilter from 'src/lib/assetdb/components/QuoteSourceFilter.vue';
 
 import firebase from 'firebase/app';
 import CollectionReference = firebase.firestore.CollectionReference;
 import {debounce} from 'quasar';
-import {applyQueries, quoteSourceFieldProperties, searchObjToQuery} from 'src/lib/AssetSchema';
+import {quoteSourceFieldProperties} from 'src/lib/assetdb/AssetSchema';
+import {applyQueries, searchObjToQuery} from 'src/lib/assetdb/schema';
+import {QuoteSourceFilter, QuoteSourceTable} from 'src/lib/assetdb';
 
 function queryArgsToObj(args: string | (string | null)[]) {
   try {

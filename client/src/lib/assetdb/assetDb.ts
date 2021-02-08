@@ -1,15 +1,15 @@
-import {myAuth, myFirestore} from 'src/lib/myfirebase';
+import {myAuth, myFirestore} from './myfirebase';
 import firebase from 'firebase/app';
 import CollectionReference = firebase.firestore.CollectionReference;
 import Query = firebase.firestore.Query;
 import FieldValue = firebase.firestore.FieldValue;
 import { uniq, pick } from 'lodash';
 
-interface QuoteSourceProvider {
-  sourceType: string
-  ref: string
-  meta: string
-}
+// interface QuoteSourceProvider {
+//   sourceType: string
+//   ref: string
+//   meta: string
+// }
 
 export interface LastUpdate {
   timestamp: number

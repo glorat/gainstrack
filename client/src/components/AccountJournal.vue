@@ -18,7 +18,7 @@
   import AddCmd from '../pages/AddCmd.vue';
   import CommandTable from '..//components/CommandTable.vue';
   // eslint-disable-next-line no-unused-vars
-  import {AccountCommandDTO, Amount} from '../lib/models';
+  import {AccountCommandDTO, Amount} from '../lib/assetdb/models';
   import axios from 'axios';
   // eslint-disable-next-line no-unused-vars
   import {CommandConfig, commands, defaultCommand} from '../config/commands';

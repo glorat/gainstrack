@@ -1,5 +1,5 @@
 import {ChronoUnit, LocalDate} from '@js-joda/core';
-import {Amount, PostingEx, Transaction} from 'src/lib/models';
+import {Amount, PostingEx, Transaction} from 'src/lib/assetdb/models';
 import {SingleFXConverter} from 'src/lib/fx';
 import {convertAccountType, isSubAccountOf, positionSetFx, positionUnderAccount} from 'src/lib/utils';
 import {some} from 'lodash';

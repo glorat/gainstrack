@@ -1,4 +1,4 @@
-import {AccountCommandDTO, AccountDTO} from '../lib/models';
+import {AccountCommandDTO, AccountDTO} from '../lib/assetdb/models';
 
 export interface CommandConfig {
     prefix: string

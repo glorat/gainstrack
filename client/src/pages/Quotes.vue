@@ -15,7 +15,7 @@
 <script lang="ts">
   import Vue from 'vue';
   import {VuePlotly} from 'src/lib/loader';
-  import {QuoteSource} from 'src/lib/assetDb';
+  import {QuoteSource} from 'src/lib/assetdb/assetDb';
 
   interface MyData {
     pagination: unknown,

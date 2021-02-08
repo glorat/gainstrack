@@ -7,7 +7,7 @@ import {
   emptyAllState,
   PostingEx,
   Transaction, TreeTableDTO
-} from '../lib/models'
+} from '../lib/assetdb/models'
 import {GlobalPricer} from '../lib/pricer';
 import {AllStateEx} from '../lib/AllStateEx';
 import {cloneDeep, includes, keys, mergeWith} from 'lodash'
@@ -15,7 +15,7 @@ import {balanceTreeTable} from '../lib/TreeTable';
 import {LocalDate} from '@js-joda/core';
 import {toCommodityGainstrack} from '../lib/commandDefaulting';
 import { store } from 'quasar/wrappers'
-import {QuoteSource} from 'src/lib/assetDb';
+import {QuoteSource} from 'src/lib/assetdb/assetDb';
 import firebase from 'firebase/app';
 import {Notify} from 'quasar';
 
@@ -393,7 +393,10 @@ export default store(function ({ Vue }) {
       },
       allPostingsEx: (state, getters): PostingEx[] => {
         return getters.allStateEx.allPostingsEx()
-      }
+      },
+      allCcys: (state): string[] => {
+        return state.allState.ccys;
+      },
     }
   });
   return Store

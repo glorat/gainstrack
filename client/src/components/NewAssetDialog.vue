@@ -14,7 +14,7 @@ import Vue from 'vue';
 
 import {QDialog} from 'quasar';
 import NewAssetEditor from 'components/NewAssetEditor.vue';
-import {AssetDTO} from 'src/lib/models';
+import {AssetDTO} from 'src/lib/assetdb/models';
 
 export default Vue.extend({
   name: 'NewAssetDialog',

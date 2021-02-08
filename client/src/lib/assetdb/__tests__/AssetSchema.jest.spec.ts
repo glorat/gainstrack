@@ -1,14 +1,12 @@
 import {
-  FieldProperty,
-  getFieldNameList,
   quoteSourceFieldProperties,
   quoteSourceSchema,
-  quoteSourceSearchSchema,
-  searchObjToQuery
-} from "src/lib/AssetSchema";
+  quoteSourceSearchSchema
+} from '../AssetSchema';
+import {FieldProperty, getFieldNameList, searchObjToQuery} from '../schema';
 
 describe ('Asset Schema', ()=>{
-  const sample = JSON.parse("{\"marketRegion\":\"IND\",\"asset\":{\"assetClass\":\"Equity\",\"geography\":\"Global\",\"type\":\"Index\",\"references\":[\"https://www.investing.com/indices/ftse-all-world\",\"https://markets.ft.com/data/indices/tearsheet/summary?s=aw01:fsi\",\"https://www.trackinsight.com/en/index/1218\"]},\"lastUpdate\":{\"uid\":\"fec320db-f125-35f3-a0d2-e66ca7e4ce95\",\"history\":\"i0VWosNvEu9h8bp0J4vK\",\"timestamp\":1610806338995,\"revision\":2},\"ccy\":\"\",\"name\":\"FTSE All World\",\"ticker\":\"FTAWORLDSR\",\"sources\":[],\"id\":\"FTAWORLDSR.IND\",\"exchange\":\"\",\"providers\":{}}\n");
+  const sample = JSON.parse('{"marketRegion":"IND","asset":{"assetClass":"Equity","geography":"Global","type":"Index","references":["https://www.investing.com/indices/ftse-all-world","https://markets.ft.com/data/indices/tearsheet/summary?s=aw01:fsi","https://www.trackinsight.com/en/index/1218"]},"lastUpdate":{"uid":"fec320db-f125-35f3-a0d2-e66ca7e4ce95","history":"i0VWosNvEu9h8bp0J4vK","timestamp":1610806338995,"revision":2},"ccy":"","name":"FTSE All World","ticker":"FTAWORLDSR","sources":[],"id":"FTAWORLDSR.IND","exchange":"","providers":{}}\n');
 
 
 

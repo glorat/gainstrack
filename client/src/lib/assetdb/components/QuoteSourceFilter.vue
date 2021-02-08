@@ -38,17 +38,15 @@
 <script lang="ts">
 import Vue from 'vue'
 import {
-  FieldProperty,
-  findProperty,
-  getFieldNameList,
   investmentAssetSearchSchema,
   quoteSourceFieldProperties, quoteSourceSearchSchema,
-} from 'src/lib/AssetSchema';
-import {EnumEntry, whereOps} from 'src/lib/enums';
+} from '../AssetSchema';
+import {EnumEntry, whereOps} from '../enums';
 import {matSearch, matFilterAlt} from '@quasar/extras/material-icons';
-import FieldEditor from 'components/field/FieldEditor.vue';
+import FieldEditor from './FieldEditor.vue';
 import {includes} from 'lodash';
-import PropertyEditor from 'components/PropertyEditor.vue';
+import PropertyEditor from './PropertyEditor.vue';
+import {FieldProperty, findProperty, getFieldNameList} from '../schema';
 
 export default Vue.extend({
   name: 'QuoteSourceFilter',
