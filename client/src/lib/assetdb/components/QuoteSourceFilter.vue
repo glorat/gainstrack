@@ -2,8 +2,8 @@
   <div>
     <q-stepper v-model="step" header-nav>
       <q-step :name="1" title="Filter" :icon="matFilterAlt">
-        <property-editor v-model="searchObj" :schema="quoteSourceSearchSchema" dense @property-added="onPropAdded($event)"></property-editor>
         <property-editor v-model="searchObj.asset" :schema="investmentAssetSearchSchema" dense @property-added="onPropAdded($event, 'asset')"></property-editor>
+        <property-editor v-model="searchObj" :schema="quoteSourceSearchSchema" dense @property-added="onPropAdded($event)"></property-editor>
       </q-step>
       <q-step :name="2" title="Advanced Filter" :icon="matFilterAlt">
         <div class="row" v-for="(row,idx) in query">
@@ -27,10 +27,10 @@
           <q-select label="Add Column" :options="fieldsToAdd" value="" @input="$emit('update:selected-columns', [...selectedColumns, $event.value] )"></q-select>
         </div>
       </q-step>
-      <q-step :name="4" title="Search" :icon="matSearch" color="primary">
-        <p>You can save this search by bookmarking or copying the URL</p>
-        <q-btn color="primary" label="Refresh" :icon="matSearch" @click="onSearch"></q-btn>
-      </q-step>
+<!--      <q-step :name="4" title="Search" :icon="matSearch" color="primary">-->
+<!--        <p>You can save this search by bookmarking or copying the URL</p>-->
+<!--        <q-btn color="primary" label="Refresh" :icon="matSearch" @click="onSearch"></q-btn>-->
+<!--      </q-step>-->
     </q-stepper>
   </div>
 </template>

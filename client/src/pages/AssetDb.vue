@@ -5,6 +5,9 @@
                          :column-editing="columnEditing" @update:column-editing="columnEditing = $event"
                          @preview="onPreview"
                          @search="onSearch" ></quote-source-filter>
+
+<!--    <pre>{{ params }}</pre>-->
+
     <quote-source-table :quote-sources="quoteSources"
                         :selected-columns="selectedColumns" @update:selected-columns="selectedColumns = $event"
                         :column-editing="columnEditing"
@@ -61,9 +64,10 @@ export default Vue.extend({
   },
 
   methods: {
-    async refresh(params: any) {
+    async refresh() {
+      const params = queryArgsToObj(this.$route.query.args) ?? defaultParams();
+
       // Perform some sanitising/defaulting
-      if (!params) params = defaultParams();
       if (!params.query) params.query = [];
       if (!params.searchObj) params.searchObj = {asset:{}};
       if (!params.fields) params.fields = [];
@@ -77,7 +81,10 @@ export default Vue.extend({
       await this.applyQuery(params);
 
     },
-    async applyQuery(params: any, limit?: number) {
+    async applyQuery(params: any) {
+      const defaultLimit = 20;
+      const actualLimit = defaultLimit;
+
       try {
         this.loading = true;
         const {query, searchObj} = params ?? {};
@@ -86,27 +93,32 @@ export default Vue.extend({
         const cq = [...advancedQuery, ...searchObjQuery];
 
         if (cq && cq.length && cq[0].where) {
-          const filter = limit ? (col: CollectionReference) => applyQueries(col, cq).limit(limit) : (col: CollectionReference) => applyQueries(col, cq)
+          const filter = (col: CollectionReference) => applyQueries(col, cq).limit(actualLimit);
           this.quoteSources = await getAllQuoteSources(filter)
         } else {
-          this.quoteSources = await getAllQuoteSources()
+          this.quoteSources = await getAllQuoteSources(col => col.limit(actualLimit));
         }
       } catch (e) {
-        this.$notify.error(e.message)
+        this.$notify.error(e.message);
       } finally {
         this.loading = false;
       }
     },
     onSearch(params: any) {
-      this.$router.push({query: {args: JSON.stringify(params)}})
+      const args = JSON.stringify(params);
+      // Prevent NavigationDuplicated
+      if (this.$route.query?.args !== args) {
+        this.$router.push({query: {args}})
+      }
     },
     onPreview(params: any) {
       this.previewQuery = params;
       this.doPreview();
     },
     doPreview: debounce(async function(this:any) {
-      await this.applyQuery(this.previewQuery, 10);
-      this.previewing = true;
+      this.onSearch(this.previewQuery);
+      // await this.applyQuery(this.previewQuery, 10);
+      // this.previewing = true;
     },1000),
     createNew() {
       this.$router.push({name: 'quoteSourceNew'});
@@ -117,17 +129,18 @@ export default Vue.extend({
       }
     }
   },
-  mounted() {
-    const params = queryArgsToObj(this.$route.query.args);
-    this.refresh(params);
-
+  computed: {
   },
-  beforeRouteUpdate(to, from, next) {
-    // react to route changes...
-    // don't forget to call next()
-    const params = queryArgsToObj(to.query.args);
-    this.refresh(params);
-    next();
+  watch: {
+    params: {
+      handler(val) {
+        this.onPreview(val)
+      }, deep: true
+    },
+    '$route': 'refresh'
+  },
+  mounted() {
+    this.refresh();
   },
 })
 

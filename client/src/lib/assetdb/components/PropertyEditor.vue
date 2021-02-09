@@ -48,6 +48,7 @@
         // }
       },
       onFieldCleared(field: string) {
+        console.log(`${field} cleared`);
         this.$delete(this.value, field);
         this.$emit('property-removed', field);
       },
