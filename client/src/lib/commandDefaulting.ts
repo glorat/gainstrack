@@ -292,14 +292,18 @@ export function defaultedTransferCommand(c: AccountCommandEditing, stateEx: AllS
   if (acct) {
     if (!dc.change.ccy) dc.change = {...dc.change, ccy: acct.ccy}
   }
+
   const other = stateEx.findAccount(dc.otherAccount);
 
   if (!dc.options || !dc.options.targetChange) {
     dc.options = {targetChange: {number: 0, ccy: ''}};
   }
 
-  if (other) {
+  if (other?.accountId) {
     if (!dc.options.targetChange.ccy) dc.options.targetChange = {...dc.options.targetChange, ccy: other.ccy}
+  }  else if (acct && acct.options.multiAsset) {
+    // Default to yourself if you are transferring from a multi-asset account
+    dc.otherAccount = acct.accountId;
   }
 
   if (!dc.options.targetChange.number && dc.change.ccy && dc.change.number) {

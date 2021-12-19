@@ -19,7 +19,8 @@
         </div>
         <div>
           <balance-editor label="Target Amount" class="c-options-target-change"
-                          :value="dc.options.targetChange" :original="c.options.targetChange || {}" @input="c.options.targetChange=$event"
+                          :value="dc.options.targetChange" :original="c.options.targetChange || {}"
+                          @input="c.options = {...c.options, targetChange:$event}"
                           ></balance-editor>
         </div>
 
