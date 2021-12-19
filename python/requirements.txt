@@ -1,1 +1,1 @@
-investpy==0.9.14
+investpy==1.0.7
