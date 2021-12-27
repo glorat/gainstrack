@@ -51,6 +51,11 @@
           description: 'Giving you options on implementing an international flavour of the Boglehead inspired "two fund portfolio"',
           icon: 'img:icons/boglebot.svg'
         },
+        {target: 'forecast', title: 'Retirement Target Calculator',
+          description: 'In 30 seconds, calculate the year by which you can retire',
+          icon: 'img:icons/boglebot.svg'
+        },
+
         {target: 'investments', title: 'Portfolio Tools', subtitle: 'Under development!',
           description: 'Tools for helping you manage your portfolio of investments',
           icon: mdiAlert

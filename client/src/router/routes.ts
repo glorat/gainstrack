@@ -27,6 +27,7 @@ import BogleTwoFund from 'pages/BogleTwoFund.vue';
 import RebalanceCalc from 'components/RebalanceCalc.vue';
 import Login from 'pages/Login.vue';
 import UserProfile from 'pages/UserProfile.vue';
+import ForecastView from 'components/forecast/ForecastView.vue';
 
 const commonRoutes: RouteConfig[] = [
   {path: '/assetdb', meta: {title:'Asset DB'}, component: () => import('../pages/AssetDb.vue')},
@@ -129,13 +130,14 @@ const simpleRoutes: RouteConfig[] = [
     meta: {title: 'Investment Assets'}
     },
   {path: '/contribute', component: RebalanceCalc, props:{accountId: 'Assets:Investment'}, meta: {title: 'Contribution Calculator'}, name: 'rebalance'},
+  {path: '/forecast', component: ForecastView, meta: {title: 'Retirement Target Forecast'}},
   {path: '/', component: BogleTools, meta: {title: 'Boglebot Home', icon: matHome}},
   {path: '/*', component: BogleTools},
   ];
 const simpleNavBar: string[][] = [
   [''],
   ['play'],
-  ['investments', 'contribute'],
+  ['investments', 'contribute', 'forecast'],
   ['assetdb'],
   ['user_profile'],
 ];
