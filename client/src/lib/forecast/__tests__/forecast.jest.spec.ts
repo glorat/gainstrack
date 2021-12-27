@@ -1,5 +1,5 @@
 import {ForecastState, ForecastStateEx, performForecast} from 'src/lib/forecast/forecast';
-import {find} from 'lodash';
+import {find, round} from 'lodash';
 
 describe('forecast', () => {
   test('sample case', () => {
@@ -10,13 +10,17 @@ describe('forecast', () => {
       expenses: 20000,
       networth: 0
     }
-    const states: ForecastStateEx[] = performForecast(initState)
+    const strategy = {
+      roi: (networth:number) => round(networth * 0.05)
+    }
+    const states: ForecastStateEx[] = performForecast(initState, strategy)
 
-    expect(states[9].timeunit === 10)
-    expect(states[9].networth === 386771)
+    expect(states[0].timeunit).toStrictEqual( 2021)
+    expect(states[9].timeunit).toStrictEqual( 2030)
+    expect(states[9].networth).toStrictEqual( 386771)
 
     const retireEntry = find(states, state => state.roi > state.expenses)
     expect(retireEntry).toBeDefined()
-    expect(retireEntry?.timeunit === 2030)
+    expect(retireEntry?.timeunit).toStrictEqual(2031)
   })
 })
