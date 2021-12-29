@@ -8,7 +8,7 @@
       <q-card-section>
         <q-input label="Income" type="number" v-model.number="input.income"></q-input>
         <q-input label="Expenses" type="number" v-model.number="input.expenses"></q-input>
-        <q-input label="Savings Rate" type="number" v-on:input="onSavingsRateChange($event)" :value="100*input.expenses / input.income" suffix="%"></q-input>
+        <q-input label="Savings Rate" type="number" v-on:input="onSavingsRateChange($event)" :value="100*(input.income-input.expenses) / input.income" suffix="%"></q-input>
         <q-input label="Networth" type="number" v-model.number="input.networth"></q-input>
       </q-card-section>
       <q-card-section>
@@ -56,7 +56,7 @@ export default defineComponent({
     onSavingsRateChange(ev:string|number) {
       const newRate = +ev;
       if (newRate > 0 && newRate <=100) {
-        this.input.expenses = this.input.income * (newRate/100);
+        this.input.expenses = this.input.income * ((100-newRate)/100);
       }
     }
   }

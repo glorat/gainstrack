@@ -13,18 +13,22 @@ export interface ForecastStateEx extends ForecastState {
 
 export interface ForecastStrategy {
   roi : (networth:number) => number
+  inflation : (networth:number) => number
+  retirementTarget: (state: ForecastStateEx) => boolean
 }
 
-const sampleRoi = (networth:number) => round(networth * 0.04)
+const rate = (rate:number) => (base:number) => round(base * rate)
 
 const defaultStrategy: ForecastStrategy = {
-  roi : sampleRoi
+  roi : rate(0.07),
+  inflation: rate(0.03), // Global inflation has been around 3% the last decade
+  retirementTarget: state => state.networth > state.expenses*25 // 4% SWR rule
 }
 
 
 export function performForecast(initState: ForecastState, forecastStrategy:ForecastStrategy = defaultStrategy): ForecastStateEx[] {
 
-  const cond = (state:ForecastStateEx) => (state.timeunit-initState.timeunit)<=30 && state.roi <= state.expenses
+  const cond = (state:ForecastStateEx) => (state.timeunit-initState.timeunit)<=30 && !(forecastStrategy.retirementTarget(state))
 
   let state = iterateForecast(initState, forecastStrategy);
   const states:ForecastStateEx[] = [state];
@@ -36,13 +40,15 @@ export function performForecast(initState: ForecastState, forecastStrategy:Forec
 }
 
 export function iterateForecast(state: ForecastState, forecastStrategy:ForecastStrategy): ForecastStateEx {
-  const investmentWorth = state.networth + (state.income - state.expenses)/2;
+  const deltaExpense = forecastStrategy.inflation(state.expenses)
+  const newExpense = state.expenses + deltaExpense
+  const investmentWorth = state.networth + (state.income - state.expenses)/2; // Still using orig expenses to bias investment
   const roi = forecastStrategy.roi(investmentWorth)
-  const deltaNetworth = roi + state.income - state.expenses
+  const deltaNetworth = roi + state.income - newExpense
   const ret = {
     timeunit: state.timeunit + 1,
     income: state.income,
-    expenses: state.expenses,
+    expenses: newExpense,
     networth: state.networth + deltaNetworth,
     roi
   }

@@ -1,4 +1,4 @@
-import {ForecastState, ForecastStateEx, performForecast} from 'src/lib/forecast/forecast';
+import {ForecastState, ForecastStateEx, ForecastStrategy, performForecast} from 'src/lib/forecast/forecast';
 import {find, round} from 'lodash';
 
 describe('forecast', () => {
@@ -10,8 +10,10 @@ describe('forecast', () => {
       expenses: 20000,
       networth: 0
     }
-    const strategy = {
-      roi: (networth:number) => round(networth * 0.05)
+    const strategy: ForecastStrategy = {
+      roi: (networth:number) => round(networth * 0.05),
+      inflation: () => 0,
+      retirementTarget: state => state.roi > state.expenses
     }
     const states: ForecastStateEx[] = performForecast(initState, strategy)
 
