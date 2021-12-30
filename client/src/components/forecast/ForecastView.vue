@@ -1,28 +1,42 @@
 <template>
   <my-page padding>
-    <q-card>
-      <q-card-section>
-        Enter your annual income and expenses, and the current networth of your saved investment assets
-      </q-card-section>
-      <q-separator inset />
-      <q-card-section>
-        <q-input label="Income" type="number" v-model.number="input.income"></q-input>
-        <q-input label="Expenses" type="number" v-model.number="input.expenses"></q-input>
-        <q-input label="Savings Rate" type="number" v-on:input="onSavingsRateChange($event)" :value="100*(input.income-input.expenses) / input.income" suffix="%"></q-input>
-        <q-input label="Networth" type="number" v-model.number="input.networth"></q-input>
-      </q-card-section>
-      <q-card-section>
-        Your retirement objective will be met in year <span class="text-h3">{{ targetYear }}</span>
-      </q-card-section>
-    </q-card>
-    <q-table :data="forecastEntries" :pagination="pagination"></q-table>
+    <div class="row items-start q-pa-md q-gutter-md">
+      <q-card class="">
+        <q-card-section>
+          Enter your annual income and expenses, and the current networth of your saved investment assets
+        </q-card-section>
+        <q-separator inset/>
+        <q-card-section>
+          <q-input label="Income" type="number" v-model.number="input.income"></q-input>
+          <q-input label="Expenses" type="number" v-model.number="input.expenses"></q-input>
+          <q-input label="Savings Rate" type="number" v-on:input="onSavingsRateChange($event)"
+                   :value="100*(input.income-input.expenses) / input.income" suffix="%"></q-input>
+          <q-input label="Networth" type="number" v-model.number="input.networth"></q-input>
+        </q-card-section>
+        <q-card-section>
+          Your retirement objective will be met in year <span class="text-h3">{{ targetYear }}</span>
+        </q-card-section>
+      </q-card>
+      <q-card class="">
+        <q-card-section>The following default assumptions can be adjusted</q-card-section>
+        <q-separator inset/>
+        <q-card-section>
+          <q-input label="Inflation" type="number" v-model.number="strategy.inflation" suffix="%"></q-input>
+          <q-input label="Return on investment" type="number" v-model.number="strategy.roi" suffix="%"></q-input>
+          <q-input label="Retirement target (multiples of annual expenses)" type="number"
+                   v-model.number="strategy.expenseMultiple"></q-input>
+        </q-card-section>
+      </q-card>
+    </div>
+    <q-table class="col-12" :data="forecastEntries" :pagination="pagination"></q-table>
   </my-page>
 </template>
 
 <script lang="ts">
 import {defineComponent} from '@vue/composition-api';
-import {ForecastStateEx, performForecast} from 'src/lib/forecast/forecast';
+import {ForecastStateEx, ForecastStrategy, performForecast} from 'src/lib/forecast/forecast';
 import {LocalDate} from '@js-joda/core';
+import {round} from 'lodash';
 
 export default defineComponent({
   name: 'ForecastView',
@@ -37,26 +51,36 @@ export default defineComponent({
       expenses,
       networth
     };
+    const strategy = {inflation: 3, roi: 7, expenseMultiple: 25};
 
-    const pagination = {rowsPerPage: 30}
-    return {input, pagination}
+    const pagination = {rowsPerPage: 30};
+    return {input, pagination, strategy};
 
   },
   computed: {
-    forecastEntries():ForecastStateEx[] {
-      let entries = performForecast(this.input);
+    forecastEntries(): ForecastStateEx[] {
+      let entries = performForecast(this.input, this.forecastStrategy);
       return entries;
     },
-    targetYear():number {
-      const e = this.forecastEntries
-      return e[e.length-1].timeunit
+    targetYear(): number {
+      const e = this.forecastEntries;
+      return e[e.length - 1].timeunit;
+    },
+    forecastStrategy(): ForecastStrategy {
+      const rate = (rate: number) => (base: number) => round(base * rate);
+      return {
+        roi: rate(this.strategy.roi / 100),
+        inflation: rate(this.strategy.inflation / 100),
+        retirementTarget: state => state.networth > state.expenses * this.strategy.expenseMultiple
+      };
+
     }
   },
-  methods:{
-    onSavingsRateChange(ev:string|number) {
+  methods: {
+    onSavingsRateChange(ev: string | number) {
       const newRate = +ev;
-      if (newRate > 0 && newRate <=100) {
-        this.input.expenses = this.input.income * ((100-newRate)/100);
+      if (newRate > 0 && newRate <= 100) {
+        this.input.expenses = this.input.income * ((100 - newRate) / 100);
       }
     }
   }
