@@ -19,14 +19,14 @@ export interface ForecastStrategy {
 
 const rate = (rate:number) => (base:number) => round(base * rate)
 
-const defaultStrategy: ForecastStrategy = {
-  roi : rate(0.07),
+export const defaultForecastStrategy: ForecastStrategy = {
+  roi : rate(0.07), // Global equities have been 8% in the last decade. So lower due to bonds
   inflation: rate(0.03), // Global inflation has been around 3% the last decade
   retirementTarget: state => state.networth > state.expenses*25 // 4% SWR rule
 }
 
 
-export function performForecast(initState: ForecastState, forecastStrategy:ForecastStrategy = defaultStrategy): ForecastStateEx[] {
+export function performForecast(initState: ForecastState, forecastStrategy:ForecastStrategy = defaultForecastStrategy): ForecastStateEx[] {
 
   const cond = (state:ForecastStateEx) => (state.timeunit-initState.timeunit)<=30 && !(forecastStrategy.retirementTarget(state))
 

@@ -168,7 +168,7 @@ export const {appRoutes, navBar, layout, appTitle, appDescription} : AppMode = (
   } else {
     // Default to gainstrack for unknown host
     // Can change this during development. Should not hit this in production
-    return simpleMode;
+    return gainstrackMode;
 
   }
 })()
