@@ -140,10 +140,10 @@ import {mapGetters} from 'vuex';
 import {apiPnlExplainDetail} from 'src/lib/apiFacade';
 import {forecastFromPnl} from 'src/lib/forecastFromPnl';
 import {
-  defaultForecastStrategy,
+  defaultForecastModels,
   ForecastState,
   ForecastStateEx,
-  ForecastStrategy,
+  ModelSpec,
   performForecast
 } from 'src/lib/forecast/forecast';
 import {PLExplainDTO} from 'src/lib/PLExplain';
@@ -168,8 +168,8 @@ export default defineComponent({
       // Use of concat to sort a copy
       return this.explainData.delta.concat().sort((a, b) => Math.abs(b.explain) - Math.abs(a.explain));
     },
-    forecastStrategy(): ForecastStrategy {
-      return defaultForecastStrategy;
+    forecastStrategy(): ModelSpec[] {
+      return defaultForecastModels;
     },
 
     // Below fns are dupe from ForecastView. Mixin?

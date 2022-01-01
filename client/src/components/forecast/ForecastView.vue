@@ -34,7 +34,7 @@
 
 <script lang="ts">
 import {defineComponent} from '@vue/composition-api';
-import {ForecastStateEx, ForecastStrategy, performForecast} from 'src/lib/forecast/forecast';
+import {ForecastStateEx, ModelSpec, performForecast} from 'src/lib/forecast/forecast';
 import {LocalDate} from '@js-joda/core';
 import {round} from 'lodash';
 
@@ -62,17 +62,20 @@ export default defineComponent({
       let entries = performForecast(this.input, this.forecastStrategy);
       return entries;
     },
-    targetYear(): number {
-      const e = this.forecastEntries;
-      return e[e.length - 1].timeunit;
+    targetYear(): number|undefined {
+      return this.forecastEntries.find(e => e.networth > e.expenses * this.strategy.expenseMultiple)?.timeunit
     },
-    forecastStrategy(): ForecastStrategy {
-      const rate = (rate: number) => (base: number) => round(base * rate);
-      return {
-        roi: rate(this.strategy.roi / 100),
-        inflation: rate(this.strategy.inflation / 100),
-        retirementTarget: state => state.networth > state.expenses * this.strategy.expenseMultiple
-      };
+    forecastStrategy(): ModelSpec[] {
+      return [
+        {model: 'inflation', args: {inflation: this.strategy.inflation}},
+        {model: 'roi', args: {roi: this.strategy.roi}},
+      ]
+      // const rate = (rate: number) => (base: number) => round(base * rate);
+      // return {
+      //   roi: rate(this.strategy.roi / 100),
+      //   inflation: rate(this.strategy.inflation / 100),
+      //   retirementTarget: state => state.networth > state.expenses * this.strategy.expenseMultiple
+      // };
 
     }
   },
@@ -80,7 +83,7 @@ export default defineComponent({
     onSavingsRateChange(ev: string | number) {
       const newRate = +ev;
       if (newRate > 0 && newRate <= 100) {
-        this.input.expenses = this.input.income * ((100 - newRate) / 100);
+        this.input.expenses = round(this.input.income * ((100 - newRate) / 100));
       }
     }
   }
