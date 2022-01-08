@@ -77,13 +77,14 @@ export default defineComponent({
     const timeunit = LocalDate.now().year();
     const tab = 'basic';
 
-    const input = {
+    const defaultInput = {
       timeunit,
       income,
       expenses,
       networth
     };
-    const strategy = {inflation: 3, roi: 7, expenseMultiple: 25};
+    const input = this.$store.state.forecast.params || defaultInput;
+    const strategy =  {inflation: 3, roi: 7, expenseMultiple: 25};
 
     const pagination = {rowsPerPage: 30};
     return {tab, input, pagination, strategy};
@@ -109,6 +110,14 @@ export default defineComponent({
       //   retirementTarget: state => state.networth > state.expenses * this.strategy.expenseMultiple
       // };
 
+    }
+  },
+  watch: {
+    input: {
+      deep: true,
+      handler(input) {
+        this.$store.dispatch('forecast/updateForecastParams', input );
+      }
     }
   },
   methods: {

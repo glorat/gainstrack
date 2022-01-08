@@ -18,6 +18,7 @@ import { store } from 'quasar/wrappers'
 import {QuoteSource} from 'src/lib/assetdb/assetDb';
 import firebase from 'firebase/app';
 import {Notify} from 'quasar';
+import VuexPersistence from 'vuex-persist';
 
 export interface TimeSeries {
   x: string[]
@@ -52,6 +53,11 @@ const initState: MyState = {
   user: undefined,
   auth0token: undefined
 };
+
+const vuexLocal = new VuexPersistence<MyState>({
+  storage: window.localStorage,
+  modules: ['forecast'],
+});
 
 type FXConverterWrapper = ((fx: SingleFXConversion) => SingleFXConverter)
 
@@ -88,9 +94,31 @@ export default store(function ({ Vue }) {
     }
   });
 
+  interface ForecastState {
+    params: any
+  }
+
+  const forecastModule = {
+    namespaced: true,
+    state: () => ({params: undefined } as ForecastState),
+    mutations: {
+      forecastParamsUpdated(state: ForecastState, params: any) {
+        state.params = params
+      }
+    },
+    actions: {
+      updateForecastParams(context:any, params:any) {
+        context.commit('forecastParamsUpdated', params)
+      }
+    }
+  }
 
   const Store = new Vuex.Store<MyState>({
     state: initState,
+    plugins: [vuexLocal.plugin],
+    modules: {
+      forecast: forecastModule
+    },
     mutations: {
       auth0token(state: MyState, token) {
         state.auth0token = token
