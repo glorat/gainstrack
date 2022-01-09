@@ -25,9 +25,9 @@ case class EarnCommand(date:LocalDate, incomeTag:String, value:Amount, targetAcc
       incomeAccount.options.fundingAccount.getOrElse(throw new IllegalStateException(s"Cannot earn from ${incomeAccount} without a fundingAccount option specified in its creation"))
     )
     val targetAccount = accts.find(_.accountId == targetAccountId).getOrElse(throw new IllegalStateException(s"Target account ${targetAccountId} does not exist"))
-    // Multi-asset accounts have a dedicated sub funding account
-    val targetFundingAccountId = if (targetAccount.options.multiAsset) targetAccountId.subAccount(value.ccy.symbol) else targetAccountId
-    Seq(Transfer(incomeAccount.accountId, targetFundingAccountId, date, value, value, description))
+    // The Transfer.toTransfers looks weird but is needed to ensure multiAsset account works
+
+    Transfer(incomeAccount.accountId, targetAccountId, date, value, value, description).toTransfers(accts)
   }
 
   def toGainstrack: Seq[String] = {

@@ -26,7 +26,8 @@ case class SpendCommand(date:LocalDate, expenseTag:String, value:Amount, otherAc
     )
     val sourceAccount = accts.find(_.accountId == sourceAccountId).getOrElse(throw new IllegalStateException(s"Target account ${sourceAccountId} does not exist"))
 
-    Seq(Transfer(sourceAccountId, expenseAccount.accountId, date, value, value, description))
+    // The Transfer.toTransfers looks weird but is needed to ensure multiAsset account works
+    Transfer(sourceAccountId, expenseAccount.accountId, date, value, value, description).toTransfers(accts)
   }
 
   def toGainstrack: Seq[String] = {
