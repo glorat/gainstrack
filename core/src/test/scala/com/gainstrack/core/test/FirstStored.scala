@@ -96,6 +96,7 @@ class FirstStored extends AnyFlatSpec with BeforeAndAfterAll {
   }
 
   it should "handle added CommodityCommand" in {
+    // FIXME: sometimes getting "had size 4 instead of expected size 3" under FirestoreFirstStored
     assert (repo.getAllCommits(id2).size == 3)
 
     val e2 = getEntity(id2)
