@@ -83,12 +83,17 @@ export default defineComponent({
       expenses,
       networth
     };
-    const input = this.$store.state.forecast.params || defaultInput;
+    const input = defaultInput;
     const strategy =  {inflation: 3, roi: 7, expenseMultiple: 25};
 
     const pagination = {rowsPerPage: 30};
     return {tab, input, pagination, strategy};
 
+  },
+  mounted() {
+    if (this.$store.state.forecast.params) {
+      this.input = this.$store.state.forecast.params
+    }
   },
   computed: {
     forecastEntries(): ForecastStateEx[] {
@@ -121,7 +126,7 @@ export default defineComponent({
     }
   },
   methods: {
-    onSavingsRateChange(ev: string | number) {
+    onSavingsRateChange(ev: string | number):void {
       const newRate = +ev;
       if (newRate > 0 && newRate <= 100) {
         this.input.expenses = round(this.input.income * ((100 - newRate) / 100));
