@@ -20,6 +20,16 @@ const inflation = (args:Record<string, string|number>) => ({
   }
 })
 
+const wageInflation = (args: Record<string, string | number>) => ({
+  condition: () => true,
+  action: (state: ForecastStateEx) => {
+    const rate: number = 1 + +args['inflation'] / 100;
+    state = {...state, income: round(state.income * rate), expenses: state.expenses};
+    return state;
+  }
+})
+
+
 const roi = (args:Record<string, string|number>) => ({
   condition: ()=>true,
   action: (state:ForecastStateEx) => {
@@ -37,7 +47,8 @@ interface Model {
 
 const forecastModelRegister: Record<string, (args:Record<string, string|number>) => Model> = {
   inflation,
-  roi
+  roi,
+  wageInflation
 }
 
 export interface ModelSpec {
@@ -47,7 +58,8 @@ export interface ModelSpec {
 
 export const defaultForecastModels: ModelSpec[] = [
   {model: 'inflation', args: {inflation: 3}}, // Global inflation has been around 3% the last decade
-  {model: 'roi', args: {roi: 7}} // Global equities have been 8% in the last decade. So lower due to bonds
+  {model: 'roi', args: {roi: 7}}, // Global equities have been 8% in the last decade. So lower due to bonds
+  {model: 'wageInflation', args: {inflation: 3}},
 ];
 
 export function performForecast(initState: ForecastState, forecastSpecs:ModelSpec[]): ForecastStateEx[] {

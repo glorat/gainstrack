@@ -83,17 +83,19 @@ export default defineComponent({
       expenses,
       networth
     };
-    const input = defaultInput;
-    const strategy =  {inflation: 3, roi: 7, expenseMultiple: 25};
 
+    const input = defaultInput;
+    const strategy =   {inflation: 3, roi: 7, expenseMultiple: 25};
     const pagination = {rowsPerPage: 30};
     return {tab, input, pagination, strategy};
 
   },
   mounted() {
-    if (this.$store.state.forecast.params) {
-      this.input = this.$store.state.forecast.params
+    if (this.$store.state.forecast?.params) {
+      this.input = this.$store.state.forecast.params.input
+      this.strategy = this.$store.state.forecast.params.strategy
     }
+    this.input.timeunit = LocalDate.now().year();
   },
   computed: {
     forecastEntries(): ForecastStateEx[] {
@@ -106,6 +108,7 @@ export default defineComponent({
     forecastStrategy(): ModelSpec[] {
       return [
         {model: 'inflation', args: {inflation: this.strategy.inflation}},
+        {model: 'wageInflation', args: {inflation: this.strategy.inflation}},
         {model: 'roi', args: {roi: this.strategy.roi}},
       ]
       // const rate = (rate: number) => (base: number) => round(base * rate);
@@ -120,13 +123,23 @@ export default defineComponent({
   watch: {
     input: {
       deep: true,
-      handler(input) {
-        this.$store.dispatch('forecast/updateForecastParams', input );
+      handler() {
+        this.onParamsUpdated()
+      }
+    },
+    strategy: {
+      deep: true,
+      handler() {
+        this.onParamsUpdated()
       }
     }
   },
   methods: {
-    onSavingsRateChange(ev: string | number):void {
+    onParamsUpdated() {
+      const params = {input: this.input, strategy: this.strategy};
+      this.$store.dispatch('forecast/updateForecastParams', params );
+    },
+    onSavingsRateChange(ev: string | number) {
       const newRate = +ev;
       if (newRate > 0 && newRate <= 100) {
         this.input.expenses = round(this.input.income * ((100 - newRate) / 100));
