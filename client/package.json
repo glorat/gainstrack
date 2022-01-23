@@ -61,7 +61,7 @@
     "eslint-plugin-standard": "^4.1.0",
     "eslint-plugin-vue": "^6.1.2",
     "firebase": "^8.10.0",
-    "marked": "^0.7.0",
+    "marked": "^4.0.10",
     "vue-tour": "git://github.com/glorat/vue-tour.git#popper2"
   },
   "browserslist": [
