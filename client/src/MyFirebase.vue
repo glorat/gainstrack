@@ -9,7 +9,7 @@
   import myAuth = myfirebase.myAuth;
   import {Store} from 'vuex';
   import axios from 'axios';
-  import firebase from 'firebase/app';
+  import firebase from 'firebase/compat/app';
 
   async function fbAuthStateChanged(user: firebase.User | null, $store: Store<unknown>) {
     if (user) {

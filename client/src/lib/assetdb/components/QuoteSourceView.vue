@@ -70,7 +70,7 @@
     quoteSourceFieldProperties
   } from '../AssetSchema';
   import ObjectFieldView from './ObjectFieldView.vue';
-  import firebase from 'firebase';
+  import firebase from 'firebase/compat/app';
   import CollectionReference = firebase.firestore.CollectionReference;
   import {applyQueries, searchObjToQuery} from '../schema';
 

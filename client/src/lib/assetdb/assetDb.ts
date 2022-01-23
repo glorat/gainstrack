@@ -1,5 +1,5 @@
 import {myAuth, myFirestore} from './myfirebase';
-import firebase from 'firebase/app';
+import firebase from 'firebase/compat/app';
 import CollectionReference = firebase.firestore.CollectionReference;
 import Query = firebase.firestore.Query;
 import FieldValue = firebase.firestore.FieldValue;

@@ -1,6 +1,6 @@
 import {find, includes, keys, get} from 'lodash';
 import {EnumEntry} from './enums';
-import firebase from 'firebase';
+import firebase from 'firebase/compat/app';
 import CollectionReference = firebase.firestore.CollectionReference;
 import Query = firebase.firestore.Query;
 

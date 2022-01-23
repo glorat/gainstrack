@@ -16,7 +16,7 @@ import {LocalDate} from '@js-joda/core';
 import {toCommodityGainstrack} from '../lib/commandDefaulting';
 import { store } from 'quasar/wrappers'
 import {QuoteSource} from 'src/lib/assetdb/assetDb';
-import firebase from 'firebase/app';
+import firebase from 'firebase/compat/app';
 import {Notify} from 'quasar';
 import VuexPersistence from 'vuex-persist';
 

@@ -1,6 +1,5 @@
 import {RequestHandler} from "express";
-import {auth} from "firebase-admin/lib/auth";
-import Auth = auth.Auth;
+import {Auth} from "firebase-admin/lib/auth";
 
 const {createHash} = require('crypto');
 

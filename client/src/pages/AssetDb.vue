@@ -26,7 +26,7 @@ import {getAllQuoteSources, QuoteSource} from 'src/lib/assetdb/assetDb';
 // import QuoteSourceTable from 'src/lib/assetdb/components/QuoteSourceTable.vue';
 // import QuoteSourceFilter from 'src/lib/assetdb/components/QuoteSourceFilter.vue';
 
-import firebase from 'firebase/app';
+import firebase from 'firebase/compat/app';
 import CollectionReference = firebase.firestore.CollectionReference;
 import {debounce} from 'quasar';
 import {quoteSourceFieldProperties} from 'src/lib/assetdb/AssetSchema';

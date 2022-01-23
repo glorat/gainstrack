@@ -1,10 +1,10 @@
-import firebase from 'firebase/app';
+import firebase from 'firebase/compat/app';
 
+import 'firebase/compat/auth';
 // Add the Firebase services that you want to use
-import 'firebase/analytics';
-import 'firebase/firestore';
-import 'firebase/auth';
-import 'firebase/functions';
+import 'firebase/compat/analytics';
+import 'firebase/compat/firestore';
+import 'firebase/compat/functions';
 
 let inited = false;
 
