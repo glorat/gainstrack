@@ -9,7 +9,7 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
+import {defineComponent} from 'vue'
 import firebase from 'firebase/compat/app';
 import 'firebase/compat/auth';
 
@@ -19,7 +19,7 @@ import 'firebaseui/dist/firebaseui.css'
 import * as firebaseui from 'firebaseui'
 import {MyState} from 'src/store'
 
-export default Vue.extend({
+export default defineComponent({
   name: 'FirebaseLogin',
   methods: {
     async logout(): Promise<void> {

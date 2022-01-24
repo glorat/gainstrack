@@ -98,8 +98,12 @@ module.exports = {
     'vue/no-unused-components': 'warn',
     'indent': 'off',
     'semi': 'off',
-    'no-unused-vars': 'warn',
-    // FIXME: reenable these recommended typescript rules
+    'no-unused-vars': 'off', // vue3 upgrade has flagged up more than expected
+
+    '@typescript-eslint/no-non-null-assertion': 'off',
+    // FIXME: So many hidden bugs that need time to fix
+    'vue/no-mutating-props': 'off',
+        // FIXME: reenable these recommended typescript rules
     '@typescript-eslint/ban-types': 'warn',
     '@typescript-eslint/no-this-alias': 'warn',
     '@typescript-eslint/ban-ts-comment': 'warn',

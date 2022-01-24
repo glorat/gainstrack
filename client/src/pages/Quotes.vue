@@ -8,12 +8,12 @@
 
     <vue-plotly :data="series" :layout="layout" :options="options" auto-resize></vue-plotly>
 
-    <q-table dense row-key="id" :columns="columns" :pagination.sync="pagination" :selected.sync="selected" selection="single" :data="quoteConfig"></q-table>
+    <q-table dense row-key="id" :columns="columns" v-model:pagination="pagination" v-model:selected="selected" selection="single" :data="quoteConfig"></q-table>
   </my-page>
 </template>
 
 <script lang="ts">
-  import Vue from 'vue';
+  import {defineComponent} from 'vue';
   import {VuePlotly} from 'src/lib/loader';
   import {QuoteSource} from 'src/lib/assetdb/assetDb';
 
@@ -21,14 +21,14 @@
     pagination: unknown,
     selected: unknown[],
     columns: Record<string, unknown>[],
-    quoteConfig: QuoteSource,
+    quoteConfig: QuoteSource[],
     currentRow?: QuoteSource,
     series: Record<string, unknown>[],
     layout: Record<string, unknown>,
     options: Record<string, unknown>
   }
 
-  export default Vue.extend({
+  export default defineComponent({
     name: 'Quotes',
     components: {
       VuePlotly

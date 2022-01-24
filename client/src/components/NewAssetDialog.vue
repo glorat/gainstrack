@@ -10,13 +10,13 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import {defineComponent} from 'vue';
 
 import {QDialog} from 'quasar';
 import NewAssetEditor from 'components/NewAssetEditor.vue';
 import {AssetDTO} from 'src/lib/assetdb/models';
 
-export default Vue.extend({
+export default defineComponent({
   name: 'NewAssetDialog',
   components: {NewAssetEditor},
   props: {

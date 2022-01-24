@@ -196,7 +196,7 @@ export const emptyAllState: AllState = {
   priceState: {ccys:[], prices:{} },
   tradeFx: {baseCcy: 'USD', data:{}},
   fxMapper: {},
-  proxyMapper:{}
+  proxyMapper:{},
 };
 
 export interface TreeTableDTO {

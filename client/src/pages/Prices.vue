@@ -31,7 +31,7 @@
   import { SingleFXConversion, SingleFXConverter } from '../lib/fx';
   // eslint-disable-next-line no-unused-vars
   import { MyState, TimeSeries } from '../store';
-  import Vue from 'vue';
+  import {defineComponent} from 'vue';
   import {LocalDate} from '@js-joda/core';
 
   interface Price {
@@ -43,7 +43,7 @@
     cvalues2: (number|undefined)[]
   }
 
-  export default Vue.extend({
+  export default defineComponent({
     name: 'Prices',
     data() {
       return {
@@ -80,7 +80,7 @@
             const val = fx.getFX(price.name.split('/')[0], price.name.split('/')[1], LocalDate.parse(dt));
             return val ? Math.round(val*100)/100: undefined;
           });
-          this.$set(price, 'cvalues2', cvalues2);
+          price['cvalues2'] = cvalues2;
         });
       },
     },
@@ -107,7 +107,8 @@
         this.reloadQuotes();
 
       } catch (error) {
-        notify.error(error);
+        const e:any = error;
+        notify.error(e?.toString());
       }
 
     }

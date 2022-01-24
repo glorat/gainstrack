@@ -33,12 +33,12 @@
 </template>
 
 <script lang="ts">
-  import Vue from 'vue';
+  import {defineComponent} from 'vue';
   import {emptyQuoteSource, QuoteSource, quoteSourceDb, sanitiseQuoteSource, upsertQuoteSource} from 'src/lib/assetdb/assetDb';
   import { extend } from 'quasar'
   import {QuoteSourceEditor, QuoteSourceHistoryView, QuoteSourceView} from 'src/lib/assetdb';
 
-  export default Vue.extend({
+  export default defineComponent({
     name: 'QuoteSource',
     components: {QuoteSourceEditor, QuoteSourceHistoryView, QuoteSourceView},
     props: {
@@ -106,8 +106,9 @@
 
           }
         } catch (error) {
+          const e:any = error;
           console.error(error)
-          this.$notify.error(error)
+          this.$notify.error(e.toString())
         } finally {
           // this.loading = false;
         }
@@ -126,8 +127,9 @@
           }
         }
         catch (error) {
+          const e:any = error;
           console.error(error);
-          this.$notify.error(error.message);
+          this.$notify.error(e?.message || e.toString());
         }
         finally {
           this.loading = false
@@ -151,7 +153,7 @@
     mounted(): void {
       this.refresh();
     },
-    beforeDestroy() {
+    beforeUnmount() {
       const unsub = this.unsubscribe;
       if (unsub) {
         unsub();

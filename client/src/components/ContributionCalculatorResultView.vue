@@ -9,7 +9,7 @@
 
 <script lang="ts">
 import {ContributionCalculatorEntries} from '../lib/ContributionCalculator';
-import {defineComponent} from '@vue/composition-api';
+import {defineComponent} from 'vue';
 import {formatNumber, formatPerc} from 'src/lib/utils';
 
 export default defineComponent({

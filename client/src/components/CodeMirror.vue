@@ -112,7 +112,7 @@
                 })
             },
         },
-        beforeDestroy() {
+        beforeUnmount() {
             if (this.editor) {
                 this.editor.toTextArea()
             }

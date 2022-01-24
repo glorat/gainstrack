@@ -5,13 +5,13 @@
 <script lang="ts">
     import axios from 'axios';
     import marked from 'marked';
-    import Vue from 'vue';
+    import {defineComponent} from 'vue';
 
     interface MyData {
         content: string
     }
 
-    export default Vue.extend({
+    export default defineComponent({
         name: 'MarkdownRender',
         props: ['page'],
         data(): MyData {

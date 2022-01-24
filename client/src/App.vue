@@ -1,5 +1,5 @@
 <template>
-  <div id="q-app">
+  <div>
     <router-view></router-view>
     <my-sentry></my-sentry>
     <my-firebase></my-firebase>

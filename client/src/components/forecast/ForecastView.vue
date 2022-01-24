@@ -63,10 +63,10 @@
 </template>
 
 <script lang="ts">
-import {defineComponent} from '@vue/composition-api';
 import {ForecastStateEx, ModelSpec, performForecast} from 'src/lib/forecast/forecast';
 import {LocalDate} from '@js-joda/core';
 import {round} from 'lodash';
+import { defineComponent } from 'vue'
 
 export default defineComponent({
   name: 'ForecastView',

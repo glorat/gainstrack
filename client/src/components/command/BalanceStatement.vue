@@ -21,14 +21,14 @@
     import BalanceEditor from '../../lib/assetdb/components/BalanceEditor.vue';
     import {CommandEditorMixin} from '../../mixins/CommandEditorMixin';
     import AccountSelector from '../AccountSelector.vue';
-    import Vue from 'vue';
+    import { defineComponent } from 'vue';
 
 
     // interface MyData {
     //     c: AccountCommandDTO
     // }
 
-    export default Vue.extend({
+    export default defineComponent({
         name: 'BalanceStatement',
         props: {cmd: Object},
         mixins: [CommandEditorMixin],

@@ -12,7 +12,7 @@
 </template>
 
 <script lang="ts">
-    import Vue from 'vue';
+    import {defineComponent} from 'vue';
     import {matEvent} from '@quasar/extras/material-icons';
     import {date} from 'quasar';
 
@@ -29,7 +29,7 @@
         return date.formatDate(fromISO(dt), format);
     }
 
-    export default Vue.extend({
+    export default defineComponent({
         name: 'CommandDateEditor',
         data() {
           return {
@@ -48,7 +48,7 @@
         },
         computed: {
             dateObj() {
-                return reformatIsoDate(this.value, 'YYYY/MM/DD');
+                return reformatIsoDate(this.value || '', 'YYYY/MM/DD');
             }
         }
     })

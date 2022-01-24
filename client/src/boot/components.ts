@@ -1,13 +1,14 @@
-import MyPage from '../components/MyPage.vue';
+// import MyPage from '../components/MyPage.vue';
 import { LoadingBar } from 'quasar'
 
 import version from '../../VERSION.json';
 
-import Vue from 'vue';
+import {createApp} from 'vue';
 import {boot} from 'quasar/wrappers';
 
-export default boot(({ Vue }) => {
-  Vue.component('MyPage', MyPage);
+export default boot(() => {
+  // FIXME: globally register MyPage
+  // defineComponent('MyPage', MyPage);
 
   LoadingBar.setDefaults({
     color: 'primary',
@@ -16,10 +17,12 @@ export default boot(({ Vue }) => {
   })
 })
 
-declare module 'vue/types/vue' {
-  interface Vue {
-    $appVersion: string;
-  }
-}
+const app = createApp({})
+app.config.globalProperties.$appVersion = version.version
 
-Vue.prototype.$appVersion = version.version;
+// declare module '@vue/runtime-core' {
+//   interface ComponentCustomProperties {
+//     appVersion: string
+//   }
+// }
+

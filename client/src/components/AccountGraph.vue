@@ -3,7 +3,7 @@
 </template>
 
 <script lang="ts">
-    import Vue from 'vue';
+    import {defineComponent} from 'vue';
     import { VuePlotly } from '../lib/loader'
     import {mapGetters} from 'vuex';
     import {AccountDTO, Posting} from 'src/lib/assetdb/models';
@@ -16,6 +16,7 @@
     } from 'src/lib/utils';
     import { keys, flatten, uniq } from 'lodash';
     import {LocalDate} from '@js-joda/core';
+
     //
     // const expMovingAverage = (array: {x:unknown, y: number}[], range:number) => {
     //     const k = 2 / (range + 1);
@@ -37,7 +38,7 @@
     //     });
     // }
 
-    export default Vue.extend({
+    export default defineComponent({
         name: 'AccountGraph',
         components: {VuePlotly},
         props: ['accountId'],
@@ -80,7 +81,7 @@
           return this.findAccount(this.accountId)
         },
         conversion (): string {
-          return this.$store.state.allState.conversion;
+          return this.$store.state.conversion;
         },
         mySeries():any {
           const account = this.myAccount;

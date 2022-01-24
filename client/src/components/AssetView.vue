@@ -8,10 +8,10 @@
                 :columns="allColumns"
                 :visible-columns="visibleColumns"
                 :loading="loading"
-                :pagination.sync="pagination"
+                v-model:pagination="pagination"
                 row-key="assetId"
                 :selection="selection"
-                :selected.sync="selected"
+                v-model:selected="selected"
                 dense
                 v-if="networthByAsset.length>0 || loading"
         >
@@ -50,8 +50,8 @@
 </template>
 
 <script lang="ts">
-    import Vue from 'vue';
-    import { date } from 'quasar';
+    import {defineComponent} from 'vue';
+    import { date, useQuasar } from 'quasar';
     import {NetworthByAsset, AssetColumn, AssetResponse, AssetDTO} from '../lib/assetdb/models';
     import {matEdit, matAdd, matAddCircleOutline ,matSwapHoriz} from '@quasar/extras/material-icons';
     import CommandEditorDialog from 'components/CommandEditorDialog.vue';
@@ -71,7 +71,7 @@
     }
 
 
-    export default Vue.extend({
+    export default defineComponent({
         name: 'AssetView',
         data() {
             const modes: Mode[] = [
@@ -126,10 +126,12 @@
             balance: {number:row.units, ccy: row.assetId},
           };
 
-          this.$q.dialog({
+          useQuasar().dialog({
             component: CommandEditorDialog,
-            parent: this,
-            cmd: cmd
+            // parent: this,
+            componentProps: {
+              cmd
+            }
             // ...more.props...
           })
         },
@@ -143,18 +145,22 @@
             change: {number: undefined, ccy: row.assetId},
           };
 
-          this.$q.dialog({
+          useQuasar().dialog({
             component: CommandEditorDialog,
-            parent: this,
-            cmd: cmd
+            // parent: this,
+            componentProps: {
+              cmd: cmd
+            }
             // ...more.props...
           })
         },
         onNewAsset() {
-          this.$q.dialog({
+          useQuasar().dialog({
             component: NewAssetDialog,
-            parent: this,
-            accountId: this.accountId
+            // parent: this,
+            componentProps: {
+              accountId: this.accountId
+            }
           }).onOk((asset:AssetDTO) => {
             // Since we've created the asset, let's do a command right away
             this.onUnitsEdit({row: {units:1, assetId: asset.asset}})
@@ -162,10 +168,12 @@
         },
         onAssetEdit(props: any) {
           const row: NetworthByAsset = props.row;
-          this.$q.dialog({
+          useQuasar().dialog({
             component: AssetEditorDialog,
-            parent: this,
-            assetId: row.assetId
+            // parent: this,
+            componentProps: {
+              assetId: row.assetId
+            }
             // ...more.props...
           })
         },
@@ -229,7 +237,7 @@
           totalValueStr():string {
             return formatNumber(this.totalValue);
           },
-            currentMode(): Mode {
+          currentMode(): Mode {
                 const mode = this.modes.find(m => m.name === this.mode);
                 if (mode) {
                     const more: AssetColumn[] = this.moreColumns.filter(x => x.tag === mode.moreColumns);
@@ -246,7 +254,7 @@
                 return this.networthByAsset.filter(this.currentMode.filter);
             },
             totalRows(): NetworthByAsset[] {
-                return this.assetResponse.totals;
+                return this.assetResponse?.totals || [];
             },
             visibleColumns(): string[] {
                 return this.currentMode.columns;
@@ -255,16 +263,16 @@
                 return this.columns.concat(this.moreColumns);
             },
             networthByAsset(): NetworthByAsset[] {
-                return this.assetResponse.rows;
+                return this.assetResponse?.rows || [];
             },
             moreColumns(): AssetColumn[] {
-                return this.assetResponse.columns.map(col => {
+                return this.assetResponse?.columns.map(col => {
                     return {
                         ...col,
                         field: row => row.priceMoves[col.name],
                         format: (val: number) => val ? `${(val * 100).toFixed(1)}%` : ''
                     } as AssetColumn;
-                });
+                }) || [];
             },
         },
     });

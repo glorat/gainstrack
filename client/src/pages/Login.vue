@@ -5,8 +5,8 @@
 </template>
 
 <script>
-import {defineComponent} from '@vue/composition-api';
 import {FirebaseLogin} from '../lib/loader';
+import { defineComponent } from 'vue'
 
 export default defineComponent({
   name: 'Login',

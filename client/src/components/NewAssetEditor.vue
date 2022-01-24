@@ -39,7 +39,7 @@
 </template>
 
 <script lang="ts">
-import {defineComponent} from '@vue/composition-api';
+import {defineComponent} from 'vue';
 import FieldEditor from '../lib/assetdb/components/FieldEditor.vue';
 import {
   createAssetFromProps,
@@ -77,13 +77,13 @@ export default defineComponent({
   },
   methods: {
     onFieldUpdate(field:string, newValue: any) {
-      this.$set(this.properties, field, newValue);
+      this.properties[field] = newValue;
       if (newValue && schemaFor(field).fieldType==='ticker') {
         this.$store.dispatch('loadQuotes', newValue);
       }
     },
     onRemove(propType: FieldProperty) {
-      this.$delete(this.properties, propType.name);
+      delete this.properties[propType.name];
     },
     addAsset() {
       const str = this.assetGainstrack;

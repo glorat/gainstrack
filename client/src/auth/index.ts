@@ -1,5 +1,5 @@
 import Auth0Client from '@auth0/auth0-spa-js/dist/typings/Auth0Client';
-import Vue from 'vue';
+import {defineComponent} from 'vue';
 import createAuth0Client, {
   getIdTokenClaimsOptions,
   GetTokenSilentlyOptions,
@@ -11,7 +11,7 @@ import createAuth0Client, {
 const DEFAULT_REDIRECT_CALLBACK: any = () =>
   window.history.replaceState({}, document.title, window.location.pathname);
 
-let instance: Vue | null;
+let instance: any | null;
 
 /** Returns the current instance of the SDK */
 export const getInstance = () => instance;
@@ -23,7 +23,7 @@ interface MyData {
   auth0ClientPromise: Promise<Auth0Client>,
   auth0Client: Auth0Client,
   popupOpen: boolean,
-  error: null | string,
+  error: unknown,
 }
 
 /** Creates an instance of the Auth0 SDK. If one has already been created, it returns that instance */
@@ -37,7 +37,7 @@ export const useAuth0= ({
   }
 
   // The 'instance' is simply a Vue object
-  instance = new Vue({
+  instance = defineComponent({
     data(): MyData {
       // Some fancy type hacking since auth0* vars are null
       // Relying on component init to guarantee not-null

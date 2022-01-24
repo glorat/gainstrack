@@ -14,10 +14,10 @@
 </template>
 
 <script lang="ts">
-  import Vue from 'vue';
+  import {defineComponent} from 'vue';
   import {mapGetters} from 'vuex';
 
-  export default Vue.extend({
+  export default defineComponent({
     name: 'AccountSelector',
     props: {
       value: String,

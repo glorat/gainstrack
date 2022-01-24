@@ -21,7 +21,7 @@
             <q-page-container>
 <!--                <q-page>-->
 <!--                    <article>-->
-                        <tour></tour>
+<!-- Not vue3 ready                       <tour></tour>-->
                         <router-view></router-view>
 <!--                    </article>-->
 <!--                </q-page>-->
@@ -36,12 +36,10 @@
     import MyAside from '../pages/MyAside';
     import FilterForm from '../components/FilterForm';
     import { matMenu } from '@quasar/extras/material-icons';
-    import { Tour } from '../lib/loader'
-
 
     export default {
         name: 'MyQLayout',
-        components: { MyAside, Tour, FilterForm },
+        components: { MyAside, FilterForm },
         mounted() {
             this.$router.afterEach((to) => {
                 this.pageTitle = (to.meta.title || 'Gainstrack');

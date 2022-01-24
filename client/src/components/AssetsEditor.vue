@@ -72,7 +72,7 @@
   import { flatten, uniq, cloneDeep } from 'lodash'
   import { matCheck, matRefresh } from '@quasar/extras/material-icons'
   import { MarkdownRender } from 'src/lib/loader'
-  import Vue from 'vue';
+  import {defineComponent} from 'vue';
   import {GlobalPricer} from 'src/lib/pricer';
   import {MyState} from 'src/store';
   import {AccountCommandDTO} from 'src/lib/assetdb/models';
@@ -81,7 +81,7 @@
   import {formatNumber} from 'src/lib/utils';
   import {toCommodityGainstrack} from 'src/lib/commandDefaulting';
 
-  export default Vue.extend({
+  export default defineComponent({
     name: 'AssetsEditor',
     components: {
       MarkdownRender,
@@ -126,13 +126,15 @@
         return formatNumber(price);
       },
       assetTouched (asset: AccountCommandDTO) {
-        this.$set(asset, 'dirty', true)
+        const a = asset as any;
+        a['dirty'] = true
       },
       assetReset (asset: AccountCommandDTO) {
         const orig = this.originalAssets.find(x => x.asset === asset.asset)
         const idx = this.assets.indexOf(asset)
         Object.assign(this.assets[idx], cloneDeep(orig))
-        this.$set(this.assets[idx], 'dirty', false)
+        const a:any = this.assets[idx]
+        a['dirty'] = false
       },
       tickerSearch (queryString: string, update: any) {
 
@@ -158,7 +160,8 @@
             if (orig === undefined) throw new Error('Invariant violation in assetSave')
             const idx = this.originalAssets.indexOf(orig)
             Object.assign(this.originalAssets[idx], cloneDeep(asset))
-            this.$set(asset, 'dirty', false)
+            const a:any = asset;
+            a['dirty'] = false
           })
           .catch(error => this.$notify.error(error.response.data))
       },

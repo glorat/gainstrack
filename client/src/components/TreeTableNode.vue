@@ -21,11 +21,11 @@
 
 
 <script lang="ts">
-    import Vue from 'vue';
+    import {defineComponent} from 'vue';
     import { mapGetters } from 'vuex';
     import {TreeTableDTO} from 'src/lib/assetdb/models';
 
-    export default Vue.extend({
+    export default defineComponent({
         name: 'TreeTableNode',
         props: {
           node: Object as () => TreeTableDTO,
@@ -33,10 +33,10 @@
         },
         data(): {toggled: Record<string, boolean>} {
           const ret: {toggled: Record<string, boolean>} = {
-                toggled: this.node.children.reduce((map: Record<string, boolean>, obj) => {
+                toggled: this.node?.children.reduce((map: Record<string, boolean>, obj) => {
                     map[obj.name] = this.$store.getters.mainAccounts.includes(obj.name);
                     return map;
-                }, {}),
+                }, {}) || {},
             };
           return ret;
         },
@@ -50,7 +50,7 @@
         },
         methods: {
             onToggle(acct: TreeTableDTO) {
-                this.$set(this.toggled, acct.name, !this.toggled[acct.name]);
+                this.toggled[acct.name] = !this.toggled[acct.name];
             }
         }
     })

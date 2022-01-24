@@ -35,10 +35,10 @@
 
 <script lang="ts">
   import LoginForm from '../components/LoginForm.vue';
-  import Vue from 'vue'
+  import {defineComponent} from 'vue'
   import {appRoutes, navBar} from 'src/router/routes';
 
-  export default Vue.extend({
+  export default defineComponent({
     props: {
       hideLogin: Boolean
     },
@@ -60,7 +60,7 @@
         return this.$store.state.parseState.errors;
       },
       errorClass() {
-        return this.$store.state.parseState.errors.length > 0 ? 'error' : 'error hidden';
+        return this.$store.state.parseState.errors?.length > 0 ? 'error' : 'error hidden';
       }
     }
   })

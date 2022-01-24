@@ -21,10 +21,10 @@
             <td>{{ cmd.date }}</td>
             <td v-if="columnShow['commandType']">{{ cmd.commandType }}</td>
             <td v-if="columnShow['asset']">{{ cmd.asset }}</td>
-            <td v-if="columnShow['change']" class="num">{{ cmd.change | amount }}</td>
-            <td v-if="columnShow['price']" class="num">{{ cmd.price | amount }}</td>
-            <td v-if="columnShow['commission']" class="num">{{ cmd.commission | amount }}</td>
-            <td v-if="columnShow['balance']" class="num">{{ cmd.balance | amount }}</td>
+            <td v-if="columnShow['change']" class="num">{{ amount(cmd.change ) }}</td>
+            <td v-if="columnShow['price']" class="num">{{ amount(cmd.price) }}</td>
+            <td v-if="columnShow['commission']" class="num">{{ amount(cmd.commission) }}</td>
+            <td v-if="columnShow['balance']" class="num">{{ amount(cmd.balance) }}</td>
             <td v-if="columnShow['otherAccount']">{{ cmd.otherAccount }}</td>
             <td>{{ cmd.description }}</td>
         </tr>
@@ -34,31 +34,29 @@
 
 <script lang="ts">
   import {AccountCommandDTO, Amount} from '../lib/assetdb/models';
-  import Vue, {PropType} from 'vue';
+  import {defineComponent, PropType} from 'vue';
 
-    export default Vue.extend({
+    export default defineComponent({
         name: 'CommandTable',
         props: {
             cmds: Array as PropType<AccountCommandDTO[]>,
             columns: {
                 type: Array as PropType<string[]>,
-                // default: () => [],
+                default: () => [],
             },
-        },
-        filters: {
-            amount(value: Amount) {
-                if (!value) {
-                    return ''
-                } else {
-                    return `${value.number} ${value.ccy}`
-                }
-
-            }
         },
         methods: {
             selectCommand() {
                 // TODO
             },
+          amount(value: Amount) {
+            if (!value) {
+              return ''
+            } else {
+              return `${value.number} ${value.ccy}`
+            }
+
+          }
         },
         computed: {
             columnShow(): Record<string, boolean> {

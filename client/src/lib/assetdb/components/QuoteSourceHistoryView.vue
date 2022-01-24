@@ -1,6 +1,6 @@
 <template>
   <div>
-    <q-table :data="history" :columns="columns" :expanded.sync="expanded" :loading="loading">
+    <q-table :data="history" :columns="columns" v-model:expanded="expanded" :loading="loading">
       <template v-slot:body="props">
         <q-tr :props="props" @click="props.expand = !props.expand" style="cursor: pointer">
           <q-td
@@ -25,7 +25,7 @@
 </template>
 
 <script lang="ts">
-  import Vue from 'vue';
+  import {defineComponent} from 'vue';
   import {getDisplayNames, getQuoteSourceHistory, QuoteSource, QuoteSourceHistory} from '../assetDb';
   import {mdiAlert} from '@quasar/extras/mdi-v5';
   import {quoteSourceFieldProperties} from '../AssetSchema';
@@ -67,7 +67,7 @@
     return rows;
   }
 
-  export default Vue.extend({
+  export default defineComponent({
     name: 'QuoteSourceHistoryView',
     props: {
       qsrc: Object as () => QuoteSource
@@ -89,7 +89,7 @@
       async refresh() {
         this.loading = true;
         try {
-          const history = await getQuoteSourceHistory(this.qsrc.id);
+          const history = await getQuoteSourceHistory(this.qsrc!.id);
           this.history = enrichQuoteSourceHistory(history);
           this.displayNameMap = await getDisplayNames(history.map(x => x.uid));
 
@@ -103,7 +103,7 @@
     },
     computed: {
       id(): string {
-        return this.qsrc.id;
+        return this.qsrc!.id;
       },
       columns(): any[] {
         return [

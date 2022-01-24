@@ -11,13 +11,13 @@
 </template>
 
 <script lang="ts">
-  import Vue from 'vue';
-  import {PropType} from '@vue/composition-api';
+  import {defineComponent} from 'vue';
+  import {PropType} from 'vue';
   import {AccountCommandDTO} from 'src/lib/assetdb/models';
   import {QDialog} from 'quasar';
   import AddCmd from 'pages/AddCmd.vue';
 
-  export default Vue.extend({
+  export default defineComponent({
     name: 'CommandEditorDialog',
     components: {AddCmd},
     props: {

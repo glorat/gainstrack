@@ -5,10 +5,10 @@
 </template>
 
 <script lang="ts">
-  import Vue from 'vue';
+  import {defineComponent} from 'vue';
   import {MarkdownRender} from 'src/lib/loader';
 
-  export default Vue.extend({
+  export default defineComponent({
     name: 'Markdown',
     props: ['page'],
     components: {MarkdownRender},

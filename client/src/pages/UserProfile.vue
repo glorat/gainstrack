@@ -26,14 +26,14 @@
 </template>
 
 <script lang="ts">
-  import Vue from 'vue';
+  import {defineComponent} from 'vue';
   import {MyState} from 'src/store';
   import firebase from 'firebase/compat/app';
   import {getUserRole, setDisplayName} from 'src/lib/assetdb/assetDb';
-  import DocumentData = firebase.firestore.DocumentData;
+  import {DocumentData} from  'firebase/firestore';
   import {matLogin} from '@quasar/extras/material-icons';
 
-  export default Vue.extend({
+  export default defineComponent({
     name: 'UserProfile',
     props: {
       id: {
@@ -80,7 +80,8 @@
           this.refresh()
         }
         catch (error) {
-          this.$notify.error(error.message)
+          const e:any = error;
+          this.$notify.error(e?.message)
         } finally {
           this.loading = false;
         }
@@ -111,7 +112,7 @@
         if (this.auth0authned) {
           return this.$auth.user.name
         } else if (this.firebaseAuthed) {
-          return this.$store.state.user.displayName
+          return this.$store.state.user?.displayName || 'anon'
         } else {
           return 'Unknown'
         }

@@ -36,7 +36,7 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
+import {defineComponent} from 'vue'
 import {
   investmentAssetSearchSchema,
   quoteSourceFieldProperties, quoteSourceSearchSchema,
@@ -48,7 +48,7 @@ import {includes} from 'lodash';
 import PropertyEditor from './PropertyEditor.vue';
 import {FieldProperty, findProperty, getFieldNameList} from '../schema';
 
-export default Vue.extend({
+export default defineComponent({
   name: 'QuoteSourceFilter',
   components: {FieldEditor, PropertyEditor},
   props: {
@@ -143,7 +143,7 @@ export default Vue.extend({
             .map( x => `asset.${x.name}`);
           final = [name, ...one, ...two];
         }
-        this.selectedColumns.splice(0, this.selectedColumns.length, ...final);
+        this.selectedColumns?.splice(0, this.selectedColumns!.length, ...final);
 
 
       }

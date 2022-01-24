@@ -7,10 +7,10 @@
 </template>
 
 <script lang="ts">
-    import Vue from 'vue';
+    import {defineComponent} from 'vue';
     import AssetId from './AssetId.vue';
     import {AmountEditing} from 'src/lib/assetdb/models';
-    export default Vue.extend({
+    export default defineComponent({
         name: 'BalanceEditor',
         components: {
             AssetId

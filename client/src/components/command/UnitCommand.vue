@@ -21,13 +21,13 @@
 
 <script>
     import {CommandEditorMixin} from '../../mixins/CommandEditorMixin';
-    import Vue from 'vue';
+    import { defineComponent } from 'vue';
     import AccountSelector from '../AccountSelector';
     import BalanceEditor from '../../lib/assetdb/components/BalanceEditor';
     import { mapGetters } from 'vuex'
     import { LocalDate } from '@js-joda/core'
 
-    export default Vue.extend({
+    export default defineComponent({
         name: 'UnitCommand',
         mixins: [CommandEditorMixin],
         components: {AccountSelector, BalanceEditor},

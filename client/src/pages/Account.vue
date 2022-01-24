@@ -35,7 +35,7 @@
 </template>
 
 <script lang="ts">
-  import Vue from 'vue';
+  import {defineComponent} from 'vue';
   import JournalTable from '../components/JournalTable.vue'
   import ConversionSelect from '../components/ConversionSelect.vue'
   import AccountGraph from '../components/AccountGraph.vue'
@@ -56,7 +56,7 @@
   import EventBus from 'src/event-bus';
   import {apiAssetsReport} from 'src/lib/apiFacade';
 
-  export default Vue.extend({
+  export default defineComponent({
     name: 'Account',
     components: {
       AccountGraph,
@@ -97,7 +97,7 @@
         return this.mainAccounts.includes(this.accountId)
       },
       conversion(): string {
-        return this.$store.state.allState.conversion
+        return this.$store.state.conversion
       },
       entries(): CommandPostingsWithBalance[] {
         const state: MyState = this.$store.state;
@@ -145,8 +145,9 @@
         try {
           this.assetResponse = await apiAssetsReport(this.$store, props ?? this.$props);
         } catch (error) {
+          const e = error;
           console.error(error)
-          this.$notify.error(error)
+          this.$notify.error(e.toString())
         }
       }
     },

@@ -42,7 +42,7 @@
   import BalanceEditor from '../../lib/assetdb/components/BalanceEditor.vue';
   import {CommandEditorMixin} from '../../mixins/CommandEditorMixin';
   import AccountSelector from '../AccountSelector.vue';
-  import Vue from 'vue';
+  import { defineComponent } from 'vue';
   import {
     canConvertToTrade,
     commandIsValid, convertToTrade,
@@ -51,7 +51,7 @@
     toGainstrack
   } from 'src/lib/commandDefaulting'
 
-  export default Vue.extend({
+  export default defineComponent({
     name: 'BalanceOrUnit',
     props: {cmd: Object},
     mixins: [CommandEditorMixin],

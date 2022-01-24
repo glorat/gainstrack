@@ -77,7 +77,7 @@
 </template>
 
 <script lang="ts">
-import {defineComponent, PropType} from '@vue/composition-api';
+import {defineComponent, PropType} from 'vue';
 import CommandDateEditor from 'components/CommandDateEditor.vue';
 import BalanceEditor from './BalanceEditor.vue';
 import AssetId from './AssetId.vue';
@@ -128,7 +128,7 @@ export default defineComponent({
     },
     arrayInput(idx: number, ev: any) {
       const orig:any = this.modelValue; // To clone or not to clone???
-      this.$set(orig, idx, ev);
+      orig[idx] = ev;
       this.$emit('input', orig);
     },
     arrayAdd() {

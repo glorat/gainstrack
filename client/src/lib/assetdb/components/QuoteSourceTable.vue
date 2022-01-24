@@ -49,7 +49,7 @@
 </template>
 
 <script lang="ts">
-  import Vue from 'vue';
+  import {defineComponent} from 'vue';
   import {QuoteSource} from '../assetDb';
   import {quoteSourceFieldProperties} from '../AssetSchema';
   import {matArchive} from '@quasar/extras/material-icons';
@@ -57,11 +57,12 @@
   import {exportFile} from 'quasar';
   import {pathToTableColumn} from '../schema';
 
-  export default Vue.extend({
+  export default defineComponent({
     name: 'QuoteSourceTable',
     props: {
       quoteSources: {
-        type: Array as () => QuoteSource[]
+        type: Array as () => QuoteSource[],
+        required: true
       },
       loading: Boolean,
       selectedColumns: {
@@ -94,8 +95,8 @@
       },
       swapLeft(idx:number):void {
         const tmp = this.selectedColumns[idx];
-        Vue.set(this.selectedColumns, idx, this.selectedColumns[idx-1]);
-        Vue.set(this.selectedColumns, idx-1, tmp);
+        this.selectedColumns[idx] = this.selectedColumns[idx-1];
+        this.selectedColumns[idx-1] = tmp;
         this.$emit('update:selected-columns', this.selectedColumns);
       },
       exportTable() {

@@ -1,5 +1,5 @@
 import { Notify } from 'quasar';
-import Vue from 'vue';
+import {createApp} from 'vue';
 
 interface MyNotify {
   success(msg: string): void
@@ -28,12 +28,14 @@ const qnotify: MyNotify = {
     }
 };
 
-declare module 'vue/types/vue' {
-  interface Vue {
-    $notify: MyNotify;
-  }
-}
+// declare module '@vue/runtime-core' {
+//   interface ComponentCustomProperties {
+//     $notify: MyNotify;
+//   }
+// }
 
-Vue.prototype.$notify = qnotify;
+
+const app = createApp({})
+app.config.globalProperties.$notify = qnotify
 
 

@@ -21,17 +21,16 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import {defineComponent} from 'vue';
 import {getAllQuoteSources, QuoteSource} from 'src/lib/assetdb/assetDb';
 // import QuoteSourceTable from 'src/lib/assetdb/components/QuoteSourceTable.vue';
 // import QuoteSourceFilter from 'src/lib/assetdb/components/QuoteSourceFilter.vue';
 
-import firebase from 'firebase/compat/app';
-import CollectionReference = firebase.firestore.CollectionReference;
 import {debounce} from 'quasar';
 import {quoteSourceFieldProperties} from 'src/lib/assetdb/AssetSchema';
 import {applyQueries, searchObjToQuery} from 'src/lib/assetdb/schema';
 import {QuoteSourceFilter, QuoteSourceTable} from 'src/lib/assetdb';
+import {CollectionReference} from 'firebase/firestore'
 
 function queryArgsToObj(args: string | (string | null)[]) {
   try {
@@ -49,7 +48,7 @@ function queryArgsToObj(args: string | (string | null)[]) {
 
 const defaultParams = () => ({query:[], searchObj:{asset:{}}, fields: []});
 
-export default Vue.extend({
+export default defineComponent({
   name: 'AssetDb',
   components: {QuoteSourceTable, QuoteSourceFilter},
   data() {
@@ -98,8 +97,9 @@ export default Vue.extend({
         } else {
           this.quoteSources = await getAllQuoteSources(col => col.limit(actualLimit));
         }
-      } catch (e) {
-        this.$notify.error(e.message);
+      } catch (error) {
+        const e:any = error;
+        this.$notify.error(e.message ?? e.toString());
       } finally {
         this.loading = false;
       }

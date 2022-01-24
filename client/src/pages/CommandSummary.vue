@@ -25,7 +25,7 @@
 </template>
 
 <script lang="ts">
-import {defineComponent} from '@vue/composition-api';
+import {defineComponent} from 'vue';
 import {apiAccountSummary} from 'src/lib/apiFacade';
 import {sum} from 'lodash';
 import {formatNumber} from 'src/lib/utils';

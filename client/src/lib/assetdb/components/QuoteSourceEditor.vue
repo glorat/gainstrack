@@ -33,14 +33,14 @@
 </template>
 
 <script lang="ts">
-  import Vue from 'vue';
+  import {defineComponent} from 'vue';
   import {QuoteSource} from '../assetDb';
   import EnumSelect from './EnumSelect.vue';
   import PropertyEditor from './PropertyEditor.vue';
   import {investmentAssetSchema} from '../AssetSchema';
   import {marketRegions, quoteSourceTypes} from '../enums';
 
-  export default Vue.extend({
+  export default defineComponent({
     name: 'QuoteSourceEditor',
     components: {EnumSelect, PropertyEditor},
     props: {
@@ -55,14 +55,14 @@
     },
     methods: {
       removeSource(src: any) {
-        const qsrc: QuoteSource = this.qsrc;
+        const qsrc: QuoteSource = this.qsrc!;
         qsrc.sources = qsrc.sources.filter(s => s!==src)
       }
     },
     computed: {
       autoId() : string {
-        const qsrc = this.qsrc;
-        if (qsrc.ticker && qsrc.marketRegion) {
+        const qsrc = this.qsrc!;
+        if (qsrc?.ticker && qsrc?.marketRegion) {
           if (qsrc.marketRegion === 'GLOBAL') {
             return qsrc.ticker.toUpperCase()
           } else {
@@ -74,7 +74,7 @@
     },
     watch: {
       autoId() {
-        this.qsrc.id = this.autoId;
+        this.qsrc!.id = this.autoId;
       }
     }
   })

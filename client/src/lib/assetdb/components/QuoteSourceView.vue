@@ -63,22 +63,26 @@
 </template>
 
 <script lang="ts">
-  import Vue from 'vue';
+  import {defineComponent} from 'vue';
   import {getAllQuoteSources, QuoteSource} from '../assetDb';
   import {
     investmentAssetProperties,
     quoteSourceFieldProperties
   } from '../AssetSchema';
   import ObjectFieldView from './ObjectFieldView.vue';
-  import firebase from 'firebase/compat/app';
-  import CollectionReference = firebase.firestore.CollectionReference;
+  // import firebase from 'firebase/compat/app';
+  // import CollectionReference = firebase.firestore.CollectionReference;
+  import {CollectionReference} from 'firebase/firestore';
   import {applyQueries, searchObjToQuery} from '../schema';
 
-  export default Vue.extend({
+  export default defineComponent({
     name: 'QuoteSourceView',
     components: {ObjectFieldView},
     props: {
-      qsrc: Object as () => QuoteSource
+      qsrc: {
+        type: Object as () => QuoteSource,
+        required: true
+      }
     },
     data() {
       const related = [] as QuoteSource[];

@@ -29,12 +29,12 @@
 
 <script lang="ts">
 import AssetId from '../lib/assetdb/components/AssetId.vue';
-import Vue from 'vue';
+import {defineComponent} from 'vue';
 import {AllState, AssetDTO} from '../lib/assetdb/models';
 import { keys, cloneDeep } from 'lodash';
 import {toCommodityGainstrack} from 'src/lib/commandDefaulting';
 
-export default Vue.extend({
+export default defineComponent({
   name: 'AssetEditor',
   components: {AssetId},
   props: {
@@ -47,7 +47,7 @@ export default Vue.extend({
     }
   },
   methods: {
-    originalAssetFor(assetId: string) {
+    originalAssetFor(assetId: string|undefined) {
       return this.allState.assetState.find( x => x.asset === assetId);
     },
     async onSubmit() {

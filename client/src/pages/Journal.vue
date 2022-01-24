@@ -12,11 +12,11 @@
   import JournalTable from '../components/JournalTable.vue'
   import {AccountTxDTO, journalEntries} from 'src/lib/utils'
   import { mapGetters } from 'vuex'
-  import Vue from 'vue';
+  import {defineComponent} from 'vue';
   import { MyState } from 'src/store';
   import {SingleFXConverter} from 'src/lib/fx';
 
-  export default Vue.extend({
+  export default defineComponent({
     name: 'Journal',
     components: { JournalTable },
     props: ['accountId'],

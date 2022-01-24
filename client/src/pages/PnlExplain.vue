@@ -27,15 +27,15 @@
                 </tr>
                 <tr>
                     <td>Opening Networth</td>
-                    <td class="num" v-for="explainData in explains"><template v-if="explainData.toNetworth">{{ explainData.toNetworth - explainData.actual | amount }}</template></td>
+                    <td class="num" v-for="explainData in explains"><template v-if="explainData.toNetworth">{{ amount(explainData.toNetworth - explainData.actual) }}</template></td>
                 </tr>
                 <tr>
                     <td>Change In Networth</td>
-                    <td class="num change" v-for="explainData in explains">{{ explainData.actual | amount}}</td>
+                    <td class="num change" v-for="explainData in explains">{{ amount(explainData.actual) }}</td>
                 </tr>
                 <tr>
                     <td>(%)</td>
-                    <td class="num" v-for="explainData in explains"><template v-if="explainData.networthChange">{{ explainData.networthChange | perc}}</template></td>
+                    <td class="num" v-for="explainData in explains"><template v-if="explainData.networthChange">{{ perc(explainData.networthChange) }}</template></td>
                 </tr>
                 <tr>
                     <td class="total">Networth</td>
@@ -117,9 +117,6 @@
             'allPostingsEx',
             'fxConverter',
           ]),
-            latestDate() {
-                return this.$store.state.allState.latestDate;
-            },
         },
         mounted() {
             this.refresh()
@@ -143,10 +140,8 @@
                 const denom = explainData.toNetworth ? explainData.toNetworth - explainData.actual : 0.0;
                 return (denom === 0.0) ? 0.0 : explainData.actual / denom;
             },
-        },
-        filters: {
-            amount: (value) => value.toFixed(2),
-            perc: (value) => (100*value).toFixed(1) + '%',
+          amount: (value) => value.toFixed(2),
+          perc: (value) => (100*value).toFixed(1) + '%',
         },
         data() {
           // eslint-disable-next-line

@@ -19,14 +19,14 @@
 </template>
 
 <script lang="ts">
-  import Vue from 'vue';
+  import {defineComponent} from 'vue';
   import FieldEditor from './FieldEditor.vue';
   import {
     userAssetSchema
   } from '../AssetSchema';
   import {FieldProperty, Schema} from '../schema';
 
-  export default Vue.extend({
+  export default defineComponent({
     name: 'PropertyEditor',
     components: {FieldEditor},
     props: {
@@ -42,22 +42,22 @@
     },
     methods: {
       onFieldUpdate(field:string, newValue: any) {
-        this.$set(this.value, field, newValue);
+        this.value[field] = newValue;
         // if (newValue && schemaFor(field).schema==='ticker') {
         //   this.$store.dispatch('loadQuotes', newValue);
         // }
       },
       onFieldCleared(field: string) {
         console.log(`${field} cleared`);
-        this.$delete(this.value, field);
+        delete this.value[field]
         this.$emit('property-removed', field);
       },
       onFieldAdd(name: string) {
-        this.$set(this.value, name, undefined);
+        this.value[name] = undefined;
         this.$emit('property-added', name);
       },
       onRemove(propType: FieldProperty) {
-        this.$delete(this.value, propType.name);
+        delete this.value[propType.name]
       },
     },
     computed: {

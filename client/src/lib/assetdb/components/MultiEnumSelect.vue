@@ -18,10 +18,10 @@
 </template>
 
 <script lang="ts">
-  import Vue from 'vue';
+  import {defineComponent} from 'vue';
   import {EnumEntry, simpleEnumEntry} from 'src/lib/assetdb/enums';
 
-  export default Vue.extend({
+  export default defineComponent({
     name: 'MultiEnumSelect',
     // Forward looking for vue-3
     model: {
@@ -35,7 +35,7 @@
       dense: Boolean,
     },
     data() {
-      const displayOptions: EnumEntry[] = this.options
+      const displayOptions: EnumEntry[] = this.options ?? []
       return {
         displayOptions,
       }
@@ -44,7 +44,7 @@
       filterFn (val: string, update: any) {
         update(() => {
           const needle = val.toLowerCase()
-          this.displayOptions = this.options.filter(v => v.value.toLowerCase().indexOf(needle) > -1)
+          this.displayOptions = this.options?.filter(v => v.value.toLowerCase().indexOf(needle) > -1) ?? []
         })
       },
       onInput(vals: EnumEntry[]): void {
@@ -52,6 +52,7 @@
         vals.forEach(val => {
           ret[val.value] = true
         });
+
         this.$emit('input', ret);
       }
     },
@@ -60,7 +61,7 @@
         const modelValue = this.modelValue ?? {};
         return Object.keys(modelValue)
           .filter(k => modelValue[k]) // only truthy ones
-          .map(key => this.options.find(o => o.value === key) ?? simpleEnumEntry(key))
+          .map(key => this.options?.find(o => o.value === key) ?? simpleEnumEntry(key))
       },
       // displayValue(): string|undefined {
       //   return this.options.find(x => x.value === this.modelValue)?.label
