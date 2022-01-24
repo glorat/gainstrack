@@ -4,7 +4,7 @@
 
 <script lang="ts">
     import axios from 'axios';
-    import marked from 'marked';
+    import {marked} from 'marked';
     import {defineComponent} from 'vue';
 
     interface MyData {

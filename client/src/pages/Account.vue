@@ -145,7 +145,7 @@
         try {
           this.assetResponse = await apiAssetsReport(this.$store, props ?? this.$props);
         } catch (error) {
-          const e = error;
+          const e:any = error;
           console.error(error)
           this.$notify.error(e.toString())
         }

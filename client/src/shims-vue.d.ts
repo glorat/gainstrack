@@ -1,19 +1,15 @@
-// import { ComponentCustomProperties } from 'vue'
+/* eslint-disable */
+// This line MUST exist or 'vue' imports blow up
+import {Store} from 'vuex';
+
+declare module '*.vue' {
+  import type { DefineComponent } from 'vue';
+  const component: DefineComponent<{}, {}, any>;
+  export default component;
+}
 
 declare module '@vue/runtime-core' {
   interface ComponentCustomProperties {
     $auth: any
   }
-}
-// Mocks all files ending in `.vue` showing them as plain Vue instances
-// declare module '*.vue' {
-//   import Vue from 'vue'
-//   export default Vue
-// }
-
-/* eslint-disable */
-declare module '*.vue' {
-  import type { DefineComponent } from 'vue';
-  const component: DefineComponent<{}, {}, any>;
-  export default component;
 }

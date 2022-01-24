@@ -30,9 +30,8 @@ import {debounce} from 'quasar';
 import {quoteSourceFieldProperties} from 'src/lib/assetdb/AssetSchema';
 import {applyQueries, searchObjToQuery} from 'src/lib/assetdb/schema';
 import {QuoteSourceFilter, QuoteSourceTable} from 'src/lib/assetdb';
-import {CollectionReference} from 'firebase/firestore'
 
-function queryArgsToObj(args: string | (string | null)[]) {
+function queryArgsToObj(args: any) {
   try {
     if (args && 'string'===typeof(args)) {
       const params = JSON.parse(args);
@@ -64,7 +63,8 @@ export default defineComponent({
 
   methods: {
     async refresh() {
-      const params = queryArgsToObj(this.$route.query.args) ?? defaultParams();
+      const queryArgs = this.$route.query['args'];
+      const params = queryArgsToObj(queryArgs) ?? defaultParams();
 
       // Perform some sanitising/defaulting
       if (!params.query) params.query = [];
@@ -92,10 +92,10 @@ export default defineComponent({
         const cq = [...advancedQuery, ...searchObjQuery];
 
         if (cq && cq.length && cq[0].where) {
-          const filter = (col: CollectionReference) => applyQueries(col, cq).limit(actualLimit);
+          const filter = (col: any) => applyQueries(col, cq).limit(actualLimit);
           this.quoteSources = await getAllQuoteSources(filter)
         } else {
-          this.quoteSources = await getAllQuoteSources(col => col.limit(actualLimit));
+          this.quoteSources = await getAllQuoteSources((col:any) => col.limit(actualLimit));
         }
       } catch (error) {
         const e:any = error;

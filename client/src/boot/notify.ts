@@ -34,6 +34,12 @@ const qnotify: MyNotify = {
 //   }
 // }
 
+declare module '@vue/runtime-core' {
+  interface ComponentCustomProperties {
+    $notify: any
+  }
+}
+
 
 const app = createApp({})
 app.config.globalProperties.$notify = qnotify

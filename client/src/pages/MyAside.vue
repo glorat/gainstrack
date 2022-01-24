@@ -60,7 +60,8 @@
         return this.$store.state.parseState.errors;
       },
       errorClass() {
-        return this.$store.state.parseState.errors?.length > 0 ? 'error' : 'error hidden';
+        const errs = (this.$store.state.parseState.errors as string[]) ?? []
+        return errs.length > 0 ? 'error' : 'error hidden';
       }
     }
   })

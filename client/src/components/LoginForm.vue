@@ -14,12 +14,12 @@
 </template>
 
 <script>
-import Vue from 'vue';
+import { createApp } from 'vue';
 
 // Import the plugin here
 import {Auth0Plugin} from '../auth';
-
-Vue.use(Auth0Plugin, {
+const app = createApp({});
+app.use(Auth0Plugin, {
         domain: process.env.VUE_APP_AUTH0_ID + '.auth0.com',
         clientId: process.env.VUE_APP_AUTH0_CLIENT,
         audience: process.env.VUE_APP_AUTH0_AUDIENCE,
