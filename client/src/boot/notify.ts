@@ -1,5 +1,5 @@
 import { Notify } from 'quasar';
-import {createApp} from 'vue';
+import {boot} from 'quasar/wrappers';
 
 interface MyNotify {
   success(msg: string): void
@@ -40,8 +40,6 @@ declare module '@vue/runtime-core' {
   }
 }
 
-
-const app = createApp({})
-app.config.globalProperties.$notify = qnotify
-
-
+export default boot(({app}) => {
+  app.config.globalProperties.$notify = qnotify
+})

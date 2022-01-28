@@ -44,7 +44,7 @@
             this.$router.afterEach((to) => {
                 this.pageTitle = (to.meta.title || 'Gainstrack');
             });
-            this.pageTitle = this.$router.currentRoute.meta.title;
+            this.pageTitle = this.$router.currentRoute.value.meta.title;
 
           // Get some state on startup
           this.$store.dispatch('reload');

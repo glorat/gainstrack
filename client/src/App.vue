@@ -1,7 +1,7 @@
 <template>
   <div>
     <router-view></router-view>
-    <my-sentry></my-sentry>
+<!--    <my-sentry></my-sentry>-->
     <my-firebase></my-firebase>
   </div>
 </template>

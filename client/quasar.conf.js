@@ -55,7 +55,11 @@ module.exports = configure(function (ctx) {
     // Full list of options: https://quasar.dev/quasar-cli/quasar-conf-js#Property%3A-build
     build: {
       vueRouterMode: 'history', // available values: 'hash', 'history'
-
+      chainWebpack (chain) {
+        // needed for csv-stringify
+        const nodePolyfillWebpackPlugin = require('node-polyfill-webpack-plugin')
+        chain.plugin('node-polyfill').use(nodePolyfillWebpackPlugin)
+      }
       // transpile: false,
 
       // Add dependencies for transpiling with Babel (Array of string/regex)

@@ -164,7 +164,7 @@ export const useAuth0= ({
 
 // Create a simple Vue plugin to expose the wrapper object throughout the application
 export const Auth0Plugin = {
-  install(vue: any, options: Record<string, unknown>) {
-    vue.prototype.$auth = useAuth0(options);
+  install(app: any, options: Record<string, unknown>) {
+    app.config.globalProperties.$auth = useAuth0(options);
   }
 };

@@ -53,7 +53,7 @@
   import {QuoteSource} from '../assetDb';
   import {quoteSourceFieldProperties} from '../AssetSchema';
   import {matArchive} from '@quasar/extras/material-icons';
-  import stringify from 'csv-stringify/lib/sync';
+  // import {stringify} from 'csv-stringify/sync';
   import {exportFile} from 'quasar';
   import {pathToTableColumn} from '../schema';
 
@@ -111,8 +111,8 @@
         });
         const columns = tableColumns.map(col => col.label ?? col.name);
         const options = {columns, header: true};
-        const data = stringify(records, options);
-
+        // const data = stringify(records, options);
+        const data = '';
         const status = exportFile(
           'table-export.csv',
           data,

@@ -14,24 +14,6 @@
 </template>
 
 <script>
-import { createApp } from 'vue';
-
-// Import the plugin here
-import {Auth0Plugin} from '../auth';
-const app = createApp({});
-app.use(Auth0Plugin, {
-        domain: process.env.VUE_APP_AUTH0_ID + '.auth0.com',
-        clientId: process.env.VUE_APP_AUTH0_CLIENT,
-        audience: process.env.VUE_APP_AUTH0_AUDIENCE,
-        // lint-ignore
-        // onRedirectCallback: appState => {
-        //   router.push(
-        //       appState && appState.targetUrl
-        //           ? appState.targetUrl
-        //           : window.location.pathname
-        //   );
-        // }
-    });
 
     export default {
         name: 'LoginForm',
