@@ -10,8 +10,8 @@
         <span>{{ schema.description }}</span>
         <field-editor
           :schema="schema"
-          :model-value="properties[schema.name]"
-          @update:model-value="onFieldUpdate(schema.name, $event)"
+          :modelValue="properties[schema.name]"
+          @update:modelValue="onFieldUpdate(schema.name, $event)"
         ></field-editor>
       </div>
     </q-card-section>

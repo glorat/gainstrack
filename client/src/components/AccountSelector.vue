@@ -1,7 +1,7 @@
 <template>
   <q-select
-    :model-value="value"
-    @update:model-value="onQSelectChanged($event)"
+    :modelValue="value"
+    @update:modelValue="onQSelectChanged($event)"
     :options="filteredOptions"
     :label="resolvedPlaceholder"
     :input-class="selectClass"

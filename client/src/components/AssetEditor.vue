@@ -1,7 +1,7 @@
 <template>
   <q-card>
     <q-card-section>
-      <asset-id :model-value="assetId"></asset-id>
+      <asset-id :modelValue="assetId"></asset-id>
       <q-input v-for="opt in assetOptions" :key="opt" :label="opt" v-model="asset.options[opt]"></q-input>
 <!--      <q-chip-->
 <!--        v-for="opt in assetOptions" :key="opt" :label="opt"-->

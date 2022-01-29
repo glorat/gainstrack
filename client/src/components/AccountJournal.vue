@@ -1,7 +1,7 @@
 <template>
   <div>
     <div v-if="c.commandType">
-      <add-cmd :model-value="c" :command-columns="commandTableColumns" @cancel="addCancel" has-cancel></add-cmd>
+      <add-cmd :modelValue="c" :command-columns="commandTableColumns" @cancel="addCancel" has-cancel></add-cmd>
     </div>
     <div v-if="!c.commandType">
       Add Entry

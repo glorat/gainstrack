@@ -1,8 +1,8 @@
 <template>
 <!--  font-style: italic; -->
     <div class="row items-start">
-      <q-input :input-class="amountClass" :label="label || 'Amount'" @focus="$event.target.select && $event.target.select()" type="number" v-model="v.number" @update:model-value="onChanged($event)" clearable></q-input>
-      <asset-id :input-class="ccyClass" v-model="v.ccy" @update:model-value="onCcyChanged()"></asset-id>
+      <q-input :input-class="amountClass" :label="label || 'Amount'" @focus="$event.target.select && $event.target.select()" type="number" v-model="v.number" @update:modelValue="onChanged($event)" clearable></q-input>
+      <asset-id :input-class="ccyClass" v-model="v.ccy" @update:modelValue="onCcyChanged()"></asset-id>
     </div>
 </template>
 

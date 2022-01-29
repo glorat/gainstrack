@@ -1,7 +1,7 @@
 <template>
   <q-select
     :label="label || 'Asset'"
-    :model-value="value"
+    :modelValue="value"
     @model-value="onSelectChanged"
     use-input
     hide-selected

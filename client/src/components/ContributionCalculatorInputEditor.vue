@@ -1,6 +1,6 @@
 <template>
   <div>
-    <q-table :data="displayEntries" :columns="columns" hide-pagination :pagination="pagination">
+    <q-table :rows="displayEntries" :columns="columns" hide-pagination :pagination="pagination">
       <template v-slot:body-cell-target="props">
         <q-td :props="props">
           <q-input v-if="props.rowIndex<displayEntries.length-1" v-model.number="props.row.target" suffix="%"

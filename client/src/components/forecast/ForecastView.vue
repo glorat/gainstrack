@@ -24,8 +24,8 @@
           <q-card-section>
             <q-input label="Income" type="number" v-model.number="input.income"></q-input>
             <q-input label="Expenses" type="number" v-model.number="input.expenses"></q-input>
-            <q-input label="Savings Rate" type="number" @update:model-value="onSavingsRateChange($event)"
-                     :model-value="100*(input.income-input.expenses) / input.income" suffix="%"></q-input>
+            <q-input label="Savings Rate" type="number" @update:modelValue="onSavingsRateChange($event)"
+                     :modelValue="100*(input.income-input.expenses) / input.income" suffix="%"></q-input>
             <q-input label="Networth" type="number" v-model.number="input.networth"></q-input>
             <q-input label="Retirement target (multiples of annual expenses)" type="number"
                      v-model.number="strategy.expenseMultiple"></q-input>
@@ -58,7 +58,7 @@
       Your retirement objective will be met in year <span class="text-h3">{{ targetYear }}</span>
     </div>
 
-    <q-table :data="forecastEntries" :pagination="pagination" dense></q-table>
+    <q-table :rows="forecastEntries" :pagination="pagination" dense></q-table>
   </my-page>
 </template>
 

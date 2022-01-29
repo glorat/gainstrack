@@ -1,5 +1,5 @@
 <template>
-  <q-select :model-value="modelValue" @update:modelValue="$emit('update:modelValue', $event)" :label="label"
+  <q-select :modelValue="modelValue" @update:modelValue="$emit('update:modelValue', $event)" :label="label"
             :options="displayOptions" emit-value
             use-input @filter="filterFn"
             :display-value="displayValue"

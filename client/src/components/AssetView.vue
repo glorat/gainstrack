@@ -4,7 +4,7 @@
             <q-radio v-for="m in modes" :key="m.name" v-model="mode" :val="m.name" :label="m.label"/>
         </div>
         <q-table
-                :data="filteredAssets"
+                :rows="filteredAssets"
                 :columns="allColumns"
                 :visible-columns="visibleColumns"
                 :loading="loading"
@@ -51,7 +51,7 @@
 
 <script lang="ts">
     import {defineComponent} from 'vue';
-    import { date, useQuasar } from 'quasar';
+    import { date } from 'quasar';
     import {NetworthByAsset, AssetColumn, AssetResponse, AssetDTO} from '../lib/assetdb/models';
     import {matEdit, matAdd, matAddCircleOutline ,matSwapHoriz} from '@quasar/extras/material-icons';
     import CommandEditorDialog from 'components/CommandEditorDialog.vue';
@@ -126,7 +126,7 @@
             balance: {number:row.units, ccy: row.assetId},
           };
 
-          useQuasar().dialog({
+          this.$q.dialog({
             component: CommandEditorDialog,
             // parent: this,
             componentProps: {
@@ -145,7 +145,7 @@
             change: {number: undefined, ccy: row.assetId},
           };
 
-          useQuasar().dialog({
+          this.$q.dialog({
             component: CommandEditorDialog,
             // parent: this,
             componentProps: {
@@ -155,7 +155,7 @@
           })
         },
         onNewAsset() {
-          useQuasar().dialog({
+          this.$q.dialog({
             component: NewAssetDialog,
             // parent: this,
             componentProps: {
@@ -168,7 +168,7 @@
         },
         onAssetEdit(props: any) {
           const row: NetworthByAsset = props.row;
-          useQuasar().dialog({
+          this.$q.dialog({
             component: AssetEditorDialog,
             // parent: this,
             componentProps: {

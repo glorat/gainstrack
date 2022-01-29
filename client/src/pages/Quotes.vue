@@ -8,7 +8,7 @@
 
     <vue-plotly :data="series" :layout="layout" :options="options" auto-resize></vue-plotly>
 
-    <q-table dense row-key="id" :columns="columns" v-model:pagination="pagination" v-model:selected="selected" selection="single" :data="quoteConfig"></q-table>
+    <q-table dense row-key="id" :columns="columns" v-model:pagination="pagination" v-model:selected="selected" selection="single" :rows="quoteConfig"></q-table>
   </my-page>
 </template>
 

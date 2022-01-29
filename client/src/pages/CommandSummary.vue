@@ -9,7 +9,7 @@
     </q-tabs>
 
     <networth-sunburst :height="200" :account-id="accountId"></networth-sunburst>
-    <q-table dense :data="data" :columns="columns" :pagination="pagination" @row-click="onRowClick">
+    <q-table dense :rows="data" :columns="columns" :pagination="pagination" @row-click="onRowClick">
       <template v-slot:bottom-row>
         <q-tr>
           <q-td>

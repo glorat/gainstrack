@@ -1,5 +1,5 @@
 <template>
-  <command-date-editor @update:model-value="onDateChange" :model-value="dateOverride"></command-date-editor>
+  <command-date-editor @update:modelValue="onDateChange" :modelValue="dateOverride"></command-date-editor>
 </template>
 
 <script lang="ts">

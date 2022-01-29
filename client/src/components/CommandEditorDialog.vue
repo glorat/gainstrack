@@ -1,6 +1,6 @@
 <template>
   <q-dialog ref="dialog" @hide="onDialogHide">
-    <add-cmd :model-value="cmd" @cancel="onDialogHide" @command-added="onOKClick"
+    <add-cmd :modelValue="cmd" @cancel="onDialogHide" @command-added="onOKClick"
              title="Add/Edit Record"
              hide-journal
              has-cancel
@@ -23,11 +23,13 @@
     props: {
       cmd: Object as PropType<AccountCommandDTO>
     },
+    emits: ['ok', 'hide'],
     methods: {
       // following method is REQUIRED
       // (don't change its name --> "show")
       show() {
         const dialog = this.$refs.dialog as QDialog;
+        debugger;
         dialog.show();
       },
 

@@ -10,14 +10,14 @@
       <tbody>
       <tr>
         <td class="datecell" colspan="2">
-          <command-date-editor label="From Date" :model-value="explainData.fromDate"
-                               @update:model-value="fromDateChanged($event)"></command-date-editor>
+          <command-date-editor label="From Date" :modelValue="explainData.fromDate"
+                               @update:modelValue="fromDateChanged($event)"></command-date-editor>
         </td>
       </tr>
       <tr>
         <td class="datecell" colspan="2">
-          <command-date-editor label="To Date" :model-value="explainData.toDate"
-                               @update:model-value="toDateChanged($event)"></command-date-editor>
+          <command-date-editor label="To Date" :modelValue="explainData.toDate"
+                               @update:modelValue="toDateChanged($event)"></command-date-editor>
         </td>
       </tr>
       <tr>

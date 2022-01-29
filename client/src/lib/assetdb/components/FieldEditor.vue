@@ -1,59 +1,59 @@
 <template>
   <command-date-editor
     v-if="type==='date'"
-    :model-value="modelValue" @update:model-value="inputChanged($event)"></command-date-editor>
+    :modelValue="modelValue" @update:modelValue="inputChanged($event)"></command-date-editor>
   <balance-editor
     v-else-if="type==='balance'"
-    :model-value="modelValue" @update:model-value="inputChanged($event)"></balance-editor>
+    :modelValue="modelValue" @update:modelValue="inputChanged($event)"></balance-editor>
   <asset-id
     v-else-if="type==='asset'"
-    :model-value="modelValue" @update:model-value="inputChanged($event)"></asset-id>
+    :modelValue="modelValue" @update:modelValue="inputChanged($event)"></asset-id>
   <ticker-select
     v-else-if="type==='ticker'"
-    :model-value="modelValue" @update:model-value="inputChanged($event)"></ticker-select>
+    :modelValue="modelValue" @update:modelValue="inputChanged($event)"></ticker-select>
   <q-input
     v-else-if="type==='number'"
-    :model-value="modelValue" type="number"
+    :modelValue="modelValue" type="number"
     :clearable="clearable" :dense="dense"
-    @clear="cleared" @update:model-value="inputChanged($event)"
+    @clear="cleared" @update:modelValue="inputChanged($event)"
     ></q-input>
   <q-input
     v-else-if="type==='percentage'"
-    :model-value="modelValue" type="number"
+    :modelValue="modelValue" type="number"
     suffix="%"
     :clearable="clearable" :dense="dense"
-    @clear="cleared" @update:model-value="inputChanged($event)"
+    @clear="cleared" @update:modelValue="inputChanged($event)"
   ></q-input>
   <q-input
     v-else-if="type==='string'"
-    :model-value="modelValue" :label="schema.label"
+    :modelValue="modelValue" :label="schema.label"
     :clearable="clearable" :dense="dense"
-    @clear="cleared" @update:model-value="inputChanged($event)"
+    @clear="cleared" @update:modelValue="inputChanged($event)"
   ></q-input>
   <enum-select
     v-else-if="type==='category'"
     :options="assetCategories"
-    :model-value="modelValue"
+    :modelValue="modelValue"
     :clearable="clearable" :dense="dense"
-    @clear="cleared" @update:model-value="inputChanged($event)"
+    @clear="cleared" @update:modelValue="inputChanged($event)"
     >
   </enum-select>
   <enum-select
     v-else-if="type==='enum'"
-    :model-value="modelValue"
+    :modelValue="modelValue"
     :label="schema.label"
     :options="schema.fieldMeta"
     :clearable="clearable" :dense="dense"
-    @clear="cleared" @update:model-value="inputChanged($event)"
+    @clear="cleared" @update:modelValue="inputChanged($event)"
   >
   </enum-select>
   <multi-enum-select
     v-else-if="type==='multiEnum'"
-    :model-value="modelValue"
+    :modelValue="modelValue"
     :label="schema.label"
     :options="schema.fieldMeta"
     :clerable="clearable" :dense="dense"
-    @clear="cleared" @update:model-value="inputChanged($event)"
+    @clear="cleared" @update:modelValue="inputChanged($event)"
   >
   </multi-enum-select>
   <div
@@ -63,10 +63,10 @@
     <field-editor
       v-for="(sub, idx) in modelValue"
       :key="idx"
-      :schema="schema.fieldMeta" :model-value="sub"
+      :schema="schema.fieldMeta" :modelValue="sub"
       :clearable="clearable" :dense="dense"
       @clear="arrayCleared(idx)"
-      @update:model-value="arrayInput(idx, $event)"
+      @update:modelValue="arrayInput(idx, $event)"
     >
 
     </field-editor>

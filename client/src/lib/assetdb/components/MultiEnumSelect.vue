@@ -1,5 +1,5 @@
 <template>
-  <q-select :model-value="selectValue" @update:model-value="onInput" :label="label"
+  <q-select :modelValue="selectValue" @update:modelValue="onInput" :label="label"
             :options="displayOptions"
             multiple use-chips
             use-input @filter="filterFn"

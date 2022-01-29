@@ -1,6 +1,6 @@
 <template>
   <div>
-    <q-table :data="history" :columns="columns" v-model:expanded="expanded" :loading="loading">
+    <q-table :rows="history" :columns="columns" v-model:expanded="expanded" :loading="loading">
       <template v-slot:body="props">
         <q-tr :props="props" @click="props.expand = !props.expand" style="cursor: pointer">
           <q-td
@@ -14,7 +14,7 @@
         <q-tr v-if="props.expand" :props="props">
           <q-td colspan="100%">
             <div class="text-left q-gutter-sm">
-              <q-table :data="props.row.diffs"></q-table>
+              <q-table :rows="props.row.diffs"></q-table>
               <q-btn color="warning" disable label="Revert To This"></q-btn>
             </div>
           </q-td>

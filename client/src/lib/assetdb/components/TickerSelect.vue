@@ -2,8 +2,8 @@
   <q-select
     use-input
     clearable
-    :model-value="value"
-    @update:model-value="$emit('update:modelValue', $event)"
+    :modelValue="value"
+    @update:modelValue="$emit('update:modelValue', $event)"
     :options="tickerOptions"
     @filter="tickerSearch"
   />

@@ -3,9 +3,9 @@
     <div v-for="schema in assetProperties" :key="schema.label">
       <field-editor
         :schema="schema"
-        :model-value="value[schema.name]"
+        :modelValue="value[schema.name]"
         clearable :dense="dense"
-        @update:model-value="onFieldUpdate(schema.name, $event)"
+        @update:modelValue="onFieldUpdate(schema.name, $event)"
         @clear="onFieldCleared(schema.name)"
       ></field-editor>
     </div>
