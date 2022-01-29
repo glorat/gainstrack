@@ -1,10 +1,10 @@
 <template>
-    <q-input class="c-date" dense :value="dateObj" @input="onDateChanged($event)"
+    <q-input class="c-date" dense :model-value="dateObj" @update:model-value="onDateChanged($event)"
              :label="label || 'Date'" mask="date" :rules="['date']">
         <template v-slot:append>
             <q-icon :name="matEvent" class="cursor-pointer">
                 <q-popup-proxy ref="qDateProxy" transition-show="scale" transition-hide="scale">
-                    <q-date :value="dateObj" @input="(ev) => {$refs.qDateProxy.hide(); onDateChanged(ev)}" />
+                    <q-date :model-value="dateObj" @update:model-value="(ev) => {$refs.qDateProxy.hide(); onDateChanged(ev)}" />
                 </q-popup-proxy>
             </q-icon>
         </template>

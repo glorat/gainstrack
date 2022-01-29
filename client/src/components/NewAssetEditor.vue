@@ -11,7 +11,7 @@
         <field-editor
           :schema="schema"
           :model-value="properties[schema.name]"
-          @input="onFieldUpdate(schema.name, $event)"
+          @update:model-value="onFieldUpdate(schema.name, $event)"
         ></field-editor>
       </div>
     </q-card-section>

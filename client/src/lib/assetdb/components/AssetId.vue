@@ -1,8 +1,8 @@
 <template>
   <q-select
     :label="label || 'Asset'"
-    :value="value"
-    @input-value="onSelectChanged"
+    :model-value="value"
+    @model-value="onSelectChanged"
     use-input
     hide-selected
     fill-input
@@ -68,7 +68,7 @@
       },
       onSelectChanged(ev: string) {
         if (ev !== this.value) {
-          this.$emit('input', ev.toUpperCase());
+          this.$emit('update:modelValue', ev.toUpperCase());
         }
       },
     }

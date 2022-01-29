@@ -1,41 +1,41 @@
 <template>
   <command-date-editor
     v-if="type==='date'"
-    :value="modelValue" @input="inputChanged($event)"></command-date-editor>
+    :model-value="modelValue" @update:model-value="inputChanged($event)"></command-date-editor>
   <balance-editor
     v-else-if="type==='balance'"
-    :value="modelValue" @input="inputChanged($event)"></balance-editor>
+    :model-value="modelValue" @update:model-value="inputChanged($event)"></balance-editor>
   <asset-id
     v-else-if="type==='asset'"
-    :value="modelValue" @input="inputChanged($event)"></asset-id>
+    :model-value="modelValue" @update:model-value="inputChanged($event)"></asset-id>
   <ticker-select
     v-else-if="type==='ticker'"
-    :value="modelValue" @input="inputChanged($event)"></ticker-select>
+    :model-value="modelValue" @update:model-value="inputChanged($event)"></ticker-select>
   <q-input
     v-else-if="type==='number'"
-    :value="modelValue" type="number"
+    :model-value="modelValue" type="number"
     :clearable="clearable" :dense="dense"
-    @clear="cleared" @input="inputChanged($event)"
+    @clear="cleared" @update:model-value="inputChanged($event)"
     ></q-input>
   <q-input
     v-else-if="type==='percentage'"
-    :value="modelValue" type="number"
+    :model-value="modelValue" type="number"
     suffix="%"
     :clearable="clearable" :dense="dense"
-    @clear="cleared" @input="inputChanged($event)"
+    @clear="cleared" @update:model-value="inputChanged($event)"
   ></q-input>
   <q-input
     v-else-if="type==='string'"
-    :value="modelValue" :label="schema.label"
+    :model-value="modelValue" :label="schema.label"
     :clearable="clearable" :dense="dense"
-    @clear="cleared" @input="inputChanged($event)"
+    @clear="cleared" @update:model-value="inputChanged($event)"
   ></q-input>
   <enum-select
     v-else-if="type==='category'"
     :options="assetCategories"
     :model-value="modelValue"
     :clearable="clearable" :dense="dense"
-    @clear="cleared" @input="inputChanged($event)"
+    @clear="cleared" @update:model-value="inputChanged($event)"
     >
   </enum-select>
   <enum-select
@@ -44,7 +44,7 @@
     :label="schema.label"
     :options="schema.fieldMeta"
     :clearable="clearable" :dense="dense"
-    @clear="cleared" @input="inputChanged($event)"
+    @clear="cleared" @update:model-value="inputChanged($event)"
   >
   </enum-select>
   <multi-enum-select
@@ -53,7 +53,7 @@
     :label="schema.label"
     :options="schema.fieldMeta"
     :clerable="clearable" :dense="dense"
-    @clear="cleared" @input="inputChanged($event)"
+    @clear="cleared" @update:model-value="inputChanged($event)"
   >
   </multi-enum-select>
   <div
@@ -66,7 +66,7 @@
       :schema="schema.fieldMeta" :model-value="sub"
       :clearable="clearable" :dense="dense"
       @clear="arrayCleared(idx)"
-      @input="arrayInput(idx, $event)"
+      @update:model-value="arrayInput(idx, $event)"
     >
 
     </field-editor>

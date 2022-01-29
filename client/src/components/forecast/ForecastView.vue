@@ -24,8 +24,8 @@
           <q-card-section>
             <q-input label="Income" type="number" v-model.number="input.income"></q-input>
             <q-input label="Expenses" type="number" v-model.number="input.expenses"></q-input>
-            <q-input label="Savings Rate" type="number" v-on:input="onSavingsRateChange($event)"
-                     :value="100*(input.income-input.expenses) / input.income" suffix="%"></q-input>
+            <q-input label="Savings Rate" type="number" @update:model-value="onSavingsRateChange($event)"
+                     :model-value="100*(input.income-input.expenses) / input.income" suffix="%"></q-input>
             <q-input label="Networth" type="number" v-model.number="input.networth"></q-input>
             <q-input label="Retirement target (multiples of annual expenses)" type="number"
                      v-model.number="strategy.expenseMultiple"></q-input>

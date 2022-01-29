@@ -31,7 +31,7 @@
             clearable
             class="asset-ticker"
             v-model="asset.options.ticker"
-            v-on:input="assetTouched(asset)"
+            @update:modelValue="assetTouched(asset)"
             :options="tickerOptions"
             @filter="tickerSearch"
             />
@@ -42,14 +42,14 @@
             clearable
             class="asset-proxy"
             v-model="asset.options.proxy"
-            v-on:input="assetTouched(asset)"
+            @update:modelValue="assetTouched(asset)"
             :options="tickerOptions"
             @filter="tickerSearch"
           />
         </td>
         <td width="250px">
           <q-select v-model="asset.options.tags"
-                    v-on:input="assetTouched(asset)"
+                    @update:modelValue="assetTouched(asset)"
                     multiple
                     new-value-mode="add-unique"
                     use-chips

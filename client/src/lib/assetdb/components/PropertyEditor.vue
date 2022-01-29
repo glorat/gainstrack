@@ -5,7 +5,7 @@
         :schema="schema"
         :model-value="value[schema.name]"
         clearable :dense="dense"
-        @input="onFieldUpdate(schema.name, $event)"
+        @update:model-value="onFieldUpdate(schema.name, $event)"
         @clear="onFieldCleared(schema.name)"
       ></field-editor>
     </div>

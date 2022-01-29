@@ -11,7 +11,7 @@
         <q-tab name="edit" label="Edit"></q-tab>
         <q-tab v-if="id" name="history" label="History"></q-tab>
       </q-tabs>
-      <q-tab-panels :value="displayTab" animated>
+      <q-tab-panels :model-value="displayTab" animated>
         <q-tab-panel name="view">
           <quote-source-view :qsrc="data"></quote-source-view>
         </q-tab-panel>

@@ -4,7 +4,7 @@
       <div class="text-h6">{{ title }}</div>
     </q-card-section>
     <q-card-section v-if="!success">
-      <command-editor :input="c" v-on:command-changed="commandChanged"
+      <command-editor :model-value="c" v-on:command-changed="commandChanged"
                       v-on:gainstrack-changed="gainstrackChange($event)"
                       :options="options"
       ></command-editor>
@@ -151,7 +151,7 @@
         this.testCommand();
       },
       commandChanged (cmd) {
-        this.$emit('input', cmd)
+        this.$emit('update:modelValue', cmd)
       },
       cancel () {
         this.$emit('cancel')

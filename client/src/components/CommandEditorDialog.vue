@@ -1,6 +1,6 @@
 <template>
   <q-dialog ref="dialog" @hide="onDialogHide">
-    <add-cmd :input="cmd" @cancel="onDialogHide" @command-added="onOKClick"
+    <add-cmd :model-value="cmd" @cancel="onDialogHide" @command-added="onOKClick"
              title="Add/Edit Record"
              hide-journal
              has-cancel

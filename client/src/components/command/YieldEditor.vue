@@ -6,15 +6,15 @@
         <div v-if="!hideAccount">
           <account-selector
             placeholder="Yield Source Account"
-            class="c-account-id" :value="dc.accountId" :original="c.accountId"
-            @input="c.accountId=$event" :account-list="assetAccounts"
+            class="c-account-id" :model-value="dc.accountId" :original="c.accountId"
+            @update:model-value="c.accountId=$event" :account-list="assetAccounts"
           ></account-selector>        </div>
         <div v-if="multiAsset">
           <!-- TODO: Restrict this asset list to whatever is in this account -->
-            <asset-id label="Asset that is yielding" :value="dc.asset" :original="c.asset" @input="$set(c, 'asset', $event)"></asset-id>
+            <asset-id label="Asset that is yielding" :model-value="dc.asset" :original="c.asset" @update:model-value="$set(c, 'asset', $event)"></asset-id>
         </div>
         <div>
-          <balance-editor label="Dividend/Interest/Yield" class="change" :value="dc.change" :original="c.change" @input="$set(c, 'change', $event)"></balance-editor>
+          <balance-editor label="Dividend/Interest/Yield" class="change" :model-value="dc.change" :original="c.change" @update:model-value="$set(c, 'change', $event)"></balance-editor>
         </div>
     </div>
 </template>

@@ -1,7 +1,7 @@
 <template>
   <q-select
-    :value="value"
-    v-on:input="onQSelectChanged($event)"
+    :model-value="value"
+    @update:model-value="onQSelectChanged($event)"
     :options="filteredOptions"
     :label="resolvedPlaceholder"
     :input-class="selectClass"
@@ -52,10 +52,10 @@
     },
     methods: {
       onChanged(ev: any) {
-        this.$emit('input', ev.target.value);
+        this.$emit('update:modelValue', ev.target.value);
       },
       onQSelectChanged(ev: { label: string, value: string }) {
-        this.$emit('input', ev.value);
+        this.$emit('update:modelValue', ev.value);
       },
       filterFn(val: string, update: any) {
         update(() => {

@@ -14,7 +14,7 @@
         v-model="file"
         label="Drop file here or click to upload"
         filled
-        @input="onFileInput"
+        @update:model-value="onFileInput"
       >
         <template v-slot:before>
           <q-icon :name="matCloudUpload" />

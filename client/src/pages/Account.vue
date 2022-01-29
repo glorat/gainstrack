@@ -1,6 +1,6 @@
 <template>
   <my-page padding>
-    <q-tabs v-model="tab" inline-label class="bg-secondary text-white" @input="onTabPanelChanged">
+    <q-tabs v-model="tab" inline-label class="bg-secondary text-white" @update:model-value="onTabPanelChanged">
       <q-tab name="assets" :icon="matAssignment" label="Balance"></q-tab>
       <q-tab name="statement" :icon="matAccountBalance" label="Statements"></q-tab>
       <q-tab name="journal" :icon="matEdit" label="Journal" v-if="hasJournal" class="account-tab-journal"></q-tab>

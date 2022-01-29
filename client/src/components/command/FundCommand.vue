@@ -4,19 +4,19 @@
             <command-date-editor v-model="c.date"></command-date-editor>
         </div>
       <div v-if="!hideAccount">
-        <account-selector class="c-account-id" :value="dc.accountId" :original="c.accountId"
-                          @input="c.accountId=$event" :account-list="fundableAccounts"
+        <account-selector class="c-account-id" :model-value="dc.accountId" :original="c.accountId"
+                          @update:model-value="c.accountId=$event" :account-list="fundableAccounts"
                           placeholder="Account to fund"
         ></account-selector>
       </div>
       <div>
-        <balance-editor class="c-change" label="Funding Amount" :value="dc.change" :original="c.change" @input="c.change=$event"></balance-editor>
+        <balance-editor class="c-change" label="Funding Amount" :model-value="dc.change" :original="c.change" @update:model-value="c.change=$event"></balance-editor>
       </div>
         <div>
             Override funding source (optional) <help-tip tag="fundOtherAccount"></help-tip>
           <account-selector class="c-other-account" placeholder="Funding Account"
-                            :value="dc.otherAccount" :original="c.otherAccount"
-                            @input="c.otherAccount=$event"
+                            :model-value="dc.otherAccount" :original="c.otherAccount"
+                            @update:model-value="c.otherAccount=$event"
           ></account-selector>
         </div>
     </div>
