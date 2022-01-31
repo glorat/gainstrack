@@ -44,10 +44,12 @@
     name: 'QuoteSourceEditor',
     components: {EnumSelect, PropertyEditor},
     props: {
-      qsrc: Object as () => QuoteSource
+      modelValue: Object as () => QuoteSource
     },
     data() {
+      const qsrc = this.modelValue;
       return {
+        qsrc,
         marketRegions,
         quoteSourceTypes,
         investmentAssetSchema

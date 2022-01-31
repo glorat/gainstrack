@@ -16,7 +16,7 @@
           <quote-source-view :qsrc="data"></quote-source-view>
         </q-tab-panel>
         <q-tab-panel name="edit">
-          <quote-source-editor :qsrc="editingData"></quote-source-editor>
+          <quote-source-editor v-model="editingData"></quote-source-editor>
           <q-btn @click="refresh()" label="Reset" color="warning"></q-btn>
           <q-btn :disable="!canSaveQuoteSource" @click="saveQuoteSource" :label="saveLabel" color="primary"></q-btn>
         </q-tab-panel>

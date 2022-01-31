@@ -1,6 +1,6 @@
 <template>
   <my-page padding>
-    <quote-source-filter :params="params"
+    <quote-source-filter v-model:params="params"
                          :selected-columns="selectedColumns" @update:selected-columns="selectedColumns = $event"
                          :column-editing="columnEditing" @update:column-editing="columnEditing = $event"
                          @preview="onPreview"

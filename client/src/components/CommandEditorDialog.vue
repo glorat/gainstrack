@@ -29,7 +29,6 @@
       // (don't change its name --> "show")
       show() {
         const dialog = this.$refs.dialog as QDialog;
-        debugger;
         dialog.show();
       },
 

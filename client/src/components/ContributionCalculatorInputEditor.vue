@@ -14,7 +14,7 @@
     </q-table>
     <div class="row">
       <div class="col-12">
-        <balance-editor v-model="contribution" label="Contribution"></balance-editor>
+        <balance-editor :value="contribution" label="Contribution"></balance-editor>
       </div>
     </div>
   </div>
@@ -42,10 +42,12 @@ export default defineComponent({
   },
   data() {
     const pagination = {rowsPerPage: 100}
+    const c = this.contribution;
     return {
       formatPerc,
       formatNumber,
-      pagination
+      pagination,
+      c
     }
   },
   computed: {

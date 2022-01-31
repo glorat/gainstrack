@@ -22,9 +22,9 @@
           },
           label: String,
           original: Object as () => AmountEditing|undefined},
-      // data() {
-      //   return {v: {...this.value}}
-      // },
+      data() {
+        return {v: {...this.value}}
+      },
         methods: {
           onCcyChanged() {
             this.$emit('ccyChanged', this.v.ccy);
@@ -35,9 +35,6 @@
             }
         },
       computed: {
-        v():AmountEditing {
-          return this.value;
-        },
         amountClass(): any {
           const defaulted = this.original && (this.v.number !== this.original.number);
           return {'defaulted-input': defaulted}

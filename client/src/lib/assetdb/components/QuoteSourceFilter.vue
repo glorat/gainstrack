@@ -18,7 +18,7 @@
           </div>
         </div>
         <div class="row" title="">
-          <q-btn color="secondary" label="Custom Filter" @click="params.query.push({where:['','==','']})"></q-btn>
+          <q-btn color="secondary" label="Custom Filter" @click="$emit('update:params', [...params, {where:['','==','']}])"></q-btn>
         </div>
 
       </q-step>
@@ -143,8 +143,10 @@ export default defineComponent({
             .map( x => `asset.${x.name}`);
           final = [name, ...one, ...two];
         }
-        this.selectedColumns?.splice(0, this.selectedColumns!.length, ...final);
+        const a = [...this.selectedColumns ?? []];
 
+        a.splice(0, this.selectedColumns!.length, ...final);
+        this.$emit('update:selectedColumns', a);
 
       }
     }

@@ -34,15 +34,21 @@
         type: Object as () => Schema,
         default: () => userAssetSchema
       },
-      value: {
+      modelValue: {
         type: Object as () => Record<string, any>,
         default: () => ({} as Record<string, any>)
       },
       dense: Boolean,
     },
+    data() {
+      return {
+        value: this.modelValue
+      }
+    },
     methods: {
       onFieldUpdate(field:string, newValue: any) {
         this.value[field] = newValue;
+        this.$emit('update:modelValue', this.value);
         // if (newValue && schemaFor(field).schema==='ticker') {
         //   this.$store.dispatch('loadQuotes', newValue);
         // }
@@ -50,14 +56,17 @@
       onFieldCleared(field: string) {
         console.log(`${field} cleared`);
         delete this.value[field]
+        this.$emit('update:modelValue', this.value);
         this.$emit('property-removed', field);
       },
       onFieldAdd(name: string) {
         this.value[name] = undefined;
         this.$emit('property-added', name);
+        this.$emit('update:modelValue', this.value);
       },
       onRemove(propType: FieldProperty) {
         delete this.value[propType.name]
+        this.$emit('update:modelValue', this.value);
       },
     },
     computed: {

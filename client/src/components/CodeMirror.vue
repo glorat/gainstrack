@@ -10,7 +10,7 @@
     export default {
         name: 'codemirror',
         props: {
-            value: {
+            modelValue: {
                 type: String,
                 default: '',
             },
@@ -33,6 +33,7 @@
         },
         data() {
             return {
+              value: this.modelValue,
                 skipNextChangeEvent: false,
                 myMarks: [],
             }
@@ -47,7 +48,8 @@
                 }
               this.value = cm.getValue();
                 if (this.$emit) {
-                  this.$emit('change', cm.getValue())
+                  this.$emit('change', this.value)
+                  this.$emit('update:modelValue', this.value)
                 }
             });
         },

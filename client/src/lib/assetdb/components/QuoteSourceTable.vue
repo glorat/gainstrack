@@ -85,19 +85,22 @@
         matArchive,
       }
     },
+    emits:['row-click', 'update:selected-columns'],
     methods: {
       onRowClick(ev: any, data: QuoteSource) {
         this.$emit('row-click', data)
       },
       deleteColumn(idx: number): void {
-        this.selectedColumns.splice(idx,1);
-        this.$emit('update:selected-columns', this.selectedColumns);
+        const a = [...this.selectedColumns];
+        a.splice(idx,1);
+        this.$emit('update:selected-columns', a);
       },
       swapLeft(idx:number):void {
-        const tmp = this.selectedColumns[idx];
-        this.selectedColumns[idx] = this.selectedColumns[idx-1];
-        this.selectedColumns[idx-1] = tmp;
-        this.$emit('update:selected-columns', this.selectedColumns);
+        const a = [...this.selectedColumns];
+        const tmp = a[idx];
+        a[idx] = a[idx-1];
+        a[idx-1] = tmp;
+        this.$emit('update:selected-columns', a);
       },
       exportTable() {
         const tableColumns = this.columns;
