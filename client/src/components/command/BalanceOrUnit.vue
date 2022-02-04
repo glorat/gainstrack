@@ -30,7 +30,7 @@
     <div v-if="showCommission">
       <help-tip tag="tradeCommission"></help-tip>
       <balance-editor label="Commission" class="c-commission"
-                      :model-="dc.commission" :original="c.commission" @update:modelValue="c.commission=$event"></balance-editor>
+                      :modelValue="dc.commission" :original="c.commission" @update:modelValue="c.commission=$event"></balance-editor>
     </div>
     <div>
       <q-btn color="secondary" v-if="canConvertToTrade" @click="convertToTrade">Convert to Trade</q-btn>

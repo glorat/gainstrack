@@ -11,10 +11,10 @@
           ></account-selector>        </div>
         <div v-if="multiAsset">
           <!-- TODO: Restrict this asset list to whatever is in this account -->
-            <asset-id label="Asset that is yielding" :modelValue="dc.asset" :original="c.asset" @update:modelValue="$set(c, 'asset', $event)"></asset-id>
+            <asset-id label="Asset that is yielding" :modelValue="dc.asset" :original="c.asset" @update:modelValue="c.asset = $event"></asset-id>
         </div>
         <div>
-          <balance-editor label="Dividend/Interest/Yield" class="change" :modelValue="dc.change" :original="c.change" @update:modelValue="$set(c, 'change', $event)"></balance-editor>
+          <balance-editor label="Dividend/Interest/Yield" class="change" :modelValue="dc.change" :original="c.change" @update:modelValue="c.change = $event"></balance-editor>
         </div>
     </div>
 </template>

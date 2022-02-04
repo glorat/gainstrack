@@ -1,6 +1,6 @@
 <template>
   <q-select
-    :modelValue="value"
+    :modelValue="modelValue"
     @update:modelValue="onQSelectChanged($event)"
     :options="filteredOptions"
     :label="resolvedPlaceholder"
@@ -20,7 +20,7 @@
   export default defineComponent({
     name: 'AccountSelector',
     props: {
-      value: String,
+      modelValue: String,
       original: {},
       accountList: Array as () => string[],
       placeholder: String
@@ -47,7 +47,7 @@
 
       },
       selectClass(): any {
-        const defaulted = this.value !== this.original;
+        const defaulted = this.modelValue !== this.original;
         return {'defaulted-input': defaulted}
       },
     },

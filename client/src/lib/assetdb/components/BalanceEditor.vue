@@ -1,8 +1,8 @@
 <template>
 <!--  font-style: italic; -->
     <div class="row items-start">
-      <q-input :input-class="amountClass" :label="label || 'Amount'" @focus="$event.target.select && $event.target.select()" type="number" v-model="v.number" @update:modelValue="onChanged($event)" clearable></q-input>
-      <asset-id :input-class="ccyClass" v-model="v.ccy" @update:modelValue="onCcyChanged()"></asset-id>
+      <q-input :input-class="amountClass" :label="label || 'Amount'" @focus="$event.target.select && $event.target.select()" type="number" :model-value="modelValue.number" @update:modelValue="onChanged($event)" clearable></q-input>
+      <asset-id :input-class="ccyClass" :model-value="modelValue.ccy" @update:modelValue="onCcyChanged($event)"></asset-id>
     </div>
 </template>
 
@@ -16,31 +16,33 @@
             AssetId
         },
         props: {
-          value: {
+          modelValue: {
             type: Object as () => AmountEditing,
             default: () => {return {number:undefined, ccy: undefined} as AmountEditing}
           },
           label: String,
-          original: Object as () => AmountEditing|undefined},
-      data() {
-        return {v: {...this.value}}
-      },
+          original: Object as () => AmountEditing|undefined
+        },
+      emits: ['update:modelValue'],
         methods: {
-          onCcyChanged() {
-            this.$emit('ccyChanged', this.v.ccy);
-            this.onChanged();
+          onCcyChanged(ev:any) {
+            const ret = {...this.modelValue, ccy:ev};
+            this.$emit('update:modelValue', ret);
+            // this.$emit('ccyChanged', this.v.ccy);
+            // this.onChanged();
           },
-            onChanged() {
-                this.$emit('update:modelValue', this.v);
+            onChanged(ev:any) {
+              const ret = {...this.modelValue, number:ev};
+              this.$emit('update:modelValue', ret);
             }
         },
       computed: {
         amountClass(): any {
-          const defaulted = this.original && (this.v.number !== this.original.number);
+          const defaulted = this.original && (this.modelValue.number !== this.original.number);
           return {'defaulted-input': defaulted}
         },
         ccyClass(): any {
-          const defaulted = this.original && (this.v.ccy !== this.original.ccy);
+          const defaulted = this.original && (this.modelValue.ccy !== this.original.ccy);
           return {'defaulted-input': defaulted}
         },
       }
