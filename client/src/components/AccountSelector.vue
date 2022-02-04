@@ -25,6 +25,7 @@
       accountList: Array as () => string[],
       placeholder: String
     },
+    emits: ['update:modelValue'],
     data() {
       return {
         filteredOptions: [] as {value: string, label:string}[]

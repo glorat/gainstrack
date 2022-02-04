@@ -98,7 +98,6 @@ module.exports = {
     'vue/no-unused-components': 'warn',
     'indent': 'off',
     'semi': 'off',
-    'no-unused-vars': 'off', // vue3 upgrade has flagged up more than expected
 
     '@typescript-eslint/no-non-null-assertion': 'off',
 

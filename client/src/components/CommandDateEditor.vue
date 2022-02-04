@@ -37,13 +37,14 @@
           }
         },
         props: {value: String, label: String},
+      emits: ['update:modelValue'],
         methods: {
             onChanged(ev: string) {
-                this.$emit('input', ev);
+                this.$emit('update:modelValue', ev);
             },
             onDateChanged(ev: string) {
                 const myDate = reformatIsoDate(ev, 'YYYY-MM-DD');
-                this.$emit('input', myDate);
+                this.$emit('update:modelValue', myDate);
             },
         },
         computed: {

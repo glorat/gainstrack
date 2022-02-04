@@ -32,11 +32,11 @@
             }
         },
         data() {
-            return {
-              value: this.modelValue,
-                skipNextChangeEvent: false,
-                myMarks: [],
-            }
+          return {
+            value: this.modelValue,
+            skipNextChangeEvent: false,
+            myMarks: [],
+          }
         },
         ready() {
             this.editor = CodeMirror.fromTextArea(this.$el.querySelector('textarea'), this.options);
@@ -68,7 +68,7 @@
             });
         },
         watch: {
-            value(newVal) {
+            modelValue(newVal) {
                 const editorValue = this.editor.getValue();
                 if (newVal !== editorValue) {
                     this.skipNextChangeEvent = true;

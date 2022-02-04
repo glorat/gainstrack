@@ -5,7 +5,7 @@
     </div>
     <div v-if="!hideAccount">
       <account-selector class="c-account-id" :modelValue="dc.accountId" :original="c.accountId"
-                        @update:modelValue="c.accountId=$event" :account-list="balanceableAccounts"></account-selector>
+                        @update:modelValue="onAccountChanged" :account-list="balanceableAccounts"></account-selector>
     </div>
     <div v-if="showBalance">
       <balance-editor label="Balance" class="c-balance" :modelValue="dc.balance" :original="c.balance" @update:modelValue="c.balance=$event"></balance-editor>
@@ -70,6 +70,9 @@
 
         this.c = newc;
 
+      },
+      onAccountChanged(ev) {
+        this.c.accountId=ev;
       }
     },
     computed: {

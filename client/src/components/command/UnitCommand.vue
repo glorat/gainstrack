@@ -65,7 +65,9 @@
         computed: {
           ...mapGetters(['fxConverter']),
             toGainstrack() {
-                return `${this.c.date} unit ${this.c.accountId} ${this.c.balance.number} ${this.c.balance.ccy} @${this.c.price.number} ${this.c.price.ccy}`;
+            const c = this.c;
+            debugger;
+                return `${c.date} unit ${this.c.accountId} ${this.c.balance.number} ${this.c.balance.ccy} @${this.c.price.number} ${this.c.price.ccy}`;
             }
         }
     })

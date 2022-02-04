@@ -2,7 +2,7 @@
   <q-select
     :label="label || 'Asset'"
     :modelValue="value"
-    @model-value="onSelectChanged"
+    @update:modelValue="onSelectChanged"
     use-input
     hide-selected
     fill-input
@@ -28,6 +28,7 @@
   export default defineComponent({
     name: 'AssetId',
     props: {value: String, label: String, inputClass: {}},
+    emits: ['update:modelValue'],
     data() {
       return {
         filteredOptions: [] as MyOpt[],
@@ -66,9 +67,9 @@
           }
         })
       },
-      onSelectChanged(ev: string) {
-        if (ev !== this.value) {
-          this.$emit('update:modelValue', ev.toUpperCase());
+      onSelectChanged(ev: any) {
+        if (ev.value !== this.value) {
+          this.$emit('update:modelValue', ev.value.toUpperCase());
         }
       },
     }
