@@ -3,7 +3,7 @@ import { LoadingBar } from 'quasar'
 
 import version from '../../VERSION.json';
 import {boot} from 'quasar/wrappers';
-import {Auth0Plugin} from '../auth';
+import {useAuth} from '../auth';
 
 export default boot(({app}) => {
   // FIXME: globally register MyPage
@@ -19,9 +19,9 @@ export default boot(({app}) => {
   app.config.globalProperties.$appVersion = version.version
 
   // Import the plugin here
-  app.use(Auth0Plugin, {
+  useAuth().initializeAuth({
     domain: process.env.VUE_APP_AUTH0_ID + '.auth0.com',
-    clientId: process.env.VUE_APP_AUTH0_CLIENT,
+    client_id: process.env.VUE_APP_AUTH0_CLIENT!,
     audience: process.env.VUE_APP_AUTH0_AUDIENCE,
     // lint-ignore
     // onRedirectCallback: appState => {

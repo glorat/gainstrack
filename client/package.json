@@ -17,7 +17,7 @@
     "concurrently:dev:jest": "concurrently \"quasar dev\" \"jest --watch\""
   },
   "dependencies": {
-    "@auth0/auth0-spa-js": "^1.19.3",
+    "@auth0/auth0-spa-js": "^1.19.4",
     "@glorat/boglebot": "^1.0.1",
     "@js-joda/core": "^3.2.0",
     "@quasar/extras": "^1.12.2",

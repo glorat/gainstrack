@@ -32,6 +32,7 @@
   import {getUserRole, setDisplayName} from 'src/lib/assetdb/assetDb';
   import {DocumentData} from  'firebase/firestore';
   import {matLogin} from '@quasar/extras/material-icons';
+  import {useAuth} from 'src/auth';
 
   export default defineComponent({
     name: 'UserProfile',
@@ -44,7 +45,9 @@
       const userRoles: DocumentData|undefined = undefined;
       const loading = false;
       const newDisplayName = '';
+      const auth = useAuth();
       return {
+        auth,
         userRoles: userRoles as DocumentData|undefined,
         loading,
         newDisplayName,
@@ -97,7 +100,7 @@
         return this.$store.state;
       },
       auth0authned():boolean {
-        return this.$auth.isAuthenticated
+        return this.auth.isAuthenticated
       },
       firebaseAuthed():boolean {
         return !!this.state.user;
@@ -110,7 +113,7 @@
       },
       authName():string {
         if (this.auth0authned) {
-          return this.$auth.user.name
+          return this.auth.user?.name ?? 'anon'
         } else if (this.firebaseAuthed) {
           return this.$store.state.user?.displayName || 'anon'
         } else {

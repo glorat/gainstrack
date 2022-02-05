@@ -4,27 +4,31 @@
         <div v-if="isAuthenticated">
             Logged in as <em>{{  authName }}</em>
             <form @submit.prevent="logout()" v-if="auth0authned">
-              <input type="submit" name="logout" value="Logout" :disabled="loading || $auth.loading" >
+              <input type="submit" name="logout" value="Logout" :disabled="loading || auth.loading" >
             </form>
         </div>
       <div v-else>
-        <button class="login" :disabled="$auth.loading" @click="auth0login">Sign Up/Log in</button>
+        <button class="login" :disabled="auth.loading" @click="auth0login">Sign Up/Log in</button>
       </div>
     </div>
 </template>
 
 <script>
 
+    import { useAuth } from 'src/auth'
+
     export default {
         name: 'LoginForm',
         data() {
+          const auth = useAuth();
             return {
-                loading: false,
+              auth,
+              loading: false,
             }
         },
         computed: {
           auth0authned() {
-            return this.$auth.isAuthenticated
+            return this.auth.isAuthenticated
           },
           firebaseAuthed() {
             return !!this.$store.state.user;
@@ -34,7 +38,7 @@
           },
           authName() {
             if (this.auth0authned) {
-              return this.$auth.user.name
+              return this.auth.user?.name ?? 'anon'
             } else if (this.firebaseAuthed) {
               return this.$store.state.user.displayName
             } else {
@@ -52,15 +56,15 @@
         },
         methods: {
             async logout() {
-                if (this.$auth.isAuthenticated) {
-                    this.$auth.logout({
+                if (this.auth.isAuthenticated) {
+                    this.auth.logout({
                         returnTo: window.location.origin
                     });
                 }
             },
             // Log the user in
             auth0login() {
-                this.$auth.loginWithRedirect();
+                this.auth.loginWithRedirect();
             },
             async loginWithToken(auth) {
               this.loading = true;
@@ -80,7 +84,7 @@
 
             },
             async auth0validate() {
-                await this.loginWithToken(this.$auth)
+                await this.loginWithToken(this.auth)
 
             },
         },
