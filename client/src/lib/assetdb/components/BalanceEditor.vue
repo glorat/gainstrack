@@ -23,7 +23,8 @@
           label: String,
           original: Object as () => AmountEditing|undefined
         },
-      emits: ['update:modelValue'],
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      emits: {'update:modelValue': (payload: AmountEditing) => true},
         methods: {
           onCcyChanged(ev:any) {
             const ret = {...this.modelValue, ccy:ev};
@@ -32,7 +33,7 @@
             // this.onChanged();
           },
             onChanged(ev:any) {
-              const ret = {...this.modelValue, number:ev};
+              const ret = {...this.modelValue, number: parseFloat(ev)};
               this.$emit('update:modelValue', ret);
             }
         },

@@ -7,7 +7,7 @@
             @clear="$emit('clear')"
   >
     <template v-slot:option="scope">
-      <q-item v-bind="scope.itemProps" v-on="scope.itemEvents">
+      <q-item v-bind="scope.itemProps">
         <q-item-section>
           <q-item-label>{{ scope.opt.value }}</q-item-label>
           <q-item-label caption>{{ scope.opt.description }}</q-item-label>

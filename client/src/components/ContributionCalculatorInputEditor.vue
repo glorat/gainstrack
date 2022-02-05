@@ -14,7 +14,7 @@
     </q-table>
     <div class="row">
       <div class="col-12">
-        <balance-editor :value="contribution" label="Contribution"></balance-editor>
+        <balance-editor :modelValue="contribution" @update:modelValue="$emit('update:contribution', $event)"  label="Contribution"></balance-editor>
       </div>
     </div>
   </div>

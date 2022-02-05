@@ -45,7 +45,7 @@
       >
         <contribution-calculator-input-editor
           :entries="entries"
-          :contribution="contribution"
+          v-model:contribution="contribution"
         ></contribution-calculator-input-editor>
         <q-stepper-navigation>
           <q-btn @click="calculate" color="primary" label="Continue" :disable="!canCalculate"/>

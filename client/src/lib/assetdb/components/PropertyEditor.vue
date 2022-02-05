@@ -3,7 +3,7 @@
     <div v-for="schema in assetProperties" :key="schema.label">
       <field-editor
         :schema="schema"
-        :modelValue="value[schema.name]"
+        :modelValue="modelValue[schema.name]"
         clearable :dense="dense"
         @update:modelValue="onFieldUpdate(schema.name, $event)"
         @clear="onFieldCleared(schema.name)"
@@ -40,41 +40,38 @@
       },
       dense: Boolean,
     },
-    data() {
-      return {
-        value: this.modelValue
-      }
-    },
     methods: {
       onFieldUpdate(field:string, newValue: any) {
-        this.value[field] = newValue;
-        this.$emit('update:modelValue', this.value);
+        const ret = {...this.modelValue, [field]:newValue};
+        this.$emit('update:modelValue', ret);
         // if (newValue && schemaFor(field).schema==='ticker') {
         //   this.$store.dispatch('loadQuotes', newValue);
         // }
       },
       onFieldCleared(field: string) {
         console.log(`${field} cleared`);
-        delete this.value[field]
-        this.$emit('update:modelValue', this.value);
+        const ret = {...this.modelValue};
+        delete ret[field];
+        this.$emit('update:modelValue', ret);
         this.$emit('property-removed', field);
       },
       onFieldAdd(name: string) {
-        this.value[name] = undefined;
+        const ret = {...this.modelValue, [name]:undefined};
         this.$emit('property-added', name);
-        this.$emit('update:modelValue', this.value);
+        this.$emit('update:modelValue', ret);
       },
       onRemove(propType: FieldProperty) {
-        delete this.value[propType.name]
-        this.$emit('update:modelValue', this.value);
+        const ret = {...this.modelValue};
+        delete ret[propType.name]
+        this.$emit('update:modelValue', ret);
       },
     },
     computed: {
       assetProperties(): FieldProperty[] {
-        return this.schema.selectedPropertiesForAsset(this.value);
+        return this.schema.selectedPropertiesForAsset(this.modelValue);
       },
       availableTags(): FieldProperty[] {
-        return this.schema.availablePropertiesForAsset(this.value)
+        return this.schema.availablePropertiesForAsset(this.modelValue)
       },
     }
   })

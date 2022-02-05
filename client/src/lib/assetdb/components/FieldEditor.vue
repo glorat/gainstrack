@@ -110,7 +110,7 @@ export default defineComponent({
   },
   methods: {
     inputChanged($event:any) {
-      this.$emit('input', $event)
+      this.$emit('update:modelValue', $event)
     },
     cleared() {
       this.$emit('clear')
@@ -119,7 +119,7 @@ export default defineComponent({
       const orig:any = this.modelValue;
       if (orig.length>1) {
         orig.splice(idx, 1);
-        this.$emit('input', orig);
+        this.$emit('update:modelValue', orig);
       } else {
         // Last element cleared, remove the whole lot
         this.$emit('clear');
@@ -129,11 +129,11 @@ export default defineComponent({
     arrayInput(idx: number, ev: any) {
       const orig:any = this.modelValue; // To clone or not to clone???
       orig[idx] = ev;
-      this.$emit('input', orig);
+      this.$emit('update:modelValue', orig);
     },
     arrayAdd() {
       const orig:any = this.modelValue ?? [];
-      this.$emit('input', [...orig, undefined]);
+      this.$emit('update:modelValue', [...orig, undefined]);
     }
   },
   computed: {
