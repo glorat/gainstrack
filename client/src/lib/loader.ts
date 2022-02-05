@@ -3,7 +3,6 @@ import { defineAsyncComponent } from 'vue'
 /* These are imports of components that should be lazy loaded and webchunked */
 
 export const VuePlotly = defineAsyncComponent(() => import(/* webpackChunkName: "Plotly" */'../components/Plotly.vue'));
-export const MySentry = defineAsyncComponent(() => import(/* webpackChunkName: "MySentry" */ '../MySentry.vue'));
 export const MyFirebase = defineAsyncComponent(() => import(/* webpackChunkName: "MyFirebase" */'../MyFirebase.vue'));
 export const MarkdownRender = defineAsyncComponent(() => import(/* webpackChunkName: "MarkdownRender" */ '../components/MarkdownRender.vue'));
 export const Tour = defineAsyncComponent(() => import (/* webpackChunkName: "Tour" */ '../Tour.vue'));

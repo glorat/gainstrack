@@ -21,6 +21,8 @@
     "@glorat/boglebot": "^1.0.1",
     "@js-joda/core": "^3.2.0",
     "@quasar/extras": "^1.12.2",
+    "@sentry/tracing": "^6.17.4",
+    "@sentry/vue": "^6.17.4",
     "@types/jest": "^26.0.24",
     "@types/lodash": "^4.14.178",
     "@types/marked": "^4.0.1",
@@ -45,8 +47,6 @@
     "@quasar/app": "^3.2.9",
     "@quasar/quasar-app-extension-dotenv": "^1.1.0",
     "@quasar/quasar-app-extension-testing": "^2.0.2",
-    "@sentry/browser": "^5.30.0",
-    "@sentry/integrations": "^5.30.0",
     "@types/node": "^12.20.21",
     "@typescript-eslint/eslint-plugin": "^5.10.0",
     "@typescript-eslint/parser": "^5.10.0",
@@ -65,7 +65,6 @@
     "node-polyfill-webpack-plugin": "^1.1.4"
   },
   "browserslist": [
-    "ie >= 11",
     "last 10 Chrome versions",
     "last 10 Firefox versions",
     "last 4 Edge versions",
