@@ -75,6 +75,17 @@ const initializeAuth = async (options: Auth0ClientOptions, onRedirectCallback: (
       state.error = null;
       onRedirectCallback(appState);
     }
+    else {
+      try {
+        await auth0Client.getTokenSilently();
+        state.user = await auth0Client.getUser();
+        state.isAuthenticated = await auth0Client.isAuthenticated();
+        state.error = null;
+      } catch (error) {
+        console.log('auth0 cannot autologin', error)
+      }
+
+    }
   } catch (e) {
     state.error = e as Auth0Error;
     return;
