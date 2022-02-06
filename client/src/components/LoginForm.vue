@@ -9,6 +9,8 @@
         </div>
       <div v-else>
         <button class="login" :disabled="auth.loading" @click="auth0login">Sign Up/Log in</button>
+<!--        <button class="login" :disabled="auth.loading" @click="auth0validate">Test</button>-->
+
       </div>
     </div>
 </template>
@@ -27,6 +29,9 @@
             }
         },
         computed: {
+          auth0ready() {
+            return !this.auth.loading;
+          },
           auth0authned() {
             return this.auth.isAuthenticated
           },
@@ -46,15 +51,12 @@
             }
           }
         },
-        watch: {
-          // FIXME: Is this relying on a race condition to be invoked on startup??
-            auth0authned(val) {
-                if (val) {
-                    this.auth0validate();
-                }
-            }
-        },
-        methods: {
+      watch: {
+        auth0ready (val) {
+          console.log(`auth0ready ${val}, authn: ${this.auth.isAuthenticated}`)
+        }
+      },
+      methods: {
             async logout() {
                 if (this.auth.isAuthenticated) {
                     this.auth.logout({
@@ -66,25 +68,23 @@
             auth0login() {
                 this.auth.loginWithRedirect();
             },
-            async loginWithToken(auth) {
-              this.loading = true;
-                const notify = this.$notify;
-                const getToken = async () => await auth.getTokenSilently();
-                try {
-                  await this.$store.dispatch('loginWithToken', getToken)
-                }
-                catch (error) {
-                  notify.error('Something went wrong logging in');
-                  console.error(error);
-                  this.$store.dispatch('logout');
-                }
-                finally {
-                  this.loading = false
-                }
-
-            },
             async auth0validate() {
-                await this.loginWithToken(this.auth)
+              const auth = this.auth;
+              this.loading = true;
+              const notify = this.$notify;
+              const getToken = async () => await auth.getTokenSilently();
+              try {
+                await this.$store.dispatch('loginWithToken', getToken)
+              }
+              catch (error) {
+                notify.error('Something went wrong logging in');
+                console.error(error);
+                // FIXME: Clears store token but not the auth0 state
+                await this.$store.dispatch('logout');
+              }
+              finally {
+                this.loading = false
+              }
 
             },
         },
