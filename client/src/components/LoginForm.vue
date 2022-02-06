@@ -54,6 +54,9 @@
       watch: {
         auth0ready (val) {
           console.log(`auth0ready ${val}, authn: ${this.auth.isAuthenticated}`)
+          if (val && this.auth.isAuthenticated) {
+            this.auth0validate()
+          }
         }
       },
       methods: {
