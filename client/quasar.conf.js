@@ -8,6 +8,13 @@
 /* eslint-env node */
 /* eslint-disable @typescript-eslint/no-var-requires */
 const { configure } = require('quasar/wrappers')
+const {reduce} = require('lodash');
+const pathsToProxy = ['/api', '/gainstrack', '/functions'];
+const proxyProxyConfig = reduce(
+  pathsToProxy,
+  (obj, path) => ({ ...obj, [path]: { target: 'https://poc.gainstrack.com', changeOrigin:true, secure:false } }),
+  {}
+);
 
 module.exports = configure(function (ctx) {
   return {
@@ -31,6 +38,7 @@ module.exports = configure(function (ctx) {
       // 'composition-api',
       'notify',
       'components',
+      'sentry'
     ],
 
     // https://quasar.dev/quasar-cli/quasar-conf-js#Property%3A-css
@@ -55,12 +63,7 @@ module.exports = configure(function (ctx) {
     // Full list of options: https://quasar.dev/quasar-cli/quasar-conf-js#Property%3A-build
     build: {
       vueRouterMode: 'history', // available values: 'hash', 'history'
-      chainWebpack (chain) {
-        // needed for csv-stringify
-        const nodePolyfillWebpackPlugin = require('node-polyfill-webpack-plugin')
-        chain.plugin('node-polyfill').use(nodePolyfillWebpackPlugin)
-      }
-      // transpile: false,
+  // transpile: false,
 
       // Add dependencies for transpiling with Babel (Array of string/regex)
       // (from node_modules, which are by default not transpiled).
@@ -97,22 +100,7 @@ module.exports = configure(function (ctx) {
       },
       port: 8080,
       open: false, // opens browser window automatically
-      proxy: {
-        // proxy all requests starting with /api to jsonplaceholder
-        '/api' : {
-          target: 'http://localhost:9050',
-          secure: false
-        },
-        '/gainstrack' : {
-          target: 'http://localhost:5001',
-          secure: false
-        },
-        '/functions' : {
-          target: 'http://localhost:5001',
-          pathRewrite: {'^/functions' : '/gainstrack/us-central1'},
-          secure: false
-        }
-      }
+      proxy: proxyProxyConfig
     },
 
     // https://quasar.dev/quasar-cli/quasar-conf-js#Property%3A-framework
