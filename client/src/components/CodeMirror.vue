@@ -63,7 +63,7 @@
                 }
                 if (this.$emit) {
                   this.$emit('change', cm.getValue());
-                  this.$emit('input', cm.getValue())
+                  this.$emit('update:modelValue', cm.getValue())
                 }
             });
         },
