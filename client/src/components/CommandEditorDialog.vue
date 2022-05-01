@@ -1,6 +1,6 @@
 <template>
   <q-dialog ref="dialog" @hide="onDialogHide">
-    <add-cmd :input="cmd" @cancel="onDialogHide" @command-added="onOKClick"
+    <add-cmd :modelValue="cmd" @cancel="onDialogHide" @command-added="onOKClick"
              title="Add/Edit Record"
              hide-journal
              has-cancel
@@ -11,18 +11,19 @@
 </template>
 
 <script lang="ts">
-  import Vue from 'vue';
-  import {PropType} from '@vue/composition-api';
+  import {defineComponent} from 'vue';
+  import {PropType} from 'vue';
   import {AccountCommandDTO} from 'src/lib/assetdb/models';
   import {QDialog} from 'quasar';
   import AddCmd from 'pages/AddCmd.vue';
 
-  export default Vue.extend({
+  export default defineComponent({
     name: 'CommandEditorDialog',
     components: {AddCmd},
     props: {
       cmd: Object as PropType<AccountCommandDTO>
     },
+    emits: ['ok', 'hide'],
     methods: {
       // following method is REQUIRED
       // (don't change its name --> "show")

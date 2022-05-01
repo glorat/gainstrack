@@ -4,7 +4,7 @@
       <div class="text-h6">{{ title }}</div>
     </q-card-section>
     <q-card-section v-if="!success">
-      <command-editor :input="c" v-on:command-changed="commandChanged"
+      <command-editor :modelValue="c" v-on:command-changed="commandChanged"
                       v-on:gainstrack-changed="gainstrackChange($event)"
                       :options="options"
       ></command-editor>
@@ -103,7 +103,7 @@
       options: {
         type: Object,
       },
-      input: Object,
+      modelValue: Object,
       commandColumns: {
         type: Array,
         default: () => [],
@@ -134,8 +134,8 @@
       ...mapGetters(['baseCcy']),
       c () {
         let c = {}
-        if (this.input) {
-          c = { ...this.input }
+        if (this.modelValue) {
+          c = { ...this.modelValue }
         }
         c.commandType = c.commandType || this.$route.query.cmd
         return c
@@ -151,7 +151,7 @@
         this.testCommand();
       },
       commandChanged (cmd) {
-        this.$emit('input', cmd)
+        this.$emit('update:modelValue', cmd)
       },
       cancel () {
         this.$emit('cancel')

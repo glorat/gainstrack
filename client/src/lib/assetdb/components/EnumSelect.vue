@@ -1,5 +1,5 @@
 <template>
-  <q-select :value="modelValue" @input="$emit('input', $event)" :label="label"
+  <q-select :modelValue="modelValue" @update:modelValue="$emit('update:modelValue', $event)" :label="label"
             :options="displayOptions" emit-value
             use-input @filter="filterFn"
             :display-value="displayValue"
@@ -7,7 +7,7 @@
             @clear="$emit('clear')"
   >
     <template v-slot:option="scope">
-      <q-item v-bind="scope.itemProps" v-on="scope.itemEvents">
+      <q-item v-bind="scope.itemProps">
         <q-item-section>
           <q-item-label>{{ scope.opt.value }}</q-item-label>
           <q-item-label caption>{{ scope.opt.description }}</q-item-label>
@@ -18,10 +18,10 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import {defineComponent} from 'vue';
 import {EnumEntry} from '../enums';
 
-export default Vue.extend({
+export default defineComponent({
   name: 'EnumSelect',
   // Forward looking for vue-3
   model: {
@@ -35,7 +35,7 @@ export default Vue.extend({
     dense: Boolean,
   },
   data() {
-    const displayOptions: EnumEntry[] = this.options
+    const displayOptions: EnumEntry[] = this.options ?? []
     return {
       displayOptions,
     }
@@ -44,13 +44,13 @@ export default Vue.extend({
     filterFn (val: string, update: any) {
       update(() => {
         const needle = val.toLowerCase()
-        this.displayOptions = this.options.filter(v => v.value.toLowerCase().indexOf(needle) > -1)
+        this.displayOptions = this.options?.filter(v => v.value.toLowerCase().indexOf(needle) > -1) ?? []
       })
     }
   },
   computed: {
     displayValue(): string|undefined {
-      return this.options.find(x => x.value === this.modelValue)?.label
+      return this.options?.find(x => x.value === this.modelValue)?.label
     },
   }
 })

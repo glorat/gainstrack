@@ -2,8 +2,8 @@
   <div>
     <q-stepper v-model="step" header-nav>
       <q-step :name="1" title="Filter" :icon="matFilterAlt">
-        <property-editor v-model="searchObj.asset" :schema="investmentAssetSearchSchema" dense @property-added="onPropAdded($event, 'asset')"></property-editor>
-        <property-editor v-model="searchObj" :schema="quoteSourceSearchSchema" dense @property-added="onPropAdded($event)"></property-editor>
+        <property-editor :model-value="searchObj.asset" @update:modelValue="onAssetUpdate" :schema="investmentAssetSearchSchema" dense @property-added="onPropAdded($event, 'asset')"></property-editor>
+        <property-editor :model-value="searchObj" @update:modelValue="onObjUpdated" :schema="quoteSourceSearchSchema" dense @property-added="onPropAdded($event)"></property-editor>
       </q-step>
       <q-step :name="2" title="Advanced Filter" :icon="matFilterAlt">
         <div class="row" v-for="(row,idx) in query">
@@ -18,7 +18,7 @@
           </div>
         </div>
         <div class="row" title="">
-          <q-btn color="secondary" label="Custom Filter" @click="params.query.push({where:['','==','']})"></q-btn>
+          <q-btn color="secondary" label="Custom Filter" @click="$emit('update:params', [...params, {where:['','==','']}])"></q-btn>
         </div>
 
       </q-step>
@@ -36,7 +36,7 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
+import {defineComponent} from 'vue'
 import {
   investmentAssetSearchSchema,
   quoteSourceFieldProperties, quoteSourceSearchSchema,
@@ -48,7 +48,7 @@ import {includes} from 'lodash';
 import PropertyEditor from './PropertyEditor.vue';
 import {FieldProperty, findProperty, getFieldNameList} from '../schema';
 
-export default Vue.extend({
+export default defineComponent({
   name: 'QuoteSourceFilter',
   components: {FieldEditor, PropertyEditor},
   props: {
@@ -111,6 +111,15 @@ export default Vue.extend({
       this.$emit('search', params);
       this.$emit('update:column-editing', false)
     },
+    onAssetUpdate(asset:any) {
+      const searchObj = {...this.params.searchObj, asset};
+      const params = {...this.params, searchObj};
+      this.$emit('update:params', params)
+    },
+    onObjUpdated(searchObj:any) {
+      const params = {...this.params, searchObj};
+      this.$emit('update:params', params);
+    },
     // onPropAdded(field: string, path?: string) {
     onPropAdded() {
       this.refreshColumns();
@@ -143,8 +152,10 @@ export default Vue.extend({
             .map( x => `asset.${x.name}`);
           final = [name, ...one, ...two];
         }
-        this.selectedColumns.splice(0, this.selectedColumns.length, ...final);
+        const a = [...this.selectedColumns ?? []];
 
+        a.splice(0, this.selectedColumns!.length, ...final);
+        this.$emit('update:selectedColumns', a);
 
       }
     }

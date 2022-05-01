@@ -1,8 +1,8 @@
 <template>
   <q-select
     :label="label || 'Asset'"
-    :value="value"
-    @input-value="onSelectChanged"
+    :modelValue="value"
+    @update:modelValue="onSelectChanged"
     use-input
     hide-selected
     fill-input
@@ -15,7 +15,7 @@
 </template>
 
 <script lang="ts">
-  import { defineComponent } from '@vue/composition-api'
+  import { defineComponent } from 'vue'
 
   interface MyOpt {
     value: string
@@ -28,6 +28,7 @@
   export default defineComponent({
     name: 'AssetId',
     props: {value: String, label: String, inputClass: {}},
+    emits: ['update:modelValue'],
     data() {
       return {
         filteredOptions: [] as MyOpt[],
@@ -66,9 +67,9 @@
           }
         })
       },
-      onSelectChanged(ev: string) {
-        if (ev !== this.value) {
-          this.$emit('input', ev.toUpperCase());
+      onSelectChanged(ev: any) {
+        if (ev.value !== this.value) {
+          this.$emit('update:modelValue', ev.value.toUpperCase());
         }
       },
     }

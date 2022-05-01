@@ -2,14 +2,14 @@
   <div>
     <pre><span v-for="row in data"><template v-if="row.targetValue !== row.value">BUY {{ formatNumber(row.targetValue - row.value) }} {{ baseCcy }} of {{ row.assetId }}<template v-if="row.price!==1"> ({{ formatNumber((row.targetValue - row.value)/row.price) }} {{row.assetId}} @{{ formatNumber(row.price) }} {{baseCcy}})</template></template>
 </span></pre>
-    <q-table :data="data" :columns="columns" :pagination="pagination" hide-bottom>
+    <q-table :rows="data" :columns="columns" :pagination="pagination" hide-bottom>
     </q-table>
   </div>
 </template>
 
 <script lang="ts">
 import {ContributionCalculatorEntries} from '../lib/ContributionCalculator';
-import {defineComponent} from '@vue/composition-api';
+import {defineComponent} from 'vue';
 import {formatNumber, formatPerc} from 'src/lib/utils';
 
 export default defineComponent({

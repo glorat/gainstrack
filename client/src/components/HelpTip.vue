@@ -5,7 +5,7 @@
 </template>
 
 <script lang="ts">
-  import Vue from 'vue';
+  import {defineComponent} from 'vue';
   import {matInfo} from '@quasar/extras/material-icons';
 
   const texts: Record<string, string> = {
@@ -18,7 +18,7 @@
     balOtherAccount: 'Select the account against which an adjustment will be booked to make this account balance. For one-off adjustments, Equity:Opening can be used. For current account, Expenses:General makes sense',
   };
 
-  export default Vue.extend({
+  export default defineComponent({
     name: 'HelpTip',
     data() {
       return {
@@ -27,7 +27,7 @@
     },
     computed: {
       tipText(): string {
-        return texts[this.tag] || `${this.tag} does not have help text defined`;
+        return texts[this.tag || ''] || `${this.tag} does not have help text defined`;
       }
     },
     props: {

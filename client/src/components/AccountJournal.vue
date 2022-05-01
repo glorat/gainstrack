@@ -1,7 +1,7 @@
 <template>
   <div>
     <div v-if="c.commandType">
-      <add-cmd :input="c" :command-columns="commandTableColumns" @cancel="addCancel" has-cancel></add-cmd>
+      <add-cmd :modelValue="c" :command-columns="commandTableColumns" @cancel="addCancel" has-cancel></add-cmd>
     </div>
     <div v-if="!c.commandType">
       Add Entry
@@ -23,10 +23,10 @@
   // eslint-disable-next-line no-unused-vars
   import {CommandConfig, commands, defaultCommand} from '../config/commands';
   import {mapGetters} from 'vuex';
-  import Vue from 'vue';
+  import {defineComponent} from 'vue';
   import {MyState} from 'src/store';
 
-  export default Vue.extend({
+  export default defineComponent({
     name: 'AccountJournal',
     components: {AddCmd, CommandTable},
     props: ['accountId'],
@@ -61,7 +61,8 @@
           this.$notify.success(response.data);
           await this.$store.dispatch('reload');
         } catch (error) {
-          this.$notify.error(error.response.data)
+          const e:any = error;
+          this.$notify.error(e?.response?.data || e)
         }
       },
     },

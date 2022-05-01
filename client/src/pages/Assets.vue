@@ -6,7 +6,7 @@
 
 <script lang="ts">
   import AssetView from '../components/AssetView.vue';
-  import Vue from 'vue';
+  import {defineComponent} from 'vue';
   import axios from 'axios';
   // eslint-disable-next-line no-unused-vars
   import {AssetResponse, PostingEx} from '../lib/assetdb/models';
@@ -16,7 +16,7 @@
   import {isSubAccountOf, postingsToPositionSet} from 'src/lib/utils';
   import {mapGetters} from 'vuex';
 
-  export default Vue.extend({
+  export default defineComponent({
     name: 'Assets',
     components: {AssetView},
     data() {
@@ -52,11 +52,13 @@
             this.assetResponse = assetResponse;
           }
         } catch (error) {
+          const e:any = error;
           console.error(error);
-          this.$notify.error(error);
+          this.$notify.error(e.toString());
         } finally {
           this.loading = false;
         }
+
       }
     },
     mounted() {

@@ -4,45 +4,36 @@
         <div v-if="isAuthenticated">
             Logged in as <em>{{  authName }}</em>
             <form @submit.prevent="logout()" v-if="auth0authned">
-              <input type="submit" name="logout" value="Logout" :disabled="loading || $auth.loading" >
+              <input type="submit" name="logout" value="Logout" :disabled="loading || auth.loading" >
             </form>
         </div>
       <div v-else>
-        <button class="login" :disabled="$auth.loading" @click="auth0login">Sign Up/Log in</button>
+        <button class="login" :disabled="auth.loading" @click="auth0login">Sign Up/Log in</button>
+<!--        <button class="login" :disabled="auth.loading" @click="auth0validate">Test</button>-->
+
       </div>
     </div>
 </template>
 
 <script>
-import Vue from 'vue';
 
-// Import the plugin here
-import {Auth0Plugin} from '../auth';
-
-Vue.use(Auth0Plugin, {
-        domain: process.env.VUE_APP_AUTH0_ID + '.auth0.com',
-        clientId: process.env.VUE_APP_AUTH0_CLIENT,
-        audience: process.env.VUE_APP_AUTH0_AUDIENCE,
-        // lint-ignore
-        // onRedirectCallback: appState => {
-        //   router.push(
-        //       appState && appState.targetUrl
-        //           ? appState.targetUrl
-        //           : window.location.pathname
-        //   );
-        // }
-    });
+    import { useAuth } from 'src/auth'
 
     export default {
         name: 'LoginForm',
         data() {
+          const auth = useAuth();
             return {
-                loading: false,
+              auth,
+              loading: false,
             }
         },
         computed: {
+          auth0ready() {
+            return !this.auth.loading;
+          },
           auth0authned() {
-            return this.$auth.isAuthenticated
+            return this.auth.isAuthenticated
           },
           firebaseAuthed() {
             return !!this.$store.state.user;
@@ -52,7 +43,7 @@ Vue.use(Auth0Plugin, {
           },
           authName() {
             if (this.auth0authned) {
-              return this.$auth.user.name
+              return this.auth.user?.name ?? 'anon'
             } else if (this.firebaseAuthed) {
               return this.$store.state.user.displayName
             } else {
@@ -60,45 +51,43 @@ Vue.use(Auth0Plugin, {
             }
           }
         },
-        watch: {
-          // FIXME: Is this relying on a race condition to be invoked on startup??
-            auth0authned(val) {
-                if (val) {
-                    this.auth0validate();
-                }
-            }
-        },
-        methods: {
+      watch: {
+        auth0ready (val) {
+          console.log(`auth0ready ${val}, authn: ${this.auth.isAuthenticated}`)
+          if (val && this.auth.isAuthenticated) {
+            this.auth0validate()
+          }
+        }
+      },
+      methods: {
             async logout() {
-                if (this.$auth.isAuthenticated) {
-                    this.$auth.logout({
+                if (this.auth.isAuthenticated) {
+                    this.auth.logout({
                         returnTo: window.location.origin
                     });
                 }
             },
             // Log the user in
             auth0login() {
-                this.$auth.loginWithRedirect();
-            },
-            async loginWithToken(auth) {
-              this.loading = true;
-                const notify = this.$notify;
-                const getToken = async () => await auth.getTokenSilently();
-                try {
-                  await this.$store.dispatch('loginWithToken', getToken)
-                }
-                catch (error) {
-                  notify.error('Something went wrong logging in');
-                  console.error(error);
-                  this.$store.dispatch('logout');
-                }
-                finally {
-                  this.loading = false
-                }
-
+                this.auth.loginWithRedirect();
             },
             async auth0validate() {
-                await this.loginWithToken(this.$auth)
+              const auth = this.auth;
+              this.loading = true;
+              const notify = this.$notify;
+              const getToken = async () => await auth.getTokenSilently();
+              try {
+                await this.$store.dispatch('loginWithToken', getToken)
+              }
+              catch (error) {
+                notify.error('Something went wrong logging in');
+                console.error(error);
+                // FIXME: Clears store token but not the auth0 state
+                await this.$store.dispatch('logout');
+              }
+              finally {
+                this.loading = false
+              }
 
             },
         },

@@ -4,7 +4,7 @@
           <command-date-editor v-model="c.date"></command-date-editor>
         </div>
         <div v-if="!hideAccount">
-            <account-selector class="c-account-id" v-model="c.accountId" v-on:input="accountIdChanged" :account-list="balanceableAccounts"></account-selector>
+            <account-selector class="c-account-id" v-model="c.accountId" @update:modelValue="accountIdChanged" :account-list="balanceableAccounts"></account-selector>
         </div>
         <div>
             <balance-editor label="Balance" class="c-balance" v-model="c.balance"></balance-editor>
@@ -21,14 +21,14 @@
     import BalanceEditor from '../../lib/assetdb/components/BalanceEditor.vue';
     import {CommandEditorMixin} from '../../mixins/CommandEditorMixin';
     import AccountSelector from '../AccountSelector.vue';
-    import Vue from 'vue';
+    import { defineComponent } from 'vue';
 
 
     // interface MyData {
     //     c: AccountCommandDTO
     // }
 
-    export default Vue.extend({
+    export default defineComponent({
         name: 'BalanceStatement',
         props: {cmd: Object},
         mixins: [CommandEditorMixin],

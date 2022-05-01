@@ -1,6 +1,6 @@
 <template>
   <my-page padding>
-    <quote-source-filter :params="params"
+    <quote-source-filter v-model:params="params"
                          :selected-columns="selectedColumns" @update:selected-columns="selectedColumns = $event"
                          :column-editing="columnEditing" @update:column-editing="columnEditing = $event"
                          @preview="onPreview"
@@ -21,19 +21,17 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import {defineComponent} from 'vue';
 import {getAllQuoteSources, QuoteSource} from 'src/lib/assetdb/assetDb';
 // import QuoteSourceTable from 'src/lib/assetdb/components/QuoteSourceTable.vue';
 // import QuoteSourceFilter from 'src/lib/assetdb/components/QuoteSourceFilter.vue';
 
-import firebase from 'firebase/compat/app';
-import CollectionReference = firebase.firestore.CollectionReference;
 import {debounce} from 'quasar';
 import {quoteSourceFieldProperties} from 'src/lib/assetdb/AssetSchema';
 import {applyQueries, searchObjToQuery} from 'src/lib/assetdb/schema';
 import {QuoteSourceFilter, QuoteSourceTable} from 'src/lib/assetdb';
 
-function queryArgsToObj(args: string | (string | null)[]) {
+function queryArgsToObj(args: any) {
   try {
     if (args && 'string'===typeof(args)) {
       const params = JSON.parse(args);
@@ -49,7 +47,7 @@ function queryArgsToObj(args: string | (string | null)[]) {
 
 const defaultParams = () => ({query:[], searchObj:{asset:{}}, fields: []});
 
-export default Vue.extend({
+export default defineComponent({
   name: 'AssetDb',
   components: {QuoteSourceTable, QuoteSourceFilter},
   data() {
@@ -65,7 +63,8 @@ export default Vue.extend({
 
   methods: {
     async refresh() {
-      const params = queryArgsToObj(this.$route.query.args) ?? defaultParams();
+      const queryArgs = this.$route.query['args'];
+      const params = queryArgsToObj(queryArgs) ?? defaultParams();
 
       // Perform some sanitising/defaulting
       if (!params.query) params.query = [];
@@ -93,13 +92,14 @@ export default Vue.extend({
         const cq = [...advancedQuery, ...searchObjQuery];
 
         if (cq && cq.length && cq[0].where) {
-          const filter = (col: CollectionReference) => applyQueries(col, cq).limit(actualLimit);
+          const filter = (col: any) => applyQueries(col, cq).limit(actualLimit);
           this.quoteSources = await getAllQuoteSources(filter)
         } else {
-          this.quoteSources = await getAllQuoteSources(col => col.limit(actualLimit));
+          this.quoteSources = await getAllQuoteSources((col:any) => col.limit(actualLimit));
         }
-      } catch (e) {
-        this.$notify.error(e.message);
+      } catch (error) {
+        const e:any = error;
+        this.$notify.error(e.message ?? e.toString());
       } finally {
         this.loading = false;
       }

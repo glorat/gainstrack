@@ -1,5 +1,10 @@
 import { route } from 'quasar/wrappers'
-import VueRouter from 'vue-router'
+import {
+  createMemoryHistory,
+  createRouter,
+  createWebHashHistory,
+  createWebHistory, Router,
+} from 'vue-router';
 import {MyState} from '../store'
 import routes, { appTitle, appDescription } from './routes'
 
@@ -8,27 +13,38 @@ import routes, { appTitle, appDescription } from './routes'
  * directly export the Router instantiation
  */
 
-export default route<MyState>(function ({ Vue }) {
-  Vue.use(VueRouter);
+export let router: Router;
 
-  const Router = new VueRouter({
-    scrollBehavior: () => ({ x: 0, y: 0 }),
+export default route<MyState>(function(/* { store, ssrContext } */) {
+  const createHistory = process.env.SERVER
+    ? createMemoryHistory
+    : (process.env.VUE_ROUTER_MODE === 'history' ? createWebHistory : createWebHashHistory);
+
+
+
+  router = createRouter({
+    scrollBehavior: () => ({left: 0, top: 0}),
     routes,
 
-    // Leave these as is and change from quasar.conf.js instead!
+
+    // Leave this as is and make changes in quasar.conf.js instead!
     // quasar.conf.js -> build -> vueRouterMode
     // quasar.conf.js -> build -> publicPath
-    mode: process.env.VUE_ROUTER_MODE,
-    base: process.env.VUE_ROUTER_BASE
+    // mode: process.env.VUE_ROUTER_MODE,
+    // base: process.env.VUE_ROUTER_BASE,
+
+    history: createHistory(
+      process.env.MODE==='ssr' ? void 0:process.env.VUE_ROUTER_BASE
+    ),
   });
 
-  Router.afterEach((to) => {
-    document.title = (to.meta.title || appTitle);
+  router.afterEach((to) => {
+    const title: string = to.meta['title']as string|undefined ?? appTitle
+    document.title = title;
+    const desc:string = to.meta['description'] as string|undefined?? appDescription
     document
       .getElementsByTagName('meta')
-      .namedItem('description')?.setAttribute('content',to.meta.description || appDescription)
-
+      .namedItem('description')?.setAttribute('content',desc)
   });
-
-  return Router
-})
+  return router
+});

@@ -2,15 +2,15 @@
   <q-select
     use-input
     clearable
-    :value="value"
-    @input="$emit('input', $event)"
+    :modelValue="value"
+    @update:modelValue="$emit('update:modelValue', $event)"
     :options="tickerOptions"
     @filter="tickerSearch"
   />
 </template>
 
 <script lang="ts">
-import {defineComponent} from '@vue/composition-api';
+import {defineComponent} from 'vue';
 import {QuoteSource} from '../assetDb';
 
 /**

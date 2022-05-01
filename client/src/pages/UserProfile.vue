@@ -26,14 +26,15 @@
 </template>
 
 <script lang="ts">
-  import Vue from 'vue';
+  import {defineComponent} from 'vue';
   import {MyState} from 'src/store';
   import firebase from 'firebase/compat/app';
   import {getUserRole, setDisplayName} from 'src/lib/assetdb/assetDb';
-  import DocumentData = firebase.firestore.DocumentData;
+  import {DocumentData} from  'firebase/firestore';
   import {matLogin} from '@quasar/extras/material-icons';
+  import {useAuth} from 'src/auth';
 
-  export default Vue.extend({
+  export default defineComponent({
     name: 'UserProfile',
     props: {
       id: {
@@ -44,7 +45,9 @@
       const userRoles: DocumentData|undefined = undefined;
       const loading = false;
       const newDisplayName = '';
+      const auth = useAuth();
       return {
+        auth,
         userRoles: userRoles as DocumentData|undefined,
         loading,
         newDisplayName,
@@ -80,7 +83,8 @@
           this.refresh()
         }
         catch (error) {
-          this.$notify.error(error.message)
+          const e:any = error;
+          this.$notify.error(e?.message)
         } finally {
           this.loading = false;
         }
@@ -96,7 +100,7 @@
         return this.$store.state;
       },
       auth0authned():boolean {
-        return this.$auth.isAuthenticated
+        return this.auth.isAuthenticated
       },
       firebaseAuthed():boolean {
         return !!this.state.user;
@@ -109,9 +113,9 @@
       },
       authName():string {
         if (this.auth0authned) {
-          return this.$auth.user.name
+          return this.auth.user?.name ?? 'anon'
         } else if (this.firebaseAuthed) {
-          return this.$store.state.user.displayName
+          return this.$store.state.user?.displayName || 'anon'
         } else {
           return 'Unknown'
         }

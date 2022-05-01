@@ -89,7 +89,7 @@
             this.$watch('options', this.react, { deep: !this.watchShallow })
             this.$watch('layout', this.relayout, { deep: !this.watchShallow })
         },
-        beforeDestroy() {
+        beforeUnmount() {
             window.removeEventListener('resize', this.__resizeListener)
             this.__generalListeners.forEach(obj => this.$refs.container.removeAllListeners(obj.fullName))
             Plotly.purge(this.$refs.container)

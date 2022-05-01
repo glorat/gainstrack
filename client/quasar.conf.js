@@ -8,13 +8,23 @@
 /* eslint-env node */
 /* eslint-disable @typescript-eslint/no-var-requires */
 const { configure } = require('quasar/wrappers')
+const {reduce} = require('lodash');
+const pathsToProxy = ['/api', '/gainstrack', '/functions'];
+const proxyProxyConfig = reduce(
+  pathsToProxy,
+  (obj, path) => ({ ...obj, [path]: { target: 'https://poc.gainstrack.com', changeOrigin:true, secure:false } }),
+  {}
+);
 
 module.exports = configure(function (ctx) {
   return {
     // https://quasar.dev/quasar-cli/supporting-ts
     supportTS: {
       tsCheckerConfig: {
-        eslint: true
+        eslint: {
+          enabled: true,
+          files: './src/**/*.{ts,tsx,js,jsx,vue}',
+        },
       }
     },
 
@@ -28,6 +38,7 @@ module.exports = configure(function (ctx) {
       // 'composition-api',
       'notify',
       'components',
+      'sentry'
     ],
 
     // https://quasar.dev/quasar-cli/quasar-conf-js#Property%3A-css
@@ -52,8 +63,7 @@ module.exports = configure(function (ctx) {
     // Full list of options: https://quasar.dev/quasar-cli/quasar-conf-js#Property%3A-build
     build: {
       vueRouterMode: 'history', // available values: 'hash', 'history'
-
-      // transpile: false,
+  // transpile: false,
 
       // Add dependencies for transpiling with Babel (Array of string/regex)
       // (from node_modules, which are by default not transpiled).
@@ -70,78 +80,39 @@ module.exports = configure(function (ctx) {
       // extractCSS: false,
 
       // https://quasar.dev/quasar-cli/handling-webpack
-      extendWebpack (cfg) {
-        // linting is slow in TS projects, we execute it only for production builds
-        if (ctx.prod) {
-          cfg.module.rules.push({
-            enforce: 'pre',
-            test: /\.(js|vue)$/,
-            loader: 'eslint-loader',
-            exclude: /node_modules/
-          })
-        }
-      }
+      // extendWebpack (cfg) {
+      //   // linting is slow in TS projects, we execute it only for production builds
+      //   if (ctx.prod) {
+      //     cfg.module.rules.push({
+      //       enforce: 'pre',
+      //       test: /\.(js|vue)$/,
+      //       loader: 'eslint-loader',
+      //       exclude: /node_modules/
+      //     })
+      //   }
+      // }
     },
 
     // Full list of options: https://quasar.dev/quasar-cli/quasar-conf-js#Property%3A-devServer
     devServer: {
-      https: false,
+      server: {
+        type: 'http'
+      },
       port: 8080,
       open: false, // opens browser window automatically
-      proxy: {
-        // proxy all requests starting with /api to jsonplaceholder
-        '/api' : {
-          target: 'http://localhost:9050',
-          secure: false
-        },
-        '/gainstrack' : {
-          target: 'http://localhost:5001',
-          secure: false
-        },
-        '/functions' : {
-          target: 'http://localhost:5001',
-          pathRewrite: {'^/functions' : '/gainstrack/us-central1'},
-          secure: false
-        }
-      }
+      proxy: proxyProxyConfig
     },
 
     // https://quasar.dev/quasar-cli/quasar-conf-js#Property%3A-framework
     framework: {
       iconSet: 'svg-material-icons', // Quasar icon set
-      lang: 'en-us', // Quasar language pack
+      lang: 'en-US', // Quasar language pack
       config: {},
 
       // Possible values for "importStrategy":
       // * 'auto' - (DEFAULT) Auto-import needed Quasar components & directives
       // * 'all'  - Manually specify what to import
       importStrategy: 'auto',
-
-      components: [
-        'QFile',
-        'QLayout',
-        'QHeader',
-        'QDrawer',
-        'QPageContainer',
-        'QPage',
-        'QToolbar',
-        'QToolbarTitle',
-        'QBtn',
-        'QIcon',
-        'QList',
-        'QItem',
-        'QItemSection',
-        'QItemLabel',
-        'QSeparator',
-        'QScrollArea',
-        'QBadge',
-        'QPageSticky',
-        'QTable',
-        'QRadio',
-      ],
-      directives: [
-        'Ripple'
-      ],
 
       // Quasar plugins
       plugins: ['Notify', 'LoadingBar', 'Dialog', 'Meta']

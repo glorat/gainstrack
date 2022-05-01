@@ -3,6 +3,7 @@
     <form id="entry-filters" class="wide-form">
       <span class="spacer"></span>
       <span>Filters: </span>
+      <!-- FIXME: Mutating object in child component -->
       <button-toggle v-for="t in entryTypes" :key="t" :name="t" :off-state="offState"></button-toggle>
 
     </form>
@@ -62,7 +63,7 @@
     },
     methods: {
       rowClick (row) {
-        this.$set(this.visiblePostings, row, !this.visiblePostings[row])
+        this.visiblePostings[row] = !this.visiblePostings[row]
       },
     },
     computed: {

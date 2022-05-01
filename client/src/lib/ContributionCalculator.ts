@@ -42,7 +42,7 @@ export class ContributionCalculator {
     this.contrib = contrib;
     this.targetTotal += contrib;
     this.updateDeviation();
-
+debugger;
     for (let i=0; i<this.entries.length-1; i++) {
       const toAdjust = this.entries.slice(0,i+1);
       // const currentDev = this.entries[i].deviation

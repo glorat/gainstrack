@@ -1,7 +1,6 @@
 import {myAuth, myFirestore} from './myfirebase';
 import firebase from 'firebase/compat/app';
-import CollectionReference = firebase.firestore.CollectionReference;
-import Query = firebase.firestore.Query;
+// import Query = firebase.firestore.Query;
 import FieldValue = firebase.firestore.FieldValue;
 import { uniq, pick } from 'lodash';
 
@@ -132,13 +131,13 @@ export async function upsertQuoteSource(qsrc: QuoteSource): Promise<void> {
 //   return all.find(x => x.id === id)
 // }
 
-export async function getAllQuoteSources(filter?: (col:CollectionReference) => Query|CollectionReference): Promise<QuoteSource[]> {
+export async function getAllQuoteSources(filter?: any): Promise<QuoteSource[]> {
   const dataRef = quoteSourceDb();
   const filteredRef = filter? filter(dataRef) : dataRef;
 
   const snapshot = await filteredRef.get();
   const ret:QuoteSource[] = [];
-  snapshot.forEach(doc => {
+  snapshot.forEach((doc:any) => {
     const data = doc.data();
     data.id = doc.id;
     const qs = sanitiseQuoteSource(data);
@@ -176,8 +175,8 @@ function prepareQuoteSourceForSave(qs: QuoteSource) {
 
 export async function getQuoteSourceHistory(id: string): Promise<QuoteSourceHistory[]> {
   const ref = quoteSourceHistoryDb()
-    .where('payload.id', '==', id)
-    .orderBy('createTime', 'desc'); // orderBy createTime
+  .where('payload.id', '==', id)
+  .orderBy('createTime', 'desc'); // orderBy createTime
   const snapshot = await ref.get()
   const ret:QuoteSourceHistory[] = [];
   snapshot.forEach(doc => {

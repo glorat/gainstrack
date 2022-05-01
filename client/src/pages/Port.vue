@@ -14,7 +14,7 @@
         v-model="file"
         label="Drop file here or click to upload"
         filled
-        @input="onFileInput"
+        @update:modelValue="onFileInput"
       >
         <template v-slot:before>
           <q-icon :name="matCloudUpload" />
@@ -25,17 +25,16 @@
 
 <script lang="ts">
     import { matCloudUpload } from '@quasar/extras/material-icons';
-    import Vue from 'vue';
+    import {defineComponent} from 'vue';
     import axios from 'axios';
 
-    export default Vue.extend({
+    export default defineComponent({
         name: 'Port',
       data() {
         return {
           matCloudUpload,
           file: undefined as undefined | File
         }
-
       },
         methods: {
           onFileInput() {

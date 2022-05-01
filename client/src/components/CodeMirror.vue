@@ -10,7 +10,7 @@
     export default {
         name: 'codemirror',
         props: {
-            value: {
+            modelValue: {
                 type: String,
                 default: '',
             },
@@ -32,10 +32,11 @@
             }
         },
         data() {
-            return {
-                skipNextChangeEvent: false,
-                myMarks: [],
-            }
+          return {
+            value: this.modelValue,
+            skipNextChangeEvent: false,
+            myMarks: [],
+          }
         },
         ready() {
             this.editor = CodeMirror.fromTextArea(this.$el.querySelector('textarea'), this.options);
@@ -47,7 +48,8 @@
                 }
               this.value = cm.getValue();
                 if (this.$emit) {
-                  this.$emit('change', cm.getValue())
+                  this.$emit('change', this.value)
+                  this.$emit('update:modelValue', this.value)
                 }
             });
         },
@@ -61,12 +63,12 @@
                 }
                 if (this.$emit) {
                   this.$emit('change', cm.getValue());
-                  this.$emit('input', cm.getValue())
+                  this.$emit('update:modelValue', cm.getValue())
                 }
             });
         },
         watch: {
-            value(newVal) {
+            modelValue(newVal) {
                 const editorValue = this.editor.getValue();
                 if (newVal !== editorValue) {
                     this.skipNextChangeEvent = true;
@@ -112,7 +114,7 @@
                 })
             },
         },
-        beforeDestroy() {
+        beforeUnmount() {
             if (this.editor) {
                 this.editor.toTextArea()
             }

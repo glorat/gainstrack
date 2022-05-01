@@ -3,7 +3,7 @@
 </template>
 
 <script lang="ts">
-  import Vue from 'vue';
+  import {defineComponent} from 'vue';
   import {myfirebase} from 'src/lib/assetdb';
   import myAnalytics = myfirebase.myAnalytics;
   import myAuth = myfirebase.myAuth;
@@ -19,7 +19,7 @@
     }
   }
 
-  export default Vue.extend({
+  export default defineComponent({
     name: 'MyFirebase',
     methods: {
       async refreshFirebaseToken() {

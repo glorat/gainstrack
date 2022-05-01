@@ -5,22 +5,22 @@
         </div>
         <div>
           <account-selector class="c-account-id" placeholder="Source Account"
-                            :value="dc.accountId" :original="c.accountId"
-                            @input="c.accountId=$event" :account-list="transferableAccounts"></account-selector>
+                            :modelValue="dc.accountId" :original="c.accountId"
+                            @update:modelValue="c.accountId=$event" :account-list="transferableAccounts"></account-selector>
         </div>
         <div>
-          <balance-editor label="Transfer Amount" class="c-change" :value="dc.change" :original="c.change" @input="c.change=$event"></balance-editor>
+          <balance-editor label="Transfer Amount" class="c-change" :modelValue="dc.change" :original="c.change" @update:modelValue="c.change=$event"></balance-editor>
         </div>
         <div>
           <account-selector class="c-other-account" placeholder="Target Account"
-                            :value="dc.otherAccount" :original="c.otherAccount"
-                            @input="c.otherAccount=$event" :account-list="transferableAccounts"></account-selector>
+                            :modelValue="dc.otherAccount" :original="c.otherAccount"
+                            @update:modelValue="c.otherAccount=$event" :account-list="transferableAccounts"></account-selector>
 
         </div>
         <div>
           <balance-editor label="Target Amount" class="c-options-target-change"
-                          :value="dc.options.targetChange" :original="c.options.targetChange || {}"
-                          @input="c.options = {...c.options, targetChange:$event}"
+                          :modelValue="dc.options.targetChange" :original="c.options.targetChange || {}"
+                          @update:modelValue="c.options = {...c.options, targetChange:$event}"
                           ></balance-editor>
         </div>
 

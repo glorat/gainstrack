@@ -6,7 +6,7 @@ import IrrSummary from '../pages/IrrSummary.vue';
 import Journal from '../pages/Journal.vue';
 import Prices from '../pages/Prices.vue';
 import {matAccountBalance, matAddCircleOutline, matEdit, matHome} from '@quasar/extras/material-icons';
-import {RouteConfig} from 'vue-router';
+import {RouteRecordRaw} from 'vue-router';
 import Markdown from 'pages/Markdown.vue';
 import Assets from 'pages/Assets.vue';
 import BalanceSheet from 'pages/BalanceSheet.vue';
@@ -21,15 +21,15 @@ import Add from 'pages/Add.vue';
 import AddCmd from 'pages/AddCmd.vue';
 import PnlExplainDetail from 'pages/PnlExplainDetail.vue';
 import Account from 'pages/Account.vue';
-import {AsyncComponent} from 'vue';
 import BogleTools from 'pages/BogleTools.vue';
 import BogleTwoFund from 'pages/BogleTwoFund.vue';
 import RebalanceCalc from 'components/RebalanceCalc.vue';
 import Login from 'pages/Login.vue';
 import UserProfile from 'pages/UserProfile.vue';
 import ForecastView from 'components/forecast/ForecastView.vue';
+import {AsyncComponentLoader} from '@vue/runtime-core';
 
-const commonRoutes: RouteConfig[] = [
+const commonRoutes: RouteRecordRaw[] = [
   {path: '/assetdb', meta: {title:'Asset DB'}, component: () => import('../pages/AssetDb.vue')},
   {path: '/quotesdb/new', name: 'quoteSourceNew', meta: {title: 'Quotes DB'}, component: () => import('../pages/QuoteSource.vue')},
   {path: '/quotesdb/:id', name: 'quoteSource', meta: {title: 'Quotes DB'}, props: true, component: () => import('../pages/QuoteSource.vue')},
@@ -38,7 +38,7 @@ const commonRoutes: RouteConfig[] = [
   {path: '/user_profile/:id', name: 'userProfile', component: UserProfile, meta: {title: 'User Profile'}, props: true},
 ];
 
-const gainstrackRoutes: RouteConfig[] = [
+const gainstrackRoutes: RouteRecordRaw[] = [
   ...commonRoutes,
   {path: '/add', component: Add, meta: {title: 'Add Record', icon: matAddCircleOutline}},
   {path: '/add/cmd', name: 'addcmd', component: AddCmd, meta: {title: 'Add Record'}},
@@ -112,7 +112,7 @@ const gainstrackNavBar = [
   ['help', 'faq', 'releases']
 ];
 
-const gainstrackMode: AppMode = {
+const gainstrackMode = {
   appTitle: 'Gainstrack',
   appDescription: 'Gainstrack Wealth',
   appRoutes: gainstrackRoutes,
@@ -120,7 +120,7 @@ const gainstrackMode: AppMode = {
   layout: () => import(/* webpackChunkName: "GainstrackCom" */ '../layouts/GainstrackCom.vue')
 };
 
-const simpleRoutes: RouteConfig[] = [
+const simpleRoutes: RouteRecordRaw[] = [
   ...commonRoutes,
   // boglebot.com specific routes
   {path: '/play', component: BogleTwoFund,
@@ -152,9 +152,9 @@ const simpleMode: AppMode =
   }
 
 interface AppMode {
-  appRoutes:RouteConfig[]
+  appRoutes:RouteRecordRaw[]
   navBar: string[][]
-  layout: AsyncComponent
+  layout: AsyncComponentLoader
   appTitle: string
   appDescription: string
 }
@@ -173,7 +173,7 @@ export const {appRoutes, navBar, layout, appTitle, appDescription} : AppMode = (
   }
 })()
 
-const routes: RouteConfig[] = [
+const routes: RouteRecordRaw[] = [
   {
     path: '/',
     component: layout,

@@ -1,6 +1,5 @@
 import {SingleFXConversion, SingleFXConverter} from '../lib/fx'
 import axios, {AxiosRequestConfig} from 'axios'
-import Vuex from 'vuex'
 import {
   AccountDTO,
   AllState, AssetDTO,
@@ -19,12 +18,15 @@ import {QuoteSource} from 'src/lib/assetdb/assetDb';
 import firebase from 'firebase/compat/app';
 import {Notify} from 'quasar';
 import VuexPersistence from 'vuex-persist';
+import { createStore, Store as VuexStore, useStore as vuexUseStore } from 'vuex'
+import {InjectionKey} from 'vue';
 
 export interface TimeSeries {
   x: string[]
   y: number[]
   name: string
 }
+
 
 export interface MyState {
   allState: AllState,
@@ -36,9 +38,19 @@ export interface MyState {
   gainstrackText: string,
   quotes: Record<string, TimeSeries>,
   conversion: string
-  user: firebase.User|undefined
-  auth0token: string|undefined
+  user: firebase.User | undefined
+  auth0token: string | undefined
 }
+
+
+export interface ForecastVuexState {
+  params: any
+}
+
+export interface MyRoot {
+  forecast:ForecastVuexState
+}
+
 
 const initState: MyState = {
   allState: emptyAllState,
@@ -61,9 +73,18 @@ const vuexLocal = new VuexPersistence<MyState>({
 
 type FXConverterWrapper = ((fx: SingleFXConversion) => SingleFXConverter)
 
-export default store(function ({ Vue }) {
-  Vue.use(Vuex);
+// provide typings for `this.$store`
+declare module '@vue/runtime-core' {
+  interface ComponentCustomProperties {
+    $store: VuexStore<MyState & MyRoot>
+  }
+}
 
+// provide typings for `useStore` helper
+export const storeKey: InjectionKey<VuexStore<MyState>> = Symbol('vuex-key')
+
+
+export default store(function (/* { ssrContext } */) {
   let requestPreprocessor = async (config:AxiosRequestConfig):Promise<AxiosRequestConfig> => {
     return config;
   }
@@ -94,15 +115,11 @@ export default store(function ({ Vue }) {
     }
   });
 
-  interface ForecastState {
-    params: any
-  }
-
   const forecastModule = {
     namespaced: true,
-    state: () => ({params: undefined } as ForecastState),
+    state: () => ({params: undefined } as ForecastVuexState),
     mutations: {
-      forecastParamsUpdated(state: ForecastState, params: any) {
+      forecastParamsUpdated(state: ForecastVuexState, params: any) {
         state.params = params
       }
     },
@@ -113,7 +130,7 @@ export default store(function ({ Vue }) {
     }
   }
 
-  const Store = new Vuex.Store<MyState>({
+  const Store = createStore({
     state: initState,
     plugins: [vuexLocal.plugin],
     modules: {
@@ -148,12 +165,12 @@ export default store(function ({ Vue }) {
         state.allState = data
       },
       quotesUpserted (state: MyState, data: { key: string, series: TimeSeries }) {
-        Vue.set(state.quotes, data.key, data.series)
+        state.quotes[data.key] = data.series
         // state.quotes[data.key] = data.series;
       },
       multiQuotesUpserted(state: MyState, data: { key: string, series: TimeSeries }[]) {
         data.forEach(row => {
-          Vue.set(state.quotes, row.key, row.series);
+          state.quotes[row.key] = row.series;
         })
       },
       conversionApplied(state: MyState, conversion: string) {
@@ -429,6 +446,10 @@ export default store(function ({ Vue }) {
   });
   return Store
 })
+
+export function useStore() {
+  return vuexUseStore(storeKey)
+}
 
 interface AccountBalances {
   Assets?: TreeTableDTO;

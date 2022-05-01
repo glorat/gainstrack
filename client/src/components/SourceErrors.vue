@@ -23,19 +23,19 @@
 </template>
 
 <script lang="ts">
-    import Vue from 'vue'
+    import {defineComponent} from 'vue'
 
     interface MyError {
         line: number
         message: string
     }
 
-    export default Vue.extend({
+    export default defineComponent({
         name: 'SourceErrors',
         props: {errs: Array as () => MyError[]},
         computed: {
             errors(): MyError[] {
-                return this.errs ? this.errs : this.$store.state.parseState.errors;
+                return this.errs ? this.errs : (this.$store.state.parseState.errors as MyError[]);
             }
         },
         methods: {

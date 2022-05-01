@@ -1,59 +1,59 @@
 <template>
   <command-date-editor
     v-if="type==='date'"
-    :value="modelValue" @input="inputChanged($event)"></command-date-editor>
+    :modelValue="modelValue" @update:modelValue="inputChanged($event)"></command-date-editor>
   <balance-editor
     v-else-if="type==='balance'"
-    :value="modelValue" @input="inputChanged($event)"></balance-editor>
+    :modelValue="modelValue" @update:modelValue="inputChanged($event)"></balance-editor>
   <asset-id
     v-else-if="type==='asset'"
-    :value="modelValue" @input="inputChanged($event)"></asset-id>
+    :modelValue="modelValue" @update:modelValue="inputChanged($event)"></asset-id>
   <ticker-select
     v-else-if="type==='ticker'"
-    :value="modelValue" @input="inputChanged($event)"></ticker-select>
+    :modelValue="modelValue" @update:modelValue="inputChanged($event)"></ticker-select>
   <q-input
     v-else-if="type==='number'"
-    :value="modelValue" type="number"
+    :modelValue="modelValue" type="number"
     :clearable="clearable" :dense="dense"
-    @clear="cleared" @input="inputChanged($event)"
+    @clear="cleared" @update:modelValue="inputChanged($event)"
     ></q-input>
   <q-input
     v-else-if="type==='percentage'"
-    :value="modelValue" type="number"
+    :modelValue="modelValue" type="number"
     suffix="%"
     :clearable="clearable" :dense="dense"
-    @clear="cleared" @input="inputChanged($event)"
+    @clear="cleared" @update:modelValue="inputChanged($event)"
   ></q-input>
   <q-input
     v-else-if="type==='string'"
-    :value="modelValue" :label="schema.label"
+    :modelValue="modelValue" :label="schema.label"
     :clearable="clearable" :dense="dense"
-    @clear="cleared" @input="inputChanged($event)"
+    @clear="cleared" @update:modelValue="inputChanged($event)"
   ></q-input>
   <enum-select
     v-else-if="type==='category'"
     :options="assetCategories"
-    :model-value="modelValue"
+    :modelValue="modelValue"
     :clearable="clearable" :dense="dense"
-    @clear="cleared" @input="inputChanged($event)"
+    @clear="cleared" @update:modelValue="inputChanged($event)"
     >
   </enum-select>
   <enum-select
     v-else-if="type==='enum'"
-    :model-value="modelValue"
+    :modelValue="modelValue"
     :label="schema.label"
     :options="schema.fieldMeta"
     :clearable="clearable" :dense="dense"
-    @clear="cleared" @input="inputChanged($event)"
+    @clear="cleared" @update:modelValue="inputChanged($event)"
   >
   </enum-select>
   <multi-enum-select
     v-else-if="type==='multiEnum'"
-    :model-value="modelValue"
+    :modelValue="modelValue"
     :label="schema.label"
     :options="schema.fieldMeta"
     :clerable="clearable" :dense="dense"
-    @clear="cleared" @input="inputChanged($event)"
+    @clear="cleared" @update:modelValue="inputChanged($event)"
   >
   </multi-enum-select>
   <div
@@ -63,10 +63,10 @@
     <field-editor
       v-for="(sub, idx) in modelValue"
       :key="idx"
-      :schema="schema.fieldMeta" :model-value="sub"
+      :schema="schema.fieldMeta" :modelValue="sub"
       :clearable="clearable" :dense="dense"
       @clear="arrayCleared(idx)"
-      @input="arrayInput(idx, $event)"
+      @update:modelValue="arrayInput(idx, $event)"
     >
 
     </field-editor>
@@ -77,7 +77,7 @@
 </template>
 
 <script lang="ts">
-import {defineComponent, PropType} from '@vue/composition-api';
+import {defineComponent, PropType} from 'vue';
 import CommandDateEditor from 'components/CommandDateEditor.vue';
 import BalanceEditor from './BalanceEditor.vue';
 import AssetId from './AssetId.vue';
@@ -110,7 +110,7 @@ export default defineComponent({
   },
   methods: {
     inputChanged($event:any) {
-      this.$emit('input', $event)
+      this.$emit('update:modelValue', $event)
     },
     cleared() {
       this.$emit('clear')
@@ -119,7 +119,7 @@ export default defineComponent({
       const orig:any = this.modelValue;
       if (orig.length>1) {
         orig.splice(idx, 1);
-        this.$emit('input', orig);
+        this.$emit('update:modelValue', orig);
       } else {
         // Last element cleared, remove the whole lot
         this.$emit('clear');
@@ -128,12 +128,12 @@ export default defineComponent({
     },
     arrayInput(idx: number, ev: any) {
       const orig:any = this.modelValue; // To clone or not to clone???
-      this.$set(orig, idx, ev);
-      this.$emit('input', orig);
+      orig[idx] = ev;
+      this.$emit('update:modelValue', orig);
     },
     arrayAdd() {
       const orig:any = this.modelValue ?? [];
-      this.$emit('input', [...orig, undefined]);
+      this.$emit('update:modelValue', [...orig, undefined]);
     }
   },
   computed: {

@@ -6,13 +6,13 @@
         <div v-if="!hideAccount">
           <account-selector
             placeholder="Spending Source"
-            class="c-account-id" :value="dc.accountId" :original="c.accountId"
-            @input="c.accountId=$event" :account-list="spendableAccounts"
+            class="c-account-id" :modelValue="dc.accountId" :original="c.accountId"
+            @update:modelValue="c.accountId=$event" :account-list="spendableAccounts"
           ></account-selector>
 
         </div>
         <div>
-          <balance-editor label="Spent Amount" class="change" :value="dc.change" :original="c.change" @input="c.change=$event"></balance-editor>
+          <balance-editor label="Spent Amount" class="change" :modelValue="dc.change" :original="c.change" @update:modelValue="c.change=$event"></balance-editor>
         </div>
     </div>
 </template>

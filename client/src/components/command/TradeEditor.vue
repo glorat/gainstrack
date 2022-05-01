@@ -5,21 +5,21 @@
         </div>
         <div v-if="!hideAccount">
           <account-selector class="c-account-id" placeholder="Source Account"
-                            :value="dc.accountId" :original="c.accountId"
-                            @input="c.accountId=$event" :account-list="tradeableAccounts"></account-selector>
+                            :modelValue="dc.accountId" :original="c.accountId"
+                            @update:modelValue="c.accountId=$event" :account-list="tradeableAccounts"></account-selector>
         </div>
         <div>
             <help-tip tag="tradeChange"></help-tip>
-          <balance-editor class="c-change" label="Purchased Amount" :value="dc.change" :original="c.change" @input="c.change=$event"></balance-editor>
+          <balance-editor class="c-change" label="Purchased Amount" :modelValue="dc.change" :original="c.change" @update:modelValue="c.change=$event"></balance-editor>
         </div>
         <div>
             <help-tip tag="tradePrice"></help-tip>
-          <balance-editor class="c-price" label="Price" :value="dc.price" :original="c.price" @input="c.price=$event"></balance-editor>
+          <balance-editor class="c-price" label="Price" :modelValue="dc.price" :original="c.price" @update:modelValue="c.price=$event"></balance-editor>
         </div>
         <div>
             <help-tip tag="tradeCommission"></help-tip>
           <balance-editor label="Commission" class="c-commission"
-                          :value="dc.commission" :original="c.commission" @input="c.commission=$event"></balance-editor>
+                          :modelValue="dc.commission" :original="c.commission" @update:modelValue="c.commission=$event"></balance-editor>
         </div>
 
     </div>

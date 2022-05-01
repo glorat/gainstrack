@@ -38,7 +38,8 @@
       this.$router.afterEach((to) => {
         this.pageTitle = (to.meta.title || 'Boglebot');
       });
-      this.pageTitle = this.$router.currentRoute.meta.title;
+      const route = this.$router.currentRoute;
+      this.pageTitle = route.value.meta.title;
 
       // Get some state on startup
       this.$store.dispatch('reload');

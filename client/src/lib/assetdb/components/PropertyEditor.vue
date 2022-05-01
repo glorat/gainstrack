@@ -3,9 +3,9 @@
     <div v-for="schema in assetProperties" :key="schema.label">
       <field-editor
         :schema="schema"
-        :model-value="value[schema.name]"
+        :modelValue="modelValue[schema.name]"
         clearable :dense="dense"
-        @input="onFieldUpdate(schema.name, $event)"
+        @update:modelValue="onFieldUpdate(schema.name, $event)"
         @clear="onFieldCleared(schema.name)"
       ></field-editor>
     </div>
@@ -19,14 +19,14 @@
 </template>
 
 <script lang="ts">
-  import Vue from 'vue';
+  import {defineComponent} from 'vue';
   import FieldEditor from './FieldEditor.vue';
   import {
     userAssetSchema
   } from '../AssetSchema';
   import {FieldProperty, Schema} from '../schema';
 
-  export default Vue.extend({
+  export default defineComponent({
     name: 'PropertyEditor',
     components: {FieldEditor},
     props: {
@@ -34,7 +34,7 @@
         type: Object as () => Schema,
         default: () => userAssetSchema
       },
-      value: {
+      modelValue: {
         type: Object as () => Record<string, any>,
         default: () => ({} as Record<string, any>)
       },
@@ -42,30 +42,36 @@
     },
     methods: {
       onFieldUpdate(field:string, newValue: any) {
-        this.$set(this.value, field, newValue);
+        const ret = {...this.modelValue, [field]:newValue};
+        this.$emit('update:modelValue', ret);
         // if (newValue && schemaFor(field).schema==='ticker') {
         //   this.$store.dispatch('loadQuotes', newValue);
         // }
       },
       onFieldCleared(field: string) {
         console.log(`${field} cleared`);
-        this.$delete(this.value, field);
+        const ret = {...this.modelValue};
+        delete ret[field];
+        this.$emit('update:modelValue', ret);
         this.$emit('property-removed', field);
       },
       onFieldAdd(name: string) {
-        this.$set(this.value, name, undefined);
+        const ret = {...this.modelValue, [name]:undefined};
         this.$emit('property-added', name);
+        this.$emit('update:modelValue', ret);
       },
       onRemove(propType: FieldProperty) {
-        this.$delete(this.value, propType.name);
+        const ret = {...this.modelValue};
+        delete ret[propType.name]
+        this.$emit('update:modelValue', ret);
       },
     },
     computed: {
       assetProperties(): FieldProperty[] {
-        return this.schema.selectedPropertiesForAsset(this.value);
+        return this.schema.selectedPropertiesForAsset(this.modelValue);
       },
       availableTags(): FieldProperty[] {
-        return this.schema.availablePropertiesForAsset(this.value)
+        return this.schema.availablePropertiesForAsset(this.modelValue)
       },
     }
   })

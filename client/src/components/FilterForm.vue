@@ -1,22 +1,18 @@
 <template>
-  <command-date-editor @input="onDateChange" :value="dateOverride"></command-date-editor>
+  <command-date-editor @update:modelValue="onDateChange" :modelValue="dateOverride"></command-date-editor>
 </template>
 
 <script lang="ts">
 
-  import Vue from 'vue';
+  import {defineComponent} from 'vue';
   import CommandDateEditor from './CommandDateEditor.vue'
 
-  export default Vue.extend({
+  export default defineComponent({
     name: 'FilterForm',
     components: {CommandDateEditor},
     computed: {
-      latestDate():string {
-        return this.$store.state.allState.latestDate;
-
-      },
       dateOverride():string {
-        return this.$store.state.allState.dateOverride;
+        return this.$store.state.dateOverride?.toString() ?? '';
       }
     },
     methods: {

@@ -1,5 +1,5 @@
 <template>
-  <q-table :columns="columns" :data="quoteSources" :pagination="pagination"
+  <q-table :columns="columns" :rows="quoteSources" :pagination="pagination"
            dense
            :loading="loading"
            title="Assets"
@@ -49,19 +49,20 @@
 </template>
 
 <script lang="ts">
-  import Vue from 'vue';
+  import {defineComponent} from 'vue';
   import {QuoteSource} from '../assetDb';
   import {quoteSourceFieldProperties} from '../AssetSchema';
   import {matArchive} from '@quasar/extras/material-icons';
-  import stringify from 'csv-stringify/lib/sync';
+  import {stringify} from 'csv-stringify/browser/esm/sync';
   import {exportFile} from 'quasar';
   import {pathToTableColumn} from '../schema';
 
-  export default Vue.extend({
+  export default defineComponent({
     name: 'QuoteSourceTable',
     props: {
       quoteSources: {
-        type: Array as () => QuoteSource[]
+        type: Array as () => QuoteSource[],
+        required: true
       },
       loading: Boolean,
       selectedColumns: {
@@ -84,19 +85,22 @@
         matArchive,
       }
     },
+    emits:['row-click', 'update:selected-columns'],
     methods: {
       onRowClick(ev: any, data: QuoteSource) {
         this.$emit('row-click', data)
       },
       deleteColumn(idx: number): void {
-        this.selectedColumns.splice(idx,1);
-        this.$emit('update:selected-columns', this.selectedColumns);
+        const a = [...this.selectedColumns];
+        a.splice(idx,1);
+        this.$emit('update:selected-columns', a);
       },
       swapLeft(idx:number):void {
-        const tmp = this.selectedColumns[idx];
-        Vue.set(this.selectedColumns, idx, this.selectedColumns[idx-1]);
-        Vue.set(this.selectedColumns, idx-1, tmp);
-        this.$emit('update:selected-columns', this.selectedColumns);
+        const a = [...this.selectedColumns];
+        const tmp = a[idx];
+        a[idx] = a[idx-1];
+        a[idx-1] = tmp;
+        this.$emit('update:selected-columns', a);
       },
       exportTable() {
         const tableColumns = this.columns;
@@ -111,7 +115,7 @@
         const columns = tableColumns.map(col => col.label ?? col.name);
         const options = {columns, header: true};
         const data = stringify(records, options);
-
+        // const data = '';
         const status = exportFile(
           'table-export.csv',
           data,

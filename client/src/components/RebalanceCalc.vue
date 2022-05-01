@@ -45,7 +45,7 @@
       >
         <contribution-calculator-input-editor
           :entries="entries"
-          :contribution="contribution"
+          v-model:contribution="contribution"
         ></contribution-calculator-input-editor>
         <q-stepper-navigation>
           <q-btn @click="calculate" color="primary" label="Continue" :disable="!canCalculate"/>
@@ -65,12 +65,11 @@
 </template>
 
 <script lang="ts">
-import {defineComponent} from '@vue/composition-api';
+import {defineComponent} from 'vue';
 import {AccountDTO, Amount, AssetResponse, NetworthByAsset} from '../lib/assetdb/models';
 import {apiAssetsReport} from 'src/lib/apiFacade';
 import {difference, includes, sum, sortBy} from 'lodash';
 import {formatPerc} from 'src/lib/utils';
-import BalanceEditor from 'src/lib/assetdb/components/BalanceEditor.vue';
 import { VuePlotly } from '../lib/loader'
 import {mapGetters} from 'vuex';
 import {
@@ -92,7 +91,6 @@ export default defineComponent({
     accountId: String,
   },
   components: {
-    BalanceEditor,
     ContributionCalculatorResultView,
     ContributionCalculatorInputEditor,
     VuePlotly,
@@ -118,8 +116,9 @@ export default defineComponent({
         this.assetsToBalance = [];
         this.contribution = {number: 0, ccy: acct?.ccy ?? 'USD'}
       } catch (error) {
+        const e:any = error;
         console.error(error);
-        this.$notify.error(error)
+        this.$notify.error(e.toString())
       }
     },
     selectAssets(): void {

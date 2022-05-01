@@ -63,60 +63,62 @@
 </template>
 
 <script lang="ts">
-  import Vue from 'vue';
-  import {getAllQuoteSources, QuoteSource} from '../assetDb';
-  import {
-    investmentAssetProperties,
-    quoteSourceFieldProperties
-  } from '../AssetSchema';
-  import ObjectFieldView from './ObjectFieldView.vue';
-  import firebase from 'firebase/compat/app';
-  import CollectionReference = firebase.firestore.CollectionReference;
-  import {applyQueries, searchObjToQuery} from '../schema';
+import {defineComponent} from 'vue';
+import {getAllQuoteSources, QuoteSource} from '../assetDb';
+import {
+  investmentAssetProperties,
+  quoteSourceFieldProperties
+} from '../AssetSchema';
+import ObjectFieldView from './ObjectFieldView.vue';
 
-  export default Vue.extend({
-    name: 'QuoteSourceView',
-    components: {ObjectFieldView},
-    props: {
-      qsrc: Object as () => QuoteSource
-    },
-    data() {
-      const related = [] as QuoteSource[];
-      const relatedLoading = false;
-      return {
-        related,
-        relatedLoading,
-        quoteSourceFieldProperties,
-        investmentAssetProperties,
-      }
-    },
-    methods: {
-      hostnameFor(url:string) {
-        return new URL(url).hostname
-      },
-      async refreshRelated() {
-        try {
-          this.relatedLoading = true;
-          const level = 1; // TODO: Iterate up levels until we get results
-          const limit = 5;
-          const cq = searchObjToQuery(this.qsrc, quoteSourceFieldProperties, fld => fld.searchLevel?fld.searchLevel<=level:false)
-          const filter = limit ? (col: CollectionReference) => applyQueries(col, cq).limit(limit) : (col: CollectionReference) => applyQueries(col, cq)
-          this.related = await getAllQuoteSources(filter)
-        }
-        catch (e) {
-          console.error(e);
-        } finally {
-          this.relatedLoading = false;
-        }
+import {applyQueries, searchObjToQuery} from '../schema';
 
-      },
-    },
-    mounted(): void {
-      this.refreshRelated();
-    },
-    computed: {
+export default defineComponent({
+  name: 'QuoteSourceView',
+  components: {ObjectFieldView},
+  props: {
+    qsrc: {
+      type: Object as () => QuoteSource,
+      required: true
     }
-  })
+  },
+  data() {
+    const related = [] as QuoteSource[];
+    const relatedLoading = false;
+    return {
+      related,
+      relatedLoading,
+      quoteSourceFieldProperties,
+      investmentAssetProperties,
+    }
+  },
+  methods: {
+    hostnameFor(url:string) {
+      return new URL(url).hostname
+    },
+    async refreshRelated() {
+      try {
+        this.relatedLoading = true;
+        const level = 1; // TODO: Iterate up levels until we get results
+        const limit = 5;
+        const cq = searchObjToQuery(this.qsrc, quoteSourceFieldProperties, fld => fld.searchLevel?fld.searchLevel<=level:false)
+        const filter = limit ? (col: any) => applyQueries(col, cq).limit(limit) : (col: any) => applyQueries(col, cq)
+        this.related = await getAllQuoteSources(filter)
+      }
+      catch (e) {
+        console.error(e);
+      } finally {
+        this.relatedLoading = false;
+      }
+
+    },
+  },
+  mounted(): void {
+    this.refreshRelated();
+  },
+  computed: {
+  }
+})
 </script>
 
 <style scoped>

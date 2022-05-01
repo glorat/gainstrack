@@ -1,7 +1,7 @@
 <template>
   <q-select
-    :value="value"
-    v-on:input="onQSelectChanged($event)"
+    :modelValue="modelValue"
+    @update:modelValue="onQSelectChanged($event)"
     :options="filteredOptions"
     :label="resolvedPlaceholder"
     :input-class="selectClass"
@@ -14,17 +14,18 @@
 </template>
 
 <script lang="ts">
-  import Vue from 'vue';
+  import {defineComponent} from 'vue';
   import {mapGetters} from 'vuex';
 
-  export default Vue.extend({
+  export default defineComponent({
     name: 'AccountSelector',
     props: {
-      value: String,
+      modelValue: String,
       original: {},
       accountList: Array as () => string[],
       placeholder: String
     },
+    emits: ['update:modelValue'],
     data() {
       return {
         filteredOptions: [] as {value: string, label:string}[]
@@ -46,16 +47,16 @@
 
       },
       selectClass(): any {
-        const defaulted = this.value !== this.original;
+        const defaulted = this.modelValue !== this.original;
         return {'defaulted-input': defaulted}
       },
     },
     methods: {
       onChanged(ev: any) {
-        this.$emit('input', ev.target.value);
+        this.$emit('update:modelValue', ev.target.value);
       },
       onQSelectChanged(ev: { label: string, value: string }) {
-        this.$emit('input', ev.value);
+        this.$emit('update:modelValue', ev.value);
       },
       filterFn(val: string, update: any) {
         update(() => {

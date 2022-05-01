@@ -16,7 +16,7 @@
                 <td class="num">{{row.endBalance}}</td>
                 <td class="num" v-bind:data-sort-value="row.start">{{ row.start }}</td>
                 <td class="num" v-bind:data-sort-value="row.end">{{ row.end }}</td>
-                <td class="num">{{ row.irr | numeral("0.00%")}}</td>
+                <td class="num">{{ perc(row.irr)}}</td>
             </tr>
             </tbody>
         </table>
@@ -34,9 +34,6 @@
     data () {
       return { info: [] }
     },
-    filters: {
-      numeral: (value, format) => numbro(value).format(format)
-    },
     methods: {
       async refresh () {
         const notify = this.$notify;
@@ -46,6 +43,9 @@
           console.error(error);
           notify.error(error)
         }
+      },
+      perc(value) {
+        return numbro(value).format('0.00%')
       }
     },
     computed: {

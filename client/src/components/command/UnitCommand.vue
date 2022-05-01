@@ -21,13 +21,13 @@
 
 <script>
     import {CommandEditorMixin} from '../../mixins/CommandEditorMixin';
-    import Vue from 'vue';
+    import { defineComponent } from 'vue';
     import AccountSelector from '../AccountSelector';
     import BalanceEditor from '../../lib/assetdb/components/BalanceEditor';
     import { mapGetters } from 'vuex'
     import { LocalDate } from '@js-joda/core'
 
-    export default Vue.extend({
+    export default defineComponent({
         name: 'UnitCommand',
         mixins: [CommandEditorMixin],
         components: {AccountSelector, BalanceEditor},
@@ -65,7 +65,9 @@
         computed: {
           ...mapGetters(['fxConverter']),
             toGainstrack() {
-                return `${this.c.date} unit ${this.c.accountId} ${this.c.balance.number} ${this.c.balance.ccy} @${this.c.price.number} ${this.c.price.ccy}`;
+            const c = this.c;
+            debugger;
+                return `${c.date} unit ${this.c.accountId} ${this.c.balance.number} ${this.c.balance.ccy} @${this.c.price.number} ${this.c.price.ccy}`;
             }
         }
     })

@@ -17,13 +17,13 @@
 </template>
 
 <script lang="ts">
-  import Vue from 'vue';
+  import {defineComponent} from 'vue';
 
   import {QDialog} from 'quasar';
   import AssetEditor from 'components/AssetEditor.vue';
   import {AssetDTO} from 'src/lib/assetdb/models';
 
-  export default Vue.extend({
+  export default defineComponent({
     name: 'AssetEditorDialog',
     components: {AssetEditor},
     props: {

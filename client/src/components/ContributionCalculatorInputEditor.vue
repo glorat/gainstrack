@@ -1,6 +1,6 @@
 <template>
   <div>
-    <q-table :data="displayEntries" :columns="columns" hide-pagination :pagination="pagination">
+    <q-table :rows="displayEntries" :columns="columns" hide-pagination :pagination="pagination">
       <template v-slot:body-cell-target="props">
         <q-td :props="props">
           <q-input v-if="props.rowIndex<displayEntries.length-1" v-model.number="props.row.target" suffix="%"
@@ -14,19 +14,19 @@
     </q-table>
     <div class="row">
       <div class="col-12">
-        <balance-editor v-model="contribution" label="Contribution"></balance-editor>
+        <balance-editor :modelValue="contribution" @update:modelValue="$emit('update:contribution', $event)"  label="Contribution"></balance-editor>
       </div>
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import {defineComponent, PropType} from '@vue/composition-api';
 import {ContributionCalculatorInput} from '../lib/ContributionCalculator';
 import BalanceEditor from 'src/lib/assetdb/components/BalanceEditor.vue';
 import {formatNumber, formatPerc} from 'src/lib/utils';
 import {sum} from 'lodash';
 import {Amount} from 'src/lib/assetdb/models';
+import { defineComponent, PropType } from 'vue'
 
 export default defineComponent({
   name: 'ContributionCalculatorInputEditor',
@@ -42,10 +42,12 @@ export default defineComponent({
   },
   data() {
     const pagination = {rowsPerPage: 100}
+    const c = this.contribution;
     return {
       formatPerc,
       formatNumber,
-      pagination
+      pagination,
+      c
     }
   },
   computed: {

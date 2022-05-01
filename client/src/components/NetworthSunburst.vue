@@ -3,7 +3,7 @@
 </template>
 
 <script lang="ts">
-  import Vue from 'vue';
+  import {defineComponent} from 'vue';
   import {VuePlotly} from 'src/lib/loader';
   import {mapGetters} from 'vuex';
   import {
@@ -17,7 +17,7 @@
   import {reduce, some} from 'lodash';
   import { LocalDate } from '@js-joda/core';
 
-  export default Vue.extend({
+  export default defineComponent({
     name: 'NetworthSunburst',
     components: {VuePlotly},
     props: {
@@ -36,7 +36,7 @@
       myAccountIds():string[] {
         const mainAccounts = ['Assets', 'Liabilities'];
         const networthAccountFilter : ((acctId:string)=>boolean) = acctId => some(mainAccounts, ma => isSubAccountOf(acctId, ma));
-        const filter:((acctId:string)=>boolean) = this.accountId ? (acctId => isSubAccountOf(acctId, this.accountId)) : networthAccountFilter;
+        const filter:((acctId:string)=>boolean) = this.accountId ? (acctId => isSubAccountOf(acctId, this.accountId!)) : networthAccountFilter;
 
         return this.accountIds
           .filter(filter)

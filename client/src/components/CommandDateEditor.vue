@@ -1,10 +1,10 @@
 <template>
-    <q-input class="c-date" dense :value="dateObj" @input="onDateChanged($event)"
+    <q-input class="c-date" dense :modelValue="dateObj" @update:modelValue="onDateChanged($event)"
              :label="label || 'Date'" mask="date" :rules="['date']">
         <template v-slot:append>
             <q-icon :name="matEvent" class="cursor-pointer">
                 <q-popup-proxy ref="qDateProxy" transition-show="scale" transition-hide="scale">
-                    <q-date :value="dateObj" @input="(ev) => {$refs.qDateProxy.hide(); onDateChanged(ev)}" />
+                    <q-date :modelValue="dateObj" @update:modelValue="(ev) => {$refs.qDateProxy.hide(); onDateChanged(ev)}" />
                 </q-popup-proxy>
             </q-icon>
         </template>
@@ -12,7 +12,7 @@
 </template>
 
 <script lang="ts">
-    import Vue from 'vue';
+    import {defineComponent} from 'vue';
     import {matEvent} from '@quasar/extras/material-icons';
     import {date} from 'quasar';
 
@@ -29,7 +29,7 @@
         return date.formatDate(fromISO(dt), format);
     }
 
-    export default Vue.extend({
+    export default defineComponent({
         name: 'CommandDateEditor',
         data() {
           return {
@@ -37,18 +37,19 @@
           }
         },
         props: {value: String, label: String},
+      emits: ['update:modelValue'],
         methods: {
             onChanged(ev: string) {
-                this.$emit('input', ev);
+                this.$emit('update:modelValue', ev);
             },
             onDateChanged(ev: string) {
                 const myDate = reformatIsoDate(ev, 'YYYY-MM-DD');
-                this.$emit('input', myDate);
+                this.$emit('update:modelValue', myDate);
             },
         },
         computed: {
             dateObj() {
-                return reformatIsoDate(this.value, 'YYYY/MM/DD');
+                return reformatIsoDate(this.value || '', 'YYYY/MM/DD');
             }
         }
     })

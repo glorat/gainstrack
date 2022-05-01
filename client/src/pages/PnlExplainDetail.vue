@@ -10,27 +10,27 @@
       <tbody>
       <tr>
         <td class="datecell" colspan="2">
-          <command-date-editor label="From Date" :value="explainData.fromDate"
-                               @input="fromDateChanged($event)"></command-date-editor>
+          <command-date-editor label="From Date" :modelValue="explainData.fromDate"
+                               @update:modelValue="fromDateChanged($event)"></command-date-editor>
         </td>
       </tr>
       <tr>
         <td class="datecell" colspan="2">
-          <command-date-editor label="To Date" :value="explainData.toDate"
-                               @input="toDateChanged($event)"></command-date-editor>
+          <command-date-editor label="To Date" :modelValue="explainData.toDate"
+                               @update:modelValue="toDateChanged($event)"></command-date-editor>
         </td>
       </tr>
       <tr>
         <td>Opening Networth</td>
-        <td class="num">{{ explainData.toNetworth - explainData.actual | amount }}</td>
+        <td class="num">{{ amount(explainData.toNetworth - explainData.actual) }}</td>
       </tr>
       <tr>
         <td>Change In Networth</td>
-        <td class="num change">{{ explainData.actual | amount }}</td>
+        <td class="num change">{{ amount(explainData.actual) }}</td>
       </tr>
       <tr>
         <td class="total">Closing Networth</td>
-        <td class="total num">{{ explainData.toNetworth | amount }}</td>
+        <td class="total num">{{ amount(explainData.toNetworth) }}</td>
       </tr>
       <tr>
         <td></td>
@@ -42,35 +42,35 @@
       </tr>
       <tr>
         <td>Markets Profit</td>
-        <td class="num">{{ explainData.totalDeltaExplain | amount }}</td>
+        <td class="num">{{ amount(explainData.totalDeltaExplain) }}</td>
       </tr>
       <tr>
         <td class="">Yield Income</td>
-        <td class="num">{{ explainData.totalYieldIncome | amount }}</td>
+        <td class="num">{{ amount(explainData.totalYieldIncome) }}</td>
       </tr>
       <tr>
         <td class="">Income</td>
-        <td class="num">{{ explainData.totalIncome | amount }}</td>
+        <td class="num">{{ amount(explainData.totalIncome) }}</td>
       </tr>
       <tr>
         <td class="">Expenses</td>
-        <td class="num">{{ explainData.totalExpense | amount }}</td>
+        <td class="num">{{ amount(explainData.totalExpense) }}</td>
       </tr>
       <tr>
         <td class="">Equity</td>
-        <td class="num">{{ explainData.totalEquity | amount }}</td>
+        <td class="num">{{ amount(explainData.totalEquity) }}</td>
       </tr>
       <tr>
         <td class="">New Activity</td>
-        <td class="num">{{ explainData.newActivityPnl | amount }}</td>
+        <td class="num">{{ amount(explainData.newActivityPnl) }}</td>
       </tr>
       <tr>
         <td class="">Unexplained</td>
-        <td class="num">{{ explainData.unexplained | amount }}</td>
+        <td class="num">{{ amount(explainData.unexplained) }}</td>
       </tr>
       <tr>
         <td class="total">Total</td>
-        <td class="total num change">{{ explainData.actual | amount }}</td>
+        <td class="total num change">{{ amount(explainData.actual) }}</td>
       </tr>
 
       Financial independence forecast: <span class="text-h4">{{ targetYear }}</span>
@@ -93,7 +93,7 @@
           <td class="num">{{ ccy.explain.toFixed(2) }}</td>
           <td class="num">{{ ccy.oldPrice.toFixed(2) }}</td>
           <td class="num">{{ ccy.newPrice.toFixed(2) }}</td>
-          <td class="num">{{ 100 * (ccy.newPrice - ccy.oldPrice) / ccy.oldPrice | amount }}%</td>
+          <td class="num">{{ amount(100 * (ccy.newPrice - ccy.oldPrice) / ccy.oldPrice) }}%</td>
           <td class="num">{{ ccy.amount.toFixed(2) }}</td>
         </tr>
       </template>
@@ -148,7 +148,7 @@ import {
 } from 'src/lib/forecast/forecast';
 import {PLExplainDTO} from 'src/lib/PLExplain';
 import CommandDateEditor from 'components/CommandDateEditor.vue';
-import {defineComponent} from '@vue/composition-api';
+import {defineComponent} from 'vue';
 
 export default defineComponent({
   name: 'PnlExplainDetail',
@@ -185,10 +185,8 @@ export default defineComponent({
       return e[e.length - 1].timeunit;
     },
   },
-  filters: {
-    amount: (value:number) => value.toFixed(2)
-  },
   methods: {
+    amount: (value:number) => value.toFixed(2),
     fromDateChanged(ev:string) {
       this.$router.push({name: 'pnldetail', params: {fromDate: ev, toDate: this.explainData.toDate}});
     },
@@ -204,8 +202,9 @@ export default defineComponent({
         if (!fromDate) debugger;
         this.explains = await apiPnlExplainDetail(this.$store, {fromDate, toDate});
       } catch (error) {
+        const e:any = error;
         console.error(error);
-        notify.error(error.response);
+        notify.error(e?.response || e.toString());
       }
     },
   },

@@ -4,33 +4,33 @@
       <command-date-editor v-model="c.date"></command-date-editor>
     </div>
     <div v-if="!hideAccount">
-      <account-selector class="c-account-id" :value="dc.accountId" :original="c.accountId"
-                        @input="c.accountId=$event" :account-list="balanceableAccounts"></account-selector>
+      <account-selector class="c-account-id" :modelValue="dc.accountId" :original="c.accountId"
+                        @update:modelValue="onAccountChanged" :account-list="balanceableAccounts"></account-selector>
     </div>
     <div v-if="showBalance">
-      <balance-editor label="Balance" class="c-balance" :value="dc.balance" :original="c.balance" @input="c.balance=$event"></balance-editor>
+      <balance-editor label="Balance" class="c-balance" :modelValue="dc.balance" :original="c.balance" @update:modelValue="c.balance=$event"></balance-editor>
     </div>
     <div v-if="showChange">
-      <balance-editor label="Change" class="c-change" :value="dc.change" :original="c.change" @input="c.change=$event"></balance-editor>
+      <balance-editor label="Change" class="c-change" :modelValue="dc.change" :original="c.change" @update:modelValue="c.change=$event"></balance-editor>
     </div>
     <div v-if="canBalanceOrUnit">
-      <q-radio :value="dc.commandType" @input="c.commandType=$event" val="bal" label="Simple Balance" />
-      <q-radio :value="dc.commandType" @input="c.commandType=$event" val="unit" label="With Cost" />
+      <q-radio :modelValue="dc.commandType" @update:modelValue="c.commandType=$event" val="bal" label="Simple Balance" />
+      <q-radio :modelValue="dc.commandType" @update:modelValue="c.commandType=$event" val="unit" label="With Cost" />
     </div>
 
     <div v-if="dc.commandType==='bal'">
       <help-tip tag="balOtherAccount"></help-tip>
       <account-selector class="c-other-account" placeholder="Adjustment Account"
-                        :value="dc.otherAccount" :original="c.otherAccount"
-                        @input="c.otherAccount=$event" :account-list="mainAccounts"></account-selector>
+                        :modelValue="dc.otherAccount" :original="c.otherAccount"
+                        @update:modelValue="c.otherAccount=$event" :account-list="mainAccounts"></account-selector>
     </div>
     <div v-if="showPrice">
-      <balance-editor label="Price" :value="dc.price" :original="c.price" @input="c.price=$event"></balance-editor>
+      <balance-editor label="Price" :modelValue="dc.price" :original="c.price" @update:modelValue="c.price=$event"></balance-editor>
     </div>
     <div v-if="showCommission">
       <help-tip tag="tradeCommission"></help-tip>
       <balance-editor label="Commission" class="c-commission"
-                      :value="dc.commission" :original="c.commission" @input="c.commission=$event"></balance-editor>
+                      :modelValue="dc.commission" :original="c.commission" @update:modelValue="c.commission=$event"></balance-editor>
     </div>
     <div>
       <q-btn color="secondary" v-if="canConvertToTrade" @click="convertToTrade">Convert to Trade</q-btn>
@@ -42,7 +42,7 @@
   import BalanceEditor from '../../lib/assetdb/components/BalanceEditor.vue';
   import {CommandEditorMixin} from '../../mixins/CommandEditorMixin';
   import AccountSelector from '../AccountSelector.vue';
-  import Vue from 'vue';
+  import { defineComponent } from 'vue';
   import {
     canConvertToTrade,
     commandIsValid, convertToTrade,
@@ -51,7 +51,7 @@
     toGainstrack
   } from 'src/lib/commandDefaulting'
 
-  export default Vue.extend({
+  export default defineComponent({
     name: 'BalanceOrUnit',
     props: {cmd: Object},
     mixins: [CommandEditorMixin],
@@ -70,6 +70,9 @@
 
         this.c = newc;
 
+      },
+      onAccountChanged(ev) {
+        this.c.accountId=ev;
       }
     },
     computed: {

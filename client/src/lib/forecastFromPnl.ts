@@ -9,7 +9,6 @@ export function forecastFromPnl(pnl: PLExplainDTO): ForecastState {
   // Need to add one because we are inclusive
   const years = ChronoUnit.DAYS.between(fromDate, toDate.plusDays(1)) / 365; // Act365
 
-debugger;
   const state:ForecastState = {
     expenses : pnl.totalExpense / years,
     income : pnl.totalIncome / years,

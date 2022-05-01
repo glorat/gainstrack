@@ -25,11 +25,11 @@
 </template>
 
 <script lang="ts">
-    import Vue from 'vue';
+    import {defineComponent} from 'vue';
     import TreeTableNode from './TreeTableNode.vue';
     import { TreeTableDTO } from 'src/lib/assetdb/models';
 
-    export default Vue.extend({
+    export default defineComponent({
         name: 'TreeTable',
         props: {node: Object as () => TreeTableDTO},
         data() {
@@ -41,7 +41,7 @@
             classObject(): Record<string, any> {
                 const ret:Record<string, any> = {};
                 ret['depth-' + this.depth] = true;
-                ret['has-children'] = this.node.children && this.node.children.length > 0;
+                ret['has-children'] = this.node?.children && this.node?.children.length > 0;
                 return ret;
             }
         },

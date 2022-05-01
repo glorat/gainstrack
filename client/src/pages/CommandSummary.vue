@@ -9,7 +9,7 @@
     </q-tabs>
 
     <networth-sunburst :height="200" :account-id="accountId"></networth-sunburst>
-    <q-table dense :data="data" :columns="columns" :pagination="pagination" @row-click="onRowClick">
+    <q-table dense :rows="data" :columns="columns" :pagination="pagination" @row-click="onRowClick">
       <template v-slot:bottom-row>
         <q-tr>
           <q-td>
@@ -25,7 +25,7 @@
 </template>
 
 <script lang="ts">
-import {defineComponent} from '@vue/composition-api';
+import {defineComponent} from 'vue';
 import {apiAccountSummary} from 'src/lib/apiFacade';
 import {sum} from 'lodash';
 import {formatNumber} from 'src/lib/utils';
