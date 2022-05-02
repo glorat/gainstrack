@@ -87,7 +87,7 @@
             }, { deep: !this.watchShallow })
 
             this.$watch('options', this.react, { deep: !this.watchShallow })
-            this.$watch('layout', this.relayout, { deep: !this.watchShallow })
+            this.$watch('layout', this.relayoutOnWatch, { deep: !this.watchShallow })
         },
         beforeUnmount() {
             window.removeEventListener('resize', this.__resizeListener)
@@ -95,6 +95,10 @@
             Plotly.purge(this.$refs.container)
         },
         methods: {
+          // The watch needs to be indirect or some infinite recursion happens on Vue 3
+          relayoutOnWatch() {
+            this.relayout();
+          },
             initEvents() {
                 // https://github.com/statnett/vue-plotly/issues/20
                 if (this.autoResize) {
