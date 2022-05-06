@@ -46,13 +46,20 @@ export function accountInvestmentReport(accountId: string, ccy: string, fromDate
 
   const cashflowTable = new CashflowTable(baseFlows)
 
+  const pnlGain = endBalance - startBalance
+  const flowGain = inflows.reduce((prev, curr) => {
+    return prev + curr.convertedValue!.number;
+  }, 0.0);
+
   return {
     accountId,
     balance: endBalance,
     start: baseFlows[0].date.toString(),
     end: baseFlows[baseFlows.length-1].date.toString(),
     cashflowTable,
-    irr: cashflowTable.irr()
+    irr: cashflowTable.irr(),
+    pnlGain,
+    flowGain
   }
 }
 
