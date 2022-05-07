@@ -151,15 +151,12 @@
   margin: 0;
 }
 
+.journal .datecell,
 .tree-table .num,
 .journal .num {
   font-family: var(--font-family-monospaced);
   color: var(--color-text);
   text-align: right;
-}
-
-.tree-table .number,
-.journal .num {
   white-space: nowrap;
 }
 
@@ -314,10 +311,10 @@ pre code {
   border: 0;
 }
 
-table {
-  border-spacing: 0;
-  border-collapse: collapse;
-}
+/*table {*/
+/*  border-spacing: 0;*/
+/*  border-collapse: collapse;*/
+/*}*/
 
 td,
 th {
@@ -325,6 +322,7 @@ th {
   white-space: nowrap;
 }
 
+td.datecell,
 td.num,
 th.num {
   width: 7em;

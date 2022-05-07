@@ -7,40 +7,47 @@
       <button-toggle v-for="t in entryTypes" :key="t" :name="t" :off-state="offState"></button-toggle>
 
     </form>
-    <ol class="journal show-transaction show-cleared">
-      <li class="head">
-        <p>
-          <span class="datecell" data-sort="string">Date</span>
-          <span class="description" data-sort="string">Description</span>
-          <span class="num" data-sort="number"></span>
-          <span v-if="showBalance" class="num" data-sort="number">Change</span>
-          <span v-if="showBalance" class="num" data-sort="number">Balance</span>
-        </p>
-      </li>
-      <li class="transaction cleared" :class="{'show-postings':visiblePostings[rowIndex]?'show':''}" v-for="(row, rowIndex) in filteredEntries">
-        <p>
-          <span class="datecell">{{ row.date }}</span>
-          <span class="description">{{ row.description }}</span>
-          <!-- eslint-disable-next-line vue/no-unused-vars -->
-          <span class="indicators" v-on:click="rowClick(rowIndex)"><span v-for="i in row.postings"></span>
-            <!-- {{i}} --></span>
-          <span data-sort="number"></span>
-          <span v-if="showBalance" class="num">{{ row.change }} </span>
-          <span v-if="showBalance" class="num">{{ row.position }}</span>
-        </p>
-        <ul class="postings">
-          <li v-for="posting in row.postings">
-            <p>
-              <span class="datecell"></span>
-              <span class="description"><router-link :to="{name:'account', params: { accountId: posting.account }}">{{ posting.account }}</router-link></span>
-              <span class="num">{{ posting.value.number}} {{ posting.value.ccy }} {{ posting.price ? `@${posting.price.number}` : ''}}</span>
-              <span class="num"></span>
-              <span class="num"></span>
-            </p>
-          </li>
-        </ul>
-      </li>
-    </ol>
+
+    <q-table
+      :rows="filteredEntries"
+      row-key="description"
+      :columns="columns"
+      v-model:pagination="pagination"
+      dense
+      class="journal"
+    >
+      <template v-slot:body="props">
+        <q-tr :props="props" style="cursor: pointer" v-on:click="props.expand = !props.expand">
+          <q-td
+            v-for="col in props.cols"
+            :key="col.name"
+            :props="props"
+          >
+            <template v-if="col.name==='detail'">
+              <!-- eslint-disable-next-line vue/no-unused-vars -->
+              <span class="indicators" v-on:click="props.expand = !props.expand"><span v-for="i in props.row.postings"> </span></span>
+
+            </template>
+            <template v-else>
+              {{ col.value }}
+            </template>
+          </q-td>
+        </q-tr>
+
+        <template v-if="props.expand">
+          <q-tr v-show="props.expand" v-for="posting in props.row.postings" :key="posting">
+            <q-td class="datecell"></q-td>
+            <q-td class="description"><router-link :to="{name:'account', params: { accountId: posting.account }}">{{ posting.account }}</router-link></q-td>
+            <q-td class="num">{{ posting.value.number}} {{ posting.value.ccy }} {{ posting.price ? `@${posting.price.number}` : ''}}</q-td>
+            <q-td class="num"></q-td>
+            <q-td class="num" v-if="showBalance"></q-td>
+          </q-tr>
+        </template>
+
+      </template>
+
+    </q-table>
+
   </div>
 </template>
 
@@ -56,9 +63,16 @@
       showBalance: Boolean
     },
     data () {
+
+
+      const pagination = {
+        rowsPerPage: 10,
+      };
+
       return {
         visiblePostings: {},
-        offState: {}
+        offState: {},
+        pagination,
       }
     },
     methods: {
@@ -79,6 +93,35 @@
       },
       entryTypes () {
         return uniq(this.entries.map(x => x.cmdType))
+      },
+      columns () {
+        const columns = [
+          {
+            name: 'date',
+            label: 'Date',
+            field: 'date',
+            classes: ['datecell']
+          }, {
+            name: 'description',
+            label: 'Description',
+            field: 'description',
+            align: 'left',
+          }, {
+            name: 'detail',
+            label: '',
+            field: () => ''
+          }, {
+            name: 'change',
+            label: 'Change',
+            field: 'change',
+            align: 'right',
+            classes: ['num']
+          }];
+        if (this.showBalance) {
+          columns.push({name: 'balance', label: 'Balance', field: 'position', classes:['num']})
+        }
+        return columns;
+
       }
     }
   }
@@ -301,7 +344,7 @@
     margin-left: 1em;
   }
 
-  .journal .indicators {
+  .indicators {
     display: flex;
     flex-shrink: 3;
     flex-wrap: wrap;
@@ -310,7 +353,7 @@
     cursor: pointer;
   }
 
-  .journal .indicators span {
+  .indicators span {
     min-width: 6px;
     height: 6px;
     padding: 0;
