@@ -36,7 +36,7 @@
               matEvent
           }
         },
-        props: {value: String, label: String},
+        props: {modelValue: String, label: String},
       emits: ['update:modelValue'],
         methods: {
             onChanged(ev: string) {
@@ -49,7 +49,7 @@
         },
         computed: {
             dateObj() {
-                return reformatIsoDate(this.value || '', 'YYYY/MM/DD');
+                return reformatIsoDate(this.modelValue || '', 'YYYY/MM/DD');
             }
         }
     })
