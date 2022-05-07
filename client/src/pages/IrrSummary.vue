@@ -1,31 +1,26 @@
 <template>
     <my-page padding>
-        <table class="queryresults sortable">
-            <thead>
-            <tr>
-                <th data-sort="string">account</th>
-<!--                <th data-sort="num">balance</th>-->
-                <th data-sort="num">start</th>
-                <th data-sort="num">end</th>
-                <th data-sort="num">irr</th>
-                <th data-sort="num">pnl</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr v-bind:key="row.accountId" v-for="row in info">
-                <td><router-link :to="{ name: 'irr_detail', params: { accountId: row.accountId }}">{{ row.accountId }}</router-link></td>
-<!--                <td class="num">{{row.endBalance}}</td>-->
-                <td class="num" v-bind:data-sort-value="row.start">{{ row.start }}</td>
-                <td class="num" v-bind:data-sort-value="row.end">{{ row.end }}</td>
-                <td class="num">{{ perc(row.irr)}}</td>
-                <td class="num">{{ (row.pnlGain + row.flowGain).toFixed(0) }}</td>
-            </tr>
-            <tr>
-              <td colspan="4"></td>
-              <td class="num">{{ totalPnl.toFixed(0) }}</td>
-            </tr>
-            </tbody>
-        </table>
+      <q-table
+        :rows="info"
+        :columns="columns"
+        v-model:pagination="pagination"
+        dense
+        row-key="account"
+      >
+        <template v-slot:bottom-row>
+          <q-tr>
+            <q-td colspan="100%" class="num">
+              Total Pnl: <span class="num">{{totalPnl.toFixed(0) }}</span>
+            </q-td>
+          </q-tr>
+        </template>
+
+        <template v-slot:body-cell-account="props">
+          <q-td :props="props">
+            <router-link :to="{ name: 'irr_detail', params: { accountId: props.value }}">{{ props.value }}</router-link>
+          </q-td>
+        </template>
+      </q-table>
     </my-page>
 
 </template>
@@ -34,11 +29,50 @@
   import numbro from 'numbro'
   import { apiIrrSummary } from 'src/lib/apiFacade'
   import { mapGetters } from 'vuex'
+  import { formatNumber, formatPerc } from 'src/lib/utils'
 
   export default {
     name: 'IrrSummary',
     data () {
-      return { info: [], totalPnl:0 }
+      const columns = [{
+        name: 'account',
+        label: 'Account',
+        field: 'accountId',
+        align: 'left',
+        sortable: true
+      }, {
+        name: 'start',
+        field: 'start',
+        label: 'start',
+        classes: ['num']
+      }, {
+        name: 'end',
+        field: 'end',
+        label: 'end',
+        classes: ['num']
+      }, {
+        name: 'irr',
+        field: 'irr',
+        label: 'irr',
+        classes: ['num'],
+        sortable: true,
+        format: formatPerc
+      }, {
+        name: 'pnl',
+        label: 'pnl',
+        field: (row) => (row.pnlGain + row.flowGain),
+        classes: ['num'],
+        sortable: true,
+        format: formatNumber
+      }];
+
+      const pagination = {
+          rowsPerPage: 10,
+          sortBy: 'pnl',
+          descending: true,
+        };
+
+      return { info: [], totalPnl:0, columns, pagination }
     },
     methods: {
       async refresh () {
