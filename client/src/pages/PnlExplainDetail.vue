@@ -180,9 +180,10 @@ export default defineComponent({
       let entries = performForecast(this.forecastState, this.forecastStrategy);
       return entries;
     },
-    targetYear(): number {
-      const e = this.forecastEntries;
-      return e[e.length - 1].timeunit;
+    targetYear(): number|undefined {
+      const strategy =   {inflation: 3, roi: 7, expenseMultiple: 25};
+      return this.forecastEntries.find(e => e.networth > e.expenses * strategy.expenseMultiple)?.timeunit
+
     },
   },
   methods: {
