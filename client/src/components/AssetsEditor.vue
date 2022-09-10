@@ -17,7 +17,7 @@
           {{ asset.asset }}
         </td>
         <td class="num">
-          {{ positions[asset.asset].units.number }}
+          {{ formatNumber(positions[asset.asset].units.number) }}
         </td>
         <td>
           {{ pricerLabelFor(asset)}}
@@ -95,6 +95,7 @@
         tickerOptions: [] as string[],
         matRefresh,
         matCheck,
+        formatNumber,
       }
     },
     computed: {
