@@ -19,11 +19,11 @@
                 </tr>
                 <tr>
                     <td>From Date</td>
-                    <td class="datecell" v-for="explainData in explains">{{ explainData.fromDate}}</td>
+                    <td class="num" v-for="explainData in explains">{{ explainData.fromDate}}</td>
                 </tr>
                 <tr>
                     <td>To Date</td>
-                    <td class="datecell" v-for="explainData in explains">{{ explainData.toDate}}</td>
+                    <td class="num" v-for="explainData in explains">{{ explainData.toDate}}</td>
                 </tr>
                 <tr>
                     <td>Opening Networth</td>

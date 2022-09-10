@@ -91,7 +91,7 @@ object Transfer extends CommandParser {
     require(targetValue.number != zeroFraction)
     require(sourceValue.number != zeroFraction)
     val fxRate = targetValue.number/sourceValue.number
-    val fxDescription = if (sourceValue.ccy == targetValue.ccy) "" else s"@${1/fxRate.toDouble}"
+    val fxDescription = if (sourceValue.ccy == targetValue.ccy) "" else s"@${1/fxRate.toDouble.formatted("%.6f")}"
     val description:String = s"Transfer ${sourceValue} ${source} -> ${dest}" + fxDescription
     Transfer(source, dest, date, sourceValue, targetValue, description)
   }
