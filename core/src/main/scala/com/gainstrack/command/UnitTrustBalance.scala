@@ -18,7 +18,8 @@ case class UnitTrustBalance(
                              accountId: AccountId,
                              date: LocalDate,
                              security: Amount,
-                             price:Amount
+                             price:Amount,
+                             comments: Seq[String] = Seq()
                            ) extends AccountCommand {
 
   def value:Amount = price * security.number
@@ -121,6 +122,13 @@ case class UnitTrustBalance(
 
   override def toPartialDTO: AccountCommandDTO = {
     AccountCommandDTO(accountId = accountId, date = date, balance = Some(security), price = Some(price))
+  }
+
+  /** Commands should write
+   * this.copy(comments = newComments)
+   * */
+  override def withComments(newComments: Seq[String]): AccountCommand = {
+    copy(comments = newComments)
   }
 }
 object UnitTrustBalance extends CommandParser {

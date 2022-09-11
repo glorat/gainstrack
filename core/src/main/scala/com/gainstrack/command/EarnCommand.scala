@@ -2,8 +2,9 @@ package com.gainstrack.command
 
 import com.gainstrack.core._
 
-case class EarnCommand(date:LocalDate, incomeTag:String, value:Amount, targetAccountIdOpt:Option[AccountId] = None) extends CommandNeedsAccounts {
+case class EarnCommand(date:LocalDate, incomeTag:String, value:Amount, targetAccountIdOpt:Option[AccountId] = None, comments:Seq[String] = Seq()) extends CommandNeedsAccounts {
   val mainIncomeAccountId: AccountId = if (incomeTag.startsWith("Income:")) AccountId(incomeTag) else AccountId(s"Income:${incomeTag}")
+
 
   // private val incomeAccountId = AccountId(s"${mainIncomeAccountId}:${value.ccy.symbol}")
 
@@ -41,6 +42,13 @@ case class EarnCommand(date:LocalDate, incomeTag:String, value:Amount, targetAcc
 
   override def toPartialDTO: AccountCommandDTO = {
     AccountCommandDTO(accountId = mainIncomeAccountId, date = date, change = Some(value), otherAccount = targetAccountIdOpt)
+  }
+
+  /** Commands should write
+   * this.copy(comments = newComments)
+   * */
+  override def withComments(newComments: Seq[String]): AccountCommand = {
+    copy(comments = newComments)
   }
 }
 

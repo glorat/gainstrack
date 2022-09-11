@@ -24,11 +24,25 @@ class First extends AnyFlatSpec {
   "parser" should "roundtrip" in {
     cmds.foreach(cmd => {
       val p = new GainstrackParser
-      val strs = cmd.toGainstrack
+      val strs = cmd.toGainstrackWithComments
       p.parseLines(strs)
 
       assert(cmd == p.getCommands.last)
+    })
+  }
 
+  it should "roundtrip commented commands" in {
+    cmds.foreach(cmd => {
+      val commented = cmd.withComments(Seq("mycomment"))
+      val p = new GainstrackParser
+      val strs = commented.toGainstrackWithComments
+      p.parseLines(strs)
+
+      val c2 = p.getCommands.last
+      assert(commented == c2)
+
+      val strs2 = c2.toGainstrackWithComments
+      assert(strs == strs2)
     })
   }
 

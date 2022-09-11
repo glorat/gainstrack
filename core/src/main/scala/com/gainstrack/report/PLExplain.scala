@@ -46,6 +46,7 @@ class PLExplain(startDate: LocalDate, toDate: LocalDate)
   val activity: Seq[Transaction] = transactionState.cmds.collect({case tx:Transaction=>tx}).filter(criteria)
   val newActivityByTx: Map[String, Double] = activity.map(tx => {
     val actPnl = tx.activityPnL(singleFXConversion,toDate, baseCcy)
+    // FIXME: Why toGainstrack??
     tx.origin.toGainstrack.head -> actPnl
   }).filter(_._2 != 0.0).toMap
 

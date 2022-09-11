@@ -7,7 +7,8 @@ import com.gainstrack.core._
 case class AccountCreation (
                            date: LocalDate,
                            key: AccountKey,
-                           options:AccountOptions
+                           options:AccountOptions,
+                           comments: Seq[String] = Seq()
                            ) extends AccountCommand with BeancountCommand {
   override def origin: AccountCommand = this
   def accountId = key.name
@@ -83,6 +84,10 @@ case class AccountCreation (
 
   override def withOption(key:String, valueStr:String) : AccountCreation = {
     copy (options = options.withOption(key, valueStr))
+  }
+
+  override def withComments(newComments: Seq[String]): AccountCommand = {
+    this.copy(comments = newComments)
   }
 }
 

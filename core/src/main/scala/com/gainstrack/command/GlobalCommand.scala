@@ -2,7 +2,7 @@ package com.gainstrack.command
 
 import com.gainstrack.core._
 
-case class GlobalCommand(operatingCurrency:AssetId = AssetId("USD")) extends AccountCommand {
+case class GlobalCommand(operatingCurrency:AssetId = AssetId("USD"), comments:Seq[String] = Seq()) extends AccountCommand {
   override def date: LocalDate = MinDate
 
   override def commandString: String = ""
@@ -30,5 +30,9 @@ case class GlobalCommand(operatingCurrency:AssetId = AssetId("USD")) extends Acc
 
   override def toPartialDTO: AccountCommandDTO = {
     AccountCommandDTO(accountId = AccountId.root, date = date, options = Some(this))
+  }
+
+  override def withComments(newComments: Seq[String]): AccountCommand = {
+    copy(comments = newComments)
   }
 }

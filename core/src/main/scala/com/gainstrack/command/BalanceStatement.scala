@@ -7,7 +7,8 @@ case class BalanceStatement(
                              date: LocalDate, // post or enter?
                              accountId:AccountId,
                              balance:Amount,
-                             adjAccount:AccountId
+                             adjAccount:AccountId,
+                             comments: Seq[String] = Seq()
                            ) extends AccountCommand {
   private val self = this
 
@@ -42,6 +43,13 @@ case class BalanceStatement(
 
   override def toPartialDTO: AccountCommandDTO = {
     AccountCommandDTO(accountId = accountId, date = date, balance = Some(balance), otherAccount = Some(adjAccount))
+  }
+
+  /** Commands should write
+   * this.copy(comments = newComments)
+   * */
+  override def withComments(newComments: Seq[String]): AccountCommand = {
+    copy(comments = newComments)
   }
 }
 

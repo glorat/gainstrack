@@ -16,6 +16,9 @@ class GainstrackParser {
   private var lineCount : Int = 0
   private var commandToLocation: Map[AccountCommand, Int] = Map()
 
+  // Interim state
+  private var recentComments: Seq[String] = Seq()
+
   def getCommands : Seq[AccountCommand] = {
     val ret = Seq[AccountCommand]() ++ globalCommand ++ commands
     AccountCommand.sorted(ret)
@@ -49,7 +52,7 @@ class GainstrackParser {
   private val AccountCommandPattern =s"${datePattern} ${prefix}.*".r
   private val OptionCommandPattern = s"""^option "${prefix}" "(.*)"""".r
   private val Metadata = s"\\s*([a-z][A-Za-z0-9_-]+):\\s*(.*)".r
-  private val CommentLine = "[;#].*".r
+  private val CommentLine = "[;#]\\s?(.*)".r
   private val IgnoreLine = "^\\w*$".r
 
   final class MergeConflictException(val message: String) extends RuntimeException {
@@ -72,8 +75,12 @@ class GainstrackParser {
       case AccountCommandPattern(dateStr, prefix) => {
         if (parsers.contains(prefix)) {
           try {
-            val newCmd = parsers(prefix).parse(line)
+            var newCmd = parsers(prefix).parse(line)
             checkForConflict(newCmd)
+            // Accrue comments
+            newCmd = newCmd.withComments(recentComments)
+            recentComments = Seq()
+
             commands = commands :+ newCmd
             commandToLocation = commandToLocation + (newCmd -> lineCount)
           }
@@ -103,9 +110,12 @@ class GainstrackParser {
 
       }
       case OptionCommandPattern(key, valueStr) => {
-        globalCommand = Some(globalCommand.getOrElse(GlobalCommand()).withOption(key, valueStr))
+        globalCommand = Some(globalCommand.getOrElse(GlobalCommand()).withOption(key, valueStr).withComments(recentComments).asInstanceOf[GlobalCommand])
+        recentComments = Seq()
       }
-      case CommentLine() => ()
+      case CommentLine(commentStr) => {
+        recentComments = recentComments :+ commentStr
+      }
       case IgnoreLine() => ()
       case _ => {
         errors = errors :+ ParserMessage(s"Unparsable: ${line}", lineCount, line)

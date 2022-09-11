@@ -7,7 +7,8 @@ case class SecurityPurchase(
                              date:LocalDate,
                              security:Amount,
                              price:Amount,
-                             commission:Amount
+                             commission:Amount,
+                             comments: Seq[String] = Seq()
                            ) extends AccountCommand {
   // Only asset accounts. Liabilities is possible but a bit of a stretch
   require(accountId.accountType == Assets)
@@ -68,6 +69,10 @@ case class SecurityPurchase(
   override def toPartialDTO: AccountCommandDTO = {
     // TODO: Commission
     AccountCommandDTO(accountId = accountId, date = date, change = Some(security), price = Some(price), commission = Some(commission))
+  }
+
+  override def withComments(newComments: Seq[String]): AccountCommand = {
+    copy(comments = newComments)
   }
 }
 

@@ -2,7 +2,7 @@ package com.gainstrack.command
 
 import com.gainstrack.core._
 
-case class PriceObservation(date:LocalDate, assetId: AssetId, price:Amount, myOrigin:Option[AccountCommand]=None)
+case class PriceObservation(date:LocalDate, assetId: AssetId, price:Amount, myOrigin:Option[AccountCommand]=None, comments:Seq[String] = Seq())
   extends AccountCommand with BeancountCommand {
   override def commandString: String = PriceObservation.prefix
   override def mainAccount: Option[AccountId] = None
@@ -19,6 +19,10 @@ case class PriceObservation(date:LocalDate, assetId: AssetId, price:Amount, myOr
   }
 
   override def toPartialDTO: AccountCommandDTO = AccountCommandDTO(accountId = AccountId.root, date = date, price = Some(price), asset = Some(assetId))
+  
+  override def withComments(newComments: Seq[String]): AccountCommand = {
+    copy(comments = newComments)
+  }
 }
 
 object PriceObservation extends CommandParser {

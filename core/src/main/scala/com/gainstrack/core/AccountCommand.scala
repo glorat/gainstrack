@@ -4,6 +4,11 @@ import com.gainstrack.command.{AccountCreation, BalanceAdjustment, BalanceStatem
 import net.glorat.cqrs.{Command, DomainEvent}
 
 trait AccountCommand extends Command with DomainEvent  {
+  /** Commands should write
+   * this.copy(comments = newComments)
+   * */
+  def withComments(newComments: Seq[String]): AccountCommand
+
   // with Ordered[AccountCommand]
 
   // Mandatory fields
@@ -11,6 +16,10 @@ trait AccountCommand extends Command with DomainEvent  {
   def commandString: String // The stored short version
   def description: String
   def toGainstrack: Seq[String]
+  def comments: Seq[String]
+  def toGainstrackWithComments: Seq[String] = {
+    comments.map(x => s"; ${x}") ++ toGainstrack
+  }
   def toPartialDTO: AccountCommandDTO
   def toDTO: AccountCommandDTO = toPartialDTO.autoFill(this)
 
