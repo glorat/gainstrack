@@ -38,7 +38,7 @@ object BalanceReport {
 
 case class BalanceReportState(balances:Map[AccountId, PositionSet]) {
 
-  def toDTO = {
+  def toDTO: Map[String,PositionSet.DTO] = {
     balances.map(kv => kv._1.n -> kv._2.toDTO)
   }
 

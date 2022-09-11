@@ -7,7 +7,7 @@ import com.gainstrack.core._
 
 case class DailyBalance(balanceState: BalanceState) {
 
-  def monthlySeries(accountId: AccountId, conversionStrategy: String, startDate: LocalDate, endDate: LocalDate, acctState: AccountState, assetChainMap: AssetChainMap, singleFXConversion: SingleFXConverter) = {
+  def monthlySeries(accountId: AccountId, conversionStrategy: String, startDate: LocalDate, endDate: LocalDate, acctState: AccountState, assetChainMap: AssetChainMap, singleFXConversion: SingleFXConverter): ApexOptions = {
     val startMonth = YearMonth.from(startDate)
     val end = YearMonth.from(endDate)
     val it = Iterator.iterate(startMonth)(_.plusMonths(1)).takeWhile(!_.isAfter(end))

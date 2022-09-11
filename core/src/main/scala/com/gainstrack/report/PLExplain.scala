@@ -13,17 +13,17 @@ class PLExplain(startDate: LocalDate, toDate: LocalDate)
 
   // To include startDate, we must be at the start of startDate, which is the
   // end-of-day of the previous day!
-  val fromDate = startDate.minusDays(1)
+  val fromDate: LocalDate = startDate.minusDays(1)
   // FIXME: Deduct liabilities
 
   val baseCcy = accountState.baseCurrency
   val dailyReport = new DailyBalance(balanceState)
-  val totalNetworthStart = dailyReport.convertedPosition(Assets.accountId, fromDate, "global")
-  val totalNetworthEnd = dailyReport.convertedPosition(Assets.accountId, toDate, "global")
-  val actualPnl = (totalNetworthEnd - totalNetworthStart).getBalance(baseCcy).number.toDouble
+  val totalNetworthStart: PositionSet = dailyReport.convertedPosition(Assets.accountId, fromDate, "global")
+  val totalNetworthEnd: PositionSet = dailyReport.convertedPosition(Assets.accountId, toDate, "global")
+  val actualPnl: Double = (totalNetworthEnd - totalNetworthStart).getBalance(baseCcy).number.toDouble
 
   // Explain P&L due to price changes
-  val networthStart = dailyReport.convertedPosition(Assets.accountId, fromDate, "units")
+  val networthStart: PositionSet = dailyReport.convertedPosition(Assets.accountId, fromDate, "units")
   val ccyExplain = networthStart.ccys
   private val priceDelta: Iterable[DeltaExplain] = {
     ccyExplain.flatMap(ccy => {
@@ -36,24 +36,24 @@ class PLExplain(startDate: LocalDate, toDate: LocalDate)
         })
       })
   }
-  val deltaExplain = priceDelta
+  val deltaExplain: Iterable[DeltaExplain] = priceDelta
     .map(_.withPosition(networthStart))
     .filter(_.explain != 0.0)
-  val totalDeltaExplain = deltaExplain.map(_.explain).sum
+  val totalDeltaExplain: Double = deltaExplain.map(_.explain).sum
 
   // Activity
   val criteria:Transaction=>Boolean = tx =>  tx.postDate.isAfter(fromDate) && ((tx.postDate.isBefore(toDate) || tx.postDate.isEqual(toDate)))
-  val activity = transactionState.cmds.collect({case tx:Transaction=>tx}).filter(criteria)
+  val activity: Seq[Transaction] = transactionState.cmds.collect({case tx:Transaction=>tx}).filter(criteria)
   val newActivityByTx: Map[String, Double] = activity.map(tx => {
     val actPnl = tx.activityPnL(singleFXConversion,toDate, baseCcy)
     tx.origin.toGainstrack.head -> actPnl
   }).filter(_._2 != 0.0).toMap
 
-  val balanceReport = BalanceReport(transactionState.cmds, fromDate, toDate)
+  val balanceReport: BalanceReport = BalanceReport(transactionState.cmds, fromDate, toDate)
   // Note that income/equity has reversed sign per accounting norms
-  val totalEquity = -balanceReport.getState.convertedPosition(Equity.accountId, toDate, "global").getBalance(baseCcy).number.toDouble
+  val totalEquity: Double = -balanceReport.getState.convertedPosition(Equity.accountId, toDate, "global").getBalance(baseCcy).number.toDouble
 
-  val yieldIncome = activity.filter(
+  val yieldIncome: Double = activity.filter(
     tx => tx.origin.isInstanceOf[YieldCommand]
 //      || tx.origin.isInstanceOf[UnitTrustBalance]
 //      || tx.origin.isInstanceOf[Transfer]
@@ -61,23 +61,23 @@ class PLExplain(startDate: LocalDate, toDate: LocalDate)
     tx.pnl(singleFXConversion, tx.postDate, baseCcy, _ match { case Income => -1.0; case _ => 0.0 })
   }).sum
 
-  val totalIncome =
+  val totalIncome: Double =
     -balanceReport.getState.convertedPosition(Income.accountId, toDate, "global").getBalance(baseCcy).number.toDouble - yieldIncome
 
 
-  val totalExpense = balanceReport.getState.convertedPosition(Expenses.accountId, toDate, "global").getBalance(baseCcy).number.toDouble
+  val totalExpense: Double = balanceReport.getState.convertedPosition(Expenses.accountId, toDate, "global").getBalance(baseCcy).number.toDouble
 
-  val newActivityPnl = newActivityByTx.map(_._2).sum
+  val newActivityPnl: Double = newActivityByTx.map(_._2).sum
 
   // TODO: Explain newActivityPnl properly
-  val explained = totalDeltaExplain + newActivityPnl + totalEquity + totalIncome + yieldIncome - totalExpense
-  val unexplained = actualPnl - explained
-  val toNetworth = totalNetworthEnd.getBalance(baseCcy).number.toDouble
-  val changeDenom = toNetworth - actualPnl
-  val networthChange =  if(changeDenom != 0.0) Some(actualPnl / changeDenom) else None
+  val explained: Double = totalDeltaExplain + newActivityPnl + totalEquity + totalIncome + yieldIncome - totalExpense
+  val unexplained: Double = actualPnl - explained
+  val toNetworth: Double = totalNetworthEnd.getBalance(baseCcy).number.toDouble
+  val changeDenom: Double = toNetworth - actualPnl
+  val networthChange: Option[Double] =  if(changeDenom != 0.0) Some(actualPnl / changeDenom) else None
 
 
-  def toDTO = {
+  def toDTO: PLExplainDTO = {
 //    Map("fromDate" -> fromDate, "toDate" -> toDate,
 //      "actual" -> actualPnl, "explained" -> explained, "unexplained" -> unexplained,
 //      "newActivityPnl" -> newActivityPnl,

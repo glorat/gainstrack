@@ -56,7 +56,7 @@ class GainstrackParser {
     override def getMessage = message
   }
 
-  def checkForConflict(newCmd: AccountCommand) = {
+  def checkForConflict(newCmd: AccountCommand): Option[Nothing] = {
     val conflictOpt = commands.find(_.mergedWith(newCmd) != MergeConcat)
     conflictOpt.map (conflict => {
       throw new MergeConflictException(s"${newCmd.toGainstrack.head} conflicts with ${conflict.toGainstrack.head}")

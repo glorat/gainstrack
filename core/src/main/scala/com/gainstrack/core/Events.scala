@@ -40,7 +40,7 @@ trait AccountType {
   // A quick and dirty cheat
   override val toString: String = this.getClass.getSimpleName.dropRight(1)
 
-  implicit def accountId = AccountId(this.toString)
+  implicit def accountId: AccountId = AccountId(this.toString)
 
 }
 case object Assets extends AccountType
@@ -50,7 +50,7 @@ case object Income extends AccountType
 case object Expenses extends AccountType
 case object AccountRoot extends AccountType
 object AccountType {
-  val all = Set(Assets, Liabilities, Equity, Income, Expenses)
+  val all: Set[AccountType] = Set(Assets, Liabilities, Equity, Income, Expenses)
 
   def apply(str:String) : AccountType = {
     str match {

@@ -102,7 +102,7 @@ case class PriceState(ccys: Set[AssetId], prices: Map[AssetPair, SortedMap[Local
         .withUpdatedSeries(fx2, new2ByDate)
   }
 
-  def withUpdatedSeries(assetId:AssetPair, series: SortedMap[LocalDate, Fraction]) = {
+  def withUpdatedSeries(assetId:AssetPair, series: SortedMap[LocalDate, Fraction]): PriceState = {
     this.copy(ccys = ccys + AssetId(assetId.fx1) + AssetId(assetId.fx1),  prices = prices.updated(assetId, series))
   }
 
@@ -153,7 +153,7 @@ object PriceState {
 }
 
 case class AssetPair(str: String) {
-  def fx1 = {
+  def fx1: String = {
     str.split("/")(0)
   }
   def fx2:String = {

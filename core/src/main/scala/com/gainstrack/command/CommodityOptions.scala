@@ -11,7 +11,7 @@ case class CommodityOptions (
                               options: SortedMap[String, String] = SortedMap()
                             ) extends CommandOptions {
 
-  def toDTO = {
+  def toDTO: Map[String,Object] = {
     options.toMap + ("name" -> name) +
       ("ticker" -> ticker) +
       ("tags" -> tags.toSeq)

@@ -13,10 +13,10 @@ case class SecurityPurchase(
   require(accountId.accountType == Assets)
 
   // Auto-gen the account name
-  val cashAccountId = accountId.subAccount(price.ccy.symbol)
-  val securityAccountId = accountId.subAccount(security.ccy.symbol)
-  val incomeAcctId = accountId.convertTypeWithSubAccount(Income, price.ccy.symbol)
-  val expenseAcctId = accountId.convertTypeWithSubAccount(Expenses, price.ccy.symbol)
+  val cashAccountId: AccountId = accountId.subAccount(price.ccy.symbol)
+  val securityAccountId: AccountId = accountId.subAccount(security.ccy.symbol)
+  val incomeAcctId: AccountId = accountId.convertTypeWithSubAccount(Income, price.ccy.symbol)
+  val expenseAcctId: AccountId = accountId.convertTypeWithSubAccount(Expenses, price.ccy.symbol)
   val requiredAccountIds:Seq[AccountId] = Seq(cashAccountId, securityAccountId, incomeAcctId, expenseAcctId)
 
   override def mainAccount: Option[AccountId] = Some(accountId)
@@ -96,5 +96,5 @@ object SecurityPurchase extends CommandParser {
     }
   }
 
-  def apply(str:String) = parse(str)
+  def apply(str:String): SecurityPurchase = parse(str)
 }

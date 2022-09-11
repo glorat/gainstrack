@@ -3,6 +3,7 @@ package com.gainstrack.report
 import com.gainstrack.command.{AccountCreation, CommandNeedsAccounts, CommodityCommand, SecurityPurchase, UnitTrustBalance}
 import com.gainstrack.core.{AccountCommand, AssetId}
 import net.glorat.cqrs.{AggregateRootState, DomainEvent}
+import com.gainstrack.core.AccountCommandDTO
 
 case class AssetState(
                        allAssets: Map[AssetId, CommodityCommand] = Map(),
@@ -10,7 +11,7 @@ case class AssetState(
                        tagToAssets: Map[String, Set[AssetId]] = Map())
   extends AggregateRootState {
 
-  def toDTO = {
+  def toDTO: Seq[AccountCommandDTO] = {
     allAssets.values.map(_.toDTO).toSeq
   }
 

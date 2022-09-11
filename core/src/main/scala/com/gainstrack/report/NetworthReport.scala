@@ -11,7 +11,7 @@ object NetworthReport {
     case _ => false
   }
 
-  def byAsset(date: LocalDate, baseCcy: AssetId, accountFilter:AccountId=>Boolean = networthAccounts)(accountState: AccountState, balanceState: BalanceState, assetState: AssetState, singleFXConverter: SingleFXConverter) = {
+  def byAsset(date: LocalDate, baseCcy: AssetId, accountFilter:AccountId=>Boolean = networthAccounts)(accountState: AccountState, balanceState: BalanceState, assetState: AssetState, singleFXConverter: SingleFXConverter): NetworthAssetReportDTO = {
     val nw = balanceState.totalPosition(accountFilter, date)
     val nwAccounts = accountState.mainAccounts.filter(acct => accountFilter(acct.accountId))
 
@@ -37,7 +37,7 @@ object NetworthReport {
     NetworthAssetReportDTO(rows)
   }
 
-  def byAsset2(date: LocalDate, baseCcy: AssetId, accountFilter:AccountId=>Boolean = networthAccounts)(accountState: AccountState, txState: TransactionState, assetState: AssetState, singleFXConverter: SingleFXConverter) = {
+  def byAsset2(date: LocalDate, baseCcy: AssetId, accountFilter:AccountId=>Boolean = networthAccounts)(accountState: AccountState, txState: TransactionState, assetState: AssetState, singleFXConverter: SingleFXConverter): NetworthAssetReportDTO = {
     val nwAccounts = accountState.mainAccounts.filter(acct => accountFilter(acct.accountId))
 
     // val txsInScope = txState.allTransactions.filter(_.postings.exists(p => accountFilter(p.account)))

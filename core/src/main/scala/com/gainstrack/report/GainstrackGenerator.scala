@@ -14,7 +14,7 @@ case class GainstrackGenerator(originalCommands:Seq[AccountCommand])  {
 
   val startTime = Instant.now
   // Global
-  val globalCommand = originalCommands.head match {
+  val globalCommand: GlobalCommand = originalCommands.head match {
     case g:GlobalCommand => g
     case _ => GlobalCommand()
   }
@@ -27,16 +27,16 @@ case class GainstrackGenerator(originalCommands:Seq[AccountCommand])  {
   private val expander =
     originalCommands.foldLeft(CommandAccountExpander(firstAcctState)) ((state, ev) => state.handle(ev))
   val finalCommands = expander.cmds
-  implicit val acctState = firstAcctState.copy(accounts = expander.acctState.accounts)
+  implicit val acctState: AccountState = firstAcctState.copy(accounts = expander.acctState.accounts)
 
   // Second pass for balances
   implicit val balanceState:BalanceState =
     finalCommands.foldLeft(BalanceState(acctState)) ( (state,ev) => state.handle(ev))
 
   // Third pass for projections
-  val fxChainMap = priceState.toFxChainMap(acctState.baseCurrency)
-  implicit val assetChainMap = AssetChainMap(acctState.withInterpolatedAccounts, priceState)
-  implicit val dailyBalances = new DailyBalance(balanceState)
+  val fxChainMap: Map[AssetId,List[AssetId]] = priceState.toFxChainMap(acctState.baseCurrency)
+  implicit val assetChainMap: AssetChainMap = AssetChainMap(acctState.withInterpolatedAccounts, priceState)
+  implicit val dailyBalances: DailyBalance = new DailyBalance(balanceState)
 
   implicit val txState:TransactionState =
     finalCommands.foldLeft(TransactionState(acctState, balanceState, Seq())) ((state, ev) => state.handle(ev))
@@ -45,21 +45,21 @@ case class GainstrackGenerator(originalCommands:Seq[AccountCommand])  {
   implicit val assetState: AssetState =
     finalCommands.foldLeft(AssetState())(_.handle(_))
   val priceFXConverter = priceState.priceFxConverter
-  val tradeFXConversion = SingleFXConversion.generate(acctState.baseCurrency)(priceFXConverter, fxChainMap)
+  val tradeFXConversion: SingleFXConversion = SingleFXConversion.generate(acctState.baseCurrency)(priceFXConverter, fxChainMap)
   val fxMapper: Map[AssetId, AssetId] = new FXMapperGenerator(assetState).fxMapper
-  val proxyMapper = new FXMapperGenerator(assetState).proxyMapper
+  val proxyMapper: Map[AssetId,AssetId] = new FXMapperGenerator(assetState).proxyMapper
   val latestDate:LocalDate = finalCommands.maxBy(_.date).date
-  val txOrigins = txState.cmds.map(_.origin).map(originalCommands.indexOf(_))
-  val badOrigin = txOrigins.indexOf(-1)
+  val txOrigins: Seq[Int] = txState.cmds.map(_.origin).map(originalCommands.indexOf(_))
+  val badOrigin: Int = txOrigins.indexOf(-1)
   // Invariant condition of linking beancountCommand back to accountCommand
   if (badOrigin >= 0) {
     val unknownCommand = txState.cmds(badOrigin).origin
     throw new IllegalStateException("Unmatched tx.origin: " + unknownCommand.toGainstrack.mkString("\n"));
   }
 
-  val txs = txState.cmds.collect({ case tx: Transaction => tx })
-  val origins = txs.map(_.origin).map(originalCommands.indexOf(_))
-  val txDTOs = txs.zip(origins).map(tup => tup._1.toDTO(tup._2))
+  val txs: Seq[Transaction] = txState.cmds.collect({ case tx: Transaction => tx })
+  val origins: Seq[Int] = txs.map(_.origin).map(originalCommands.indexOf(_))
+  val txDTOs: Seq[TransactionDTO] = txs.zip(origins).map(tup => tup._1.toDTO(tup._2))
 
   def allState:Map[String, Any] = {
     Map(

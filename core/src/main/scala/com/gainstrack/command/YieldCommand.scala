@@ -3,9 +3,9 @@ package com.gainstrack.command
 import com.gainstrack.core._
 
 case class YieldCommand(date:LocalDate, accountId:AccountId, asset:Option[AssetId], value:Amount, targetAccountIdOpt:Option[AccountId] = None) extends CommandNeedsAccounts {
-  val assetAccountId = asset.map(a => accountId.subAccount(a.symbol)).getOrElse(accountId)
+  val assetAccountId: AccountId = asset.map(a => accountId.subAccount(a.symbol)).getOrElse(accountId)
 
-  val incomeAccountId = asset.map(a => accountId.convertTypeWithSubAccount(Income, a.symbol)).getOrElse(assetAccountId.convertType(Income))
+  val incomeAccountId: AccountId = asset.map(a => accountId.convertTypeWithSubAccount(Income, a.symbol)).getOrElse(assetAccountId.convertType(Income))
 
   override def commandString: String = YieldCommand.prefix
 
