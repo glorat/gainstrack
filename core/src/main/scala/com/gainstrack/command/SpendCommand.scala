@@ -2,7 +2,7 @@ package com.gainstrack.command
 
 import com.gainstrack.core._
 
-case class SpendCommand(date:LocalDate, expenseTag:String, value:Amount, otherAccountIdOpt:Option[AccountId] = None) extends CommandNeedsAccounts {
+case class SpendCommand(date:LocalDate, expenseTag:String, value:Amount, otherAccountIdOpt:Option[AccountId] = None, comments:Seq[String] = Seq()) extends CommandNeedsAccounts {
   val mainIncomeAccountId: AccountId = if (expenseTag.startsWith("Expenses:")) AccountId(expenseTag) else AccountId(s"Expenses:${expenseTag}")
 
   // private val incomeAccountId = AccountId(s"${mainIncomeAccountId}:${value.ccy.symbol}")
@@ -41,6 +41,10 @@ case class SpendCommand(date:LocalDate, expenseTag:String, value:Amount, otherAc
 
   override def toPartialDTO: AccountCommandDTO = {
     AccountCommandDTO(accountId = mainIncomeAccountId, date = date, change = Some(value), otherAccount = otherAccountIdOpt)
+  }
+
+  override def withComments(newComments: Seq[String]): AccountCommand = {
+    copy(comments = newComments)
   }
 }
 

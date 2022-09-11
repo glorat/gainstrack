@@ -9,7 +9,8 @@ case class Transfer(
                      date: LocalDate,
                      sourceValue: Amount,
                      targetValue: Amount,
-                     description:String
+                     description:String, // Might be redundant with comments?
+                     comments: Seq[String] = Seq()
                    ) extends CommandNeedsAccounts {
   def accountId : AccountId = source // Source is where the action was triggered!
   override def commandString: String = Transfer.prefix
@@ -76,6 +77,9 @@ case class Transfer(
 
   override def toPartialDTO: AccountCommandDTO = {
     AccountCommandDTO(accountId = accountId, date = date, change = Some(sourceValue), price = Some(price), otherAccount = Some(dest))
+  }
+  override def withComments(newComments: Seq[String]): AccountCommand = {
+    copy(comments = newComments)
   }
 }
 

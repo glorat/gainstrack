@@ -2,7 +2,7 @@ package com.gainstrack.command
 
 import com.gainstrack.core._
 
-case class CommodityCommand(date: LocalDate, asset:AssetId, options:CommodityOptions) extends AccountCommand with BeancountCommand {
+case class CommodityCommand(date: LocalDate, asset:AssetId, options:CommodityOptions, comments: Seq[String] = Seq()) extends AccountCommand with BeancountCommand {
   override def commandString: String = CommodityCommand.prefix
 
   override def description: String = asset.symbol
@@ -27,6 +27,13 @@ case class CommodityCommand(date: LocalDate, asset:AssetId, options:CommodityOpt
 
   override def toPartialDTO: AccountCommandDTO = {
     AccountCommandDTO(accountId = AccountId.root, date = date, asset = Some(asset), options = Some(options.toDTO))
+  }
+
+  /** Commands should write
+   * this.copy(comments = newComments)
+   * */
+  override def withComments(newComments: Seq[String]): AccountCommand = {
+    copy(comments = newComments)
   }
 }
 

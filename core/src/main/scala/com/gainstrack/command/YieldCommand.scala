@@ -2,11 +2,10 @@ package com.gainstrack.command
 
 import com.gainstrack.core._
 
-case class YieldCommand(date:LocalDate, accountId:AccountId, asset:Option[AssetId], value:Amount, targetAccountIdOpt:Option[AccountId] = None) extends CommandNeedsAccounts {
+case class YieldCommand(date:LocalDate, accountId:AccountId, asset:Option[AssetId], value:Amount, targetAccountIdOpt:Option[AccountId] = None, comments:Seq[String] = Seq()) extends CommandNeedsAccounts {
   val assetAccountId: AccountId = asset.map(a => accountId.subAccount(a.symbol)).getOrElse(accountId)
 
   val incomeAccountId: AccountId = asset.map(a => accountId.convertTypeWithSubAccount(Income, a.symbol)).getOrElse(assetAccountId.convertType(Income))
-
   override def commandString: String = YieldCommand.prefix
 
   override def description: String = s"${assetAccountId.shortName} yield ${value}"
@@ -68,6 +67,10 @@ case class YieldCommand(date:LocalDate, accountId:AccountId, asset:Option[AssetI
 
   override def toPartialDTO: AccountCommandDTO = {
     AccountCommandDTO(accountId = accountId, date = date, asset = asset, change = Some(value), otherAccount = targetAccountIdOpt)
+  }
+
+  override def withComments(newComments: Seq[String]): AccountCommand = {
+    copy(comments = newComments)
   }
 }
 

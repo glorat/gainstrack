@@ -128,7 +128,7 @@ class TransactionAmountTest extends AnyFlatSpec {
 
     it should "generate original command strings" in {
 
-      val strs = cmds.toSeq.flatMap(_.toGainstrack).mkString("\n")
+      val strs = cmds.toSeq.flatMap(_.toGainstrackWithComments).mkString("\n")
 
       val secondParser = new GainstrackParser
 

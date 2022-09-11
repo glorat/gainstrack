@@ -142,6 +142,9 @@ case class GainstrackGenerator(originalCommands:Seq[AccountCommand])  {
     def involvedAccounts: Set[AccountId] = Set()
 
     def toPartialDTO: AccountCommandDTO = ???
+
+    override def comments: Seq[String] = ???
+    override def withComments(newComments: Seq[String]): AccountCommand = ???
   }
 
   def toBeancount: Seq[BeancountLine] = {
@@ -218,9 +221,9 @@ case class GainstrackGenerator(originalCommands:Seq[AccountCommand])  {
 
     val grp = originalCommands.filter(_.mainAccount.isDefined).toSeq.groupBy(_.mainAccount.get)
     val accids = grp.keys.toSeq.sorted
-    val accountStrs = accids.map(grp(_).flatMap(_.toGainstrack).mkString("\n")).mkString("\n\n")
-    val topStrs = top.toGainstrack.mkString("\n")
-    val bottomStrs = bottom.toSeq.flatMap(_.toGainstrack).mkString("\n")
+    val accountStrs = accids.map(grp(_).flatMap(_.toGainstrackWithComments).mkString("\n")).mkString("\n\n")
+    val topStrs = top.toGainstrackWithComments.mkString("\n")
+    val bottomStrs = bottom.toSeq.flatMap(_.toGainstrackWithComments).mkString("\n")
     s"${topStrs}\n\n${accountStrs}\n\n${bottomStrs}"
   }
 }

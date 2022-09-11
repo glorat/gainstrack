@@ -2,7 +2,7 @@ package com.gainstrack.command
 
 import com.gainstrack.core._
 
-case class FundCommand(date:LocalDate, accountId:AccountId, change:Amount, sourceAccountIdOpt:Option[AccountId] = None) extends CommandNeedsAccounts {
+case class FundCommand(date:LocalDate, accountId:AccountId, change:Amount, sourceAccountIdOpt:Option[AccountId] = None, comments:Seq[String] = Seq()) extends CommandNeedsAccounts {
   override def description: String = s"Fund ${change}"
 
   override def mainAccount: Option[AccountId] = Some(accountId)
@@ -34,6 +34,10 @@ case class FundCommand(date:LocalDate, accountId:AccountId, change:Amount, sourc
 
   override def toPartialDTO: AccountCommandDTO = {
     AccountCommandDTO(accountId = accountId, date = date, change = Some(change), otherAccount = sourceAccountIdOpt)
+  }
+
+  override def withComments(newComments: Seq[String]): AccountCommand = {
+    copy(comments = newComments)
   }
 }
 

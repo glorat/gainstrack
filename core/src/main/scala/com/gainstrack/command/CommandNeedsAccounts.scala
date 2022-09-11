@@ -22,4 +22,7 @@ case class CommandWithAccounts[T<:CommandNeedsAccounts](underlying:T, accounts:S
   override def toGainstrack: Seq[String] = ???
 
   override def toPartialDTO: AccountCommandDTO = underlying.toPartialDTO
+
+  override def comments: Seq[String] = underlying.comments
+  override def withComments(newComments: Seq[String]): AccountCommand = copy(underlying = underlying.withComments(newComments).asInstanceOf[T])
 }
