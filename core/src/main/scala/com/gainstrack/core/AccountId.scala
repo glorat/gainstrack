@@ -55,5 +55,5 @@ object AccountId {
   import scala.language.implicitConversions
   implicit def stringToAccountId(str:String):AccountId = AccountId(str)
 
-  val root = AccountId("")
+  val root: AccountId = AccountId("")
 }

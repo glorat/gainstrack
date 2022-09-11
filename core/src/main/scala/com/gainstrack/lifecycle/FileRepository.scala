@@ -15,15 +15,16 @@ import org.json4s.jackson.Serialization.{read, write}
 import org.slf4j.LoggerFactory
 
 import scala.util.Using
+import org.slf4j.Logger
 
 class FileRepository(basePath:Path) extends RepositoryWithEntityStream {
-  val logger =  LoggerFactory.getLogger(getClass)
+  val logger: Logger =  LoggerFactory.getLogger(getClass)
 
   protected implicit val jsonFormats: Formats = org.json4s.DefaultFormats + UUIDSerializer + InstantSerializer
 
   require(Files.isDirectory(basePath), s"$basePath must exist as directory")
 
-  protected def filenameForId(id: GUID)  = {
+  protected def filenameForId(id: GUID): Path  = {
     basePath.resolve(id.toString)
   }
 
@@ -106,7 +107,7 @@ class FileRepository(basePath:Path) extends RepositoryWithEntityStream {
   }
 
   // Use for admin only
-  override def purge(id: GUID) = {
+  override def purge(id: GUID): Unit = {
     val filename = basePath.resolve(id.toString)
     Files.deleteIfExists(filename)
   }

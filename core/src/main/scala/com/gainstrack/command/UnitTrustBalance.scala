@@ -24,10 +24,10 @@ case class UnitTrustBalance(
   def value:Amount = price * security.number
 
   require(accountId.accountType == Assets)
-  val cashAccountId = accountId.subAccount(price.ccy.symbol)
-  val incomeAccountId = accountId.convertTypeWithSubAccount(Income, price.ccy.symbol)
-  val expenseAccountId = accountId.convertTypeWithSubAccount(Expenses, price.ccy.symbol)
-  val securityAccountId = accountId.subAccount(security.ccy.symbol)
+  val cashAccountId: AccountId = accountId.subAccount(price.ccy.symbol)
+  val incomeAccountId: AccountId = accountId.convertTypeWithSubAccount(Income, price.ccy.symbol)
+  val expenseAccountId: AccountId = accountId.convertTypeWithSubAccount(Expenses, price.ccy.symbol)
+  val securityAccountId: AccountId = accountId.subAccount(security.ccy.symbol)
 
   override def commandString: String = UnitTrustBalance.prefix
   def description:String = s"Unit statement: ${security} @${price}"

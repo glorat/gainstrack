@@ -8,10 +8,10 @@ case class SortedColumnMap[K ,V] (ks: IndexedSeq[K], val vs:IndexedSeq[V]) {
   require(ks.length == vs.length)
 
   def isEmpty = ks.isEmpty
-  def contains(key: K) = ks.contains(key) // FIXME: Use binary search
+  def contains(key: K): Boolean = ks.contains(key) // FIXME: Use binary search
 
   // FIXME: APL iota semantics should return ks.length if key is above everything (not -1 as currently)
-  def iota(key:K)(implicit kOrder:Ordering[K]) = ks.indexWhere(kOrder.compare(_, key)>0)
+  def iota(key:K)(implicit kOrder:Ordering[K]): Int = ks.indexWhere(kOrder.compare(_, key)>0)
 
   def latestKey(key:K)(implicit kOrder:Ordering[K]): Option[K] = {
     val idx = this.iota(key)

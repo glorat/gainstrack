@@ -4,9 +4,9 @@ import com.gainstrack.core._
 import org.scalatest.flatspec.AnyFlatSpec
 
 class TestPositionSet extends AnyFlatSpec {
-  val empty = PositionSet()
-  val someUsd = Amount.parse("10 USD")
-  val someGbp = Amount.parse("6 GBP")
+  val empty: PositionSet = PositionSet()
+  val someUsd: Amount = Amount.parse("10 USD")
+  val someGbp: Amount = Amount.parse("6 GBP")
   "PositionSet" should "add balances" in {
     val more = empty+someUsd+someGbp
     val expected: Map[AssetId, Fraction]  = Map(AssetId("GBP")->6, AssetId("USD")->10)

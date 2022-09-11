@@ -7,12 +7,13 @@ import net.glorat.ledger.{FirestoreLedger, FirestoreLedgerConfig}
 import org.json4s.{DefaultFormats, ShortTypeHints}
 
 import scala.concurrent.ExecutionContext
+import org.json4s.Formats
 
 object FirebaseFactory {
   // FIXME: Move to application.conf or equivalent
-  val firestoreConfig = FirestoreLedgerConfig("https://gainstrack.firebaseio.com", "users", "records")
-  val anonFirestoreConfig = firestoreConfig.copy(mainCollectionName = "anons")
-  implicit val formats = DefaultFormats.withHints(ShortTypeHints(List(classOf[GainstrackEntityDelta]))) + InstantSerializer + UUIDSerializer
+  val firestoreConfig: FirestoreLedgerConfig = FirestoreLedgerConfig("https://gainstrack.firebaseio.com", "users", "records")
+  val anonFirestoreConfig: FirestoreLedgerConfig = firestoreConfig.copy(mainCollectionName = "anons")
+  implicit val formats: Formats = DefaultFormats.withHints(ShortTypeHints(List(classOf[GainstrackEntityDelta]))) + InstantSerializer + UUIDSerializer
 
 
   val options: FirebaseOptions =
@@ -23,7 +24,7 @@ object FirebaseFactory {
 
   FirebaseApp.initializeApp(options)
 
-  def createCustomToken(uid: String) = {
+  def createCustomToken(uid: String): String = {
     import com.google.firebase.auth.FirebaseAuth
     val auth = FirebaseAuth.getInstance(FirebaseApp.getInstance)
     auth.createCustomToken(uid)
@@ -34,7 +35,7 @@ object FirebaseFactory {
 
   def createAnonRepo(implicit ec: ExecutionContext) = new FirestoreLedger(anonFirestoreConfig)
 
-  def firebaseAuth() = {
+  def firebaseAuth(): FirebaseAuth = {
     FirebaseAuth.getInstance
   }
 }

@@ -86,7 +86,7 @@ case class TransactionState(acctState:AccountState, balanceState:BalanceState, c
     allTransactions.filter(tx => tx.postDate.isBefore(date) || tx.postDate.isEqual(date))
   }
 
-  def postingsForAccount(acctId:AccountId) = {
+  def postingsForAccount(acctId:AccountId): Seq[Posting] = {
     allTransactions.flatMap(_.postings.filter(_.account == acctId))
   }
 

@@ -3,7 +3,7 @@ package com.gainstrack.command
 import com.gainstrack.core._
 
 case class EarnCommand(date:LocalDate, incomeTag:String, value:Amount, targetAccountIdOpt:Option[AccountId] = None) extends CommandNeedsAccounts {
-  val mainIncomeAccountId = if (incomeTag.startsWith("Income:")) AccountId(incomeTag) else AccountId(s"Income:${incomeTag}")
+  val mainIncomeAccountId: AccountId = if (incomeTag.startsWith("Income:")) AccountId(incomeTag) else AccountId(s"Income:${incomeTag}")
 
   // private val incomeAccountId = AccountId(s"${mainIncomeAccountId}:${value.ccy.symbol}")
 

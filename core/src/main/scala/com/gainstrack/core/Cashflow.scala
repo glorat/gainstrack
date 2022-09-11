@@ -3,7 +3,7 @@ package com.gainstrack.core
 import java.time.temporal.ChronoUnit
 
 case class Cashflow(date:LocalDate, value:Amount, source:AccountId, convertedValue:Option[Amount]=None) {
-  def pv(baseDate:LocalDate, discountRate:Double) = {
+  def pv(baseDate:LocalDate, discountRate:Double): Double = {
     val days = ChronoUnit.DAYS.between(baseDate, date)
     val dcf = days/365.0 // Using Act365 for simplicity
     val cfpv = convertedValue.get.number.toDouble/Math.pow(1+discountRate, dcf)
@@ -27,7 +27,7 @@ object Cashflow {
 }
 
 case class CashflowTable(cashflows:Seq[Cashflow]) {
-  val sorted = cashflows.sortBy(_.date)
+  val sorted: Seq[Cashflow] = cashflows.sortBy(_.date)
   def npv(discountRate:Double):Double = {
     require(sorted.length>0)
     val baseDate = sorted.head.date

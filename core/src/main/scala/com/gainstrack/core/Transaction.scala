@@ -71,7 +71,7 @@ case class Transaction (
     pnl(singleFXConverter, toDate, baseCcy, multFn)
   }
 
-  def pnl(singleFXConverter: SingleFXConverter, toDate:LocalDate, baseCcy:AssetId, multFn:AccountType=>Double) = {
+  def pnl(singleFXConverter: SingleFXConverter, toDate:LocalDate, baseCcy:AssetId, multFn:AccountType=>Double): Double = {
     postings.map(p => {
       val amt = p.value.get
       val fx = singleFXConverter.getFX(amt.ccy, baseCcy, toDate).getOrElse(0.0)
@@ -81,7 +81,7 @@ case class Transaction (
     }).sum
   }
 
-  def pnl2(singleFXConverter: SingleFXConverter, toDate:LocalDate, baseCcy:AssetId, multFn:PartialFunction[AccountType, Double]) = {
+  def pnl2(singleFXConverter: SingleFXConverter, toDate:LocalDate, baseCcy:AssetId, multFn:PartialFunction[AccountType, Double]): Double = {
     postings.map(p => {
       val amt = p.value.get
       val fx = singleFXConverter.getFX(amt.ccy, baseCcy, toDate).getOrElse(0.0)

@@ -7,9 +7,10 @@ import net.glorat.cqrs._
 import org.slf4j.LoggerFactory
 
 import scala.io.BufferedSource
+import org.slf4j.Logger
 
 class GainstrackEntity extends AggregateRoot {
-  val logger =  LoggerFactory.getLogger(getClass)
+  val logger: Logger =  LoggerFactory.getLogger(getClass)
 
   override protected var state : AggregateRootState = GainstrackEntityState(id = java.util.UUID.randomUUID(), cmdStrs=Seq())
   def getState : GainstrackEntityState = state.asInstanceOf[GainstrackEntityState]
@@ -21,7 +22,7 @@ class GainstrackEntity extends AggregateRoot {
     applyChange(GainstrackEntityDelta(id = Some(initId)))
   }
 
-  def addCommand(cmdStr:String) = {
+  def addCommand(cmdStr:String): Unit = {
     val parser = new GainstrackParser
     parser.parseString(cmdStr)
     val cmds = parser.getCommands
@@ -66,7 +67,7 @@ class GainstrackEntity extends AggregateRoot {
 }
 
 case class GainstrackEntityState(id: GUID, cmdStrs: Seq[Seq[String]]) extends AggregateRootState {
-  val logger =  LoggerFactory.getLogger(getClass)
+  val logger: Logger =  LoggerFactory.getLogger(getClass)
   private val parser = new GainstrackParser
 
   lazy val cmds: Seq[AccountCommand] = {
@@ -125,7 +126,7 @@ case class GainstrackEntityDelta(
                                 adds: Option[Seq[Seq[String]]] = None,
                                 removes: Option[Seq[Seq[String]]] = None
                                 ) extends DomainEvent {
-  def isEmpty = this == GainstrackEntityDelta()
+  def isEmpty: Boolean = this == GainstrackEntityDelta()
 
   def withAdds(as: Seq[Seq[String]]) : GainstrackEntityDelta = {
     if (as.length>0) {

@@ -62,7 +62,7 @@ class Real extends AnyFlatSpec with BeforeAndAfterEach {
     priceState
   }
 
-  val fromDate = parseDate("1980-01-01")
+  val fromDate: LocalDate = parseDate("1980-01-01")
   val queryDate = java.time.LocalDate.now
 
   it should "calculate IRR for investment accounts" taggedAs RealDataAvailable in {
@@ -98,7 +98,7 @@ class Real extends AnyFlatSpec with BeforeAndAfterEach {
     val accountId = AccountId("Assets:Investment:Zurich")
     val rep = new AccountInvestmentReport(accountId, AssetId("GBP"), fromDate, queryDate, bg.acctState, bg.balanceState, bg.txState, bg.tradeFXConversion)
 
-    assert(rep.irr < 0.068)
+    assert(rep.irr < 0.08)
     assert(rep.irr > 0.05)
   }
 

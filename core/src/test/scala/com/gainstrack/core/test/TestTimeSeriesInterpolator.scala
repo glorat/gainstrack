@@ -7,7 +7,7 @@ import org.scalatest.flatspec.AnyFlatSpec
 import scala.collection.immutable.SortedMap
 
 class TestTimeSeriesInterpolator extends AnyFlatSpec {
-  val data = SortedColumnMap.from(SortedMap(
+  val data: SortedColumnMap[LocalDate,Fraction] = SortedColumnMap.from(SortedMap(
     parseDate("2019-01-01") -> parseNumber("1"),
     parseDate("2019-12-31") -> parseNumber("365")
   ))

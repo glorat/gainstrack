@@ -13,10 +13,10 @@ class AssetAllocation(positionSet: PositionSet, tagConfig:Seq[Seq[String]], asse
   private var counter = 1
   private val MORE = "..."
 
-  val initNode = FooNode(counter, 0, 0, positionSet, "networth")
+  val initNode: FooNode = FooNode(counter, 0, 0, positionSet, "networth")
   val aaData :Seq[FooNode] = initNode +: foo(initNode)
 
-  def toDTO(baseCcy:AssetId, date: LocalDate, fxConverter: FXConverter) = {
+  def toDTO(baseCcy:AssetId, date: LocalDate, fxConverter: FXConverter): Map[String,Seq[Any]] = {
     Map(
       "ids" -> aaData.map(_.index.toString),
       "parents" -> aaData.map(p => if (p.parent>0) p.parent.toString else ""),

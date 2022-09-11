@@ -38,7 +38,7 @@ case class FundCommand(date:LocalDate, accountId:AccountId, change:Amount, sourc
 }
 
 object FundCommand extends CommandParser {
-  val DEFAULT_FUND_ACCOUNT = AccountId("Equity:Opening")
+  val DEFAULT_FUND_ACCOUNT: AccountId = AccountId("Equity:Opening")
 
   import Patterns._
   val prefix: String = "fund"

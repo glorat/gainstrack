@@ -17,9 +17,9 @@ class First extends AnyFlatSpec {
   parser.parseLines(Source.fromResource("src.gainstrack").getLines())
 
   val cmds = parser.getCommands
-  val today = parseDate("2019-12-31")
+  val today: LocalDate = parseDate("2019-12-31")
 
-  val tx = Transfer.parse("2019-01-02 tfr Assets:HSBCHK Assets:Investment:HSBC:USD 40000 HKD 5084.91 USD")
+  val tx: Transfer = Transfer.parse("2019-01-02 tfr Assets:HSBCHK Assets:Investment:HSBC:USD 40000 HKD 5084.91 USD")
 
   "parser" should "roundtrip" in {
     cmds.foreach(cmd => {
@@ -111,7 +111,7 @@ class First extends AnyFlatSpec {
     assert(assetChainMap(AccountId("Assets:Investment:IBUSD:VWRD")).map(_.symbol) == Seq("VWRD", "USD", "GBP"))
   }
 
-  val bg = GainstrackGenerator(cmds)
+  val bg: GainstrackGenerator = GainstrackGenerator(cmds)
 
   val accountMap = bg.acctState.accountMap
 

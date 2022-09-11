@@ -3,7 +3,7 @@ package com.gainstrack.command
 import com.gainstrack.core._
 
 case class SpendCommand(date:LocalDate, expenseTag:String, value:Amount, otherAccountIdOpt:Option[AccountId] = None) extends CommandNeedsAccounts {
-  val mainIncomeAccountId = if (expenseTag.startsWith("Expenses:")) AccountId(expenseTag) else AccountId(s"Expenses:${expenseTag}")
+  val mainIncomeAccountId: AccountId = if (expenseTag.startsWith("Expenses:")) AccountId(expenseTag) else AccountId(s"Expenses:${expenseTag}")
 
   // private val incomeAccountId = AccountId(s"${mainIncomeAccountId}:${value.ccy.symbol}")
 
