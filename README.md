@@ -28,9 +28,13 @@ By knowing your networth, income and expenses, we can forecast many things like
 
 ### Developer notes
 
-Proxy the mysql instance as localhost with this
+Proxy the mysql instance as localhost with the [original version](https://cloud.google.com/sql/docs/mysql/sql-proxy) of cloud sql proxy
 
-`cloud_sql_proxy -credential_file=./gainstrack-firebase-adminsdk-i4v7p-cd5c94630a.json -instances=gainstrack:asia-northeast2:gainstrack-tk=tcp:3306`
+`cloud_sql_proxy -credential_file=./gainstrack-firebase-adminsdk-i4v7p-cd5c94630a.json -instances=gainstrack:asia-northeast1:gainstrack-tk=tcp:3306`
+
+For the more [recent version](https://github.com/GoogleCloudPlatform/cloud-sql-proxy) of the proxy:
+
+`cloud-sql-proxy -c ./gainstrack-firebase-adminsdk-i4v7p-cd5c94630a.json gainstrack:asia-northeast1:gainstrack-tk`
 
 #### Environment variables
 `AV_API_KEY` - API Key for alphavantage. Free keys can be obtained from their webiste
