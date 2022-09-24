@@ -16,7 +16,7 @@
                 <h5>Liabilities</h5>
                 <tree-table v-bind:node="info['Liabilities']"></tree-table>
                 <h5>Equity</h5>
-                <tree-table v-bind:node="info['Equity']"></tree-table>
+                <tree-table v-bind:node="info['Equities']"></tree-table>
             </div>
         </div>
     </my-page>
