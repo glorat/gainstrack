@@ -1,13 +1,10 @@
 import java.security.interfaces.RSAPublicKey
-import java.time.Instant
+import java.time.{Clock, Instant, ZoneId}
 import java.util.Date
-
 import com.auth0.jwk.{JwkProviderBuilder, UrlJwkProvider}
 import com.auth0.jwt.algorithms.Algorithm
 import com.auth0.jwt.exceptions.TokenExpiredException
 import com.auth0.jwt.{JWT, JWTDecoder, JWTVerifier}
-import com.auth0.jwt.impl.JWTParser
-import com.auth0.jwt.interfaces.{Clock, DecodedJWT}
 import com.gainstrack.web.{Auth0Config, Auth0JWTVerifier}
 import org.scalatest.flatspec.AnyFlatSpec
 
@@ -37,9 +34,7 @@ class AuthTest extends AnyFlatSpec {
       .withAudience(audience)
       // .build
       .asInstanceOf[JWTVerifier.BaseVerification]
-      .build(new Clock {
-        override def getToday: Date = Date.from(Instant.parse("2019-12-20T00:00:00Z"))
-      })
+      .build(Clock.fixed(Instant.parse("2019-12-20T00:00:00Z"), ZoneId.of("UTC")))
 
     val jwt = verifier.verify(token)
 
