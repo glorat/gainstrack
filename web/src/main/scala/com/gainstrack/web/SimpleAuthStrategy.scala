@@ -1,9 +1,8 @@
 package com.gainstrack.web
 
 import java.util.UUID
-
 import javax.servlet.http.{HttpServletRequest, HttpServletResponse}
-import org.json4s.Formats
+import org.json4s.{Formats, JValue}
 import org.scalatra.ScalatraBase
 import org.scalatra.auth.ScentryStrategy
 import org.scalatra.json.JacksonJsonSupport
@@ -16,7 +15,7 @@ class SimpleAuthStrategy(protected override val app: ScalatraBase)
   override def name: String = "SimpleAuthStrategy"
 
   private val jsonOpt:Option[JacksonJsonSupport] = if (app.isInstanceOf[JacksonJsonSupport] ) Some(app.asInstanceOf[JacksonJsonSupport]) else None
-  private val bodyOpt = jsonOpt.map(_.parsedBody)
+  private val bodyOpt: Option[JValue] = jsonOpt.map(_.parsedBody)
   private val username = bodyOpt.flatMap(body => (body \ "username").extractOpt[String]).map(_.toLowerCase)
   private val password = bodyOpt.flatMap(body => (body \ "password").extractOpt[String])
 

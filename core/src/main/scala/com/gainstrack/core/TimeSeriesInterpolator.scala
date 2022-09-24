@@ -70,7 +70,7 @@ object TimeSeriesInterpolator {
     val ret: Option[Double] = nearest match {
       case _: Empty[N] => None
       case e: Exact[N] => {
-        Some(e.value.toDouble())
+        Some(e.value.toDouble)
       }
       case e: ExtrapolateLow[N] => Some(e.value.toDouble)
       case e: ExtrapolateHigh[N] => Some(e.value.toDouble)
@@ -97,7 +97,7 @@ object TimeSeriesInterpolator {
     val ret: Option[Double] = nearest match {
       case _: Empty[N] => None
       case e: Exact[N] => {
-        Some(e.value.toDouble())
+        Some(e.value.toDouble)
       }
       case e: ExtrapolateLow[N] => Some(e.value.toDouble)
       case e: ExtrapolateHigh[N] => Some(e.value.toDouble)
