@@ -14,7 +14,8 @@ class First extends AnyFlatSpec {
 
   import scala.io.Source
 
-  parser.parseLines(Source.fromResource("src.gainstrack").getLines())
+  private val lines = Source.fromResource("src.gainstrack").getLines().toList
+  parser.parseLines(lines)
 
   val cmds = parser.getCommands
   val today: LocalDate = parseDate("2019-12-31")
@@ -26,7 +27,6 @@ class First extends AnyFlatSpec {
       val p = new GainstrackParser
       val strs = cmd.toGainstrackWithComments
       p.parseLines(strs)
-
       assert(cmd == p.getCommands.last)
     })
   }
@@ -64,6 +64,7 @@ class First extends AnyFlatSpec {
     val cmd = cmds.head
     assert(cmd.isInstanceOf[GlobalCommand])
     assert(cmd.asInstanceOf[GlobalCommand].operatingCurrency == AssetId("GBP"))
+    assert(cmd.comments.length == 3) // Three comments!
   }
 
   "transfer" should "calc fx rate" in {
@@ -115,8 +116,8 @@ class First extends AnyFlatSpec {
     val newState = acctState.withInterpolatedAccounts
     val newAccounts = newState.accounts.&~(acctState.accounts)
 
-    newAccounts.foreach(a => println(s"${a.toBeancount}"))
-    assert(newAccounts.size == 10)
+//    newAccounts.foreach(a => println(s"${a.toBeancount}"))
+    assert(newAccounts.size == 9)
   }
 
   it should "generate asset conversion chains" in {
@@ -136,7 +137,17 @@ class First extends AnyFlatSpec {
 
   it should "generate sane beancount string" in {
     val str = bg.toGainstrack
-    assert(str.startsWith("option \"operating_currency\" \"GBP\"\n\n2000-01-01 open Assets:Bank:HSBCUK GBP\n\n2000-01-01 open Assets:Bank:Nationwide GBP"))
+    assert(str.startsWith("; Global level comments\n;  second line\n;   third line\noption \"operating_currency\" \"GBP\"\n\n2000-01-01 open Assets:Bank:HSBCUK GBP\n\n2000-01-01 open Assets:Bank:Nationwide GBP"))
+  }
+
+  it should "round trip generate the same formatted gainstrack text" in {
+    val genLines = bg.toGainstrack.split("\n")
+
+    genLines.zipWithIndex.foreach{ case (elem, idx) => {
+      assert(elem === lines(idx))
+    }}
+
+//    assert(str === lines.mkString("\n"))
   }
 
   it should "pass bean-check" in {

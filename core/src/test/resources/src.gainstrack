@@ -1,6 +1,6 @@
-;Global level comments
-; second line
-;  third line
+; Global level comments
+;  second line
+;   third line
 option "operating_currency" "GBP"
 
 2000-01-01 open Assets:Bank:HSBCUK GBP
@@ -61,20 +61,19 @@ option "operating_currency" "GBP"
 2010-01-01 open Equity:Opening GBP
   multiAsset:true
 
-2010-01-01 open Income:Salary:CNY CNY
-  fundingAccount: Assets:HSBCCN
-2018-07-26 earn Salary 25000.0 CNY
-2018-07-26 earn Salary Assets:HSBCCN 25000.0 CNY
-
 2010-01-01 open Expenses:Education CNY
   fundingAccount: Assets:HSBCCN
-2018-08-15 spend Expenses:Education 100000 CNY
+2018-08-15 spend Expenses:Education 100000.0 CNY
 
-option "operating_currency" "GBP"
+2010-01-01 open Income:Salary CNY
+  fundingAccount: Assets:HSBCCN
+2018-07-26 earn Income:Salary 25000.0 CNY
+2018-07-26 earn Income:Salary Assets:HSBCCN 25000.0 CNY
+
 1900-01-01 commodity VWRD
   tags: equity,global
-  arbitrary: hello world
   ticker: VWRD.LON
+  arbitrary: hello world
 1900-01-01 commodity IUAA
   tags: bond,us
   ticker: IUAA.LON

@@ -217,7 +217,7 @@ case class GainstrackGenerator(originalCommands:Seq[AccountCommand])  {
 
   def toGainstrack: String = {
     val top = globalCommand
-    val bottom = originalCommands.filter(_.mainAccount.isEmpty)
+    val bottom = originalCommands.filter(_.mainAccount.isEmpty).filter(_ != globalCommand)
 
     val grp = originalCommands.filter(_.mainAccount.isDefined).toSeq.groupBy(_.mainAccount.get)
     val accids = grp.keys.toSeq.sorted
