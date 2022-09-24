@@ -10,10 +10,9 @@ updateOptions := updateOptions.value.withCachedResolution(true)
 
 lazy val myResolvers = Seq(
   Classpaths.typesafeReleases,
-  Resolver.sonatypeRepo("releases"),
-  Resolver.sonatypeRepo("public"),
   Resolver.bintrayRepo("cakesolutions", "maven")
-)
+) ++ Resolver.sonatypeOssRepos("releases") ++ Resolver.sonatypeOssRepos("public")
+
 
 lazy val dependencies = new {
   val dlstoreV = "0.4.0"
@@ -57,14 +56,14 @@ lazy val useLocalDlcrypto = file("dlcrypto/build.sbt").exists()
 lazy val commonSettings = Seq(
   libraryDependencies ++= dlsuite_deps,
   resolvers ++= myResolvers,
-  test in assembly := {},
-  assemblyMergeStrategy in assembly := {
+  assembly / test := {},
+  assembly / assemblyMergeStrategy := {
     case x if x.contains("io.netty.versions.properties") => MergeStrategy.discard
     case "module-info.class" => MergeStrategy.discard // Jackson libraries
     case PathList("META-INF", "services", xs @ _*) => MergeStrategy.concat // Netty config
     case PathList("META-INF", xs @ _*) => MergeStrategy.discard
     case x => {
-      val oldStrategy = (assemblyMergeStrategy in assembly).value
+      val oldStrategy = (assembly / assemblyMergeStrategy).value
       oldStrategy(x)
     }
 
@@ -75,7 +74,7 @@ lazy val web = project
   .dependsOn(quotes % "compile->compile;test->test")
   .settings(commonSettings: _*)
   .settings(
-    mainClass in assembly := Some("JettyLauncher"),
+    assembly / mainClass := Some("JettyLauncher"),
   )
 
 lazy val core = project
