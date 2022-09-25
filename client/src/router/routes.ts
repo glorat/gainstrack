@@ -99,8 +99,13 @@ const gainstrackRoutes: RouteRecordRaw[] = [
     props: {page: 'releases.md'},  meta: {title: 'Release Notes'}},
   {path: '/faq', component: Markdown,
     props: {page: 'faq.md'},  meta: {title: 'FAQ'}},
+  {path: '/docs/:page', component: Markdown,
+    props: true},
   {path: '/*', component: Markdown,
     props: {page: 'welcome.md'},  meta: {title: 'Welcome'}},
+  {path: '/', component: Markdown,
+    props: {page: 'welcome.md'},  meta: {title: 'Welcome'}},
+
 ];
 
 const gainstrackNavBar = [
@@ -168,7 +173,7 @@ export const {appRoutes, navBar, layout, appTitle, appDescription} : AppMode = (
   } else {
     // Default to gainstrack for unknown host
     // Can change this during development. Should not hit this in production
-    return simpleMode;
+    return gainstrackMode;
 
   }
 })()

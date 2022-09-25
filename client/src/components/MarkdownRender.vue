@@ -1,5 +1,5 @@
 <template>
-    <div v-html="rendered"></div>
+    <div class="markdown-body" v-html="rendered"></div>
 </template>
 
 <script lang="ts">
@@ -30,11 +30,13 @@
         },
         methods: {
             loadPage(page: string) {
-                axios.get('/md/' + page)
+              const resolvedPage = page.endsWith('.md') ? page : `${page}.md` // Auto append .md
+
+                axios.get('/md/' + resolvedPage)
                     .then(response => {
                         this.content = response.data;
                     })
-                    .catch(error => this.content = page + ':' + error.message);
+                    .catch(error => this.content = resolvedPage + ':' + error.message);
             }
         },
         watch: {
