@@ -136,7 +136,7 @@ class SyncUp(implicit ec: ExecutionContext) {
     val cmdDaily = if (cfg.marketRegion == "GLOBAL") {
       s"""wget -O $outFile https://www.alphavantage.co/query?function=FX_DAILY&from_symbol=$avSymbol&to_symbol=USD&outputsize=full&datatype=csv&apikey=$apikey"""
     } else {
-      s"""wget -O $outFile https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=$avSymbol&outputsize=full&datatype=csv&apikey=$apikey"""
+      s"""wget -O $outFile https://www.alphavantage.co/query?function=TIME_SERIES_WEEKLY&symbol=$avSymbol&outputsize=full&datatype=csv&apikey=$apikey"""
     }
 
     goGetIt(outFile, cmdDaily, stdoutResult = false, forceDownload = forceDownload)
