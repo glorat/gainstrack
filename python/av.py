@@ -33,7 +33,7 @@ def doit(args):
             symbol = avs[0].ref
 
     ts = TimeSeries(output_format='pandas')
-    data, meta_data = ts.get_daily(symbol=symbol, outputsize='full')
+    data, meta_data = ts.get_weekly(symbol)
 
     data = data.rename(columns = {'date':'timestamp', '4. close':'close'})
     ret = data.to_csv(columns=['close'], index_label='timestamp')

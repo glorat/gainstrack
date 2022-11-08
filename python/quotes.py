@@ -1,4 +1,6 @@
+from datetime import datetime
 import sys
+import pandas as pd
 
 def investpy(request):
     """HTTP Cloud Function.
@@ -24,6 +26,7 @@ def investpy(request):
 
 def doit(args):
     import investpy
+    from investiny import historical_data, search_assets
 
     ticker = args['ticker']
     market_region = args['marketRegion']
@@ -39,11 +42,27 @@ def doit(args):
     country = country_map[market_region]
 
     etfs_dict = investpy.etfs.get_etfs_dict()
-    names = [item['name'] for item in etfs_dict if item['symbol']==ticker and item['country'] == country]
-    etf = names[0]
-    foo = investpy.etfs.get_etf_recent_data(etf, country)
-    foo = foo.rename(columns = {'Date':'timestamp', 'Close':'close', 'Currency':'currency'})
-    return foo.to_csv(columns=['close','currency'], index_label='timestamp')
+    rows = [item for item in etfs_dict if item['symbol']==ticker and item['country'] == country]
+    row = rows[0]
+    # print(row)
+    exchange = row['stock_exchange']
+    currency = row['currency']
+    # foo = investpy.etfs.get_etf_recent_data(etf, country)
+    search_results = search_assets(query=ticker, type="ETF", limit=2)
+    matches = [item for item in search_results if item["exchange"] == exchange]
+
+    # print(matches)
+
+    investing_id = int(matches[0]["ticker"])
+    data = historical_data(investing_id=investing_id, from_date="09/01/2022")
+    df = pd.DataFrame(data)
+    # print(data)
+    df['timestamp'] = df['date'].apply(lambda x: datetime.strptime(x, '%m/%d/%Y').strftime('%Y-%m-%d'))
+    df['currency'] = currency
+    df['close'] = df['close'].round(4)
+    # df = df.rename(columns={'date': 'timestamp'})
+    # print(df)
+    return df.to_csv(columns=['timestamp', 'close', 'currency'], index=False)
 
 def main():
     ticker = sys.argv[1]
