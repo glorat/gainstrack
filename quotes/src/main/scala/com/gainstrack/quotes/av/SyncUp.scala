@@ -112,6 +112,7 @@ class SyncUp(implicit ec: ExecutionContext) {
     cfg.sources match {
       case QuoteSourceSource("av", _ , _)::_ => downloadQuoteFromAlphaVantage(cfg, forceDownload)
       case QuoteSourceSource("investpy", _ , _)::_ => downloadQuoteFromInvestPy(cfg, forceDownload)
+      case QuoteSourceSource("yahoo", _, _) :: _ => downloadQuoteWithPython(cfg, "yahoo", forceDownload)
       case _ => ()
     }
 
@@ -126,6 +127,17 @@ class SyncUp(implicit ec: ExecutionContext) {
 
     val outFile = s"db/av/$symbol.csv"
     val cmd = s"""python3 python/quotes.py ${ticker} "${marketRegion}""""
+    goGetIt(outFile, cmd, stdoutResult = true, forceDownload = forceDownload)
+  }
+
+  private def downloadQuoteWithPython(qs: QuoteSource, pythonMethod: String, forceDownload:Boolean) = {
+    require(pythonMethod.matches("^\\w+$"))
+    val symbol = qs.id
+    val icfg = qs.sources.find(_.sourceType == pythonMethod).get
+    val ticker = if (icfg.ref != "") icfg.ref else qs.ticker
+    val marketRegion = qs.marketRegion
+    val outFile = s"db/av/$symbol.csv"
+    val cmd = s"""python3 python/$pythonMethod.py ${ticker} "${marketRegion}""""
     goGetIt(outFile, cmd, stdoutResult = true, forceDownload = forceDownload)
   }
 
