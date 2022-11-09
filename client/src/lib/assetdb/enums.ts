@@ -44,6 +44,7 @@ export const quoteSourceTypes = [
   {value: 'av', label: 'Alpha Vantage'},
   {value: 'investpy', label: 'investpy'},
   {value: 'ft', label: 'ft.com symbol'},
+  {value: 'yahoo', label: 'Yahoo finance symbol'},
 ].map(cleanUp);
 
 export const investmentAssetTypes = [
