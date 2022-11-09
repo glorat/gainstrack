@@ -2,7 +2,7 @@
   <div>
     <q-table :rows="history" :columns="columns" v-model:expanded="expanded" :loading="loading">
       <template v-slot:body="props">
-        <q-tr :props="props" @click="props.expand = !props.expand" style="cursor: pointer">
+        <q-tr :props="props" @click="onRowClick" style="cursor: pointer">
           <q-td
             v-for="col in props.cols"
             :key="col.name"
@@ -86,6 +86,9 @@
       }
     },
     methods: {
+      onRowClick() {
+        console.log('row clicked')
+      },
       async refresh() {
         this.loading = true;
         try {
