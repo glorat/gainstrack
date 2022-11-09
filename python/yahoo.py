@@ -18,12 +18,14 @@ def doit(args):
     # print(ticker, file=sys.stderr)
 
     t = yf.Ticker(ticker)
+    currency = t.info['currency']
 
     # df = t.history(period="1mo")
     df = t.history(period="max")
     df['timestamp'] = df.index.strftime('%Y-%m-%d')
     df['close'] = df['Close'].round(4)
-    ret = df.to_csv(columns=['timestamp', 'close'], index=False)
+    df['currency'] = currency
+    ret = df.to_csv(columns=['timestamp', 'close', 'currency'], index=False)
     return ret
 
 
