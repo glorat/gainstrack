@@ -1,14 +1,32 @@
 name: Docker Image CI
 
-on: [push]
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
 
-jobs:
+jobs:      
+  deploy:
 
-  build:
-
+    name: Setup Gcloud Account
     runs-on: ubuntu-latest
-
+    env:
+      IMAGE_NAME: gcr.io/${{ secrets.GCP_PROJECT_ID }}/${{ secrets.GCP_APP_NAME }}
     steps:
-    - uses: actions/checkout@v1
-    - name: Build the Docker image
-      run: docker build . --file Dockerfile --tag gainstrack
+
+    - name: Login
+      uses: google-github-actions/setup-gcloud@v0
+      with:
+        project_id: ${{ secrets.GCP_PROJECT_ID }}
+        service_account_email: ${{ secrets.GCP_EMAIL }}
+        service_account_key: ${{ secrets.GCP_CREDENTIALS }}
+
+    - name: Configure Docker
+      run: gcloud auth configure-docker --quiet
+
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Build Docker image
+      run: docker build . --file fast.Dockerfile -t $IMAGE_NAME
