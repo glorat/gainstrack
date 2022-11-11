@@ -73,3 +73,4 @@ jobs:
           projectId: gainstrack
           target: poc
           channelId: live
+          entryPoint: ./client
