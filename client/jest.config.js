@@ -1,24 +1,35 @@
-const esModules = ['quasar/lang', 'lodash-es'].join('|');
+const esModules = ['quasar', 'quasar/lang', 'lodash-es'].join('|');
 
 /* eslint-env node */
 module.exports = {
   globals: {
-    __DEV__: true
+    __DEV__: true,
+    // TODO: Remove if resolved natively
+    // See https://github.com/vuejs/vue-jest/issues/175
+    'vue-jest': {
+      pug: { doctype: 'html' },
+    },
+    // Remove if using `const enums`
+    // See https://huafu.github.io/ts-jest/user/config/isolatedModules#example
+    'ts-jest': {
+      isolatedModules: true,
+    },
   },
-  setupFilesAfterEnv: ['<rootDir>/test/jest/jest.setup.ts'],
+  // Jest assumes we are testing in node environment, specify jsdom environment instead
+  testEnvironment: 'jsdom',
   // noStackTrace: true,
   // bail: true,
   // cache: false,
   // verbose: true,
   // watch: true,
-  collectCoverage: true,
+  collectCoverage: false,
   coverageDirectory: '<rootDir>/test/jest/coverage',
   collectCoverageFrom: [
     '<rootDir>/src/**/*.vue',
     '<rootDir>/src/**/*.js',
     '<rootDir>/src/**/*.ts',
     '<rootDir>/src/**/*.jsx',
-    '<rootDir>/src/**/*.tsx'
+    '<rootDir>/src/**/*.tsx',
   ],
   coveragePathIgnorePatterns: ['/node_modules/', '.d.ts$'],
   coverageThreshold: {
@@ -27,13 +38,13 @@ module.exports = {
       //  functions: 50,
       //  lines: 50,
       //  statements: 50
-    }
+    },
   },
   testMatch: [
     // Matches tests in any subfolder of 'src' or into 'test/jest/__tests__'
     // Matches all files with extension 'js', 'jsx', 'ts' and 'tsx'
     '<rootDir>/test/jest/__tests__/**/*.(spec|test).+(ts|js)?(x)',
-    '<rootDir>/src/**/*.jest.(spec|test).+(ts|js)?(x)'
+    '<rootDir>/src/**/*.jest.(spec|test).+(ts|js)?(x)',
   ],
   // Extension-less imports of components are resolved to .ts files by TS,
   //  grating correct type-checking in test files.
@@ -44,7 +55,7 @@ module.exports = {
   // See https://github.com/vuejs/vue-jest/issues/188#issuecomment-620750728
   moduleFileExtensions: ['vue', 'js', 'jsx', 'json', 'ts', 'tsx'],
   moduleNameMapper: {
-    '^quasar$': '<rootDir>/node_modules/quasar/dist/quasar.common.js',
+    '^quasar$': 'quasar/dist/quasar.esm.prod.js',
     '^~/(.*)$': '<rootDir>/$1',
     '^src/(.*)$': '<rootDir>/src/$1',
     '^app/(.*)$': '<rootDir>/$1',
@@ -53,7 +64,7 @@ module.exports = {
     '^pages/(.*)$': '<rootDir>/src/pages/$1',
     '^assets/(.*)$': '<rootDir>/src/assets/$1',
     '^boot/(.*)$': '<rootDir>/src/boot/$1',
-    '.*css$': '@quasar/quasar-app-extension-testing-unit-jest/stub.css'
+    '.*css$': '@quasar/quasar-app-extension-testing-unit-jest/stub.css',
   },
   transform: {
     // See https://jestjs.io/docs/en/configuration.html#transformignorepatterns-array-string
@@ -65,8 +76,8 @@ module.exports = {
     // https://github.com/tleunen/find-babel-config/issues/33
     '.*\\.vue$': 'vue-jest',
     '.+\\.(css|styl|less|sass|scss|svg|png|jpg|ttf|woff|woff2)$':
-      'jest-transform-stub'
+      'jest-transform-stub',
   },
-  transformIgnorePatterns: [`<rootDir>/node_modules/(?!(${esModules}))`],
-  snapshotSerializers: ['<rootDir>/node_modules/jest-serializer-vue']
+  transformIgnorePatterns: [`node_modules/(?!(${esModules}))`],
+  snapshotSerializers: ['<rootDir>/node_modules/jest-serializer-vue'],
 };

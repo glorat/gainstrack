@@ -1,0 +1,34 @@
+name: Web client CI
+
+on:
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+    name: Build and Test
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./client
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+      - name: Set up Node (16)
+        uses: actions/setup-node@v1
+        with:
+          node-version: 16.x
+      - name: NPM ci
+        run: npm ci
+      - name: Build
+        run: npx quasar build
+      - name: Test
+        run: npx quasar test --unit jest
+      - name: Deploy preview
+        uses: FirebaseExtended/action-hosting-deploy@v0
+        with:
+          repoToken: '${{ secrets.GITHUB_TOKEN }}'
+          firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_GAINSTRACK }}'
+          projectId: gainstrack
+          target: poc
+          entryPoint: ./client
