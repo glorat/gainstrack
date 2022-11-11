@@ -21,7 +21,7 @@ jobs:
       - name: NPM ci
         run: npm ci
       - name: Build PWA
-        run: npx quasar build -m pwa
+        run: npx quasar build
       - name: Test
         run: npx quasar test --unit jest
       - name: Deploy preview
