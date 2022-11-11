@@ -20,7 +20,7 @@ jobs:
           node-version: 16.x
       - name: NPM ci
         run: npm ci
-      - name: Build PWA
+      - name: Build
         run: npx quasar build
       - name: Test
         run: npx quasar test --unit jest
@@ -31,4 +31,3 @@ jobs:
           firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_GAINSTRACK }}'
           projectId: gainstrack
           target: poc
-          entryPoint: ./client
