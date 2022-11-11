@@ -17,6 +17,8 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: 16.x
+      - name: NPM ci
+        run: npm ci
       - name: Build PWA
         run: npx quasar build -m pwa
       - name: Test
