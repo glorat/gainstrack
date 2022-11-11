@@ -37,7 +37,7 @@ jobs:
          # SENTRY_URL: https://sentry.io/
         with:
          environment: production
-         sourcemaps: ./dist/spa
+         sourcemaps: ./client/dist/spa
          finalize: false
          ignore_missing: true
          ignore_empty: true
@@ -52,7 +52,7 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: build-artifacts
-          path: "./dist/spa"
+          path: "./client/dist/spa"
   deploy:
     name: Deploy
     runs-on: ubuntu-latest
@@ -64,7 +64,7 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: build-artifacts
-          path: "./dist/spa"
+          path: "./client/dist/spa"
       - name: Deploy preview
         uses: FirebaseExtended/action-hosting-deploy@v0
         with:
