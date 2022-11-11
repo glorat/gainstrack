@@ -1,0 +1,23 @@
+name: Web client CI
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+    name: Build and Test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+      - name: Set up Node (16)
+        uses: actions/setup-node@v1
+        with:
+          node-version: 16.x
+      - name: Build PWA
+        run: npx quasar build -m pwa
+      - name: Test
+        run: npx quasar test --unit jest
