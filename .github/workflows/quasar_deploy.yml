@@ -37,9 +37,11 @@ jobs:
         if: ${{ needs.pre_check.outputs.new_release_published }}
         run: echo "Preparing version ${{ steps.semantic.outputs.new_release_version }}
   build:
-    name: Build and deploy
+    name: Build
     needs: [ pre_check ]
-    if: needs.pre_check.outputs.new_release_published
+    if: needs.pre_check.outputs.new_release_published == 'true'
+    outputs:
+      new_release_published: needs.pre_check.outputs.new_release_published
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -63,7 +65,7 @@ jobs:
       - name: Build
         run: npx quasar build --publish sentry
       - name: Determine version
-        run: echo "SOURCE_VERSION=$(jq -r .version PACKAGE.json)" >> $GITHUB_ENV
+        run: echo "SOURCE_VERSION=$(jq -r .version package.json)" >> $GITHUB_ENV
       - name: Determine version
         run: echo "Deploying version $SOURCE_VERSION"
       - name: Create Sentry release
@@ -95,6 +97,7 @@ jobs:
     name: Deploy
     runs-on: ubuntu-latest
     needs: [ build ]
+    if: needs.build.outputs.new_release_published == 'true'
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v2
