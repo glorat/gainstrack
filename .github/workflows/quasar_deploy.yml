@@ -37,7 +37,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Version check
         if: ${{ steps.semantic.outputs.new_release_published == 'true' }}
-        run: echo "Preparing version ${{ steps.semantic.outputs.new_release_version }}
+        run: echo "Preparing version ${{ steps.semantic.outputs.new_release_version }}"
   build:
     name: Build front-end
     needs: [ pre_check ]
