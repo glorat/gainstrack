@@ -5,9 +5,12 @@ on:
     branches: [ master ]
 
 jobs:
-  build:
-    name: Build and Test
+  pre_check:
+    name: Test and semver
     runs-on: ubuntu-latest
+    outputs:
+      new_release_published: steps.semantic.outputs.new_release_published
+      new_release_version: steps.semantic.outputs.new_release_version
     defaults:
       run:
         working-directory: ./client
@@ -23,9 +26,40 @@ jobs:
       - name: Test
         run: npx quasar test --unit jest
       - name: Semantic Release
+        id: semantic
+        uses: cycjimmy/semantic-release-action@v3
+        with:
+          semantic_version: 19.0.5
+          dry_run: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: npx semantic-release
+      - name: Version check
+        if: ${{ needs.pre_check.outputs.new_release_published }}
+        run: echo "Preparing version ${{ steps.semantic.outputs.new_release_version }}
+  build:
+    name: Build and deploy
+    needs: [ pre_check ]
+    if: needs.pre_check.outputs.new_release_published
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./client
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+      - name: Set up Node (16)
+        uses: actions/setup-node@v1
+        with:
+          node-version: 16.x
+      - name: NPM ci
+        run: npm ci
+      - name: Semantic Release
+        id: semantic
+        uses: cycjimmy/semantic-release-action@v3
+        with:
+         semantic_version: 19.0.5
+        env:
+         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Build
         run: npx quasar build --publish sentry
       - name: Determine version
@@ -69,7 +103,7 @@ jobs:
         with:
           name: build-artifacts
           path: "./client/dist/spa"
-      - name: Deploy preview
+      - name: Deploy live
         uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           repoToken: '${{ secrets.GITHUB_TOKEN }}'
