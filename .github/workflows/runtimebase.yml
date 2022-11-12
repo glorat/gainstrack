@@ -1,4 +1,5 @@
 on: [workflow_dispatch]
+name: Build and push runtime image
 
 jobs:
   build:

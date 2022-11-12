@@ -43,7 +43,7 @@ jobs:
     needs: [ pre_check ]
     if: needs.pre_check.outputs.new_release_published == 'true'
     outputs:
-      new_release_published: needs.pre_check.outputs.new_release_published
+      new_release_published: ${{ needs.pre_check.outputs.new_release_published }}
     runs-on: ubuntu-latest
     defaults:
       run:
