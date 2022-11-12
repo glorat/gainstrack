@@ -1,4 +1,4 @@
-name: Web client CICD
+name: Release branch CICD
 
 on:
   push:
@@ -39,7 +39,7 @@ jobs:
         if: ${{ needs.pre_check.outputs.new_release_published }}
         run: echo "Preparing version ${{ steps.semantic.outputs.new_release_version }}
   build:
-    name: Build
+    name: Build front-end
     needs: [ pre_check ]
     if: needs.pre_check.outputs.new_release_published == 'true'
     outputs:
