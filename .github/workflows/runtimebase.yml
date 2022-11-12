@@ -23,7 +23,7 @@ jobs:
         run: gcloud auth configure-docker --quiet
 
       - name: Build Docker image
-        run: docker build . --file scalabase.Dockerfile -t $IMAGE_NAME
+        run: docker build . --file runtime.Dockerfile -t $IMAGE_NAME
 
       - name: Push Docker image
         run: docker push $IMAGE_NAME
