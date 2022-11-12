@@ -66,6 +66,8 @@ jobs:
          semantic_version: 19.0.5
         env:
          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Set package.json version
+        run: npm version ${{ steps.semantic.outputs.new_release_version }} --no-git-tag-version
       - name: Build
         run: npx quasar build --publish sentry
       - name: Determine version
