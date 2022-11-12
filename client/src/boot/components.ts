@@ -1,7 +1,7 @@
 import MyPage from '../components/MyPage.vue';
 import { LoadingBar } from 'quasar'
 
-import version from '../../../package.json';
+import version from '../../package.json';
 import {boot} from 'quasar/wrappers';
 import {useAuth} from '../auth';
 
