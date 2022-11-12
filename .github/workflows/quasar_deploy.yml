@@ -156,6 +156,12 @@ jobs:
       matrix:
         server: [ "quotes", "appserver" ]
     steps:
+    - id: 'auth'
+      uses: 'google-github-actions/auth@v1'
+      with:
+        credentials_json: '${{ secrets.GCP_CREDENTIALS }}'
+    - name: 'Set up Cloud SDK'
+      uses: 'google-github-actions/setup-gcloud@v1'
     - name: Release ${{ matrix.server }} server
       run: |-
         gcloud run deploy ${{ matrix.server }} \
