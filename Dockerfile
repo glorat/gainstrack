@@ -33,9 +33,6 @@ RUN npm install
 
 # Then build
 COPY ./client/ .
-# Override symlink with physical for container build
-RUN rm VERSION.json
-COPY ./VERSION.json .
 RUN npm run build
 
 FROM openjdk:17.0.2-slim-bullseye

@@ -14,20 +14,24 @@ jobs:
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v3
-      - name: Determine version
-        run: echo "SOURCE_VERSION=$(jq -r .version VERSION.json)" >> $GITHUB_ENV
-      - name: Determine version
-        run: echo "Deploying version $SOURCE_VERSION"
       - name: Set up Node (16)
         uses: actions/setup-node@v1
         with:
           node-version: 16.x
       - name: NPM ci
         run: npm ci
-      - name: Build
-        run: npx quasar build --publish sentry
       - name: Test
         run: npx quasar test --unit jest
+      - name: Semantic Release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: npx semantic-release
+      - name: Build
+        run: npx quasar build --publish sentry
+      - name: Determine version
+        run: echo "SOURCE_VERSION=$(jq -r .version PACKAGE.json)" >> $GITHUB_ENV
+      - name: Determine version
+        run: echo "Deploying version $SOURCE_VERSION"
       - name: Create Sentry release
         uses: getsentry/action-release@v1
         env:

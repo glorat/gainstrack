@@ -2,7 +2,7 @@ import {boot} from 'quasar/wrappers';
 import * as Sentry from '@sentry/vue';
 import { BrowserTracing } from '@sentry/tracing';
 import {router} from 'src/router'
-import version from '../../VERSION.json'
+import version from '../../../package.json'
 
 export default boot(({app}) => {
 
