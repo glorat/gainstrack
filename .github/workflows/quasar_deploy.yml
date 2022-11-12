@@ -121,7 +121,7 @@ jobs:
           target: poc
           channelId: live
           entryPoint: ./client
-  deploy_backend:
+  release_backend:
     name: Build and test backend
     runs-on: ubuntu-latest
     needs: [ pre_check ]
@@ -148,20 +148,20 @@ jobs:
 
       - name: Push Docker image
         run: docker push $IMAGE_NAME
+  deploy_backend:
+    name: Deploy backend
+    runs-on: ubuntu-latest
+    needs: [ release_backend ]
+    strategy:
+      matrix:
+        server: [ "quotes", "appserver" ]
+    steps:
+    - name: Release ${{ matrix.server }} server
+      run: |-
+        gcloud run deploy ${{ matrix.server }} \
+          --region asia-northeast1 \
+          --image gcr.io/gainstrack/gainstrack \
+          --platform managed \
+          --allow-unauthenticated \
+          --project gainstrack
 
-      - name: Release quotes server
-        run: |-
-          gcloud run deploy quotes \
-            --region asia-northeast1 \
-            --image gcr.io/gainstrack/gainstrack \
-            --platform managed \
-            --allow-unauthenticated \
-            --project gainstrack
-      - name: Release appserver server
-        run: |-
-          gcloud run deploy appserver \
-            --region asia-northeast1 \
-            --image gcr.io/gainstrack/gainstrack \
-            --platform managed \
-            --allow-unauthenticated \
-            --project gainstrack
