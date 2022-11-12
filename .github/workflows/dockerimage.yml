@@ -27,4 +27,4 @@ jobs:
       run: gcloud auth configure-docker --quiet
 
     - name: Build Docker image
-      run: docker build . --file fast.Dockerfile -t $IMAGE_NAME
+      run: docker build . --file fasttest.Dockerfile -t $IMAGE_NAME

@@ -6,7 +6,7 @@ COPY build.sbt .
 COPY web web
 COPY quotes quotes
 COPY core core
-RUN sbt test assembly
+RUN sbt assembly
 
 FROM gcr.io/gainstrack/runtime
 RUN mkdir -p /app
