@@ -1,3 +1,6 @@
+<template>
+  <div></div>
+</template>
 <!--<template>-->
 <!--  &lt;!&ndash; eslint-disable &ndash;&gt;-->
 <!--  <v-tour name="myTour" :steps="steps" :options="options">-->
