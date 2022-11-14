@@ -112,13 +112,22 @@ jobs:
         with:
           name: build-artifacts
           path: "./client/dist/spa"
-      - name: Deploy live
+      - name: Deploy poc
         uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           repoToken: '${{ secrets.GITHUB_TOKEN }}'
           firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_GAINSTRACK }}'
           projectId: gainstrack
           target: poc
+          channelId: live
+          entryPoint: ./client
+      - name: Deploy prod
+        uses: FirebaseExtended/action-hosting-deploy@v0
+        with:
+          repoToken: '${{ secrets.GITHUB_TOKEN }}'
+          firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_GAINSTRACK }}'
+          projectId: gainstrack
+          target: prod
           channelId: live
           entryPoint: ./client
   release_backend:
