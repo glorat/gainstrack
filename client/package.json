@@ -20,10 +20,10 @@
   "dependencies": {
     "@auth0/auth0-spa-js": "^1.19.4",
     "@glorat/boglebot": "^1.0.1",
-    "@js-joda/core": "^3.2.0",
+    "@js-joda/core": "^5.4.2",
     "@quasar/extras": "^1.15.5",
-    "@sentry/tracing": "^6.17.4",
-    "@sentry/vue": "^6.17.4",
+    "@sentry/tracing": "^7.19.0",
+    "@sentry/vue": "^7.19.0",
     "@types/jest": "^26.0.24",
     "@types/lodash": "^4.14.178",
     "@types/marked": "^4.0.1",
@@ -39,6 +39,7 @@
     "plotly.js-dist": "^1.58.5",
     "quasar": "^2.10.1",
     "stream": "^0.0.2",
+    "vue": "^3.2.45",
     "vuex": "^4.0.1",
     "vuex-persist": "^3.1.3"
   },
