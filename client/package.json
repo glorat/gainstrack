@@ -39,6 +39,7 @@
     "plotly.js-dist": "^1.58.5",
     "quasar": "^2.10.1",
     "stream": "^0.0.2",
+    "vue": "^3.2.45",
     "vuex": "^4.0.1",
     "vuex-persist": "^3.1.3"
   },
