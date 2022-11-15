@@ -87,7 +87,7 @@ jobs:
          finalize: false
          ignore_missing: true
          ignore_empty: true
-         version: ${{ env.SOURCE_VERSION }}
+         version: gainstrack@${{ env.SOURCE_VERSION }}
       - name: Remove Source Maps
         run: |
           # Remove all source maps
