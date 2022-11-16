@@ -1,52 +1,52 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`First State asset tree converted to global 1`] = `
-Object {
-  "assetBalance": Array [
-    Object {
+{
+  "assetBalance": [
+    {
       "ccy": "GBP",
       "number": 625581.5365236884,
     },
   ],
-  "children": Array [
-    Object {
-      "assetBalance": Array [
-        Object {
+  "children": [
+    {
+      "assetBalance": [
+        {
           "ccy": "GBP",
           "number": 188635.59,
         },
       ],
-      "children": Array [
-        Object {
-          "assetBalance": Array [
-            Object {
+      "children": [
+        {
+          "assetBalance": [
+            {
               "ccy": "GBP",
               "number": 19000,
             },
           ],
-          "children": Array [],
+          "children": [],
           "name": "Assets:Bank:HSBCUK",
           "shortName": "HSBCUK",
         },
-        Object {
-          "assetBalance": Array [
-            Object {
+        {
+          "assetBalance": [
+            {
               "ccy": "GBP",
               "number": 115703.48999999999,
             },
           ],
-          "children": Array [],
+          "children": [],
           "name": "Assets:Bank:Nationwide",
           "shortName": "Nationwide",
         },
-        Object {
-          "assetBalance": Array [
-            Object {
+        {
+          "assetBalance": [
+            {
               "ccy": "GBP",
               "number": 53932.1,
             },
           ],
-          "children": Array [],
+          "children": [],
           "name": "Assets:Bank:NationwideSavings",
           "shortName": "NationwideSavings",
         },
@@ -54,85 +54,85 @@ Object {
       "name": "Assets:Bank",
       "shortName": "Bank",
     },
-    Object {
-      "assetBalance": Array [
-        Object {
+    {
+      "assetBalance": [
+        {
           "ccy": "GBP",
           "number": 0,
         },
       ],
-      "children": Array [],
+      "children": [],
       "name": "Assets:HSBCCN",
       "shortName": "HSBCCN",
     },
-    Object {
-      "assetBalance": Array [
-        Object {
+    {
+      "assetBalance": [
+        {
           "ccy": "GBP",
           "number": 3292.743399472632,
         },
       ],
-      "children": Array [],
+      "children": [],
       "name": "Assets:HSBCHK",
       "shortName": "HSBCHK",
     },
-    Object {
-      "assetBalance": Array [
-        Object {
+    {
+      "assetBalance": [
+        {
           "ccy": "GBP",
           "number": 433653.2031242158,
         },
       ],
-      "children": Array [
-        Object {
-          "assetBalance": Array [
-            Object {
+      "children": [
+        {
+          "assetBalance": [
+            {
               "ccy": "GBP",
               "number": -22107.826223337514,
             },
           ],
-          "children": Array [
-            Object {
-              "assetBalance": Array [
-                Object {
+          "children": [
+            {
+              "assetBalance": [
+                {
                   "ccy": "GBP",
                   "number": 2429.383626097867,
                 },
               ],
-              "children": Array [],
+              "children": [],
               "name": "Assets:Investment:HSBC:BRK-B",
               "shortName": "BRK-B",
             },
-            Object {
-              "assetBalance": Array [
-                Object {
+            {
+              "assetBalance": [
+                {
                   "ccy": "GBP",
                   "number": -41585.069008782935,
                 },
               ],
-              "children": Array [],
+              "children": [],
               "name": "Assets:Investment:HSBC:USD",
               "shortName": "USD",
             },
-            Object {
-              "assetBalance": Array [
-                Object {
+            {
+              "assetBalance": [
+                {
                   "ccy": "GBP",
                   "number": 806.0774780426599,
                 },
               ],
-              "children": Array [],
+              "children": [],
               "name": "Assets:Investment:HSBC:VCSH",
               "shortName": "VCSH",
             },
-            Object {
-              "assetBalance": Array [
-                Object {
+            {
+              "assetBalance": [
+                {
                   "ccy": "GBP",
                   "number": 16241.781681304896,
                 },
               ],
-              "children": Array [],
+              "children": [],
               "name": "Assets:Investment:HSBC:VTI",
               "shortName": "VTI",
             },
@@ -140,55 +140,55 @@ Object {
           "name": "Assets:Investment:HSBC",
           "shortName": "HSBC",
         },
-        Object {
-          "assetBalance": Array [
-            Object {
+        {
+          "assetBalance": [
+            {
               "ccy": "GBP",
               "number": 27415.40934755332,
             },
           ],
-          "children": Array [
-            Object {
-              "assetBalance": Array [
-                Object {
+          "children": [
+            {
+              "assetBalance": [
+                {
                   "ccy": "GBP",
                   "number": 971.7534504391468,
                 },
               ],
-              "children": Array [],
+              "children": [],
               "name": "Assets:Investment:IBUSD:BRK-B",
               "shortName": "BRK-B",
             },
-            Object {
-              "assetBalance": Array [
-                Object {
+            {
+              "assetBalance": [
+                {
                   "ccy": "GBP",
                   "number": 4097.396486825595,
                 },
               ],
-              "children": Array [],
+              "children": [],
               "name": "Assets:Investment:IBUSD:IUAA",
               "shortName": "IUAA",
             },
-            Object {
-              "assetBalance": Array [
-                Object {
+            {
+              "assetBalance": [
+                {
                   "ccy": "GBP",
                   "number": 134.92001254704837,
                 },
               ],
-              "children": Array [],
+              "children": [],
               "name": "Assets:Investment:IBUSD:USD",
               "shortName": "USD",
             },
-            Object {
-              "assetBalance": Array [
-                Object {
+            {
+              "assetBalance": [
+                {
                   "ccy": "GBP",
                   "number": 22211.33939774153,
                 },
               ],
-              "children": Array [],
+              "children": [],
               "name": "Assets:Investment:IBUSD:VWRD",
               "shortName": "VWRD",
             },
@@ -196,99 +196,99 @@ Object {
           "name": "Assets:Investment:IBUSD",
           "shortName": "IBUSD",
         },
-        Object {
-          "assetBalance": Array [
-            Object {
+        {
+          "assetBalance": [
+            {
               "ccy": "GBP",
               "number": 80300.28,
             },
           ],
-          "children": Array [
-            Object {
-              "assetBalance": Array [
-                Object {
+          "children": [
+            {
+              "assetBalance": [
+                {
                   "ccy": "GBP",
                   "number": 0.0017671099985818728,
                 },
               ],
-              "children": Array [],
+              "children": [],
               "name": "Assets:Investment:OldMutual:GBP",
               "shortName": "GBP",
             },
-            Object {
-              "assetBalance": Array [
-                Object {
+            {
+              "assetBalance": [
+                {
                   "ccy": "GBP",
                   "number": 1802.43824,
                 },
               ],
-              "children": Array [],
+              "children": [],
               "name": "Assets:Investment:OldMutual:GBR04S9K",
               "shortName": "GBR04S9K",
             },
-            Object {
-              "assetBalance": Array [
-                Object {
+            {
+              "assetBalance": [
+                {
                   "ccy": "GBP",
                   "number": 3981.925561,
                 },
               ],
-              "children": Array [],
+              "children": [],
               "name": "Assets:Investment:OldMutual:GBR06HUW",
               "shortName": "GBR06HUW",
             },
-            Object {
-              "assetBalance": Array [
-                Object {
+            {
+              "assetBalance": [
+                {
                   "ccy": "GBP",
                   "number": 18405.485914,
                 },
               ],
-              "children": Array [],
+              "children": [],
               "name": "Assets:Investment:OldMutual:OPXC",
               "shortName": "OPXC",
             },
-            Object {
-              "assetBalance": Array [
-                Object {
+            {
+              "assetBalance": [
+                {
                   "ccy": "GBP",
                   "number": 17342.540658,
                 },
               ],
-              "children": Array [],
+              "children": [],
               "name": "Assets:Investment:OldMutual:OPY7",
               "shortName": "OPY7",
             },
-            Object {
-              "assetBalance": Array [
-                Object {
+            {
+              "assetBalance": [
+                {
                   "ccy": "GBP",
                   "number": 3475.46032769,
                 },
               ],
-              "children": Array [],
+              "children": [],
               "name": "Assets:Investment:OldMutual:QLNC",
               "shortName": "QLNC",
             },
-            Object {
-              "assetBalance": Array [
-                Object {
+            {
+              "assetBalance": [
+                {
                   "ccy": "GBP",
                   "number": 33385.518261,
                 },
               ],
-              "children": Array [],
+              "children": [],
               "name": "Assets:Investment:OldMutual:QS90",
               "shortName": "QS90",
             },
-            Object {
-              "assetBalance": Array [
-                Object {
+            {
+              "assetBalance": [
+                {
                   "ccy": "GBP",
                   "number": 1906.9092712,
                 },
               ],
-              "children": Array [],
+              "children": [],
               "name": "Assets:Investment:OldMutual:SVDK",
               "shortName": "SVDK",
             },
@@ -296,55 +296,55 @@ Object {
           "name": "Assets:Investment:OldMutual",
           "shortName": "OldMutual",
         },
-        Object {
-          "assetBalance": Array [
-            Object {
+        {
+          "assetBalance": [
+            {
               "ccy": "GBP",
               "number": 348045.33999999997,
             },
           ],
-          "children": Array [
-            Object {
-              "assetBalance": Array [
-                Object {
+          "children": [
+            {
+              "assetBalance": [
+                {
                   "ccy": "GBP",
                   "number": 155303.3314,
                 },
               ],
-              "children": Array [],
+              "children": [],
               "name": "Assets:Investment:Zurich:AMER",
               "shortName": "AMER",
             },
-            Object {
-              "assetBalance": Array [
-                Object {
+            {
+              "assetBalance": [
+                {
                   "ccy": "GBP",
                   "number": 158121.6,
                 },
               ],
-              "children": Array [],
+              "children": [],
               "name": "Assets:Investment:Zurich:FTSE",
               "shortName": "FTSE",
             },
-            Object {
-              "assetBalance": Array [
-                Object {
+            {
+              "assetBalance": [
+                {
                   "ccy": "GBP",
                   "number": -0.020100000030652154,
                 },
               ],
-              "children": Array [],
+              "children": [],
               "name": "Assets:Investment:Zurich:GBP",
               "shortName": "GBP",
             },
-            Object {
-              "assetBalance": Array [
-                Object {
+            {
+              "assetBalance": [
+                {
                   "ccy": "GBP",
                   "number": 34620.4287,
                 },
               ],
-              "children": Array [],
+              "children": [],
               "name": "Assets:Investment:Zurich:TBOND",
               "shortName": "TBOND",
             },
@@ -363,14 +363,14 @@ Object {
 `;
 
 exports[`First State pnlExplain monthly 1`] = `
-Array [
-  Object {
+[
+  {
     "actual": 13149.88062177109,
-    "delta": Array [],
+    "delta": [],
     "explained": 13149.880621771095,
     "fromDate": "2019-01-01",
     "networthChange": 0,
-    "newActivityByAccount": Array [],
+    "newActivityByAccount": [],
     "newActivityPnl": 45.81369226032758,
     "tenor": "avg",
     "toDate": "2019-12-31",
@@ -382,13 +382,13 @@ Array [
     "totalYieldIncome": 0,
     "unexplained": -4.198123330449259e-12,
   },
-  Object {
+  {
     "actual": 157798.5674612531,
-    "delta": Array [],
+    "delta": [],
     "explained": 157798.56746125314,
     "fromDate": "2019-01-01",
     "networthChange": 0.33694631920989737,
-    "newActivityByAccount": Array [],
+    "newActivityByAccount": [],
     "newActivityPnl": 549.764307123931,
     "tenor": "total",
     "toDate": "2019-12-31",
@@ -400,13 +400,13 @@ Array [
     "totalYieldIncome": 0,
     "unexplained": -5.03774799653911e-11,
   },
-  Object {
+  {
     "actual": 0,
-    "delta": Array [],
+    "delta": [],
     "explained": 0,
     "fromDate": "2019-12-01",
     "networthChange": 0,
-    "newActivityByAccount": Array [],
+    "newActivityByAccount": [],
     "newActivityPnl": 0,
     "tenor": "Dec",
     "toDate": "2019-12-31",
@@ -418,13 +418,13 @@ Array [
     "totalYieldIncome": 0,
     "unexplained": 0,
   },
-  Object {
+  {
     "actual": 0,
-    "delta": Array [],
+    "delta": [],
     "explained": 0,
     "fromDate": "2019-11-01",
     "networthChange": 0,
-    "newActivityByAccount": Array [],
+    "newActivityByAccount": [],
     "newActivityPnl": 0,
     "tenor": "Nov",
     "toDate": "2019-11-30",
@@ -436,13 +436,13 @@ Array [
     "totalYieldIncome": 0,
     "unexplained": 0,
   },
-  Object {
+  {
     "actual": 0,
-    "delta": Array [],
+    "delta": [],
     "explained": 0,
     "fromDate": "2019-10-01",
     "networthChange": 0,
-    "newActivityByAccount": Array [],
+    "newActivityByAccount": [],
     "newActivityPnl": 0,
     "tenor": "Oct",
     "toDate": "2019-10-31",
@@ -454,13 +454,13 @@ Array [
     "totalYieldIncome": 0,
     "unexplained": 0,
   },
-  Object {
+  {
     "actual": 0,
-    "delta": Array [],
+    "delta": [],
     "explained": 0,
     "fromDate": "2019-09-01",
     "networthChange": 0,
-    "newActivityByAccount": Array [],
+    "newActivityByAccount": [],
     "newActivityPnl": 0,
     "tenor": "Sep",
     "toDate": "2019-09-30",
@@ -472,13 +472,13 @@ Array [
     "totalYieldIncome": 0,
     "unexplained": 0,
   },
-  Object {
+  {
     "actual": 0,
-    "delta": Array [],
+    "delta": [],
     "explained": 0,
     "fromDate": "2019-08-01",
     "networthChange": 0,
-    "newActivityByAccount": Array [],
+    "newActivityByAccount": [],
     "newActivityPnl": 0,
     "tenor": "Aug",
     "toDate": "2019-08-31",
@@ -490,13 +490,13 @@ Array [
     "totalYieldIncome": 0,
     "unexplained": 0,
   },
-  Object {
+  {
     "actual": 0,
-    "delta": Array [],
+    "delta": [],
     "explained": 0,
     "fromDate": "2019-07-01",
     "networthChange": 0,
-    "newActivityByAccount": Array [],
+    "newActivityByAccount": [],
     "newActivityPnl": 0,
     "tenor": "Jul",
     "toDate": "2019-07-31",
@@ -508,13 +508,13 @@ Array [
     "totalYieldIncome": 0,
     "unexplained": 0,
   },
-  Object {
+  {
     "actual": 0,
-    "delta": Array [],
+    "delta": [],
     "explained": 0,
     "fromDate": "2019-06-01",
     "networthChange": 0,
-    "newActivityByAccount": Array [],
+    "newActivityByAccount": [],
     "newActivityPnl": 0,
     "tenor": "Jun",
     "toDate": "2019-06-30",
@@ -526,13 +526,13 @@ Array [
     "totalYieldIncome": 0,
     "unexplained": 0,
   },
-  Object {
+  {
     "actual": 0,
-    "delta": Array [],
+    "delta": [],
     "explained": 0,
     "fromDate": "2019-05-01",
     "networthChange": 0,
-    "newActivityByAccount": Array [],
+    "newActivityByAccount": [],
     "newActivityPnl": 0,
     "tenor": "May",
     "toDate": "2019-05-31",
@@ -544,10 +544,10 @@ Array [
     "totalYieldIncome": 0,
     "unexplained": 0,
   },
-  Object {
+  {
     "actual": 39.66436637379229,
-    "delta": Array [
-      Object {
+    "delta": [
+      {
         "amount": 15,
         "assetId": "BRK-B",
         "explain": 51.32528230865728,
@@ -562,20 +562,20 @@ Array [
     "explained": 39.66436637389633,
     "fromDate": "2019-04-01",
     "networthChange": 0.00006340801174028729,
-    "newActivityByAccount": Array [
-      Object {
+    "newActivityByAccount": [
+      {
         "accountId": "BUY 100.0 VWRD @85.79 USD",
         "explain": 3.136762860726776,
       },
-      Object {
+      {
         "accountId": "BUY 230.0 VWRD @85.83 USD",
         "explain": -3.637978807091713e-12,
       },
-      Object {
+      {
         "accountId": "BUY 1000.0 IUAA @5.225 USD",
         "explain": -9.094947017729282e-13,
       },
-      Object {
+      {
         "accountId": "BUY 6.0 BRK-B @206.53 USD",
         "explain": -1.1368683772161603e-13,
       },
@@ -591,10 +591,10 @@ Array [
     "totalYieldIncome": 0,
     "unexplained": -1.0403766736999387e-10,
   },
-  Object {
+  {
     "actual": 163247.49036177335,
-    "delta": Array [
-      Object {
+    "delta": [
+      {
         "amount": 100,
         "assetId": "VTI",
         "explain": 215.61977206190204,
@@ -609,20 +609,20 @@ Array [
     "explained": 163247.49036177332,
     "fromDate": "2019-03-01",
     "networthChange": 0.3531245388008474,
-    "newActivityByAccount": Array [
-      Object {
+    "newActivityByAccount": [
+      {
         "accountId": "BUY 13.0 VCSH @79.07 USD",
         "explain": -2.2737367544323206e-13,
       },
-      Object {
+      {
         "accountId": "BUY 14.0 VTI @144.62 USD",
         "explain": -8.673149309911878,
       },
-      Object {
+      {
         "accountId": "BUY 30.0 VTI @143.83 USD",
         "explain": 9.094947017729282e-13,
       },
-      Object {
+      {
         "accountId": "BUY 15.0 BRK-B @200.58 USD",
         "explain": 18.663739021330002,
       },
@@ -638,10 +638,10 @@ Array [
     "totalYieldIncome": 0,
     "unexplained": 2.9103830456733704e-11,
   },
-  Object {
+  {
     "actual": -6025.224221445795,
-    "delta": Array [
-      Object {
+    "delta": [
+      {
         "amount": 100,
         "assetId": "VTI",
         "explain": 518.1322319810406,
@@ -656,7 +656,7 @@ Array [
     "explained": -6025.224221445872,
     "fromDate": "2019-02-01",
     "networthChange": -0.012865624552193628,
-    "newActivityByAccount": Array [],
+    "newActivityByAccount": [],
     "newActivityPnl": 0,
     "tenor": "Feb",
     "toDate": "2019-02-28",
@@ -668,14 +668,14 @@ Array [
     "totalYieldIncome": 0,
     "unexplained": 7.73070496506989e-11,
   },
-  Object {
+  {
     "actual": 536.6369545517373,
-    "delta": Array [],
+    "delta": [],
     "explained": 536.63695455179,
     "fromDate": "2019-01-01",
     "networthChange": 0.0011471921597045404,
-    "newActivityByAccount": Array [
-      Object {
+    "newActivityByAccount": [
+      {
         "accountId": "BUY 100.0 VTI @127.63 USD",
         "explain": 536.63695455179,
       },
