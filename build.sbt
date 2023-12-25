@@ -31,7 +31,7 @@ lazy val common_deps = Seq(
   "com.typesafe.slick" %% "slick" % "3.4.1",
   "com.typesafe.slick" %% "slick-hikaricp" % "3.4.1",
   "mysql" % "mysql-connector-java" % "8.0.33",
-  "com.google.cloud.sql" % "mysql-socket-factory-connector-j-8" % "1.15.1",
+  "com.google.cloud.sql" % "mysql-socket-factory-connector-j-8" % "1.11.0",
   "com.google.cloud" % "google-cloud-pubsub" % "1.123.6",
   "com.softwaremill.sttp.client3" %% "core" % "3.8.13",
   "com.softwaremill.sttp.client3" %% "json4s" % "3.8.13",
