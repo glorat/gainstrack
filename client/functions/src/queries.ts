@@ -1,5 +1,5 @@
+import {Request} from "firebase-functions/lib/v1/providers/https";
 import {Response} from "express";
-import {Request} from "firebase-functions/lib/providers/https";
 
 import {quoteSourceFieldProperties} from '../../src/lib/assetdb/AssetSchema';
 import {get} from 'lodash';

@@ -1,8 +1,8 @@
 import * as functions from 'firebase-functions';
-import {firebaseHandler} from "./auth";
+import {authHandler, firebaseHandler, tokenHandler} from './auth';
 import {quoteSourcesHandler, quoteSourcesTableHandler} from "./queries";
-import * as cors from 'cors';
-import {Request} from "firebase-functions/lib/providers/https";
+import cors from 'cors';
+import {Request} from "firebase-functions/lib/v1/providers/https";
 import {quoteSourceHistoryCreateHandler} from "./writes";
 
 const admin = require('firebase-admin');
@@ -112,7 +112,10 @@ const app = express();
 
 app.post('/firebase', jwtCheck, firebaseHandler(admin.auth()));
 app.post('/functions/auth/firebase', jwtCheck, firebaseHandler(admin.auth()));
-
+app.get('/authorize', authHandler);
+app.post('/token', tokenHandler);
+app.post('/functions/auth/token', tokenHandler);
+app.get('/functions/auth/authorize', authHandler);
 
 export const auth = functions
   // .region('asia-northeast1')
