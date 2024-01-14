@@ -1,5 +1,5 @@
-import {QueryDocumentSnapshot} from "firebase-functions/lib/providers/firestore";
 import {EventContext} from "firebase-functions";
+import {QueryDocumentSnapshot} from 'firebase-admin/firestore';
 
 export let quoteSourceHistoryCreateHandler = (firestore: FirebaseFirestore.Firestore) =>async (snap: QueryDocumentSnapshot, context: EventContext) => {
   // Get an object representing the document
@@ -37,7 +37,7 @@ export let quoteSourceHistoryCreateHandler = (firestore: FirebaseFirestore.Fires
 
       await firestore.collection('quoteSources').doc(id).set(toSave);
     }
-  } catch (e) {
+  } catch (e:any) {
     console.error(e);
     snapData.error = e.toString()
     await firestore.collection('quoteSourceErrors').add(snapData);
