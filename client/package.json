@@ -27,7 +27,7 @@
     "@types/jest": "^26.0.24",
     "@types/lodash": "^4.14.178",
     "@types/marked": "^4.0.1",
-    "axios": "^0.21.4",
+    "axios": "^1.6.0",
     "core-js": "^3.20.1",
     "csv-stringify": "^6.0.5",
     "firebase": "^10.7.1",
