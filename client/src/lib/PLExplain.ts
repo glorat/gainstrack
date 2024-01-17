@@ -159,7 +159,8 @@ function totalPnlExplain(exps: PLExplainDTO[]):PLExplainDTO {
     totalYieldIncome: sum(exps.map(e => e.totalYieldIncome)),
     totalExpense: sum(exps.map(e => e.totalExpense)),
     totalDeltaExplain: sum(exps.map(e => e.totalDeltaExplain)),
-    expenseByAccount: [],
+    expenseByAccount: exps[0].expenseByAccount.map(e => e.accountId)
+        .map((accountId,idx) => ({accountId, value: sum(exps.map(e => e.expenseByAccount[idx].value))})),
     delta: [],
     tenor: 'total'
   }
@@ -179,7 +180,7 @@ function dividePnlExplain(p: PLExplainDTO, n: number):PLExplainDTO {
     totalExpense: p.totalExpense/n,
     totalDeltaExplain: p.totalDeltaExplain/n,
     delta: [], // not supported,
-    expenseByAccount: [], // TODO
+    expenseByAccount: p.expenseByAccount.map(x => ({accountId: x.accountId, value: x.value/n})),
     tenor: 'avg', // that's why we do a division
   }
 }
