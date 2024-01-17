@@ -447,7 +447,7 @@ export default store(function (/* { ssrContext } */) {
   return Store
 })
 
-export function useStore() {
+export function useStore(): VuexStore<MyState> {
   return vuexUseStore(storeKey)
 }
 

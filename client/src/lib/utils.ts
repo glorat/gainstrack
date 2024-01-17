@@ -23,6 +23,15 @@ export function parentAccountIdOf(accountId: string):string {
   }
 }
 
+export function getAccountLevel(accountName: string, n: number): string {
+  const accountParts = accountName.split(':');
+  if (accountParts.length <= n) {
+    return accountName;
+  } else {
+    return accountParts.slice(0, n).join(':');
+  }
+}
+
 export function isSubAccountOf(accountId: string, parentId: string): boolean {
   return (accountId === parentId) || (accountId.startsWith(parentId + ':'))
 }

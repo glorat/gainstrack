@@ -7,7 +7,8 @@
 <!--            "totalEquity" -> totalEquity, "totalIncome" -> totalIncome, "totalExpense" -> totalExpense, "totalDeltaExplain" -> totalDeltaExplain-->
 <!--            // , "delta" -> deltaExplain-->
 <!--            )-->
-            <table class="sortable">
+          <pre>{{ explains[explains.length-1].expenseByAccount }}</pre>
+          <table class="sortable">
                 <tbody>
                 <tr>
                     <td></td>
@@ -69,8 +70,19 @@
                     <td class="num" v-for="explainData in explains">{{ explainData.totalIncome.toFixed(2) }}</td>
                 </tr>
                 <tr>
-                    <td>Expenses</td>
+                    <td> <q-btn flat color="primary" :icon="matExpand"/> Expenses</td>
                     <td class="num" v-for="explainData in explains">{{ explainData.totalExpense.toFixed(2) }}</td>
+                </tr>
+                <tr v-for="(rec, recIdx) in explains[explains.length-1].expenseByAccount">
+                  <td>  {{ rec.accountId}}</td>
+                  <td class="num" v-for="explainData in explains">{{ explainData.expenseByAccount[recIdx]?.value?.toFixed(2) }}</td>
+                </tr>
+                <tr>
+                  <td>
+                    <help-tip tag="newActivityPnl"></help-tip>
+                    New Activity P&L
+                  </td>
+                  <td class="num" v-for="explainData in explains">{{ explainData.newActivityPnl.toFixed(2) }}</td>
                 </tr>
                 <tr>
                     <td>Equity</td>
@@ -99,61 +111,66 @@
     </my-page>
 </template>
 
-<script>
-    import HelpTip from '../components/HelpTip';
-    import { mapGetters } from 'vuex';
-    import { apiPnlExplainMonthly } from '../lib/apiFacade';
-    import { matAnalytics } from '@quasar/extras/material-icons'
+<script lang="ts">
+import { defineComponent } from 'vue';
+import HelpTip from '../components/HelpTip.vue';
+import { mapGetters } from 'vuex';
+import { apiPnlExplainMonthly } from '../lib/apiFacade';
+import { matAnalytics, matExpand } from '@quasar/extras/material-icons';
+import {PLExplainDTO} from 'src/lib/PLExplain';
+import {qnotify} from 'boot/notify';
+import {useStore} from 'src/store';
 
-
-    export default {
-        name: 'PnlExplain',
-        components: {
-            HelpTip,
-        },
-        computed: {
-          ...mapGetters([
-            'baseCcy',
-            'allPostingsEx',
-            'fxConverter',
-          ]),
-        },
-        mounted() {
-            this.refresh()
-        },
-        methods: {
-          async refresh() {
-            const notify = this.$notify;
-            try {
-              this.explains = await apiPnlExplainMonthly(this.$store);
-            } catch (error) {
-              console.error(error);
-              notify.error(error);
-            }
-          },
-            onColumnClick(explain) {
-                if (explain.fromDate && explain.toDate) {
-                    this.$router.push({name: 'pnldetail', params: {fromDate: explain.fromDate, toDate: explain.toDate}});
-                }
-            },
-            percChange(explainData) {
-                const denom = explainData.toNetworth ? explainData.toNetworth - explainData.actual : 0.0;
-                return (denom === 0.0) ? 0.0 : explainData.actual / denom;
-            },
-          amount: (value) => value.toFixed(2),
-          perc: (value) => (100*value).toFixed(1) + '%',
-        },
-        data() {
-          // eslint-disable-next-line
-            const self = this;
-            return {
-                explains: [],
-              matAnalytics,
-            };
-
-        }
-    }
+export default defineComponent({
+  name: 'PnlExplain',
+  components: {
+    HelpTip,
+  },
+  computed: {
+    ...mapGetters([
+      'baseCcy',
+      'allPostingsEx',
+      'fxConverter',
+    ]),
+  },
+  mounted() {
+    this.refresh();
+  },
+  methods: {
+    async refresh() {
+      const notify = qnotify;
+      try {
+        this.explains = await apiPnlExplainMonthly(this.store);
+      } catch (error:any) {
+        console.error(error);
+        notify.error(error);
+      }
+    },
+    onColumnClick(explain: PLExplainDTO) {
+      if (explain.fromDate && explain.toDate) {
+        this.$router.push({ name: 'pnldetail', params: { fromDate: explain.fromDate, toDate: explain.toDate } });
+      }
+    },
+    percChange(explainData: PLExplainDTO) {
+      const denom = explainData.toNetworth ? explainData.toNetworth - explainData.actual : 0.0;
+      return denom === 0.0 ? 0.0 : explainData.actual / denom;
+    },
+    amount: (value: number) => value.toFixed(2),
+    perc: (value: number) => (100 * value).toFixed(1) + '%',
+  },
+  data() {
+    const store = useStore()
+    return {
+      store,
+      explains: [] as PLExplainDTO[], // Change the type according to your data structure
+      matAnalytics,
+      matExpand,
+    };
+  },
+});
 </script>
+
+
 
 <style scoped>
     .subtotal {

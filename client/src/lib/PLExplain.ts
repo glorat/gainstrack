@@ -2,12 +2,13 @@ import {LocalDate} from '@js-joda/core';
 
 import {AccountCommandDTO, PostingEx} from 'src/lib/assetdb/models';
 import {
-  isSubAccountOf,
+  getAccountLevel,
+  isSubAccountOf, parentAccountIdOf,
   positionSetFx,
   positionUnderAccount,
   postingsToPositionSet
 } from 'src/lib/utils';
-import { keys, groupBy, sum, range } from 'lodash';
+import {keys, groupBy, sum, range, uniq} from 'lodash';
 import {SingleFXConverter} from 'src/lib/fx';
 
 export interface PLExplainDTO {
@@ -17,13 +18,19 @@ export interface PLExplainDTO {
   newActivityPnl: number, newActivityByAccount: {accountId: string, explain: number}[]
   totalEquity: number
   totalIncome: number, totalYieldIncome: number
-  totalExpense: number, totalDeltaExplain: number
+  totalExpense: number, expenseByAccount: {accountId: string, value: number}[]
+  totalDeltaExplain: number
   delta: any[]
   tenor?: string
 }
 
 export function pnlExplain(startDate: LocalDate, toDate: LocalDate, allPostings: PostingEx[],
                            allCmds: AccountCommandDTO[], baseCcy: string, fxConverter: SingleFXConverter): PLExplainDTO {
+  // for leveled breakdown
+  const levels = 2
+  const allAccountIds = uniq(allCmds.map(p => p.accountId))
+  const allAccountLevels = uniq( allAccountIds.map(id => getAccountLevel(id, levels)) )
+
   const postings = allPostings.filter(p => isSubAccountOf(p.account, 'Assets')); // FIXME: +Liabilities
   const fromDate = startDate.minusDays(1) // So we do inclusivity of the startDate
   const toStartPostings = postings.filter(p => LocalDate.parse(p.date).isBefore(fromDate.plusDays(1)));
@@ -67,7 +74,6 @@ export function pnlExplain(startDate: LocalDate, toDate: LocalDate, allPostings:
   }).filter(x => x.explain !== 0.0)
   // mapValues(activityPostingsByAccount, (ps: PostingEx[]) => positionSetFx(postingsToPositionSet(ps), baseCcy, LocalDate.parse(ps[0].date), fxConverter))
   const newActivityPnl = sum(newActivityByAccount.map(x => x.explain))
-  const equityPositionChange = positionUnderAccount(duringPostings, 'Equity')
 
 
   const yieldPostings = duringPostings.filter( p => {
@@ -79,11 +85,20 @@ export function pnlExplain(startDate: LocalDate, toDate: LocalDate, allPostings:
   });
   const totalYieldIncome = sum(yieldIncomes)
 
-
+  const equityPositionChange = positionUnderAccount(duringPostings, 'Equity')
   const totalEquity = -positionSetFx(equityPositionChange, baseCcy, toDate, fxConverter)
   const totalIncome =
     -positionSetFx(positionUnderAccount(duringPostings, 'Income'), baseCcy, toDate, fxConverter) - totalYieldIncome
-  const totalExpense = positionSetFx(positionUnderAccount(duringPostings, 'Expenses'), baseCcy, toDate, fxConverter)
+  const expensePositionChange = positionUnderAccount(duringPostings, 'Expenses')
+  const totalExpense = positionSetFx(expensePositionChange, baseCcy, toDate, fxConverter)
+
+  // Do an l2 breakdown detail of expenses
+  const expenseAccountIdBreakdown = allAccountLevels.filter(a => parentAccountIdOf(a) === 'Expenses')
+  const expenseByAccount = expenseAccountIdBreakdown.map(accountId => {
+    const ps = positionUnderAccount(duringPostings, accountId)
+    const value = positionSetFx(ps, baseCcy, toDate, fxConverter)
+    return {accountId, value}
+  })
 
   const explained = totalDeltaExplain + newActivityPnl + totalEquity + totalIncome + totalYieldIncome - totalExpense
   const unexplained = actual - explained;
@@ -103,7 +118,8 @@ export function pnlExplain(startDate: LocalDate, toDate: LocalDate, allPostings:
     newActivityPnl, newActivityByAccount,
     totalEquity,
     totalIncome, totalYieldIncome,
-    totalExpense, totalDeltaExplain,
+    totalExpense, expenseByAccount,
+    totalDeltaExplain,
     delta};
 }
 
@@ -143,6 +159,7 @@ function totalPnlExplain(exps: PLExplainDTO[]):PLExplainDTO {
     totalYieldIncome: sum(exps.map(e => e.totalYieldIncome)),
     totalExpense: sum(exps.map(e => e.totalExpense)),
     totalDeltaExplain: sum(exps.map(e => e.totalDeltaExplain)),
+    expenseByAccount: [],
     delta: [],
     tenor: 'total'
   }
@@ -162,6 +179,7 @@ function dividePnlExplain(p: PLExplainDTO, n: number):PLExplainDTO {
     totalExpense: p.totalExpense/n,
     totalDeltaExplain: p.totalDeltaExplain/n,
     delta: [], // not supported,
+    expenseByAccount: [], // TODO
     tenor: 'avg', // that's why we do a division
   }
 }

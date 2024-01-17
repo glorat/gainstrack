@@ -7,7 +7,7 @@ interface MyNotify {
   warning(msg: string): void
 }
 
-const qnotify: MyNotify = {
+export const qnotify: MyNotify = {
     success(msg) {
         Notify.create({
             type: 'positive',
