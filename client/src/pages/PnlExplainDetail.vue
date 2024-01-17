@@ -116,16 +116,22 @@
       <!--                <td class="subtitle">Equity</td>-->
       <!--                <td class="num">{{ explainData.totalEquity.toFixed(2) }}</td>-->
       <!--            </tr>-->
+      <template v-if="explainData.expenseByAccount.length">
       <tr v-if="explainData.expenseByAccount.length">
           <td colspan="4" class="subtitle">Expenses</td>
           <td>P&L</td>
       </tr>
-      <template v-if="explainData.expenseByAccount.length">
-          <tr v-for="exp in explainData.expenseByAccount">
-              <td colspan="4">{{ exp.accountId }}</td>
-              <td class="num">{{ exp.value.toFixed(2) }}</td>
-          </tr>
+      <tr v-for="exp in explainData.expenseByAccount">
+          <td colspan="4">{{ exp.accountId }}</td>
+          <td class="num">{{ exp.value.toFixed(2) }}</td>
+      </tr>
+        <tr>
+          <td class="subtotal" colspan="4">Total</td>
+          <td class="subtotal num">{{ explainData.totalExpense.toFixed(2) }}</td>
+        </tr>
+        <tr><td></td><td></td></tr>
       </template>
+
       <tr v-if="explainData.newActivityByAccount.length">
         <td colspan="4" class="subtitle">New Activity</td>
         <td>P&L</td>
@@ -229,7 +235,9 @@ export default defineComponent({
   },
   data() {
     const explains: PLExplainDTO[] = [];
+    const expansions: Record<string, boolean> = {};
     return {
+      expansions,
       explains,
     };
   },

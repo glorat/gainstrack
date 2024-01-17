@@ -69,7 +69,7 @@
                     <td class="num" v-for="explainData in explains">{{ explainData.totalIncome.toFixed(2) }}</td>
                 </tr>
                 <tr>
-                    <td><q-btn round flat size="xs" :icon="matAddCircleOutline" @click="expansions['expenses'] = !expansions['expenses']"></q-btn>
+                    <td><q-btn round flat size="xs" :icon="expansions['expenses'] ? matRemoveCircleOutline : matAddCircleOutline" @click="expansions['expenses'] = !expansions['expenses']"></q-btn>
                       Expenses</td>
                     <td class="num" v-for="explainData in explains">{{ explainData.totalExpense.toFixed(2) }}</td>
                 </tr>
@@ -107,14 +107,13 @@
 </template>
 
 <script setup lang="ts">
-import {computed, ref, onMounted, reactive} from 'vue';
+import {computed, onMounted, reactive, ref} from 'vue';
 import HelpTip from '../components/HelpTip.vue';
-import { mapGetters } from 'vuex';
-import { apiPnlExplainMonthly } from '../lib/apiFacade';
-import {matAdd, matAddCircleOutline, matAnalytics, matExpand, matPlusOne} from '@quasar/extras/material-icons';
-import { PLExplainDTO } from 'src/lib/PLExplain'; // Make sure the path is correct
-import { qnotify } from 'boot/notify'; // Make sure the path is correct
-import { useStore } from 'src/store';
+import {apiPnlExplainMonthly} from '../lib/apiFacade';
+import {matAddCircleOutline, matAnalytics, matRemoveCircleOutline} from '@quasar/extras/material-icons';
+import {PLExplainDTO} from 'src/lib/PLExplain';
+import {qnotify} from 'boot/notify'; 
+import {useStore} from 'src/store';
 import {router} from 'src/router';
 
 const store = useStore();
