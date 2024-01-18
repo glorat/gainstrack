@@ -29,7 +29,7 @@
         name: 'TreeTableNode',
         props: {
           node: Object as () => TreeTableDTO,
-          depth: Number
+          depth: { type: Number, required: true },
         },
         data(): {toggled: Record<string, boolean>} {
           const ret: {toggled: Record<string, boolean>} = {

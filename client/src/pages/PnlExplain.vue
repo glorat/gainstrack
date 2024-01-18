@@ -7,7 +7,7 @@
 <!--            "totalEquity" -> totalEquity, "totalIncome" -> totalIncome, "totalExpense" -> totalExpense, "totalDeltaExplain" -> totalDeltaExplain-->
 <!--            // , "delta" -> deltaExplain-->
 <!--            )-->
-            <table class="sortable">
+          <table class="sortable">
                 <tbody>
                 <tr>
                     <td></td>
@@ -69,9 +69,16 @@
                     <td class="num" v-for="explainData in explains">{{ explainData.totalIncome.toFixed(2) }}</td>
                 </tr>
                 <tr>
-                    <td>Expenses</td>
+                    <td><q-btn round flat size="xs" :icon="expansions['expenses'] ? matRemoveCircleOutline : matAddCircleOutline" @click="expansions['expenses'] = !expansions['expenses']"></q-btn>
+                      Expenses</td>
                     <td class="num" v-for="explainData in explains">{{ explainData.totalExpense.toFixed(2) }}</td>
                 </tr>
+                <template v-if="expansions['expenses']">
+                  <tr v-for="(rec, recIdx) in explains[explains.length-1].expenseByAccount">
+                    <td> - {{ rec.accountId}}</td>
+                    <td class="num" v-for="explainData in explains">{{ explainData.expenseByAccount[recIdx]?.value?.toFixed(2) }}</td>
+                  </tr>
+                </template>
                 <tr>
                     <td>Equity</td>
                     <td class="num" v-for="explainData in explains">{{ explainData.totalEquity.toFixed(2) }}</td>
@@ -99,61 +106,52 @@
     </my-page>
 </template>
 
-<script>
-    import HelpTip from '../components/HelpTip';
-    import { mapGetters } from 'vuex';
-    import { apiPnlExplainMonthly } from '../lib/apiFacade';
-    import { matAnalytics } from '@quasar/extras/material-icons'
+<script setup lang="ts">
+import {computed, onMounted, reactive, ref} from 'vue';
+import HelpTip from '../components/HelpTip.vue';
+import {apiPnlExplainMonthly} from '../lib/apiFacade';
+import {matAddCircleOutline, matAnalytics, matRemoveCircleOutline} from '@quasar/extras/material-icons';
+import {PLExplainDTO} from 'src/lib/PLExplain';
+import {qnotify} from 'boot/notify';
+import {useStore} from 'src/store';
+import {router} from 'src/router';
 
+const store = useStore();
+const explains = ref<PLExplainDTO[]>([]);
+const baseCcy = computed(() => store.getters.baseCcy);
+const allPostingsEx = computed(() => store.getters.allPostingsEx);
+const fxConverter = computed(() => store.getters.fxConverter);
+const expansions = reactive<Record<string, boolean>>({})
 
-    export default {
-        name: 'PnlExplain',
-        components: {
-            HelpTip,
-        },
-        computed: {
-          ...mapGetters([
-            'baseCcy',
-            'allPostingsEx',
-            'fxConverter',
-          ]),
-        },
-        mounted() {
-            this.refresh()
-        },
-        methods: {
-          async refresh() {
-            const notify = this.$notify;
-            try {
-              this.explains = await apiPnlExplainMonthly(this.$store);
-            } catch (error) {
-              console.error(error);
-              notify.error(error);
-            }
-          },
-            onColumnClick(explain) {
-                if (explain.fromDate && explain.toDate) {
-                    this.$router.push({name: 'pnldetail', params: {fromDate: explain.fromDate, toDate: explain.toDate}});
-                }
-            },
-            percChange(explainData) {
-                const denom = explainData.toNetworth ? explainData.toNetworth - explainData.actual : 0.0;
-                return (denom === 0.0) ? 0.0 : explainData.actual / denom;
-            },
-          amount: (value) => value.toFixed(2),
-          perc: (value) => (100*value).toFixed(1) + '%',
-        },
-        data() {
-          // eslint-disable-next-line
-            const self = this;
-            return {
-                explains: [],
-              matAnalytics,
-            };
+const refresh = async () => {
+  const notify = qnotify;
+  try {
+    explains.value = await apiPnlExplainMonthly(store);
+  } catch (error: any) {
+    console.error(error);
+    notify.error(error);
+  }
+};
 
-        }
-    }
+const onColumnClick = (explain: PLExplainDTO) => {
+  if (explain.fromDate && explain.toDate) {
+    router.push({ name: 'pnldetail', params: { fromDate: explain.fromDate, toDate: explain.toDate } });
+  }
+};
+
+const percChange = (explainData: PLExplainDTO) => {
+  const denom = explainData.toNetworth ? explainData.toNetworth - explainData.actual : 0.0;
+  return denom === 0.0 ? 0.0 : explainData.actual / denom;
+};
+
+const amount = (value: number) => value.toFixed(2);
+const perc = (value: number) => (100 * value).toFixed(1) + '%';
+
+onMounted(refresh);
 </script>
+
+
+
 
 <style scoped>
     .subtotal {

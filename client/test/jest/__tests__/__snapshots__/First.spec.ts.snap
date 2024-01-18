@@ -367,6 +367,12 @@ exports[`First State pnlExplain monthly 1`] = `
   {
     "actual": 13149.88062177109,
     "delta": [],
+    "expenseByAccount": [
+      {
+        "accountId": "Expenses:Education",
+        "value": 0,
+      },
+    ],
     "explained": 13149.880621771095,
     "fromDate": "2019-01-01",
     "networthChange": 0,
@@ -385,6 +391,12 @@ exports[`First State pnlExplain monthly 1`] = `
   {
     "actual": 157798.5674612531,
     "delta": [],
+    "expenseByAccount": [
+      {
+        "accountId": "Expenses:Education",
+        "value": 0,
+      },
+    ],
     "explained": 157798.56746125314,
     "fromDate": "2019-01-01",
     "networthChange": 0.33694631920989737,
@@ -403,6 +415,12 @@ exports[`First State pnlExplain monthly 1`] = `
   {
     "actual": 0,
     "delta": [],
+    "expenseByAccount": [
+      {
+        "accountId": "Expenses:Education",
+        "value": 0,
+      },
+    ],
     "explained": 0,
     "fromDate": "2019-12-01",
     "networthChange": 0,
@@ -421,6 +439,12 @@ exports[`First State pnlExplain monthly 1`] = `
   {
     "actual": 0,
     "delta": [],
+    "expenseByAccount": [
+      {
+        "accountId": "Expenses:Education",
+        "value": 0,
+      },
+    ],
     "explained": 0,
     "fromDate": "2019-11-01",
     "networthChange": 0,
@@ -439,6 +463,12 @@ exports[`First State pnlExplain monthly 1`] = `
   {
     "actual": 0,
     "delta": [],
+    "expenseByAccount": [
+      {
+        "accountId": "Expenses:Education",
+        "value": 0,
+      },
+    ],
     "explained": 0,
     "fromDate": "2019-10-01",
     "networthChange": 0,
@@ -457,6 +487,12 @@ exports[`First State pnlExplain monthly 1`] = `
   {
     "actual": 0,
     "delta": [],
+    "expenseByAccount": [
+      {
+        "accountId": "Expenses:Education",
+        "value": 0,
+      },
+    ],
     "explained": 0,
     "fromDate": "2019-09-01",
     "networthChange": 0,
@@ -475,6 +511,12 @@ exports[`First State pnlExplain monthly 1`] = `
   {
     "actual": 0,
     "delta": [],
+    "expenseByAccount": [
+      {
+        "accountId": "Expenses:Education",
+        "value": 0,
+      },
+    ],
     "explained": 0,
     "fromDate": "2019-08-01",
     "networthChange": 0,
@@ -493,6 +535,12 @@ exports[`First State pnlExplain monthly 1`] = `
   {
     "actual": 0,
     "delta": [],
+    "expenseByAccount": [
+      {
+        "accountId": "Expenses:Education",
+        "value": 0,
+      },
+    ],
     "explained": 0,
     "fromDate": "2019-07-01",
     "networthChange": 0,
@@ -511,6 +559,12 @@ exports[`First State pnlExplain monthly 1`] = `
   {
     "actual": 0,
     "delta": [],
+    "expenseByAccount": [
+      {
+        "accountId": "Expenses:Education",
+        "value": 0,
+      },
+    ],
     "explained": 0,
     "fromDate": "2019-06-01",
     "networthChange": 0,
@@ -529,6 +583,12 @@ exports[`First State pnlExplain monthly 1`] = `
   {
     "actual": 0,
     "delta": [],
+    "expenseByAccount": [
+      {
+        "accountId": "Expenses:Education",
+        "value": 0,
+      },
+    ],
     "explained": 0,
     "fromDate": "2019-05-01",
     "networthChange": 0,
@@ -557,6 +617,12 @@ exports[`First State pnlExplain monthly 1`] = `
         "oldPrice": 158.53722291928065,
         "oldValue": 2378.0583437892096,
         "toDate": "2019-04-30",
+      },
+    ],
+    "expenseByAccount": [
+      {
+        "accountId": "Expenses:Education",
+        "value": 0,
       },
     ],
     "explained": 39.66436637389633,
@@ -606,6 +672,12 @@ exports[`First State pnlExplain monthly 1`] = `
         "toDate": "2019-03-31",
       },
     ],
+    "expenseByAccount": [
+      {
+        "accountId": "Expenses:Education",
+        "value": 0,
+      },
+    ],
     "explained": 163247.49036177332,
     "fromDate": "2019-03-01",
     "networthChange": 0.3531245388008474,
@@ -653,6 +725,12 @@ exports[`First State pnlExplain monthly 1`] = `
         "toDate": "2019-02-28",
       },
     ],
+    "expenseByAccount": [
+      {
+        "accountId": "Expenses:Education",
+        "value": 0,
+      },
+    ],
     "explained": -6025.224221445872,
     "fromDate": "2019-02-01",
     "networthChange": -0.012865624552193628,
@@ -671,6 +749,12 @@ exports[`First State pnlExplain monthly 1`] = `
   {
     "actual": 536.6369545517373,
     "delta": [],
+    "expenseByAccount": [
+      {
+        "accountId": "Expenses:Education",
+        "value": 0,
+      },
+    ],
     "explained": 536.63695455179,
     "fromDate": "2019-01-01",
     "networthChange": 0.0011471921597045404,
