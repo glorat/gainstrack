@@ -112,7 +112,7 @@ import HelpTip from '../components/HelpTip.vue';
 import {apiPnlExplainMonthly} from '../lib/apiFacade';
 import {matAddCircleOutline, matAnalytics, matRemoveCircleOutline} from '@quasar/extras/material-icons';
 import {PLExplainDTO} from 'src/lib/PLExplain';
-import {qnotify} from 'boot/notify'; 
+import {qnotify} from 'boot/notify';
 import {useStore} from 'src/store';
 import {router} from 'src/router';
 
