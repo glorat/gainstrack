@@ -7,7 +7,8 @@ import {quoteSourceHistoryCreateHandler} from "./writes";
 
 const admin = require('firebase-admin');
 admin.initializeApp();
-import jwt = require('express-jwt');
+// import jwt = require('express-jwt');
+import {expressjwt as jwt, GetVerificationKey} from 'express-jwt'
 
 import jwks = require('jwks-rsa');
 
@@ -47,7 +48,7 @@ const jwtCheck = jwt({
     rateLimit: true,
     jwksRequestsPerMinute: 5,
     jwksUri: `https://${config.AUTH0_DOMAIN}/.well-known/jwks.json`,
-  }),
+  }) as GetVerificationKey,
   audience: config.AUTH0_API_AUDIENCE,
   issuer: `https://${config.AUTH0_DOMAIN}/`,
   algorithms: ['RS256'],
