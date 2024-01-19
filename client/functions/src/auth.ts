@@ -1,4 +1,5 @@
 import {RequestHandler, Request, Response} from "express";
+import {Request as JwtRequest} from 'express-jwt'
 import {Auth} from "firebase-admin/auth";
 import axios from 'axios';
 
@@ -20,10 +21,10 @@ function javaHash(input: string) {
 
 export const firebaseHandler:  ((fbauth:Auth) => RequestHandler)= (fbauth) => async (req, res) => {
   // Create UID from authenticated Auth0 user
-  // @ts-ignore
-  const uid = req.user.sub;
+  const uid = (req as JwtRequest).auth?.sub
   // Mint token
   try {
+    if (!uid) throw new Error('no sub in token')
     // Convert the provider free string uid to a uuid in the same way the official backend does
     const uuid = javaHash(uid);
     // TODO: Port the auth0 claims to fb in the second argument
