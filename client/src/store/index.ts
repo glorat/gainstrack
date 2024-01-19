@@ -1,5 +1,5 @@
 import {SingleFXConversion, SingleFXConverter} from '../lib/fx'
-import axios, {AxiosRequestConfig} from 'axios'
+import axios, {AxiosRequestConfig, InternalAxiosRequestConfig} from 'axios'
 import {
   AccountDTO,
   AllState, AssetDTO,
@@ -85,16 +85,17 @@ export const storeKey: InjectionKey<VuexStore<MyState>> = Symbol('vuex-key')
 
 
 export default store(function (/* { ssrContext } */) {
-  let requestPreprocessor = async (config:AxiosRequestConfig):Promise<AxiosRequestConfig> => {
+  let requestPreprocessor = async (config:InternalAxiosRequestConfig):Promise<InternalAxiosRequestConfig> => {
     return config;
   }
-
-  axios.interceptors.request.use(function (config) {
-    return requestPreprocessor(config);
-  }, function (error) {
-    // Do something with request error
-    return Promise.reject(error);
-  });
+  axios.interceptors.request.use(
+      config => {
+        return requestPreprocessor(config)
+      },
+      error => {
+        return Promise.reject(error);
+      }
+  );
 
   axios.interceptors.response.use(res => res, function (error) {
     if (error.response.status === 401) {
@@ -334,9 +335,7 @@ export default store(function (/* { ssrContext } */) {
 
         requestPreprocessor = async (config) => {
           const token = await getToken();
-          config.headers.common = {
-            Authorization: `Bearer ${token}` // send the access token through the 'Authorization' header
-          };
+          config.headers['Authorization'] = `Bearer ${token}`;
           return config;
         }
 
