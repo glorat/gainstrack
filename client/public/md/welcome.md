@@ -1,21 +1,18 @@
 # Welcome to gainstrack
 ## Why gainstrack?
 
-Gainstrack's aim is for individuals to be have control over their own finances through information and insights on their networth
+Gainstrack's aim is for individuals to be have control over their own finances through information and insights on their networth, tracking your path to financial independence.
 
-Beyond knowing your networth, it tracks your wealth across multiple accounts in multipe currencies, helping you track your path to financial independence
+Unique capabilities to achieve this include
+* Uses [plain text accounting](https://plaintextaccounting.org/) philosophy so you control all your data
+* Provides the most comprehensive Wall Street level [P&L explain](/pnlexplain) capability so you know exactly all the reasons your networth is changing
+* Multiple account management with full multicurrency support
 
-## How finances are recorded
-Gainstrack allows you to record your finances in a simple text file.
+## Gainstrack Help
 
-Behind the scenes, Gainstrack converts this to a journal of double-entry bookkeeping records, allowing the generation of rich and powerful reporting that is usually the domain of advanced accounting software run by accountants.
+Gainstrack provides a lot of documentation. A high-level overview of how it’s organized will help you know where to look for certain things:
 
-For more information on how Gainstrack works, see the [help pages](/docs/help)
-
-## Getting started
-
-Creating an account allows your gainstrack data to be saved and updated with our UI tools or in-built editor
-
-## Anonymous mode
-
-No registration required - maintain your own Gainstrack finances file on your machine and import to the website as necessary using the import/export capability
+- [Tutorials](/docs/tutorial) take you by the hand through setting up your first set of personal accounts
+- [Background](/docs/background) discuss key topics and concepts at a fairly high level and provide useful background information and explanation.
+- [Reference](/docs/reference) contains technical references
+- [How-to](/docs/howto) guides are recipes. They guide you through the steps involved in addressing key problems and use-cases.

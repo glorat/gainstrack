@@ -1,0 +1,62 @@
+## Getting Started
+
+Tutorials. A hands-on introduction to Gainstrack.
+
+### Quick-start
+You can choose to create a login so that your account details or saved - or simply skip to use the anonymous mode without logging in.
+
+Go to the [editor](/editor). If it is the first time, you'll see a sample template
+
+If you'd like a sample to start, here is something you can enter
+
+```text
+2000-01-01 open Equity:Opening GBP
+  multiAsset: true
+2000-01-01 open Assets:Bank:England GBP
+
+2004-10-14 open Assets:Pension:Barclays GBP
+    multiAsset: true
+    automaticReinvestment: true
+    fundingAccount: Equity:Opening
+
+2004-10-14 fund Assets:Pension:Barclays 500 GBP
+2004-10-14 fund Assets:Pension:Barclays Equity:Opening 500 GBP
+2004-10-15 unit Assets:Pension:Barclays 500 BGIL @2 GBP
+2019-04-18 unit Assets:Pension:Barclays 600 BGIL @5 GBP
+
+2004-10-14 open Assets:ISA:London GBP
+    fundingAccount: Assets:Bank:England
+    incomeAccount: Income:ISA:London
+
+2004-10-14 fund Assets:ISA:London 7000 GBP
+; Cash in ISA makes money
+2005-10-14 adj Assets:ISA:London 8000 GBP Income:ISA:London
+; Earn interest income, paid back to bank
+2005-10-15 yield Assets:ISA:London 15 GBP
+
+2004-10-14 open Assets:Investment:Stocks GBP
+    fundingAccount: Assets:Bank:England
+    multiAsset: true
+2006-11-01 fund Assets:Investment:Stocks 1000 GBP
+2006-11-02 trade Assets:Investment:Stocks 50 FTSE @10 GBP
+2006-11-15 yield Assets:Investment:Stocks FTSE 10 GBP
+2006-11-02 trade Assets:Investment:Stocks 50 VWRL @10 GBP C0.20 GBP
+2006-11-15 yield Assets:Investment:Stocks VWRL 10 USD
+2006-11-15 tfr Assets:Investment:Stocks Assets:Investment:Stocks 10 USD 9 GBP
+
+2005-07-26 open Income:Salary:GBP GBP
+    fundingAccount: Assets:Bank:England
+2005-07-26 earn Salary 25000.00 GBP
+2005-07-26 earn Salary Assets:Bank:England 25000.00 GBP
+
+; Earn some interest
+2005-08-01 yield Assets:Bank:England 10 GBP
+
+1900-01-01 commodity FTSE
+  name: FTSE100 Index
+  category: equity/uk
+```
+
+Now browse various reports by looking at the menu
+
+Try adding new commands per the [reference](/docs/reference), or you can try via the UI.
