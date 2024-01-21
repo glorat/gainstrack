@@ -106,7 +106,7 @@ class TransactionAmountTest extends AnyFlatSpec {
       assertBalance("Assets:Bank:England", "2005-11-01", 43025)
     }
     it should "handle dividend yield into trading cash account" in {
-      assertBalance("Assets:Investment:Stocks:GBP", "2006-11-15", 19)
+      assertBalance("Assets:Investment:Stocks:GBP", "2006-11-15", parseNumber("18.8"))
       assertBalance("Assets:Investment:Stocks:USD", "2006-11-15", 0)
     }
 
