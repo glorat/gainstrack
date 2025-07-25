@@ -16,11 +16,11 @@ jobs:
         working-directory: ./client
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v3
-      - name: Set up Node (16)
-        uses: actions/setup-node@v1
+        uses: actions/checkout@v4
+      - name: Set up Node (20)
+        uses: actions/setup-node@v4
         with:
-          node-version: 16.x
+          node-version: 20.x
           cache: 'npm'
           cache-dependency-path: client/package-lock.json
       - name: NPM ci
@@ -29,9 +29,9 @@ jobs:
         run: npx quasar test --unit jest
       - name: Semantic Release
         id: semantic
-        uses: cycjimmy/semantic-release-action@v3
+        uses: cycjimmy/semantic-release-action@v4
         with:
-          semantic_version: 19.0.5
+          semantic_version: 23.1.0
           dry_run: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -50,18 +50,18 @@ jobs:
         working-directory: ./client
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v3
-      - name: Set up Node (16)
-        uses: actions/setup-node@v1
+        uses: actions/checkout@v4
+      - name: Set up Node (20)
+        uses: actions/setup-node@v4
         with:
-          node-version: 16.x
+          node-version: 20.x
           cache: 'npm'
           cache-dependency-path: client/package-lock.json
       - name: NPM ci
         run: npm ci
       - name: Semantic Release
         id: semantic
-        uses: cycjimmy/semantic-release-action@v3
+        uses: cycjimmy/semantic-release-action@v4
         with:
          semantic_version: 19.0.5
         env:
@@ -95,7 +95,7 @@ jobs:
           # Remove source map references in files
           sed -i 's/^\/\/# sourceMappingURL=.*$//' $(find ./dist/spa -regextype posix-extended -regex '.*.(js|css)$' -type f)
       - name: Upload Build Artifacts
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: build-artifacts
           path: "./client/dist/spa"
@@ -106,14 +106,14 @@ jobs:
     if: needs.build.outputs.new_release_published == 'true'
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
       - name: Download Build Artifacts
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v4
         with:
           name: build-artifacts
           path: "./client/dist/spa"
       - name: Deploy poc
-        uses: FirebaseExtended/action-hosting-deploy@v0
+        uses: FirebaseExtended/action-hosting-deploy@v0.6.0
         with:
           repoToken: '${{ secrets.GITHUB_TOKEN }}'
           firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_GAINSTRACK }}'
@@ -122,7 +122,7 @@ jobs:
           channelId: live
           entryPoint: ./client
       - name: Deploy prod
-        uses: FirebaseExtended/action-hosting-deploy@v0
+        uses: FirebaseExtended/action-hosting-deploy@v0.6.0
         with:
           repoToken: '${{ secrets.GITHUB_TOKEN }}'
           firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_GAINSTRACK }}'
@@ -139,15 +139,15 @@ jobs:
       IMAGE_NAME: gcr.io/${{ secrets.GCP_PROJECT_ID }}/${{ secrets.GCP_APP_NAME }}
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - id: 'auth'
-        uses: 'google-github-actions/auth@v1'
+        uses: 'google-github-actions/auth@v2'
         with:
           credentials_json: '${{ secrets.GCP_CREDENTIALS }}'
 
       - name: 'Set up Cloud SDK'
-        uses: 'google-github-actions/setup-gcloud@v1'
+        uses: 'google-github-actions/setup-gcloud@v2'
 
       - name: Configure Docker
         run: gcloud auth configure-docker --quiet

@@ -13,11 +13,11 @@ jobs:
         working-directory: ./client
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v3
-      - name: Set up Node (16)
-        uses: actions/setup-node@v1
+        uses: actions/checkout@v4
+      - name: Set up Node (20)
+        uses: actions/setup-node@v4
         with:
-          node-version: 16.x
+          node-version: 20.x
           cache: 'npm'
           cache-dependency-path: client/package-lock.json
       - name: NPM ci
@@ -27,7 +27,7 @@ jobs:
       - name: Test
         run: npx quasar test --unit jest
       - name: Deploy preview
-        uses: FirebaseExtended/action-hosting-deploy@v0
+        uses: FirebaseExtended/action-hosting-deploy@v0.6.0
         if: ${{ github.actor == 'dependabot[bot]' }}
         with:
           repoToken: '${{ secrets.GITHUB_TOKEN }}'
