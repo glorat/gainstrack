@@ -113,7 +113,7 @@ jobs:
           name: build-artifacts
           path: "./client/dist/spa"
       - name: Deploy poc
-        uses: FirebaseExtended/action-hosting-deploy@v0.6.0
+        uses: FirebaseExtended/action-hosting-deploy@v0.9.0
         with:
           repoToken: '${{ secrets.GITHUB_TOKEN }}'
           firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_GAINSTRACK }}'
@@ -122,7 +122,7 @@ jobs:
           channelId: live
           entryPoint: ./client
       - name: Deploy prod
-        uses: FirebaseExtended/action-hosting-deploy@v0.6.0
+        uses: FirebaseExtended/action-hosting-deploy@v0.9.0
         with:
           repoToken: '${{ secrets.GITHUB_TOKEN }}'
           firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_GAINSTRACK }}'
