@@ -71,8 +71,8 @@ class QuotesAdminController(implicit val executor :ExecutionContext)
         }
         catch {
           case e: Exception => {
-            logger.error("subsync dropping error: " + e.toString, e)
             logger.error("subsync stack: " + e.getStackTrace.mkString("\n"))
+            logger.error("subsync error: " + e.toString, e)
             Future.successful(QuotesMergeResult(0,0, Some(e.toString)))
           }
         }
