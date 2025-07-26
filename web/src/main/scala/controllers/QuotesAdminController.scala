@@ -71,7 +71,7 @@ class QuotesAdminController(implicit val executor :ExecutionContext)
         }
         catch {
           case e: Exception => {
-            logger.error("subsync dropping error: " + e.toString)
+            logger.error("subsync dropping error: " + e.toString, e)
             Future.successful(QuotesMergeResult(0,0, Some(e.toString)))
           }
         }
@@ -88,7 +88,7 @@ class QuotesAdminController(implicit val executor :ExecutionContext)
           syncUp.googlePublishAllSyncs.map(_ => "OK")
         } catch {
           case e: Exception => {
-            logger.error("syncall dropping error: " + e.toString)
+            logger.error("syncall dropping error: " + e.toString, e)
             Future.successful(e.toString)
           }
         }
@@ -98,7 +98,7 @@ class QuotesAdminController(implicit val executor :ExecutionContext)
 
   error {
     case e:Exception => {
-      logger.error("Unhandled error: " + e.toString)
+      logger.error("Unhandled error: " + e.toString, e)
     }
   }
 
