@@ -4,7 +4,7 @@ ThisBuild / version := "0.1"
 
 ThisBuild / organization := "com.gainstrack"
 
-ThisBuild / scalaVersion := "2.13.3"
+ThisBuild / scalaVersion := "2.13.16"
 
 updateOptions := updateOptions.value.withCachedResolution(true)
 

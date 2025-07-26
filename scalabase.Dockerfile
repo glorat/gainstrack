@@ -1,5 +1,6 @@
 
-FROM hseeberger/scala-sbt:17.0.2_1.6.2_2.13.8 as builder
+FROM sbtscala/scala-sbt:eclipse-temurin-17.0.15_6_1.11.3_2.13.16 AS builder
+
 # Install fava
 RUN apt-get update && apt-get -y install python3 python3-pip python3-dev libxml2-dev libxslt-dev gcc musl-dev g++ && rm -rf /var/lib/apt/lists/*
 RUN pip3 install beancount
