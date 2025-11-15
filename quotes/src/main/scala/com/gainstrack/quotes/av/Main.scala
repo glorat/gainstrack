@@ -20,7 +20,7 @@ object Main {
   // Flip this to decide where the web server should get quotes from!
   val config = ConfigFactory.load()
   val theStore:QuoteStore = if (config.getBoolean("quotes.useDb")) QuotesDb else QuotesFileStore
-  logger.info(s"Starting main using QuoteStore of type ${theStore.getClass.getSimpleName}")
+  logger.info(s"STARTING main using QuoteStore of type ${theStore.getClass.getSimpleName}")
 
   def main(args: Array[String]): Unit = {
     // Prime it first so we can measure
