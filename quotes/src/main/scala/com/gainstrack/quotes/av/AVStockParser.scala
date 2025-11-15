@@ -111,7 +111,7 @@ case class StockParseResult(series:SortedMap[LocalDate, Double], liveQuote:Doubl
     val minGbpUsdDouble = priceState.data(AssetId("GBP")).vs.min
     // This 1.05 assumes that daily LSEGBP movement does not exceed 5%. A tricky point...
     // TODO: A better way might be to use a reference symbol that is correct (e.g VWRD or VT)
-    require(minGbpUsdDouble > 1.05, s"GBPUSD ${minGbpUsdDouble.formatted("%.2d")} are so close cannot distinguish feeds with mixed GBP and USD in them")
+    require(minGbpUsdDouble > 1.05, s"GBPUSD ${minGbpUsdDouble.formatted("%.2f")} are so close cannot distinguish feeds with mixed GBP and USD in them")
     val minGbpUsd = minGbpUsdDouble
 
     // Have to reverse because refPrice/liveQuote is today so we work backwards
