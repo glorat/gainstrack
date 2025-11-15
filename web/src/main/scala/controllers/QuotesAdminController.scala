@@ -46,7 +46,7 @@ class QuotesAdminController(implicit val executor :ExecutionContext)
         try {
           logger.info(request.body)
           val body = parsedBody.extract[GooglePubSubRequest]
-          logger.info(s"Handling published subsync message ${body.message.messageId}")
+          logger.info(s"HANDLING published subsync message ${body.message.messageId}")
           val symbols = body.message.message.split(",").toList
           symbols match {
             case Nil => Future.successful(QuotesMergeResult(0,0,None))
