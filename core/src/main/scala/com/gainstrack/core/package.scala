@@ -22,7 +22,5 @@ package object core {
 
   implicit def stringToBalance(str:String): Amount = Amount.parse(str)
 
-  implicit val localDateOrdering: Ordering[LocalDate] = new Ordering[LocalDate] {
-    def compare(x: LocalDate, y: LocalDate): Int = x compareTo y
-  }
+  implicit val localDateOrdering: Ordering[LocalDate] = Ordering.fromLessThan(_ isBefore _)
 }

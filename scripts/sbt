@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 # Wrapper that runs sbt with the environment this project needs:
-#   1. JDK 17 — the project does NOT compile on the JDK 26 that Homebrew's sbt
-#      bundles (java.util.Comparator vs Scala Ordering max/min conflict).
+#   1. JDK 21 (the targeted LTS). The project also builds on 17 and on 26 (the
+#      latter only since the package.scala Ordering fix). We deliberately steer
+#      away from Homebrew sbt's bundled JDK 26 by default and prefer 21.
 #   2. The project-local .venv on PATH so the backend/tests can find `bean-check`
 #      (beancount is a runtime dependency; see python/requirements.txt).
 #
@@ -11,14 +12,14 @@ set -euo pipefail
 
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 
-# --- JDK 17 ---
-if [ -z "${JAVA_HOME:-}" ] || ! "$JAVA_HOME/bin/java" -version 2>&1 | grep -q '"17'; then
+# --- JDK: prefer 21, accept a preset 21/17 ---
+if [ -z "${JAVA_HOME:-}" ] || ! "$JAVA_HOME/bin/java" -version 2>&1 | grep -qE '"(21|17)'; then
   if [ -x /usr/libexec/java_home ]; then
-    JAVA_HOME="$(/usr/libexec/java_home -v 17 2>/dev/null || true)"
+    JAVA_HOME="$(/usr/libexec/java_home -v 21 2>/dev/null || /usr/libexec/java_home -v 17 2>/dev/null || true)"
   fi
 fi
 if [ -z "${JAVA_HOME:-}" ]; then
-  echo "scripts/sbt: could not locate a JDK 17. Install one or set JAVA_HOME." >&2
+  echo "scripts/sbt: could not locate JDK 21 (or 17). Install one or set JAVA_HOME." >&2
   exit 1
 fi
 export JAVA_HOME

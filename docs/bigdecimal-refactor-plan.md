@@ -189,20 +189,24 @@ scale pitfalls, e.g. `0` vs `0.00`). Use `.signum == 0` / `.compare`. Audit ever
 `sbt` is installed via Homebrew (`/opt/homebrew/bin/sbt`, runner; project uses
 sbt **1.11.3** from `project/build.properties`).
 
-**CRITICAL — JDK version:** Homebrew's sbt bundles **JDK 26**, on which the
-project does NOT compile (source conflict between `java.util.Comparator` and
-Scala `Ordering` `max`/`min` at `core/.../core/package.scala:25`). You MUST run
-sbt on **JDK 17**:
+**JDK: target is 21 (LTS).** The project builds + tests green on JDK 17 and 21
+with no changes. It also builds on JDK 26 *after* one fix (below). Homebrew's
+sbt bundles JDK 26, so do NOT let it use its default — use the wrapper, which
+selects 21.
 
-```
-export JAVA_HOME=/Library/Java/JavaVirtualMachines/jdk-17.0.4.1.jdk/Contents/Home
-sbt -batch "core/compile"
-sbt -batch "core/test"
-```
+`core/.../core/package.scala:25` previously used a hand-rolled
+`new Ordering[LocalDate]{}` that fails to compile on JDK 26 (its
+`java.util.Comparator` now ships default `max`/`min` that collide with Scala's
+`Ordering`). Replaced with `Ordering.fromLessThan(_ isBefore _)` — idiomatic,
+works on 17/21/26. This is the ONLY source blocker for newer JDKs (verified:
+core+quotes+web compile and core tests pass on real JDK 26).
 
 Installed JDKs (via `/usr/libexec/java_home -V`): 21.0.9 (Temurin) and 17.0.4.1
-(Oracle). 17 is the one the BSP config referenced and the one that works.
-Local caches (`~/.ivy2`, `~/.sbt`, Coursier) are populated.
+(Oracle); plus Homebrew's 26.0.1 (not registered in java_home). Local caches
+(`~/.ivy2`, `~/.sbt`, Coursier) are populated.
+
+**Deferred:** Docker base images still pin Temurin 17 (`scalabase.Dockerfile`,
+`runtime.Dockerfile`). Bumping prod to a newer JDK is a separate change.
 
 **beancount (RUNTIME dependency) via uv:** the backend shells out to
 `bean-check`. It is pinned as `beancount==2.3.6` in `python/requirements.txt`
@@ -217,12 +221,19 @@ uv pip install --python .venv/bin/python -r python/requirements.txt
 `.venv/bin` must be on PATH when running sbt so tests/runtime find `bean-check`.
 
 **Use the wrapper `./scripts/sbt`** — it bakes in both gotchas (auto-selects
-JDK 17 via `/usr/libexec/java_home -v 17`, prepends `.venv/bin`). So the whole
-baseline is just:
+JDK 21, prepends `.venv/bin`). So the whole baseline is just:
 
 ```
 ./scripts/sbt "core/test"
 ```
+
+**Test flakiness — FIXED.** `FirstStored` and its subclass `FirestoreFirstStored`
+inherited the same hardcoded UUIDs and, when Firebase creds are absent, both fall
+back to `FileRepository("/tmp")` — racing on identical files under ScalaTest's
+parallel suite execution (intermittent "invalid CE at revision N" / wrong commit
+counts; there was a `FIXME` about it). Fixed by seeding the ids with
+`getClass.getName` in `FirstStored.scala` so each suite has distinct storage keys.
+Suite is now deterministically green.
 
 `.venv/` is gitignored. Production parity note: the Docker images currently
 install beancount unpinned (`pip3 install beancount`) / transitively via `fava`;
