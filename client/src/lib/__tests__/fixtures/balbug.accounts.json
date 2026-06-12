@@ -1,0 +1,341 @@
+[ {
+  "date" : "2021-01-01",
+  "accountId" : "Assets:Bank:SC",
+  "ccy" : "CNY",
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : true,
+    "automaticReinvestment" : false,
+    "generatedAccount" : false,
+    "hidden" : false,
+    "placeholder" : false
+  }
+}, {
+  "date" : "2010-01-01",
+  "accountId" : "Income:Salary",
+  "ccy" : "CNY",
+  "options" : {
+    "tradingAccount" : false,
+    "fundingAccount" : "Assets:Bank:HSBCCN",
+    "description" : "",
+    "multiAsset" : false,
+    "automaticReinvestment" : false,
+    "generatedAccount" : false,
+    "hidden" : false,
+    "placeholder" : false
+  }
+}, {
+  "date" : "2016-01-01",
+  "accountId" : "Expenses:Aiden:CNY",
+  "ccy" : "CNY",
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : false,
+    "automaticReinvestment" : false,
+    "generatedAccount" : true,
+    "hidden" : false,
+    "placeholder" : false
+  }
+}, {
+  "date" : "-999999999-01-01",
+  "accountId" : "Equity",
+  "ccy" : "GBP",
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : false,
+    "automaticReinvestment" : false,
+    "generatedAccount" : true,
+    "hidden" : false,
+    "placeholder" : false
+  }
+}, {
+  "date" : "-999999999-01-01",
+  "accountId" : "",
+  "ccy" : "GBP",
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : false,
+    "automaticReinvestment" : false,
+    "generatedAccount" : true,
+    "hidden" : false,
+    "placeholder" : true
+  }
+}, {
+  "date" : "2021-06-01",
+  "accountId" : "Assets:Bank:SCSG",
+  "ccy" : "SGD",
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : true,
+    "automaticReinvestment" : false,
+    "generatedAccount" : false,
+    "hidden" : false,
+    "placeholder" : false
+  }
+}, {
+  "date" : "2010-01-01",
+  "accountId" : "Assets:Bank:HSBCHK",
+  "ccy" : "HKD",
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : true,
+    "automaticReinvestment" : false,
+    "generatedAccount" : false,
+    "hidden" : false,
+    "placeholder" : false
+  }
+}, {
+  "date" : "2016-01-01",
+  "accountId" : "Expenses:Chloe:CNY",
+  "ccy" : "CNY",
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : false,
+    "automaticReinvestment" : false,
+    "generatedAccount" : true,
+    "hidden" : false,
+    "placeholder" : false
+  }
+}, {
+  "date" : "1980-01-01",
+  "accountId" : "Expenses:General:SGD",
+  "ccy" : "SGD",
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : false,
+    "automaticReinvestment" : false,
+    "generatedAccount" : true,
+    "hidden" : false,
+    "placeholder" : false
+  }
+}, {
+  "date" : "1980-01-01",
+  "accountId" : "Expenses:General:CNY",
+  "ccy" : "CNY",
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : false,
+    "automaticReinvestment" : false,
+    "generatedAccount" : true,
+    "hidden" : false,
+    "placeholder" : false
+  }
+}, {
+  "date" : "2010-01-01",
+  "accountId" : "Assets:Bank:HSBCHK:HKD",
+  "ccy" : "HKD",
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : false,
+    "automaticReinvestment" : false,
+    "generatedAccount" : true,
+    "hidden" : false,
+    "placeholder" : false
+  }
+}, {
+  "date" : "1980-01-01",
+  "accountId" : "Expenses:General:HKD",
+  "ccy" : "HKD",
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : false,
+    "automaticReinvestment" : false,
+    "generatedAccount" : true,
+    "hidden" : false,
+    "placeholder" : false
+  }
+}, {
+  "date" : "1980-01-01",
+  "accountId" : "Equity:Opening:GBP",
+  "ccy" : "GBP",
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : false,
+    "automaticReinvestment" : false,
+    "generatedAccount" : true,
+    "hidden" : false,
+    "placeholder" : false
+  }
+}, {
+  "date" : "2000-01-01",
+  "accountId" : "Assets:Bank:HSBCUK",
+  "ccy" : "GBP",
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : false,
+    "automaticReinvestment" : false,
+    "generatedAccount" : false,
+    "hidden" : false,
+    "placeholder" : false
+  }
+}, {
+  "date" : "-999999999-01-01",
+  "accountId" : "Assets",
+  "ccy" : "GBP",
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : false,
+    "automaticReinvestment" : false,
+    "generatedAccount" : true,
+    "hidden" : false,
+    "placeholder" : false
+  }
+}, {
+  "date" : "2021-06-01",
+  "accountId" : "Assets:Bank:SCSG:SGD",
+  "ccy" : "SGD",
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : false,
+    "automaticReinvestment" : false,
+    "generatedAccount" : true,
+    "hidden" : false,
+    "placeholder" : false
+  }
+}, {
+  "date" : "-999999999-01-01",
+  "accountId" : "Expenses",
+  "ccy" : "GBP",
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : false,
+    "automaticReinvestment" : false,
+    "generatedAccount" : true,
+    "hidden" : false,
+    "placeholder" : false
+  }
+}, {
+  "date" : "2021-01-01",
+  "accountId" : "Assets:Bank:SC:CNY",
+  "ccy" : "CNY",
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : false,
+    "automaticReinvestment" : false,
+    "generatedAccount" : true,
+    "hidden" : false,
+    "placeholder" : false
+  }
+}, {
+  "date" : "2000-01-01",
+  "accountId" : "Assets:Bank:Barclays",
+  "ccy" : "GBP",
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : false,
+    "automaticReinvestment" : false,
+    "generatedAccount" : false,
+    "hidden" : false,
+    "placeholder" : false
+  }
+}, {
+  "date" : "2010-01-01",
+  "accountId" : "Assets:Bank:HSBCCN",
+  "ccy" : "CNY",
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : false,
+    "automaticReinvestment" : false,
+    "generatedAccount" : false,
+    "hidden" : false,
+    "placeholder" : false
+  }
+}, {
+  "date" : "1980-01-01",
+  "accountId" : "Expenses:General",
+  "ccy" : "GBP",
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : true,
+    "automaticReinvestment" : false,
+    "generatedAccount" : false,
+    "hidden" : false,
+    "placeholder" : false
+  }
+}, {
+  "date" : "-999999999-01-01",
+  "accountId" : "Assets:Bank",
+  "ccy" : "GBP",
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : false,
+    "automaticReinvestment" : false,
+    "generatedAccount" : true,
+    "hidden" : false,
+    "placeholder" : false
+  }
+}, {
+  "date" : "1980-01-01",
+  "accountId" : "Equity:Opening",
+  "ccy" : "GBP",
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : true,
+    "automaticReinvestment" : false,
+    "generatedAccount" : false,
+    "hidden" : false,
+    "placeholder" : false
+  }
+}, {
+  "date" : "-999999999-01-01",
+  "accountId" : "Income",
+  "ccy" : "GBP",
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : false,
+    "automaticReinvestment" : false,
+    "generatedAccount" : true,
+    "hidden" : false,
+    "placeholder" : false
+  }
+}, {
+  "date" : "2016-01-01",
+  "accountId" : "Expenses:Chloe",
+  "ccy" : "CNY",
+  "options" : {
+    "tradingAccount" : false,
+    "fundingAccount" : "Assets:Bank:HSBCCN",
+    "description" : "",
+    "multiAsset" : true,
+    "automaticReinvestment" : false,
+    "generatedAccount" : false,
+    "hidden" : false,
+    "placeholder" : false
+  }
+}, {
+  "date" : "2016-01-01",
+  "accountId" : "Expenses:Aiden",
+  "ccy" : "CNY",
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : true,
+    "automaticReinvestment" : false,
+    "generatedAccount" : false,
+    "hidden" : false,
+    "placeholder" : false
+  }
+} ]

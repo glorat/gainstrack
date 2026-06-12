@@ -1,0 +1,733 @@
+[ {
+  "date" : "-999999999-01-01",
+  "accountId" : "Expenses",
+  "ccy" : "GBP",
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : false,
+    "automaticReinvestment" : false,
+    "generatedAccount" : true,
+    "hidden" : false,
+    "placeholder" : false
+  }
+}, {
+  "date" : "2010-01-01",
+  "accountId" : "Income:Investment:OldMutual:GBP",
+  "ccy" : "GBP",
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : false,
+    "automaticReinvestment" : false,
+    "generatedAccount" : true,
+    "hidden" : false,
+    "placeholder" : false
+  }
+}, {
+  "date" : "2010-01-01",
+  "accountId" : "Equity:Opening:GBP",
+  "ccy" : "GBP",
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : false,
+    "automaticReinvestment" : false,
+    "generatedAccount" : true,
+    "hidden" : false,
+    "placeholder" : false
+  }
+}, {
+  "date" : "2010-01-01",
+  "accountId" : "Equity:Opening",
+  "ccy" : "GBP",
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : true,
+    "automaticReinvestment" : false,
+    "generatedAccount" : false,
+    "hidden" : false,
+    "placeholder" : false
+  }
+}, {
+  "date" : "2010-01-01",
+  "accountId" : "Assets:Investment:Zurich:TBOND",
+  "ccy" : "TBOND",
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : false,
+    "automaticReinvestment" : false,
+    "generatedAccount" : true,
+    "hidden" : false,
+    "placeholder" : false
+  }
+}, {
+  "date" : "-999999999-01-01",
+  "accountId" : "Equity",
+  "ccy" : "GBP",
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : false,
+    "automaticReinvestment" : false,
+    "generatedAccount" : true,
+    "hidden" : false,
+    "placeholder" : false
+  }
+}, {
+  "date" : "2010-01-01",
+  "accountId" : "Equity:Opening:CNY",
+  "ccy" : "CNY",
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : false,
+    "automaticReinvestment" : false,
+    "generatedAccount" : true,
+    "hidden" : false,
+    "placeholder" : false
+  }
+}, {
+  "date" : "2010-01-01",
+  "accountId" : "Expenses:Investment:Zurich:GBP",
+  "ccy" : "GBP",
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : false,
+    "automaticReinvestment" : false,
+    "generatedAccount" : true,
+    "hidden" : false,
+    "placeholder" : false
+  }
+}, {
+  "date" : "2010-01-01",
+  "accountId" : "Income:Investment:OldMutual",
+  "ccy" : "GBP",
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : true,
+    "automaticReinvestment" : false,
+    "generatedAccount" : true,
+    "hidden" : false,
+    "placeholder" : false
+  }
+}, {
+  "date" : "2010-01-01",
+  "accountId" : "Assets:Investment:OldMutual:GBR04S9K",
+  "ccy" : "GBR04S9K",
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : false,
+    "automaticReinvestment" : false,
+    "generatedAccount" : true,
+    "hidden" : false,
+    "placeholder" : false
+  }
+}, {
+  "date" : "-999999999-01-01",
+  "accountId" : "Assets",
+  "ccy" : "GBP",
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : false,
+    "automaticReinvestment" : false,
+    "generatedAccount" : true,
+    "hidden" : false,
+    "placeholder" : false
+  }
+}, {
+  "date" : "2010-01-01",
+  "accountId" : "Income:Salary",
+  "ccy" : "CNY",
+  "options" : {
+    "tradingAccount" : false,
+    "fundingAccount" : "Assets:HSBCCN",
+    "description" : "",
+    "multiAsset" : false,
+    "automaticReinvestment" : false,
+    "generatedAccount" : false,
+    "hidden" : false,
+    "placeholder" : false
+  }
+}, {
+  "date" : "2019-04-01",
+  "accountId" : "Assets:Investment:IBUSD:BRK-B",
+  "ccy" : "BRK-B",
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : false,
+    "automaticReinvestment" : false,
+    "generatedAccount" : true,
+    "hidden" : false,
+    "placeholder" : false
+  }
+}, {
+  "date" : "-999999999-01-01",
+  "accountId" : "Assets:Investment",
+  "ccy" : "GBP",
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : false,
+    "automaticReinvestment" : false,
+    "generatedAccount" : true,
+    "hidden" : false,
+    "placeholder" : false
+  }
+}, {
+  "date" : "2010-01-01",
+  "accountId" : "Income:Investment:Zurich",
+  "ccy" : "GBP",
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : true,
+    "automaticReinvestment" : false,
+    "generatedAccount" : true,
+    "hidden" : false,
+    "placeholder" : false
+  }
+}, {
+  "date" : "2010-01-01",
+  "accountId" : "Assets:Investment:HSBC:VCSH",
+  "ccy" : "VCSH",
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : false,
+    "automaticReinvestment" : false,
+    "generatedAccount" : true,
+    "hidden" : false,
+    "placeholder" : false
+  }
+}, {
+  "date" : "-999999999-01-01",
+  "accountId" : "Assets:Bank",
+  "ccy" : "GBP",
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : false,
+    "automaticReinvestment" : false,
+    "generatedAccount" : true,
+    "hidden" : false,
+    "placeholder" : false
+  }
+}, {
+  "date" : "2010-01-01",
+  "accountId" : "Assets:Investment:OldMutual:QS90",
+  "ccy" : "QS90",
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : false,
+    "automaticReinvestment" : false,
+    "generatedAccount" : true,
+    "hidden" : false,
+    "placeholder" : false
+  }
+}, {
+  "date" : "2019-04-01",
+  "accountId" : "Income:Investment:IBUSD:USD",
+  "ccy" : "USD",
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : false,
+    "automaticReinvestment" : false,
+    "generatedAccount" : true,
+    "hidden" : false,
+    "placeholder" : false
+  }
+}, {
+  "date" : "2010-01-01",
+  "accountId" : "Assets:Investment:OldMutual:OPY7",
+  "ccy" : "OPY7",
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : false,
+    "automaticReinvestment" : false,
+    "generatedAccount" : true,
+    "hidden" : false,
+    "placeholder" : false
+  }
+}, {
+  "date" : "2010-01-01",
+  "accountId" : "Expenses:Investment:OldMutual",
+  "ccy" : "GBP",
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : true,
+    "automaticReinvestment" : false,
+    "generatedAccount" : true,
+    "hidden" : false,
+    "placeholder" : false
+  }
+}, {
+  "date" : "2010-01-01",
+  "accountId" : "Assets:Investment:Zurich",
+  "ccy" : "GBP",
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : true,
+    "automaticReinvestment" : false,
+    "generatedAccount" : false,
+    "hidden" : false,
+    "placeholder" : false
+  }
+}, {
+  "date" : "2010-01-01",
+  "accountId" : "Assets:Investment:HSBC:VTI",
+  "ccy" : "VTI",
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : false,
+    "automaticReinvestment" : false,
+    "generatedAccount" : true,
+    "hidden" : false,
+    "placeholder" : false
+  }
+}, {
+  "date" : "2010-01-01",
+  "accountId" : "Expenses:Education",
+  "ccy" : "CNY",
+  "options" : {
+    "tradingAccount" : false,
+    "fundingAccount" : "Assets:HSBCCN",
+    "description" : "",
+    "multiAsset" : false,
+    "automaticReinvestment" : false,
+    "generatedAccount" : false,
+    "hidden" : false,
+    "placeholder" : false
+  }
+}, {
+  "date" : "2010-01-01",
+  "accountId" : "Assets:Investment:HSBC:BRK-B",
+  "ccy" : "BRK-B",
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : false,
+    "automaticReinvestment" : false,
+    "generatedAccount" : true,
+    "hidden" : false,
+    "placeholder" : false
+  }
+}, {
+  "date" : "2000-01-01",
+  "accountId" : "Assets:Bank:NationwideSavings",
+  "ccy" : "GBP",
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : false,
+    "automaticReinvestment" : false,
+    "generatedAccount" : false,
+    "hidden" : false,
+    "placeholder" : false
+  }
+}, {
+  "date" : "2000-01-01",
+  "accountId" : "Assets:Bank:Nationwide",
+  "ccy" : "GBP",
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : false,
+    "automaticReinvestment" : false,
+    "generatedAccount" : false,
+    "hidden" : false,
+    "placeholder" : false
+  }
+}, {
+  "date" : "2019-04-01",
+  "accountId" : "Assets:Investment:IBUSD",
+  "ccy" : "USD",
+  "options" : {
+    "expenseAccount" : "Expenses:Investment:IBUSD:USD",
+    "tradingAccount" : false,
+    "incomeAccount" : "Income:Investment:IBUSD:USD",
+    "description" : "",
+    "multiAsset" : true,
+    "automaticReinvestment" : false,
+    "generatedAccount" : false,
+    "hidden" : false,
+    "placeholder" : false
+  }
+}, {
+  "date" : "2010-01-01",
+  "accountId" : "Assets:HSBCCN",
+  "ccy" : "CNY",
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : false,
+    "automaticReinvestment" : false,
+    "generatedAccount" : false,
+    "hidden" : false,
+    "placeholder" : false
+  }
+}, {
+  "date" : "-999999999-01-01",
+  "accountId" : "",
+  "ccy" : "GBP",
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : false,
+    "automaticReinvestment" : false,
+    "generatedAccount" : true,
+    "hidden" : false,
+    "placeholder" : true
+  }
+}, {
+  "date" : "2010-01-01",
+  "accountId" : "Assets:Investment:Zurich:GBP",
+  "ccy" : "GBP",
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : false,
+    "automaticReinvestment" : false,
+    "generatedAccount" : true,
+    "hidden" : false,
+    "placeholder" : false
+  }
+}, {
+  "date" : "2019-04-01",
+  "accountId" : "Assets:Investment:IBUSD:IUAA",
+  "ccy" : "IUAA",
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : false,
+    "automaticReinvestment" : false,
+    "generatedAccount" : true,
+    "hidden" : false,
+    "placeholder" : false
+  }
+}, {
+  "date" : "2010-01-01",
+  "accountId" : "Assets:Investment:HSBC:USD",
+  "ccy" : "USD",
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : false,
+    "automaticReinvestment" : false,
+    "generatedAccount" : false,
+    "hidden" : false,
+    "placeholder" : false
+  }
+}, {
+  "date" : "2019-04-01",
+  "accountId" : "Expenses:Investment:IBUSD",
+  "ccy" : "USD",
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : true,
+    "automaticReinvestment" : false,
+    "generatedAccount" : true,
+    "hidden" : false,
+    "placeholder" : false
+  }
+}, {
+  "date" : "2019-04-01",
+  "accountId" : "Assets:Investment:IBUSD:USD",
+  "ccy" : "USD",
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : false,
+    "automaticReinvestment" : false,
+    "generatedAccount" : true,
+    "hidden" : false,
+    "placeholder" : false
+  }
+}, {
+  "date" : "-999999999-01-01",
+  "accountId" : "Income",
+  "ccy" : "GBP",
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : false,
+    "automaticReinvestment" : false,
+    "generatedAccount" : true,
+    "hidden" : false,
+    "placeholder" : false
+  }
+}, {
+  "date" : "2019-04-01",
+  "accountId" : "Income:Investment:IBUSD",
+  "ccy" : "USD",
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : true,
+    "automaticReinvestment" : false,
+    "generatedAccount" : true,
+    "hidden" : false,
+    "placeholder" : false
+  }
+}, {
+  "date" : "2019-04-01",
+  "accountId" : "Expenses:Investment:IBUSD:USD",
+  "ccy" : "USD",
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : false,
+    "automaticReinvestment" : false,
+    "generatedAccount" : true,
+    "hidden" : false,
+    "placeholder" : false
+  }
+}, {
+  "date" : "2010-01-01",
+  "accountId" : "Assets:Investment:Zurich:FTSE",
+  "ccy" : "FTSE",
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : false,
+    "automaticReinvestment" : false,
+    "generatedAccount" : true,
+    "hidden" : false,
+    "placeholder" : false
+  }
+}, {
+  "date" : "2010-01-01",
+  "accountId" : "Income:Investment:Zurich:GBP",
+  "ccy" : "GBP",
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : false,
+    "automaticReinvestment" : false,
+    "generatedAccount" : true,
+    "hidden" : false,
+    "placeholder" : false
+  }
+}, {
+  "date" : "-999999999-01-01",
+  "accountId" : "Income:Investment",
+  "ccy" : "GBP",
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : false,
+    "automaticReinvestment" : false,
+    "generatedAccount" : true,
+    "hidden" : false,
+    "placeholder" : false
+  }
+}, {
+  "date" : "2010-01-01",
+  "accountId" : "Assets:Investment:OldMutual:QLNC",
+  "ccy" : "QLNC",
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : false,
+    "automaticReinvestment" : false,
+    "generatedAccount" : true,
+    "hidden" : false,
+    "placeholder" : false
+  }
+}, {
+  "date" : "2010-01-01",
+  "accountId" : "Assets:Investment:OldMutual:SVDK",
+  "ccy" : "SVDK",
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : false,
+    "automaticReinvestment" : false,
+    "generatedAccount" : true,
+    "hidden" : false,
+    "placeholder" : false
+  }
+}, {
+  "date" : "2010-01-01",
+  "accountId" : "Assets:Investment:OldMutual:OPXC",
+  "ccy" : "OPXC",
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : false,
+    "automaticReinvestment" : false,
+    "generatedAccount" : true,
+    "hidden" : false,
+    "placeholder" : false
+  }
+}, {
+  "date" : "2010-01-01",
+  "accountId" : "Expenses:Investment:Zurich",
+  "ccy" : "GBP",
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : true,
+    "automaticReinvestment" : false,
+    "generatedAccount" : true,
+    "hidden" : false,
+    "placeholder" : false
+  }
+}, {
+  "date" : "2010-01-01",
+  "accountId" : "Assets:HSBCHK",
+  "ccy" : "HKD",
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : false,
+    "automaticReinvestment" : false,
+    "generatedAccount" : false,
+    "hidden" : false,
+    "placeholder" : false
+  }
+}, {
+  "date" : "2010-01-01",
+  "accountId" : "Equity:Opening:HKD",
+  "ccy" : "HKD",
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : false,
+    "automaticReinvestment" : false,
+    "generatedAccount" : true,
+    "hidden" : false,
+    "placeholder" : false
+  }
+}, {
+  "date" : "2010-01-01",
+  "accountId" : "Assets:Investment:OldMutual",
+  "ccy" : "GBP",
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : true,
+    "automaticReinvestment" : false,
+    "generatedAccount" : false,
+    "hidden" : false,
+    "placeholder" : false
+  }
+}, {
+  "date" : "2019-04-01",
+  "accountId" : "Assets:Investment:IBUSD:VWRD",
+  "ccy" : "VWRD",
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : false,
+    "automaticReinvestment" : false,
+    "generatedAccount" : true,
+    "hidden" : false,
+    "placeholder" : false
+  }
+}, {
+  "date" : "2010-01-01",
+  "accountId" : "Expenses:Investment:OldMutual:GBP",
+  "ccy" : "GBP",
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : false,
+    "automaticReinvestment" : false,
+    "generatedAccount" : true,
+    "hidden" : false,
+    "placeholder" : false
+  }
+}, {
+  "date" : "-999999999-01-01",
+  "accountId" : "Expenses:Investment",
+  "ccy" : "GBP",
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : false,
+    "automaticReinvestment" : false,
+    "generatedAccount" : true,
+    "hidden" : false,
+    "placeholder" : false
+  }
+}, {
+  "date" : "2010-01-01",
+  "accountId" : "Assets:Investment:OldMutual:GBR06HUW",
+  "ccy" : "GBR06HUW",
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : false,
+    "automaticReinvestment" : false,
+    "generatedAccount" : true,
+    "hidden" : false,
+    "placeholder" : false
+  }
+}, {
+  "date" : "2010-01-01",
+  "accountId" : "Assets:Investment:Zurich:AMER",
+  "ccy" : "AMER",
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : false,
+    "automaticReinvestment" : false,
+    "generatedAccount" : true,
+    "hidden" : false,
+    "placeholder" : false
+  }
+}, {
+  "date" : "2010-01-01",
+  "accountId" : "Assets:Investment:HSBC",
+  "ccy" : "USD",
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : true,
+    "automaticReinvestment" : false,
+    "generatedAccount" : false,
+    "hidden" : false,
+    "placeholder" : false
+  }
+}, {
+  "date" : "2010-01-01",
+  "accountId" : "Assets:Investment:OldMutual:GBP",
+  "ccy" : "GBP",
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : false,
+    "automaticReinvestment" : false,
+    "generatedAccount" : true,
+    "hidden" : false,
+    "placeholder" : false
+  }
+}, {
+  "date" : "2000-01-01",
+  "accountId" : "Assets:Bank:HSBCUK",
+  "ccy" : "GBP",
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : false,
+    "automaticReinvestment" : false,
+    "generatedAccount" : false,
+    "hidden" : false,
+    "placeholder" : false
+  }
+} ]

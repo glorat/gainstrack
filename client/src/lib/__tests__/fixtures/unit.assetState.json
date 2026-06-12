@@ -1,0 +1,57 @@
+[ {
+  "accountId" : "",
+  "date" : "1900-01-01",
+  "asset" : "GBP",
+  "options" : {
+    "name" : "",
+    "ticker" : "",
+    "tags" : [ ]
+  },
+  "commandType" : "commodity",
+  "description" : "GBP"
+}, {
+  "accountId" : "",
+  "date" : "1900-01-01",
+  "asset" : "USD",
+  "options" : {
+    "name" : "",
+    "ticker" : "",
+    "tags" : [ ]
+  },
+  "commandType" : "commodity",
+  "description" : "USD"
+}, {
+  "accountId" : "",
+  "date" : "1900-01-01",
+  "asset" : "BGIL",
+  "options" : {
+    "name" : "",
+    "ticker" : "",
+    "tags" : [ ]
+  },
+  "commandType" : "commodity",
+  "description" : "BGIL"
+}, {
+  "accountId" : "",
+  "date" : "1900-01-01",
+  "asset" : "FTSE",
+  "options" : {
+    "category" : "equity/uk",
+    "name" : "FTSE100 Index",
+    "ticker" : "",
+    "tags" : [ ]
+  },
+  "commandType" : "commodity",
+  "description" : "FTSE"
+}, {
+  "accountId" : "",
+  "date" : "1900-01-01",
+  "asset" : "VWRL",
+  "options" : {
+    "name" : "",
+    "ticker" : "",
+    "tags" : [ ]
+  },
+  "commandType" : "commodity",
+  "description" : "VWRL"
+} ]

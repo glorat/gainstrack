@@ -1,0 +1,61 @@
+{
+  "Income:SCBSG" : {
+    "series" : { },
+    "ccy" : "USD"
+  },
+  "Income:SCBSG:GBP" : {
+    "series" : { },
+    "ccy" : "GBP"
+  },
+  "Assets:SCBSG:GBP" : {
+    "series" : {
+      "2018-10-31" : -38739.6000,
+      "2019-10-30" : 34652.9300
+    },
+    "ccy" : "GBP"
+  },
+  "Income:Opening" : {
+    "series" : {
+      "1959-12-31" : 0
+    },
+    "ccy" : "USD"
+  },
+  "Expenses:SCBSG:USD" : {
+    "series" : { },
+    "ccy" : "USD"
+  },
+  "Assets:SCBSG:SCGBP" : {
+    "series" : {
+      "2018-10-31" : 5275.0
+    },
+    "ccy" : "SCGBP"
+  },
+  "Assets:SCBSG:USD" : {
+    "series" : {
+      "2019-10-30" : 66991.65
+    },
+    "ccy" : "USD"
+  },
+  "Income:Opening:GBP" : {
+    "series" : {
+      "2019-10-30" : -73392.5300
+    },
+    "ccy" : "GBP"
+  },
+  "Assets:SCBSG" : {
+    "series" : {
+      "1999-12-31" : 0
+    },
+    "ccy" : "USD"
+  },
+  "Income:Opening:USD" : {
+    "series" : {
+      "2019-10-30" : -66991.65
+    },
+    "ccy" : "USD"
+  },
+  "Expenses:SCBSG" : {
+    "series" : { },
+    "ccy" : "USD"
+  }
+}

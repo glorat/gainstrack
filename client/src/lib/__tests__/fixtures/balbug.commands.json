@@ -1,0 +1,475 @@
+[ {
+  "accountId" : "",
+  "date" : "-999999999-01-01",
+  "options" : {
+    "operatingCurrency" : "GBP",
+    "comments" : [ ]
+  },
+  "commandType" : "",
+  "description" : "global configuration"
+}, {
+  "accountId" : "Equity:Opening",
+  "date" : "1980-01-01",
+  "balance" : {
+    "number" : 0,
+    "ccy" : "GBP"
+  },
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : true,
+    "automaticReinvestment" : false,
+    "generatedAccount" : false,
+    "hidden" : false,
+    "placeholder" : false
+  },
+  "commandType" : "open",
+  "description" : "Account opened"
+}, {
+  "accountId" : "Expenses:General",
+  "date" : "1980-01-01",
+  "balance" : {
+    "number" : 0,
+    "ccy" : "GBP"
+  },
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : true,
+    "automaticReinvestment" : false,
+    "generatedAccount" : false,
+    "hidden" : false,
+    "placeholder" : false
+  },
+  "commandType" : "open",
+  "description" : "Account opened"
+}, {
+  "accountId" : "Assets:Bank:Barclays",
+  "date" : "2000-01-01",
+  "balance" : {
+    "number" : 0,
+    "ccy" : "GBP"
+  },
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : false,
+    "automaticReinvestment" : false,
+    "generatedAccount" : false,
+    "hidden" : false,
+    "placeholder" : false
+  },
+  "commandType" : "open",
+  "description" : "Account opened"
+}, {
+  "accountId" : "Assets:Bank:HSBCUK",
+  "date" : "2000-01-01",
+  "balance" : {
+    "number" : 0,
+    "ccy" : "GBP"
+  },
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : false,
+    "automaticReinvestment" : false,
+    "generatedAccount" : false,
+    "hidden" : false,
+    "placeholder" : false
+  },
+  "commandType" : "open",
+  "description" : "Account opened"
+}, {
+  "accountId" : "Assets:Bank:HSBCCN",
+  "date" : "2010-01-01",
+  "balance" : {
+    "number" : 0,
+    "ccy" : "CNY"
+  },
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : false,
+    "automaticReinvestment" : false,
+    "generatedAccount" : false,
+    "hidden" : false,
+    "placeholder" : false
+  },
+  "commandType" : "open",
+  "description" : "Account opened"
+}, {
+  "accountId" : "Assets:Bank:HSBCHK",
+  "date" : "2010-01-01",
+  "balance" : {
+    "number" : 0,
+    "ccy" : "HKD"
+  },
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : true,
+    "automaticReinvestment" : false,
+    "generatedAccount" : false,
+    "hidden" : false,
+    "placeholder" : false
+  },
+  "commandType" : "open",
+  "description" : "Account opened"
+}, {
+  "accountId" : "Income:Salary",
+  "date" : "2010-01-01",
+  "balance" : {
+    "number" : 0,
+    "ccy" : "CNY"
+  },
+  "options" : {
+    "tradingAccount" : false,
+    "fundingAccount" : "Assets:Bank:HSBCCN",
+    "description" : "",
+    "multiAsset" : false,
+    "automaticReinvestment" : false,
+    "generatedAccount" : false,
+    "hidden" : false,
+    "placeholder" : false
+  },
+  "commandType" : "open",
+  "description" : "Account opened"
+}, {
+  "accountId" : "Assets:Bank:Barclays",
+  "date" : "2010-04-08",
+  "balance" : {
+    "number" : 14854.91,
+    "ccy" : "GBP"
+  },
+  "otherAccount" : "Equity:Opening",
+  "commandType" : "bal",
+  "description" : "Account balance 14854.91 GBP"
+}, {
+  "accountId" : "Assets:Bank:HSBCUK",
+  "date" : "2010-05-17",
+  "balance" : {
+    "number" : 54342.0,
+    "ccy" : "GBP"
+  },
+  "otherAccount" : "Equity:Opening",
+  "commandType" : "bal",
+  "description" : "Account balance 54342.0 GBP"
+}, {
+  "accountId" : "Income:Salary",
+  "date" : "2010-12-30",
+  "change" : {
+    "number" : 120000.0,
+    "ccy" : "CNY"
+  },
+  "commandType" : "earn",
+  "description" : "Earn 120000.0 CNY Salary"
+}, {
+  "accountId" : "Expenses:Aiden",
+  "date" : "2016-01-01",
+  "balance" : {
+    "number" : 0,
+    "ccy" : "CNY"
+  },
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : true,
+    "automaticReinvestment" : false,
+    "generatedAccount" : false,
+    "hidden" : false,
+    "placeholder" : false
+  },
+  "commandType" : "open",
+  "description" : "Account opened"
+}, {
+  "accountId" : "Expenses:Chloe",
+  "date" : "2016-01-01",
+  "balance" : {
+    "number" : 0,
+    "ccy" : "CNY"
+  },
+  "options" : {
+    "tradingAccount" : false,
+    "fundingAccount" : "Assets:Bank:HSBCCN",
+    "description" : "",
+    "multiAsset" : true,
+    "automaticReinvestment" : false,
+    "generatedAccount" : false,
+    "hidden" : false,
+    "placeholder" : false
+  },
+  "commandType" : "open",
+  "description" : "Account opened"
+}, {
+  "accountId" : "Assets:Bank:HSBCHK",
+  "date" : "2017-01-05",
+  "balance" : {
+    "number" : 234835.3,
+    "ccy" : "HKD"
+  },
+  "otherAccount" : "Expenses:General",
+  "commandType" : "bal",
+  "description" : "Account balance 234835.3 HKD"
+}, {
+  "accountId" : "",
+  "date" : "2017-12-31",
+  "asset" : "CNY",
+  "price" : {
+    "number" : 0.1141,
+    "ccy" : "GBP"
+  },
+  "commandType" : "price",
+  "description" : "GBP/CNY = 0.1141 GBP"
+}, {
+  "accountId" : "",
+  "date" : "2017-12-31",
+  "asset" : "HKD",
+  "price" : {
+    "number" : 0.0947,
+    "ccy" : "GBP"
+  },
+  "commandType" : "price",
+  "description" : "GBP/HKD = 0.0947 GBP"
+}, {
+  "accountId" : "Assets:Bank:HSBCCN",
+  "date" : "2018-06-08",
+  "balance" : {
+    "number" : 458728.28,
+    "ccy" : "CNY"
+  },
+  "otherAccount" : "Expenses:General",
+  "commandType" : "bal",
+  "description" : "Account balance 458728.28 CNY"
+}, {
+  "accountId" : "",
+  "date" : "2018-12-31",
+  "asset" : "CNY",
+  "price" : {
+    "number" : 0.1146,
+    "ccy" : "GBP"
+  },
+  "commandType" : "price",
+  "description" : "GBP/CNY = 0.1146 GBP"
+}, {
+  "accountId" : "",
+  "date" : "2019-01-01",
+  "asset" : "GBP",
+  "price" : {
+    "number" : 1.2752,
+    "ccy" : "USD"
+  },
+  "commandType" : "price",
+  "description" : "USD/GBP = 1.2752 USD"
+}, {
+  "accountId" : "",
+  "date" : "2019-04-01",
+  "asset" : "AMER",
+  "price" : {
+    "number" : 5.68,
+    "ccy" : "GBP"
+  },
+  "commandType" : "price",
+  "description" : "GBP/AMER = 5.68 GBP"
+}, {
+  "accountId" : "Expenses:Chloe",
+  "date" : "2019-04-17",
+  "change" : {
+    "number" : 152520.0,
+    "ccy" : "CNY"
+  },
+  "commandType" : "spend",
+  "description" : "Spend 152520.0 CNY Expenses:Chloe"
+}, {
+  "accountId" : "",
+  "date" : "2019-04-23",
+  "asset" : "CNY",
+  "price" : {
+    "number" : 0.11,
+    "ccy" : "GBP"
+  },
+  "commandType" : "price",
+  "description" : "GBP/CNY = 0.11 GBP"
+}, {
+  "accountId" : "",
+  "date" : "2019-04-23",
+  "asset" : "HKD",
+  "price" : {
+    "number" : 0.098,
+    "ccy" : "GBP"
+  },
+  "commandType" : "price",
+  "description" : "GBP/HKD = 0.098 GBP"
+}, {
+  "accountId" : "",
+  "date" : "2019-04-30",
+  "asset" : "PP",
+  "price" : {
+    "number" : 440000.0,
+    "ccy" : "GBP"
+  },
+  "commandType" : "price",
+  "description" : "GBP/PP = 440000.0 GBP"
+}, {
+  "accountId" : "",
+  "date" : "2019-05-20",
+  "asset" : "GOLD",
+  "price" : {
+    "number" : 275.95,
+    "ccy" : "CNY"
+  },
+  "commandType" : "price",
+  "description" : "CNY/GOLD = 275.95 CNY"
+}, {
+  "accountId" : "",
+  "date" : "2019-05-20",
+  "asset" : "XAU",
+  "price" : {
+    "number" : 8837.0851,
+    "ccy" : "CNY"
+  },
+  "commandType" : "price",
+  "description" : "CNY/XAU = 8837.0851 CNY"
+}, {
+  "accountId" : "Expenses:Chloe",
+  "date" : "2020-03-23",
+  "change" : {
+    "number" : 10000.0,
+    "ccy" : "CNY"
+  },
+  "commandType" : "spend",
+  "description" : "Spend 10000.0 CNY Expenses:Chloe"
+}, {
+  "accountId" : "Expenses:Chloe",
+  "date" : "2020-06-19",
+  "change" : {
+    "number" : 12073.7,
+    "ccy" : "CNY"
+  },
+  "commandType" : "spend",
+  "description" : "Spend 12073.7 CNY Expenses:Chloe"
+}, {
+  "accountId" : "Expenses:Aiden",
+  "date" : "2020-08-27",
+  "change" : {
+    "number" : 57800.0,
+    "ccy" : "CNY"
+  },
+  "otherAccount" : "Assets:Bank:HSBCCN",
+  "commandType" : "spend",
+  "description" : "Spend 57800.0 CNY Expenses:Aiden"
+}, {
+  "accountId" : "Expenses:Aiden",
+  "date" : "2020-10-26",
+  "change" : {
+    "number" : 53800.0,
+    "ccy" : "CNY"
+  },
+  "otherAccount" : "Assets:Bank:HSBCCN",
+  "commandType" : "spend",
+  "description" : "Spend 53800.0 CNY Expenses:Aiden"
+}, {
+  "accountId" : "Expenses:Chloe",
+  "date" : "2020-10-26",
+  "change" : {
+    "number" : 57000.0,
+    "ccy" : "CNY"
+  },
+  "commandType" : "spend",
+  "description" : "Spend 57000.0 CNY Expenses:Chloe"
+}, {
+  "accountId" : "Assets:Bank:SC",
+  "date" : "2021-01-01",
+  "balance" : {
+    "number" : 0,
+    "ccy" : "CNY"
+  },
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : true,
+    "automaticReinvestment" : false,
+    "generatedAccount" : false,
+    "hidden" : false,
+    "placeholder" : false
+  },
+  "commandType" : "open",
+  "description" : "Account opened"
+}, {
+  "accountId" : "Expenses:Aiden",
+  "date" : "2021-03-07",
+  "change" : {
+    "number" : 53650.0,
+    "ccy" : "CNY"
+  },
+  "otherAccount" : "Assets:Bank:SC",
+  "commandType" : "spend",
+  "description" : "Spend 53650.0 CNY Expenses:Aiden"
+}, {
+  "accountId" : "Expenses:Chloe",
+  "date" : "2021-03-07",
+  "change" : {
+    "number" : 56850.0,
+    "ccy" : "CNY"
+  },
+  "otherAccount" : "Assets:Bank:SC",
+  "commandType" : "spend",
+  "description" : "Spend 56850.0 CNY Expenses:Chloe"
+}, {
+  "accountId" : "Assets:Bank:SCSG",
+  "date" : "2021-06-01",
+  "balance" : {
+    "number" : 0,
+    "ccy" : "SGD"
+  },
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : true,
+    "automaticReinvestment" : false,
+    "generatedAccount" : false,
+    "hidden" : false,
+    "placeholder" : false
+  },
+  "commandType" : "open",
+  "description" : "Account opened"
+}, {
+  "accountId" : "Assets:Bank:SC",
+  "date" : "2021-07-10",
+  "balance" : {
+    "number" : 131398.0,
+    "ccy" : "CNY"
+  },
+  "otherAccount" : "Expenses:General",
+  "commandType" : "bal",
+  "description" : "Account balance 131398.0 CNY"
+}, {
+  "accountId" : "Assets:Bank:SC",
+  "date" : "2021-07-22",
+  "change" : {
+    "number" : 53838.56,
+    "ccy" : "CNY"
+  },
+  "otherAccount" : "Income:Salary",
+  "commandType" : "fund",
+  "description" : "Fund 53838.56 CNY"
+}, {
+  "accountId" : "Assets:Bank:SCSG",
+  "date" : "2021-08-04",
+  "balance" : {
+    "number" : 29184.67,
+    "ccy" : "SGD"
+  },
+  "otherAccount" : "Expenses:General",
+  "commandType" : "bal",
+  "description" : "Account balance 29184.67 SGD"
+}, {
+  "accountId" : "Assets:Bank:SC",
+  "date" : "2021-08-10",
+  "balance" : {
+    "number" : 158085.55,
+    "ccy" : "CNY"
+  },
+  "otherAccount" : "Expenses:General",
+  "commandType" : "bal",
+  "description" : "Account balance 158085.55 CNY"
+} ]

@@ -1,0 +1,316 @@
+[ {
+  "date" : "2010-01-01",
+  "accountId" : "Assets:Investment:HSBC:VCSH",
+  "ccy" : "VCSH",
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : false,
+    "automaticReinvestment" : false,
+    "generatedAccount" : true,
+    "hidden" : false,
+    "placeholder" : false
+  }
+}, {
+  "date" : "2010-01-01",
+  "accountId" : "Income:Investment:HSBC:USD",
+  "ccy" : "USD",
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : false,
+    "automaticReinvestment" : false,
+    "generatedAccount" : true,
+    "hidden" : false,
+    "placeholder" : false
+  }
+}, {
+  "date" : "2010-01-01",
+  "accountId" : "Assets:Investment:HSBC:VTI",
+  "ccy" : "VTI",
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : false,
+    "automaticReinvestment" : false,
+    "generatedAccount" : true,
+    "hidden" : false,
+    "placeholder" : false
+  }
+}, {
+  "date" : "2010-01-01",
+  "accountId" : "Assets:Investment:HSBC:BRK-B",
+  "ccy" : "BRK-B",
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : false,
+    "automaticReinvestment" : false,
+    "generatedAccount" : true,
+    "hidden" : false,
+    "placeholder" : false
+  }
+}, {
+  "date" : "-999999999-01-01",
+  "accountId" : "Assets",
+  "ccy" : "USD",
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : false,
+    "automaticReinvestment" : false,
+    "generatedAccount" : true,
+    "hidden" : false,
+    "placeholder" : false
+  }
+}, {
+  "date" : "2010-01-01",
+  "accountId" : "Equity:Opening:USD",
+  "ccy" : "USD",
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : false,
+    "automaticReinvestment" : false,
+    "generatedAccount" : false,
+    "hidden" : false,
+    "placeholder" : false
+  }
+}, {
+  "date" : "2010-01-01",
+  "accountId" : "Expenses:Investment:HSBC:USD",
+  "ccy" : "USD",
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : false,
+    "automaticReinvestment" : false,
+    "generatedAccount" : true,
+    "hidden" : false,
+    "placeholder" : false
+  }
+}, {
+  "date" : "2010-01-01",
+  "accountId" : "Income:Investment:HSBC:VTI",
+  "ccy" : "USD",
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : false,
+    "automaticReinvestment" : false,
+    "generatedAccount" : true,
+    "hidden" : false,
+    "placeholder" : false
+  }
+}, {
+  "date" : "-999999999-01-01",
+  "accountId" : "Assets:Investment",
+  "ccy" : "USD",
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : false,
+    "automaticReinvestment" : false,
+    "generatedAccount" : true,
+    "hidden" : false,
+    "placeholder" : false
+  }
+}, {
+  "date" : "2010-01-01",
+  "accountId" : "Assets:Investment:HSBC:USD",
+  "ccy" : "USD",
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : false,
+    "automaticReinvestment" : false,
+    "generatedAccount" : true,
+    "hidden" : false,
+    "placeholder" : false
+  }
+}, {
+  "date" : "2010-01-01",
+  "accountId" : "Income:Investment:HSBC:VCSH",
+  "ccy" : "USD",
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : false,
+    "automaticReinvestment" : false,
+    "generatedAccount" : true,
+    "hidden" : false,
+    "placeholder" : false
+  }
+}, {
+  "date" : "-999999999-01-01",
+  "accountId" : "Income:Investment",
+  "ccy" : "USD",
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : false,
+    "automaticReinvestment" : false,
+    "generatedAccount" : true,
+    "hidden" : false,
+    "placeholder" : false
+  }
+}, {
+  "date" : "2010-01-01",
+  "accountId" : "Income:Investment:HSBC",
+  "ccy" : "USD",
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : true,
+    "automaticReinvestment" : false,
+    "generatedAccount" : true,
+    "hidden" : false,
+    "placeholder" : false
+  }
+}, {
+  "date" : "2010-01-01",
+  "accountId" : "Assets:Investment:HSBC",
+  "ccy" : "USD",
+  "options" : {
+    "expenseAccount" : "Expenses:Investment:HSBC:USD",
+    "tradingAccount" : false,
+    "incomeAccount" : "Income:Investment:HSBC:USD",
+    "fundingAccount" : "Assets:Bank:HSBCHK",
+    "description" : "",
+    "multiAsset" : true,
+    "automaticReinvestment" : false,
+    "generatedAccount" : false,
+    "hidden" : false,
+    "placeholder" : false
+  }
+}, {
+  "date" : "-999999999-01-01",
+  "accountId" : "Expenses",
+  "ccy" : "USD",
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : false,
+    "automaticReinvestment" : false,
+    "generatedAccount" : true,
+    "hidden" : false,
+    "placeholder" : false
+  }
+}, {
+  "date" : "2010-01-01",
+  "accountId" : "Assets:Bank:HSBCHK",
+  "ccy" : "HKD",
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : false,
+    "automaticReinvestment" : false,
+    "generatedAccount" : false,
+    "hidden" : false,
+    "placeholder" : false
+  }
+}, {
+  "date" : "2010-01-01",
+  "accountId" : "Assets:Bank:HSBCCN",
+  "ccy" : "CNY",
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : false,
+    "automaticReinvestment" : false,
+    "generatedAccount" : false,
+    "hidden" : false,
+    "placeholder" : false
+  }
+}, {
+  "date" : "-999999999-01-01",
+  "accountId" : "",
+  "ccy" : "USD",
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : false,
+    "automaticReinvestment" : false,
+    "generatedAccount" : true,
+    "hidden" : false,
+    "placeholder" : true
+  }
+}, {
+  "date" : "-999999999-01-01",
+  "accountId" : "Equity:Opening",
+  "ccy" : "USD",
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : false,
+    "automaticReinvestment" : false,
+    "generatedAccount" : true,
+    "hidden" : false,
+    "placeholder" : false
+  }
+}, {
+  "date" : "-999999999-01-01",
+  "accountId" : "Expenses:Investment",
+  "ccy" : "USD",
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : false,
+    "automaticReinvestment" : false,
+    "generatedAccount" : true,
+    "hidden" : false,
+    "placeholder" : false
+  }
+}, {
+  "date" : "-999999999-01-01",
+  "accountId" : "Assets:Bank",
+  "ccy" : "USD",
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : false,
+    "automaticReinvestment" : false,
+    "generatedAccount" : true,
+    "hidden" : false,
+    "placeholder" : false
+  }
+}, {
+  "date" : "2010-01-01",
+  "accountId" : "Expenses:Investment:HSBC",
+  "ccy" : "USD",
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : true,
+    "automaticReinvestment" : false,
+    "generatedAccount" : true,
+    "hidden" : false,
+    "placeholder" : false
+  }
+}, {
+  "date" : "-999999999-01-01",
+  "accountId" : "Equity",
+  "ccy" : "USD",
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : false,
+    "automaticReinvestment" : false,
+    "generatedAccount" : true,
+    "hidden" : false,
+    "placeholder" : false
+  }
+}, {
+  "date" : "-999999999-01-01",
+  "accountId" : "Income",
+  "ccy" : "USD",
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : false,
+    "automaticReinvestment" : false,
+    "generatedAccount" : true,
+    "hidden" : false,
+    "placeholder" : false
+  }
+} ]

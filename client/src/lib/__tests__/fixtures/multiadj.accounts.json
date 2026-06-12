@@ -1,0 +1,186 @@
+[ {
+  "date" : "1960-01-01",
+  "accountId" : "Income:Bank:CAD",
+  "ccy" : "CAD",
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : false,
+    "automaticReinvestment" : false,
+    "generatedAccount" : true,
+    "hidden" : false,
+    "placeholder" : false
+  }
+}, {
+  "date" : "-999999999-01-01",
+  "accountId" : "Assets",
+  "ccy" : "USD",
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : false,
+    "automaticReinvestment" : false,
+    "generatedAccount" : true,
+    "hidden" : false,
+    "placeholder" : false
+  }
+}, {
+  "date" : "1960-01-01",
+  "accountId" : "Assets:Bank:CAD",
+  "ccy" : "CAD",
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : false,
+    "automaticReinvestment" : false,
+    "generatedAccount" : true,
+    "hidden" : false,
+    "placeholder" : false
+  }
+}, {
+  "date" : "1960-01-01",
+  "accountId" : "Assets:Bank:XIU",
+  "ccy" : "XIU",
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : false,
+    "automaticReinvestment" : false,
+    "generatedAccount" : true,
+    "hidden" : false,
+    "placeholder" : false
+  }
+}, {
+  "date" : "1960-01-01",
+  "accountId" : "Equity:Opening",
+  "ccy" : "USD",
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : true,
+    "automaticReinvestment" : false,
+    "generatedAccount" : false,
+    "hidden" : false,
+    "placeholder" : false
+  }
+}, {
+  "date" : "1960-01-01",
+  "accountId" : "Expenses:Bank",
+  "ccy" : "USD",
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : true,
+    "automaticReinvestment" : false,
+    "generatedAccount" : true,
+    "hidden" : false,
+    "placeholder" : false
+  }
+}, {
+  "date" : "1960-01-01",
+  "accountId" : "Assets:Bank",
+  "ccy" : "USD",
+  "options" : {
+    "expenseAccount" : "Expenses:Bank:CAD",
+    "tradingAccount" : false,
+    "incomeAccount" : "Income:Bank:CAD",
+    "fundingAccount" : "Equity:Opening",
+    "description" : "",
+    "multiAsset" : true,
+    "automaticReinvestment" : false,
+    "generatedAccount" : false,
+    "hidden" : false,
+    "placeholder" : false
+  }
+}, {
+  "date" : "1960-01-01",
+  "accountId" : "Equity:Opening:CAD",
+  "ccy" : "CAD",
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : false,
+    "automaticReinvestment" : false,
+    "generatedAccount" : true,
+    "hidden" : false,
+    "placeholder" : false
+  }
+}, {
+  "date" : "1960-01-01",
+  "accountId" : "Expenses:Bank:USD",
+  "ccy" : "USD",
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : false,
+    "automaticReinvestment" : false,
+    "generatedAccount" : true,
+    "hidden" : false,
+    "placeholder" : false
+  }
+}, {
+  "date" : "-999999999-01-01",
+  "accountId" : "Expenses",
+  "ccy" : "USD",
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : false,
+    "automaticReinvestment" : false,
+    "generatedAccount" : true,
+    "hidden" : false,
+    "placeholder" : false
+  }
+}, {
+  "date" : "-999999999-01-01",
+  "accountId" : "",
+  "ccy" : "USD",
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : false,
+    "automaticReinvestment" : false,
+    "generatedAccount" : true,
+    "hidden" : false,
+    "placeholder" : true
+  }
+}, {
+  "date" : "-999999999-01-01",
+  "accountId" : "Equity",
+  "ccy" : "USD",
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : false,
+    "automaticReinvestment" : false,
+    "generatedAccount" : true,
+    "hidden" : false,
+    "placeholder" : false
+  }
+}, {
+  "date" : "1960-01-01",
+  "accountId" : "Income:Bank",
+  "ccy" : "USD",
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : true,
+    "automaticReinvestment" : false,
+    "generatedAccount" : true,
+    "hidden" : false,
+    "placeholder" : false
+  }
+}, {
+  "date" : "-999999999-01-01",
+  "accountId" : "Income",
+  "ccy" : "USD",
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : false,
+    "automaticReinvestment" : false,
+    "generatedAccount" : true,
+    "hidden" : false,
+    "placeholder" : false
+  }
+} ]

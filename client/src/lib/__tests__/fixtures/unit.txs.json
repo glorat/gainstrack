@@ -1,0 +1,315 @@
+[ {
+  "originIndex" : 6,
+  "postDate" : "2004-10-14",
+  "postings" : [ {
+    "account" : "Equity:Opening:GBP",
+    "value" : {
+      "number" : -500,
+      "ccy" : "GBP"
+    }
+  }, {
+    "account" : "Assets:Pension:Barclays:GBP",
+    "value" : {
+      "number" : 500,
+      "ccy" : "GBP"
+    }
+  } ]
+}, {
+  "originIndex" : 6,
+  "postDate" : "2004-10-14",
+  "postings" : [ {
+    "account" : "Assets:Pension:Barclays:GBP",
+    "value" : {
+      "number" : -500,
+      "ccy" : "GBP"
+    }
+  }, {
+    "account" : "Income:Pension:Barclays:GBP",
+    "value" : {
+      "number" : 500,
+      "ccy" : "GBP"
+    }
+  } ]
+}, {
+  "originIndex" : 7,
+  "postDate" : "2004-10-14",
+  "postings" : [ {
+    "account" : "Equity:Opening:GBP",
+    "value" : {
+      "number" : -500,
+      "ccy" : "GBP"
+    }
+  }, {
+    "account" : "Assets:Pension:Barclays:GBP",
+    "value" : {
+      "number" : 500,
+      "ccy" : "GBP"
+    }
+  } ]
+}, {
+  "originIndex" : 7,
+  "postDate" : "2004-10-14",
+  "postings" : [ {
+    "account" : "Assets:Pension:Barclays:GBP",
+    "value" : {
+      "number" : -500,
+      "ccy" : "GBP"
+    }
+  }, {
+    "account" : "Income:Pension:Barclays:GBP",
+    "value" : {
+      "number" : 500,
+      "ccy" : "GBP"
+    }
+  } ]
+}, {
+  "originIndex" : 8,
+  "postDate" : "2004-10-14",
+  "postings" : [ {
+    "account" : "Assets:Bank:England",
+    "value" : {
+      "number" : -7000,
+      "ccy" : "GBP"
+    }
+  }, {
+    "account" : "Assets:ISA:London",
+    "value" : {
+      "number" : 7000,
+      "ccy" : "GBP"
+    }
+  } ]
+}, {
+  "originIndex" : 9,
+  "postDate" : "2004-10-15",
+  "postings" : [ {
+    "account" : "Income:Pension:Barclays:GBP",
+    "value" : {
+      "number" : -1000,
+      "ccy" : "GBP"
+    }
+  }, {
+    "account" : "Assets:Pension:Barclays:BGIL",
+    "value" : {
+      "number" : 500,
+      "ccy" : "BGIL"
+    },
+    "price" : {
+      "number" : 2,
+      "ccy" : "GBP"
+    }
+  } ]
+}, {
+  "originIndex" : 11,
+  "postDate" : "2005-07-26",
+  "postings" : [ {
+    "account" : "Income:Salary:GBP",
+    "value" : {
+      "number" : -25000.00,
+      "ccy" : "GBP"
+    }
+  }, {
+    "account" : "Assets:Bank:England",
+    "value" : {
+      "number" : 25000.00,
+      "ccy" : "GBP"
+    }
+  } ]
+}, {
+  "originIndex" : 12,
+  "postDate" : "2005-07-26",
+  "postings" : [ {
+    "account" : "Income:Salary:GBP",
+    "value" : {
+      "number" : -25000.00,
+      "ccy" : "GBP"
+    }
+  }, {
+    "account" : "Assets:Bank:England",
+    "value" : {
+      "number" : 25000.00,
+      "ccy" : "GBP"
+    }
+  } ]
+}, {
+  "originIndex" : 13,
+  "postDate" : "2005-08-01",
+  "postings" : [ {
+    "account" : "Income:Bank:England",
+    "value" : {
+      "number" : -10,
+      "ccy" : "GBP"
+    }
+  }, {
+    "account" : "Assets:Bank:England",
+    "value" : {
+      "number" : 10,
+      "ccy" : "GBP"
+    }
+  } ]
+}, {
+  "originIndex" : 14,
+  "postDate" : "2005-10-13",
+  "postings" : [ {
+    "account" : "Income:ISA:London",
+    "value" : {
+      "number" : -1000,
+      "ccy" : "GBP"
+    }
+  }, {
+    "account" : "Assets:ISA:London",
+    "value" : {
+      "number" : 1000,
+      "ccy" : "GBP"
+    }
+  } ]
+}, {
+  "originIndex" : 15,
+  "postDate" : "2005-10-15",
+  "postings" : [ {
+    "account" : "Income:ISA:London",
+    "value" : {
+      "number" : -15,
+      "ccy" : "GBP"
+    }
+  }, {
+    "account" : "Assets:Bank:England",
+    "value" : {
+      "number" : 15,
+      "ccy" : "GBP"
+    }
+  } ]
+}, {
+  "originIndex" : 16,
+  "postDate" : "2006-11-01",
+  "postings" : [ {
+    "account" : "Assets:Bank:England",
+    "value" : {
+      "number" : -1000,
+      "ccy" : "GBP"
+    }
+  }, {
+    "account" : "Assets:Investment:Stocks:GBP",
+    "value" : {
+      "number" : 1000,
+      "ccy" : "GBP"
+    }
+  } ]
+}, {
+  "originIndex" : 17,
+  "postDate" : "2006-11-02",
+  "postings" : [ {
+    "account" : "Assets:Investment:Stocks:GBP",
+    "value" : {
+      "number" : -500,
+      "ccy" : "GBP"
+    }
+  }, {
+    "account" : "Assets:Investment:Stocks:FTSE",
+    "value" : {
+      "number" : 50,
+      "ccy" : "FTSE"
+    },
+    "price" : {
+      "number" : 10,
+      "ccy" : "GBP"
+    }
+  } ]
+}, {
+  "originIndex" : 18,
+  "postDate" : "2006-11-02",
+  "postings" : [ {
+    "account" : "Assets:Investment:Stocks:GBP",
+    "value" : {
+      "number" : -500.20,
+      "ccy" : "GBP"
+    }
+  }, {
+    "account" : "Assets:Investment:Stocks:VWRL",
+    "value" : {
+      "number" : 50,
+      "ccy" : "VWRL"
+    },
+    "price" : {
+      "number" : 10,
+      "ccy" : "GBP"
+    }
+  }, {
+    "account" : "Expenses:Investment:Stocks:GBP",
+    "value" : {
+      "number" : 0.20,
+      "ccy" : "GBP"
+    }
+  } ]
+}, {
+  "originIndex" : 19,
+  "postDate" : "2006-11-15",
+  "postings" : [ {
+    "account" : "Income:Investment:Stocks:FTSE",
+    "value" : {
+      "number" : -10,
+      "ccy" : "GBP"
+    }
+  }, {
+    "account" : "Assets:Investment:Stocks:GBP",
+    "value" : {
+      "number" : 10,
+      "ccy" : "GBP"
+    }
+  } ]
+}, {
+  "originIndex" : 20,
+  "postDate" : "2006-11-15",
+  "postings" : [ {
+    "account" : "Income:Investment:Stocks:VWRL",
+    "value" : {
+      "number" : -10,
+      "ccy" : "USD"
+    }
+  }, {
+    "account" : "Assets:Investment:Stocks:USD",
+    "value" : {
+      "number" : 10,
+      "ccy" : "USD"
+    }
+  } ]
+}, {
+  "originIndex" : 21,
+  "postDate" : "2006-11-15",
+  "postings" : [ {
+    "account" : "Assets:Investment:Stocks:USD",
+    "value" : {
+      "number" : -10,
+      "ccy" : "USD"
+    }
+  }, {
+    "account" : "Assets:Investment:Stocks:GBP",
+    "value" : {
+      "number" : 9,
+      "ccy" : "GBP"
+    },
+    "price" : {
+      "number" : 1.111111111111111111111111111111111,
+      "ccy" : "USD"
+    }
+  } ]
+}, {
+  "originIndex" : 22,
+  "postDate" : "2019-04-18",
+  "postings" : [ {
+    "account" : "Income:Pension:Barclays:GBP",
+    "value" : {
+      "number" : -500,
+      "ccy" : "GBP"
+    }
+  }, {
+    "account" : "Assets:Pension:Barclays:BGIL",
+    "value" : {
+      "number" : 100,
+      "ccy" : "BGIL"
+    },
+    "price" : {
+      "number" : 5,
+      "ccy" : "GBP"
+    }
+  } ]
+} ]

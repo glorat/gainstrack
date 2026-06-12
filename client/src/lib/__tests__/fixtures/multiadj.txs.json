@@ -1,0 +1,125 @@
+[ {
+  "originIndex" : 4,
+  "postDate" : "2017-10-30",
+  "postings" : [ {
+    "account" : "Equity:Opening:CAD",
+    "value" : {
+      "number" : -1500,
+      "ccy" : "CAD"
+    }
+  }, {
+    "account" : "Assets:Bank:CAD",
+    "value" : {
+      "number" : 1500,
+      "ccy" : "CAD"
+    }
+  } ]
+}, {
+  "originIndex" : 7,
+  "postDate" : "2019-10-30",
+  "postings" : [ {
+    "account" : "Equity:Opening:CAD",
+    "value" : {
+      "number" : -8500,
+      "ccy" : "CAD"
+    }
+  }, {
+    "account" : "Assets:Bank:CAD",
+    "value" : {
+      "number" : 8500,
+      "ccy" : "CAD"
+    }
+  } ]
+}, {
+  "originIndex" : 8,
+  "postDate" : "2019-11-11",
+  "postings" : [ {
+    "account" : "Assets:Bank:CAD",
+    "value" : {
+      "number" : -10000.00,
+      "ccy" : "CAD"
+    }
+  }, {
+    "account" : "Assets:Bank:XIU",
+    "value" : {
+      "number" : 1000.0,
+      "ccy" : "XIU"
+    },
+    "price" : {
+      "number" : 10.0,
+      "ccy" : "CAD"
+    }
+  } ]
+}, {
+  "originIndex" : 9,
+  "postDate" : "2019-11-30",
+  "postings" : [ {
+    "account" : "Equity:Opening:CAD",
+    "value" : {
+      "number" : -1001.00,
+      "ccy" : "CAD"
+    }
+  }, {
+    "account" : "Assets:Bank:CAD",
+    "value" : {
+      "number" : 1001.00,
+      "ccy" : "CAD"
+    }
+  } ]
+}, {
+  "originIndex" : 10,
+  "postDate" : "2019-12-01",
+  "postings" : [ {
+    "account" : "Assets:Bank:CAD",
+    "value" : {
+      "number" : -1000.00,
+      "ccy" : "CAD"
+    }
+  }, {
+    "account" : "Assets:Bank:XIU",
+    "value" : {
+      "number" : 100.0,
+      "ccy" : "XIU"
+    },
+    "price" : {
+      "number" : 10.0,
+      "ccy" : "CAD"
+    }
+  } ]
+}, {
+  "originIndex" : 11,
+  "postDate" : "2019-12-05",
+  "postings" : [ {
+    "account" : "Assets:Bank:CAD",
+    "value" : {
+      "number" : -1000.00,
+      "ccy" : "CAD"
+    }
+  }, {
+    "account" : "Assets:Bank:XIU",
+    "value" : {
+      "number" : 100.0,
+      "ccy" : "XIU"
+    },
+    "price" : {
+      "number" : 10.0,
+      "ccy" : "CAD"
+    }
+  } ]
+}, {
+  "originIndex" : 12,
+  "postDate" : "2019-12-05",
+  "postings" : [ {
+    "account" : "Equity:Opening:CAD",
+    "value" : {
+      "number" : -1000.00,
+      "ccy" : "CAD"
+    }
+  }, {
+    "account" : "Assets:Bank:CAD",
+    "value" : {
+      "number" : 1000.00,
+      "ccy" : "CAD"
+    }
+  } ]
+} ]

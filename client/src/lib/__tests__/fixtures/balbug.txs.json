@@ -1,0 +1,273 @@
+[ {
+  "originIndex" : 8,
+  "postDate" : "2010-04-08",
+  "postings" : [ {
+    "account" : "Equity:Opening:GBP",
+    "value" : {
+      "number" : -14854.91,
+      "ccy" : "GBP"
+    }
+  }, {
+    "account" : "Assets:Bank:Barclays",
+    "value" : {
+      "number" : 14854.91,
+      "ccy" : "GBP"
+    }
+  } ]
+}, {
+  "originIndex" : 9,
+  "postDate" : "2010-05-17",
+  "postings" : [ {
+    "account" : "Equity:Opening:GBP",
+    "value" : {
+      "number" : -54342.0,
+      "ccy" : "GBP"
+    }
+  }, {
+    "account" : "Assets:Bank:HSBCUK",
+    "value" : {
+      "number" : 54342.0,
+      "ccy" : "GBP"
+    }
+  } ]
+}, {
+  "originIndex" : 10,
+  "postDate" : "2010-12-30",
+  "postings" : [ {
+    "account" : "Income:Salary",
+    "value" : {
+      "number" : -120000.0,
+      "ccy" : "CNY"
+    }
+  }, {
+    "account" : "Assets:Bank:HSBCCN",
+    "value" : {
+      "number" : 120000.0,
+      "ccy" : "CNY"
+    }
+  } ]
+}, {
+  "originIndex" : 13,
+  "postDate" : "2017-01-05",
+  "postings" : [ {
+    "account" : "Expenses:General:HKD",
+    "value" : {
+      "number" : -234835.3,
+      "ccy" : "HKD"
+    }
+  }, {
+    "account" : "Assets:Bank:HSBCHK:HKD",
+    "value" : {
+      "number" : 234835.3,
+      "ccy" : "HKD"
+    }
+  } ]
+}, {
+  "originIndex" : 16,
+  "postDate" : "2018-06-08",
+  "postings" : [ {
+    "account" : "Expenses:General:CNY",
+    "value" : {
+      "number" : -338728.28,
+      "ccy" : "CNY"
+    }
+  }, {
+    "account" : "Assets:Bank:HSBCCN",
+    "value" : {
+      "number" : 338728.28,
+      "ccy" : "CNY"
+    }
+  } ]
+}, {
+  "originIndex" : 20,
+  "postDate" : "2019-04-17",
+  "postings" : [ {
+    "account" : "Assets:Bank:HSBCCN",
+    "value" : {
+      "number" : -152520.0,
+      "ccy" : "CNY"
+    }
+  }, {
+    "account" : "Expenses:Chloe:CNY",
+    "value" : {
+      "number" : 152520.0,
+      "ccy" : "CNY"
+    }
+  } ]
+}, {
+  "originIndex" : 26,
+  "postDate" : "2020-03-23",
+  "postings" : [ {
+    "account" : "Assets:Bank:HSBCCN",
+    "value" : {
+      "number" : -10000.0,
+      "ccy" : "CNY"
+    }
+  }, {
+    "account" : "Expenses:Chloe:CNY",
+    "value" : {
+      "number" : 10000.0,
+      "ccy" : "CNY"
+    }
+  } ]
+}, {
+  "originIndex" : 27,
+  "postDate" : "2020-06-19",
+  "postings" : [ {
+    "account" : "Assets:Bank:HSBCCN",
+    "value" : {
+      "number" : -12073.7,
+      "ccy" : "CNY"
+    }
+  }, {
+    "account" : "Expenses:Chloe:CNY",
+    "value" : {
+      "number" : 12073.7,
+      "ccy" : "CNY"
+    }
+  } ]
+}, {
+  "originIndex" : 28,
+  "postDate" : "2020-08-27",
+  "postings" : [ {
+    "account" : "Assets:Bank:HSBCCN",
+    "value" : {
+      "number" : -57800.0,
+      "ccy" : "CNY"
+    }
+  }, {
+    "account" : "Expenses:Aiden:CNY",
+    "value" : {
+      "number" : 57800.0,
+      "ccy" : "CNY"
+    }
+  } ]
+}, {
+  "originIndex" : 29,
+  "postDate" : "2020-10-26",
+  "postings" : [ {
+    "account" : "Assets:Bank:HSBCCN",
+    "value" : {
+      "number" : -53800.0,
+      "ccy" : "CNY"
+    }
+  }, {
+    "account" : "Expenses:Aiden:CNY",
+    "value" : {
+      "number" : 53800.0,
+      "ccy" : "CNY"
+    }
+  } ]
+}, {
+  "originIndex" : 30,
+  "postDate" : "2020-10-26",
+  "postings" : [ {
+    "account" : "Assets:Bank:HSBCCN",
+    "value" : {
+      "number" : -57000.0,
+      "ccy" : "CNY"
+    }
+  }, {
+    "account" : "Expenses:Chloe:CNY",
+    "value" : {
+      "number" : 57000.0,
+      "ccy" : "CNY"
+    }
+  } ]
+}, {
+  "originIndex" : 32,
+  "postDate" : "2021-03-07",
+  "postings" : [ {
+    "account" : "Assets:Bank:SC:CNY",
+    "value" : {
+      "number" : -53650.0,
+      "ccy" : "CNY"
+    }
+  }, {
+    "account" : "Expenses:Aiden:CNY",
+    "value" : {
+      "number" : 53650.0,
+      "ccy" : "CNY"
+    }
+  } ]
+}, {
+  "originIndex" : 33,
+  "postDate" : "2021-03-07",
+  "postings" : [ {
+    "account" : "Assets:Bank:SC:CNY",
+    "value" : {
+      "number" : -56850.0,
+      "ccy" : "CNY"
+    }
+  }, {
+    "account" : "Expenses:Chloe:CNY",
+    "value" : {
+      "number" : 56850.0,
+      "ccy" : "CNY"
+    }
+  } ]
+}, {
+  "originIndex" : 35,
+  "postDate" : "2021-07-10",
+  "postings" : [ {
+    "account" : "Expenses:General:CNY",
+    "value" : {
+      "number" : -241898.0,
+      "ccy" : "CNY"
+    }
+  }, {
+    "account" : "Assets:Bank:SC:CNY",
+    "value" : {
+      "number" : 241898.0,
+      "ccy" : "CNY"
+    }
+  } ]
+}, {
+  "originIndex" : 36,
+  "postDate" : "2021-07-22",
+  "postings" : [ {
+    "account" : "Income:Salary",
+    "value" : {
+      "number" : -53838.56,
+      "ccy" : "CNY"
+    }
+  }, {
+    "account" : "Assets:Bank:SC:CNY",
+    "value" : {
+      "number" : 53838.56,
+      "ccy" : "CNY"
+    }
+  } ]
+}, {
+  "originIndex" : 37,
+  "postDate" : "2021-08-04",
+  "postings" : [ {
+    "account" : "Expenses:General:SGD",
+    "value" : {
+      "number" : -29184.67,
+      "ccy" : "SGD"
+    }
+  }, {
+    "account" : "Assets:Bank:SCSG:SGD",
+    "value" : {
+      "number" : 29184.67,
+      "ccy" : "SGD"
+    }
+  } ]
+}, {
+  "originIndex" : 38,
+  "postDate" : "2021-08-10",
+  "postings" : [ {
+    "account" : "Expenses:General:CNY",
+    "value" : {
+      "number" : 27151.01,
+      "ccy" : "CNY"
+    }
+  }, {
+    "account" : "Assets:Bank:SC:CNY",
+    "value" : {
+      "number" : -27151.01,
+      "ccy" : "CNY"
+    }
+  } ]
+} ]

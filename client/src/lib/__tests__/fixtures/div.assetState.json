@@ -1,0 +1,67 @@
+[ {
+  "accountId" : "",
+  "date" : "1900-01-01",
+  "asset" : "USD",
+  "options" : {
+    "name" : "",
+    "ticker" : "",
+    "tags" : [ ]
+  },
+  "commandType" : "commodity",
+  "description" : "USD"
+}, {
+  "accountId" : "",
+  "date" : "1900-01-01",
+  "asset" : "CNY",
+  "options" : {
+    "name" : "",
+    "ticker" : "",
+    "tags" : [ ]
+  },
+  "commandType" : "commodity",
+  "description" : "CNY"
+}, {
+  "accountId" : "",
+  "date" : "1900-01-01",
+  "asset" : "VTI",
+  "options" : {
+    "name" : "",
+    "ticker" : "",
+    "tags" : [ ]
+  },
+  "commandType" : "commodity",
+  "description" : "VTI"
+}, {
+  "accountId" : "",
+  "date" : "1900-01-01",
+  "asset" : "BRK-B",
+  "options" : {
+    "name" : "",
+    "ticker" : "",
+    "tags" : [ ]
+  },
+  "commandType" : "commodity",
+  "description" : "BRK-B"
+}, {
+  "accountId" : "",
+  "date" : "1900-01-01",
+  "asset" : "VCSH",
+  "options" : {
+    "name" : "",
+    "ticker" : "",
+    "tags" : [ ]
+  },
+  "commandType" : "commodity",
+  "description" : "VCSH"
+}, {
+  "accountId" : "",
+  "date" : "1900-01-01",
+  "asset" : "HKD",
+  "options" : {
+    "name" : "",
+    "ticker" : "",
+    "tags" : [ ]
+  },
+  "commandType" : "commodity",
+  "description" : "HKD"
+} ]

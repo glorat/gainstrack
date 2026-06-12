@@ -22,3 +22,13 @@ data/
 db/
 gainstrack*.json
 .venv/
+
+# Scala build tools (Bloop / Metals / BSP) — machine-local
+.bloop/
+.bsp/
+.metals/
+metals.sbt
+project/project/
+
+# VS Code (root)
+.vscode/

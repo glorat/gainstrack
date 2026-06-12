@@ -1,0 +1,212 @@
+[ {
+  "accountId" : "",
+  "date" : "-999999999-01-01",
+  "options" : {
+    "operatingCurrency" : "GBP",
+    "comments" : [ ]
+  },
+  "commandType" : "",
+  "description" : "global configuration"
+}, {
+  "accountId" : "Equity:Opening",
+  "date" : "2019-01-01",
+  "balance" : {
+    "number" : 0,
+    "ccy" : "GBP"
+  },
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : true,
+    "automaticReinvestment" : false,
+    "generatedAccount" : false,
+    "hidden" : false,
+    "placeholder" : false
+  },
+  "commandType" : "open",
+  "description" : "Account opened"
+}, {
+  "accountId" : "Assets:Bank:HSBCGBP",
+  "date" : "2019-01-01",
+  "balance" : {
+    "number" : 0,
+    "ccy" : "GBP"
+  },
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : false,
+    "automaticReinvestment" : false,
+    "generatedAccount" : false,
+    "hidden" : false,
+    "placeholder" : false
+  },
+  "commandType" : "open",
+  "description" : "Account opened"
+}, {
+  "accountId" : "Assets:Bank:HSBCUSD",
+  "date" : "2019-01-01",
+  "balance" : {
+    "number" : 0,
+    "ccy" : "USD"
+  },
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : false,
+    "automaticReinvestment" : false,
+    "generatedAccount" : false,
+    "hidden" : false,
+    "placeholder" : false
+  },
+  "commandType" : "open",
+  "description" : "Account opened"
+}, {
+  "accountId" : "Assets:Equities:GBPStock",
+  "date" : "2019-01-01",
+  "balance" : {
+    "number" : 0,
+    "ccy" : "GBP"
+  },
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : false,
+    "automaticReinvestment" : false,
+    "generatedAccount" : false,
+    "hidden" : false,
+    "placeholder" : false
+  },
+  "commandType" : "open",
+  "description" : "Account opened"
+}, {
+  "accountId" : "Assets:Equities:USDStock",
+  "date" : "2019-01-01",
+  "balance" : {
+    "number" : 0,
+    "ccy" : "USD"
+  },
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : false,
+    "automaticReinvestment" : false,
+    "generatedAccount" : false,
+    "hidden" : false,
+    "placeholder" : false
+  },
+  "commandType" : "open",
+  "description" : "Account opened"
+}, {
+  "accountId" : "Expenses:Testaccount1:GBP",
+  "date" : "2019-01-01",
+  "balance" : {
+    "number" : 0,
+    "ccy" : "GBP"
+  },
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : true,
+    "automaticReinvestment" : false,
+    "generatedAccount" : false,
+    "hidden" : false,
+    "placeholder" : false
+  },
+  "commandType" : "open",
+  "description" : "Account opened"
+}, {
+  "accountId" : "Expenses:Testaccount1:Testaccount1detail:GBP",
+  "date" : "2019-01-01",
+  "balance" : {
+    "number" : 0,
+    "ccy" : "GBP"
+  },
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : true,
+    "automaticReinvestment" : false,
+    "generatedAccount" : false,
+    "hidden" : false,
+    "placeholder" : false
+  },
+  "commandType" : "open",
+  "description" : "Account opened"
+}, {
+  "accountId" : "Equity:Opening",
+  "date" : "2019-01-01",
+  "change" : {
+    "number" : 50000.0,
+    "ccy" : "GBP"
+  },
+  "price" : {
+    "number" : 1,
+    "ccy" : "GBP"
+  },
+  "otherAccount" : "Assets:Bank:HSBCGBP",
+  "commandType" : "tfr",
+  "description" : "Transfer 50000.0 GBP Equity:Opening -> Assets:Bank:HSBCGBP"
+}, {
+  "accountId" : "Equity:Opening",
+  "date" : "2019-01-01",
+  "change" : {
+    "number" : 100000.0,
+    "ccy" : "USD"
+  },
+  "price" : {
+    "number" : 1,
+    "ccy" : "USD"
+  },
+  "otherAccount" : "Assets:Bank:HSBCUSD",
+  "commandType" : "tfr",
+  "description" : "Transfer 100000.0 USD Equity:Opening -> Assets:Bank:HSBCUSD"
+}, {
+  "accountId" : "Equity:Opening",
+  "date" : "2019-01-01",
+  "change" : {
+    "number" : 10000,
+    "ccy" : "GBP"
+  },
+  "price" : {
+    "number" : 1,
+    "ccy" : "GBP"
+  },
+  "otherAccount" : "Assets:Equities:GBPStock",
+  "commandType" : "tfr",
+  "description" : "Transfer 10000 GBP Equity:Opening -> Assets:Equities:GBPStock"
+}, {
+  "accountId" : "Equity:Opening",
+  "date" : "2019-01-01",
+  "change" : {
+    "number" : 25000,
+    "ccy" : "USD"
+  },
+  "price" : {
+    "number" : 1,
+    "ccy" : "USD"
+  },
+  "otherAccount" : "Assets:Equities:USDStock",
+  "commandType" : "tfr",
+  "description" : "Transfer 25000 USD Equity:Opening -> Assets:Equities:USDStock"
+}, {
+  "accountId" : "",
+  "date" : "2019-01-01",
+  "asset" : "USD",
+  "price" : {
+    "number" : 0.5,
+    "ccy" : "GBP"
+  },
+  "commandType" : "price",
+  "description" : "GBP/USD = 0.5 GBP"
+}, {
+  "accountId" : "",
+  "date" : "2019-11-30",
+  "asset" : "USD",
+  "price" : {
+    "number" : 1,
+    "ccy" : "GBP"
+  },
+  "commandType" : "price",
+  "description" : "GBP/USD = 1 GBP"
+} ]

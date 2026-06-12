@@ -1,0 +1,53 @@
+[ {
+  "originIndex" : 2,
+  "postDate" : "2018-10-31",
+  "postings" : [ {
+    "account" : "Assets:SCBSG:GBP",
+    "value" : {
+      "number" : -38739.6000,
+      "ccy" : "GBP"
+    }
+  }, {
+    "account" : "Assets:SCBSG:SCGBP",
+    "value" : {
+      "number" : 5275.0,
+      "ccy" : "SCGBP"
+    },
+    "price" : {
+      "number" : 7.344,
+      "ccy" : "GBP"
+    }
+  } ]
+}, {
+  "originIndex" : 3,
+  "postDate" : "2019-10-30",
+  "postings" : [ {
+    "account" : "Income:Opening:GBP",
+    "value" : {
+      "number" : -73392.5300,
+      "ccy" : "GBP"
+    }
+  }, {
+    "account" : "Assets:SCBSG:GBP",
+    "value" : {
+      "number" : 73392.5300,
+      "ccy" : "GBP"
+    }
+  } ]
+}, {
+  "originIndex" : 4,
+  "postDate" : "2019-10-30",
+  "postings" : [ {
+    "account" : "Income:Opening:USD",
+    "value" : {
+      "number" : -66991.65,
+      "ccy" : "USD"
+    }
+  }, {
+    "account" : "Assets:SCBSG:USD",
+    "value" : {
+      "number" : 66991.65,
+      "ccy" : "USD"
+    }
+  } ]
+} ]

@@ -1,0 +1,89 @@
+[ {
+  "accountId" : "",
+  "date" : "1900-01-01",
+  "asset" : "SGD",
+  "options" : {
+    "name" : "",
+    "ticker" : "",
+    "tags" : [ ]
+  },
+  "commandType" : "commodity",
+  "description" : "SGD"
+}, {
+  "accountId" : "",
+  "date" : "1900-01-01",
+  "asset" : "GBP",
+  "options" : {
+    "name" : "",
+    "ticker" : "",
+    "tags" : [ ]
+  },
+  "commandType" : "commodity",
+  "description" : "GBP"
+}, {
+  "accountId" : "",
+  "date" : "1900-01-01",
+  "asset" : "PP",
+  "options" : {
+    "name" : "",
+    "ticker" : "",
+    "tags" : [ ]
+  },
+  "commandType" : "commodity",
+  "description" : "PP"
+}, {
+  "accountId" : "",
+  "date" : "1900-01-01",
+  "asset" : "CNY",
+  "options" : {
+    "name" : "",
+    "ticker" : "",
+    "tags" : [ ]
+  },
+  "commandType" : "commodity",
+  "description" : "CNY"
+}, {
+  "accountId" : "",
+  "date" : "1900-01-01",
+  "asset" : "AMER",
+  "options" : {
+    "name" : "",
+    "ticker" : "",
+    "tags" : [ ]
+  },
+  "commandType" : "commodity",
+  "description" : "AMER"
+}, {
+  "accountId" : "",
+  "date" : "1900-01-01",
+  "asset" : "HKD",
+  "options" : {
+    "name" : "",
+    "ticker" : "",
+    "tags" : [ ]
+  },
+  "commandType" : "commodity",
+  "description" : "HKD"
+}, {
+  "accountId" : "",
+  "date" : "1900-01-01",
+  "asset" : "GOLD",
+  "options" : {
+    "name" : "",
+    "ticker" : "",
+    "tags" : [ ]
+  },
+  "commandType" : "commodity",
+  "description" : "GOLD"
+}, {
+  "accountId" : "",
+  "date" : "1900-01-01",
+  "asset" : "XAU",
+  "options" : {
+    "name" : "",
+    "ticker" : "",
+    "tags" : [ ]
+  },
+  "commandType" : "commodity",
+  "description" : "XAU"
+} ]

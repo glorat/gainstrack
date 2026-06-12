@@ -51,6 +51,21 @@
             editorSave() {
                 this.$store.commit('gainstrackText', this.info.source);
                 const notify = this.$notify;
+
+                // Not logged in: compute AllState locally (TS generator), no backend round-trip.
+                if (!this.$store.getters.isAuthenticated) {
+                    this.$store.dispatch('loadLocalText', this.info.source).then(res => {
+                        if (res.ok) {
+                            this.$store.dispatch('parseState', { errors: [] });
+                            notify.success('Computed locally');
+                        } else {
+                            this.$store.dispatch('parseState', { errors: res.errors });
+                            notify.warning('There are errors...');
+                        }
+                    });
+                    return;
+                }
+
                 axios.post('/api/post/source', {source: this.info.source, filePath: '', entryHash: '', sha256sum: ''})
                     .then(response => {
                         this.$store.dispatch('parseState', response.data);

@@ -1,0 +1,98 @@
+[ {
+  "accountId" : "Income:Opening",
+  "date" : "1960-01-01",
+  "balance" : {
+    "number" : 0,
+    "ccy" : "USD"
+  },
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : true,
+    "automaticReinvestment" : false,
+    "generatedAccount" : false,
+    "hidden" : false,
+    "placeholder" : false
+  },
+  "commandType" : "open",
+  "description" : "Account opened"
+}, {
+  "accountId" : "Assets:SCBSG",
+  "date" : "2000-01-01",
+  "balance" : {
+    "number" : 0,
+    "ccy" : "USD"
+  },
+  "options" : {
+    "tradingAccount" : false,
+    "fundingAccount" : "Income:Opening",
+    "description" : "",
+    "multiAsset" : true,
+    "automaticReinvestment" : false,
+    "generatedAccount" : false,
+    "hidden" : false,
+    "placeholder" : false
+  },
+  "commandType" : "open",
+  "description" : "Account opened"
+}, {
+  "accountId" : "Assets:SCBSG",
+  "date" : "2018-10-31",
+  "change" : {
+    "number" : 5275.0,
+    "ccy" : "SCGBP"
+  },
+  "price" : {
+    "number" : 7.344,
+    "ccy" : "GBP"
+  },
+  "commission" : {
+    "number" : 0,
+    "ccy" : "GBP"
+  },
+  "commandType" : "trade",
+  "description" : "BUY 5275.0 SCGBP @7.344 GBP"
+}, {
+  "accountId" : "Assets:SCBSG",
+  "date" : "2019-10-31",
+  "balance" : {
+    "number" : 34652.93,
+    "ccy" : "GBP"
+  },
+  "otherAccount" : "Income:Opening",
+  "commandType" : "adj",
+  "description" : "Account balance 34652.93 GBP"
+}, {
+  "accountId" : "Assets:SCBSG",
+  "date" : "2019-10-31",
+  "balance" : {
+    "number" : 66991.65,
+    "ccy" : "USD"
+  },
+  "otherAccount" : "Income:Opening",
+  "commandType" : "adj",
+  "description" : "Account balance 66991.65 USD"
+}, {
+  "accountId" : "",
+  "date" : "2019-10-31",
+  "asset" : "GBP",
+  "price" : {
+    "number" : 1.2945,
+    "ccy" : "USD"
+  },
+  "commandType" : "price",
+  "description" : "USD/GBP = 1.2945 USD"
+}, {
+  "accountId" : "Assets:SCBSG",
+  "date" : "2019-10-31",
+  "balance" : {
+    "number" : 5275.0,
+    "ccy" : "SCGBP"
+  },
+  "price" : {
+    "number" : 7.01,
+    "ccy" : "GBP"
+  },
+  "commandType" : "unit",
+  "description" : "Unit statement: 5275.0 SCGBP @7.01 GBP"
+} ]

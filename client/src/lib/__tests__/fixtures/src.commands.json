@@ -1,0 +1,721 @@
+[ {
+  "accountId" : "",
+  "date" : "-999999999-01-01",
+  "options" : {
+    "operatingCurrency" : "GBP",
+    "comments" : [ "Global level comments", " second line", "  third line" ]
+  },
+  "commandType" : "",
+  "description" : "global configuration"
+}, {
+  "accountId" : "",
+  "date" : "1900-01-01",
+  "asset" : "VWRD",
+  "options" : {
+    "arbitrary" : "hello world",
+    "name" : "",
+    "ticker" : "VWRD.LON",
+    "tags" : [ "equity", "global" ]
+  },
+  "commandType" : "commodity",
+  "description" : "VWRD"
+}, {
+  "accountId" : "",
+  "date" : "1900-01-01",
+  "asset" : "IUAA",
+  "options" : {
+    "name" : "",
+    "ticker" : "IUAA.LON",
+    "tags" : [ "bond", "us" ]
+  },
+  "commandType" : "commodity",
+  "description" : "IUAA"
+}, {
+  "accountId" : "Assets:Bank:HSBCUK",
+  "date" : "2000-01-01",
+  "balance" : {
+    "number" : 0,
+    "ccy" : "GBP"
+  },
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : false,
+    "automaticReinvestment" : false,
+    "generatedAccount" : false,
+    "hidden" : false,
+    "placeholder" : false
+  },
+  "commandType" : "open",
+  "description" : "Account opened"
+}, {
+  "accountId" : "Assets:Bank:Nationwide",
+  "date" : "2000-01-01",
+  "balance" : {
+    "number" : 0,
+    "ccy" : "GBP"
+  },
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : false,
+    "automaticReinvestment" : false,
+    "generatedAccount" : false,
+    "hidden" : false,
+    "placeholder" : false
+  },
+  "commandType" : "open",
+  "description" : "Account opened"
+}, {
+  "accountId" : "Assets:Bank:NationwideSavings",
+  "date" : "2000-01-01",
+  "balance" : {
+    "number" : 0,
+    "ccy" : "GBP"
+  },
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : false,
+    "automaticReinvestment" : false,
+    "generatedAccount" : false,
+    "hidden" : false,
+    "placeholder" : false
+  },
+  "commandType" : "open",
+  "description" : "Account opened"
+}, {
+  "accountId" : "Assets:HSBCCN",
+  "date" : "2010-01-01",
+  "balance" : {
+    "number" : 0,
+    "ccy" : "CNY"
+  },
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : false,
+    "automaticReinvestment" : false,
+    "generatedAccount" : false,
+    "hidden" : false,
+    "placeholder" : false
+  },
+  "commandType" : "open",
+  "description" : "Account opened"
+}, {
+  "accountId" : "Assets:HSBCHK",
+  "date" : "2010-01-01",
+  "balance" : {
+    "number" : 0,
+    "ccy" : "HKD"
+  },
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : false,
+    "automaticReinvestment" : false,
+    "generatedAccount" : false,
+    "hidden" : false,
+    "placeholder" : false
+  },
+  "commandType" : "open",
+  "description" : "Account opened"
+}, {
+  "accountId" : "Assets:Investment:HSBC",
+  "date" : "2010-01-01",
+  "balance" : {
+    "number" : 0,
+    "ccy" : "USD"
+  },
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : true,
+    "automaticReinvestment" : false,
+    "generatedAccount" : false,
+    "hidden" : false,
+    "placeholder" : false
+  },
+  "commandType" : "open",
+  "description" : "Account opened"
+}, {
+  "accountId" : "Assets:Investment:HSBC:USD",
+  "date" : "2010-01-01",
+  "balance" : {
+    "number" : 0,
+    "ccy" : "USD"
+  },
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : false,
+    "automaticReinvestment" : false,
+    "generatedAccount" : false,
+    "hidden" : false,
+    "placeholder" : false
+  },
+  "commandType" : "open",
+  "description" : "Account opened"
+}, {
+  "accountId" : "Assets:Investment:OldMutual",
+  "date" : "2010-01-01",
+  "balance" : {
+    "number" : 0,
+    "ccy" : "GBP"
+  },
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : true,
+    "automaticReinvestment" : false,
+    "generatedAccount" : false,
+    "hidden" : false,
+    "placeholder" : false
+  },
+  "commandType" : "open",
+  "description" : "Account opened"
+}, {
+  "accountId" : "Assets:Investment:Zurich",
+  "date" : "2010-01-01",
+  "balance" : {
+    "number" : 0,
+    "ccy" : "GBP"
+  },
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : true,
+    "automaticReinvestment" : false,
+    "generatedAccount" : false,
+    "hidden" : false,
+    "placeholder" : false
+  },
+  "commandType" : "open",
+  "description" : "Account opened"
+}, {
+  "accountId" : "Equity:Opening",
+  "date" : "2010-01-01",
+  "balance" : {
+    "number" : 0,
+    "ccy" : "GBP"
+  },
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : true,
+    "automaticReinvestment" : false,
+    "generatedAccount" : false,
+    "hidden" : false,
+    "placeholder" : false
+  },
+  "commandType" : "open",
+  "description" : "Account opened"
+}, {
+  "accountId" : "Expenses:Education",
+  "date" : "2010-01-01",
+  "balance" : {
+    "number" : 0,
+    "ccy" : "CNY"
+  },
+  "options" : {
+    "tradingAccount" : false,
+    "fundingAccount" : "Assets:HSBCCN",
+    "description" : "",
+    "multiAsset" : false,
+    "automaticReinvestment" : false,
+    "generatedAccount" : false,
+    "hidden" : false,
+    "placeholder" : false
+  },
+  "commandType" : "open",
+  "description" : "Account opened"
+}, {
+  "accountId" : "Income:Salary",
+  "date" : "2010-01-01",
+  "balance" : {
+    "number" : 0,
+    "ccy" : "CNY"
+  },
+  "options" : {
+    "tradingAccount" : false,
+    "fundingAccount" : "Assets:HSBCCN",
+    "description" : "",
+    "multiAsset" : false,
+    "automaticReinvestment" : false,
+    "generatedAccount" : false,
+    "hidden" : false,
+    "placeholder" : false
+  },
+  "commandType" : "open",
+  "description" : "Account opened"
+}, {
+  "accountId" : "Assets:Investment:Zurich",
+  "date" : "2013-07-01",
+  "balance" : {
+    "number" : 265000.0,
+    "ccy" : "GBP"
+  },
+  "otherAccount" : "Equity:Opening",
+  "commandType" : "adj",
+  "description" : "Account balance 265000.0 GBP"
+}, {
+  "accountId" : "Assets:Bank:Nationwide",
+  "date" : "2014-01-04",
+  "change" : {
+    "number" : 25613.71,
+    "ccy" : "GBP"
+  },
+  "commandType" : "fund",
+  "description" : "Fund 25613.71 GBP"
+}, {
+  "accountId" : "Income:Salary",
+  "date" : "2018-07-26",
+  "change" : {
+    "number" : 25000.0,
+    "ccy" : "CNY"
+  },
+  "commandType" : "earn",
+  "description" : "Earn 25000.0 CNY Income:Salary"
+}, {
+  "accountId" : "Income:Salary",
+  "date" : "2018-07-26",
+  "change" : {
+    "number" : 25000.0,
+    "ccy" : "CNY"
+  },
+  "otherAccount" : "Assets:HSBCCN",
+  "commandType" : "earn",
+  "description" : "Earn 25000.0 CNY Income:Salary"
+}, {
+  "accountId" : "Expenses:Education",
+  "date" : "2018-08-15",
+  "change" : {
+    "number" : 100000.0,
+    "ccy" : "CNY"
+  },
+  "commandType" : "spend",
+  "description" : "Spend 100000.0 CNY Expenses:Education"
+}, {
+  "accountId" : "Assets:HSBCCN",
+  "date" : "2019-01-01",
+  "balance" : {
+    "number" : 547413.7,
+    "ccy" : "CNY"
+  },
+  "otherAccount" : "Equity:Opening",
+  "commandType" : "adj",
+  "description" : "Account balance 547413.7 CNY"
+}, {
+  "accountId" : "Assets:HSBCHK",
+  "date" : "2019-01-01",
+  "balance" : {
+    "number" : 138668.37,
+    "ccy" : "HKD"
+  },
+  "otherAccount" : "Equity:Opening",
+  "commandType" : "adj",
+  "description" : "Account balance 138668.37 HKD"
+}, {
+  "accountId" : "Assets:Investment:OldMutual",
+  "date" : "2019-01-01",
+  "balance" : {
+    "number" : 80300.28,
+    "ccy" : "GBP"
+  },
+  "otherAccount" : "Equity:Opening",
+  "commandType" : "adj",
+  "description" : "Account balance 80300.28 GBP"
+}, {
+  "accountId" : "Assets:Investment:Zurich",
+  "date" : "2019-01-01",
+  "balance" : {
+    "number" : 348045.34,
+    "ccy" : "GBP"
+  },
+  "otherAccount" : "Income:Investment:Zurich:GBP",
+  "commandType" : "adj",
+  "description" : "Account balance 348045.34 GBP"
+}, {
+  "accountId" : "",
+  "date" : "2019-01-01",
+  "asset" : "GBP",
+  "price" : {
+    "number" : 1.2752,
+    "ccy" : "USD"
+  },
+  "commandType" : "price",
+  "description" : "USD/GBP = 1.2752 USD"
+}, {
+  "accountId" : "Assets:Investment:OldMutual",
+  "date" : "2019-01-01",
+  "balance" : {
+    "number" : 2221.2587,
+    "ccy" : "QS90"
+  },
+  "price" : {
+    "number" : 15.03,
+    "ccy" : "GBP"
+  },
+  "commandType" : "unit",
+  "description" : "Unit statement: 2221.2587 QS90 @15.03 GBP"
+}, {
+  "accountId" : "Assets:Investment:OldMutual",
+  "date" : "2019-01-01",
+  "balance" : {
+    "number" : 525.5707,
+    "ccy" : "OPXC"
+  },
+  "price" : {
+    "number" : 35.02,
+    "ccy" : "GBP"
+  },
+  "commandType" : "unit",
+  "description" : "Unit statement: 525.5707 OPXC @35.02 GBP"
+}, {
+  "accountId" : "Assets:Investment:OldMutual",
+  "date" : "2019-01-01",
+  "balance" : {
+    "number" : 538.2539,
+    "ccy" : "OPY7"
+  },
+  "price" : {
+    "number" : 32.22,
+    "ccy" : "GBP"
+  },
+  "commandType" : "unit",
+  "description" : "Unit statement: 538.2539 OPY7 @32.22 GBP"
+}, {
+  "accountId" : "Assets:Investment:OldMutual",
+  "date" : "2019-01-01",
+  "balance" : {
+    "number" : 752.8264,
+    "ccy" : "SVDK"
+  },
+  "price" : {
+    "number" : 2.533,
+    "ccy" : "GBP"
+  },
+  "commandType" : "unit",
+  "description" : "Unit statement: 752.8264 SVDK @2.533 GBP"
+}, {
+  "accountId" : "Assets:Investment:OldMutual",
+  "date" : "2019-01-01",
+  "balance" : {
+    "number" : 243.2453,
+    "ccy" : "GBR06HUW"
+  },
+  "price" : {
+    "number" : 16.37,
+    "ccy" : "GBP"
+  },
+  "commandType" : "unit",
+  "description" : "Unit statement: 243.2453 GBR06HUW @16.37 GBP"
+}, {
+  "accountId" : "Assets:Investment:OldMutual",
+  "date" : "2019-01-01",
+  "balance" : {
+    "number" : 97.9586,
+    "ccy" : "GBR04S9K"
+  },
+  "price" : {
+    "number" : 18.4,
+    "ccy" : "GBP"
+  },
+  "commandType" : "unit",
+  "description" : "Unit statement: 97.9586 GBR04S9K @18.4 GBP"
+}, {
+  "accountId" : "Assets:Investment:OldMutual",
+  "date" : "2019-01-01",
+  "balance" : {
+    "number" : 4578.3959,
+    "ccy" : "QLNC"
+  },
+  "price" : {
+    "number" : 0.7591,
+    "ccy" : "GBP"
+  },
+  "commandType" : "unit",
+  "description" : "Unit statement: 4578.3959 QLNC @0.7591 GBP"
+}, {
+  "accountId" : "Assets:Investment:Zurich",
+  "date" : "2019-01-01",
+  "balance" : {
+    "number" : 30511.46,
+    "ccy" : "AMER"
+  },
+  "price" : {
+    "number" : 5.09,
+    "ccy" : "GBP"
+  },
+  "commandType" : "unit",
+  "description" : "Unit statement: 30511.46 AMER @5.09 GBP"
+}, {
+  "accountId" : "Assets:Investment:Zurich",
+  "date" : "2019-01-01",
+  "balance" : {
+    "number" : 75296.0,
+    "ccy" : "FTSE"
+  },
+  "price" : {
+    "number" : 2.1,
+    "ccy" : "GBP"
+  },
+  "commandType" : "unit",
+  "description" : "Unit statement: 75296.0 FTSE @2.1 GBP"
+}, {
+  "accountId" : "Assets:Investment:Zurich",
+  "date" : "2019-01-01",
+  "balance" : {
+    "number" : 28146.69,
+    "ccy" : "TBOND"
+  },
+  "price" : {
+    "number" : 1.23,
+    "ccy" : "GBP"
+  },
+  "commandType" : "unit",
+  "description" : "Unit statement: 28146.69 TBOND @1.23 GBP"
+}, {
+  "accountId" : "Assets:HSBCHK",
+  "date" : "2019-01-02",
+  "change" : {
+    "number" : 40000.0,
+    "ccy" : "HKD"
+  },
+  "price" : {
+    "number" : 0.12712275,
+    "ccy" : "HKD"
+  },
+  "otherAccount" : "Assets:Investment:HSBC:USD",
+  "commandType" : "tfr",
+  "description" : "Transfer 40000.0 HKD Assets:HSBCHK -> Assets:Investment:HSBC:USD@7.866413"
+}, {
+  "accountId" : "Assets:Investment:HSBC",
+  "date" : "2019-01-02",
+  "change" : {
+    "number" : 100.0,
+    "ccy" : "VTI"
+  },
+  "price" : {
+    "number" : 127.63,
+    "ccy" : "USD"
+  },
+  "commission" : {
+    "number" : 0,
+    "ccy" : "USD"
+  },
+  "commandType" : "trade",
+  "description" : "BUY 100.0 VTI @127.63 USD"
+}, {
+  "accountId" : "Assets:HSBCHK",
+  "date" : "2019-02-14",
+  "balance" : {
+    "number" : 33030.33,
+    "ccy" : "HKD"
+  },
+  "otherAccount" : "Equity:Opening",
+  "commandType" : "adj",
+  "description" : "Account balance 33030.33 HKD"
+}, {
+  "accountId" : "Assets:Investment:HSBC",
+  "date" : "2019-03-08",
+  "change" : {
+    "number" : 13.0,
+    "ccy" : "VCSH"
+  },
+  "price" : {
+    "number" : 79.07,
+    "ccy" : "USD"
+  },
+  "commission" : {
+    "number" : 0,
+    "ccy" : "USD"
+  },
+  "commandType" : "trade",
+  "description" : "BUY 13.0 VCSH @79.07 USD"
+}, {
+  "accountId" : "Assets:Investment:HSBC",
+  "date" : "2019-03-15",
+  "change" : {
+    "number" : 14.0,
+    "ccy" : "VTI"
+  },
+  "price" : {
+    "number" : 144.62,
+    "ccy" : "USD"
+  },
+  "commission" : {
+    "number" : 0,
+    "ccy" : "USD"
+  },
+  "commandType" : "trade",
+  "description" : "BUY 14.0 VTI @144.62 USD"
+}, {
+  "accountId" : "Assets:Investment:HSBC",
+  "date" : "2019-03-26",
+  "change" : {
+    "number" : 30.0,
+    "ccy" : "VTI"
+  },
+  "price" : {
+    "number" : 143.83,
+    "ccy" : "USD"
+  },
+  "commission" : {
+    "number" : 0,
+    "ccy" : "USD"
+  },
+  "commandType" : "trade",
+  "description" : "BUY 30.0 VTI @143.83 USD"
+}, {
+  "accountId" : "Assets:Investment:HSBC",
+  "date" : "2019-03-27",
+  "change" : {
+    "number" : 15.0,
+    "ccy" : "BRK-B"
+  },
+  "price" : {
+    "number" : 200.58,
+    "ccy" : "USD"
+  },
+  "commission" : {
+    "number" : 0,
+    "ccy" : "USD"
+  },
+  "commandType" : "trade",
+  "description" : "BUY 15.0 BRK-B @200.58 USD"
+}, {
+  "accountId" : "Assets:Investment:IBUSD",
+  "date" : "2019-04-01",
+  "balance" : {
+    "number" : 0,
+    "ccy" : "USD"
+  },
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : true,
+    "automaticReinvestment" : false,
+    "generatedAccount" : false,
+    "hidden" : false,
+    "placeholder" : false
+  },
+  "commandType" : "open",
+  "description" : "Account opened"
+}, {
+  "accountId" : "Assets:Bank:Nationwide",
+  "date" : "2019-04-01",
+  "balance" : {
+    "number" : 134703.49,
+    "ccy" : "GBP"
+  },
+  "otherAccount" : "Equity:Opening",
+  "commandType" : "adj",
+  "description" : "Account balance 134703.49 GBP"
+}, {
+  "accountId" : "Assets:Bank:NationwideSavings",
+  "date" : "2019-04-01",
+  "balance" : {
+    "number" : 53932.1,
+    "ccy" : "GBP"
+  },
+  "otherAccount" : "Equity:Opening",
+  "commandType" : "adj",
+  "description" : "Account balance 53932.1 GBP"
+}, {
+  "accountId" : "Assets:Bank:Nationwide",
+  "date" : "2019-04-11",
+  "change" : {
+    "number" : 19000.0,
+    "ccy" : "GBP"
+  },
+  "price" : {
+    "number" : 1,
+    "ccy" : "GBP"
+  },
+  "otherAccount" : "Assets:Bank:HSBCUK",
+  "commandType" : "tfr",
+  "description" : "Transfer 19000.0 GBP Assets:Bank:Nationwide -> Assets:Bank:HSBCUK"
+}, {
+  "accountId" : "Assets:Investment:HSBC:USD",
+  "date" : "2019-04-11",
+  "change" : {
+    "number" : 34975.0,
+    "ccy" : "USD"
+  },
+  "price" : {
+    "number" : 1,
+    "ccy" : "USD"
+  },
+  "otherAccount" : "Assets:Investment:IBUSD:USD",
+  "commandType" : "tfr",
+  "description" : "Transfer 34975.0 USD Assets:Investment:HSBC:USD -> Assets:Investment:IBUSD:USD"
+}, {
+  "accountId" : "Assets:Investment:IBUSD",
+  "date" : "2019-04-11",
+  "change" : {
+    "number" : 100.0,
+    "ccy" : "VWRD"
+  },
+  "price" : {
+    "number" : 85.79,
+    "ccy" : "USD"
+  },
+  "commission" : {
+    "number" : 4.76,
+    "ccy" : "USD"
+  },
+  "commandType" : "trade",
+  "description" : "BUY 100.0 VWRD @85.79 USD"
+}, {
+  "accountId" : "Assets:Investment:IBUSD",
+  "date" : "2019-04-11",
+  "change" : {
+    "number" : 230.0,
+    "ccy" : "VWRD"
+  },
+  "price" : {
+    "number" : 85.83,
+    "ccy" : "USD"
+  },
+  "commission" : {
+    "number" : 10.84,
+    "ccy" : "USD"
+  },
+  "commandType" : "trade",
+  "description" : "BUY 230.0 VWRD @85.83 USD"
+}, {
+  "accountId" : "Assets:Investment:IBUSD",
+  "date" : "2019-04-11",
+  "change" : {
+    "number" : 1000.0,
+    "ccy" : "IUAA"
+  },
+  "price" : {
+    "number" : 5.225,
+    "ccy" : "USD"
+  },
+  "commission" : {
+    "number" : 2.93,
+    "ccy" : "USD"
+  },
+  "commandType" : "trade",
+  "description" : "BUY 1000.0 IUAA @5.225 USD"
+}, {
+  "accountId" : "Assets:Investment:IBUSD",
+  "date" : "2019-04-11",
+  "change" : {
+    "number" : 6.0,
+    "ccy" : "BRK-B"
+  },
+  "price" : {
+    "number" : 206.53,
+    "ccy" : "USD"
+  },
+  "commission" : {
+    "number" : 0.34,
+    "ccy" : "USD"
+  },
+  "commandType" : "trade",
+  "description" : "BUY 6.0 BRK-B @206.53 USD"
+} ]

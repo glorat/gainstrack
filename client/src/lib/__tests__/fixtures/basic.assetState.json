@@ -1,0 +1,34 @@
+[ {
+  "accountId" : "",
+  "date" : "1900-01-01",
+  "asset" : "USD",
+  "options" : {
+    "name" : "",
+    "ticker" : "",
+    "tags" : [ ]
+  },
+  "commandType" : "commodity",
+  "description" : "USD"
+}, {
+  "accountId" : "",
+  "date" : "1900-01-01",
+  "asset" : "AAPL",
+  "options" : {
+    "name" : "",
+    "ticker" : "",
+    "tags" : [ ]
+  },
+  "commandType" : "commodity",
+  "description" : "AAPL"
+}, {
+  "accountId" : "",
+  "date" : "1900-01-01",
+  "asset" : "EWJ",
+  "options" : {
+    "name" : "",
+    "ticker" : "",
+    "tags" : [ ]
+  },
+  "commandType" : "commodity",
+  "description" : "EWJ"
+} ]

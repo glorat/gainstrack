@@ -1,0 +1,275 @@
+[ {
+  "accountId" : "Equity:Opening:USD",
+  "date" : "2010-01-01",
+  "balance" : {
+    "number" : 0,
+    "ccy" : "USD"
+  },
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : false,
+    "automaticReinvestment" : false,
+    "generatedAccount" : false,
+    "hidden" : false,
+    "placeholder" : false
+  },
+  "commandType" : "open",
+  "description" : "Account opened"
+}, {
+  "accountId" : "Assets:Bank:HSBCHK",
+  "date" : "2010-01-01",
+  "balance" : {
+    "number" : 0,
+    "ccy" : "HKD"
+  },
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : false,
+    "automaticReinvestment" : false,
+    "generatedAccount" : false,
+    "hidden" : false,
+    "placeholder" : false
+  },
+  "commandType" : "open",
+  "description" : "Account opened"
+}, {
+  "accountId" : "Assets:Bank:HSBCCN",
+  "date" : "2010-01-01",
+  "balance" : {
+    "number" : 0,
+    "ccy" : "CNY"
+  },
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : false,
+    "automaticReinvestment" : false,
+    "generatedAccount" : false,
+    "hidden" : false,
+    "placeholder" : false
+  },
+  "commandType" : "open",
+  "description" : "Account opened"
+}, {
+  "accountId" : "Assets:Investment:HSBC",
+  "date" : "2010-01-01",
+  "balance" : {
+    "number" : 0,
+    "ccy" : "USD"
+  },
+  "options" : {
+    "tradingAccount" : false,
+    "fundingAccount" : "Assets:Bank:HSBCHK",
+    "description" : "",
+    "multiAsset" : true,
+    "automaticReinvestment" : false,
+    "generatedAccount" : false,
+    "hidden" : false,
+    "placeholder" : false
+  },
+  "commandType" : "open",
+  "description" : "Account opened"
+}, {
+  "accountId" : "Assets:Bank:HSBCHK",
+  "date" : "2019-01-02",
+  "change" : {
+    "number" : 40000,
+    "ccy" : "HKD"
+  },
+  "price" : {
+    "number" : 0.12712275,
+    "ccy" : "HKD"
+  },
+  "otherAccount" : "Assets:Investment:HSBC",
+  "commandType" : "tfr",
+  "description" : "Transfer 40000 HKD Assets:Bank:HSBCHK -> Assets:Investment:HSBC@7.866413"
+}, {
+  "accountId" : "Assets:Investment:HSBC",
+  "date" : "2019-01-02",
+  "change" : {
+    "number" : 8,
+    "ccy" : "VTI"
+  },
+  "price" : {
+    "number" : 127.3800,
+    "ccy" : "USD"
+  },
+  "commission" : {
+    "number" : 18.00,
+    "ccy" : "USD"
+  },
+  "commandType" : "trade",
+  "description" : "BUY 8 VTI @127.3800 USD"
+}, {
+  "accountId" : "Assets:Investment:HSBC",
+  "date" : "2019-01-05",
+  "balance" : {
+    "number" : 4047.87,
+    "ccy" : "USD"
+  },
+  "otherAccount" : "Equity:Opening:USD",
+  "commandType" : "adj",
+  "description" : "Account balance 4047.87 USD"
+}, {
+  "accountId" : "Equity:Opening:USD",
+  "date" : "2019-01-15",
+  "change" : {
+    "number" : 23.20,
+    "ccy" : "USD"
+  },
+  "price" : {
+    "number" : 1,
+    "ccy" : "USD"
+  },
+  "otherAccount" : "Assets:Investment:HSBC",
+  "commandType" : "tfr",
+  "description" : "Transfer 23.20 USD Equity:Opening:USD -> Assets:Investment:HSBC"
+}, {
+  "accountId" : "Assets:Investment:HSBC",
+  "date" : "2019-03-05",
+  "balance" : {
+    "number" : 4071.07,
+    "ccy" : "USD"
+  },
+  "otherAccount" : "Equity:Opening:USD",
+  "commandType" : "adj",
+  "description" : "Account balance 4071.07 USD"
+}, {
+  "accountId" : "Assets:Investment:HSBC",
+  "date" : "2019-03-08",
+  "change" : {
+    "number" : 13,
+    "ccy" : "VCSH"
+  },
+  "price" : {
+    "number" : 79.0700,
+    "ccy" : "USD"
+  },
+  "commission" : {
+    "number" : 0,
+    "ccy" : "USD"
+  },
+  "commandType" : "trade",
+  "description" : "BUY 13 VCSH @79.0700 USD"
+}, {
+  "accountId" : "Assets:Bank:HSBCCN",
+  "date" : "2019-03-15",
+  "change" : {
+    "number" : 83364.65,
+    "ccy" : "CNY"
+  },
+  "price" : {
+    "number" : 0.1716882395595735122740873979558482,
+    "ccy" : "CNY"
+  },
+  "otherAccount" : "Assets:Investment:HSBC",
+  "commandType" : "tfr",
+  "description" : "Transfer 83364.65 CNY Assets:Bank:HSBCCN -> Assets:Investment:HSBC@5.824511"
+}, {
+  "accountId" : "Assets:Investment:HSBC",
+  "date" : "2019-03-15",
+  "change" : {
+    "number" : 14,
+    "ccy" : "VTI"
+  },
+  "price" : {
+    "number" : 144.6200,
+    "ccy" : "USD"
+  },
+  "commission" : {
+    "number" : 0,
+    "ccy" : "USD"
+  },
+  "commandType" : "trade",
+  "description" : "BUY 14 VTI @144.6200 USD"
+}, {
+  "accountId" : "Assets:Bank:HSBCCN",
+  "date" : "2019-03-26",
+  "change" : {
+    "number" : 200000,
+    "ccy" : "CNY"
+  },
+  "price" : {
+    "number" : 0.1482248,
+    "ccy" : "CNY"
+  },
+  "otherAccount" : "Assets:Investment:HSBC",
+  "commandType" : "tfr",
+  "description" : "Transfer 200000 CNY Assets:Bank:HSBCCN -> Assets:Investment:HSBC@6.746509"
+}, {
+  "accountId" : "Assets:Investment:HSBC",
+  "date" : "2019-03-26",
+  "change" : {
+    "number" : 30,
+    "ccy" : "VTI"
+  },
+  "price" : {
+    "number" : 143.8300,
+    "ccy" : "USD"
+  },
+  "commission" : {
+    "number" : 0,
+    "ccy" : "USD"
+  },
+  "commandType" : "trade",
+  "description" : "BUY 30 VTI @143.8300 USD"
+}, {
+  "accountId" : "Assets:Investment:HSBC",
+  "date" : "2019-03-27",
+  "change" : {
+    "number" : 15,
+    "ccy" : "BRK-B"
+  },
+  "price" : {
+    "number" : 200.5800,
+    "ccy" : "USD"
+  },
+  "commission" : {
+    "number" : 0,
+    "ccy" : "USD"
+  },
+  "commandType" : "trade",
+  "description" : "BUY 15 BRK-B @200.5800 USD"
+}, {
+  "accountId" : "Assets:Investment:HSBC",
+  "date" : "2019-03-29",
+  "asset" : "VTI",
+  "change" : {
+    "number" : 11.88,
+    "ccy" : "USD"
+  },
+  "commandType" : "yield",
+  "description" : "VTI yield 11.88 USD"
+}, {
+  "accountId" : "Assets:Investment:HSBC",
+  "date" : "2019-03-30",
+  "balance" : {
+    "number" : 37664.45,
+    "ccy" : "USD"
+  },
+  "otherAccount" : "Equity:Opening:USD",
+  "commandType" : "adj",
+  "description" : "Account balance 37664.45 USD"
+}, {
+  "accountId" : "Assets:Investment:HSBC",
+  "date" : "2019-04-08",
+  "asset" : "VCSH",
+  "change" : {
+    "number" : 1.95,
+    "ccy" : "USD"
+  },
+  "commandType" : "yield",
+  "description" : "VCSH yield 1.95 USD"
+}, {
+  "accountId" : "Assets:Investment:HSBC",
+  "date" : "2019-05-04",
+  "balance" : {
+    "number" : 2658.10,
+    "ccy" : "USD"
+  },
+  "otherAccount" : "Equity:Opening:USD",
+  "commandType" : "adj",
+  "description" : "Account balance 2658.10 USD"
+} ]

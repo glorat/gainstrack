@@ -1,0 +1,74 @@
+### id: ok-simple-transfer
+2019-01-01 open Equity:Opening USD
+2019-01-01 open Assets:A USD
+2019-01-01 open Assets:B USD
+2019-01-02 fund Assets:A 100 USD
+2019-01-03 tfr Assets:A Assets:B 50 USD
+
+### id: ok-multiasset-trade
+2019-01-01 open Equity:Opening USD
+2019-01-01 open Assets:Broker USD
+  multiAsset: true
+2019-01-02 fund Assets:Broker 1000 USD
+2019-01-03 trade Assets:Broker 5 IVV @100 USD
+
+### id: ok-earn-with-funding
+2019-01-01 open Assets:Bank USD
+2019-01-01 open Income:Salary USD
+  fundingAccount: Assets:Bank
+2019-01-02 earn Salary 100 USD
+
+### id: ok-spend-with-funding
+2019-01-01 open Equity:Opening USD
+2019-01-01 open Assets:Bank USD
+2019-01-01 open Expenses:Food USD
+  fundingAccount: Assets:Bank
+2019-01-02 fund Assets:Bank 100 USD
+2019-01-03 spend Food 30 USD
+
+### id: ok-multiasset-unit
+2019-01-01 open Assets:Inv GBP
+  multiAsset: true
+2019-01-02 unit Assets:Inv 100 FTSE @2 GBP
+
+### id: ok-bal-adjustment
+2019-01-01 open Equity:Opening USD
+2019-01-01 open Assets:Bank USD
+2019-01-02 bal Assets:Bank 500 USD Equity:Opening
+
+### id: err-trade-nonexistent-account
+2019-01-01 trade Assets:NoSuch 5 IVV @100 USD
+
+### id: err-trade-non-multiasset
+2019-01-01 open Assets:Broker USD
+2019-01-02 trade Assets:Broker 5 IVV @100 USD
+
+### id: err-unit-non-multiasset
+2019-01-01 open Assets:Inv GBP
+2019-01-02 unit Assets:Inv 100 FTSE @2 GBP
+
+### id: err-unit-nonexistent-account
+2019-01-01 unit Assets:NoSuch 100 FTSE @2 GBP
+
+### id: err-transfer-nonexistent-dest
+2019-01-01 open Assets:A USD
+2019-01-02 fund Assets:A 100 USD
+2019-01-03 tfr Assets:A Assets:Nope 50 USD
+
+### id: err-transfer-nonexistent-source
+2019-01-01 open Assets:B USD
+2019-01-02 tfr Assets:Nope Assets:B 50 USD
+
+### id: err-fund-nonexistent
+2019-01-01 fund Assets:Nope 100 USD
+
+### id: err-earn-no-funding
+2019-01-01 open Income:Salary USD
+2019-01-02 earn Salary 100 USD
+
+### id: err-spend-no-funding
+2019-01-01 open Expenses:Food USD
+2019-01-02 spend Food 30 USD
+
+### id: err-yield-nonexistent-account
+2019-01-01 yield Assets:NoSuch 5 GBP

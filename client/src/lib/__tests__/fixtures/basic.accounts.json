@@ -1,0 +1,943 @@
+[ {
+  "date" : "-999999999-01-01",
+  "accountId" : "Expenses:UTrade",
+  "ccy" : "USD",
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : false,
+    "automaticReinvestment" : false,
+    "generatedAccount" : true,
+    "hidden" : false,
+    "placeholder" : false
+  }
+}, {
+  "date" : "-999999999-01-01",
+  "accountId" : "Expenses:Fun",
+  "ccy" : "USD",
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : false,
+    "automaticReinvestment" : false,
+    "generatedAccount" : true,
+    "hidden" : false,
+    "placeholder" : false
+  }
+}, {
+  "date" : "-999999999-01-01",
+  "accountId" : "Income:Interest",
+  "ccy" : "USD",
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : false,
+    "automaticReinvestment" : false,
+    "generatedAccount" : true,
+    "hidden" : false,
+    "placeholder" : false
+  }
+}, {
+  "date" : "1970-01-01",
+  "accountId" : "Expenses:Home:Monthly:Condo-Fees",
+  "ccy" : "USD",
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : false,
+    "automaticReinvestment" : false,
+    "generatedAccount" : false,
+    "hidden" : false,
+    "placeholder" : false
+  }
+}, {
+  "date" : "-999999999-01-01",
+  "accountId" : "Expenses:Food",
+  "ccy" : "USD",
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : false,
+    "automaticReinvestment" : false,
+    "generatedAccount" : true,
+    "hidden" : false,
+    "placeholder" : false
+  }
+}, {
+  "date" : "-999999999-01-01",
+  "accountId" : "Liabilities:BestBank:Mortgage",
+  "ccy" : "USD",
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : false,
+    "automaticReinvestment" : false,
+    "generatedAccount" : true,
+    "hidden" : false,
+    "placeholder" : false
+  }
+}, {
+  "date" : "-999999999-01-01",
+  "accountId" : "Expenses:Home",
+  "ccy" : "USD",
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : false,
+    "automaticReinvestment" : false,
+    "generatedAccount" : true,
+    "hidden" : false,
+    "placeholder" : false
+  }
+}, {
+  "date" : "1970-01-01",
+  "accountId" : "Income:Dividends",
+  "ccy" : "USD",
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : false,
+    "automaticReinvestment" : false,
+    "generatedAccount" : false,
+    "hidden" : false,
+    "placeholder" : false
+  }
+}, {
+  "date" : "1970-01-01",
+  "accountId" : "Assets:UTrade:Account:USD",
+  "ccy" : "USD",
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : false,
+    "automaticReinvestment" : false,
+    "generatedAccount" : true,
+    "hidden" : false,
+    "placeholder" : false
+  }
+}, {
+  "date" : "1970-01-01",
+  "accountId" : "Expenses:Car:Gas",
+  "ccy" : "USD",
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : false,
+    "automaticReinvestment" : false,
+    "generatedAccount" : false,
+    "hidden" : false,
+    "placeholder" : false
+  }
+}, {
+  "date" : "1970-01-01",
+  "accountId" : "Assets:BestBank:Savings",
+  "ccy" : "USD",
+  "options" : {
+    "tradingAccount" : false,
+    "fundingAccount" : "Equity:Opening",
+    "description" : "",
+    "multiAsset" : false,
+    "automaticReinvestment" : false,
+    "generatedAccount" : false,
+    "hidden" : false,
+    "placeholder" : false
+  }
+}, {
+  "date" : "-999999999-01-01",
+  "accountId" : "Liabilities",
+  "ccy" : "USD",
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : false,
+    "automaticReinvestment" : false,
+    "generatedAccount" : true,
+    "hidden" : false,
+    "placeholder" : false
+  }
+}, {
+  "date" : "1970-01-01",
+  "accountId" : "Income:Capital-Gains",
+  "ccy" : "USD",
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : false,
+    "automaticReinvestment" : false,
+    "generatedAccount" : false,
+    "hidden" : false,
+    "placeholder" : false
+  }
+}, {
+  "date" : "-999999999-01-01",
+  "accountId" : "Income:Salary:AcmeCo",
+  "ccy" : "USD",
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : false,
+    "automaticReinvestment" : false,
+    "generatedAccount" : true,
+    "hidden" : false,
+    "placeholder" : false
+  }
+}, {
+  "date" : "1970-01-01",
+  "accountId" : "Income:UTrade:Account:AAPL",
+  "ccy" : "USD",
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : false,
+    "automaticReinvestment" : false,
+    "generatedAccount" : true,
+    "hidden" : false,
+    "placeholder" : false
+  }
+}, {
+  "date" : "-999999999-01-01",
+  "accountId" : "Income:UTrade",
+  "ccy" : "USD",
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : false,
+    "automaticReinvestment" : false,
+    "generatedAccount" : true,
+    "hidden" : false,
+    "placeholder" : false
+  }
+}, {
+  "date" : "1970-01-01",
+  "accountId" : "Assets:UTrade:Account:EWJ",
+  "ccy" : "EWJ",
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : false,
+    "automaticReinvestment" : false,
+    "generatedAccount" : true,
+    "hidden" : false,
+    "placeholder" : false
+  }
+}, {
+  "date" : "1970-01-01",
+  "accountId" : "Expenses:Food:Grocery",
+  "ccy" : "USD",
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : false,
+    "automaticReinvestment" : false,
+    "generatedAccount" : false,
+    "hidden" : false,
+    "placeholder" : false
+  }
+}, {
+  "date" : "-999999999-01-01",
+  "accountId" : "Expenses",
+  "ccy" : "USD",
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : false,
+    "automaticReinvestment" : false,
+    "generatedAccount" : true,
+    "hidden" : false,
+    "placeholder" : false
+  }
+}, {
+  "date" : "-999999999-01-01",
+  "accountId" : "Expenses:Car",
+  "ccy" : "USD",
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : false,
+    "automaticReinvestment" : false,
+    "generatedAccount" : true,
+    "hidden" : false,
+    "placeholder" : false
+  }
+}, {
+  "date" : "1970-01-01",
+  "accountId" : "Expenses:Food:Restaurant",
+  "ccy" : "USD",
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : false,
+    "automaticReinvestment" : false,
+    "generatedAccount" : false,
+    "hidden" : false,
+    "placeholder" : false
+  }
+}, {
+  "date" : "-999999999-01-01",
+  "accountId" : "",
+  "ccy" : "USD",
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : false,
+    "automaticReinvestment" : false,
+    "generatedAccount" : true,
+    "hidden" : false,
+    "placeholder" : true
+  }
+}, {
+  "date" : "1970-01-01",
+  "accountId" : "Liabilities:Credit-Card:VISA",
+  "ccy" : "USD",
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : false,
+    "automaticReinvestment" : false,
+    "generatedAccount" : false,
+    "hidden" : false,
+    "placeholder" : false
+  }
+}, {
+  "date" : "1970-01-01",
+  "accountId" : "Income:BestBank:Checking",
+  "ccy" : "USD",
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : false,
+    "automaticReinvestment" : false,
+    "generatedAccount" : true,
+    "hidden" : false,
+    "placeholder" : false
+  }
+}, {
+  "date" : "1970-01-01",
+  "accountId" : "Expenses:Food:Alcool",
+  "ccy" : "USD",
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : false,
+    "automaticReinvestment" : false,
+    "generatedAccount" : false,
+    "hidden" : false,
+    "placeholder" : false
+  }
+}, {
+  "date" : "-999999999-01-01",
+  "accountId" : "Expenses:Home:Monthly",
+  "ccy" : "USD",
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : false,
+    "automaticReinvestment" : false,
+    "generatedAccount" : true,
+    "hidden" : false,
+    "placeholder" : false
+  }
+}, {
+  "date" : "1970-01-01",
+  "accountId" : "Expenses:Clothes",
+  "ccy" : "USD",
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : false,
+    "automaticReinvestment" : false,
+    "generatedAccount" : false,
+    "hidden" : false,
+    "placeholder" : false
+  }
+}, {
+  "date" : "1970-01-01",
+  "accountId" : "Expenses:Medical",
+  "ccy" : "USD",
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : false,
+    "automaticReinvestment" : false,
+    "generatedAccount" : false,
+    "hidden" : false,
+    "placeholder" : false
+  }
+}, {
+  "date" : "1970-01-01",
+  "accountId" : "Equity:Opening",
+  "ccy" : "USD",
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : false,
+    "automaticReinvestment" : false,
+    "generatedAccount" : false,
+    "hidden" : false,
+    "placeholder" : false
+  }
+}, {
+  "date" : "1970-01-01",
+  "accountId" : "Income:Salary:AcmeCo:USD",
+  "ccy" : "USD",
+  "options" : {
+    "tradingAccount" : false,
+    "fundingAccount" : "Assets:BestBank:Checking",
+    "description" : "",
+    "multiAsset" : false,
+    "automaticReinvestment" : false,
+    "generatedAccount" : false,
+    "hidden" : false,
+    "placeholder" : false
+  }
+}, {
+  "date" : "1970-01-01",
+  "accountId" : "Income:UTrade:Account:USD",
+  "ccy" : "USD",
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : false,
+    "automaticReinvestment" : false,
+    "generatedAccount" : true,
+    "hidden" : false,
+    "placeholder" : false
+  }
+}, {
+  "date" : "1970-01-01",
+  "accountId" : "Expenses:Fun:Movie",
+  "ccy" : "USD",
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : false,
+    "automaticReinvestment" : false,
+    "generatedAccount" : false,
+    "hidden" : false,
+    "placeholder" : false
+  }
+}, {
+  "date" : "-999999999-01-01",
+  "accountId" : "Liabilities:BestBank",
+  "ccy" : "USD",
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : false,
+    "automaticReinvestment" : false,
+    "generatedAccount" : true,
+    "hidden" : false,
+    "placeholder" : false
+  }
+}, {
+  "date" : "1970-01-01",
+  "accountId" : "Liabilities:Condo-Management",
+  "ccy" : "USD",
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : false,
+    "automaticReinvestment" : false,
+    "generatedAccount" : false,
+    "hidden" : false,
+    "placeholder" : false
+  }
+}, {
+  "date" : "1970-01-01",
+  "accountId" : "Expenses:Sports:Gear",
+  "ccy" : "USD",
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : false,
+    "automaticReinvestment" : false,
+    "generatedAccount" : false,
+    "hidden" : false,
+    "placeholder" : false
+  }
+}, {
+  "date" : "-999999999-01-01",
+  "accountId" : "Expenses:Financial",
+  "ccy" : "USD",
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : false,
+    "automaticReinvestment" : false,
+    "generatedAccount" : true,
+    "hidden" : false,
+    "placeholder" : false
+  }
+}, {
+  "date" : "1970-01-01",
+  "accountId" : "Expenses:Books",
+  "ccy" : "USD",
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : false,
+    "automaticReinvestment" : false,
+    "generatedAccount" : false,
+    "hidden" : false,
+    "placeholder" : false
+  }
+}, {
+  "date" : "1970-01-01",
+  "accountId" : "Assets:BestBank:Checking",
+  "ccy" : "USD",
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : false,
+    "automaticReinvestment" : false,
+    "generatedAccount" : false,
+    "hidden" : false,
+    "placeholder" : false
+  }
+}, {
+  "date" : "1970-01-01",
+  "accountId" : "Expenses:Home:Monthly:Loan-Interest",
+  "ccy" : "USD",
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : false,
+    "automaticReinvestment" : false,
+    "generatedAccount" : false,
+    "hidden" : false,
+    "placeholder" : false
+  }
+}, {
+  "date" : "1970-01-01",
+  "accountId" : "Expenses:Sports",
+  "ccy" : "USD",
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : false,
+    "automaticReinvestment" : false,
+    "generatedAccount" : false,
+    "hidden" : false,
+    "placeholder" : false
+  }
+}, {
+  "date" : "1970-01-01",
+  "accountId" : "Expenses:Charity",
+  "ccy" : "USD",
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : false,
+    "automaticReinvestment" : false,
+    "generatedAccount" : false,
+    "hidden" : false,
+    "placeholder" : false
+  }
+}, {
+  "date" : "-999999999-01-01",
+  "accountId" : "Income:BestBank",
+  "ccy" : "USD",
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : false,
+    "automaticReinvestment" : false,
+    "generatedAccount" : true,
+    "hidden" : false,
+    "placeholder" : false
+  }
+}, {
+  "date" : "-999999999-01-01",
+  "accountId" : "Income:Salary",
+  "ccy" : "USD",
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : false,
+    "automaticReinvestment" : false,
+    "generatedAccount" : true,
+    "hidden" : false,
+    "placeholder" : false
+  }
+}, {
+  "date" : "1970-01-01",
+  "accountId" : "Expenses:Transportation:Taxi",
+  "ccy" : "USD",
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : false,
+    "automaticReinvestment" : false,
+    "generatedAccount" : false,
+    "hidden" : false,
+    "placeholder" : false
+  }
+}, {
+  "date" : "-999999999-01-01",
+  "accountId" : "Assets",
+  "ccy" : "USD",
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : false,
+    "automaticReinvestment" : false,
+    "generatedAccount" : true,
+    "hidden" : false,
+    "placeholder" : false
+  }
+}, {
+  "date" : "-999999999-01-01",
+  "accountId" : "Assets:UTrade",
+  "ccy" : "USD",
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : false,
+    "automaticReinvestment" : false,
+    "generatedAccount" : true,
+    "hidden" : false,
+    "placeholder" : false
+  }
+}, {
+  "date" : "1970-01-01",
+  "accountId" : "Expenses:Taxes:US-Federal",
+  "ccy" : "USD",
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : false,
+    "automaticReinvestment" : false,
+    "generatedAccount" : false,
+    "hidden" : false,
+    "placeholder" : false
+  }
+}, {
+  "date" : "1970-01-01",
+  "accountId" : "Income:Interest:Savings",
+  "ccy" : "USD",
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : false,
+    "automaticReinvestment" : false,
+    "generatedAccount" : false,
+    "hidden" : false,
+    "placeholder" : false
+  }
+}, {
+  "date" : "1970-01-01",
+  "accountId" : "Income:Interest:Checking",
+  "ccy" : "USD",
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : false,
+    "automaticReinvestment" : false,
+    "generatedAccount" : false,
+    "hidden" : false,
+    "placeholder" : false
+  }
+}, {
+  "date" : "1970-01-01",
+  "accountId" : "Assets:Cash",
+  "ccy" : "USD",
+  "options" : {
+    "tradingAccount" : false,
+    "fundingAccount" : "Equity:Opening",
+    "description" : "",
+    "multiAsset" : false,
+    "automaticReinvestment" : false,
+    "generatedAccount" : false,
+    "hidden" : false,
+    "placeholder" : false
+  }
+}, {
+  "date" : "1970-01-01",
+  "accountId" : "Expenses:Financial:Commissions",
+  "ccy" : "USD",
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : false,
+    "automaticReinvestment" : false,
+    "generatedAccount" : false,
+    "hidden" : false,
+    "placeholder" : false
+  }
+}, {
+  "date" : "1970-01-01",
+  "accountId" : "Expenses:Insurance:Life",
+  "ccy" : "USD",
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : false,
+    "automaticReinvestment" : false,
+    "generatedAccount" : false,
+    "hidden" : false,
+    "placeholder" : false
+  }
+}, {
+  "date" : "-999999999-01-01",
+  "accountId" : "Expenses:Taxes",
+  "ccy" : "USD",
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : false,
+    "automaticReinvestment" : false,
+    "generatedAccount" : true,
+    "hidden" : false,
+    "placeholder" : false
+  }
+}, {
+  "date" : "1970-01-01",
+  "accountId" : "Liabilities:BestBank:Mortgage:Loan",
+  "ccy" : "USD",
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : false,
+    "automaticReinvestment" : false,
+    "generatedAccount" : false,
+    "hidden" : false,
+    "placeholder" : false
+  }
+}, {
+  "date" : "1970-01-01",
+  "accountId" : "Expenses:UTrade:Account",
+  "ccy" : "USD",
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : true,
+    "automaticReinvestment" : false,
+    "generatedAccount" : true,
+    "hidden" : false,
+    "placeholder" : false
+  }
+}, {
+  "date" : "1970-01-01",
+  "accountId" : "Assets:UTrade:Account:AAPL",
+  "ccy" : "AAPL",
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : false,
+    "automaticReinvestment" : false,
+    "generatedAccount" : true,
+    "hidden" : false,
+    "placeholder" : false
+  }
+}, {
+  "date" : "1970-01-01",
+  "accountId" : "Expenses:Govt-Services",
+  "ccy" : "USD",
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : false,
+    "automaticReinvestment" : false,
+    "generatedAccount" : false,
+    "hidden" : false,
+    "placeholder" : false
+  }
+}, {
+  "date" : "-999999999-01-01",
+  "accountId" : "Liabilities:Credit-Card",
+  "ccy" : "USD",
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : false,
+    "automaticReinvestment" : false,
+    "generatedAccount" : true,
+    "hidden" : false,
+    "placeholder" : false
+  }
+}, {
+  "date" : "1970-01-01",
+  "accountId" : "Expenses:Communications:Mail",
+  "ccy" : "USD",
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : false,
+    "automaticReinvestment" : false,
+    "generatedAccount" : false,
+    "hidden" : false,
+    "placeholder" : false
+  }
+}, {
+  "date" : "1970-01-01",
+  "accountId" : "Income:BestBank:Savings",
+  "ccy" : "USD",
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : false,
+    "automaticReinvestment" : false,
+    "generatedAccount" : true,
+    "hidden" : false,
+    "placeholder" : false
+  }
+}, {
+  "date" : "-999999999-01-01",
+  "accountId" : "Expenses:Communications",
+  "ccy" : "USD",
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : false,
+    "automaticReinvestment" : false,
+    "generatedAccount" : true,
+    "hidden" : false,
+    "placeholder" : false
+  }
+}, {
+  "date" : "-999999999-01-01",
+  "accountId" : "Assets:BestBank",
+  "ccy" : "USD",
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : false,
+    "automaticReinvestment" : false,
+    "generatedAccount" : true,
+    "hidden" : false,
+    "placeholder" : false
+  }
+}, {
+  "date" : "-999999999-01-01",
+  "accountId" : "Expenses:Transportation",
+  "ccy" : "USD",
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : false,
+    "automaticReinvestment" : false,
+    "generatedAccount" : true,
+    "hidden" : false,
+    "placeholder" : false
+  }
+}, {
+  "date" : "1970-01-01",
+  "accountId" : "Expenses:Financial:Fees",
+  "ccy" : "USD",
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : false,
+    "automaticReinvestment" : false,
+    "generatedAccount" : false,
+    "hidden" : false,
+    "placeholder" : false
+  }
+}, {
+  "date" : "1970-01-01",
+  "accountId" : "Income:UTrade:Account",
+  "ccy" : "USD",
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : true,
+    "automaticReinvestment" : false,
+    "generatedAccount" : true,
+    "hidden" : false,
+    "placeholder" : false
+  }
+}, {
+  "date" : "1970-01-01",
+  "accountId" : "Expenses:Communications:Phone",
+  "ccy" : "USD",
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : false,
+    "automaticReinvestment" : false,
+    "generatedAccount" : false,
+    "hidden" : false,
+    "placeholder" : false
+  }
+}, {
+  "date" : "1970-01-01",
+  "accountId" : "Expenses:UTrade:Account:USD",
+  "ccy" : "USD",
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : false,
+    "automaticReinvestment" : false,
+    "generatedAccount" : true,
+    "hidden" : false,
+    "placeholder" : false
+  }
+}, {
+  "date" : "1970-01-01",
+  "accountId" : "Assets:UTrade:Account",
+  "ccy" : "USD",
+  "options" : {
+    "expenseAccount" : "Expenses:UTrade:Account:USD",
+    "tradingAccount" : false,
+    "incomeAccount" : "Income:UTrade:Account:USD",
+    "fundingAccount" : "Assets:BestBank:Savings",
+    "description" : "",
+    "multiAsset" : true,
+    "automaticReinvestment" : false,
+    "generatedAccount" : false,
+    "hidden" : false,
+    "placeholder" : false
+  }
+}, {
+  "date" : "-999999999-01-01",
+  "accountId" : "Expenses:Insurance",
+  "ccy" : "USD",
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : false,
+    "automaticReinvestment" : false,
+    "generatedAccount" : true,
+    "hidden" : false,
+    "placeholder" : false
+  }
+}, {
+  "date" : "-999999999-01-01",
+  "accountId" : "Equity",
+  "ccy" : "USD",
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : false,
+    "automaticReinvestment" : false,
+    "generatedAccount" : true,
+    "hidden" : false,
+    "placeholder" : false
+  }
+}, {
+  "date" : "1970-01-01",
+  "accountId" : "Assets:AccountsReceivable",
+  "ccy" : "USD",
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : false,
+    "automaticReinvestment" : false,
+    "generatedAccount" : false,
+    "hidden" : false,
+    "placeholder" : false
+  }
+}, {
+  "date" : "-999999999-01-01",
+  "accountId" : "Income",
+  "ccy" : "USD",
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : false,
+    "automaticReinvestment" : false,
+    "generatedAccount" : true,
+    "hidden" : false,
+    "placeholder" : false
+  }
+} ]

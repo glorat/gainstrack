@@ -1,0 +1,211 @@
+[ {
+  "accountId" : "",
+  "date" : "1900-01-01",
+  "asset" : "QS90",
+  "options" : {
+    "name" : "",
+    "ticker" : "",
+    "tags" : [ ]
+  },
+  "commandType" : "commodity",
+  "description" : "QS90"
+}, {
+  "accountId" : "",
+  "date" : "1900-01-01",
+  "asset" : "GBP",
+  "options" : {
+    "name" : "",
+    "ticker" : "",
+    "tags" : [ ]
+  },
+  "commandType" : "commodity",
+  "description" : "GBP"
+}, {
+  "accountId" : "",
+  "date" : "1900-01-01",
+  "asset" : "QLNC",
+  "options" : {
+    "name" : "",
+    "ticker" : "",
+    "tags" : [ ]
+  },
+  "commandType" : "commodity",
+  "description" : "QLNC"
+}, {
+  "accountId" : "",
+  "date" : "1900-01-01",
+  "asset" : "OPY7",
+  "options" : {
+    "name" : "",
+    "ticker" : "",
+    "tags" : [ ]
+  },
+  "commandType" : "commodity",
+  "description" : "OPY7"
+}, {
+  "accountId" : "",
+  "date" : "1900-01-01",
+  "asset" : "OPXC",
+  "options" : {
+    "name" : "",
+    "ticker" : "",
+    "tags" : [ ]
+  },
+  "commandType" : "commodity",
+  "description" : "OPXC"
+}, {
+  "accountId" : "",
+  "date" : "1900-01-01",
+  "asset" : "USD",
+  "options" : {
+    "name" : "",
+    "ticker" : "",
+    "tags" : [ ]
+  },
+  "commandType" : "commodity",
+  "description" : "USD"
+}, {
+  "accountId" : "",
+  "date" : "1900-01-01",
+  "asset" : "TBOND",
+  "options" : {
+    "name" : "",
+    "ticker" : "",
+    "tags" : [ ]
+  },
+  "commandType" : "commodity",
+  "description" : "TBOND"
+}, {
+  "accountId" : "",
+  "date" : "1900-01-01",
+  "asset" : "VTI",
+  "options" : {
+    "name" : "",
+    "ticker" : "",
+    "tags" : [ ]
+  },
+  "commandType" : "commodity",
+  "description" : "VTI"
+}, {
+  "accountId" : "",
+  "date" : "1900-01-01",
+  "asset" : "BRK-B",
+  "options" : {
+    "name" : "",
+    "ticker" : "",
+    "tags" : [ ]
+  },
+  "commandType" : "commodity",
+  "description" : "BRK-B"
+}, {
+  "accountId" : "",
+  "date" : "1900-01-01",
+  "asset" : "VWRD",
+  "options" : {
+    "arbitrary" : "hello world",
+    "name" : "",
+    "ticker" : "VWRD.LON",
+    "tags" : [ "equity", "global" ]
+  },
+  "commandType" : "commodity",
+  "description" : "VWRD"
+}, {
+  "accountId" : "",
+  "date" : "1900-01-01",
+  "asset" : "HKD",
+  "options" : {
+    "name" : "",
+    "ticker" : "",
+    "tags" : [ ]
+  },
+  "commandType" : "commodity",
+  "description" : "HKD"
+}, {
+  "accountId" : "",
+  "date" : "1900-01-01",
+  "asset" : "IUAA",
+  "options" : {
+    "name" : "",
+    "ticker" : "IUAA.LON",
+    "tags" : [ "bond", "us" ]
+  },
+  "commandType" : "commodity",
+  "description" : "IUAA"
+}, {
+  "accountId" : "",
+  "date" : "1900-01-01",
+  "asset" : "CNY",
+  "options" : {
+    "name" : "",
+    "ticker" : "",
+    "tags" : [ ]
+  },
+  "commandType" : "commodity",
+  "description" : "CNY"
+}, {
+  "accountId" : "",
+  "date" : "1900-01-01",
+  "asset" : "GBR04S9K",
+  "options" : {
+    "name" : "",
+    "ticker" : "",
+    "tags" : [ ]
+  },
+  "commandType" : "commodity",
+  "description" : "GBR04S9K"
+}, {
+  "accountId" : "",
+  "date" : "1900-01-01",
+  "asset" : "GBR06HUW",
+  "options" : {
+    "name" : "",
+    "ticker" : "",
+    "tags" : [ ]
+  },
+  "commandType" : "commodity",
+  "description" : "GBR06HUW"
+}, {
+  "accountId" : "",
+  "date" : "1900-01-01",
+  "asset" : "FTSE",
+  "options" : {
+    "name" : "",
+    "ticker" : "",
+    "tags" : [ ]
+  },
+  "commandType" : "commodity",
+  "description" : "FTSE"
+}, {
+  "accountId" : "",
+  "date" : "1900-01-01",
+  "asset" : "VCSH",
+  "options" : {
+    "name" : "",
+    "ticker" : "",
+    "tags" : [ ]
+  },
+  "commandType" : "commodity",
+  "description" : "VCSH"
+}, {
+  "accountId" : "",
+  "date" : "1900-01-01",
+  "asset" : "AMER",
+  "options" : {
+    "name" : "",
+    "ticker" : "",
+    "tags" : [ ]
+  },
+  "commandType" : "commodity",
+  "description" : "AMER"
+}, {
+  "accountId" : "",
+  "date" : "1900-01-01",
+  "asset" : "SVDK",
+  "options" : {
+    "name" : "",
+    "ticker" : "",
+    "tags" : [ ]
+  },
+  "commandType" : "commodity",
+  "description" : "SVDK"
+} ]
