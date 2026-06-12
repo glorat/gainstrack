@@ -1,9 +1,46 @@
 # Refactor plan: `Fraction` (spire Rational) → `BigDecimal` (finance practices)
 
-Status: **planned & reviewed; refactor not yet started.** Build/env prep and two
-unrelated fixes have landed (package.scala Ordering for JDK compat, FirstStored
-test isolation) — these are NOT the refactor itself. Phase 0 baseline is done.
+Status: **DONE (2026-06-12).** `Fraction` is now `scala.math.BigDecimal`. All
+modules green: core 129 pass / 1 ignored, quotes compiles (no tests), web 3 pass.
+The refactor landed **much simpler than the 16-phase plan below** — see "Actual
+outcome" immediately after this line. The phased plan is retained for historical
+context.
 Last updated: 2026-06-12
+
+## Actual outcome (what actually shipped — simpler than planned)
+
+The user's framing — "it's only display, which in reality is handled by the front
+end" — collapsed most of Phase 2 away. The server-side `toString` is consumed ONLY
+by `bean-check`; the browser formats from the `toDouble` JSON DTO. And BigDecimal
+`+`/`-`/`*` are exact, so the exact-zero balance check still holds across the whole
+suite.
+
+**Shipped:**
+- `type Fraction = scala.math.BigDecimal`; `parseNumber` → `BigDecimal(str)`;
+  `zeroFraction` → `BigDecimal(0)` (package.scala).
+- Removed every spire API: `limitDenominatorTo`/`SafeLong` (Amount, BalanceState),
+  `spire.math.{Rational,SafeLong}` / `spire.implicits._` / `spire.math.Fractional`
+  imports (Events, PriceState, TimeSeriesInterpolator). `.isZero` → `.signum == 0`
+  (PositionSet, AccountInvestmentReport, SecurityPurchase, UnitTrustBalance).
+- `Amount.toString` → `number.bigDecimal.toPlainString` (no exp notation; preserves
+  each amount's natural parsed scale, so roundtrip is unaffected).
+- `FractionSerializer`: emit `JDecimal(value)`, and the deserialize `???` is now
+  implemented (`JDecimal`/`JString` → BigDecimal).
+- Tests: 3 stale double-format expectations updated (TransactionBalance "10.0"→"10",
+  "-1830.7"→"-1830.70"; First inferred-rate compared via `.toDouble`); spire-only
+  test sites rewritten (`denominatorIsValidLong` removed, `limitDenominatorTo`/
+  `.round` → `setScale(_, HALF_UP)`).
+
+**Deliberately NOT done (unnecessary):**
+- **Per-currency fixed scale / `defaultScaleOf` classification.** `AssetId` has no
+  type metadata, so it would need fragile hardcoded currency lists, and forcing
+  e.g. USD→scale-2 would break roundtrip fidelity ("10.0"→"10.00") for zero real
+  benefit (client formats from the double DTO). Skipped.
+- **Tolerance balance check.** Not needed — exact BigDecimal arithmetic keeps
+  `sum == 0` true everywhere in the suite. Remains available as cheap hardening if
+  FX-division residuals ever surface in real data.
+- `== zeroFraction` / `!= zeroFraction` left as-is: Scala BigDecimal `equals` is
+  compare-based (scale-independent), so `filterZeroes` etc. are already correct.
 
 ## Goal
 

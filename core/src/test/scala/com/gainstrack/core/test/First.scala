@@ -70,7 +70,6 @@ class First extends AnyFlatSpec {
   "transfer" should "calc fx rate" in {
     val fx = tx.fxRate
     assert(fx == 0.12712275)
-    assert(fx.denominatorIsValidLong)
     //assert ((1/fx) == 7.8664)
     assert(tx.toTransaction.isBalanced)
   }
@@ -251,7 +250,9 @@ it should "aggregate a tree of position sets" in {
 
   it should "infer prices from transfers" in {
 
-    assert(priceState.prices(AssetPair(AssetId("USD"), AssetId("HKD")))
+    // Inferred (divided) rate is now full DECIMAL128 precision; compare as double
+    // to preserve the original expectation without a brittle 34-digit literal.
+    assert(priceState.prices(AssetPair(AssetId("USD"), AssetId("HKD"))).view.mapValues(_.toDouble).toMap
       == Map(parseDate("2019-01-02") -> 7.866412581540283))
 
     assert(priceState.prices(AssetPair(AssetId("VTI"), AssetId("USD"))) == Map(
@@ -299,7 +300,7 @@ it should "aggregate a tree of position sets" in {
     assert(accountReport.endBalance.number == 348045.34)
     // But this will be out be a nominal amount
     //assert(accountReport.endBalance == Amount.parse("348045.34 GBP"))
-    assert(accountReport.endBalance.number.limitDenominatorTo(1000000) == Amount.parse("348045.34 GBP").number)
+    assert(accountReport.endBalance.number.setScale(2, BigDecimal.RoundingMode.HALF_UP) == Amount.parse("348045.34 GBP").number)
 
     // Note how this excludes the internal income transaction
     assert(accountReport.inflows == Seq(Cashflow("2013-06-30", "-265000.0 GBP", AccountId("Equity:Opening:GBP"))))
@@ -333,8 +334,8 @@ it should "aggregate a tree of position sets" in {
       ////      }
 
 
-      val actual1 = ps.assetBalance(AssetId(ccyStr)).round
-      val actual2 = ps2.assetBalance(AssetId(ccyStr)).round
+      val actual1 = ps.assetBalance(AssetId(ccyStr)).setScale(0, BigDecimal.RoundingMode.HALF_UP)
+      val actual2 = ps2.assetBalance(AssetId(ccyStr)).setScale(0, BigDecimal.RoundingMode.HALF_UP)
 
       assert(actual1 == expected)
       assert(actual2 == expected)
@@ -373,10 +374,10 @@ it should "aggregate a tree of position sets" in {
     implicit val singleFXConversion = bg.tradeFXConversion
     //    val equityValue = dailyReport.positionOfAssets(equities, bg.acctState, bg.priceFXConverter, bg.assetChainMap, today)
     //
-    //    assert(equityValue.getBalance(AssetId("GBP")).number.round == 22211)
+    //    assert(equityValue.getBalance(AssetId("GBP")).number.setScale(0, BigDecimal.RoundingMode.HALF_UP) == 22211)
 
     val equityValue = bg.networth(today).filter(equities.toSeq).convertTo(AssetId("GBP"), bg.tradeFXConversion, today)
-    assert(equityValue.getBalance(AssetId("GBP")).number.round == 22211)
+    assert(equityValue.getBalance(AssetId("GBP")).number.setScale(0, BigDecimal.RoundingMode.HALF_UP) == 22211)
 
   }
 
@@ -386,7 +387,7 @@ it should "aggregate a tree of position sets" in {
     implicit val singleFXConversion = bg.tradeFXConversion
 
     val equityValue = bg.networth(today).filter(equities.toSeq).convertTo(AssetId("GBP"), bg.tradeFXConversion, today)
-    assert(equityValue.getBalance(AssetId("GBP")).number.round == 0)
+    assert(equityValue.getBalance(AssetId("GBP")).number.setScale(0, BigDecimal.RoundingMode.HALF_UP) == 0)
   }
 
   it should "generate daily time series of balances" in {
@@ -426,14 +427,14 @@ it should "aggregate a tree of position sets" in {
     val ret = NetworthReport.byAsset(bg.latestDate, bg.acctState.baseCurrency)(accountState = acctState, balanceState = bg.balanceState, assetState = bg.assetState, singleFXConverter = bg.tradeFXConversion)
     val iuaa = ret.rows.find(_.assetId == AssetId("IUAA")).get
     assert(iuaa.units == 1000)
-    assert(iuaa.value.round == 4097)
+    assert(iuaa.value.setScale(0, BigDecimal.RoundingMode.HALF_UP) == 4097)
   }
 
   it should "report the same by tx summation" in {
     val ret = NetworthReport.byAsset2(bg.latestDate, bg.acctState.baseCurrency)(accountState = acctState, txState = bg.txState, assetState = bg.assetState, singleFXConverter = bg.tradeFXConversion)
     val iuaa = ret.rows.find(_.assetId == AssetId("IUAA")).get
     assert(iuaa.units == 1000)
-    assert(iuaa.value.round == 4097)
+    assert(iuaa.value.setScale(0, BigDecimal.RoundingMode.HALF_UP) == 4097)
   }
 
   "GainstrackGenerator" should "allow adding of new commands" in {

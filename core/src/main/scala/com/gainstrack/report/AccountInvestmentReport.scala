@@ -30,7 +30,7 @@ class AccountInvestmentReport(accountId: AccountId, ccy:AssetId, fromDate:LocalD
     total + b * fx
   })
 
-  private val headCashflows = if (startBalance.number.isZero) inflows else Cashflow(firstDate, startBalance, accountId) +: inflows
+  private val headCashflows = if (startBalance.number.signum == 0) inflows else Cashflow(firstDate, startBalance, accountId) +: inflows
 
   private val initialCashflows = headCashflows :+ Cashflow(queryDate, endBalance, accountId)
   // Normalise the cashflow table to a an appropriate single currency

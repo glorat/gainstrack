@@ -5,7 +5,7 @@ import java.time.LocalDate
 package object core {
   import scala.language.implicitConversions
 
-  type Fraction = spire.math.Rational
+  type Fraction = scala.math.BigDecimal
   type LocalDate = java.time.LocalDate
   type ZonedDateTime = java.time.ZonedDateTime
   type GUID = net.glorat.cqrs.GUID
@@ -17,8 +17,8 @@ package object core {
   // clearly a timezone issue
   def today(): LocalDate = LocalDate.now()
   def parseDate(str:String):LocalDate = java.time.LocalDate.parse(str) // TODO: yyyy-mm-dd
-  def parseNumber(str:String): Fraction = spire.math.Rational(BigDecimal(str))
-  def zeroFraction:Fraction = spire.math.Rational.zero
+  def parseNumber(str:String): Fraction = BigDecimal(str)
+  def zeroFraction:Fraction = BigDecimal(0)
 
   implicit def stringToBalance(str:String): Amount = Amount.parse(str)
 

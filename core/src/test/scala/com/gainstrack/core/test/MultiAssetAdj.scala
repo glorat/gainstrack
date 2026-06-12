@@ -22,9 +22,9 @@ class MultiAssetAdj extends AnyFlatSpec {
 
   it should "handle success adjustments to different levels" in {
     val acctId = AccountId("Assets:Bank:CAD")
-    assert (bg.balanceState.getBalance(acctId, parseDate("2010-10-31")).number.round == 0.0)
-    assert (bg.balanceState.getBalance(acctId, parseDate("2017-11-01")).number.round == 1500)
-    assert (bg.balanceState.getBalance(acctId, parseDate("2019-11-01")).number.round == 10000)
+    assert (bg.balanceState.getBalance(acctId, parseDate("2010-10-31")).number.setScale(0, BigDecimal.RoundingMode.HALF_UP) == 0.0)
+    assert (bg.balanceState.getBalance(acctId, parseDate("2017-11-01")).number.setScale(0, BigDecimal.RoundingMode.HALF_UP) == 1500)
+    assert (bg.balanceState.getBalance(acctId, parseDate("2019-11-01")).number.setScale(0, BigDecimal.RoundingMode.HALF_UP) == 10000)
   }
 
   it should "generate expected transactions" in {

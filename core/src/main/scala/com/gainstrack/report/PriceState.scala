@@ -4,7 +4,6 @@ import com.gainstrack.command._
 import com.gainstrack.core.TimeSeriesInterpolator.linearDouble
 import com.gainstrack.core._
 import net.glorat.cqrs.{AggregateRootState, DomainEvent}
-import spire.math.SafeLong
 
 import scala.annotation.tailrec
 import scala.collection.immutable.SortedMap

@@ -2,8 +2,6 @@ package com.gainstrack.core
 
 import java.time.temporal.ChronoUnit
 
-import spire.math.Fractional
-
 import scala.collection.{GenMap, SortedMap}
 
 
@@ -65,7 +63,6 @@ object TimeSeriesInterpolator {
 
   def linearFraction: Interpolator[Fraction,Double] = (nearest, date) => {
     type N= Fraction
-    import spire.implicits._
 
     val ret: Option[Double] = nearest match {
       case _: Empty[N] => None
@@ -92,7 +89,6 @@ object TimeSeriesInterpolator {
 
   def linearDouble: Interpolator[Double,Double] = (nearest, date) => {
     type N = Double
-    import spire.implicits._
 
     val ret: Option[Double] = nearest match {
       case _: Empty[N] => None

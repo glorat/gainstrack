@@ -3,7 +3,6 @@ package com.gainstrack.report
 import com.gainstrack.command._
 import com.gainstrack.core._
 import net.glorat.cqrs.{AggregateRootState, DomainEvent}
-import spire.math.SafeLong
 
 import scala.collection.immutable.SortedMap
 import scala.collection.MapView
@@ -20,7 +19,6 @@ case class BalanceState(acctState:AccountState, balances:Map[AccountId,BalanceSt
     val series = balanceSeries.get(account).getOrElse(SortedColumnMap())
     val ret:Option[Fraction] = interp.getValue(series, date)(TimeSeriesInterpolator.step)
       .map(x => x)
-       // .map(f => f.limitDenominatorTo(SafeLong(1000000)))
     ret
   }
 
@@ -32,9 +30,6 @@ case class BalanceState(acctState:AccountState, balances:Map[AccountId,BalanceSt
     balanceSeries.get(account).map(entry => {
       val ccy = balances(account).ccy
       val ret: Fraction = interp.getValue(entry, date)(TimeSeriesInterpolator.step)
-        // Danger of reverting back to Fractional from a Double FX conversion here
-        //.map(f => spire.math.Rational.apply(f).limitDenominatorTo(1000000) )
-        .map(_.limitDenominatorTo(1000000))
         .getOrElse(zeroFraction)
       Amount(ret, ccy)
     })

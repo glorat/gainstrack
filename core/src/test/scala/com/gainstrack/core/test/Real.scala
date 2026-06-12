@@ -141,8 +141,8 @@ class Real extends AnyFlatSpec with BeforeAndAfterEach {
 
     val bondTotal = bondValue.getBalance(bg.acctState.baseCurrency)
 
-    assert(equityTotal.number.round > 0)
-    assert(bondTotal.number.round > 0)
+    assert(equityTotal.number.setScale(0, BigDecimal.RoundingMode.HALF_UP) > 0)
+    assert(bondTotal.number.setScale(0, BigDecimal.RoundingMode.HALF_UP) > 0)
     val ratio = equityTotal / (equityTotal+bondTotal)
 
     assert(ratio.number > 0.5)
