@@ -1,0 +1,95 @@
+{
+  "Assets:Bank:HSBCCN" : {
+    "series" : {
+      "2009-12-31" : 0,
+      "2019-03-15" : -83364.65,
+      "2019-03-26" : -283364.65
+    },
+    "ccy" : "CNY"
+  },
+  "Expenses:Investment:HSBC" : {
+    "series" : { },
+    "ccy" : "USD"
+  },
+  "Equity:Opening:USD" : {
+    "series" : {
+      "2009-12-31" : 0,
+      "2019-01-15" : -23.20,
+      "2019-05-03" : 34985.1000
+    },
+    "ccy" : "USD"
+  },
+  "Assets:Investment:HSBC:VTI" : {
+    "series" : {
+      "2019-01-02" : 8,
+      "2019-03-15" : 22,
+      "2019-03-26" : 52
+    },
+    "ccy" : "VTI"
+  },
+  "Assets:Investment:HSBC:BRK-B" : {
+    "series" : {
+      "2019-03-27" : 15
+    },
+    "ccy" : "BRK-B"
+  },
+  "Income:Investment:HSBC:VCSH" : {
+    "series" : {
+      "2019-04-08" : -1.95
+    },
+    "ccy" : "USD"
+  },
+  "Expenses:Investment:HSBC:USD" : {
+    "series" : {
+      "2019-01-02" : 18.00
+    },
+    "ccy" : "USD"
+  },
+  "Assets:Investment:HSBC:USD" : {
+    "series" : {
+      "2019-01-02" : 4047.8700,
+      "2019-01-15" : 4071.0700,
+      "2019-03-08" : 3043.1600,
+      "2019-03-15" : 15331.2100,
+      "2019-03-26" : 40661.2700,
+      "2019-03-27" : 37652.5700,
+      "2019-03-29" : 37664.4500,
+      "2019-04-08" : 37666.4000,
+      "2019-05-03" : 2658.1000
+    },
+    "ccy" : "USD"
+  },
+  "Assets:Investment:HSBC" : {
+    "series" : {
+      "2009-12-31" : 0
+    },
+    "ccy" : "USD"
+  },
+  "Income:Investment:HSBC:VTI" : {
+    "series" : {
+      "2019-03-29" : -11.88
+    },
+    "ccy" : "USD"
+  },
+  "Income:Investment:HSBC" : {
+    "series" : { },
+    "ccy" : "USD"
+  },
+  "Assets:Bank:HSBCHK" : {
+    "series" : {
+      "2009-12-31" : 0,
+      "2019-01-02" : -40000
+    },
+    "ccy" : "HKD"
+  },
+  "Income:Investment:HSBC:USD" : {
+    "series" : { },
+    "ccy" : "USD"
+  },
+  "Assets:Investment:HSBC:VCSH" : {
+    "series" : {
+      "2019-03-08" : 13
+    },
+    "ccy" : "VCSH"
+  }
+}

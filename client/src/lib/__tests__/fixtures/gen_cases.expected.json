@@ -1,0 +1,49 @@
+[ {
+  "id" : "ok-simple-transfer",
+  "status" : "ok"
+}, {
+  "id" : "ok-multiasset-trade",
+  "status" : "ok"
+}, {
+  "id" : "ok-earn-with-funding",
+  "status" : "ok"
+}, {
+  "id" : "ok-spend-with-funding",
+  "status" : "ok"
+}, {
+  "id" : "ok-multiasset-unit",
+  "status" : "ok"
+}, {
+  "id" : "ok-bal-adjustment",
+  "status" : "ok"
+}, {
+  "id" : "err-trade-nonexistent-account",
+  "status" : "error"
+}, {
+  "id" : "err-trade-non-multiasset",
+  "status" : "error"
+}, {
+  "id" : "err-unit-non-multiasset",
+  "status" : "error"
+}, {
+  "id" : "err-unit-nonexistent-account",
+  "status" : "error"
+}, {
+  "id" : "err-transfer-nonexistent-dest",
+  "status" : "error"
+}, {
+  "id" : "err-transfer-nonexistent-source",
+  "status" : "error"
+}, {
+  "id" : "err-fund-nonexistent",
+  "status" : "error"
+}, {
+  "id" : "err-earn-no-funding",
+  "status" : "error"
+}, {
+  "id" : "err-spend-no-funding",
+  "status" : "error"
+}, {
+  "id" : "err-yield-nonexistent-account",
+  "status" : "error"
+} ]

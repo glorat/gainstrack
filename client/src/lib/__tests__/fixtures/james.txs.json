@@ -1,0 +1,65 @@
+[ {
+  "originIndex" : 8,
+  "postDate" : "2019-01-01",
+  "postings" : [ {
+    "account" : "Equity:Opening:GBP",
+    "value" : {
+      "number" : -50000.0,
+      "ccy" : "GBP"
+    }
+  }, {
+    "account" : "Assets:Bank:HSBCGBP",
+    "value" : {
+      "number" : 50000.0,
+      "ccy" : "GBP"
+    }
+  } ]
+}, {
+  "originIndex" : 9,
+  "postDate" : "2019-01-01",
+  "postings" : [ {
+    "account" : "Equity:Opening:USD",
+    "value" : {
+      "number" : -100000.0,
+      "ccy" : "USD"
+    }
+  }, {
+    "account" : "Assets:Bank:HSBCUSD",
+    "value" : {
+      "number" : 100000.0,
+      "ccy" : "USD"
+    }
+  } ]
+}, {
+  "originIndex" : 10,
+  "postDate" : "2019-01-01",
+  "postings" : [ {
+    "account" : "Equity:Opening:GBP",
+    "value" : {
+      "number" : -10000,
+      "ccy" : "GBP"
+    }
+  }, {
+    "account" : "Assets:Equities:GBPStock",
+    "value" : {
+      "number" : 10000,
+      "ccy" : "GBP"
+    }
+  } ]
+}, {
+  "originIndex" : 11,
+  "postDate" : "2019-01-01",
+  "postings" : [ {
+    "account" : "Equity:Opening:USD",
+    "value" : {
+      "number" : -25000,
+      "ccy" : "USD"
+    }
+  }, {
+    "account" : "Assets:Equities:USDStock",
+    "value" : {
+      "number" : 25000,
+      "ccy" : "USD"
+    }
+  } ]
+} ]

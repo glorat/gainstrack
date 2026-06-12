@@ -35,7 +35,7 @@ case class SecurityPurchase(
     require(baseAcct.accountId == accountId)
     require(baseAcct.options.multiAsset)
 
-    val expenseCcy = if (commission.number.isZero) baseAcct.key.assetId else commission.ccy;
+    val expenseCcy = if (commission.number.signum == 0) baseAcct.key.assetId else commission.ccy;
     val cashAcct = baseAcct.subAccount(price.ccy)
     val incomeAcct = baseAcct.relatedSubAccount(Income, price.ccy)
     val expenseAcct = baseAcct.relatedSubAccount(Expenses, expenseCcy)

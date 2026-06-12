@@ -1,0 +1,169 @@
+[ {
+  "accountId" : "Equity:Opening",
+  "date" : "1960-01-01",
+  "balance" : {
+    "number" : 0,
+    "ccy" : "USD"
+  },
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : true,
+    "automaticReinvestment" : false,
+    "generatedAccount" : false,
+    "hidden" : false,
+    "placeholder" : false
+  },
+  "commandType" : "open",
+  "description" : "Account opened"
+}, {
+  "accountId" : "Assets:Bank",
+  "date" : "1960-01-01",
+  "balance" : {
+    "number" : 0,
+    "ccy" : "USD"
+  },
+  "options" : {
+    "tradingAccount" : false,
+    "fundingAccount" : "Equity:Opening",
+    "description" : "",
+    "multiAsset" : true,
+    "automaticReinvestment" : false,
+    "generatedAccount" : false,
+    "hidden" : false,
+    "placeholder" : false
+  },
+  "commandType" : "open",
+  "description" : "Account opened"
+}, {
+  "accountId" : "",
+  "date" : "2017-01-01",
+  "asset" : "XIU",
+  "price" : {
+    "number" : 10.0,
+    "ccy" : "CAD"
+  },
+  "commandType" : "price",
+  "description" : "CAD/XIU = 10.0 CAD"
+}, {
+  "accountId" : "",
+  "date" : "2017-01-01",
+  "asset" : "CAD",
+  "price" : {
+    "number" : 0.3,
+    "ccy" : "USD"
+  },
+  "commandType" : "price",
+  "description" : "USD/CAD = 0.3 USD"
+}, {
+  "accountId" : "Assets:Bank",
+  "date" : "2017-10-31",
+  "balance" : {
+    "number" : 1500,
+    "ccy" : "CAD"
+  },
+  "otherAccount" : "Equity:Opening",
+  "commandType" : "adj",
+  "description" : "Account balance 1500 CAD"
+}, {
+  "accountId" : "",
+  "date" : "2019-01-01",
+  "asset" : "XIU",
+  "price" : {
+    "number" : 10.0,
+    "ccy" : "CAD"
+  },
+  "commandType" : "price",
+  "description" : "CAD/XIU = 10.0 CAD"
+}, {
+  "accountId" : "",
+  "date" : "2019-01-01",
+  "asset" : "CAD",
+  "price" : {
+    "number" : 0.5,
+    "ccy" : "USD"
+  },
+  "commandType" : "price",
+  "description" : "USD/CAD = 0.5 USD"
+}, {
+  "accountId" : "Assets:Bank",
+  "date" : "2019-10-31",
+  "balance" : {
+    "number" : 10000,
+    "ccy" : "CAD"
+  },
+  "otherAccount" : "Equity:Opening",
+  "commandType" : "adj",
+  "description" : "Account balance 10000 CAD"
+}, {
+  "accountId" : "Assets:Bank",
+  "date" : "2019-11-11",
+  "change" : {
+    "number" : 1000.0,
+    "ccy" : "XIU"
+  },
+  "price" : {
+    "number" : 10.0,
+    "ccy" : "CAD"
+  },
+  "commission" : {
+    "number" : 0,
+    "ccy" : "CAD"
+  },
+  "commandType" : "trade",
+  "description" : "BUY 1000.0 XIU @10.0 CAD"
+}, {
+  "accountId" : "Assets:Bank",
+  "date" : "2019-12-01",
+  "balance" : {
+    "number" : 1001,
+    "ccy" : "CAD"
+  },
+  "otherAccount" : "Equity:Opening",
+  "commandType" : "adj",
+  "description" : "Account balance 1001 CAD"
+}, {
+  "accountId" : "Assets:Bank",
+  "date" : "2019-12-01",
+  "change" : {
+    "number" : 100.0,
+    "ccy" : "XIU"
+  },
+  "price" : {
+    "number" : 10.0,
+    "ccy" : "CAD"
+  },
+  "commission" : {
+    "number" : 0,
+    "ccy" : "CAD"
+  },
+  "commandType" : "trade",
+  "description" : "BUY 100.0 XIU @10.0 CAD"
+}, {
+  "accountId" : "Assets:Bank",
+  "date" : "2019-12-05",
+  "change" : {
+    "number" : 100.0,
+    "ccy" : "XIU"
+  },
+  "price" : {
+    "number" : 10.0,
+    "ccy" : "CAD"
+  },
+  "commission" : {
+    "number" : 0,
+    "ccy" : "CAD"
+  },
+  "commandType" : "trade",
+  "description" : "BUY 100.0 XIU @10.0 CAD"
+}, {
+  "accountId" : "Assets:Bank",
+  "date" : "2019-12-05",
+  "balance" : {
+    "number" : 1,
+    "ccy" : "CAD"
+  },
+  "otherAccount" : "Equity:Opening",
+  "commandType" : "bal",
+  "description" : "Account balance 1 CAD"
+} ]

@@ -1,0 +1,314 @@
+{
+  "Income:Salary:AcmeCo:USD" : {
+    "series" : {
+      "1969-12-31" : 0,
+      "2008-01-10" : -2000.00,
+      "2008-01-25" : -4000.00,
+      "2008-02-10" : -6000.00,
+      "2008-02-25" : -8000.00
+    },
+    "ccy" : "USD"
+  },
+  "Expenses:Communications:Mail" : {
+    "series" : {
+      "1969-12-31" : 0
+    },
+    "ccy" : "USD"
+  },
+  "Expenses:Food:Alcool" : {
+    "series" : {
+      "1969-12-31" : 0
+    },
+    "ccy" : "USD"
+  },
+  "Expenses:UTrade:Account" : {
+    "series" : { },
+    "ccy" : "USD"
+  },
+  "Assets:BestBank:Savings" : {
+    "series" : {
+      "1969-12-31" : 0,
+      "2008-01-01" : 12000,
+      "2008-01-29" : 14000.00,
+      "2008-02-03" : 4000.00,
+      "2008-03-01" : 2340.19
+    },
+    "ccy" : "USD"
+  },
+  "Income:Dividends" : {
+    "series" : {
+      "1969-12-31" : 0
+    },
+    "ccy" : "USD"
+  },
+  "Income:UTrade:Account" : {
+    "series" : { },
+    "ccy" : "USD"
+  },
+  "Expenses:Home:Monthly:Loan-Interest" : {
+    "series" : {
+      "1969-12-31" : 0
+    },
+    "ccy" : "USD"
+  },
+  "Expenses:Food:Restaurant" : {
+    "series" : {
+      "1969-12-31" : 0
+    },
+    "ccy" : "USD"
+  },
+  "Income:UTrade:Account:USD" : {
+    "series" : { },
+    "ccy" : "USD"
+  },
+  "Income:BestBank:Checking" : {
+    "series" : {
+      "2008-01-12" : -0.02
+    },
+    "ccy" : "USD"
+  },
+  "Expenses:Medical" : {
+    "series" : {
+      "1969-12-31" : 0
+    },
+    "ccy" : "USD"
+  },
+  "Expenses:Insurance:Life" : {
+    "series" : {
+      "1969-12-31" : 0,
+      "2008-01-02" : 42.69
+    },
+    "ccy" : "USD"
+  },
+  "Expenses:Fun:Movie" : {
+    "series" : {
+      "1969-12-31" : 0
+    },
+    "ccy" : "USD"
+  },
+  "Expenses:Taxes:US-Federal" : {
+    "series" : {
+      "1969-12-31" : 0,
+      "2008-01-05" : -77.76
+    },
+    "ccy" : "USD"
+  },
+  "Assets:UTrade:Account:AAPL" : {
+    "series" : {
+      "2008-01-08" : 30,
+      "2008-02-28" : 0
+    },
+    "ccy" : "AAPL"
+  },
+  "Income:UTrade:Account:AAPL" : {
+    "series" : {
+      "2008-02-02" : -0.68
+    },
+    "ccy" : "USD"
+  },
+  "Liabilities:Credit-Card:VISA" : {
+    "series" : {
+      "1969-12-31" : 0
+    },
+    "ccy" : "USD"
+  },
+  "Expenses:Home:Monthly:Condo-Fees" : {
+    "series" : {
+      "1969-12-31" : 0
+    },
+    "ccy" : "USD"
+  },
+  "Expenses:UTrade:Account:USD" : {
+    "series" : {
+      "2008-01-08" : 9.95,
+      "2008-02-10" : 19.90,
+      "2008-02-28" : 29.85
+    },
+    "ccy" : "USD"
+  },
+  "Assets:BestBank:Checking" : {
+    "series" : {
+      "1969-12-31" : 0,
+      "2008-01-01" : 1412.24,
+      "2008-01-02" : 1369.55,
+      "2008-01-05" : 1447.31,
+      "2008-01-07" : 1354.31,
+      "2008-01-10" : 3354.31,
+      "2008-01-12" : 3054.33,
+      "2008-01-25" : 5054.33,
+      "2008-01-29" : 3054.33,
+      "2008-01-30" : 2254.33,
+      "2008-02-01" : 661.49,
+      "2008-02-10" : 2661.49,
+      "2008-02-20" : 2161.49,
+      "2008-02-24" : 1661.49,
+      "2008-02-25" : 3661.49
+    },
+    "ccy" : "USD"
+  },
+  "Assets:UTrade:Account" : {
+    "series" : {
+      "1969-12-31" : 0
+    },
+    "ccy" : "USD"
+  },
+  "Expenses:Sports:Gear" : {
+    "series" : {
+      "1969-12-31" : 0,
+      "2008-01-07" : 89.00
+    },
+    "ccy" : "USD"
+  },
+  "Assets:AccountsReceivable" : {
+    "series" : {
+      "1969-12-31" : 0,
+      "2008-03-26" : 431.92,
+      "2008-04-02" : 0.00
+    },
+    "ccy" : "USD"
+  },
+  "Expenses:Clothes" : {
+    "series" : {
+      "1969-12-31" : 0
+    },
+    "ccy" : "USD"
+  },
+  "Income:Interest:Checking" : {
+    "series" : {
+      "1969-12-31" : 0
+    },
+    "ccy" : "USD"
+  },
+  "Assets:Cash" : {
+    "series" : {
+      "1969-12-31" : 0,
+      "2008-01-12" : 300,
+      "2008-01-30" : 1100,
+      "2008-02-20" : 1600,
+      "2008-02-24" : 2100,
+      "2008-03-26" : 1668.08,
+      "2008-04-02" : 2100.00
+    },
+    "ccy" : "USD"
+  },
+  "Expenses:Books" : {
+    "series" : {
+      "1969-12-31" : 0
+    },
+    "ccy" : "USD"
+  },
+  "Expenses:Communications:Phone" : {
+    "series" : {
+      "1969-12-31" : 0
+    },
+    "ccy" : "USD"
+  },
+  "Equity:Opening" : {
+    "series" : {
+      "1969-12-31" : 0,
+      "2008-01-01" : -44685.26,
+      "2008-01-03" : -44589.57,
+      "2008-02-01" : -42996.73,
+      "2008-02-03" : -42894.39,
+      "2008-03-01" : -41234.58
+    },
+    "ccy" : "USD"
+  },
+  "Liabilities:BestBank:Mortgage:Loan" : {
+    "series" : {
+      "1969-12-31" : 0
+    },
+    "ccy" : "USD"
+  },
+  "Expenses:Govt-Services" : {
+    "series" : {
+      "1969-12-31" : 0
+    },
+    "ccy" : "USD"
+  },
+  "Expenses:Financial:Fees" : {
+    "series" : {
+      "1969-12-31" : 0,
+      "2008-01-07" : 4.00
+    },
+    "ccy" : "USD"
+  },
+  "Assets:UTrade:Account:USD" : {
+    "series" : {
+      "2008-01-01" : 31273.02,
+      "2008-01-08" : 25701.07,
+      "2008-02-02" : 25701.75,
+      "2008-02-03" : 35701.75,
+      "2008-02-10" : 34357.80,
+      "2008-02-28" : 40138.45
+    },
+    "ccy" : "USD"
+  },
+  "Expenses:Food:Grocery" : {
+    "series" : {
+      "1969-12-31" : 0
+    },
+    "ccy" : "USD"
+  },
+  "Income:Interest:Savings" : {
+    "series" : {
+      "1969-12-31" : 0
+    },
+    "ccy" : "USD"
+  },
+  "Assets:UTrade:Account:EWJ" : {
+    "series" : {
+      "2008-02-10" : 100
+    },
+    "ccy" : "EWJ"
+  },
+  "Expenses:Sports" : {
+    "series" : {
+      "1969-12-31" : 0
+    },
+    "ccy" : "USD"
+  },
+  "Expenses:Financial:Commissions" : {
+    "series" : {
+      "1969-12-31" : 0
+    },
+    "ccy" : "USD"
+  },
+  "Income:Capital-Gains" : {
+    "series" : {
+      "1969-12-31" : 0
+    },
+    "ccy" : "USD"
+  },
+  "Income:BestBank:Savings" : {
+    "series" : {
+      "2008-01-03" : -95.69,
+      "2008-02-03" : -198.03
+    },
+    "ccy" : "USD"
+  },
+  "Expenses:Car:Gas" : {
+    "series" : {
+      "1969-12-31" : 0
+    },
+    "ccy" : "USD"
+  },
+  "Expenses:Transportation:Taxi" : {
+    "series" : {
+      "1969-12-31" : 0
+    },
+    "ccy" : "USD"
+  },
+  "Liabilities:Condo-Management" : {
+    "series" : {
+      "1969-12-31" : 0
+    },
+    "ccy" : "USD"
+  },
+  "Expenses:Charity" : {
+    "series" : {
+      "1969-12-31" : 0
+    },
+    "ccy" : "USD"
+  }
+}

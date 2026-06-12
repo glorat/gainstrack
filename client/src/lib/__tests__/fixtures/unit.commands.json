@@ -1,0 +1,304 @@
+[ {
+  "accountId" : "",
+  "date" : "1900-01-01",
+  "asset" : "FTSE",
+  "options" : {
+    "category" : "equity/uk",
+    "name" : "FTSE100 Index",
+    "ticker" : "",
+    "tags" : [ ]
+  },
+  "commandType" : "commodity",
+  "description" : "FTSE"
+}, {
+  "accountId" : "Equity:Opening",
+  "date" : "2000-01-01",
+  "balance" : {
+    "number" : 0,
+    "ccy" : "GBP"
+  },
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : true,
+    "automaticReinvestment" : false,
+    "generatedAccount" : false,
+    "hidden" : false,
+    "placeholder" : false
+  },
+  "commandType" : "open",
+  "description" : "Account opened"
+}, {
+  "accountId" : "Assets:Bank:England",
+  "date" : "2000-01-01",
+  "balance" : {
+    "number" : 0,
+    "ccy" : "GBP"
+  },
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : false,
+    "automaticReinvestment" : false,
+    "generatedAccount" : false,
+    "hidden" : false,
+    "placeholder" : false
+  },
+  "commandType" : "open",
+  "description" : "Account opened"
+}, {
+  "accountId" : "Assets:Pension:Barclays",
+  "date" : "2004-10-14",
+  "balance" : {
+    "number" : 0,
+    "ccy" : "GBP"
+  },
+  "options" : {
+    "tradingAccount" : false,
+    "fundingAccount" : "Equity:Opening",
+    "description" : "",
+    "multiAsset" : true,
+    "automaticReinvestment" : true,
+    "generatedAccount" : false,
+    "hidden" : false,
+    "placeholder" : false
+  },
+  "commandType" : "open",
+  "description" : "Account opened"
+}, {
+  "accountId" : "Assets:ISA:London",
+  "date" : "2004-10-14",
+  "balance" : {
+    "number" : 0,
+    "ccy" : "GBP"
+  },
+  "options" : {
+    "tradingAccount" : false,
+    "incomeAccount" : "Income:ISA:London",
+    "fundingAccount" : "Assets:Bank:England",
+    "description" : "",
+    "multiAsset" : false,
+    "automaticReinvestment" : false,
+    "generatedAccount" : false,
+    "hidden" : false,
+    "placeholder" : false
+  },
+  "commandType" : "open",
+  "description" : "Account opened"
+}, {
+  "accountId" : "Assets:Investment:Stocks",
+  "date" : "2004-10-14",
+  "balance" : {
+    "number" : 0,
+    "ccy" : "GBP"
+  },
+  "options" : {
+    "tradingAccount" : false,
+    "fundingAccount" : "Assets:Bank:England",
+    "description" : "",
+    "multiAsset" : true,
+    "automaticReinvestment" : false,
+    "generatedAccount" : false,
+    "hidden" : false,
+    "placeholder" : false
+  },
+  "commandType" : "open",
+  "description" : "Account opened"
+}, {
+  "accountId" : "Assets:Pension:Barclays",
+  "date" : "2004-10-14",
+  "change" : {
+    "number" : 500,
+    "ccy" : "GBP"
+  },
+  "commandType" : "fund",
+  "description" : "Fund 500 GBP"
+}, {
+  "accountId" : "Assets:Pension:Barclays",
+  "date" : "2004-10-14",
+  "change" : {
+    "number" : 500,
+    "ccy" : "GBP"
+  },
+  "otherAccount" : "Equity:Opening",
+  "commandType" : "fund",
+  "description" : "Fund 500 GBP"
+}, {
+  "accountId" : "Assets:ISA:London",
+  "date" : "2004-10-14",
+  "change" : {
+    "number" : 7000,
+    "ccy" : "GBP"
+  },
+  "commandType" : "fund",
+  "description" : "Fund 7000 GBP"
+}, {
+  "accountId" : "Assets:Pension:Barclays",
+  "date" : "2004-10-15",
+  "balance" : {
+    "number" : 500,
+    "ccy" : "BGIL"
+  },
+  "price" : {
+    "number" : 2,
+    "ccy" : "GBP"
+  },
+  "commandType" : "unit",
+  "description" : "Unit statement: 500 BGIL @2 GBP"
+}, {
+  "accountId" : "Income:Salary:GBP",
+  "date" : "2005-07-26",
+  "balance" : {
+    "number" : 0,
+    "ccy" : "GBP"
+  },
+  "options" : {
+    "tradingAccount" : false,
+    "fundingAccount" : "Assets:Bank:England",
+    "description" : "",
+    "multiAsset" : false,
+    "automaticReinvestment" : false,
+    "generatedAccount" : false,
+    "hidden" : false,
+    "placeholder" : false
+  },
+  "commandType" : "open",
+  "description" : "Account opened"
+}, {
+  "accountId" : "Income:Salary",
+  "date" : "2005-07-26",
+  "change" : {
+    "number" : 25000.00,
+    "ccy" : "GBP"
+  },
+  "commandType" : "earn",
+  "description" : "Earn 25000.00 GBP Salary"
+}, {
+  "accountId" : "Income:Salary",
+  "date" : "2005-07-26",
+  "change" : {
+    "number" : 25000.00,
+    "ccy" : "GBP"
+  },
+  "otherAccount" : "Assets:Bank:England",
+  "commandType" : "earn",
+  "description" : "Earn 25000.00 GBP Salary"
+}, {
+  "accountId" : "Assets:Bank:England",
+  "date" : "2005-08-01",
+  "change" : {
+    "number" : 10,
+    "ccy" : "GBP"
+  },
+  "commandType" : "yield",
+  "description" : "England yield 10 GBP"
+}, {
+  "accountId" : "Assets:ISA:London",
+  "date" : "2005-10-14",
+  "balance" : {
+    "number" : 8000,
+    "ccy" : "GBP"
+  },
+  "otherAccount" : "Income:ISA:London",
+  "commandType" : "adj",
+  "description" : "Account balance 8000 GBP"
+}, {
+  "accountId" : "Assets:ISA:London",
+  "date" : "2005-10-15",
+  "change" : {
+    "number" : 15,
+    "ccy" : "GBP"
+  },
+  "commandType" : "yield",
+  "description" : "London yield 15 GBP"
+}, {
+  "accountId" : "Assets:Investment:Stocks",
+  "date" : "2006-11-01",
+  "change" : {
+    "number" : 1000,
+    "ccy" : "GBP"
+  },
+  "commandType" : "fund",
+  "description" : "Fund 1000 GBP"
+}, {
+  "accountId" : "Assets:Investment:Stocks",
+  "date" : "2006-11-02",
+  "change" : {
+    "number" : 50,
+    "ccy" : "FTSE"
+  },
+  "price" : {
+    "number" : 10,
+    "ccy" : "GBP"
+  },
+  "commission" : {
+    "number" : 0,
+    "ccy" : "GBP"
+  },
+  "commandType" : "trade",
+  "description" : "BUY 50 FTSE @10 GBP"
+}, {
+  "accountId" : "Assets:Investment:Stocks",
+  "date" : "2006-11-02",
+  "change" : {
+    "number" : 50,
+    "ccy" : "VWRL"
+  },
+  "price" : {
+    "number" : 10,
+    "ccy" : "GBP"
+  },
+  "commission" : {
+    "number" : 0.20,
+    "ccy" : "GBP"
+  },
+  "commandType" : "trade",
+  "description" : "BUY 50 VWRL @10 GBP"
+}, {
+  "accountId" : "Assets:Investment:Stocks",
+  "date" : "2006-11-15",
+  "asset" : "FTSE",
+  "change" : {
+    "number" : 10,
+    "ccy" : "GBP"
+  },
+  "commandType" : "yield",
+  "description" : "FTSE yield 10 GBP"
+}, {
+  "accountId" : "Assets:Investment:Stocks",
+  "date" : "2006-11-15",
+  "asset" : "VWRL",
+  "change" : {
+    "number" : 10,
+    "ccy" : "USD"
+  },
+  "commandType" : "yield",
+  "description" : "VWRL yield 10 USD"
+}, {
+  "accountId" : "Assets:Investment:Stocks",
+  "date" : "2006-11-15",
+  "change" : {
+    "number" : 10,
+    "ccy" : "USD"
+  },
+  "price" : {
+    "number" : 0.9,
+    "ccy" : "USD"
+  },
+  "otherAccount" : "Assets:Investment:Stocks",
+  "commandType" : "tfr",
+  "description" : "Transfer 10 USD Assets:Investment:Stocks -> Assets:Investment:Stocks@1.111111"
+}, {
+  "accountId" : "Assets:Pension:Barclays",
+  "date" : "2019-04-18",
+  "balance" : {
+    "number" : 600,
+    "ccy" : "BGIL"
+  },
+  "price" : {
+    "number" : 5,
+    "ccy" : "GBP"
+  },
+  "commandType" : "unit",
+  "description" : "Unit statement: 600 BGIL @5 GBP"
+} ]

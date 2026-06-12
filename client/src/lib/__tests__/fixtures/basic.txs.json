@@ -1,0 +1,479 @@
+[ {
+  "originIndex" : 36,
+  "postDate" : "2008-01-01",
+  "postings" : [ {
+    "account" : "Equity:Opening",
+    "value" : {
+      "number" : -1412.24,
+      "ccy" : "USD"
+    }
+  }, {
+    "account" : "Assets:BestBank:Checking",
+    "value" : {
+      "number" : 1412.24,
+      "ccy" : "USD"
+    }
+  } ]
+}, {
+  "originIndex" : 37,
+  "postDate" : "2008-01-01",
+  "postings" : [ {
+    "account" : "Equity:Opening",
+    "value" : {
+      "number" : -12000,
+      "ccy" : "USD"
+    }
+  }, {
+    "account" : "Assets:BestBank:Savings",
+    "value" : {
+      "number" : 12000,
+      "ccy" : "USD"
+    }
+  } ]
+}, {
+  "originIndex" : 38,
+  "postDate" : "2008-01-01",
+  "postings" : [ {
+    "account" : "Equity:Opening",
+    "value" : {
+      "number" : -31273.02,
+      "ccy" : "USD"
+    }
+  }, {
+    "account" : "Assets:UTrade:Account:USD",
+    "value" : {
+      "number" : 31273.02,
+      "ccy" : "USD"
+    }
+  } ]
+}, {
+  "originIndex" : 39,
+  "postDate" : "2008-01-02",
+  "postings" : [ {
+    "account" : "Assets:BestBank:Checking",
+    "value" : {
+      "number" : -42.69,
+      "ccy" : "USD"
+    }
+  }, {
+    "account" : "Expenses:Insurance:Life",
+    "value" : {
+      "number" : 42.69,
+      "ccy" : "USD"
+    }
+  } ]
+}, {
+  "originIndex" : 40,
+  "postDate" : "2008-01-03",
+  "postings" : [ {
+    "account" : "Income:BestBank:Savings",
+    "value" : {
+      "number" : -95.69,
+      "ccy" : "USD"
+    }
+  }, {
+    "account" : "Equity:Opening",
+    "value" : {
+      "number" : 95.69,
+      "ccy" : "USD"
+    }
+  } ]
+}, {
+  "originIndex" : 41,
+  "postDate" : "2008-01-05",
+  "postings" : [ {
+    "account" : "Expenses:Taxes:US-Federal",
+    "value" : {
+      "number" : -77.76,
+      "ccy" : "USD"
+    }
+  }, {
+    "account" : "Assets:BestBank:Checking",
+    "value" : {
+      "number" : 77.76,
+      "ccy" : "USD"
+    }
+  } ]
+}, {
+  "originIndex" : 42,
+  "postDate" : "2008-01-07",
+  "postings" : [ {
+    "account" : "Assets:BestBank:Checking",
+    "value" : {
+      "number" : -89.00,
+      "ccy" : "USD"
+    }
+  }, {
+    "account" : "Expenses:Sports:Gear",
+    "value" : {
+      "number" : 89.00,
+      "ccy" : "USD"
+    }
+  } ]
+}, {
+  "originIndex" : 43,
+  "postDate" : "2008-01-07",
+  "postings" : [ {
+    "account" : "Assets:BestBank:Checking",
+    "value" : {
+      "number" : -4.00,
+      "ccy" : "USD"
+    }
+  }, {
+    "account" : "Expenses:Financial:Fees",
+    "value" : {
+      "number" : 4.00,
+      "ccy" : "USD"
+    }
+  } ]
+}, {
+  "originIndex" : 44,
+  "postDate" : "2008-01-08",
+  "postings" : [ {
+    "account" : "Assets:UTrade:Account:USD",
+    "value" : {
+      "number" : -5571.95,
+      "ccy" : "USD"
+    }
+  }, {
+    "account" : "Assets:UTrade:Account:AAPL",
+    "value" : {
+      "number" : 30,
+      "ccy" : "AAPL"
+    },
+    "price" : {
+      "number" : 185.40,
+      "ccy" : "USD"
+    }
+  }, {
+    "account" : "Expenses:UTrade:Account:USD",
+    "value" : {
+      "number" : 9.95,
+      "ccy" : "USD"
+    }
+  } ]
+}, {
+  "originIndex" : 45,
+  "postDate" : "2008-01-10",
+  "postings" : [ {
+    "account" : "Income:Salary:AcmeCo:USD",
+    "value" : {
+      "number" : -2000.00,
+      "ccy" : "USD"
+    }
+  }, {
+    "account" : "Assets:BestBank:Checking",
+    "value" : {
+      "number" : 2000.00,
+      "ccy" : "USD"
+    }
+  } ]
+}, {
+  "originIndex" : 46,
+  "postDate" : "2008-01-12",
+  "postings" : [ {
+    "account" : "Assets:BestBank:Checking",
+    "value" : {
+      "number" : -300,
+      "ccy" : "USD"
+    }
+  }, {
+    "account" : "Assets:Cash",
+    "value" : {
+      "number" : 300,
+      "ccy" : "USD"
+    }
+  } ]
+}, {
+  "originIndex" : 47,
+  "postDate" : "2008-01-12",
+  "postings" : [ {
+    "account" : "Income:BestBank:Checking",
+    "value" : {
+      "number" : -0.02,
+      "ccy" : "USD"
+    }
+  }, {
+    "account" : "Assets:BestBank:Checking",
+    "value" : {
+      "number" : 0.02,
+      "ccy" : "USD"
+    }
+  } ]
+}, {
+  "originIndex" : 48,
+  "postDate" : "2008-01-25",
+  "postings" : [ {
+    "account" : "Income:Salary:AcmeCo:USD",
+    "value" : {
+      "number" : -2000.00,
+      "ccy" : "USD"
+    }
+  }, {
+    "account" : "Assets:BestBank:Checking",
+    "value" : {
+      "number" : 2000.00,
+      "ccy" : "USD"
+    }
+  } ]
+}, {
+  "originIndex" : 49,
+  "postDate" : "2008-01-29",
+  "postings" : [ {
+    "account" : "Assets:BestBank:Checking",
+    "value" : {
+      "number" : -2000.00,
+      "ccy" : "USD"
+    }
+  }, {
+    "account" : "Assets:BestBank:Savings",
+    "value" : {
+      "number" : 2000.00,
+      "ccy" : "USD"
+    }
+  } ]
+}, {
+  "originIndex" : 50,
+  "postDate" : "2008-01-30",
+  "postings" : [ {
+    "account" : "Assets:BestBank:Checking",
+    "value" : {
+      "number" : -800,
+      "ccy" : "USD"
+    }
+  }, {
+    "account" : "Assets:Cash",
+    "value" : {
+      "number" : 800,
+      "ccy" : "USD"
+    }
+  } ]
+}, {
+  "originIndex" : 51,
+  "postDate" : "2008-02-01",
+  "postings" : [ {
+    "account" : "Equity:Opening",
+    "value" : {
+      "number" : 1592.84,
+      "ccy" : "USD"
+    }
+  }, {
+    "account" : "Assets:BestBank:Checking",
+    "value" : {
+      "number" : -1592.84,
+      "ccy" : "USD"
+    }
+  } ]
+}, {
+  "originIndex" : 52,
+  "postDate" : "2008-02-02",
+  "postings" : [ {
+    "account" : "Income:UTrade:Account:AAPL",
+    "value" : {
+      "number" : -0.68,
+      "ccy" : "USD"
+    }
+  }, {
+    "account" : "Assets:UTrade:Account:USD",
+    "value" : {
+      "number" : 0.68,
+      "ccy" : "USD"
+    }
+  } ]
+}, {
+  "originIndex" : 53,
+  "postDate" : "2008-02-03",
+  "postings" : [ {
+    "account" : "Income:BestBank:Savings",
+    "value" : {
+      "number" : -102.34,
+      "ccy" : "USD"
+    }
+  }, {
+    "account" : "Equity:Opening",
+    "value" : {
+      "number" : 102.34,
+      "ccy" : "USD"
+    }
+  } ]
+}, {
+  "originIndex" : 54,
+  "postDate" : "2008-02-03",
+  "postings" : [ {
+    "account" : "Assets:BestBank:Savings",
+    "value" : {
+      "number" : -10000,
+      "ccy" : "USD"
+    }
+  }, {
+    "account" : "Assets:UTrade:Account:USD",
+    "value" : {
+      "number" : 10000,
+      "ccy" : "USD"
+    }
+  } ]
+}, {
+  "originIndex" : 55,
+  "postDate" : "2008-02-10",
+  "postings" : [ {
+    "account" : "Income:Salary:AcmeCo:USD",
+    "value" : {
+      "number" : -2000.00,
+      "ccy" : "USD"
+    }
+  }, {
+    "account" : "Assets:BestBank:Checking",
+    "value" : {
+      "number" : 2000.00,
+      "ccy" : "USD"
+    }
+  } ]
+}, {
+  "originIndex" : 56,
+  "postDate" : "2008-02-10",
+  "postings" : [ {
+    "account" : "Assets:UTrade:Account:USD",
+    "value" : {
+      "number" : -1343.95,
+      "ccy" : "USD"
+    }
+  }, {
+    "account" : "Assets:UTrade:Account:EWJ",
+    "value" : {
+      "number" : 100,
+      "ccy" : "EWJ"
+    },
+    "price" : {
+      "number" : 13.34,
+      "ccy" : "USD"
+    }
+  }, {
+    "account" : "Expenses:UTrade:Account:USD",
+    "value" : {
+      "number" : 9.95,
+      "ccy" : "USD"
+    }
+  } ]
+}, {
+  "originIndex" : 57,
+  "postDate" : "2008-02-20",
+  "postings" : [ {
+    "account" : "Assets:BestBank:Checking",
+    "value" : {
+      "number" : -500,
+      "ccy" : "USD"
+    }
+  }, {
+    "account" : "Assets:Cash",
+    "value" : {
+      "number" : 500,
+      "ccy" : "USD"
+    }
+  } ]
+}, {
+  "originIndex" : 58,
+  "postDate" : "2008-02-24",
+  "postings" : [ {
+    "account" : "Assets:BestBank:Checking",
+    "value" : {
+      "number" : -500,
+      "ccy" : "USD"
+    }
+  }, {
+    "account" : "Assets:Cash",
+    "value" : {
+      "number" : 500,
+      "ccy" : "USD"
+    }
+  } ]
+}, {
+  "originIndex" : 59,
+  "postDate" : "2008-02-25",
+  "postings" : [ {
+    "account" : "Income:Salary:AcmeCo:USD",
+    "value" : {
+      "number" : -2000.00,
+      "ccy" : "USD"
+    }
+  }, {
+    "account" : "Assets:BestBank:Checking",
+    "value" : {
+      "number" : 2000.00,
+      "ccy" : "USD"
+    }
+  } ]
+}, {
+  "originIndex" : 60,
+  "postDate" : "2008-02-28",
+  "postings" : [ {
+    "account" : "Assets:UTrade:Account:USD",
+    "value" : {
+      "number" : 5780.65,
+      "ccy" : "USD"
+    }
+  }, {
+    "account" : "Assets:UTrade:Account:AAPL",
+    "value" : {
+      "number" : -30,
+      "ccy" : "AAPL"
+    },
+    "price" : {
+      "number" : 193.02,
+      "ccy" : "USD"
+    }
+  }, {
+    "account" : "Expenses:UTrade:Account:USD",
+    "value" : {
+      "number" : 9.95,
+      "ccy" : "USD"
+    }
+  } ]
+}, {
+  "originIndex" : 63,
+  "postDate" : "2008-03-01",
+  "postings" : [ {
+    "account" : "Equity:Opening",
+    "value" : {
+      "number" : 1659.81,
+      "ccy" : "USD"
+    }
+  }, {
+    "account" : "Assets:BestBank:Savings",
+    "value" : {
+      "number" : -1659.81,
+      "ccy" : "USD"
+    }
+  } ]
+}, {
+  "originIndex" : 65,
+  "postDate" : "2008-03-26",
+  "postings" : [ {
+    "account" : "Assets:Cash",
+    "value" : {
+      "number" : -431.92,
+      "ccy" : "USD"
+    }
+  }, {
+    "account" : "Assets:AccountsReceivable",
+    "value" : {
+      "number" : 431.92,
+      "ccy" : "USD"
+    }
+  } ]
+}, {
+  "originIndex" : 66,
+  "postDate" : "2008-04-02",
+  "postings" : [ {
+    "account" : "Assets:AccountsReceivable",
+    "value" : {
+      "number" : -431.92,
+      "ccy" : "USD"
+    }
+  }, {
+    "account" : "Assets:Cash",
+    "value" : {
+      "number" : 431.92,
+      "ccy" : "USD"
+    }
+  } ]
+} ]

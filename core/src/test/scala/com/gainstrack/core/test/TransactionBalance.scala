@@ -22,16 +22,16 @@ class TransactionAmountTest extends AnyFlatSpec {
 //
     val p1 = Posting("Asset:Account", Amount(10,"USD"))
     assert(p1.weight == Amount(10, "USD"))
-    assert(p1.toString == "Asset:Account 10.0 USD")
+    assert(p1.toString == "Asset:Account 10 USD")
     val p2 = Posting("Asset:Account", Amount(10.00, "CAD"), Amount(1.01, "USD"))
     assert(p2.weight == Amount(10.10, "USD"))
     assert(p2.toString == "Asset:Account 10.0 CAD @1.01 USD")
     val p3 = Posting.withCost("Asset:Account", Amount(10, "SOME"), Amount(2.02, "USD"))
     assert(p3.weight == Amount(20.20, "USD"))
-    assert(p3.toString == "Asset:Account 10.0 SOME {2.02 USD}")
+    assert(p3.toString == "Asset:Account 10 SOME {2.02 USD}")
     val p4 = Posting.withCostAndPrice("Asset:Account", Amount(10, "SOME"), Amount(2.02, "USD"), Amount(2.50, "USD"))
     assert(p4.weight == Amount(20.20, "USD"))
-    assert(p4.toString == "Asset:Account 10.0 SOME {2.02 USD} @2.5 USD")
+    assert(p4.toString == "Asset:Account 10 SOME {2.02 USD} @2.5 USD")
   }
 
   "Security Purchase" should "balance" in {
@@ -41,7 +41,7 @@ class TransactionAmountTest extends AnyFlatSpec {
     val sp = SecurityPurchase("Assets:Broker", LocalDate.parse("2014-02-11"), Amount(10, "IVV"), Amount(183.07, "USD"))
     val tx = sp.toTransaction
     assert(tx.isBalanced)
-    assert(tx.postings(0).toString == "Assets:Broker:USD -1830.7 USD")
+    assert(tx.postings(0).toString == "Assets:Broker:USD -1830.70 USD")
     println(tx)
   }
 

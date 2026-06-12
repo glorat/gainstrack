@@ -1,0 +1,61 @@
+option "operating_currency" "GBP"
+
+2000-01-01 open Assets:Bank:Barclays GBP
+2010-04-08 bal Assets:Bank:Barclays 14854.91 GBP Equity:Opening
+
+2010-01-01 open Assets:Bank:HSBCCN CNY
+2018-06-08 bal Assets:Bank:HSBCCN 458728.28 CNY Expenses:General
+
+2010-01-01 open Assets:Bank:HSBCHK HKD
+  multiAsset:true
+2017-01-05 bal Assets:Bank:HSBCHK 234835.3 HKD Expenses:General
+
+2000-01-01 open Assets:Bank:HSBCUK GBP
+2010-05-17 bal Assets:Bank:HSBCUK 54342.0 GBP Equity:Opening
+
+2021-01-01 open Assets:Bank:SC CNY
+  multiAsset:true
+2021-07-10 bal Assets:Bank:SC 131398.0 CNY Expenses:General
+2021-07-22 fund Assets:Bank:SC Income:Salary 53838.56 CNY
+2021-08-10 bal Assets:Bank:SC 158085.55 CNY Expenses:General
+
+2021-06-01 open Assets:Bank:SCSG SGD
+  multiAsset:true
+2021-08-04 bal Assets:Bank:SCSG 29184.67 SGD Expenses:General
+
+1980-01-01 open Equity:Opening GBP
+  multiAsset:true
+
+2016-01-01 open Expenses:Aiden CNY
+  multiAsset:true
+2020-08-27 spend Expenses:Aiden Assets:Bank:HSBCCN 57800.0 CNY
+2020-10-26 spend Expenses:Aiden Assets:Bank:HSBCCN 53800.0 CNY
+2021-03-07 spend Expenses:Aiden Assets:Bank:SC 53650.0 CNY
+
+2016-01-01 open Expenses:Chloe CNY
+  fundingAccount: Assets:Bank:HSBCCN
+  multiAsset:true
+2019-04-17 spend Expenses:Chloe 152520.0 CNY
+2020-03-23 spend Expenses:Chloe 10000.0 CNY
+2020-06-19 spend Expenses:Chloe 12073.7 CNY
+2020-10-26 spend Expenses:Chloe 57000.0 CNY
+2021-03-07 spend Expenses:Chloe Assets:Bank:SC 56850.0 CNY
+
+1980-01-01 open Expenses:General GBP
+  multiAsset:true
+
+2010-01-01 open Income:Salary CNY
+  fundingAccount: Assets:Bank:HSBCCN
+2010-12-30 earn Salary 120000.0 CNY
+
+option "operating_currency" "GBP"
+2017-12-31 price CNY 0.1141 GBP
+2017-12-31 price HKD 0.0947 GBP
+2018-12-31 price CNY 0.1146 GBP
+2019-01-01 price GBP 1.2752 USD
+2019-04-01 price AMER 5.68 GBP
+2019-04-23 price CNY 0.11 GBP
+2019-04-23 price HKD 0.098 GBP
+2019-04-30 price PP 440000.0 GBP
+2019-05-20 price GOLD 275.95 CNY
+2019-05-20 price XAU 8837.0851 CNY

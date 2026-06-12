@@ -1,0 +1,14 @@
+
+
+2000-01-01 open Assets:SCBSG USD
+  fundingAccount: Income:Opening
+  multiAsset:true
+2018-10-31 trade Assets:SCBSG 5275.0 SCGBP @7.344 GBP
+2019-10-31 adj Assets:SCBSG 34652.93 GBP Income:Opening
+2019-10-31 adj Assets:SCBSG 66991.65 USD Income:Opening
+2019-10-31 unit Assets:SCBSG 5275.0 SCGBP @7.01 GBP
+
+1960-01-01 open Income:Opening USD
+  multiAsset:true
+
+2019-10-31 price GBP 1.2945 USD

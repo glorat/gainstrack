@@ -6,6 +6,8 @@ lib_managed/
 .project
 .classpath
 .cache
+python/__pycache__/
+python/env/
 .idea
 
 .settings
@@ -19,3 +21,14 @@ data/
 *.swp
 db/
 gainstrack*.json
+.venv/
+
+# Scala build tools (Bloop / Metals / BSP) — machine-local
+.bloop/
+.bsp/
+.metals/
+metals.sbt
+project/project/
+
+# VS Code (root)
+.vscode/

@@ -1,0 +1,231 @@
+[ {
+  "originIndex" : 4,
+  "postDate" : "2019-01-02",
+  "postings" : [ {
+    "account" : "Assets:Bank:HSBCHK",
+    "value" : {
+      "number" : -40000,
+      "ccy" : "HKD"
+    }
+  }, {
+    "account" : "Assets:Investment:HSBC:USD",
+    "value" : {
+      "number" : 5084.91,
+      "ccy" : "USD"
+    },
+    "price" : {
+      "number" : 7.866412581540282915528495096275057,
+      "ccy" : "HKD"
+    }
+  } ]
+}, {
+  "originIndex" : 5,
+  "postDate" : "2019-01-02",
+  "postings" : [ {
+    "account" : "Assets:Investment:HSBC:USD",
+    "value" : {
+      "number" : -1037.0400,
+      "ccy" : "USD"
+    }
+  }, {
+    "account" : "Assets:Investment:HSBC:VTI",
+    "value" : {
+      "number" : 8,
+      "ccy" : "VTI"
+    },
+    "price" : {
+      "number" : 127.3800,
+      "ccy" : "USD"
+    }
+  }, {
+    "account" : "Expenses:Investment:HSBC:USD",
+    "value" : {
+      "number" : 18.00,
+      "ccy" : "USD"
+    }
+  } ]
+}, {
+  "originIndex" : 7,
+  "postDate" : "2019-01-15",
+  "postings" : [ {
+    "account" : "Equity:Opening:USD",
+    "value" : {
+      "number" : -23.20,
+      "ccy" : "USD"
+    }
+  }, {
+    "account" : "Assets:Investment:HSBC:USD",
+    "value" : {
+      "number" : 23.20,
+      "ccy" : "USD"
+    }
+  } ]
+}, {
+  "originIndex" : 9,
+  "postDate" : "2019-03-08",
+  "postings" : [ {
+    "account" : "Assets:Investment:HSBC:USD",
+    "value" : {
+      "number" : -1027.9100,
+      "ccy" : "USD"
+    }
+  }, {
+    "account" : "Assets:Investment:HSBC:VCSH",
+    "value" : {
+      "number" : 13,
+      "ccy" : "VCSH"
+    },
+    "price" : {
+      "number" : 79.0700,
+      "ccy" : "USD"
+    }
+  } ]
+}, {
+  "originIndex" : 10,
+  "postDate" : "2019-03-15",
+  "postings" : [ {
+    "account" : "Assets:Bank:HSBCCN",
+    "value" : {
+      "number" : -83364.65,
+      "ccy" : "CNY"
+    }
+  }, {
+    "account" : "Assets:Investment:HSBC:USD",
+    "value" : {
+      "number" : 14312.73,
+      "ccy" : "USD"
+    },
+    "price" : {
+      "number" : 5.824510767687226685614833787823846,
+      "ccy" : "CNY"
+    }
+  } ]
+}, {
+  "originIndex" : 11,
+  "postDate" : "2019-03-15",
+  "postings" : [ {
+    "account" : "Assets:Investment:HSBC:USD",
+    "value" : {
+      "number" : -2024.6800,
+      "ccy" : "USD"
+    }
+  }, {
+    "account" : "Assets:Investment:HSBC:VTI",
+    "value" : {
+      "number" : 14,
+      "ccy" : "VTI"
+    },
+    "price" : {
+      "number" : 144.6200,
+      "ccy" : "USD"
+    }
+  } ]
+}, {
+  "originIndex" : 12,
+  "postDate" : "2019-03-26",
+  "postings" : [ {
+    "account" : "Assets:Bank:HSBCCN",
+    "value" : {
+      "number" : -200000,
+      "ccy" : "CNY"
+    }
+  }, {
+    "account" : "Assets:Investment:HSBC:USD",
+    "value" : {
+      "number" : 29644.96,
+      "ccy" : "USD"
+    },
+    "price" : {
+      "number" : 6.746509356059174982863866235609696,
+      "ccy" : "CNY"
+    }
+  } ]
+}, {
+  "originIndex" : 13,
+  "postDate" : "2019-03-26",
+  "postings" : [ {
+    "account" : "Assets:Investment:HSBC:USD",
+    "value" : {
+      "number" : -4314.9000,
+      "ccy" : "USD"
+    }
+  }, {
+    "account" : "Assets:Investment:HSBC:VTI",
+    "value" : {
+      "number" : 30,
+      "ccy" : "VTI"
+    },
+    "price" : {
+      "number" : 143.8300,
+      "ccy" : "USD"
+    }
+  } ]
+}, {
+  "originIndex" : 14,
+  "postDate" : "2019-03-27",
+  "postings" : [ {
+    "account" : "Assets:Investment:HSBC:USD",
+    "value" : {
+      "number" : -3008.7000,
+      "ccy" : "USD"
+    }
+  }, {
+    "account" : "Assets:Investment:HSBC:BRK-B",
+    "value" : {
+      "number" : 15,
+      "ccy" : "BRK-B"
+    },
+    "price" : {
+      "number" : 200.5800,
+      "ccy" : "USD"
+    }
+  } ]
+}, {
+  "originIndex" : 15,
+  "postDate" : "2019-03-29",
+  "postings" : [ {
+    "account" : "Income:Investment:HSBC:VTI",
+    "value" : {
+      "number" : -11.88,
+      "ccy" : "USD"
+    }
+  }, {
+    "account" : "Assets:Investment:HSBC:USD",
+    "value" : {
+      "number" : 11.88,
+      "ccy" : "USD"
+    }
+  } ]
+}, {
+  "originIndex" : 17,
+  "postDate" : "2019-04-08",
+  "postings" : [ {
+    "account" : "Income:Investment:HSBC:VCSH",
+    "value" : {
+      "number" : -1.95,
+      "ccy" : "USD"
+    }
+  }, {
+    "account" : "Assets:Investment:HSBC:USD",
+    "value" : {
+      "number" : 1.95,
+      "ccy" : "USD"
+    }
+  } ]
+}, {
+  "originIndex" : 18,
+  "postDate" : "2019-05-03",
+  "postings" : [ {
+    "account" : "Equity:Opening:USD",
+    "value" : {
+      "number" : 35008.3000,
+      "ccy" : "USD"
+    }
+  }, {
+    "account" : "Assets:Investment:HSBC:USD",
+    "value" : {
+      "number" : -35008.3000,
+      "ccy" : "USD"
+    }
+  } ]
+} ]

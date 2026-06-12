@@ -1,6 +1,5 @@
 package com.gainstrack.core
 
-import java.math.MathContext
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
@@ -74,11 +73,11 @@ object AccountIdKeySerializer extends CustomKeySerializer[AccountId](_ => ( {
 ))
 
 object FractionSerializer extends CustomSerializer[Fraction] (format => ({
-  case JString(str) => ???
+  case JDecimal(num) => num
+  case JString(str) => BigDecimal(str)
 }, {
   case value: Fraction => {
-    // JString(value.toBigDecimal(MathContext.DECIMAL64).toString)
-    JDecimal(value.toBigDecimal(MathContext.DECIMAL64))
+    JDecimal(value)
   }
 }))
 

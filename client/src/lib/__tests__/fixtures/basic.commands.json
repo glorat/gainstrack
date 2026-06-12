@@ -1,0 +1,1011 @@
+[ {
+  "accountId" : "",
+  "date" : "-999999999-01-01",
+  "options" : {
+    "operatingCurrency" : "USD",
+    "comments" : [ ]
+  },
+  "commandType" : "",
+  "description" : "global configuration"
+}, {
+  "accountId" : "Assets:UTrade:Account",
+  "date" : "1970-01-01",
+  "balance" : {
+    "number" : 0,
+    "ccy" : "USD"
+  },
+  "options" : {
+    "tradingAccount" : false,
+    "fundingAccount" : "Assets:BestBank:Savings",
+    "description" : "",
+    "multiAsset" : true,
+    "automaticReinvestment" : false,
+    "generatedAccount" : false,
+    "hidden" : false,
+    "placeholder" : false
+  },
+  "commandType" : "open",
+  "description" : "Account opened"
+}, {
+  "accountId" : "Assets:AccountsReceivable",
+  "date" : "1970-01-01",
+  "balance" : {
+    "number" : 0,
+    "ccy" : "USD"
+  },
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : false,
+    "automaticReinvestment" : false,
+    "generatedAccount" : false,
+    "hidden" : false,
+    "placeholder" : false
+  },
+  "commandType" : "open",
+  "description" : "Account opened"
+}, {
+  "accountId" : "Liabilities:BestBank:Mortgage:Loan",
+  "date" : "1970-01-01",
+  "balance" : {
+    "number" : 0,
+    "ccy" : "USD"
+  },
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : false,
+    "automaticReinvestment" : false,
+    "generatedAccount" : false,
+    "hidden" : false,
+    "placeholder" : false
+  },
+  "commandType" : "open",
+  "description" : "Account opened"
+}, {
+  "accountId" : "Liabilities:Credit-Card:VISA",
+  "date" : "1970-01-01",
+  "balance" : {
+    "number" : 0,
+    "ccy" : "USD"
+  },
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : false,
+    "automaticReinvestment" : false,
+    "generatedAccount" : false,
+    "hidden" : false,
+    "placeholder" : false
+  },
+  "commandType" : "open",
+  "description" : "Account opened"
+}, {
+  "accountId" : "Liabilities:Condo-Management",
+  "date" : "1970-01-01",
+  "balance" : {
+    "number" : 0,
+    "ccy" : "USD"
+  },
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : false,
+    "automaticReinvestment" : false,
+    "generatedAccount" : false,
+    "hidden" : false,
+    "placeholder" : false
+  },
+  "commandType" : "open",
+  "description" : "Account opened"
+}, {
+  "accountId" : "Equity:Opening",
+  "date" : "1970-01-01",
+  "balance" : {
+    "number" : 0,
+    "ccy" : "USD"
+  },
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : false,
+    "automaticReinvestment" : false,
+    "generatedAccount" : false,
+    "hidden" : false,
+    "placeholder" : false
+  },
+  "commandType" : "open",
+  "description" : "Account opened"
+}, {
+  "accountId" : "Income:Interest:Checking",
+  "date" : "1970-01-01",
+  "balance" : {
+    "number" : 0,
+    "ccy" : "USD"
+  },
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : false,
+    "automaticReinvestment" : false,
+    "generatedAccount" : false,
+    "hidden" : false,
+    "placeholder" : false
+  },
+  "commandType" : "open",
+  "description" : "Account opened"
+}, {
+  "accountId" : "Income:Interest:Savings",
+  "date" : "1970-01-01",
+  "balance" : {
+    "number" : 0,
+    "ccy" : "USD"
+  },
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : false,
+    "automaticReinvestment" : false,
+    "generatedAccount" : false,
+    "hidden" : false,
+    "placeholder" : false
+  },
+  "commandType" : "open",
+  "description" : "Account opened"
+}, {
+  "accountId" : "Income:Dividends",
+  "date" : "1970-01-01",
+  "balance" : {
+    "number" : 0,
+    "ccy" : "USD"
+  },
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : false,
+    "automaticReinvestment" : false,
+    "generatedAccount" : false,
+    "hidden" : false,
+    "placeholder" : false
+  },
+  "commandType" : "open",
+  "description" : "Account opened"
+}, {
+  "accountId" : "Income:Capital-Gains",
+  "date" : "1970-01-01",
+  "balance" : {
+    "number" : 0,
+    "ccy" : "USD"
+  },
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : false,
+    "automaticReinvestment" : false,
+    "generatedAccount" : false,
+    "hidden" : false,
+    "placeholder" : false
+  },
+  "commandType" : "open",
+  "description" : "Account opened"
+}, {
+  "accountId" : "Income:Salary:AcmeCo:USD",
+  "date" : "1970-01-01",
+  "balance" : {
+    "number" : 0,
+    "ccy" : "USD"
+  },
+  "options" : {
+    "tradingAccount" : false,
+    "fundingAccount" : "Assets:BestBank:Checking",
+    "description" : "",
+    "multiAsset" : false,
+    "automaticReinvestment" : false,
+    "generatedAccount" : false,
+    "hidden" : false,
+    "placeholder" : false
+  },
+  "commandType" : "open",
+  "description" : "Account opened"
+}, {
+  "accountId" : "Expenses:Financial:Fees",
+  "date" : "1970-01-01",
+  "balance" : {
+    "number" : 0,
+    "ccy" : "USD"
+  },
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : false,
+    "automaticReinvestment" : false,
+    "generatedAccount" : false,
+    "hidden" : false,
+    "placeholder" : false
+  },
+  "commandType" : "open",
+  "description" : "Account opened"
+}, {
+  "accountId" : "Expenses:Financial:Commissions",
+  "date" : "1970-01-01",
+  "balance" : {
+    "number" : 0,
+    "ccy" : "USD"
+  },
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : false,
+    "automaticReinvestment" : false,
+    "generatedAccount" : false,
+    "hidden" : false,
+    "placeholder" : false
+  },
+  "commandType" : "open",
+  "description" : "Account opened"
+}, {
+  "accountId" : "Expenses:Insurance:Life",
+  "date" : "1970-01-01",
+  "balance" : {
+    "number" : 0,
+    "ccy" : "USD"
+  },
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : false,
+    "automaticReinvestment" : false,
+    "generatedAccount" : false,
+    "hidden" : false,
+    "placeholder" : false
+  },
+  "commandType" : "open",
+  "description" : "Account opened"
+}, {
+  "accountId" : "Expenses:Food:Restaurant",
+  "date" : "1970-01-01",
+  "balance" : {
+    "number" : 0,
+    "ccy" : "USD"
+  },
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : false,
+    "automaticReinvestment" : false,
+    "generatedAccount" : false,
+    "hidden" : false,
+    "placeholder" : false
+  },
+  "commandType" : "open",
+  "description" : "Account opened"
+}, {
+  "accountId" : "Expenses:Food:Grocery",
+  "date" : "1970-01-01",
+  "balance" : {
+    "number" : 0,
+    "ccy" : "USD"
+  },
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : false,
+    "automaticReinvestment" : false,
+    "generatedAccount" : false,
+    "hidden" : false,
+    "placeholder" : false
+  },
+  "commandType" : "open",
+  "description" : "Account opened"
+}, {
+  "accountId" : "Expenses:Food:Alcool",
+  "date" : "1970-01-01",
+  "balance" : {
+    "number" : 0,
+    "ccy" : "USD"
+  },
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : false,
+    "automaticReinvestment" : false,
+    "generatedAccount" : false,
+    "hidden" : false,
+    "placeholder" : false
+  },
+  "commandType" : "open",
+  "description" : "Account opened"
+}, {
+  "accountId" : "Expenses:Communications:Phone",
+  "date" : "1970-01-01",
+  "balance" : {
+    "number" : 0,
+    "ccy" : "USD"
+  },
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : false,
+    "automaticReinvestment" : false,
+    "generatedAccount" : false,
+    "hidden" : false,
+    "placeholder" : false
+  },
+  "commandType" : "open",
+  "description" : "Account opened"
+}, {
+  "accountId" : "Expenses:Communications:Mail",
+  "date" : "1970-01-01",
+  "balance" : {
+    "number" : 0,
+    "ccy" : "USD"
+  },
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : false,
+    "automaticReinvestment" : false,
+    "generatedAccount" : false,
+    "hidden" : false,
+    "placeholder" : false
+  },
+  "commandType" : "open",
+  "description" : "Account opened"
+}, {
+  "accountId" : "Expenses:Transportation:Taxi",
+  "date" : "1970-01-01",
+  "balance" : {
+    "number" : 0,
+    "ccy" : "USD"
+  },
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : false,
+    "automaticReinvestment" : false,
+    "generatedAccount" : false,
+    "hidden" : false,
+    "placeholder" : false
+  },
+  "commandType" : "open",
+  "description" : "Account opened"
+}, {
+  "accountId" : "Expenses:Taxes:US-Federal",
+  "date" : "1970-01-01",
+  "balance" : {
+    "number" : 0,
+    "ccy" : "USD"
+  },
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : false,
+    "automaticReinvestment" : false,
+    "generatedAccount" : false,
+    "hidden" : false,
+    "placeholder" : false
+  },
+  "commandType" : "open",
+  "description" : "Account opened"
+}, {
+  "accountId" : "Expenses:Govt-Services",
+  "date" : "1970-01-01",
+  "balance" : {
+    "number" : 0,
+    "ccy" : "USD"
+  },
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : false,
+    "automaticReinvestment" : false,
+    "generatedAccount" : false,
+    "hidden" : false,
+    "placeholder" : false
+  },
+  "commandType" : "open",
+  "description" : "Account opened"
+}, {
+  "accountId" : "Expenses:Clothes",
+  "date" : "1970-01-01",
+  "balance" : {
+    "number" : 0,
+    "ccy" : "USD"
+  },
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : false,
+    "automaticReinvestment" : false,
+    "generatedAccount" : false,
+    "hidden" : false,
+    "placeholder" : false
+  },
+  "commandType" : "open",
+  "description" : "Account opened"
+}, {
+  "accountId" : "Expenses:Car:Gas",
+  "date" : "1970-01-01",
+  "balance" : {
+    "number" : 0,
+    "ccy" : "USD"
+  },
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : false,
+    "automaticReinvestment" : false,
+    "generatedAccount" : false,
+    "hidden" : false,
+    "placeholder" : false
+  },
+  "commandType" : "open",
+  "description" : "Account opened"
+}, {
+  "accountId" : "Expenses:Sports",
+  "date" : "1970-01-01",
+  "balance" : {
+    "number" : 0,
+    "ccy" : "USD"
+  },
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : false,
+    "automaticReinvestment" : false,
+    "generatedAccount" : false,
+    "hidden" : false,
+    "placeholder" : false
+  },
+  "commandType" : "open",
+  "description" : "Account opened"
+}, {
+  "accountId" : "Expenses:Sports:Gear",
+  "date" : "1970-01-01",
+  "balance" : {
+    "number" : 0,
+    "ccy" : "USD"
+  },
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : false,
+    "automaticReinvestment" : false,
+    "generatedAccount" : false,
+    "hidden" : false,
+    "placeholder" : false
+  },
+  "commandType" : "open",
+  "description" : "Account opened"
+}, {
+  "accountId" : "Expenses:Fun:Movie",
+  "date" : "1970-01-01",
+  "balance" : {
+    "number" : 0,
+    "ccy" : "USD"
+  },
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : false,
+    "automaticReinvestment" : false,
+    "generatedAccount" : false,
+    "hidden" : false,
+    "placeholder" : false
+  },
+  "commandType" : "open",
+  "description" : "Account opened"
+}, {
+  "accountId" : "Expenses:Books",
+  "date" : "1970-01-01",
+  "balance" : {
+    "number" : 0,
+    "ccy" : "USD"
+  },
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : false,
+    "automaticReinvestment" : false,
+    "generatedAccount" : false,
+    "hidden" : false,
+    "placeholder" : false
+  },
+  "commandType" : "open",
+  "description" : "Account opened"
+}, {
+  "accountId" : "Expenses:Medical",
+  "date" : "1970-01-01",
+  "balance" : {
+    "number" : 0,
+    "ccy" : "USD"
+  },
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : false,
+    "automaticReinvestment" : false,
+    "generatedAccount" : false,
+    "hidden" : false,
+    "placeholder" : false
+  },
+  "commandType" : "open",
+  "description" : "Account opened"
+}, {
+  "accountId" : "Expenses:Charity",
+  "date" : "1970-01-01",
+  "balance" : {
+    "number" : 0,
+    "ccy" : "USD"
+  },
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : false,
+    "automaticReinvestment" : false,
+    "generatedAccount" : false,
+    "hidden" : false,
+    "placeholder" : false
+  },
+  "commandType" : "open",
+  "description" : "Account opened"
+}, {
+  "accountId" : "Expenses:Home:Monthly:Condo-Fees",
+  "date" : "1970-01-01",
+  "balance" : {
+    "number" : 0,
+    "ccy" : "USD"
+  },
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : false,
+    "automaticReinvestment" : false,
+    "generatedAccount" : false,
+    "hidden" : false,
+    "placeholder" : false
+  },
+  "commandType" : "open",
+  "description" : "Account opened"
+}, {
+  "accountId" : "Expenses:Home:Monthly:Loan-Interest",
+  "date" : "1970-01-01",
+  "balance" : {
+    "number" : 0,
+    "ccy" : "USD"
+  },
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : false,
+    "automaticReinvestment" : false,
+    "generatedAccount" : false,
+    "hidden" : false,
+    "placeholder" : false
+  },
+  "commandType" : "open",
+  "description" : "Account opened"
+}, {
+  "accountId" : "Assets:BestBank:Checking",
+  "date" : "1970-01-01",
+  "balance" : {
+    "number" : 0,
+    "ccy" : "USD"
+  },
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : false,
+    "automaticReinvestment" : false,
+    "generatedAccount" : false,
+    "hidden" : false,
+    "placeholder" : false
+  },
+  "commandType" : "open",
+  "description" : "Account opened"
+}, {
+  "accountId" : "Assets:BestBank:Savings",
+  "date" : "1970-01-01",
+  "balance" : {
+    "number" : 0,
+    "ccy" : "USD"
+  },
+  "options" : {
+    "tradingAccount" : false,
+    "fundingAccount" : "Equity:Opening",
+    "description" : "",
+    "multiAsset" : false,
+    "automaticReinvestment" : false,
+    "generatedAccount" : false,
+    "hidden" : false,
+    "placeholder" : false
+  },
+  "commandType" : "open",
+  "description" : "Account opened"
+}, {
+  "accountId" : "Assets:Cash",
+  "date" : "1970-01-01",
+  "balance" : {
+    "number" : 0,
+    "ccy" : "USD"
+  },
+  "options" : {
+    "tradingAccount" : false,
+    "fundingAccount" : "Equity:Opening",
+    "description" : "",
+    "multiAsset" : false,
+    "automaticReinvestment" : false,
+    "generatedAccount" : false,
+    "hidden" : false,
+    "placeholder" : false
+  },
+  "commandType" : "open",
+  "description" : "Account opened"
+}, {
+  "accountId" : "Assets:BestBank:Checking",
+  "date" : "2008-01-01",
+  "balance" : {
+    "number" : 1412.24,
+    "ccy" : "USD"
+  },
+  "otherAccount" : "Equity:Opening",
+  "commandType" : "bal",
+  "description" : "Account balance 1412.24 USD"
+}, {
+  "accountId" : "Assets:BestBank:Savings",
+  "date" : "2008-01-01",
+  "balance" : {
+    "number" : 12000,
+    "ccy" : "USD"
+  },
+  "otherAccount" : "Equity:Opening",
+  "commandType" : "bal",
+  "description" : "Account balance 12000 USD"
+}, {
+  "accountId" : "Assets:UTrade:Account",
+  "date" : "2008-01-01",
+  "balance" : {
+    "number" : 31273.02,
+    "ccy" : "USD"
+  },
+  "otherAccount" : "Equity:Opening",
+  "commandType" : "bal",
+  "description" : "Account balance 31273.02 USD"
+}, {
+  "accountId" : "Assets:BestBank:Checking",
+  "date" : "2008-01-02",
+  "change" : {
+    "number" : 42.69,
+    "ccy" : "USD"
+  },
+  "price" : {
+    "number" : 1,
+    "ccy" : "USD"
+  },
+  "otherAccount" : "Expenses:Insurance:Life",
+  "commandType" : "tfr",
+  "description" : "Transfer 42.69 USD Assets:BestBank:Checking -> Expenses:Insurance:Life"
+}, {
+  "accountId" : "Assets:BestBank:Savings",
+  "date" : "2008-01-03",
+  "change" : {
+    "number" : 95.69,
+    "ccy" : "USD"
+  },
+  "commandType" : "yield",
+  "description" : "Savings yield 95.69 USD"
+}, {
+  "accountId" : "Expenses:Taxes:US-Federal",
+  "date" : "2008-01-05",
+  "change" : {
+    "number" : 77.76,
+    "ccy" : "USD"
+  },
+  "price" : {
+    "number" : 1,
+    "ccy" : "USD"
+  },
+  "otherAccount" : "Assets:BestBank:Checking",
+  "commandType" : "tfr",
+  "description" : "Transfer 77.76 USD Expenses:Taxes:US-Federal -> Assets:BestBank:Checking"
+}, {
+  "accountId" : "Assets:BestBank:Checking",
+  "date" : "2008-01-07",
+  "change" : {
+    "number" : 89.00,
+    "ccy" : "USD"
+  },
+  "price" : {
+    "number" : 1,
+    "ccy" : "USD"
+  },
+  "otherAccount" : "Expenses:Sports:Gear",
+  "commandType" : "tfr",
+  "description" : "Transfer 89.00 USD Assets:BestBank:Checking -> Expenses:Sports:Gear"
+}, {
+  "accountId" : "Assets:BestBank:Checking",
+  "date" : "2008-01-07",
+  "change" : {
+    "number" : 4.00,
+    "ccy" : "USD"
+  },
+  "price" : {
+    "number" : 1,
+    "ccy" : "USD"
+  },
+  "otherAccount" : "Expenses:Financial:Fees",
+  "commandType" : "tfr",
+  "description" : "Transfer 4.00 USD Assets:BestBank:Checking -> Expenses:Financial:Fees"
+}, {
+  "accountId" : "Assets:UTrade:Account",
+  "date" : "2008-01-08",
+  "change" : {
+    "number" : 30,
+    "ccy" : "AAPL"
+  },
+  "price" : {
+    "number" : 185.40,
+    "ccy" : "USD"
+  },
+  "commission" : {
+    "number" : 9.95,
+    "ccy" : "USD"
+  },
+  "commandType" : "trade",
+  "description" : "BUY 30 AAPL @185.40 USD"
+}, {
+  "accountId" : "Income:Salary:AcmeCo",
+  "date" : "2008-01-10",
+  "change" : {
+    "number" : 2000.00,
+    "ccy" : "USD"
+  },
+  "commandType" : "earn",
+  "description" : "Earn 2000.00 USD Salary:AcmeCo"
+}, {
+  "accountId" : "Assets:BestBank:Checking",
+  "date" : "2008-01-12",
+  "change" : {
+    "number" : 300,
+    "ccy" : "USD"
+  },
+  "price" : {
+    "number" : 1,
+    "ccy" : "USD"
+  },
+  "otherAccount" : "Assets:Cash",
+  "commandType" : "tfr",
+  "description" : "Transfer 300 USD Assets:BestBank:Checking -> Assets:Cash"
+}, {
+  "accountId" : "Assets:BestBank:Checking",
+  "date" : "2008-01-12",
+  "change" : {
+    "number" : 0.02,
+    "ccy" : "USD"
+  },
+  "commandType" : "yield",
+  "description" : "Checking yield 0.02 USD"
+}, {
+  "accountId" : "Income:Salary:AcmeCo",
+  "date" : "2008-01-25",
+  "change" : {
+    "number" : 2000.00,
+    "ccy" : "USD"
+  },
+  "commandType" : "earn",
+  "description" : "Earn 2000.00 USD Salary:AcmeCo"
+}, {
+  "accountId" : "Assets:BestBank:Checking",
+  "date" : "2008-01-29",
+  "change" : {
+    "number" : 2000.00,
+    "ccy" : "USD"
+  },
+  "price" : {
+    "number" : 1,
+    "ccy" : "USD"
+  },
+  "otherAccount" : "Assets:BestBank:Savings",
+  "commandType" : "tfr",
+  "description" : "Transfer 2000.00 USD Assets:BestBank:Checking -> Assets:BestBank:Savings"
+}, {
+  "accountId" : "Assets:BestBank:Checking",
+  "date" : "2008-01-30",
+  "change" : {
+    "number" : 800,
+    "ccy" : "USD"
+  },
+  "price" : {
+    "number" : 1,
+    "ccy" : "USD"
+  },
+  "otherAccount" : "Assets:Cash",
+  "commandType" : "tfr",
+  "description" : "Transfer 800 USD Assets:BestBank:Checking -> Assets:Cash"
+}, {
+  "accountId" : "Assets:BestBank:Checking",
+  "date" : "2008-02-01",
+  "balance" : {
+    "number" : 661.49,
+    "ccy" : "USD"
+  },
+  "otherAccount" : "Equity:Opening",
+  "commandType" : "bal",
+  "description" : "Account balance 661.49 USD"
+}, {
+  "accountId" : "Assets:UTrade:Account",
+  "date" : "2008-02-02",
+  "asset" : "AAPL",
+  "change" : {
+    "number" : 0.68,
+    "ccy" : "USD"
+  },
+  "commandType" : "yield",
+  "description" : "AAPL yield 0.68 USD"
+}, {
+  "accountId" : "Assets:BestBank:Savings",
+  "date" : "2008-02-03",
+  "change" : {
+    "number" : 102.34,
+    "ccy" : "USD"
+  },
+  "commandType" : "yield",
+  "description" : "Savings yield 102.34 USD"
+}, {
+  "accountId" : "Assets:UTrade:Account",
+  "date" : "2008-02-03",
+  "change" : {
+    "number" : 10000,
+    "ccy" : "USD"
+  },
+  "commandType" : "fund",
+  "description" : "Fund 10000 USD"
+}, {
+  "accountId" : "Income:Salary:AcmeCo",
+  "date" : "2008-02-10",
+  "change" : {
+    "number" : 2000.00,
+    "ccy" : "USD"
+  },
+  "commandType" : "earn",
+  "description" : "Earn 2000.00 USD Salary:AcmeCo"
+}, {
+  "accountId" : "Assets:UTrade:Account",
+  "date" : "2008-02-10",
+  "change" : {
+    "number" : 100,
+    "ccy" : "EWJ"
+  },
+  "price" : {
+    "number" : 13.34,
+    "ccy" : "USD"
+  },
+  "commission" : {
+    "number" : 9.95,
+    "ccy" : "USD"
+  },
+  "commandType" : "trade",
+  "description" : "BUY 100 EWJ @13.34 USD"
+}, {
+  "accountId" : "Assets:BestBank:Checking",
+  "date" : "2008-02-20",
+  "change" : {
+    "number" : 500,
+    "ccy" : "USD"
+  },
+  "price" : {
+    "number" : 1,
+    "ccy" : "USD"
+  },
+  "otherAccount" : "Assets:Cash",
+  "commandType" : "tfr",
+  "description" : "Transfer 500 USD Assets:BestBank:Checking -> Assets:Cash"
+}, {
+  "accountId" : "Assets:BestBank:Checking",
+  "date" : "2008-02-24",
+  "change" : {
+    "number" : 500,
+    "ccy" : "USD"
+  },
+  "price" : {
+    "number" : 1,
+    "ccy" : "USD"
+  },
+  "otherAccount" : "Assets:Cash",
+  "commandType" : "tfr",
+  "description" : "Transfer 500 USD Assets:BestBank:Checking -> Assets:Cash"
+}, {
+  "accountId" : "Income:Salary:AcmeCo",
+  "date" : "2008-02-25",
+  "change" : {
+    "number" : 2000.00,
+    "ccy" : "USD"
+  },
+  "commandType" : "earn",
+  "description" : "Earn 2000.00 USD Salary:AcmeCo"
+}, {
+  "accountId" : "Assets:UTrade:Account",
+  "date" : "2008-02-28",
+  "change" : {
+    "number" : -30,
+    "ccy" : "AAPL"
+  },
+  "price" : {
+    "number" : 193.02,
+    "ccy" : "USD"
+  },
+  "commission" : {
+    "number" : 9.95,
+    "ccy" : "USD"
+  },
+  "commandType" : "trade",
+  "description" : "SELL -30 AAPL @193.02 USD"
+}, {
+  "accountId" : "Assets:UTrade:Account:AAPL",
+  "date" : "2008-03-01",
+  "balance" : {
+    "number" : 0,
+    "ccy" : "AAPL"
+  },
+  "otherAccount" : "Equity:Opening",
+  "commandType" : "adj",
+  "description" : "Account balance 0 AAPL"
+}, {
+  "accountId" : "Assets:UTrade:Account:EWJ",
+  "date" : "2008-03-01",
+  "balance" : {
+    "number" : 100,
+    "ccy" : "EWJ"
+  },
+  "otherAccount" : "Equity:Opening",
+  "commandType" : "adj",
+  "description" : "Account balance 100 EWJ"
+}, {
+  "accountId" : "Assets:BestBank:Savings",
+  "date" : "2008-03-01",
+  "balance" : {
+    "number" : 2340.19,
+    "ccy" : "USD"
+  },
+  "otherAccount" : "Equity:Opening",
+  "commandType" : "bal",
+  "description" : "Account balance 2340.19 USD"
+}, {
+  "accountId" : "Assets:UTrade:Account:USD",
+  "date" : "2008-03-01",
+  "balance" : {
+    "number" : 40138.45,
+    "ccy" : "USD"
+  },
+  "otherAccount" : "Equity:Opening",
+  "commandType" : "bal",
+  "description" : "Account balance 40138.45 USD"
+}, {
+  "accountId" : "Assets:Cash",
+  "date" : "2008-03-26",
+  "change" : {
+    "number" : 431.92,
+    "ccy" : "USD"
+  },
+  "price" : {
+    "number" : 1,
+    "ccy" : "USD"
+  },
+  "otherAccount" : "Assets:AccountsReceivable",
+  "commandType" : "tfr",
+  "description" : "Transfer 431.92 USD Assets:Cash -> Assets:AccountsReceivable"
+}, {
+  "accountId" : "Assets:AccountsReceivable",
+  "date" : "2008-04-02",
+  "change" : {
+    "number" : 431.92,
+    "ccy" : "USD"
+  },
+  "price" : {
+    "number" : 1,
+    "ccy" : "USD"
+  },
+  "otherAccount" : "Assets:Cash",
+  "commandType" : "tfr",
+  "description" : "Transfer 431.92 USD Assets:AccountsReceivable -> Assets:Cash"
+} ]

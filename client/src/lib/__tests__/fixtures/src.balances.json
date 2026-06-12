@@ -1,0 +1,292 @@
+{
+  "Expenses:Investment:IBUSD:USD" : {
+    "series" : {
+      "2019-04-11" : 18.87
+    },
+    "ccy" : "USD"
+  },
+  "Assets:Investment:OldMutual" : {
+    "series" : {
+      "2009-12-31" : 0
+    },
+    "ccy" : "GBP"
+  },
+  "Assets:Bank:Nationwide" : {
+    "series" : {
+      "1999-12-31" : 0,
+      "2014-01-04" : 25613.71,
+      "2019-03-31" : 134703.49,
+      "2019-04-11" : 115703.49
+    },
+    "ccy" : "GBP"
+  },
+  "Assets:Investment:HSBC:BRK-B" : {
+    "series" : {
+      "2019-03-27" : 15.0
+    },
+    "ccy" : "BRK-B"
+  },
+  "Assets:Investment:IBUSD:BRK-B" : {
+    "series" : {
+      "2019-04-11" : 6.0
+    },
+    "ccy" : "BRK-B"
+  },
+  "Assets:Investment:Zurich:TBOND" : {
+    "series" : {
+      "2019-01-01" : 28146.69
+    },
+    "ccy" : "TBOND"
+  },
+  "Assets:Investment:Zurich:FTSE" : {
+    "series" : {
+      "2019-01-01" : 75296.0
+    },
+    "ccy" : "FTSE"
+  },
+  "Assets:Bank:HSBCUK" : {
+    "series" : {
+      "1999-12-31" : 0,
+      "2019-04-11" : 19000.0
+    },
+    "ccy" : "GBP"
+  },
+  "Assets:Investment:Zurich" : {
+    "series" : {
+      "2009-12-31" : 0
+    },
+    "ccy" : "GBP"
+  },
+  "Assets:Investment:OldMutual:GBP" : {
+    "series" : {
+      "2018-12-31" : 80300.28,
+      "2019-01-01" : 0.00176711
+    },
+    "ccy" : "GBP"
+  },
+  "Assets:Investment:OldMutual:QLNC" : {
+    "series" : {
+      "2019-01-01" : 4578.3959
+    },
+    "ccy" : "QLNC"
+  },
+  "Assets:Investment:IBUSD" : {
+    "series" : {
+      "2019-03-31" : 0
+    },
+    "ccy" : "USD"
+  },
+  "Equity:Opening:HKD" : {
+    "series" : {
+      "2018-12-31" : -138668.37,
+      "2019-02-13" : -73030.33
+    },
+    "ccy" : "HKD"
+  },
+  "Income:Investment:IBUSD" : {
+    "series" : { },
+    "ccy" : "USD"
+  },
+  "Expenses:Investment:Zurich:GBP" : {
+    "series" : { },
+    "ccy" : "GBP"
+  },
+  "Assets:Investment:IBUSD:IUAA" : {
+    "series" : {
+      "2019-04-11" : 1000.0
+    },
+    "ccy" : "IUAA"
+  },
+  "Equity:Opening:CNY" : {
+    "series" : {
+      "2018-12-31" : -597413.7
+    },
+    "ccy" : "CNY"
+  },
+  "Assets:HSBCHK" : {
+    "series" : {
+      "2009-12-31" : 0,
+      "2018-12-31" : 138668.37,
+      "2019-01-02" : 98668.37,
+      "2019-02-13" : 33030.33
+    },
+    "ccy" : "HKD"
+  },
+  "Assets:Investment:HSBC" : {
+    "series" : {
+      "2009-12-31" : 0
+    },
+    "ccy" : "USD"
+  },
+  "Income:Investment:OldMutual" : {
+    "series" : { },
+    "ccy" : "GBP"
+  },
+  "Expenses:Investment:IBUSD" : {
+    "series" : { },
+    "ccy" : "USD"
+  },
+  "Assets:Investment:HSBC:VTI" : {
+    "series" : {
+      "2019-01-02" : 100.0,
+      "2019-03-15" : 114.0,
+      "2019-03-26" : 144.0
+    },
+    "ccy" : "VTI"
+  },
+  "Assets:Investment:OldMutual:GBR04S9K" : {
+    "series" : {
+      "2019-01-01" : 97.9586
+    },
+    "ccy" : "GBR04S9K"
+  },
+  "Assets:Investment:IBUSD:USD" : {
+    "series" : {
+      "2019-04-11" : 172.0500
+    },
+    "ccy" : "USD"
+  },
+  "Income:Salary" : {
+    "series" : {
+      "2009-12-31" : 0,
+      "2018-07-26" : -50000.0
+    },
+    "ccy" : "CNY"
+  },
+  "Assets:Investment:IBUSD:VWRD" : {
+    "series" : {
+      "2019-04-11" : 330.0
+    },
+    "ccy" : "VWRD"
+  },
+  "Assets:Investment:OldMutual:OPY7" : {
+    "series" : {
+      "2019-01-01" : 538.2539
+    },
+    "ccy" : "OPY7"
+  },
+  "Assets:Investment:OldMutual:SVDK" : {
+    "series" : {
+      "2019-01-01" : 752.8264
+    },
+    "ccy" : "SVDK"
+  },
+  "Equity:Opening:GBP" : {
+    "series" : {
+      "2013-06-30" : -265000.0,
+      "2014-01-04" : -290613.71,
+      "2018-12-31" : -370913.99,
+      "2019-03-31" : -533935.87
+    },
+    "ccy" : "GBP"
+  },
+  "Equity:Opening" : {
+    "series" : {
+      "2009-12-31" : 0
+    },
+    "ccy" : "GBP"
+  },
+  "Assets:Bank:NationwideSavings" : {
+    "series" : {
+      "1999-12-31" : 0,
+      "2019-03-31" : 53932.1
+    },
+    "ccy" : "GBP"
+  },
+  "Assets:Investment:OldMutual:OPXC" : {
+    "series" : {
+      "2019-01-01" : 525.5707
+    },
+    "ccy" : "OPXC"
+  },
+  "Assets:Investment:HSBC:VCSH" : {
+    "series" : {
+      "2019-03-08" : 13.0
+    },
+    "ccy" : "VCSH"
+  },
+  "Assets:Investment:Zurich:GBP" : {
+    "series" : {
+      "2013-06-30" : 265000.0,
+      "2018-12-31" : 348045.34,
+      "2019-01-01" : -0.0201
+    },
+    "ccy" : "GBP"
+  },
+  "Assets:Investment:OldMutual:GBR06HUW" : {
+    "series" : {
+      "2019-01-01" : 243.2453
+    },
+    "ccy" : "GBR06HUW"
+  },
+  "Expenses:Investment:OldMutual:GBP" : {
+    "series" : { },
+    "ccy" : "GBP"
+  },
+  "Expenses:Education" : {
+    "series" : {
+      "2009-12-31" : 0,
+      "2018-08-15" : 100000.0
+    },
+    "ccy" : "CNY"
+  },
+  "Assets:Investment:Zurich:AMER" : {
+    "series" : {
+      "2019-01-01" : 30511.46
+    },
+    "ccy" : "AMER"
+  },
+  "Expenses:Investment:OldMutual" : {
+    "series" : { },
+    "ccy" : "GBP"
+  },
+  "Assets:HSBCCN" : {
+    "series" : {
+      "2009-12-31" : 0,
+      "2018-07-26" : 50000.0,
+      "2018-08-15" : -50000.0,
+      "2018-12-31" : 547413.7
+    },
+    "ccy" : "CNY"
+  },
+  "Assets:Investment:OldMutual:QS90" : {
+    "series" : {
+      "2019-01-01" : 2221.2587
+    },
+    "ccy" : "QS90"
+  },
+  "Assets:Investment:HSBC:USD" : {
+    "series" : {
+      "2009-12-31" : 0,
+      "2019-01-02" : -7678.090,
+      "2019-03-08" : -8706.000,
+      "2019-03-15" : -10730.680,
+      "2019-03-26" : -15045.580,
+      "2019-03-27" : -18054.280,
+      "2019-04-11" : -53029.280
+    },
+    "ccy" : "USD"
+  },
+  "Income:Investment:OldMutual:GBP" : {
+    "series" : { },
+    "ccy" : "GBP"
+  },
+  "Income:Investment:IBUSD:USD" : {
+    "series" : { },
+    "ccy" : "USD"
+  },
+  "Income:Investment:Zurich" : {
+    "series" : { },
+    "ccy" : "GBP"
+  },
+  "Income:Investment:Zurich:GBP" : {
+    "series" : {
+      "2018-12-31" : -83045.34
+    },
+    "ccy" : "GBP"
+  },
+  "Expenses:Investment:Zurich" : {
+    "series" : { },
+    "ccy" : "GBP"
+  }
+}

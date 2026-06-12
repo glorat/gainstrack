@@ -24,7 +24,6 @@ lazy val dlstore_deps =
   else Seq(dependencies.dlstore)
 
 lazy val common_deps = Seq(
-  "org.typelevel" %% "spire" % "0.18.0",
   "org.scalatest" %% "scalatest" % "3.2.15" % "test",
   "org.json4s"   %% "json4s-core" % "4.0.6",
   "org.json4s"   %% "json4s-jackson" % "4.0.6",

@@ -1,0 +1,154 @@
+{
+  "Assets:Investment:Stocks:GBP" : {
+    "series" : {
+      "2006-11-01" : 1000,
+      "2006-11-02" : -0.20,
+      "2006-11-15" : 18.80
+    },
+    "ccy" : "GBP"
+  },
+  "Expenses:Investment:Stocks" : {
+    "series" : { },
+    "ccy" : "GBP"
+  },
+  "Income:Investment:Stocks" : {
+    "series" : { },
+    "ccy" : "GBP"
+  },
+  "Income:Investment:Stocks:FTSE" : {
+    "series" : {
+      "2006-11-15" : -10
+    },
+    "ccy" : "GBP"
+  },
+  "Assets:Pension:Barclays:GBP" : {
+    "series" : {
+      "2004-10-14" : 0
+    },
+    "ccy" : "GBP"
+  },
+  "Income:Investment:Stocks:GBP" : {
+    "series" : { },
+    "ccy" : "GBP"
+  },
+  "Assets:Investment:Stocks:USD" : {
+    "series" : {
+      "2006-11-15" : 0
+    },
+    "ccy" : "USD"
+  },
+  "Income:Pension:Barclays" : {
+    "series" : { },
+    "ccy" : "GBP"
+  },
+  "Expenses:Pension:Barclays" : {
+    "series" : { },
+    "ccy" : "GBP"
+  },
+  "Expenses:Pension:Barclays:GBP" : {
+    "series" : { },
+    "ccy" : "GBP"
+  },
+  "Income:ISA:London" : {
+    "series" : {
+      "2005-10-13" : -1000,
+      "2005-10-15" : -1015
+    },
+    "ccy" : "GBP"
+  },
+  "Assets:Investment:Stocks:VWRL" : {
+    "series" : {
+      "2006-11-02" : 50
+    },
+    "ccy" : "VWRL"
+  },
+  "Assets:Investment:Stocks:FTSE" : {
+    "series" : {
+      "2006-11-02" : 50
+    },
+    "ccy" : "FTSE"
+  },
+  "Assets:Investment:Stocks" : {
+    "series" : {
+      "2004-10-13" : 0
+    },
+    "ccy" : "GBP"
+  },
+  "Assets:Bank:England" : {
+    "series" : {
+      "1999-12-31" : 0,
+      "2004-10-14" : -7000,
+      "2005-07-26" : 43000.00,
+      "2005-08-01" : 43010.00,
+      "2005-10-15" : 43025.00,
+      "2006-11-01" : 42025.00
+    },
+    "ccy" : "GBP"
+  },
+  "Equity:Opening:GBP" : {
+    "series" : {
+      "2004-10-14" : -1000
+    },
+    "ccy" : "GBP"
+  },
+  "Equity:Opening" : {
+    "series" : {
+      "1999-12-31" : 0
+    },
+    "ccy" : "GBP"
+  },
+  "Assets:Pension:Barclays:BGIL" : {
+    "series" : {
+      "2004-10-15" : 500,
+      "2019-04-18" : 600
+    },
+    "ccy" : "BGIL"
+  },
+  "Income:Investment:Stocks:VWRL" : {
+    "series" : {
+      "2006-11-15" : -10
+    },
+    "ccy" : "USD"
+  },
+  "Assets:Pension:Barclays" : {
+    "series" : {
+      "2004-10-13" : 0
+    },
+    "ccy" : "GBP"
+  },
+  "Income:Salary:GBP" : {
+    "series" : {
+      "2005-07-25" : 0,
+      "2005-07-26" : -50000.00
+    },
+    "ccy" : "GBP"
+  },
+  "Income:Bank:England" : {
+    "series" : {
+      "2005-08-01" : -10
+    },
+    "ccy" : "GBP"
+  },
+  "Income:Pension:Barclays:GBP" : {
+    "series" : {
+      "2004-10-14" : 1000,
+      "2004-10-15" : 0,
+      "2019-04-18" : -500
+    },
+    "ccy" : "GBP"
+  },
+  "Assets:ISA:London" : {
+    "series" : {
+      "2004-10-13" : 0,
+      "2004-10-14" : 7000,
+      "2005-10-13" : 8000
+    },
+    "ccy" : "GBP"
+  },
+  "Expenses:Investment:Stocks:GBP" : {
+    "series" : {
+      "2006-11-02" : 0.20
+    },
+    "ccy" : "GBP"
+  }
+}

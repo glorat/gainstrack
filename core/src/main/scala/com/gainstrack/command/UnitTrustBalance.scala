@@ -52,7 +52,7 @@ case class UnitTrustBalance(
 
     val newUnits = security-oldBalance
     val unitIncrease : Posting = Posting(securityAccountId, newUnits, price )
-    val adjAccount = if ( (oldBalance.number.isZero || security.number.isZero) ) {
+    val adjAccount = if ( (oldBalance.number.signum == 0 || security.number.signum == 0) ) {
       // Trading to/from a zero means we should obtain funding, rather than make money
       if (account.options.multiAsset && !account.options.automaticReinvestment) {
         // Fund from self
@@ -73,7 +73,7 @@ case class UnitTrustBalance(
       incomeAccountId
     }
 
-    if (newUnits.number.isZero) {
+    if (newUnits.number.signum == 0) {
       None
     }
     else if (newUnits.number.abs < 0.0000001) {

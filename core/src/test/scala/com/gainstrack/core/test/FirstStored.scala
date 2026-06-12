@@ -22,9 +22,13 @@ import org.slf4j.Logger
 class FirstStored extends AnyFlatSpec with BeforeAndAfterAll {
   val logger: Logger = LoggerFactory.getLogger(getClass)
 
-  val id: ju.UUID = java.util.UUID.nameUUIDFromBytes("first stored test case".getBytes)
-  val id2: ju.UUID = java.util.UUID.nameUUIDFromBytes("by a different route".getBytes)
-  val idbad: ju.UUID = java.util.UUID.nameUUIDFromBytes("corrupted file".getBytes)
+  // Seed the ids with the concrete class name so that this suite and its
+  // subclass (FirestoreFirstStored) get distinct storage keys. Otherwise, when
+  // Firebase creds are absent both fall back to FileRepository("/tmp") with the
+  // same UUIDs and race on the same files when ScalaTest runs suites in parallel.
+  val id: ju.UUID = java.util.UUID.nameUUIDFromBytes(s"${getClass.getName} first stored test case".getBytes)
+  val id2: ju.UUID = java.util.UUID.nameUUIDFromBytes(s"${getClass.getName} by a different route".getBytes)
+  val idbad: ju.UUID = java.util.UUID.nameUUIDFromBytes(s"${getClass.getName} corrupted file".getBytes)
 
   val e = new GainstrackEntity(id)
 

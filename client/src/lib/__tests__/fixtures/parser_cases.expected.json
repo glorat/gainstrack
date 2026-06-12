@@ -1,0 +1,736 @@
+[ {
+  "id" : "open-basic",
+  "status" : "ok",
+  "commands" : [ {
+    "accountId" : "Assets:Bank",
+    "date" : "2019-01-01",
+    "balance" : {
+      "number" : 0,
+      "ccy" : "GBP"
+    },
+    "options" : {
+      "tradingAccount" : false,
+      "description" : "",
+      "multiAsset" : false,
+      "automaticReinvestment" : false,
+      "generatedAccount" : false,
+      "hidden" : false,
+      "placeholder" : false
+    },
+    "commandType" : "open",
+    "description" : "Account opened"
+  } ]
+}, {
+  "id" : "open-with-options",
+  "status" : "ok",
+  "commands" : [ {
+    "accountId" : "Assets:Inv",
+    "date" : "2019-01-01",
+    "balance" : {
+      "number" : 0,
+      "ccy" : "GBP"
+    },
+    "options" : {
+      "tradingAccount" : false,
+      "incomeAccount" : "Income:Div",
+      "fundingAccount" : "Assets:Bank",
+      "description" : "",
+      "multiAsset" : true,
+      "automaticReinvestment" : true,
+      "generatedAccount" : false,
+      "hidden" : false,
+      "placeholder" : false
+    },
+    "commandType" : "open",
+    "description" : "Account opened"
+  } ]
+}, {
+  "id" : "open-unknown-option",
+  "status" : "error"
+}, {
+  "id" : "open-lowercase-ccy",
+  "status" : "error"
+}, {
+  "id" : "earn-simple",
+  "status" : "ok",
+  "commands" : [ {
+    "accountId" : "Income:Salary",
+    "date" : "2019-01-01",
+    "change" : {
+      "number" : 1000,
+      "ccy" : "USD"
+    },
+    "commandType" : "earn",
+    "description" : "Earn 1000 USD Salary"
+  } ]
+}, {
+  "id" : "earn-with-target",
+  "status" : "ok",
+  "commands" : [ {
+    "accountId" : "Income:Salary",
+    "date" : "2019-01-01",
+    "change" : {
+      "number" : 1000,
+      "ccy" : "USD"
+    },
+    "otherAccount" : "Assets:Bank",
+    "commandType" : "earn",
+    "description" : "Earn 1000 USD Salary"
+  } ]
+}, {
+  "id" : "earn-already-prefixed",
+  "status" : "ok",
+  "commands" : [ {
+    "accountId" : "Income:Salary",
+    "date" : "2019-01-01",
+    "change" : {
+      "number" : 1000,
+      "ccy" : "USD"
+    },
+    "commandType" : "earn",
+    "description" : "Earn 1000 USD Income:Salary"
+  } ]
+}, {
+  "id" : "spend-simple",
+  "status" : "ok",
+  "commands" : [ {
+    "accountId" : "Expenses:Food",
+    "date" : "2019-01-01",
+    "change" : {
+      "number" : 30,
+      "ccy" : "USD"
+    },
+    "commandType" : "spend",
+    "description" : "Spend 30 USD Food"
+  } ]
+}, {
+  "id" : "spend-with-account",
+  "status" : "ok",
+  "commands" : [ {
+    "accountId" : "Expenses:Food",
+    "date" : "2019-01-01",
+    "change" : {
+      "number" : 30,
+      "ccy" : "USD"
+    },
+    "otherAccount" : "Assets:Bank",
+    "commandType" : "spend",
+    "description" : "Spend 30 USD Food"
+  } ]
+}, {
+  "id" : "tfr-simple",
+  "status" : "ok",
+  "commands" : [ {
+    "accountId" : "Assets:A",
+    "date" : "2019-01-01",
+    "change" : {
+      "number" : 100,
+      "ccy" : "USD"
+    },
+    "price" : {
+      "number" : 1,
+      "ccy" : "USD"
+    },
+    "otherAccount" : "Assets:B",
+    "commandType" : "tfr",
+    "description" : "Transfer 100 USD Assets:A -> Assets:B"
+  } ]
+}, {
+  "id" : "tfr-fx",
+  "status" : "ok",
+  "commands" : [ {
+    "accountId" : "Assets:A",
+    "date" : "2019-01-02",
+    "change" : {
+      "number" : 40000,
+      "ccy" : "HKD"
+    },
+    "price" : {
+      "number" : 0.12712275,
+      "ccy" : "HKD"
+    },
+    "otherAccount" : "Assets:B",
+    "commandType" : "tfr",
+    "description" : "Transfer 40000 HKD Assets:A -> Assets:B@7.866413"
+  } ]
+}, {
+  "id" : "tfr-fx-nonterminating",
+  "status" : "ok",
+  "commands" : [ {
+    "accountId" : "Assets:A",
+    "date" : "2019-01-02",
+    "change" : {
+      "number" : 100,
+      "ccy" : "USD"
+    },
+    "price" : {
+      "number" : 0.3,
+      "ccy" : "USD"
+    },
+    "otherAccount" : "Assets:B",
+    "commandType" : "tfr",
+    "description" : "Transfer 100 USD Assets:A -> Assets:B@3.333333"
+  } ]
+}, {
+  "id" : "tfr-same-ccy-mismatched-amounts",
+  "status" : "error"
+}, {
+  "id" : "trade-basic",
+  "status" : "ok",
+  "commands" : [ {
+    "accountId" : "Assets:Broker",
+    "date" : "2010-01-01",
+    "change" : {
+      "number" : 10,
+      "ccy" : "IVV"
+    },
+    "price" : {
+      "number" : 12.3,
+      "ccy" : "USD"
+    },
+    "commission" : {
+      "number" : 0,
+      "ccy" : "USD"
+    },
+    "commandType" : "trade",
+    "description" : "BUY 10 IVV @12.3 USD"
+  } ]
+}, {
+  "id" : "trade-with-commission",
+  "status" : "ok",
+  "commands" : [ {
+    "accountId" : "Assets:Broker",
+    "date" : "2010-01-01",
+    "change" : {
+      "number" : 10,
+      "ccy" : "IVV"
+    },
+    "price" : {
+      "number" : 12.3,
+      "ccy" : "USD"
+    },
+    "commission" : {
+      "number" : 5,
+      "ccy" : "USD"
+    },
+    "commandType" : "trade",
+    "description" : "BUY 10 IVV @12.3 USD"
+  } ]
+}, {
+  "id" : "trade-sell-negative",
+  "status" : "ok",
+  "commands" : [ {
+    "accountId" : "Assets:Broker",
+    "date" : "2010-01-02",
+    "change" : {
+      "number" : -5,
+      "ccy" : "IVV"
+    },
+    "price" : {
+      "number" : 13.0,
+      "ccy" : "USD"
+    },
+    "commission" : {
+      "number" : 0,
+      "ccy" : "USD"
+    },
+    "commandType" : "trade",
+    "description" : "SELL -5 IVV @13.0 USD"
+  } ]
+}, {
+  "id" : "trade-missing-price",
+  "status" : "error"
+}, {
+  "id" : "adj-basic",
+  "status" : "ok",
+  "commands" : [ {
+    "accountId" : "Assets:Bank",
+    "date" : "2019-01-01",
+    "balance" : {
+      "number" : 138668.37,
+      "ccy" : "HKD"
+    },
+    "otherAccount" : "Equity:Opening:HKD",
+    "commandType" : "adj",
+    "description" : "Account balance 138668.37 HKD"
+  } ]
+}, {
+  "id" : "bal-basic",
+  "status" : "ok",
+  "commands" : [ {
+    "accountId" : "Assets:Bank",
+    "date" : "2019-01-01",
+    "balance" : {
+      "number" : 100,
+      "ccy" : "GBP"
+    },
+    "otherAccount" : "Equity:Opening",
+    "commandType" : "bal",
+    "description" : "Account balance 100 GBP"
+  } ]
+}, {
+  "id" : "price-basic",
+  "status" : "ok",
+  "commands" : [ {
+    "accountId" : "",
+    "date" : "2019-01-01",
+    "asset" : "IVV",
+    "price" : {
+      "number" : 100,
+      "ccy" : "USD"
+    },
+    "commandType" : "price",
+    "description" : "USD/IVV = 100 USD"
+  } ]
+}, {
+  "id" : "price-lowercase-asset",
+  "status" : "error"
+}, {
+  "id" : "unit-basic",
+  "status" : "ok",
+  "commands" : [ {
+    "accountId" : "Assets:Inv",
+    "date" : "2019-01-01",
+    "balance" : {
+      "number" : 100,
+      "ccy" : "FTSE"
+    },
+    "price" : {
+      "number" : 2.1,
+      "ccy" : "GBP"
+    },
+    "commandType" : "unit",
+    "description" : "Unit statement: 100 FTSE @2.1 GBP"
+  } ]
+}, {
+  "id" : "fund-simple",
+  "status" : "ok",
+  "commands" : [ {
+    "accountId" : "Assets:Inv",
+    "date" : "2019-01-01",
+    "change" : {
+      "number" : 1000,
+      "ccy" : "GBP"
+    },
+    "commandType" : "fund",
+    "description" : "Fund 1000 GBP"
+  } ]
+}, {
+  "id" : "fund-with-source",
+  "status" : "ok",
+  "commands" : [ {
+    "accountId" : "Assets:Inv",
+    "date" : "2019-01-01",
+    "change" : {
+      "number" : 1000,
+      "ccy" : "GBP"
+    },
+    "otherAccount" : "Equity:Opening",
+    "commandType" : "fund",
+    "description" : "Fund 1000 GBP"
+  } ]
+}, {
+  "id" : "yield-simple",
+  "status" : "ok",
+  "commands" : [ {
+    "accountId" : "Assets:Inv",
+    "date" : "2019-01-01",
+    "change" : {
+      "number" : 5,
+      "ccy" : "GBP"
+    },
+    "commandType" : "yield",
+    "description" : "Inv yield 5 GBP"
+  } ]
+}, {
+  "id" : "yield-with-asset",
+  "status" : "ok",
+  "commands" : [ {
+    "accountId" : "Assets:Inv",
+    "date" : "2019-01-01",
+    "asset" : "FTSE",
+    "change" : {
+      "number" : 5,
+      "ccy" : "GBP"
+    },
+    "commandType" : "yield",
+    "description" : "FTSE yield 5 GBP"
+  } ]
+}, {
+  "id" : "commodity-bare",
+  "status" : "ok",
+  "commands" : [ {
+    "accountId" : "",
+    "date" : "1900-01-01",
+    "asset" : "VWRD",
+    "options" : {
+      "name" : "",
+      "ticker" : "",
+      "tags" : [ ]
+    },
+    "commandType" : "commodity",
+    "description" : "VWRD"
+  } ]
+}, {
+  "id" : "commodity-with-options",
+  "status" : "ok",
+  "commands" : [ {
+    "accountId" : "",
+    "date" : "1900-01-01",
+    "asset" : "VWRD",
+    "options" : {
+      "custom" : "anything goes",
+      "name" : "Vanguard FTSE All-World",
+      "ticker" : "VWRD.LON",
+      "tags" : [ "equity", "global" ]
+    },
+    "commandType" : "commodity",
+    "description" : "VWRD"
+  } ]
+}, {
+  "id" : "global-operating-currency",
+  "status" : "ok",
+  "commands" : [ {
+    "accountId" : "",
+    "date" : "-999999999-01-01",
+    "options" : {
+      "operatingCurrency" : "GBP",
+      "comments" : [ ]
+    },
+    "commandType" : "",
+    "description" : "global configuration"
+  }, {
+    "accountId" : "Assets:Bank",
+    "date" : "2019-01-01",
+    "balance" : {
+      "number" : 0,
+      "ccy" : "GBP"
+    },
+    "options" : {
+      "tradingAccount" : false,
+      "description" : "",
+      "multiAsset" : false,
+      "automaticReinvestment" : false,
+      "generatedAccount" : false,
+      "hidden" : false,
+      "placeholder" : false
+    },
+    "commandType" : "open",
+    "description" : "Account opened"
+  } ]
+}, {
+  "id" : "comments-and-blank-lines",
+  "status" : "ok",
+  "commands" : [ {
+    "accountId" : "Assets:Bank",
+    "date" : "2019-01-01",
+    "balance" : {
+      "number" : 0,
+      "ccy" : "GBP"
+    },
+    "options" : {
+      "tradingAccount" : false,
+      "description" : "",
+      "multiAsset" : false,
+      "automaticReinvestment" : false,
+      "generatedAccount" : false,
+      "hidden" : false,
+      "placeholder" : false
+    },
+    "commandType" : "open",
+    "description" : "Account opened"
+  } ]
+}, {
+  "id" : "bad-date-month",
+  "status" : "error"
+}, {
+  "id" : "bad-date-day",
+  "status" : "error"
+}, {
+  "id" : "unknown-keyword",
+  "status" : "error"
+}, {
+  "id" : "unparsable-line",
+  "status" : "error"
+}, {
+  "id" : "metadata-before-command",
+  "status" : "error"
+}, {
+  "id" : "metadata-on-unsupported-command",
+  "status" : "error"
+}, {
+  "id" : "merge-dup-unit",
+  "status" : "error"
+}, {
+  "id" : "merge-unit-replace-diff-price",
+  "status" : "error"
+}, {
+  "id" : "merge-bal-vs-unit-same-key",
+  "status" : "error"
+}, {
+  "id" : "multi-command-sort",
+  "status" : "ok",
+  "commands" : [ {
+    "accountId" : "",
+    "date" : "-999999999-01-01",
+    "options" : {
+      "operatingCurrency" : "GBP",
+      "comments" : [ ]
+    },
+    "commandType" : "",
+    "description" : "global configuration"
+  }, {
+    "accountId" : "Assets:Bank",
+    "date" : "2019-01-01",
+    "balance" : {
+      "number" : 0,
+      "ccy" : "GBP"
+    },
+    "options" : {
+      "tradingAccount" : false,
+      "description" : "",
+      "multiAsset" : false,
+      "automaticReinvestment" : false,
+      "generatedAccount" : false,
+      "hidden" : false,
+      "placeholder" : false
+    },
+    "commandType" : "open",
+    "description" : "Account opened"
+  }, {
+    "accountId" : "Equity:Opening",
+    "date" : "2019-01-01",
+    "balance" : {
+      "number" : 0,
+      "ccy" : "GBP"
+    },
+    "options" : {
+      "tradingAccount" : false,
+      "description" : "",
+      "multiAsset" : false,
+      "automaticReinvestment" : false,
+      "generatedAccount" : false,
+      "hidden" : false,
+      "placeholder" : false
+    },
+    "commandType" : "open",
+    "description" : "Account opened"
+  }, {
+    "accountId" : "Assets:Bank",
+    "date" : "2019-01-02",
+    "balance" : {
+      "number" : 100,
+      "ccy" : "GBP"
+    },
+    "otherAccount" : "Equity:Opening",
+    "commandType" : "bal",
+    "description" : "Account balance 100 GBP"
+  } ]
+}, {
+  "id" : "number-with-comma",
+  "status" : "error"
+}, {
+  "id" : "number-exponential",
+  "status" : "ok",
+  "commands" : [ {
+    "accountId" : "",
+    "date" : "2019-01-01",
+    "asset" : "IVV",
+    "price" : {
+      "number" : 1E-7,
+      "ccy" : "USD"
+    },
+    "commandType" : "price",
+    "description" : "USD/IVV = 0.0000001 USD"
+  } ]
+}, {
+  "id" : "option-unknown-key",
+  "status" : "crash"
+}, {
+  "id" : "option-lowercase-ccy",
+  "status" : "error"
+}, {
+  "id" : "tab-separated",
+  "status" : "error"
+}, {
+  "id" : "empty-input",
+  "status" : "ok",
+  "commands" : [ ]
+}, {
+  "id" : "whitespace-only",
+  "status" : "ok",
+  "commands" : [ ]
+}, {
+  "id" : "trailing-whitespace-on-command",
+  "status" : "ok",
+  "commands" : [ {
+    "accountId" : "Assets:Bank",
+    "date" : "2019-01-01",
+    "balance" : {
+      "number" : 0,
+      "ccy" : "GBP"
+    },
+    "options" : {
+      "tradingAccount" : false,
+      "description" : "",
+      "multiAsset" : false,
+      "automaticReinvestment" : false,
+      "generatedAccount" : false,
+      "hidden" : false,
+      "placeholder" : false
+    },
+    "commandType" : "open",
+    "description" : "Account opened"
+  } ]
+}, {
+  "id" : "duplicate-open-exact",
+  "status" : "ok",
+  "commands" : [ {
+    "accountId" : "Assets:Bank",
+    "date" : "2019-01-01",
+    "balance" : {
+      "number" : 0,
+      "ccy" : "GBP"
+    },
+    "options" : {
+      "tradingAccount" : false,
+      "description" : "",
+      "multiAsset" : false,
+      "automaticReinvestment" : false,
+      "generatedAccount" : false,
+      "hidden" : false,
+      "placeholder" : false
+    },
+    "commandType" : "open",
+    "description" : "Account opened"
+  }, {
+    "accountId" : "Assets:Bank",
+    "date" : "2019-01-01",
+    "balance" : {
+      "number" : 0,
+      "ccy" : "GBP"
+    },
+    "options" : {
+      "tradingAccount" : false,
+      "description" : "",
+      "multiAsset" : false,
+      "automaticReinvestment" : false,
+      "generatedAccount" : false,
+      "hidden" : false,
+      "placeholder" : false
+    },
+    "commandType" : "open",
+    "description" : "Account opened"
+  } ]
+}, {
+  "id" : "bal-exact-duplicate",
+  "status" : "error"
+}, {
+  "id" : "duplicate-option-lines",
+  "status" : "ok",
+  "commands" : [ {
+    "accountId" : "Assets:Inv",
+    "date" : "2019-01-01",
+    "balance" : {
+      "number" : 0,
+      "ccy" : "GBP"
+    },
+    "options" : {
+      "tradingAccount" : false,
+      "description" : "",
+      "multiAsset" : true,
+      "automaticReinvestment" : false,
+      "generatedAccount" : false,
+      "hidden" : false,
+      "placeholder" : false
+    },
+    "commandType" : "open",
+    "description" : "Account opened"
+  } ]
+}, {
+  "id" : "tfr-zero-amount",
+  "status" : "error"
+}, {
+  "id" : "fund-zero-amount",
+  "status" : "ok",
+  "commands" : [ {
+    "accountId" : "Assets:Inv",
+    "date" : "2019-01-01",
+    "change" : {
+      "number" : 0,
+      "ccy" : "GBP"
+    },
+    "commandType" : "fund",
+    "description" : "Fund 0 GBP"
+  } ]
+}, {
+  "id" : "earn-zero-amount",
+  "status" : "ok",
+  "commands" : [ {
+    "accountId" : "Income:Salary",
+    "date" : "2019-01-01",
+    "change" : {
+      "number" : 0,
+      "ccy" : "USD"
+    },
+    "commandType" : "earn",
+    "description" : "Earn 0 USD Salary"
+  } ]
+}, {
+  "id" : "trade-zero-price",
+  "status" : "ok",
+  "commands" : [ {
+    "accountId" : "Assets:Broker",
+    "date" : "2010-01-01",
+    "change" : {
+      "number" : 10,
+      "ccy" : "IVV"
+    },
+    "price" : {
+      "number" : 0,
+      "ccy" : "USD"
+    },
+    "commission" : {
+      "number" : 0,
+      "ccy" : "USD"
+    },
+    "commandType" : "trade",
+    "description" : "BUY 10 IVV @0 USD"
+  } ]
+}, {
+  "id" : "open-no-subaccount",
+  "status" : "ok",
+  "commands" : [ {
+    "accountId" : "Assets",
+    "date" : "2019-01-01",
+    "balance" : {
+      "number" : 0,
+      "ccy" : "GBP"
+    },
+    "options" : {
+      "tradingAccount" : false,
+      "description" : "",
+      "multiAsset" : false,
+      "automaticReinvestment" : false,
+      "generatedAccount" : false,
+      "hidden" : false,
+      "placeholder" : false
+    },
+    "commandType" : "open",
+    "description" : "Account opened"
+  } ]
+}, {
+  "id" : "adj-negative-balance",
+  "status" : "ok",
+  "commands" : [ {
+    "accountId" : "Assets:Bank",
+    "date" : "2019-01-01",
+    "balance" : {
+      "number" : -50,
+      "ccy" : "USD"
+    },
+    "otherAccount" : "Equity:Opening",
+    "commandType" : "adj",
+    "description" : "Account balance -50 USD"
+  } ]
+} ]

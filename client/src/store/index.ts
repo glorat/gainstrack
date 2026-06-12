@@ -9,6 +9,7 @@ import {
 } from '../lib/assetdb/models'
 import {GlobalPricer} from '../lib/pricer';
 import {AllStateEx} from '../lib/AllStateEx';
+import {generateAllStateSafe} from '../lib/gen/GainstrackGenerator';
 import {cloneDeep, includes, keys, mergeWith} from 'lodash'
 import {balanceTreeTable} from '../lib/TreeTable';
 import {LocalDate} from '@js-joda/core';
@@ -63,7 +64,7 @@ const initState: MyState = {
   quotes: {},
   conversion: 'parent',
   user: undefined,
-  auth0token: undefined
+  auth0token: undefined,
 };
 
 const vuexLocal = new VuexPersistence<MyState>({
@@ -277,6 +278,18 @@ export default store(function (/* { ssrContext } */) {
           return context.state.gainstrackText
         }
       },
+      // Compute AllState locally from raw text and load it into the app (used by Editor save
+      // when not logged in). The AllState compute is local; market quotes are still pulled from
+      // the server (so market values match) — that's the only backend call here.
+      async loadLocalText (context, text: string) {
+        const { state, errors } = generateAllStateSafe(text);
+        if (!state) return { ok: false, errors };
+        await context.commit('allStateLoaded', state);
+        const quoteDeps = context.getters.quoteDeps;
+        await this.dispatch('loadMultiQuotes', keys(quoteDeps));
+        await context.dispatch('balances');
+        return { ok: true, errors: [], accounts: state.accounts.length, txs: state.txs.length, baseCcy: state.baseCcy };
+      },
       async conversion (context, c: string) {
         await axios.post('/api/state/conversion', { conversion: c });
         context.commit('conversionApplied', c);
@@ -357,6 +370,7 @@ export default store(function (/* { ssrContext } */) {
       }
     },
     getters: {
+      isAuthenticated: state => !!state.auth0token,
       allStateEx: state => {
         return new AllStateEx(state.allState);
       },

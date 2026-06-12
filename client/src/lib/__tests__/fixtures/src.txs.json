@@ -1,0 +1,649 @@
+[ {
+  "originIndex" : 15,
+  "postDate" : "2013-06-30",
+  "postings" : [ {
+    "account" : "Equity:Opening:GBP",
+    "value" : {
+      "number" : -265000.0,
+      "ccy" : "GBP"
+    }
+  }, {
+    "account" : "Assets:Investment:Zurich:GBP",
+    "value" : {
+      "number" : 265000.0,
+      "ccy" : "GBP"
+    }
+  } ]
+}, {
+  "originIndex" : 16,
+  "postDate" : "2014-01-04",
+  "postings" : [ {
+    "account" : "Equity:Opening:GBP",
+    "value" : {
+      "number" : -25613.71,
+      "ccy" : "GBP"
+    }
+  }, {
+    "account" : "Assets:Bank:Nationwide",
+    "value" : {
+      "number" : 25613.71,
+      "ccy" : "GBP"
+    }
+  } ]
+}, {
+  "originIndex" : 17,
+  "postDate" : "2018-07-26",
+  "postings" : [ {
+    "account" : "Income:Salary",
+    "value" : {
+      "number" : -25000.0,
+      "ccy" : "CNY"
+    }
+  }, {
+    "account" : "Assets:HSBCCN",
+    "value" : {
+      "number" : 25000.0,
+      "ccy" : "CNY"
+    }
+  } ]
+}, {
+  "originIndex" : 18,
+  "postDate" : "2018-07-26",
+  "postings" : [ {
+    "account" : "Income:Salary",
+    "value" : {
+      "number" : -25000.0,
+      "ccy" : "CNY"
+    }
+  }, {
+    "account" : "Assets:HSBCCN",
+    "value" : {
+      "number" : 25000.0,
+      "ccy" : "CNY"
+    }
+  } ]
+}, {
+  "originIndex" : 19,
+  "postDate" : "2018-08-15",
+  "postings" : [ {
+    "account" : "Assets:HSBCCN",
+    "value" : {
+      "number" : -100000.0,
+      "ccy" : "CNY"
+    }
+  }, {
+    "account" : "Expenses:Education",
+    "value" : {
+      "number" : 100000.0,
+      "ccy" : "CNY"
+    }
+  } ]
+}, {
+  "originIndex" : 20,
+  "postDate" : "2018-12-31",
+  "postings" : [ {
+    "account" : "Equity:Opening:CNY",
+    "value" : {
+      "number" : -597413.7,
+      "ccy" : "CNY"
+    }
+  }, {
+    "account" : "Assets:HSBCCN",
+    "value" : {
+      "number" : 597413.7,
+      "ccy" : "CNY"
+    }
+  } ]
+}, {
+  "originIndex" : 21,
+  "postDate" : "2018-12-31",
+  "postings" : [ {
+    "account" : "Equity:Opening:HKD",
+    "value" : {
+      "number" : -138668.37,
+      "ccy" : "HKD"
+    }
+  }, {
+    "account" : "Assets:HSBCHK",
+    "value" : {
+      "number" : 138668.37,
+      "ccy" : "HKD"
+    }
+  } ]
+}, {
+  "originIndex" : 22,
+  "postDate" : "2018-12-31",
+  "postings" : [ {
+    "account" : "Equity:Opening:GBP",
+    "value" : {
+      "number" : -80300.28,
+      "ccy" : "GBP"
+    }
+  }, {
+    "account" : "Assets:Investment:OldMutual:GBP",
+    "value" : {
+      "number" : 80300.28,
+      "ccy" : "GBP"
+    }
+  } ]
+}, {
+  "originIndex" : 23,
+  "postDate" : "2018-12-31",
+  "postings" : [ {
+    "account" : "Income:Investment:Zurich:GBP",
+    "value" : {
+      "number" : -83045.34,
+      "ccy" : "GBP"
+    }
+  }, {
+    "account" : "Assets:Investment:Zurich:GBP",
+    "value" : {
+      "number" : 83045.34,
+      "ccy" : "GBP"
+    }
+  } ]
+}, {
+  "originIndex" : 25,
+  "postDate" : "2019-01-01",
+  "postings" : [ {
+    "account" : "Assets:Investment:OldMutual:GBP",
+    "value" : {
+      "number" : -33385.518261,
+      "ccy" : "GBP"
+    }
+  }, {
+    "account" : "Assets:Investment:OldMutual:QS90",
+    "value" : {
+      "number" : 2221.2587,
+      "ccy" : "QS90"
+    },
+    "price" : {
+      "number" : 15.03000000000000000000000000000000,
+      "ccy" : "GBP"
+    }
+  } ]
+}, {
+  "originIndex" : 26,
+  "postDate" : "2019-01-01",
+  "postings" : [ {
+    "account" : "Assets:Investment:OldMutual:GBP",
+    "value" : {
+      "number" : -18405.485914,
+      "ccy" : "GBP"
+    }
+  }, {
+    "account" : "Assets:Investment:OldMutual:OPXC",
+    "value" : {
+      "number" : 525.5707,
+      "ccy" : "OPXC"
+    },
+    "price" : {
+      "number" : 35.02000000000000000000000000000000,
+      "ccy" : "GBP"
+    }
+  } ]
+}, {
+  "originIndex" : 27,
+  "postDate" : "2019-01-01",
+  "postings" : [ {
+    "account" : "Assets:Investment:OldMutual:GBP",
+    "value" : {
+      "number" : -17342.540658,
+      "ccy" : "GBP"
+    }
+  }, {
+    "account" : "Assets:Investment:OldMutual:OPY7",
+    "value" : {
+      "number" : 538.2539,
+      "ccy" : "OPY7"
+    },
+    "price" : {
+      "number" : 32.22000000000000000000000000000000,
+      "ccy" : "GBP"
+    }
+  } ]
+}, {
+  "originIndex" : 28,
+  "postDate" : "2019-01-01",
+  "postings" : [ {
+    "account" : "Assets:Investment:OldMutual:GBP",
+    "value" : {
+      "number" : -1906.9092712,
+      "ccy" : "GBP"
+    }
+  }, {
+    "account" : "Assets:Investment:OldMutual:SVDK",
+    "value" : {
+      "number" : 752.8264,
+      "ccy" : "SVDK"
+    },
+    "price" : {
+      "number" : 2.533000000000000000000000000000000,
+      "ccy" : "GBP"
+    }
+  } ]
+}, {
+  "originIndex" : 29,
+  "postDate" : "2019-01-01",
+  "postings" : [ {
+    "account" : "Assets:Investment:OldMutual:GBP",
+    "value" : {
+      "number" : -3981.925561,
+      "ccy" : "GBP"
+    }
+  }, {
+    "account" : "Assets:Investment:OldMutual:GBR06HUW",
+    "value" : {
+      "number" : 243.2453,
+      "ccy" : "GBR06HUW"
+    },
+    "price" : {
+      "number" : 16.37000000000000000000000000000000,
+      "ccy" : "GBP"
+    }
+  } ]
+}, {
+  "originIndex" : 30,
+  "postDate" : "2019-01-01",
+  "postings" : [ {
+    "account" : "Assets:Investment:OldMutual:GBP",
+    "value" : {
+      "number" : -1802.43824,
+      "ccy" : "GBP"
+    }
+  }, {
+    "account" : "Assets:Investment:OldMutual:GBR04S9K",
+    "value" : {
+      "number" : 97.9586,
+      "ccy" : "GBR04S9K"
+    },
+    "price" : {
+      "number" : 18.40000000000000000000000000000000,
+      "ccy" : "GBP"
+    }
+  } ]
+}, {
+  "originIndex" : 31,
+  "postDate" : "2019-01-01",
+  "postings" : [ {
+    "account" : "Assets:Investment:OldMutual:GBP",
+    "value" : {
+      "number" : -3475.46032769,
+      "ccy" : "GBP"
+    }
+  }, {
+    "account" : "Assets:Investment:OldMutual:QLNC",
+    "value" : {
+      "number" : 4578.3959,
+      "ccy" : "QLNC"
+    },
+    "price" : {
+      "number" : 0.7591000000000000000000000000000003,
+      "ccy" : "GBP"
+    }
+  } ]
+}, {
+  "originIndex" : 32,
+  "postDate" : "2019-01-01",
+  "postings" : [ {
+    "account" : "Assets:Investment:Zurich:GBP",
+    "value" : {
+      "number" : -155303.3314,
+      "ccy" : "GBP"
+    }
+  }, {
+    "account" : "Assets:Investment:Zurich:AMER",
+    "value" : {
+      "number" : 30511.46,
+      "ccy" : "AMER"
+    },
+    "price" : {
+      "number" : 5.090000000000000000000000000000001,
+      "ccy" : "GBP"
+    }
+  } ]
+}, {
+  "originIndex" : 33,
+  "postDate" : "2019-01-01",
+  "postings" : [ {
+    "account" : "Assets:Investment:Zurich:GBP",
+    "value" : {
+      "number" : -158121.60,
+      "ccy" : "GBP"
+    }
+  }, {
+    "account" : "Assets:Investment:Zurich:FTSE",
+    "value" : {
+      "number" : 75296.0,
+      "ccy" : "FTSE"
+    },
+    "price" : {
+      "number" : 2.100000000000000000000000000000000,
+      "ccy" : "GBP"
+    }
+  } ]
+}, {
+  "originIndex" : 34,
+  "postDate" : "2019-01-01",
+  "postings" : [ {
+    "account" : "Assets:Investment:Zurich:GBP",
+    "value" : {
+      "number" : -34620.4287,
+      "ccy" : "GBP"
+    }
+  }, {
+    "account" : "Assets:Investment:Zurich:TBOND",
+    "value" : {
+      "number" : 28146.69,
+      "ccy" : "TBOND"
+    },
+    "price" : {
+      "number" : 1.230000000000000000000000000000000,
+      "ccy" : "GBP"
+    }
+  } ]
+}, {
+  "originIndex" : 35,
+  "postDate" : "2019-01-02",
+  "postings" : [ {
+    "account" : "Assets:HSBCHK",
+    "value" : {
+      "number" : -40000.0,
+      "ccy" : "HKD"
+    }
+  }, {
+    "account" : "Assets:Investment:HSBC:USD",
+    "value" : {
+      "number" : 5084.91,
+      "ccy" : "USD"
+    },
+    "price" : {
+      "number" : 7.866412581540282915528495096275057,
+      "ccy" : "HKD"
+    }
+  } ]
+}, {
+  "originIndex" : 36,
+  "postDate" : "2019-01-02",
+  "postings" : [ {
+    "account" : "Assets:Investment:HSBC:USD",
+    "value" : {
+      "number" : -12763.000,
+      "ccy" : "USD"
+    }
+  }, {
+    "account" : "Assets:Investment:HSBC:VTI",
+    "value" : {
+      "number" : 100.0,
+      "ccy" : "VTI"
+    },
+    "price" : {
+      "number" : 127.63,
+      "ccy" : "USD"
+    }
+  } ]
+}, {
+  "originIndex" : 37,
+  "postDate" : "2019-02-13",
+  "postings" : [ {
+    "account" : "Equity:Opening:HKD",
+    "value" : {
+      "number" : 65638.04,
+      "ccy" : "HKD"
+    }
+  }, {
+    "account" : "Assets:HSBCHK",
+    "value" : {
+      "number" : -65638.04,
+      "ccy" : "HKD"
+    }
+  } ]
+}, {
+  "originIndex" : 38,
+  "postDate" : "2019-03-08",
+  "postings" : [ {
+    "account" : "Assets:Investment:HSBC:USD",
+    "value" : {
+      "number" : -1027.910,
+      "ccy" : "USD"
+    }
+  }, {
+    "account" : "Assets:Investment:HSBC:VCSH",
+    "value" : {
+      "number" : 13.0,
+      "ccy" : "VCSH"
+    },
+    "price" : {
+      "number" : 79.07,
+      "ccy" : "USD"
+    }
+  } ]
+}, {
+  "originIndex" : 39,
+  "postDate" : "2019-03-15",
+  "postings" : [ {
+    "account" : "Assets:Investment:HSBC:USD",
+    "value" : {
+      "number" : -2024.680,
+      "ccy" : "USD"
+    }
+  }, {
+    "account" : "Assets:Investment:HSBC:VTI",
+    "value" : {
+      "number" : 14.0,
+      "ccy" : "VTI"
+    },
+    "price" : {
+      "number" : 144.62,
+      "ccy" : "USD"
+    }
+  } ]
+}, {
+  "originIndex" : 40,
+  "postDate" : "2019-03-26",
+  "postings" : [ {
+    "account" : "Assets:Investment:HSBC:USD",
+    "value" : {
+      "number" : -4314.900,
+      "ccy" : "USD"
+    }
+  }, {
+    "account" : "Assets:Investment:HSBC:VTI",
+    "value" : {
+      "number" : 30.0,
+      "ccy" : "VTI"
+    },
+    "price" : {
+      "number" : 143.83,
+      "ccy" : "USD"
+    }
+  } ]
+}, {
+  "originIndex" : 41,
+  "postDate" : "2019-03-27",
+  "postings" : [ {
+    "account" : "Assets:Investment:HSBC:USD",
+    "value" : {
+      "number" : -3008.700,
+      "ccy" : "USD"
+    }
+  }, {
+    "account" : "Assets:Investment:HSBC:BRK-B",
+    "value" : {
+      "number" : 15.0,
+      "ccy" : "BRK-B"
+    },
+    "price" : {
+      "number" : 200.58,
+      "ccy" : "USD"
+    }
+  } ]
+}, {
+  "originIndex" : 43,
+  "postDate" : "2019-03-31",
+  "postings" : [ {
+    "account" : "Equity:Opening:GBP",
+    "value" : {
+      "number" : -109089.78,
+      "ccy" : "GBP"
+    }
+  }, {
+    "account" : "Assets:Bank:Nationwide",
+    "value" : {
+      "number" : 109089.78,
+      "ccy" : "GBP"
+    }
+  } ]
+}, {
+  "originIndex" : 44,
+  "postDate" : "2019-03-31",
+  "postings" : [ {
+    "account" : "Equity:Opening:GBP",
+    "value" : {
+      "number" : -53932.1,
+      "ccy" : "GBP"
+    }
+  }, {
+    "account" : "Assets:Bank:NationwideSavings",
+    "value" : {
+      "number" : 53932.1,
+      "ccy" : "GBP"
+    }
+  } ]
+}, {
+  "originIndex" : 45,
+  "postDate" : "2019-04-11",
+  "postings" : [ {
+    "account" : "Assets:Bank:Nationwide",
+    "value" : {
+      "number" : -19000.0,
+      "ccy" : "GBP"
+    }
+  }, {
+    "account" : "Assets:Bank:HSBCUK",
+    "value" : {
+      "number" : 19000.0,
+      "ccy" : "GBP"
+    }
+  } ]
+}, {
+  "originIndex" : 46,
+  "postDate" : "2019-04-11",
+  "postings" : [ {
+    "account" : "Assets:Investment:HSBC:USD",
+    "value" : {
+      "number" : -34975.0,
+      "ccy" : "USD"
+    }
+  }, {
+    "account" : "Assets:Investment:IBUSD:USD",
+    "value" : {
+      "number" : 34975.0,
+      "ccy" : "USD"
+    }
+  } ]
+}, {
+  "originIndex" : 47,
+  "postDate" : "2019-04-11",
+  "postings" : [ {
+    "account" : "Assets:Investment:IBUSD:USD",
+    "value" : {
+      "number" : -8583.760,
+      "ccy" : "USD"
+    }
+  }, {
+    "account" : "Assets:Investment:IBUSD:VWRD",
+    "value" : {
+      "number" : 100.0,
+      "ccy" : "VWRD"
+    },
+    "price" : {
+      "number" : 85.79,
+      "ccy" : "USD"
+    }
+  }, {
+    "account" : "Expenses:Investment:IBUSD:USD",
+    "value" : {
+      "number" : 4.76,
+      "ccy" : "USD"
+    }
+  } ]
+}, {
+  "originIndex" : 48,
+  "postDate" : "2019-04-11",
+  "postings" : [ {
+    "account" : "Assets:Investment:IBUSD:USD",
+    "value" : {
+      "number" : -19751.740,
+      "ccy" : "USD"
+    }
+  }, {
+    "account" : "Assets:Investment:IBUSD:VWRD",
+    "value" : {
+      "number" : 230.0,
+      "ccy" : "VWRD"
+    },
+    "price" : {
+      "number" : 85.83,
+      "ccy" : "USD"
+    }
+  }, {
+    "account" : "Expenses:Investment:IBUSD:USD",
+    "value" : {
+      "number" : 10.84,
+      "ccy" : "USD"
+    }
+  } ]
+}, {
+  "originIndex" : 49,
+  "postDate" : "2019-04-11",
+  "postings" : [ {
+    "account" : "Assets:Investment:IBUSD:USD",
+    "value" : {
+      "number" : -5227.9300,
+      "ccy" : "USD"
+    }
+  }, {
+    "account" : "Assets:Investment:IBUSD:IUAA",
+    "value" : {
+      "number" : 1000.0,
+      "ccy" : "IUAA"
+    },
+    "price" : {
+      "number" : 5.225,
+      "ccy" : "USD"
+    }
+  }, {
+    "account" : "Expenses:Investment:IBUSD:USD",
+    "value" : {
+      "number" : 2.93,
+      "ccy" : "USD"
+    }
+  } ]
+}, {
+  "originIndex" : 50,
+  "postDate" : "2019-04-11",
+  "postings" : [ {
+    "account" : "Assets:Investment:IBUSD:USD",
+    "value" : {
+      "number" : -1239.520,
+      "ccy" : "USD"
+    }
+  }, {
+    "account" : "Assets:Investment:IBUSD:BRK-B",
+    "value" : {
+      "number" : 6.0,
+      "ccy" : "BRK-B"
+    },
+    "price" : {
+      "number" : 206.53,
+      "ccy" : "USD"
+    }
+  }, {
+    "account" : "Expenses:Investment:IBUSD:USD",
+    "value" : {
+      "number" : 0.34,
+      "ccy" : "USD"
+    }
+  } ]
+} ]

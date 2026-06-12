@@ -1,0 +1,196 @@
+### id: open-basic
+2019-01-01 open Assets:Bank GBP
+
+### id: open-with-options
+2019-01-01 open Assets:Inv GBP
+  multiAsset: true
+  automaticReinvestment: true
+  fundingAccount: Assets:Bank
+  incomeAccount: Income:Div
+
+### id: open-unknown-option
+2019-01-01 open Assets:Bank GBP
+  bogusOption: true
+
+### id: open-lowercase-ccy
+2019-01-01 open Assets:Bank gbp
+
+### id: earn-simple
+2019-01-01 earn Salary 1000 USD
+
+### id: earn-with-target
+2019-01-01 earn Salary Assets:Bank 1000 USD
+
+### id: earn-already-prefixed
+2019-01-01 earn Income:Salary 1000 USD
+
+### id: spend-simple
+2019-01-01 spend Food 30 USD
+
+### id: spend-with-account
+2019-01-01 spend Food Assets:Bank 30 USD
+
+### id: tfr-simple
+2019-01-01 tfr Assets:A Assets:B 100 USD
+
+### id: tfr-fx
+2019-01-02 tfr Assets:A Assets:B 40000 HKD 5084.91 USD
+
+### id: tfr-fx-nonterminating
+2019-01-02 tfr Assets:A Assets:B 100 USD 30 GBP
+
+### id: tfr-same-ccy-mismatched-amounts
+2019-01-01 tfr Assets:A Assets:B 100 USD 90 USD
+
+### id: trade-basic
+2010-01-01 trade Assets:Broker 10 IVV @12.3 USD
+
+### id: trade-with-commission
+2010-01-01 trade Assets:Broker 10 IVV @12.3 USD C5 USD
+
+### id: trade-sell-negative
+2010-01-02 trade Assets:Broker -5 IVV @13.0 USD
+
+### id: trade-missing-price
+2010-01-01 trade Assets:Broker 10 IVV
+
+### id: adj-basic
+2019-01-01 adj Assets:Bank 138668.37 HKD Equity:Opening:HKD
+
+### id: bal-basic
+2019-01-01 bal Assets:Bank 100 GBP Equity:Opening
+
+### id: price-basic
+2019-01-01 price IVV 100 USD
+
+### id: price-lowercase-asset
+2019-01-01 price ivv 100 USD
+
+### id: unit-basic
+2019-01-01 unit Assets:Inv 100 FTSE @2.1 GBP
+
+### id: fund-simple
+2019-01-01 fund Assets:Inv 1000 GBP
+
+### id: fund-with-source
+2019-01-01 fund Assets:Inv Equity:Opening 1000 GBP
+
+### id: yield-simple
+2019-01-01 yield Assets:Inv 5 GBP
+
+### id: yield-with-asset
+2019-01-01 yield Assets:Inv FTSE 5 GBP
+
+### id: commodity-bare
+1900-01-01 commodity VWRD
+
+### id: commodity-with-options
+1900-01-01 commodity VWRD
+  name: Vanguard FTSE All-World
+  ticker: VWRD.LON
+  tags: equity,global
+  custom: anything goes
+
+### id: global-operating-currency
+option "operating_currency" "GBP"
+2019-01-01 open Assets:Bank GBP
+
+### id: comments-and-blank-lines
+; a leading comment
+# another comment
+
+2019-01-01 open Assets:Bank GBP
+
+### id: bad-date-month
+2019-13-01 open Assets:Bank GBP
+
+### id: bad-date-day
+2019-02-30 open Assets:Bank GBP
+
+### id: unknown-keyword
+2019-01-01 frobnicate Assets:Bank 1 GBP
+
+### id: unparsable-line
+this is not valid gainstrack !!
+
+### id: metadata-before-command
+  multiAsset: true
+2019-01-01 open Assets:Bank GBP
+
+### id: metadata-on-unsupported-command
+2019-01-01 bal Assets:Bank 100 GBP Equity:Opening
+  multiAsset: true
+
+### id: merge-dup-unit
+2019-01-01 unit Assets:Inv 100 FTSE @2.1 GBP
+2019-01-01 unit Assets:Inv 100 FTSE @2.1 GBP
+
+### id: merge-unit-replace-diff-price
+2019-01-01 unit Assets:Inv 100 FTSE @2.1 GBP
+2019-01-01 unit Assets:Inv 200 FTSE @2.5 GBP
+
+### id: merge-bal-vs-unit-same-key
+2019-01-01 bal Assets:Inv 100 FTSE Equity:Opening
+2019-01-01 unit Assets:Inv 100 FTSE @2.1 GBP
+
+### id: multi-command-sort
+2019-01-02 bal Assets:Bank 100 GBP Equity:Opening
+option "operating_currency" "GBP"
+2019-01-01 open Assets:Bank GBP
+2019-01-01 open Equity:Opening GBP
+
+### id: number-with-comma
+2019-01-01 open Assets:Bank GBP
+2019-01-02 bal Assets:Bank 1,000 GBP Equity:Opening
+
+### id: number-exponential
+2019-01-01 price IVV 1e-7 USD
+
+### id: option-unknown-key
+option "title" "My Book"
+2019-01-01 open Assets:Bank GBP
+
+### id: option-lowercase-ccy
+option "operating_currency" "gbp"
+2019-01-01 open Assets:Bank GBP
+
+### id: tab-separated
+2019-01-01	open Assets:Bank GBP
+
+### id: empty-input
+
+### id: whitespace-only
+
+### id: trailing-whitespace-on-command
+2019-01-01 open Assets:Bank GBP   
+
+### id: duplicate-open-exact
+2019-01-01 open Assets:Bank GBP
+2019-01-01 open Assets:Bank GBP
+
+### id: bal-exact-duplicate
+2019-01-01 bal Assets:Bank 100 GBP Equity:Opening
+2019-01-01 bal Assets:Bank 100 GBP Equity:Opening
+
+### id: duplicate-option-lines
+2019-01-01 open Assets:Inv GBP
+  multiAsset: false
+  multiAsset: true
+
+### id: tfr-zero-amount
+2019-01-01 tfr Assets:A Assets:B 0 USD
+
+### id: fund-zero-amount
+2019-01-01 fund Assets:Inv 0 GBP
+
+### id: earn-zero-amount
+2019-01-01 earn Salary 0 USD
+
+### id: trade-zero-price
+2010-01-01 trade Assets:Broker 10 IVV @0 USD
+
+### id: open-no-subaccount
+2019-01-01 open Assets GBP
+
+### id: adj-negative-balance
+2019-01-01 adj Assets:Bank -50 USD Equity:Opening

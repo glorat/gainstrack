@@ -1,0 +1,34 @@
+[ {
+  "accountId" : "",
+  "date" : "1900-01-01",
+  "asset" : "USD",
+  "options" : {
+    "name" : "",
+    "ticker" : "",
+    "tags" : [ ]
+  },
+  "commandType" : "commodity",
+  "description" : "USD"
+}, {
+  "accountId" : "",
+  "date" : "1900-01-01",
+  "asset" : "XIU",
+  "options" : {
+    "name" : "",
+    "ticker" : "",
+    "tags" : [ ]
+  },
+  "commandType" : "commodity",
+  "description" : "XIU"
+}, {
+  "accountId" : "",
+  "date" : "1900-01-01",
+  "asset" : "CAD",
+  "options" : {
+    "name" : "",
+    "ticker" : "",
+    "tags" : [ ]
+  },
+  "commandType" : "commodity",
+  "description" : "CAD"
+} ]

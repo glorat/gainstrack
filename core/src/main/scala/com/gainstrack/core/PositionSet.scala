@@ -84,7 +84,7 @@ case class PositionSet(assetBalance:Map[AssetId, Fraction]) {
   }
 
   def isEmpty:Boolean = {
-    assetBalance.values.forall(_.isZero)
+    assetBalance.values.forall(_.signum == 0)
   }
 
   override def toString: String = {
