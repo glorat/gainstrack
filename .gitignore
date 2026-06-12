@@ -6,6 +6,8 @@ lib_managed/
 .project
 .classpath
 .cache
+python/__pycache__/
+python/env/
 .idea
 
 .settings
@@ -19,3 +21,4 @@ data/
 *.swp
 db/
 gainstrack*.json
+.venv/

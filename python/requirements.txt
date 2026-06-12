@@ -1,3 +1,8 @@
 investpy==1.0.8
 investiny==0.7.2
 yfinance==0.2.65
+# Runtime dep: the Scala backend shells out to `bean-check` to validate
+# generated beancount output (GainstrackGenerator.writeBeancountFile ->
+# GainstrackSupport). Pinned to 2.x to match the beancount plugins/syntax the
+# generator targets (implicit_prices, book_conversions).
+beancount==2.3.6

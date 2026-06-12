@@ -1,0 +1,34 @@
+#!/usr/bin/env bash
+# Wrapper that runs sbt with the environment this project needs:
+#   1. JDK 17 — the project does NOT compile on the JDK 26 that Homebrew's sbt
+#      bundles (java.util.Comparator vs Scala Ordering max/min conflict).
+#   2. The project-local .venv on PATH so the backend/tests can find `bean-check`
+#      (beancount is a runtime dependency; see python/requirements.txt).
+#
+# Usage:  ./scripts/sbt "core/test"
+#         ./scripts/sbt "core/compile"
+set -euo pipefail
+
+REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+
+# --- JDK 17 ---
+if [ -z "${JAVA_HOME:-}" ] || ! "$JAVA_HOME/bin/java" -version 2>&1 | grep -q '"17'; then
+  if [ -x /usr/libexec/java_home ]; then
+    JAVA_HOME="$(/usr/libexec/java_home -v 17 2>/dev/null || true)"
+  fi
+fi
+if [ -z "${JAVA_HOME:-}" ]; then
+  echo "scripts/sbt: could not locate a JDK 17. Install one or set JAVA_HOME." >&2
+  exit 1
+fi
+export JAVA_HOME
+
+# --- beancount via project venv ---
+if [ ! -x "$REPO_ROOT/.venv/bin/bean-check" ]; then
+  echo "scripts/sbt: .venv missing bean-check. Create it with:" >&2
+  echo "  uv venv .venv && uv pip install --python .venv/bin/python -r python/requirements.txt" >&2
+  exit 1
+fi
+export PATH="$REPO_ROOT/.venv/bin:$PATH"
+
+exec sbt "$@"
