@@ -1,6 +1,8 @@
 # Refactor plan: `Fraction` (spire Rational) → `BigDecimal` (finance practices)
 
-Status: **planning / not started.** No source changes made yet.
+Status: **planned & reviewed; refactor not yet started.** Build/env prep and two
+unrelated fixes have landed (package.scala Ordering for JDK compat, FirstStored
+test isolation) — these are NOT the refactor itself. Phase 0 baseline is done.
 Last updated: 2026-06-12
 
 ## Goal
@@ -61,45 +63,74 @@ exact. But:
 
 ## Design
 
-### Per-currency scale registry
+### Per-currency scale: pure-function defaults + per-session overrides
 
-Source of truth = commodity options, with hardcoded defaults as fallback:
+DECISION (2026-06-12, reviewed): scale must NOT live in a global/process registry.
+The web server is **multi-tenant** (per-session `GainstrackGenerator` in
+`GainstrackSupport`), so shared mutable scale state would leak one user's
+`commodity ... precision:` into another's ledger. Also, `Amount`s are constructed
+during *parsing* — before any commodity command is folded — so a
+generator-populated registry wouldn't even be ready at construction time.
 
-```
-scaleOf(ccy) = commodityOptions(ccy).get("precision").map(_.toInt)
-                 .getOrElse(default(ccy))
-// defaults: fiat = 2, JPY/KRW = 0, crypto (BTC/ETH...) = 8, securities/NAV = 6
-```
+Two tiers:
 
-Wiring: because `Amount` is constructed in many places, use a process-level
-provider for the registry, initialized once when `GainstrackGenerator` processes
-`commodity` commands, with the hardcoded defaults as fallback. (Alternative —
-threading a registry through every `Amount.apply` — is cleaner but touches far
-more call sites; rejected for now.)
+1. **Defaults — a PURE function of the ccy symbol, used inside `Amount`** (no
+   shared state, safe to call at parse time):
+   ```
+   def defaultScaleOf(ccy: AssetId): Int   // fiat=2, JPY/KRW=0, crypto=8, securities/NAV=6
+   ```
+   `Amount` rounds to `defaultScaleOf(ccy)` on construction and scale-growing ops.
 
-### Rounding choke points (so "fixed scale at each step" holds without
-accumulating intermediate error)
+2. **Overrides — `commodity ... precision: N`** are applied at the
+   generator/report **boundary**, where per-session commodity context is in scope
+   (re-round to the declared scale when finalizing postings/balances). Any override
+   registry is per-`GainstrackGenerator` instance, **never global**.
 
-Additive chains of equal-scale amounts already stay on-scale, so only round the
-scale-growing operations + construction:
+### Rounding choke points
 
-- `Amount.apply(value, ccy)` — replace `limitDenominatorTo(1_000_000)` with
-  `value.setScale(scaleOf(ccy), HALF_EVEN)`.
-- `Amount.*` and `Amount./`, and FX `convertTo` (in `Amount` and `PositionSet`)
-  — round result to the **target** currency scale.
+`Amount` has TWO constructors: the case-class ctor `Amount(number, ccy:AssetId)`
+(used by all arithmetic ops) and `apply(value, ccy:String)`. Rounding must sit
+where BOTH funnel — normalize in the case-class `apply` override (or a private
+`normalized` helper the ops call), NOT only in the string `apply`.
+
+Additive chains of equal-scale amounts stay on-scale, so round only construction +
+the scale-growing ops:
+- construction — replace `limitDenominatorTo(1_000_000)` with
+  `value.setScale(defaultScaleOf(ccy), HALF_EVEN)`.
+- `Amount.*(Fraction)` / `Amount./` and FX `convertTo` (in `Amount`/`PositionSet`)
+  — round result to the **target** ccy default scale.
 - `Amount.+` / `Amount.-` — leave as-is (scale-preserving).
+
+**Balancing invariant:** a trade rounds both legs (`price*units` and `-price*units`)
+identically, so they still cancel to exactly 0. Never round the two sides with
+different scales/contexts — the tolerance check below is meant to absorb genuine
+cross-currency residuals, NOT asymmetric-rounding bugs.
+
+**FX/price RATES are not currency amounts.** Keep rate computation (PriceState
+division, implied rates) at a high working precision (DECIMAL128); only the
+resulting converted `Amount` gets currency-scale rounding. Do not `setScale` rates.
 
 ### Balance tolerance
 
-`Transaction.isBalanced`: replace `sum == 0` with
-`sum.abs <= 0.5 × 10^(-minScaleAmongPostings)`.
+`Transaction.isBalanced` checks a single weight-ccy (it already `require`s all
+postings share a ccy), so replace `sum == 0` with
+`sum.abs <= 0.5 × 10^(-defaultScaleOf(weightCcy))`.
 
-### Equality gotcha
+### Equality / zero tests
 
-Never use `==` on `BigDecimal` for zero tests (Scala `BigDecimal` equality has
-scale pitfalls, e.g. `0` vs `0.00`). Use `.signum == 0` / `.compare`. Audit every
-`== zeroFraction`, `!= zeroFraction`, and spire `.isZero` (which won't exist on
-`BigDecimal`).
+Use `.signum == 0` (not `==`) for zero tests. Scala `BigDecimal` `==` is mostly
+value-based, but scale/`hashCode` differences after operations make `.signum` the
+reliable choice. Audit every `== zeroFraction`, `!= zeroFraction`, and spire
+`.isZero` (which won't exist on `BigDecimal`).
+
+### Beancount text formatting (affects the RUNTIME bean-check)
+
+`Amount.toString` (Amount.scala:21) renders amounts into the generated beancount
+that `bean-check` validates — both at runtime (`writeBeancountFile`) and in two
+tests. `BigDecimal.toString` can emit exponential notation (e.g. `1E-7`), which
+beancount rejects — exactly the hazard the existing Amount.scala:18 comment warns
+about. Render via `number.bigDecimal.toPlainString` so output is always plain
+decimal, and re-verify generated beancount passes bean-check.
 
 ## Phased execution plan
 
@@ -130,22 +161,30 @@ scale pitfalls, e.g. `0` vs `0.00`). Use `.signum == 0` / `.compare`. Audit ever
 6. `TimeSeriesInterpolator.scala`: ensure `n / all` uses a `MathContext` or
    double (already converts to double); remove now-unused `spire.implicits._` /
    `spire.math.Fractional` imports.
+7. `Amount.toString` → render via `number.bigDecimal.toPlainString` (no exp
+   notation) so generated beancount stays bean-check-valid.
 
 ### Phase 2 — Semantics that actually matter
-7. Add the per-currency scale registry + provider.
-8. `Transaction.isBalanced` (`Transaction.scala:29`): tolerance check.
-9. `SecurityPurchase.scala:50` (`-price*security.number - commission`) and other
-   trade/FX multiplications: round results to currency scale via `MathContext`.
-10. Audit/convert all `== zeroFraction` / `!= zeroFraction` / `.isZero`
+8. Add `defaultScaleOf(ccy)` (pure function) and round inside `Amount` at the
+   shared construction/normalize point + scale-growing ops (see Design).
+9. Apply `commodity precision:` **overrides at the generator/report boundary**
+   (per-session), not in `Amount`.
+10. Keep PriceState rate math at DECIMAL128 — do not currency-round rates.
+11. `Transaction.isBalanced` (`Transaction.scala:29`): tolerance check.
+12. `SecurityPurchase.scala:50` (`-price*security.number - commission`) and other
+    trade/FX multiplications: round results to currency scale (both legs alike).
+13. Audit/convert all `== zeroFraction` / `!= zeroFraction` / `.isZero`
     (PositionSet `filterZeroes` + `isEmpty`, SecurityPurchase guards, etc.) to
     `.signum == 0`.
 
 ### Phase 3 — Tests
-11. `First.scala:73` `denominatorIsValidLong` and `First.scala:302`
+14. `First.scala:73` `denominatorIsValidLong` and `First.scala:302`
     `limitDenominatorTo(1000000)` — spire-specific; rewrite.
-12. Make `==` balance assertions in tests tolerance-aware / use `.compare`.
-13. Run `sbt core/test quotes/test web/test`; breakages concentrated in the 5
-    test files referencing `Fraction` directly.
+15. Make `==` balance assertions in tests tolerance-aware / use `.compare`.
+16. Run `./scripts/sbt "core/test"` after each phase; finally
+    `./scripts/sbt "core/test quotes/test web/test"`. BASELINES CAPTURED
+    (2026-06-12, all green): core 129 pass/1 ignored; quotes+web all pass. Any
+    new failure is attributable to the refactor.
 
 ## File inventory
 
@@ -235,17 +274,27 @@ counts; there was a `FIXME` about it). Fixed by seeding the ids with
 `getClass.getName` in `FirstStored.scala` so each suite has distinct storage keys.
 Suite is now deterministically green.
 
-`.venv/` is gitignored. Production parity note: the Docker images currently
-install beancount unpinned (`pip3 install beancount`) / transitively via `fava`;
-pinning it in `python/requirements.txt` makes it explicit. Consider updating
-`Dockerfile` / `scalabase.Dockerfile` to install beancount from the requirements
-file rather than a bare `pip3 install beancount` so prod matches 2.3.6.
+`.venv/` is gitignored. Production parity: DONE (2026-06-12). All Dockerfiles now
+pin `beancount==2.3.6` — `scalabase.Dockerfile` and the `Dockerfile` builder
+(both run `sbt test` → bean-check), and the runtime stages (`Dockerfile`,
+`runtime.Dockerfile`) install `fava beancount==2.3.6` (fava 1.30.x is compatible
+with beancount 2.3.6, verified by resolution). `fast`/`fasttest` inherit the
+pinned base images. JDK stays 17 across all images (intentional; prod JDK bump
+deferred). Base images modernized (2026-06-12): builder `hseeberger/scala-sbt`
+(abandoned) → `sbtscala/scala-sbt:eclipse-temurin-17.0.15_6_1.11.3_2.13.16`
+(matches scalabase + the project's declared sbt/scala); runtime
+`openjdk:17.0.2-slim-bullseye` (deprecated) → `eclipse-temurin:17-jre-jammy` in
+`Dockerfile` + `runtime.Dockerfile`; webbuilder `node:16-alpine` → `node:20-alpine`.
+Note the pip flag split: the builder base is PEP-668 externally-managed (needs
+`--break-system-packages`); the jammy runtime base is not (pip lines stay
+flag-free). Still-open (not blocking): `fava` at runtime may be vestigial (server
+calls `bean-check`, not fava) — confirm before any future cleanup.
 
 ## Next steps when resuming
 
-1. Resolve the build environment (above) and run **Phase 0** baseline:
-   `core/compile`, then `core/test` — record pass/fail counts.
-2. Proceed Phase 1 → 2 → 3, running `core/test` after each phase to track blast
-   radius.
+1. (Optional, recommended) Capture `quotes/test` + `web/test` baselines via
+   `./scripts/sbt` so the refactor's blast radius outside `core` is attributable.
+2. Proceed Phase 1 → 2 → 3, running `./scripts/sbt "core/test"` after each phase.
 3. Effort estimate: ~13 source files + 5 test files. Phase 1 mechanical; Phases
-   2–3 require judgment (the `.signum`/tolerance audit is the crux).
+   2–3 require judgment (scale boundary, `.signum`/tolerance audit, beancount
+   formatting are the crux).
