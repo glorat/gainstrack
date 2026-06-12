@@ -1,6 +1,6 @@
 /* eslint-disable */
 /**
- * @jest-environment jsdom
+ * @vitest-environment jsdom
  */
 
 import { parentAccountIdOf, postingsToPositionSet } from 'src/lib/utils'

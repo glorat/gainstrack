@@ -15,7 +15,7 @@
 <script>
 
     import axios from 'axios';
-    import TreeTable from '../components/TreeTable';
+    import TreeTable from '../components/TreeTable.vue';
     import { VuePlotly } from '../lib/loader'
 
     export default {

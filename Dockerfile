@@ -19,7 +19,7 @@ COPY core core
 RUN sbt test assembly
 
 # Sort out the web client
-FROM node:20-alpine as webbuilder
+FROM node:24-alpine as webbuilder
 RUN apk add --update --no-cache \
     git \
     python3 \
@@ -30,12 +30,12 @@ WORKDIR /build
 
 # Cache dependencies first
 COPY ./client/package.json package.json
-COPY ./client/package-lock.json package-lock.json
-RUN npm install
+COPY ./client/pnpm-lock.yaml pnpm-lock.yaml
+RUN corepack enable && pnpm install --frozen-lockfile
 
 # Then build
 COPY ./client/ .
-RUN npm run build
+RUN pnpm build
 
 FROM eclipse-temurin:17-jre-jammy
 RUN apt-get update && apt-get -y install wget python3 python3-pip python3-dev libxml2-dev libxslt-dev gcc musl-dev g++ && rm -rf /var/lib/apt/lists/*

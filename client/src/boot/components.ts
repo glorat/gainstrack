@@ -20,9 +20,9 @@ export default boot(({app}) => {
 
   // Import the plugin here
   useAuth().initializeAuth({
-    domain: process.env.VUE_APP_AUTH0_ID + '.auth0.com',
-    client_id: process.env.VUE_APP_AUTH0_CLIENT!,
-    audience: process.env.VUE_APP_AUTH0_AUDIENCE,
+    domain: import.meta.env.VITE_AUTH0_ID + '.auth0.com',
+    client_id: import.meta.env.VITE_AUTH0_CLIENT as string,
+    audience: import.meta.env.VITE_AUTH0_AUDIENCE,
     // lint-ignore
     // onRedirectCallback: appState => {
     //   router.push(

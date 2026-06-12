@@ -8,7 +8,7 @@ import { accountInvestmentReport } from 'src/lib/AccountInvestmentReport';
 
 describe('James', () => {
   describe('State', () => {
-    const data = fs.readFileSync('test/jest/__tests__/james.json', 'utf8' );
+    const data = fs.readFileSync('test/unit/james.json', 'utf8' );
     const allState: AllState = JSON.parse(data);
     const allStateEx = new AllStateEx(allState)
 

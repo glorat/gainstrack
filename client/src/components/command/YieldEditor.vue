@@ -20,11 +20,11 @@
 </template>
 
 <script>
-    import AccountSelector from '../AccountSelector';
-    import BalanceEditor from '../../lib/assetdb/components/BalanceEditor';
-    import CommandDateEditor from '../CommandDateEditor';
-    import {CommandEditorMixin} from '../../mixins/CommandEditorMixin';
-    import AssetId from '../../lib/assetdb/components/AssetId';
+    import AccountSelector from '../AccountSelector.vue';
+    import BalanceEditor from '../../lib/assetdb/components/BalanceEditor.vue';
+    import CommandDateEditor from '../CommandDateEditor.vue';
+    import {CommandEditorMixin} from '../../mixins/CommandEditorMixin.js';
+    import AssetId from '../../lib/assetdb/components/AssetId.vue';
     import {defaultedYieldCommand, toGainstrack} from 'src/lib/commandDefaulting';
 
     export default {

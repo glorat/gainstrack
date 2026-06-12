@@ -17,9 +17,9 @@
 </template>
 
 <script>
-    import AccountSelector from '../AccountSelector';
-    import BalanceEditor from '../../lib/assetdb/components/BalanceEditor';
-    import {CommandEditorMixin} from '../../mixins/CommandEditorMixin';
+    import AccountSelector from '../AccountSelector.vue';
+    import BalanceEditor from '../../lib/assetdb/components/BalanceEditor.vue';
+    import {CommandEditorMixin} from '../../mixins/CommandEditorMixin.js';
 
     function defaultedEarnCommand(c, stateEx) {
       const dc = {...c};

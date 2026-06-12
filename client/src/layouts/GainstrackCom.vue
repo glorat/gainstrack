@@ -33,8 +33,8 @@
 </template>
 
 <script>
-    import MyAside from '../pages/MyAside';
-    import FilterForm from '../components/FilterForm';
+    import MyAside from '../pages/MyAside.vue';
+    import FilterForm from '../components/FilterForm.vue';
     import { matMenu } from '@quasar/extras/material-icons';
 
     export default {

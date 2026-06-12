@@ -17,8 +17,8 @@
 </template>
 
 <script>
-  import TreeTable from '../components/TreeTable'
-  import ConversionSelect from '../components/ConversionSelect'
+  import TreeTable from '../components/TreeTable.vue'
+  import ConversionSelect from '../components/ConversionSelect.vue'
 
   export default {
     name: 'IncomeStatement',

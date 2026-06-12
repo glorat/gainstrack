@@ -57,13 +57,13 @@
 </template>
 
 <script>
-  import Transfer from './command/Transfer'
-  import FundCommand from './command/FundCommand'
-  import AccountCreation from './command/AccountCreation'
-  import EarnEditor from './command/EarnEditor'
-  import YieldEditor from './command/YieldEditor'
-  import SpendEditor from '../components/command/SpendEditor'
-  import BalanceOrUnit from 'components/command/BalanceOrUnit'
+  import Transfer from './command/Transfer.vue'
+  import FundCommand from './command/FundCommand.vue'
+  import AccountCreation from './command/AccountCreation.vue'
+  import EarnEditor from './command/EarnEditor.vue'
+  import YieldEditor from './command/YieldEditor.vue'
+  import SpendEditor from '../components/command/SpendEditor.vue'
+  import BalanceOrUnit from 'components/command/BalanceOrUnit.vue'
 
   export default {
     name: 'CommandEditor',

@@ -1,9 +1,30 @@
 {
-  "extends": "@quasar/app-webpack/tsconfig-preset",
   "compilerOptions": {
+    "target": "ES2022",
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    "module": "Preserve",
+    "moduleResolution": "bundler",
+    "strict": true,
+    "jsx": "preserve",
+    "resolveJsonModule": true,
+    "ignoreDeprecations": "6.0",
     "baseUrl": ".",
+    "paths": {
+      "src/*": ["src/*"],
+      "app/*": ["*"],
+      "components/*": ["src/components/*"],
+      "layouts/*": ["src/layouts/*"],
+      "pages/*": ["src/pages/*"],
+      "assets/*": ["src/assets/*"],
+      "boot/*": ["src/boot/*"]
+    },
+    "skipLibCheck": true,
+    "types": ["vitest/globals"]
   },
   "exclude": [
+    "node_modules",
+    "dist",
+    ".quasar",
     "functions"
   ]
 }

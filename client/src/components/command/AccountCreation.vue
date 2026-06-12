@@ -25,8 +25,8 @@
 </template>
 
 <script>
-  import { CommandEditorMixin } from '../../mixins/CommandEditorMixin'
-  import AssetId from '../../lib/assetdb/components/AssetId'
+  import { CommandEditorMixin } from '../../mixins/CommandEditorMixin.js'
+  import AssetId from '../../lib/assetdb/components/AssetId.vue'
 
   export default {
     name: 'AccountCreation',

@@ -17,16 +17,18 @@ jobs:
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
-      - name: Set up Node (20)
+      - name: Set up Node (24)
         uses: actions/setup-node@v4
         with:
-          node-version: 20.x
-          cache: 'npm'
-          cache-dependency-path: client/package-lock.json
-      - name: NPM ci
-        run: npm ci
+          node-version: 24.x
+          cache: 'pnpm'
+          cache-dependency-path: client/pnpm-lock.yaml
+      - name: Enable Corepack
+        run: corepack enable
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
       - name: Test
-        run: npx quasar test --unit jest
+        run: pnpm test:unit:ci
       - name: Semantic Release
         id: semantic
         uses: cycjimmy/semantic-release-action@v4
@@ -51,14 +53,16 @@ jobs:
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
-      - name: Set up Node (20)
+      - name: Set up Node (24)
         uses: actions/setup-node@v4
         with:
-          node-version: 20.x
-          cache: 'npm'
-          cache-dependency-path: client/package-lock.json
-      - name: NPM ci
-        run: npm ci
+          node-version: 24.x
+          cache: 'pnpm'
+          cache-dependency-path: client/pnpm-lock.yaml
+      - name: Enable Corepack
+        run: corepack enable
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
       - name: Semantic Release
         id: semantic
         uses: cycjimmy/semantic-release-action@v4
@@ -67,9 +71,9 @@ jobs:
         env:
          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Set package.json version
-        run: npm version ${{ steps.semantic.outputs.new_release_version }} --no-git-tag-version
+        run: pnpm version ${{ steps.semantic.outputs.new_release_version }} --no-git-tag-version
       - name: Build
-        run: npx quasar build --publish sentry
+        run: pnpm exec quasar build --publish sentry
       - name: Determine version
         run: echo "SOURCE_VERSION=$(jq -r .version package.json)" >> $GITHUB_ENV
       - name: Determine version
@@ -179,4 +183,3 @@ jobs:
           --platform managed \
           --allow-unauthenticated \
           --project gainstrack
-

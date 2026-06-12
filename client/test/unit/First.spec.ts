@@ -10,7 +10,7 @@ import {SingleFXConversion} from 'src/lib/fx';
 
 describe('First', () => {
   describe('State', () => {
-    const data = fs.readFileSync('test/jest/__tests__/first.json', 'utf8' );
+    const data = fs.readFileSync('test/unit/first.json', 'utf8' );
     const allState: AllState = JSON.parse(data);
     const allStateEx = new AllStateEx(allState)
     const today = LocalDate.parse('2019-12-31');

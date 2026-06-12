@@ -321,7 +321,7 @@ deferred). Base images modernized (2026-06-12): builder `hseeberger/scala-sbt`
 (abandoned) → `sbtscala/scala-sbt:eclipse-temurin-17.0.15_6_1.11.3_2.13.16`
 (matches scalabase + the project's declared sbt/scala); runtime
 `openjdk:17.0.2-slim-bullseye` (deprecated) → `eclipse-temurin:17-jre-jammy` in
-`Dockerfile` + `runtime.Dockerfile`; webbuilder `node:16-alpine` → `node:20-alpine`.
+`Dockerfile` + `runtime.Dockerfile`; webbuilder `node:16-alpine` → `node:24-alpine`.
 Note the pip flag split: the builder base is PEP-668 externally-managed (needs
 `--break-system-packages`); the jammy runtime base is not (pip lines stay
 flag-free). Still-open (not blocking): `fava` at runtime may be vestigial (server

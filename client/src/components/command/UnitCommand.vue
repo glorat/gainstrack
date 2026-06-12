@@ -20,10 +20,10 @@
 </template>
 
 <script>
-    import {CommandEditorMixin} from '../../mixins/CommandEditorMixin';
+    import {CommandEditorMixin} from '../../mixins/CommandEditorMixin.js';
     import { defineComponent } from 'vue';
-    import AccountSelector from '../AccountSelector';
-    import BalanceEditor from '../../lib/assetdb/components/BalanceEditor';
+    import AccountSelector from '../AccountSelector.vue';
+    import BalanceEditor from '../../lib/assetdb/components/BalanceEditor.vue';
     import { mapGetters } from 'vuex'
     import { LocalDate } from '@js-joda/core'
 

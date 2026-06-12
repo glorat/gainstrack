@@ -21,8 +21,7 @@ module.exports = {
   },
 
   env: {
-    browser: true,
-    jest: true
+    browser: true
   },
 
   // Rules order is important, please avoid shuffling them

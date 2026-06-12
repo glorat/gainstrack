@@ -1,6 +1,6 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`First State asset tree converted to global 1`] = `
+exports[`First > State > asset tree converted to global 1`] = `
 {
   "assetBalance": [
     {
@@ -362,7 +362,7 @@ exports[`First State asset tree converted to global 1`] = `
 }
 `;
 
-exports[`First State pnlExplain monthly 1`] = `
+exports[`First > State > pnlExplain monthly 1`] = `
 [
   {
     "actual": 13149.88062177109,

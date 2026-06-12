@@ -24,8 +24,8 @@
 
 <script>
     import BalanceEditor from '../../lib/assetdb/components/BalanceEditor.vue';
-    import {CommandEditorMixin} from '../../mixins/CommandEditorMixin';
-    import AccountSelector from '../AccountSelector';
+    import {CommandEditorMixin} from '../../mixins/CommandEditorMixin.js';
+    import AccountSelector from '../AccountSelector.vue';
     import {commandIsValid, defaultedFundCommand, toGainstrack} from 'src/lib/commandDefaulting';
 
     export default {

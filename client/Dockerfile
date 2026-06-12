@@ -1,16 +1,15 @@
-FROM node:16-alpine as builder
+FROM node:24-alpine as builder
 RUN apk add --update --no-cache \
-    python \
+    python3 \
     make \
     g++
 
 WORKDIR /build
 # Cache dependencies first
 COPY package.json package.json
-COPY package-lock.json package-lock.json
-RUN npm install
+COPY pnpm-lock.yaml pnpm-lock.yaml
+RUN corepack enable && pnpm install --frozen-lockfile
 
 # Then build
 COPY . .
-RUN npm run build
-
+RUN pnpm build

@@ -14,18 +14,20 @@ jobs:
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
-      - name: Set up Node (20)
+      - name: Set up Node (24)
         uses: actions/setup-node@v4
         with:
-          node-version: 20.x
-          cache: 'npm'
-          cache-dependency-path: client/package-lock.json
-      - name: NPM ci
-        run: npm ci
+          node-version: 24.x
+          cache: 'pnpm'
+          cache-dependency-path: client/pnpm-lock.yaml
+      - name: Enable Corepack
+        run: corepack enable
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
       - name: Build
-        run: npx quasar build
+        run: pnpm build
       - name: Test
-        run: npx quasar test --unit jest
+        run: pnpm test:unit:ci
       - name: Deploy preview
         uses: FirebaseExtended/action-hosting-deploy@v0.9.0
         if: ${{ github.actor == 'dependabot[bot]' }}

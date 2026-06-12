@@ -1,9 +1,7 @@
-/* eslint-env jest */
-/* eslint jest/expect-expect: ["error", { "assertFunctionNames": ["expect", "testMe", "interpTest"] }] */
 /**
- * @jest-environment jsdom
+ * @vitest-environment jsdom
  */
-import {SortedColumnMap, linear, fromIntDate} from '../../../src/lib/SortedColumnMap';
+import {SortedColumnMap, linear, fromIntDate} from 'src/lib/SortedColumnMap';
 import {SingleFXConversion} from 'src/lib/fx';
 import {ProxyPricer} from 'src/lib/pricer';
 import {AssetDTO} from 'src/lib/assetdb/models';

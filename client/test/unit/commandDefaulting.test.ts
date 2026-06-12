@@ -6,7 +6,7 @@ import {GlobalPricer} from 'src/lib/pricer';
 
 
 describe('commandDefaulting', () => {
-  const data = fs.readFileSync('test/jest/__tests__/first.json', 'utf8' );
+  const data = fs.readFileSync('test/unit/first.json', 'utf8' );
   const allState: AllState = JSON.parse(data);
   const allStateEx = new AllStateEx(allState)
   const pricer = new GlobalPricer(allState.commands, allState.ccys, allStateEx.tradeFxConverter(), allStateEx.tradeFxConverter())

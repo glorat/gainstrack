@@ -72,10 +72,10 @@
 </template>
 
 <script>
-  import CommandEditor from '../components/CommandEditor'
+  import CommandEditor from '../components/CommandEditor.vue'
   import axios from 'axios'
-  import CommandTable from '../components/CommandTable'
-  import SourceErrors from '../components/SourceErrors'
+  import CommandTable from '../components/CommandTable.vue'
+  import SourceErrors from '../components/SourceErrors.vue'
   import { debounce } from 'lodash'
   import EventBus from '../event-bus'
   import { mapGetters } from 'vuex'

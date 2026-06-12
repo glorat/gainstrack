@@ -27,7 +27,7 @@
 </template>
 
 <script>
-  import MyAside from '../pages/MyAside';
+  import MyAside from '../pages/MyAside.vue';
   import { matMenu } from '@quasar/extras/material-icons';
 
 

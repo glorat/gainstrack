@@ -52,7 +52,7 @@
 </template>
 
 <script>
-  import ButtonToggle from '../components/ButtonToggle'
+  import ButtonToggle from '../components/ButtonToggle.vue'
   import { uniq } from 'lodash'
 
   export default {

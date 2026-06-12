@@ -1,7 +1,7 @@
 import {mapGetters} from 'vuex';
 import EventBus from '../event-bus';
-import HelpTip from '../components/HelpTip';
-import CommandDateEditor from '../components/CommandDateEditor';
+import HelpTip from '../components/HelpTip.vue';
+import CommandDateEditor from '../components/CommandDateEditor.vue';
 
 export const CommandEditorMixin = {
     inheritAttrs: false,
