@@ -31,7 +31,7 @@ export function pnlExplain(startDate: LocalDate, toDate: LocalDate, allPostings:
   const allAccountIds = uniq(allCmds.map(p => p.accountId))
   const allAccountLevels = uniq( allAccountIds.map(id => getAccountLevel(id, levels)) )
 
-  const postings = allPostings.filter(p => isSubAccountOf(p.account, 'Assets')); // FIXME: +Liabilities
+  const postings = allPostings.filter(p => isSubAccountOf(p.account, 'Assets') || isSubAccountOf(p.account, 'Liabilities'));
   const fromDate = startDate.minusDays(1) // So we do inclusivity of the startDate
   const toStartPostings = postings.filter(p => LocalDate.parse(p.date).isBefore(fromDate.plusDays(1)));
   const toEndPostings = postings.filter(p => LocalDate.parse(p.date).isBefore(toDate.plusDays(1)));
