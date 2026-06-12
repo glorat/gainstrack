@@ -18,7 +18,6 @@ case class BalanceState(acctState:AccountState, balances:Map[AccountId,BalanceSt
   def getAccountValueOpt(account:AccountId, date: LocalDate) : Option[Fraction] = {
     val series = balanceSeries.get(account).getOrElse(SortedColumnMap())
     val ret:Option[Fraction] = interp.getValue(series, date)(TimeSeriesInterpolator.step)
-      .map(x => x)
     ret
   }
 

@@ -11,11 +11,9 @@ case class Amount(number:Fraction, ccy:AssetId) {
 
   private val errmsg = "Balance can only combine single currency"
 
-  // FIXME: This MathContext is important as it needs to match what beancount can handle
-  // toDouble is no good because beancount won't take exp format (and nor will humans)
-  // and yet we need precise fractional precision so that postings balance out perfectly
-  // BigDecimal.toString can emit exponential notation (e.g. 1E-7) which beancount
-  // rejects; toPlainString keeps it as a plain decimal that bean-check accepts.
+  // beancount won't accept exponential format (and nor will humans), yet we need the
+  // full decimal precision so postings still balance. BigDecimal.toString can emit
+  // exp notation (e.g. 1E-7); toPlainString keeps it plain so bean-check accepts it.
   override def toString: String = s"${number.bigDecimal.toPlainString} ${ccy.symbol}"
 
   def convertTo(tgtCcy: AssetId, fxConverter: FXConverter, date:LocalDate): Amount = {

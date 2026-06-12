@@ -1,7 +1,5 @@
 package com.gainstrack.core
 
-import java.math.RoundingMode
-
 import com.gainstrack.command.{BalanceAdjustment, GlobalCommand}
 import net.glorat.cqrs.{Command, DomainEvent}
 

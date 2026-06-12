@@ -2,8 +2,6 @@ package com.gainstrack.core
 
 import java.time.temporal.ChronoUnit
 
-import scala.collection.{GenMap, SortedMap}
-
 
 class TimeSeriesInterpolator {
   import TimeSeriesInterpolator._
