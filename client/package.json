@@ -27,7 +27,7 @@
     "codemirror": "^6.0.2",
     "csv-stringify": "^6.7.0",
     "decimal.js": "^10.6.0",
-    "firebase": "^10.14.1",
+    "firebase": "^12.14.0",
     "firebaseui": "^6.1.0",
     "lodash": "^4.18.1",
     "markdown-it": "^14.2.0",
