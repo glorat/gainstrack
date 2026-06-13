@@ -46,7 +46,7 @@ Open in IntelliJ and run `JettyLauncher`. Set env vars as needed (see below).
 cd client/functions
 export DEV=true
 export GOOGLE_APPLICATION_CREDENTIALS=<path-to-json>
-npm run serve
+pnpm run serve
 ```
 
 **Frontend:**
@@ -64,6 +64,7 @@ The Quasar dev server proxies API calls to `https://poc.gainstrack.com` by defau
 pnpm run quasar          # dev server (port 8080)
 pnpm run build           # production build (quasar build)
 pnpm run lint            # ESLint
+pnpm run type-check      # vue-tsc type check (no emit)
 pnpm run test:unit       # Vitest (all tests)
 pnpm run test:unit:watch # Vitest watch mode
 ```
@@ -73,6 +74,11 @@ pnpm run test:unit:watch # Vitest watch mode
 cd client
 pnpm run test:unit -- path/to/test.spec.ts
 ```
+
+### Type checking
+Run `pnpm run type-check` from `client/` after any TypeScript or Vue SFC change to catch type errors before they reach the browser. This uses `vue-tsc --noEmit`, which understands `<script setup lang="ts">` blocks and component prop types. It must pass cleanly before a PR is considered ready.
+
+Known pre-existing errors exist in older Options API components (the 18 `.vue` files without `lang="ts"`) — these are being migrated incrementally. When editing a file, add `lang="ts"` to its `<script>` tag and resolve any new errors introduced by that file before committing.
 
 ### Backend (from repo root, via sbt)
 ```bash

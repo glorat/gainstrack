@@ -34,9 +34,9 @@ export const qnotify: MyNotify = {
 //   }
 // }
 
-declare module '@vue/runtime-core' {
+declare module 'vue' {
   interface ComponentCustomProperties {
-    $notify: any
+    $notify: MyNotify
   }
 }
 

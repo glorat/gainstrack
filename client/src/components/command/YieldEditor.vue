@@ -36,7 +36,7 @@ const emit = defineEmits(['gainstrack-changed', 'command-changed', 'input'])
 
 const { c, hideAccount, mainAssetAccounts, findAccount, fxConverter, allStateEx } = useCommandEditor(props, emit)
 
-const dc = computed(() => defaultedYieldCommand(c, allStateEx.value, fxConverter.value))
+const dc = computed(() => defaultedYieldCommand(c, allStateEx.value))
 
 const multiAsset = computed(() => {
   const acct = findAccount.value(c.accountId)
@@ -46,7 +46,7 @@ const multiAsset = computed(() => {
 const assetAccounts = computed(() => mainAssetAccounts.value)
 
 const isValid = computed(() =>
-  !!dc.value.accountId && dc.value.change.number && dc.value.change.ccy && (dc.value.asset || !multiAsset.value)
+  !!dc.value.accountId && dc.value.change?.number && dc.value.change?.ccy && (dc.value.asset || !multiAsset.value)
 )
 
 const toGainstrack = computed(() => isValid.value ? toGainstrackFn(dc.value) : '')

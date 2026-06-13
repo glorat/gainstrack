@@ -25,14 +25,14 @@
         >
           <template v-if="columnEditing">
             <q-btn-group rounded>
-              <q-btn label="<" size="xs" padding="xs" :disable="idx<=0"
-                     @click.prevent.stop="swapLeft(idx)"
+              <q-btn label="<" size="xs" padding="xs" :disable="(idx as number)<=0"
+                     @click.prevent.stop="swapLeft(idx as number)"
               ></q-btn>
               <q-btn label="X" size="xs" padding="xs"
-                     @click.prevent.stop="deleteColumn(idx)"
+                     @click.prevent.stop="deleteColumn(idx as number)"
               ></q-btn>
-              <q-btn label=">" size="xs" padding="xs" :disable="idx>=props.cols.length"
-                     @click.prevent.stop="swapLeft(idx+1)"
+              <q-btn label=">" size="xs" padding="xs" :disable="(idx as number)>=props.cols.length"
+                     @click.prevent.stop="swapLeft((idx as number)+1)"
               ></q-btn>
             </q-btn-group>
             <br>
@@ -132,7 +132,7 @@
       }
     },
     computed: {
-      columns():Record<string,any>[] {
+      columns(): any[] {
         return this.selectedColumns
           .map(col => pathToTableColumn(quoteSourceFieldProperties, col))
           .map(col => ({...col, sortable: true}));

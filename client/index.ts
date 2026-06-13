@@ -2,4 +2,4 @@ export function gainstrackHello():string {
   return 'world';
 }
 
-export * from './src/store'
+export * from './src/stores'

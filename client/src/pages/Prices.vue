@@ -15,8 +15,8 @@
             <tbody>
             <tr v-for="(date, index) in series.dates">
               <td>{{ date }}</td>
-              <td class="num">{{ series.values[index] }} {{ series.units[index] }}</td>
-              <td class="num" v-if="series.cvalues[0]">{{ series.cvalues[index] }} {{ series.units[index] }}
+              <td class="num">{{ series.values[index] }} {{ series.unit }}</td>
+              <td class="num" v-if="series.cvalues[0]">{{ series.cvalues[index] }} {{ series.unit }}
               </td>
             </tr>
             </tbody>

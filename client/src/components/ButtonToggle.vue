@@ -8,12 +8,12 @@
     export default defineComponent({
         name: 'ButtonToggle',
         props: {
-            name: String,
-            offState: Object
+            name: { type: String, required: true as const },
+            offState: { type: Object as () => Record<string, boolean>, required: true as const }
         },
         methods: {
           onClick() {
-              this.offState![this.name!] = !this.offState![this.name!];
+              this.offState[this.name] = !this.offState[this.name];
           }
         }
     })

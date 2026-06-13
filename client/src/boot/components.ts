@@ -18,7 +18,7 @@ export default boot(({app}) => {
   app.config.globalProperties.$appVersion = version.version
 })
 
-declare module '@vue/runtime-core' {
+declare module 'vue' {
   interface ComponentCustomProperties {
     $appVersion: string
   }

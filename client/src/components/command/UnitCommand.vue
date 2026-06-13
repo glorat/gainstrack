@@ -33,7 +33,7 @@ const emit = defineEmits(['gainstrack-changed', 'command-changed', 'input'])
 const { c, hideAccount, tradeableAccounts, findAccount, fxConverter, allStateEx } = useCommandEditor(props, emit)
 
 function defaultStuff() {
-  const underCcy = allStateEx.value.underlyingCcy(c.balance.ccy, c.accountId)
+  const underCcy = allStateEx.value.underlyingCcy(c.balance.ccy ?? '', c.accountId)
   if (underCcy) {
     c.price.ccy = underCcy
     if (c.balance.ccy && c.price.ccy && c.date) {

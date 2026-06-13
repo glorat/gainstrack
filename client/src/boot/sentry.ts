@@ -17,7 +17,6 @@ export default boot(({app}) => {
       ],
       tracePropagationTargets: ['localhost', 'boglebot.com', 'poc.gainstrack.com', /^\//],
       attachProps: true,
-      logErrors: true,
       tracesSampleRate: 1.0,
       release: 'gainstrack@' + version.version,
       environment: process.env.NODE_ENV

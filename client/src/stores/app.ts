@@ -125,7 +125,7 @@ export const useAppStore = defineStore('app', () => {
 
   async function computeBalances() {
     if (!balances.value.Assets) {
-      const today = dateOverride.value ?? LocalDate.now()
+      const today = (dateOverride.value ?? LocalDate.now()) as LocalDate
       const forCategory = (cat: string) => balanceTreeTable(
         cat, today, baseCcy.value, conversion.value,
         allState.value.accounts, allPostingsEx.value, fxConverter.value
@@ -162,9 +162,7 @@ export const useAppStore = defineStore('app', () => {
   }
 
   async function loadQuotes(ccy: string): Promise<TimeSeries> {
-    const deps = quoteDeps.value
-    const key = deps[ccy]
-    if (key && quotes.value[key]) return quotes.value[key]
+    if (quotes.value[ccy]) return quotes.value[ccy]
     const multi = await loadMultiQuotes([ccy])
     return multi[0]
   }

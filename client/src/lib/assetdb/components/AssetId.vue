@@ -29,7 +29,7 @@
   export default defineComponent({
     name: 'AssetId',
     setup() { return { store: useAppStore() } },
-    props: {value: String, label: String, inputClass: {}},
+    props: {value: String, label: String, inputClass: { type: [String, Object, Array], default: undefined }},
     emits: ['update:modelValue'],
     data() {
       return {

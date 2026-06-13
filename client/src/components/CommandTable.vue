@@ -46,10 +46,10 @@
             },
         },
         methods: {
-            selectCommand() {
+            selectCommand(_cmd?: AccountCommandDTO) {
                 // TODO
             },
-          amount(value: Amount) {
+          amount(value: Amount | undefined) {
             if (!value) {
               return ''
             } else {

@@ -51,7 +51,7 @@ export default defineComponent({
     }
   },
   computed: {
-    columns(): Record<string, unknown>[] {
+    columns(): any[] {
       return [
         {name: 'AssetId', field: 'assetId', label: 'Asset'},
         {

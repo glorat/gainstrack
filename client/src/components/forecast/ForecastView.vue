@@ -141,8 +141,8 @@ export default defineComponent({
       const params = {input: this.input, strategy: this.strategy};
       this.forecastStore.updateForecastParams(params);
     },
-    onSavingsRateChange(ev: string | number) {
-      const newRate = +ev;
+    onSavingsRateChange(ev: string | number | null) {
+      const newRate = +(ev ?? 0);
       if (newRate > 0 && newRate <= 100) {
         this.input.expenses = round(this.input.income * ((100 - newRate) / 100));
       }

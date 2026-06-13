@@ -18,7 +18,7 @@
     <q-card-section>
       <q-chip v-for="tag in availableTags"
               :key="tag.name" color="primary" text-color="white" :label="tag.label"
-              clickable @click="$set(properties, tag.name, undefined)"></q-chip>
+              clickable @click="properties[tag.name] = undefined"></q-chip>
     </q-card-section>
     <q-card-actions align="right">
       <q-btn class="c-cancel" color="primary" type="button" v-on:click="cancel" v-close-popup>Cancel</q-btn>

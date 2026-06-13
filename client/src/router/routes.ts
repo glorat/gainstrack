@@ -1,3 +1,12 @@
+import 'vue-router'
+
+declare module 'vue-router' {
+  interface RouteMeta {
+    icon?: string
+    title?: string
+  }
+}
+
 import CommandSummary from '../pages/CommandSummary.vue';
 import Editor from '../pages/Editor.vue';
 import IncomeStatement from '../pages/IncomeStatement.vue';

@@ -20,7 +20,7 @@
           {{ asset.asset }}
         </td>
         <td class="num">
-          {{ formatNumber(positions[asset.asset].units.number) }}
+          {{ formatNumber(positions[asset.asset ?? '']?.units?.number) }}
         </td>
         <td>
           {{ pricerLabelFor(asset)}}
@@ -78,6 +78,11 @@
   import {defineComponent} from 'vue';
   import {GlobalPricer} from 'src/lib/pricer';
   import {AccountCommandDTO} from 'src/lib/assetdb/models';
+
+  type AssetRecord = Omit<AccountCommandDTO, 'options'> & {
+    options: Record<string, any>
+    dirty?: boolean
+  }
   import {mapState} from 'pinia';
   import {useAppStore} from 'src/stores';
   import {LocalDate} from '@js-joda/core';
@@ -93,9 +98,9 @@
     data () {
       return {
         // All commands that are asset commands
-        assets: [] as AccountCommandDTO[],
+        assets: [] as AssetRecord[],
         originalAssets: [] as AccountCommandDTO[],
-        positions: [],
+        positions: {} as Record<string, any>,
         tickerOptions: [] as string[],
         matRefresh,
         matCheck,
@@ -130,16 +135,14 @@
         const price = pricer.getFX(asset.asset??'', this.baseCcy, today);
         return formatNumber(price);
       },
-      assetTouched (asset: AccountCommandDTO) {
-        const a = asset as any;
-        a['dirty'] = true
+      assetTouched (asset: AssetRecord) {
+        asset.dirty = true
       },
-      assetReset (asset: AccountCommandDTO) {
+      assetReset (asset: AssetRecord) {
         const orig = this.originalAssets.find(x => x.asset === asset.asset)
         const idx = this.assets.indexOf(asset)
         Object.assign(this.assets[idx], cloneDeep(orig))
-        const a:any = this.assets[idx]
-        a['dirty'] = false
+        this.assets[idx].dirty = false
       },
       tickerSearch (queryString: string, update: any) {
         update(() => {
@@ -150,10 +153,10 @@
           this.tickerOptions = cfgs.map((cfg: any) => cfg.id);
         });
       },
-      toGainstrack (asset: AccountCommandDTO) {
+      toGainstrack (asset: AssetRecord) {
         return toCommodityGainstrack(asset)
       },
-      assetSave (asset: AccountCommandDTO) {
+      assetSave (asset: AssetRecord) {
         const str = this.toGainstrack(asset)
         axios.post('/api/post/asset', { str })
           .then(response => {
@@ -162,8 +165,7 @@
             if (orig === undefined) throw new Error('Invariant violation in assetSave')
             const idx = this.originalAssets.indexOf(orig)
             Object.assign(this.originalAssets[idx], cloneDeep(asset))
-            const a:any = asset;
-            a['dirty'] = false
+            asset.dirty = false
           })
           .catch(error => this.$notify.error(error.response.data))
       },
@@ -178,7 +180,7 @@
     },
     async mounted () {
       await this.reloadAll()
-      this.assets = cloneDeep(this.originalAssets)
+      this.assets = cloneDeep(this.originalAssets) as AssetRecord[]
     },
   })
 </script>

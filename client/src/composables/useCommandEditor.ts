@@ -1,13 +1,14 @@
 import { reactive, computed, watch } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useAppStore } from 'src/stores'
+import type { AmountEditing } from 'src/lib/assetdb/models'
 
 export interface CommandState {
   date: string
-  change: { number: number; ccy: string }
-  balance: { number: number; ccy: string }
-  price: { number: number; ccy: string }
-  commission: { number: number; ccy: string }
+  change: AmountEditing
+  balance: AmountEditing
+  price: AmountEditing
+  commission: AmountEditing
   accountId: string
   otherAccount: string
   options: Record<string, any>
@@ -18,7 +19,7 @@ export interface CommandState {
 
 export function useCommandEditor(
   props: { cmd?: Record<string, any> | null; options?: Record<string, any> | null },
-  emit: (event: string, ...args: any[]) => void
+  emit: (event: 'input' | 'command-changed', ...args: any[]) => void
 ) {
   const store = useAppStore()
   const {

@@ -19,7 +19,7 @@
         <q-input v-model="src.meta" label="Additional Params"></q-input>
         <q-btn label="Delete External Source" color="warning" @click="removeSource(src)"></q-btn>
       </div>
-      <q-btn @click="qsrc.sources.push({sourceType:'', ref: ''})" color="primary" label="Add External Source"></q-btn>
+      <q-btn @click="qsrc.sources.push({sourceType:'', ref: '', meta: ''})" color="primary" label="Add External Source"></q-btn>
     </q-card-section>
     <q-separator></q-separator>
     <q-card-section>
@@ -44,7 +44,7 @@
     name: 'QuoteSourceEditor',
     components: {EnumSelect, PropertyEditor},
     props: {
-      modelValue: Object as () => QuoteSource
+      modelValue: { type: Object as () => QuoteSource, required: true as const }
     },
     data() {
       const qsrc = this.modelValue;

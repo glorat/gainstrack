@@ -185,7 +185,7 @@ export default defineComponent({
     explainData(): PLExplainDTO {
       return this.explains[0];
     },
-    deltas(): number[] {
+    deltas(): any[] {
       // Use of concat to sort a copy
       return this.explainData.delta.concat().sort((a, b) => Math.abs(b.explain) - Math.abs(a.explain));
     },

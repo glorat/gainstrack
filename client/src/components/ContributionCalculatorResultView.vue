@@ -1,8 +1,8 @@
 <template>
   <div>
-    <pre><span v-for="row in data"><template v-if="row.targetValue !== row.value">BUY {{ formatNumber(row.targetValue - row.value) }} {{ baseCcy }} of {{ row.assetId }}<template v-if="row.price!==1"> ({{ formatNumber((row.targetValue - row.value)/row.price) }} {{row.assetId}} @{{ formatNumber(row.price) }} {{baseCcy}})</template></template>
+    <pre><span v-for="row in data"><template v-if="row.targetValue !== row.value">BUY {{ formatNumber(row.targetValue - row.value) }} {{ baseCcy }} of {{ row.assetId }}<template v-if="(row.price ?? 1)!==1"> ({{ formatNumber((row.targetValue - row.value)/(row.price ?? 1)) }} {{row.assetId}} @{{ formatNumber(row.price) }} {{baseCcy}})</template></template>
 </span></pre>
-    <q-table :rows="data" :columns="columns" :pagination="pagination" hide-bottom>
+    <q-table :rows="data ?? []" :columns="columns" :pagination="pagination" hide-bottom>
     </q-table>
   </div>
 </template>

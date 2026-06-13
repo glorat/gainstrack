@@ -1,7 +1,7 @@
 <template>
 <!--  font-style: italic; -->
     <div class="row items-start">
-      <q-input :input-class="amountClass" :label="label || 'Amount'" @focus="$event.target.select && $event.target.select()" type="number" :model-value="modelValue.number" @update:modelValue="onChanged($event)" clearable></q-input>
+      <q-input :input-class="amountClass" :label="label || 'Amount'" @focus="($event.target as HTMLInputElement | null)?.select?.()" type="number" :model-value="modelValue.number" @update:modelValue="onChanged($event)" clearable></q-input>
       <asset-id :input-class="ccyClass" :model-value="modelValue.ccy" @update:modelValue="onCcyChanged($event)"></asset-id>
     </div>
 </template>

@@ -38,7 +38,7 @@ const emit = defineEmits(['gainstrack-changed', 'command-changed', 'input'])
 
 const { c, hideAccount, allState, allStateEx, fxConverter } = useCommandEditor(props, emit)
 
-const dc = computed(() => defaultedFundCommand(c, allStateEx.value, fxConverter.value))
+const dc = computed(() => defaultedFundCommand(c, allStateEx.value))
 
 const fundableAccounts = computed(() => {
   const acctMatch = /^(Assets|Liabilities)/

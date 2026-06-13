@@ -7,7 +7,8 @@ export interface FieldProperty {
   label: string
   description: string
   fieldType: string // enum
-  fieldMeta?: EnumEntry[] | unknown
+  // fieldMeta holds EnumEntry[] for enum/multiEnum, FieldProperty for array element schema
+  fieldMeta?: any
   valid?: (props: Record<string, any>) => boolean
   searchValid?: (props: Record<string, any>) => boolean
   searchLevel?: number

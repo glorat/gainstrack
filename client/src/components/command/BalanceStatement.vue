@@ -39,8 +39,8 @@ function accountIdChanged() {
   const allCmds = [...allState.value.commands].reverse()
   const prev = allCmds.find((x: any) => x.accountId === c.accountId && x.commandType === 'bal')
   if (prev) {
-    c.otherAccount = prev.otherAccount
-    c.balance.number = prev.balance.number
+    c.otherAccount = prev.otherAccount ?? ''
+    c.balance.number = prev.balance?.number ?? 0
   } else {
     c.otherAccount = 'Equity:Opening'
   }

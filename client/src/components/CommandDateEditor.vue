@@ -4,7 +4,7 @@
         <template v-slot:append>
             <q-icon :name="matEvent" class="cursor-pointer">
                 <q-popup-proxy ref="qDateProxy" transition-show="scale" transition-hide="scale">
-                    <q-date :modelValue="dateObj" @update:modelValue="(ev) => {$refs.qDateProxy.hide(); onDateChanged(ev)}" />
+                    <q-date :modelValue="dateObj" @update:modelValue="(ev) => {($refs.qDateProxy as any).hide(); onDateChanged(ev)}" />
                 </q-popup-proxy>
             </q-icon>
         </template>
@@ -42,8 +42,8 @@
             onChanged(ev: string) {
                 this.$emit('update:modelValue', ev);
             },
-            onDateChanged(ev: string) {
-                const myDate = reformatIsoDate(ev, 'YYYY-MM-DD');
+            onDateChanged(ev: string | number | null) {
+                const myDate = ev ? reformatIsoDate(String(ev), 'YYYY-MM-DD') : undefined;
                 this.$emit('update:modelValue', myDate);
             },
         },

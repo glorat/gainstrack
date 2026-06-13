@@ -1,5 +1,5 @@
 <template>
-    <ol>
+    <ol v-if="node">
     <li v-bind:key="acct.name" v-for="acct in node.children" v-bind:class="{toggled: toggled[acct.name]}">
         <p v-if="acct.assetBalance.length>0 && acct.assetBalance.filter(a => (Math.abs(a.number)>0.005)).length>0">
           <span
@@ -35,9 +35,10 @@
           return { store: useAppStore() }
         },
         data(): {toggled: Record<string, boolean>} {
+          const mainAccounts = useAppStore().mainAccounts;
           const ret: {toggled: Record<string, boolean>} = {
                 toggled: this.node?.children.reduce((map: Record<string, boolean>, obj) => {
-                    map[obj.name] = this.store.mainAccounts.includes(obj.name);
+                    map[obj.name] = mainAccounts.includes(obj.name);
                     return map;
                 }, {}) || {},
             };

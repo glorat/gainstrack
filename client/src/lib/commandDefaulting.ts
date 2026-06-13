@@ -10,8 +10,8 @@ export function propDefined(props: Record<string, any>, name: string): boolean {
   return Object.prototype.hasOwnProperty.call(props, name)
 }
 
-// Typescript can't link the commandIsValid checks to the toGainstrack we we liberally use non-null-assertions
-export function commandIsValid(c: AccountCommandEditing):boolean {
+// Type predicate: after this returns true, TypeScript narrows c to AccountCommandDTO
+export function commandIsValid(c: AccountCommandEditing): c is AccountCommandDTO {
   if (c.commandType === 'bal')
     return !!c.accountId && !!c.date && !!c.balance && c.balance.number!==undefined && !!c.balance.ccy && !!c.otherAccount;
   else if (c.commandType === 'unit')
@@ -52,7 +52,7 @@ export function commandIsValid(c: AccountCommandEditing):boolean {
 
 }
 
-export function toGainstrack(c: AccountCommandDTO) {
+export function toGainstrack(c: AccountCommandEditing) {
   if (commandIsValid(c)) {
     if (c.commandType === 'bal') {
       return `${c.date} bal ${c.accountId} ${c.balance!.number} ${c.balance!.ccy} ${c.otherAccount}`;
@@ -107,7 +107,7 @@ export function toCommodityGainstrack(asset: AccountCommandDTO | AssetDTO) {
   return str
 }
 
-export function defaultedCommand(c: AccountCommandDTO, stateEx: AllStateEx, fxConverter: GlobalPricer): AccountCommandDTO {
+export function defaultedCommand(c: AccountCommandEditing, stateEx: AllStateEx, fxConverter: GlobalPricer): AccountCommandDTO {
   if (c.commandType === 'trade') {
     return defaultedTradeCommand(c, stateEx, fxConverter)
   }
@@ -118,8 +118,9 @@ export function defaultedCommand(c: AccountCommandDTO, stateEx: AllStateEx, fxCo
   }
 }
 
-export function defaultedTradeCommand (c: AccountCommandDTO, stateEx: AllStateEx, fxConverter: GlobalPricer): AccountCommandDTO {
+export function defaultedTradeCommand (c: AccountCommandEditing, stateEx: AllStateEx, fxConverter: GlobalPricer): AccountCommandDTO {
   const dc = {...c};
+  if (!dc.date) dc.date = LocalDate.now().toString();
   const acct = stateEx.findAccount(dc.accountId);
   if (!dc.price) dc.price = {number: 0, ccy: ''};
   if (!dc.change) dc.change = {number: 0, ccy: ''};
@@ -127,7 +128,7 @@ export function defaultedTradeCommand (c: AccountCommandDTO, stateEx: AllStateEx
   delete (dc.balance);
 
   if (!dc.price.ccy) {
-    const underCcy = stateEx.underlyingCcy(dc.change.ccy, dc.accountId);
+    const underCcy = stateEx.underlyingCcy(dc.change.ccy ?? '', dc.accountId);
     if (underCcy) {
       dc.price = {
         ...dc.price,
@@ -159,7 +160,7 @@ export function defaultedTradeCommand (c: AccountCommandDTO, stateEx: AllStateEx
 
   if (!dc.price.number && dc.price.ccy) {
     const date = LocalDate.parse(dc.date);
-    const number = fxConverter.getFXTrimmed(dc.change.ccy, dc.price.ccy, date);
+    const number = fxConverter.getFXTrimmed(dc.change.ccy ?? '', dc.price.ccy, date);
     if (number) {
       dc.price = {
         ...dc.price,
@@ -167,7 +168,7 @@ export function defaultedTradeCommand (c: AccountCommandDTO, stateEx: AllStateEx
       }
     }
   }
-  return dc
+  return dc as AccountCommandDTO
 }
 
 export function defaultedBalanceOrUnit(c: AccountCommandEditing, stateEx: AllStateEx, fxConverter: GlobalPricer): AccountCommandDTO {
@@ -323,7 +324,7 @@ export function defaultedFundCommand(c: AccountCommandEditing, stateEx: AllState
   }
   if (!dc.otherAccount) {
     if (acct) {
-      dc.otherAccount = acct.options.fundingAccount;
+      dc.otherAccount = acct.options.fundingAccount || 'Equity:Opening';
     } else {
       dc.otherAccount = 'Equity:Opening'; // Un-hardcode???
     }
@@ -331,7 +332,7 @@ export function defaultedFundCommand(c: AccountCommandEditing, stateEx: AllState
   return dc;
 }
 
-export function canConvertToTrade(c: AccountCommandDTO, stateEx: AllStateEx, fxConverter: GlobalPricer):boolean {
+export function canConvertToTrade(c: AccountCommandEditing, stateEx: AllStateEx, fxConverter: GlobalPricer):boolean {
 
   const dc = defaultedCommand(c, stateEx, fxConverter);
   if (dc.commandType !== 'unit') return false;
@@ -339,7 +340,7 @@ export function canConvertToTrade(c: AccountCommandDTO, stateEx: AllStateEx, fxC
   return true;
 }
 
-export function convertToTrade (c: AccountCommandDTO, stateEx: AllStateEx, fxConverter: GlobalPricer): AccountCommandDTO {
+export function convertToTrade (c: AccountCommandEditing, stateEx: AllStateEx, fxConverter: GlobalPricer): AccountCommandDTO {
   const dc = defaultedCommand(c, stateEx, fxConverter);
 
   const accountId = dc.accountId;
@@ -353,11 +354,16 @@ export function convertToTrade (c: AccountCommandDTO, stateEx: AllStateEx, fxCon
   const balance = dc.balance!;
   const currentBalance = pSet[balance.ccy];
   const changeBalance = balance.number - currentBalance;
-  const newc = { ...c };
+  const newc = { ...dc };
+  // Restore raw user price/commission — don't bake in FX-inferred values.
+  // commandIsValid requires price.number to be truthy, so a blank price (0)
+  // keeps the command invalid until the user explicitly confirms it.
+  newc.price = { number: c.price?.number ?? 0, ccy: c.price?.ccy || dc.price?.ccy || '' };
+  newc.commission = { number: c.commission?.number ?? 0, ccy: c.commission?.ccy || dc.commission?.ccy || '' };
   newc.change = {
     number: changeBalance,
     ccy: balance.ccy
   };
   newc.commandType = 'trade';
-  return newc
+  return newc;
 }

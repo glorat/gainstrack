@@ -101,7 +101,7 @@ export default defineComponent({
     return {
       step: 1,
       assets: {rows: [], columns: [], totals: []} as AssetResponse,
-      assetsToBalance: [],
+      assetsToBalance: [] as string[],
       entries: [] as ContributionCalculatorInput[],
       results: [] as ContributionCalculatorEntries[],
       contribution: {number: 0, ccy: ''} as Amount,
@@ -112,7 +112,7 @@ export default defineComponent({
   methods: {
     async refresh(props?: Record<string, any>): Promise<void> {
 
-      const acct: AccountDTO | undefined = this.findAccount(this.accountId);
+      const acct: AccountDTO | undefined = this.findAccount(this.accountId ?? '');
       try {
         this.assets = await apiAssetsReport(this.store, props ?? this.$props);
         this.assetsToBalance = [];

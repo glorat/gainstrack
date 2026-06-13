@@ -65,8 +65,8 @@
       :key="idx"
       :schema="schema.fieldMeta" :modelValue="sub"
       :clearable="clearable" :dense="dense"
-      @clear="arrayCleared(idx)"
-      @update:modelValue="arrayInput(idx, $event)"
+      @clear="arrayCleared(idx as number)"
+      @update:modelValue="arrayInput(idx as number, $event)"
     >
 
     </field-editor>
@@ -77,7 +77,7 @@
 </template>
 
 <script lang="ts">
-import {defineComponent, PropType} from 'vue';
+import {defineComponent, PropType, type Component} from 'vue';
 import CommandDateEditor from 'components/CommandDateEditor.vue';
 import BalanceEditor from './BalanceEditor.vue';
 import AssetId from './AssetId.vue';
@@ -95,7 +95,7 @@ export default defineComponent({
     prop: 'modelValue',
   },
   props: {
-    modelValue: {},
+    modelValue: { type: null as unknown as PropType<any>, default: undefined },
     schema: {
       type: (Object as unknown) as PropType<FieldProperty>,
       required: true,

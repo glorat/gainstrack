@@ -19,9 +19,9 @@
   import {useAppStore} from 'src/stores';
 
   interface MyData {
-    pagination: unknown,
-    selected: unknown[],
-    columns: Record<string, unknown>[],
+    pagination: { rowsPerPage: number },
+    selected: QuoteSource[],
+    columns: any[],
     quoteConfig: QuoteSource[],
     currentRow?: QuoteSource,
     series: Record<string, unknown>[],
@@ -36,7 +36,7 @@
     },
     setup() { return { store: useAppStore() } },
     data(): MyData {
-      const cfg = this.store.quoteConfig;
+      const cfg = useAppStore().quoteConfig;
 
       const defaultColumn= (col: {name:string}) => ({field: col.name, align: 'left', sortable: true})
       const columns = [

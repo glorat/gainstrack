@@ -2,8 +2,8 @@
   <div>
     <q-stepper v-model="step" header-nav>
       <q-step :name="1" title="Filter" :icon="matFilterAlt">
-        <property-editor :model-value="searchObj.asset" @update:modelValue="onAssetUpdate" :schema="investmentAssetSearchSchema" dense @property-added="onPropAdded($event, 'asset')"></property-editor>
-        <property-editor :model-value="searchObj" @update:modelValue="onObjUpdated" :schema="quoteSourceSearchSchema" dense @property-added="onPropAdded($event)"></property-editor>
+        <property-editor :model-value="searchObj.asset" @update:modelValue="onAssetUpdate" :schema="investmentAssetSearchSchema" dense @property-added="onPropAdded"></property-editor>
+        <property-editor :model-value="searchObj" @update:modelValue="onObjUpdated" :schema="quoteSourceSearchSchema" dense @property-added="onPropAdded"></property-editor>
       </q-step>
       <q-step :name="2" title="Advanced Filter" :icon="matFilterAlt">
         <div class="row" v-for="(row,idx) in query">
@@ -18,13 +18,13 @@
           </div>
         </div>
         <div class="row" title="">
-          <q-btn color="secondary" label="Custom Filter" @click="$emit('update:params', [...params, {where:['','==','']}])"></q-btn>
+          <q-btn color="secondary" label="Custom Filter" @click="$emit('update:params', {...params, query: [...(params.query ?? []), {where:['','==','']}]})"></q-btn>
         </div>
 
       </q-step>
       <q-step :name="3" title="Columns">
         <div class="col-6">
-          <q-select label="Add Column" :options="fieldsToAdd" value="" @input="$emit('update:selected-columns', [...selectedColumns, $event.value] )"></q-select>
+          <q-select label="Add Column" :options="fieldsToAdd" :model-value="''" emit-value @update:model-value="$emit('update:selected-columns', [...(selectedColumns ?? []), $event])"></q-select>
         </div>
       </q-step>
 <!--      <q-step :name="4" title="Search" :icon="matSearch" color="primary">-->

@@ -100,7 +100,7 @@
                   sortBy: 'value',
                   descending: true,
                 },
-              selection: 'multiple',
+              selection: 'multiple' as const,
               selected: [],
               matEdit,
               matAdd,
@@ -184,7 +184,7 @@
       },
         computed: {
           ...mapState(useAppStore, ['mainAccounts', 'baseCcy', 'fxConverter']),
-          columns(): AssetColumn[] {
+          columns(): any[] {
             return [{
               name: 'assetId',
               label: 'Asset',
@@ -225,7 +225,7 @@
             }];
           },
           canEdit(): boolean {
-            return !!this.accountId && this.mainAccounts.find( (x:string) => x===this.accountId) && !!this.accountId.match('^(Assets|Liabilities)');
+            return !!this.accountId && !!this.mainAccounts.find( (x:string) => x===this.accountId) && !!this.accountId.match('^(Assets|Liabilities)');
           },
           canTrade(): boolean {
             // TODO: Exclude account baseccy?
@@ -260,7 +260,7 @@
             visibleColumns(): string[] {
                 return this.currentMode.columns;
             },
-            allColumns(): AssetColumn[] {
+            allColumns(): any[] {
                 return this.columns.concat(this.moreColumns);
             },
             networthByAsset(): NetworthByAsset[] {

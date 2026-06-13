@@ -75,8 +75,8 @@
       async setDisplayName() {
         try {
           this.loading = true;
-          const result = await setDisplayName(this.newDisplayName)
-          if (result.message) this.$notify.success(result.message);
+          const result = await setDisplayName(this.newDisplayName) as any
+          if (result?.message) this.$notify.success(result.message);
           this.refresh()
         }
         catch (error) {
@@ -103,7 +103,7 @@
         return this.store.user;
       },
       authName():string {
-        return this.state.user?.displayName || 'anon'
+        return this.store.user?.displayName || 'anon'
       }
     },  })
 </script>

@@ -4,10 +4,10 @@
       <div v-for="(menuItem, idx2) in menuItems" :key="idx2">
         <q-item dense clickable v-ripple :to="menuItem.path" :id="`route-${menuItem.path.replace('/','')}`">
           <q-item-section avatar>
-            <q-icon :name="menuItem.meta.icon"/>
+            <q-icon :name="menuItem.meta?.icon"/>
           </q-item-section>
           <q-item-section>
-            {{ menuItem.meta.title }}
+            {{ menuItem.meta?.title }}
           </q-item-section>
         </q-item>
 
@@ -45,11 +45,10 @@
     },
     data() {
       return {
-        menuItemsList: navBar.map(ss => {
-          return ss.map((key: string) => {
-            return appRoutes.find(rt => rt.path === `/${key}`);
-          });
-        })
+        menuItemsList: navBar.map(ss =>
+          ss.map((key: string) => appRoutes.find(rt => rt.path === `/${key}`))
+            .filter((rt): rt is (typeof appRoutes)[number] => Boolean(rt))
+        )
       }
     },
     components: {LoginForm},
@@ -58,8 +57,8 @@
       version() {
         return this.$appVersion;
       },
-      errors() {
-        return this.store.parseState.errors;
+      errors(): string[] {
+        return (this.store.parseState?.errors ?? []) as string[];
       },
       errorClass() {
         const errs = (this.store.parseState.errors as string[]) ?? []

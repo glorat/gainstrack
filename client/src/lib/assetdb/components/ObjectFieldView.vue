@@ -24,7 +24,7 @@
         type: Array as () => FieldProperty[]
         , required: true},
       object: {
-        type: Object as () => Record<string, unknown>,
+        type: Object as () => Record<string, any>,
         required: true,
       }
     },
