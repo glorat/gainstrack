@@ -16,7 +16,7 @@ import { useDialogPluginComponent } from 'quasar';
 import { AccountCommandDTO } from 'src/lib/assetdb/models';
 import AddCmd from 'pages/AddCmd.vue';
 
-const props = defineProps<{ cmd?: AccountCommandDTO }>();
+defineProps<{ cmd?: AccountCommandDTO }>();
 defineEmits([...useDialogPluginComponent.emits]);
 
 const { dialogRef, onDialogHide, onDialogOK } = useDialogPluginComponent();

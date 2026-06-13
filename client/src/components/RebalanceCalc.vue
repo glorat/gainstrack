@@ -69,7 +69,7 @@ import { computed, ref, onMounted } from 'vue';
 import {AccountDTO, Amount, AssetResponse, NetworthByAsset} from '../lib/assetdb/models';
 import {apiAssetsReport} from 'src/lib/apiFacade';
 import {difference, includes, sum, sortBy} from 'lodash';
-import {formatPerc} from 'src/lib/utils';
+
 import {VuePlotly} from '../lib/loader';
 import {useAppStore} from 'src/stores';
 import {
@@ -128,7 +128,6 @@ function calculate(): void {
 }
 
 const baseCcy = computed((): string => contribution.value.ccy);
-const totalOriginalValue = computed((): number => sum(entries.value.map(e => e.value)));
 const totalTargetPerc = computed((): number => sum(entries.value.map(row => row.target || 0)));
 const canCalculate = computed((): boolean => totalTargetPerc.value === 100 && contribution.value.number > 0.0);
 const remainingAssets = computed((): string[] => difference(assets.value.rows.map(row => row.assetId), assetsToBalance.value));

@@ -14,7 +14,7 @@ import { useDialogPluginComponent } from 'quasar';
 import AssetEditor from 'components/AssetEditor.vue';
 import { AssetDTO } from 'src/lib/assetdb/models';
 
-const props = defineProps<{ assetId?: string }>();
+defineProps<{ assetId?: string }>();
 defineEmits([...useDialogPluginComponent.emits]);
 
 const { dialogRef, onDialogHide, onDialogOK } = useDialogPluginComponent();
