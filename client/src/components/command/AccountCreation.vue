@@ -21,69 +21,39 @@
       <q-toggle v-model="c.options.automaticReinvestment" label="Automatic Reinvestment"/>
     </div>
   </div>
-
 </template>
 
-<script>
-  import { CommandEditorMixin } from '../../mixins/CommandEditorMixin.js'
-  import AssetId from '../../lib/assetdb/components/AssetId.vue'
+<script setup lang="ts">
+import { computed, watch } from 'vue'
+import AssetId from '../../lib/assetdb/components/AssetId.vue'
+import CommandDateEditor from '../CommandDateEditor.vue'
+import { useCommandEditor } from '../../composables/useCommandEditor'
 
-  export default {
-    name: 'AccountCreation',
-    components: {
-      AssetId,
-    },
-    mixins: [CommandEditorMixin],
-    data () {
-      let c = {}
-      if (this.cmd) {
-        c = { ...this.cmd }
-      }
-      c.date = c.date || new Date().toISOString().slice(0, 10)
-      c.ccy = '' // Default to base currency
-      c.accountType = ''
-      c.accountName = ''
-      c.options = {
-        multiAsset: false,
-        automaticReinvestment: false
-      }
-      return { c }
-    },
-    computed: {
-      isValid () {
-        return this.c.date && this.c.accountType && this.c.accountName && this.c.ccy
-      },
-      dto () {
-        if (this.isValid) {
-          return {
-            date: this.c.date,
-            accountId: this.c.accountType + ':' + this.c.accountName,
-            ccy: this.c.ccy,
-            options: this.c.options
-          }
-        } else {
-          return undefined
-        }
-      },
-      toGainstrack () {
-        if (this.isValid) {
-          const dto = this.dto
+defineOptions({ inheritAttrs: false })
 
-          let baseStr = `${dto.date} open ${dto.accountId} ${dto.ccy}`
-          if (dto.options.multiAsset) {
-            baseStr += '\n  multiAsset: true'
-          }
-          if (dto.options.automaticReinvestment) {
-            baseStr += '\n  automaticReinvestment: true'
-          }
-          return baseStr
-        } else {
-          return undefined
-        }
+const props = defineProps<{ cmd?: Record<string, any>; options?: Record<string, any> }>()
+const emit = defineEmits(['gainstrack-changed', 'command-changed', 'input'])
 
-      }
-    }
-  }
+const { c } = useCommandEditor(props, emit)
+
+// AccountCreation-specific fields not in the base command state
+c.ccy = ''
+c.accountType = ''
+c.accountName = ''
+c.options = { multiAsset: false, automaticReinvestment: false }
+
+const isValid = computed(() => c.date && c.accountType && c.accountName && c.ccy)
+
+const toGainstrack = computed(() => {
+  if (!isValid.value) return ''
+  const accountId = `${c.accountType}:${c.accountName}`
+  let str = `${c.date} open ${accountId} ${c.ccy}`
+  if (c.options.multiAsset) str += '\n  multiAsset: true'
+  if (c.options.automaticReinvestment) str += '\n  automaticReinvestment: true'
+  return str
+})
+
+watch(toGainstrack, (str) => emit('gainstrack-changed', str), { immediate: true })
 </script>
 
 <style scoped>

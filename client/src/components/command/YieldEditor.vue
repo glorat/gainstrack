@@ -8,7 +8,8 @@
             placeholder="Yield Source Account"
             class="c-account-id" :modelValue="dc.accountId" :original="c.accountId"
             @update:modelValue="c.accountId=$event" :account-list="assetAccounts"
-          ></account-selector>        </div>
+          ></account-selector>
+        </div>
         <div v-if="multiAsset">
           <!-- TODO: Restrict this asset list to whatever is in this account -->
             <asset-id label="Asset that is yielding" :modelValue="dc.asset" :original="c.asset" @update:modelValue="c.asset = $event"></asset-id>
@@ -19,49 +20,36 @@
     </div>
 </template>
 
-<script>
-    import AccountSelector from '../AccountSelector.vue';
-    import BalanceEditor from '../../lib/assetdb/components/BalanceEditor.vue';
-    import CommandDateEditor from '../CommandDateEditor.vue';
-    import {CommandEditorMixin} from '../../mixins/CommandEditorMixin.js';
-    import AssetId from '../../lib/assetdb/components/AssetId.vue';
-    import {defaultedYieldCommand, toGainstrack} from 'src/lib/commandDefaulting';
+<script setup lang="ts">
+import { computed, watch } from 'vue'
+import AccountSelector from '../AccountSelector.vue'
+import BalanceEditor from '../../lib/assetdb/components/BalanceEditor.vue'
+import CommandDateEditor from '../CommandDateEditor.vue'
+import AssetId from '../../lib/assetdb/components/AssetId.vue'
+import { defaultedYieldCommand, toGainstrack as toGainstrackFn } from 'src/lib/commandDefaulting'
+import { useCommandEditor } from '../../composables/useCommandEditor'
 
-    export default {
-        name: 'YieldEditor',
-        components: {AssetId, AccountSelector, BalanceEditor, CommandDateEditor},
-        mixins: [CommandEditorMixin],
-        methods: {
+defineOptions({ inheritAttrs: false })
 
-        },
-        computed: {
-          dc() {
-            const stateEx = this.allStateEx;
-            const fxConverter = this.fxConverter
-            const dc = defaultedYieldCommand(this.c, stateEx, fxConverter);
-            return dc;
-          },
-            multiAsset() {
-                const acct = this.findAccount(this.c.accountId);
-                return acct && acct.options.multiAsset;
-            },
-            assetAccounts() {
-                return this.mainAssetAccounts;
-            },
-            isValid() {
-              const c /*: AccountCommandDTO*/ = this.dc;
-                return !!c.accountId
-                    && c.change.number
-                    && c.change.ccy
-                    && (c.asset || !this.multiAsset);
-            },
-            toGainstrack() {
-              return toGainstrack(this.dc)
-            }
-        }
-    }
+const props = defineProps<{ cmd?: Record<string, any>; options?: Record<string, any> }>()
+const emit = defineEmits(['gainstrack-changed', 'command-changed', 'input'])
+
+const { c, hideAccount, mainAssetAccounts, findAccount, fxConverter, allStateEx } = useCommandEditor(props, emit)
+
+const dc = computed(() => defaultedYieldCommand(c, allStateEx.value, fxConverter.value))
+
+const multiAsset = computed(() => {
+  const acct = findAccount.value(c.accountId)
+  return acct && acct.options.multiAsset
+})
+
+const assetAccounts = computed(() => mainAssetAccounts.value)
+
+const isValid = computed(() =>
+  !!dc.value.accountId && dc.value.change.number && dc.value.change.ccy && (dc.value.asset || !multiAsset.value)
+)
+
+const toGainstrack = computed(() => isValid.value ? toGainstrackFn(dc.value) : '')
+
+watch(toGainstrack, (str) => emit('gainstrack-changed', str), { immediate: true })
 </script>
-
-<style scoped>
-
-</style>

@@ -78,7 +78,6 @@
   import CommandTable from '../components/CommandTable.vue'
   import SourceErrors from '../components/SourceErrors.vue'
   import { debounce } from 'lodash'
-  import EventBus from '../event-bus'
   import { mapState } from 'pinia'
   import { useAppStore } from 'src/stores'
   import { apiCmdTest } from 'src/lib/apiFacade'
@@ -189,7 +188,6 @@
               this.$notify.success(`${this.added.length} entries added`)
               this.store.reload()
               this.$emit('command-added', str)
-              EventBus.$emit('command-added', str)
             }
 
           })

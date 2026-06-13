@@ -37,6 +37,7 @@
   import {emptyQuoteSource, QuoteSource, quoteSourceDb, sanitiseQuoteSource, upsertQuoteSource} from 'src/lib/assetdb/assetDb';
   import { extend } from 'quasar'
   import {QuoteSourceEditor, QuoteSourceHistoryView, QuoteSourceView} from 'src/lib/assetdb';
+  import { query, where, onSnapshot } from 'firebase/firestore';
 
   export default defineComponent({
     name: 'QuoteSource',
@@ -87,7 +88,8 @@
             this.subscribeId = id;
             if (id) {
               this.loading = true;
-              this.unsubscribe = quoteSourceDb().where('id', '==', id).onSnapshot(items => {
+              const q = query(quoteSourceDb(), where('id', '==', id));
+              this.unsubscribe = onSnapshot(q, items => {
                 this.loading = false;
                 const item = items.docs[0];
                 const doc = item.data();

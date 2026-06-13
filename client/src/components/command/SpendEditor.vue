@@ -9,7 +9,6 @@
             class="c-account-id" :modelValue="dc.accountId" :original="c.accountId"
             @update:modelValue="c.accountId=$event" :account-list="spendableAccounts"
           ></account-selector>
-
         </div>
         <div>
           <balance-editor label="Spent Amount" class="change" :modelValue="dc.change" :original="c.change" @update:modelValue="c.change=$event"></balance-editor>
@@ -17,48 +16,36 @@
     </div>
 </template>
 
-<script>
-    import AccountSelector from '../AccountSelector.vue';
-    import BalanceEditor from '../../lib/assetdb/components/BalanceEditor.vue';
-    import {CommandEditorMixin} from '../../mixins/CommandEditorMixin.js';
+<script setup lang="ts">
+import { computed, watch } from 'vue'
+import AccountSelector from '../AccountSelector.vue'
+import BalanceEditor from '../../lib/assetdb/components/BalanceEditor.vue'
+import CommandDateEditor from '../CommandDateEditor.vue'
+import { useCommandEditor } from '../../composables/useCommandEditor'
 
-    export default {
-        name: 'SpendEditor',
-        components: {AccountSelector, BalanceEditor},
-        mixins: [CommandEditorMixin],
-        methods: {
-        },
-        computed: {
-          dc() {
-            const dc = {...this.c};
-            const acct = this.findAccount(this.c.accountId);
-            if (acct && !dc.change.ccy) {
-              dc.change = {...dc.change, ccy: acct.ccy};
-            }
-            // Would need some serious AI to predict the default spent amount!
-            return dc;
-          },
-            spendableAccounts() {
-                return this.mainAccounts.filter(x => x.startsWith('Expenses:'));
-            },
-            isValid() {
-              const c /*: AccountCommandDTO*/ = this.dc;
-                return !!c.accountId
-                    && c.change.number
-                    && c.change.ccy;
-            },
-            toGainstrack() {
-              const c /*: AccountCommandDTO*/ = this.dc;
-                if (this.isValid) {
-                    return `${c.date} spend ${c.accountId} ${c.change.number} ${c.change.ccy}`;
-                } else {
-                    return '';
-                }
-            }
-        },
-    }
+defineOptions({ inheritAttrs: false })
+
+const props = defineProps<{ cmd?: Record<string, any>; options?: Record<string, any> }>()
+const emit = defineEmits(['gainstrack-changed', 'command-changed', 'input'])
+
+const { c, hideAccount, mainAccounts, findAccount } = useCommandEditor(props, emit)
+
+const dc = computed(() => {
+  const result = { ...c }
+  const acct = findAccount.value(c.accountId)
+  if (acct && !result.change.ccy) result.change = { ...result.change, ccy: acct.ccy }
+  return result
+})
+
+const spendableAccounts = computed(() => mainAccounts.value.filter((x: string) => x.startsWith('Expenses:')))
+
+const isValid = computed(() => !!dc.value.accountId && dc.value.change.number && dc.value.change.ccy)
+
+const toGainstrack = computed(() => {
+  const cmd = dc.value
+  if (isValid.value) return `${cmd.date} spend ${cmd.accountId} ${cmd.change.number} ${cmd.change.ccy}`
+  return ''
+})
+
+watch(toGainstrack, (str) => emit('gainstrack-changed', str), { immediate: true })
 </script>
-
-<style scoped>
-
-</style>

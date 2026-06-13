@@ -5,7 +5,7 @@
     </div>
     <div v-if="!hideAccount">
       <account-selector class="c-account-id" :modelValue="dc.accountId" :original="c.accountId"
-                        @update:modelValue="onAccountChanged" :account-list="balanceableAccounts"></account-selector>
+                        @update:modelValue="c.accountId=$event" :account-list="balanceableAccounts"></account-selector>
     </div>
     <div v-if="showBalance">
       <balance-editor label="Balance" class="c-balance" :modelValue="dc.balance" :original="c.balance" @update:modelValue="c.balance=$event"></balance-editor>
@@ -33,105 +33,61 @@
                       :modelValue="dc.commission" :original="c.commission" @update:modelValue="c.commission=$event"></balance-editor>
     </div>
     <div>
-      <q-btn color="secondary" v-if="canConvertToTrade" @click="convertToTrade">Convert to Trade</q-btn>
+      <q-btn color="secondary" v-if="canConvertToTrade" @click="doConvertToTrade">Convert to Trade</q-btn>
     </div>
   </div>
 </template>
 
-<script>
-  import BalanceEditor from '../../lib/assetdb/components/BalanceEditor.vue';
-  import {CommandEditorMixin} from '../../mixins/CommandEditorMixin.js';
-  import AccountSelector from '../AccountSelector.vue';
-  import { defineComponent } from 'vue';
-  import {
-    canConvertToTrade,
-    commandIsValid, convertToTrade,
-    defaultedCommand,
-    propDefined,
-    toGainstrack
-  } from 'src/lib/commandDefaulting'
+<script setup lang="ts">
+import { computed, watch } from 'vue'
+import BalanceEditor from '../../lib/assetdb/components/BalanceEditor.vue'
+import AccountSelector from '../AccountSelector.vue'
+import CommandDateEditor from '../CommandDateEditor.vue'
+import HelpTip from '../HelpTip.vue'
+import {
+  canConvertToTrade as checkCanConvertToTrade, commandIsValid, convertToTrade,
+  defaultedCommand, propDefined, toGainstrack as toGainstrackFn
+} from 'src/lib/commandDefaulting'
+import { useCommandEditor } from '../../composables/useCommandEditor'
 
-  export default defineComponent({
-    name: 'BalanceOrUnit',
-    props: {cmd: Object},
-    mixins: [CommandEditorMixin],
-    components: {
-      BalanceEditor,
-      AccountSelector,
-    },
-    methods: {
+defineOptions({ inheritAttrs: false })
 
-      convertToTrade() {
+const props = defineProps<{ cmd?: Record<string, any>; options?: Record<string, any> }>()
+const emit = defineEmits(['gainstrack-changed', 'command-changed', 'input'])
 
-        const c = this.c;
-        const stateEx = this.allStateEx;
-        const fxConverter = this.fxConverter;
-        const newc = convertToTrade(c, stateEx, fxConverter)
+const { c, hideAccount, mainAccounts, allState, allStateEx, fxConverter, findAccount } = useCommandEditor(props, emit)
 
-        this.c = newc;
+const dc = computed(() => defaultedCommand(c, allStateEx.value, fxConverter.value))
 
-      },
-      onAccountChanged(ev) {
-        this.c.accountId=ev;
-      }
-    },
-    computed: {
-      dc() {
-        // Take care to use copy-on-write pattern in this function
-        const c = this.c;
-        const stateEx = this.allStateEx;
-        const fxConverter = this.fxConverter
-        const dc = defaultedCommand(c, stateEx, fxConverter);
-        return dc;
-      },
-      mainAccount() {
-        return this.findAccount(this.dc.accountId);
-      },
-      balanceableAccounts() {
-        return this.allState.accounts.filter(acct => {
-          const id = acct.accountId;
-          const t = (/^(Asset|Liabilities|Equity)/.test(id));
-          return (acct.options.generatedAccount === false) && t
-        }).map( a => a.accountId).sort()
-      },
-      showBalance() {
-        return propDefined(this.dc, 'balance');
-      },
-      showChange() {
-        return propDefined(this.dc, 'change');
-      },
-      showCommission() {
-        return propDefined(this.dc, 'commission');
-      },
-      showPrice() {
-        if (this.dc.commandType==='bal') return false;
-        return propDefined(this.dc, 'price')
-      },
-      canBalanceOrUnit() {
-        if (!this.dc.commandType?.match('bal|unit')) return false;
-        const acct = this.mainAccount;
-        if (!acct) return false;
-        return acct.options.multiAsset;
-      },
-      isValid() /*: boolean*/ {
-        const c = this.dc;
-        return commandIsValid(c);
-        // lint-ignore
-      },
-      toGainstrack() /*: string*/ {
-        return toGainstrack(this.dc)
-      },
-      canConvertToTrade() {
-        const c = this.c;
-        const stateEx = this.allStateEx;
-        const fxConverter = this.fxConverter;
-        return canConvertToTrade(c, stateEx, fxConverter)
-      },
-    },
+const mainAccount = computed(() => findAccount.value(dc.value.accountId))
 
-  });
+const balanceableAccounts = computed(() =>
+  allState.value.accounts
+    .filter((acct: any) => {
+      const t = /^(Asset|Liabilities|Equity)/.test(acct.accountId)
+      return acct.options.generatedAccount === false && t
+    })
+    .map((a: any) => a.accountId).sort()
+)
+
+const showBalance = computed(() => propDefined(dc.value, 'balance'))
+const showChange = computed(() => propDefined(dc.value, 'change'))
+const showCommission = computed(() => propDefined(dc.value, 'commission'))
+const showPrice = computed(() => dc.value.commandType !== 'bal' && propDefined(dc.value, 'price'))
+
+const canBalanceOrUnit = computed(() => {
+  if (!dc.value.commandType?.match('bal|unit')) return false
+  return !!mainAccount.value?.options.multiAsset
+})
+
+const canConvertToTrade = computed(() => checkCanConvertToTrade(c, allStateEx.value, fxConverter.value))
+
+function doConvertToTrade() {
+  const newc = convertToTrade(c, allStateEx.value, fxConverter.value)
+  Object.assign(c, newc)
+}
+
+const toGainstrack = computed(() => commandIsValid(dc.value) ? toGainstrackFn(dc.value) : '')
+
+watch(toGainstrack, (str) => emit('gainstrack-changed', str), { immediate: true })
 </script>
-
-<style scoped>
-
-</style>

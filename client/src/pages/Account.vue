@@ -53,7 +53,6 @@
   } from 'src/lib/utils';
   import {AccountDTO, NetworthByAsset, Posting} from 'src/lib/assetdb/models';
   import {LocalDate} from '@js-joda/core';
-  import EventBus from 'src/event-bus';
   import {apiAssetsReport} from 'src/lib/apiFacade';
 
   export default defineComponent({
@@ -136,7 +135,6 @@
     },
     methods: {
       onTabPanelChanged() {
-        EventBus.$emit('account-tab-changed', this.tab);
       },
       async refresh (props?: Record<string, any>) {
         try {

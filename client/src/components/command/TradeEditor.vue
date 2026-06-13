@@ -21,43 +21,28 @@
           <balance-editor label="Commission" class="c-commission"
                           :modelValue="dc.commission" :original="c.commission" @update:modelValue="c.commission=$event"></balance-editor>
         </div>
-
     </div>
 </template>
 
-<script>
-    import BalanceEditor from '../../lib/assetdb/components/BalanceEditor.vue';
-    import {CommandEditorMixin} from '../../mixins/CommandEditorMixin.js';
-    import AccountSelector from '../AccountSelector.vue';
-    import CommandDateEditor from '../CommandDateEditor.vue';
-    import { commandIsValid, defaultedTradeCommand, toGainstrack } from 'src/lib/commandDefaulting'
+<script setup lang="ts">
+import { computed, watch } from 'vue'
+import BalanceEditor from '../../lib/assetdb/components/BalanceEditor.vue'
+import AccountSelector from '../AccountSelector.vue'
+import CommandDateEditor from '../CommandDateEditor.vue'
+import HelpTip from '../HelpTip.vue'
+import { commandIsValid, defaultedTradeCommand, toGainstrack as toGainstrackFn } from 'src/lib/commandDefaulting'
+import { useCommandEditor } from '../../composables/useCommandEditor'
 
-    export default {
-        name: 'TradeEditor',
-        components: {AccountSelector, BalanceEditor, CommandDateEditor},
-        mixins: [CommandEditorMixin],
-        methods: {
-        },
-        computed: {
-          dc() {
-            const c = this.c;
-            const stateEx = this.allStateEx;
-            const fxConverter = this.fxConverter;
-            const dc = defaultedTradeCommand(c, stateEx, fxConverter)
-            return dc;
+defineOptions({ inheritAttrs: false })
 
-          },
-          isValid () {
-            const c = this.dc
-            return commandIsValid(c)
-          },
-          toGainstrack () {
-            return toGainstrack(this.dc)
-          }
-        },
-    }
+const props = defineProps<{ cmd?: Record<string, any>; options?: Record<string, any> }>()
+const emit = defineEmits(['gainstrack-changed', 'command-changed', 'input'])
+
+const { c, hideAccount, tradeableAccounts, fxConverter, allStateEx } = useCommandEditor(props, emit)
+
+const dc = computed(() => defaultedTradeCommand(c, allStateEx.value, fxConverter.value))
+
+const toGainstrack = computed(() => commandIsValid(dc.value) ? toGainstrackFn(dc.value) : '')
+
+watch(toGainstrack, (str) => emit('gainstrack-changed', str), { immediate: true })
 </script>
-
-<style scoped>
-
-</style>

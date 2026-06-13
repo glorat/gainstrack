@@ -16,71 +16,51 @@
     </div>
 </template>
 
-<script>
-    // import {AccountCommandDTO, AccountDTO} from '@/models';
-    import BalanceEditor from '../../lib/assetdb/components/BalanceEditor.vue';
-    import {CommandEditorMixin} from '../../mixins/CommandEditorMixin.js';
-    import AccountSelector from '../AccountSelector.vue';
-    import { defineComponent } from 'vue';
+<script setup lang="ts">
+import { computed, watch } from 'vue'
+import BalanceEditor from '../../lib/assetdb/components/BalanceEditor.vue'
+import AccountSelector from '../AccountSelector.vue'
+import CommandDateEditor from '../CommandDateEditor.vue'
+import HelpTip from '../HelpTip.vue'
+import { useCommandEditor } from '../../composables/useCommandEditor'
 
+defineOptions({ inheritAttrs: false })
 
-    // interface MyData {
-    //     c: AccountCommandDTO
-    // }
+const props = defineProps<{ cmd?: Record<string, any>; options?: Record<string, any> }>()
+const emit = defineEmits(['gainstrack-changed', 'command-changed', 'input'])
 
-    export default defineComponent({
-        name: 'BalanceStatement',
-        props: {cmd: Object},
-        mixins: [CommandEditorMixin],
-        components: {
-            BalanceEditor,
-            AccountSelector,
-        },
-        methods: {
-            accountIdChanged() {
-                const acct = this.findAccount(this.c.accountId);
-                if (acct) {
-                    this.c.balance.ccy = acct.ccy;
-                }
-                const allCmds /*: AccountCommandDTO[]*/ = [...this.allState.commands].reverse();
-                const prev = allCmds.find(
-                    x => x.accountId === this.c.accountId && x.commandType === 'bal');
-                if (prev) {
-                    this.c.otherAccount = prev.otherAccount;
-                    // A better than nothing heurstic - using the actual balance of this date would be better
-                    this.c.balance.number = prev.balance.number;
-                } else {
-                    this.c.otherAccount = 'Equity:Opening'
-                }
-            },
-        },
-        computed: {
-            balanceableAccounts() {
-                return this.allState.accounts.filter(acct => {
-                    const id = acct.accountId;
-                    const t = (/^(Asset|Liabilities|Equity)/.test(id));
-                    return (acct.options.generatedAccount === false) && t
-                }).map( a => a.accountId).sort()
-            },
-            isValid() /*: boolean*/ {
-                const c = this.c;
-                // lint-ignore
-                return c.accountId && c.date && c.balance && c.balance.ccy && c.otherAccount;
-            },
-            toGainstrack() /*: string*/ {
-                if (this.isValid) {
-                    const c /*: AccountCommandDTO*/ = this.c;
-                    // lint-ignore
-                    return `${c.date} bal ${c.accountId} ${c.balance.number} ${c.balance.ccy} ${c.otherAccount}`;
-                } else {
-                    return '';
-                }
-            }
-        },
+const { c, hideAccount, mainAccounts, allState, findAccount } = useCommandEditor(props, emit)
 
-    });
+function accountIdChanged() {
+  const acct = findAccount.value(c.accountId)
+  if (acct) {
+    c.balance.ccy = acct.ccy
+  }
+  const allCmds = [...allState.value.commands].reverse()
+  const prev = allCmds.find((x: any) => x.accountId === c.accountId && x.commandType === 'bal')
+  if (prev) {
+    c.otherAccount = prev.otherAccount
+    c.balance.number = prev.balance.number
+  } else {
+    c.otherAccount = 'Equity:Opening'
+  }
+}
+
+const balanceableAccounts = computed(() =>
+  allState.value.accounts
+    .filter((acct: any) => {
+      const t = /^(Asset|Liabilities|Equity)/.test(acct.accountId)
+      return acct.options.generatedAccount === false && t
+    })
+    .map((a: any) => a.accountId).sort()
+)
+
+const isValid = computed(() => c.accountId && c.date && c.balance && c.balance.ccy && c.otherAccount)
+
+const toGainstrack = computed(() => {
+  if (isValid.value) return `${c.date} bal ${c.accountId} ${c.balance.number} ${c.balance.ccy} ${c.otherAccount}`
+  return ''
+})
+
+watch(toGainstrack, (str) => emit('gainstrack-changed', str), { immediate: true })
 </script>
-
-<style scoped>
-
-</style>

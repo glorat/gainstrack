@@ -22,47 +22,32 @@
     </div>
 </template>
 
-<script>
-    import BalanceEditor from '../../lib/assetdb/components/BalanceEditor.vue';
-    import {CommandEditorMixin} from '../../mixins/CommandEditorMixin.js';
-    import AccountSelector from '../AccountSelector.vue';
-    import {commandIsValid, defaultedFundCommand, toGainstrack} from 'src/lib/commandDefaulting';
+<script setup lang="ts">
+import { computed, watch } from 'vue'
+import BalanceEditor from '../../lib/assetdb/components/BalanceEditor.vue'
+import AccountSelector from '../AccountSelector.vue'
+import CommandDateEditor from '../CommandDateEditor.vue'
+import HelpTip from '../HelpTip.vue'
+import { commandIsValid, defaultedFundCommand, toGainstrack as toGainstrackFn } from 'src/lib/commandDefaulting'
+import { useCommandEditor } from '../../composables/useCommandEditor'
 
-    export default {
-        name: 'FundCommand',
-        mixins: [CommandEditorMixin],
-        components: {
-            BalanceEditor,
-            AccountSelector,
-        },
-        methods: {
+defineOptions({ inheritAttrs: false })
 
-        },
-        computed: {
-          dc() {
-            const c = this.c;
-            const stateEx = this.allStateEx;
-            const fxConverter = this.fxConverter
-            const dc = defaultedFundCommand(c, stateEx, fxConverter);
-            return dc;
-          },
-            fundableAccounts() {
-                const all = this.allState.accounts;
-                const acctMatch = /^(Assets|Liabilities)/;
-                const scope = all.filter(x => acctMatch.test(x.accountId) && !x.options.generatedAccount);
-                return scope.map(x => x.accountId).sort();
-            },
-            isValid() {
-              return commandIsValid(this.dc)
-            },
-            toGainstrack() {
-              return toGainstrack(this.dc);
-            }
-        }
+const props = defineProps<{ cmd?: Record<string, any>; options?: Record<string, any> }>()
+const emit = defineEmits(['gainstrack-changed', 'command-changed', 'input'])
 
-    }
+const { c, hideAccount, allState, allStateEx, fxConverter } = useCommandEditor(props, emit)
+
+const dc = computed(() => defaultedFundCommand(c, allStateEx.value, fxConverter.value))
+
+const fundableAccounts = computed(() => {
+  const acctMatch = /^(Assets|Liabilities)/
+  return allState.value.accounts
+    .filter((x: any) => acctMatch.test(x.accountId) && !x.options.generatedAccount)
+    .map((x: any) => x.accountId).sort()
+})
+
+const toGainstrack = computed(() => commandIsValid(dc.value) ? toGainstrackFn(dc.value) : '')
+
+watch(toGainstrack, (str) => emit('gainstrack-changed', str), { immediate: true })
 </script>
-
-<style scoped>
-
-</style>

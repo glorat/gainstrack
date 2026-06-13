@@ -1,11 +1,10 @@
-
 <template>
     <div>
         <div>
           <command-date-editor v-model="c.date"></command-date-editor>
         </div>
         <div v-if="!hideAccount">
-            <account-selector v-model="c.accountId" :account-list="tradeableAccounts" @input="accountIdChanged"></account-selector>
+            <account-selector v-model="c.accountId" :account-list="tradeableAccounts" @update:modelValue="accountIdChanged"></account-selector>
         </div>
         <div>
             Balance
@@ -15,65 +14,51 @@
             Price
             <balance-editor v-model="c.price"></balance-editor>
         </div>
-
     </div>
 </template>
 
-<script>
-    import {CommandEditorMixin} from '../../mixins/CommandEditorMixin.js';
-    import { defineComponent } from 'vue';
-    import AccountSelector from '../AccountSelector.vue';
-    import BalanceEditor from '../../lib/assetdb/components/BalanceEditor.vue';
-    import {mapState} from 'pinia';
-    import {useAppStore} from 'src/stores';
-    import { LocalDate } from '@js-joda/core'
+<script setup lang="ts">
+import { computed, watch, onMounted } from 'vue'
+import AccountSelector from '../AccountSelector.vue'
+import BalanceEditor from '../../lib/assetdb/components/BalanceEditor.vue'
+import CommandDateEditor from '../CommandDateEditor.vue'
+import { LocalDate } from '@js-joda/core'
+import { useCommandEditor } from '../../composables/useCommandEditor'
 
-    export default defineComponent({
-        name: 'UnitCommand',
-        mixins: [CommandEditorMixin],
-        components: {AccountSelector, BalanceEditor},
-      mounted () {
-          if (!this.c.balance.number) {
-            this.defaultStuff();
-          }
-      },
-      methods: {
-            accountIdChanged() {
-              const acct = this.findAccount(this.c.accountId);
-                if (acct) {
-                    this.c.price.ccy = acct.ccy;
-                    this.c.commission.ccy = acct.ccy;
-                    this.defaultStuff();
-                }
-            },
-          defaultStuff() {
-              const c = this.c;
-              // TODO: Consider finding prev by Tx to cover both trade and unit commands
-            const underCcy = this.allStateEx.underlyingCcy(this.c.balance.ccy, this.c.accountId);
-            if (underCcy) {
-              const fxConverter = this.fxConverter
+defineOptions({ inheritAttrs: false })
 
-              // this.c.balance.number = prev.balance.number // FIXME: get current balance
-              this.c.price.ccy = underCcy;
+const props = defineProps<{ cmd?: Record<string, any>; options?: Record<string, any> }>()
+const emit = defineEmits(['gainstrack-changed', 'command-changed', 'input'])
 
-              if (c.balance.ccy && c.price.ccy && c.date) {
-                const dt = LocalDate.parse(c.date);
-                this.c.price.number = fxConverter.getFXTrimmed(c.balance.ccy, c.price.ccy, dt);
-              }
-            }
-          }
-        },
-        computed: {
-          ...mapState(useAppStore, ['fxConverter']),
-            toGainstrack() {
-            const c = this.c;
-            debugger;
-                return `${c.date} unit ${this.c.accountId} ${this.c.balance.number} ${this.c.balance.ccy} @${this.c.price.number} ${this.c.price.ccy}`;
-            }
-        }
-    })
+const { c, hideAccount, tradeableAccounts, findAccount, fxConverter, allStateEx } = useCommandEditor(props, emit)
+
+function defaultStuff() {
+  const underCcy = allStateEx.value.underlyingCcy(c.balance.ccy, c.accountId)
+  if (underCcy) {
+    c.price.ccy = underCcy
+    if (c.balance.ccy && c.price.ccy && c.date) {
+      const dt = LocalDate.parse(c.date)
+      c.price.number = fxConverter.value.getFXTrimmed(c.balance.ccy, c.price.ccy, dt)
+    }
+  }
+}
+
+function accountIdChanged() {
+  const acct = findAccount.value(c.accountId)
+  if (acct) {
+    c.price.ccy = acct.ccy
+    c.commission.ccy = acct.ccy
+    defaultStuff()
+  }
+}
+
+onMounted(() => {
+  if (!c.balance.number) defaultStuff()
+})
+
+const toGainstrack = computed(() =>
+  `${c.date} unit ${c.accountId} ${c.balance.number} ${c.balance.ccy} @${c.price.number} ${c.price.ccy}`
+)
+
+watch(toGainstrack, (str) => emit('gainstrack-changed', str), { immediate: true })
 </script>
-
-<style scoped>
-
-</style>

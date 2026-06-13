@@ -16,55 +16,36 @@
     </div>
 </template>
 
-<script>
-    import AccountSelector from '../AccountSelector.vue';
-    import BalanceEditor from '../../lib/assetdb/components/BalanceEditor.vue';
-    import {CommandEditorMixin} from '../../mixins/CommandEditorMixin.js';
+<script setup lang="ts">
+import { computed, watch } from 'vue'
+import AccountSelector from '../AccountSelector.vue'
+import BalanceEditor from '../../lib/assetdb/components/BalanceEditor.vue'
+import CommandDateEditor from '../CommandDateEditor.vue'
+import { useCommandEditor } from '../../composables/useCommandEditor'
 
-    function defaultedEarnCommand(c, stateEx) {
-      const dc = {...c};
-      const acct = stateEx.findAccount(dc.accountId);
-      if (acct && !dc.change.ccy) {
-        dc.change = {...dc.change, ccy: acct.ccy};
-      }
-      // Would need some serious AI to predict the default earned amount!
-      return dc;
-    }
+defineOptions({ inheritAttrs: false })
 
-    export default {
-        name: 'EarnEditor',
-        components: {AccountSelector, BalanceEditor},
-        mixins: [CommandEditorMixin],
-        methods: {
-        },
-        computed: {
-          dc() {
-            const c = this.c;
-            const stateEx = this.allStateEx;
-            return defaultedEarnCommand(c, stateEx);
-          },
-            earnableAccounts() {
-                return this.mainAccounts.filter(x => x.startsWith('Income:'));
-            },
-            isValid() {
-              const c /*: AccountCommandDTO*/ = this.dc;
-                return !!c.accountId
-                    && c.change.number
-                    && c.change.ccy;
-            },
-            toGainstrack() {
-              const c /*: AccountCommandDTO*/ = this.dc;
-                if (this.isValid) {
-                    const tag = c.accountId.substring(7);
-                    return `${c.date} earn ${tag} ${c.change.number} ${c.change.ccy}`;
-                } else {
-                    return '';
-                }
-            }
-        },
-    }
+const props = defineProps<{ cmd?: Record<string, any>; options?: Record<string, any> }>()
+const emit = defineEmits(['gainstrack-changed', 'command-changed', 'input'])
+
+const { c, hideAccount, mainAccounts, allStateEx } = useCommandEditor(props, emit)
+
+const dc = computed(() => {
+  const result = { ...c }
+  const acct = allStateEx.value.findAccount(result.accountId)
+  if (acct && !result.change.ccy) result.change = { ...result.change, ccy: acct.ccy }
+  return result
+})
+
+const earnableAccounts = computed(() => mainAccounts.value.filter((x: string) => x.startsWith('Income:')))
+
+const isValid = computed(() => !!dc.value.accountId && dc.value.change.number && dc.value.change.ccy)
+
+const toGainstrack = computed(() => {
+  const cmd = dc.value
+  if (isValid.value) return `${cmd.date} earn ${cmd.accountId.substring(7)} ${cmd.change.number} ${cmd.change.ccy}`
+  return ''
+})
+
+watch(toGainstrack, (str) => emit('gainstrack-changed', str), { immediate: true })
 </script>
-
-<style scoped>
-
-</style>

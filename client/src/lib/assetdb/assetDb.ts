@@ -124,7 +124,7 @@ export async function getAllQuoteSources(filter?: (col: ReturnType<typeof quoteS
     const qs = sanitiseQuoteSource(data)
     ret.push(qs)
   })
-  allQuoteSources = ret
+  if (!filter) allQuoteSources = ret
   return ret
 }
 

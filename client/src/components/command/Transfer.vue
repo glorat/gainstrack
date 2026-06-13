@@ -15,7 +15,6 @@
           <account-selector class="c-other-account" placeholder="Target Account"
                             :modelValue="dc.otherAccount" :original="c.otherAccount"
                             @update:modelValue="c.otherAccount=$event" :account-list="transferableAccounts"></account-selector>
-
         </div>
         <div>
           <balance-editor label="Target Amount" class="c-options-target-change"
@@ -23,50 +22,29 @@
                           @update:modelValue="c.options = {...c.options, targetChange:$event}"
                           ></balance-editor>
         </div>
-
-
     </div>
 </template>
 
-<script>
-    import BalanceEditor from '../../lib/assetdb/components/BalanceEditor.vue';
-    import {CommandEditorMixin} from '../../mixins/CommandEditorMixin.js';
-    import AccountSelector from '../AccountSelector.vue';
-    import {commandIsValid, defaultedTransferCommand, toGainstrack} from 'src/lib/commandDefaulting';
+<script setup lang="ts">
+import { computed, watch } from 'vue'
+import BalanceEditor from '../../lib/assetdb/components/BalanceEditor.vue'
+import AccountSelector from '../AccountSelector.vue'
+import CommandDateEditor from '../CommandDateEditor.vue'
+import { commandIsValid, defaultedTransferCommand, toGainstrack as toGainstrackFn } from 'src/lib/commandDefaulting'
+import { useCommandEditor } from '../../composables/useCommandEditor'
 
-    export default {
-        name: 'Transfer',
-        props: {cmd: Object},
-        components: {
-            BalanceEditor,
-            AccountSelector,
-        },
-        mixins: [CommandEditorMixin],
-        methods: {
-        },
-        computed: {
-          dc() {
-            const c = this.c;
-            const stateEx = this.allStateEx;
-            const fxConverter = this.fxConverter
+defineOptions({ inheritAttrs: false })
 
-            const dc = defaultedTransferCommand(c, stateEx, fxConverter);
-            return dc;
-          },
-            transferableAccounts() {
-                return this.mainAccounts;
-            },
-            isValid() {
-              return commandIsValid(this.dc);
-            },
-            toGainstrack() {
-              return toGainstrack(this.dc);
-            }
+const props = defineProps<{ cmd?: Record<string, any>; options?: Record<string, any> }>()
+const emit = defineEmits(['gainstrack-changed', 'command-changed', 'input'])
 
-        }
-    }
+const { c, mainAccounts, fxConverter, allStateEx } = useCommandEditor(props, emit)
+
+const dc = computed(() => defaultedTransferCommand(c, allStateEx.value, fxConverter.value))
+
+const transferableAccounts = computed(() => mainAccounts.value)
+
+const toGainstrack = computed(() => commandIsValid(dc.value) ? toGainstrackFn(dc.value) : '')
+
+watch(toGainstrack, (str) => emit('gainstrack-changed', str), { immediate: true })
 </script>
-
-<style scoped>
-
-</style>

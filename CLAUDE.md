@@ -52,7 +52,7 @@ npm run serve
 **Frontend:**
 ```bash
 cd client
-npm run quasar   # runs: quasar dev on port 8080
+pnpm run quasar   # runs: quasar dev on port 8080
 ```
 
 The Quasar dev server proxies API calls to `https://poc.gainstrack.com` by default (configured in `quasar.conf.js`). To point at local backend, update the proxy target there.
@@ -61,17 +61,17 @@ The Quasar dev server proxies API calls to `https://poc.gainstrack.com` by defau
 
 ### Frontend (run from `client/`)
 ```bash
-npm run quasar          # dev server (port 8080)
-npm run build           # production build (quasar build)
-npm run lint            # ESLint
-npm run test:unit       # Jest (all tests)
-npm run test:unit:watch # Jest watch mode
+pnpm run quasar          # dev server (port 8080)
+pnpm run build           # production build (quasar build)
+pnpm run lint            # ESLint
+pnpm run test:unit       # Vitest (all tests)
+pnpm run test:unit:watch # Vitest watch mode
 ```
 
-### Run a single Jest test file:
+### Run a single Vitest test file:
 ```bash
 cd client
-npx jest path/to/test.spec.ts
+pnpm run test:unit -- path/to/test.spec.ts
 ```
 
 ### Backend (from repo root, via sbt)
@@ -84,9 +84,9 @@ sbt web/assembly                  # build uber-jar
 
 ### Cloud Functions (from `client/functions/`)
 ```bash
-npm run build     # compile TypeScript
-npm run serve     # build + start emulator
-npm run deploy    # deploy to Firebase
+pnpm run build     # compile TypeScript
+pnpm run serve     # build + start emulator
+pnpm run deploy    # deploy to Firebase
 ```
 
 ## Key Environment Variables
@@ -105,8 +105,9 @@ Frontend auth is configured via `.env.development` in `client/` (Auth0 client/do
 ## Testing
 
 - **Scala tests** live in `core/src/test/scala/` and `web/src/test/scala/`; use ScalaTest
-- **TypeScript/Vue tests** live in `client/test/jest/__tests__/` and `client/src/lib/__tests__/`; use Jest + `@quasar/quasar-app-extension-testing-unit-jest`
-- Test files use `.spec.ts` or `.test.ts` or `.jest.spec.ts` suffixes
+- **TypeScript/Vue tests** live in `client/test/unit/` and `client/src/lib/__tests__/`; use Vitest
+- Test files use `.spec.ts`, `.test.ts`, or `.jest.spec.ts` suffixes (`.jest.spec.ts` is a legacy naming convention, not actual Jest)
+- Run tests with `pnpm run test:unit` from `client/`; do **not** use `npx jest` or `npm run`
 
 ## Data Flow
 
