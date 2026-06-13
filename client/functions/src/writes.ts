@@ -1,48 +1,45 @@
-import {EventContext} from "firebase-functions";
+import {FirestoreEvent} from 'firebase-functions/firestore';
 import {QueryDocumentSnapshot} from 'firebase-admin/firestore';
 
-export let quoteSourceHistoryCreateHandler = (firestore: FirebaseFirestore.Firestore) =>async (snap: QueryDocumentSnapshot, context: EventContext) => {
-  // Get an object representing the document
-  const historyId = context.params.historyId;
-  const snapData = snap.data();
-  const toSave = snapData.payload;
+type HistoryParams = { historyId: string };
 
-  try {
+export const quoteSourceHistoryCreateHandler = (firestore: FirebaseFirestore.Firestore) =>
+  async (event: FirestoreEvent<QueryDocumentSnapshot | undefined, HistoryParams>) => {
+    const historyId = event.params.historyId;
+    const snap = event.data;
+    if (!snap) return;
 
-    const id = toSave?.id;
-    const doc = await firestore.collection('quoteSources').doc(id).get();
-    if (doc.exists && doc.data()!.lastUpdate?.revision) {
-      if (doc.data()!.lastUpdate?.revision === toSave.lastUpdate?.revision) {
-        // Annotate the projection with history reference
+    const snapData = snap.data();
+    const toSave = snapData.payload;
+
+    try {
+      const id = toSave?.id;
+      const doc = await firestore.collection('quoteSources').doc(id).get();
+      if (doc.exists && doc.data()!.lastUpdate?.revision) {
+        if (doc.data()!.lastUpdate?.revision === toSave.lastUpdate?.revision) {
+          toSave.lastUpdate = {
+            timestamp: snap.createTime.toMillis(),
+            uid: snapData.uid,
+            revision: (toSave.lastUpdate?.revision ?? 0) + 1,
+            history: historyId,
+          };
+          await firestore.collection('quoteSources').doc(id).set(toSave);
+        } else {
+          throw new Error('Revision mismatch');
+        }
+      } else {
         toSave.lastUpdate = {
           timestamp: snap.createTime.toMillis(),
           uid: snapData.uid,
-          revision: (toSave.lastUpdate?.revision ?? 0) + 1,
+          revision: 1,
           history: historyId,
         };
-
         await firestore.collection('quoteSources').doc(id).set(toSave);
-      } else {
-        // Revision mismatch - dump it
-        throw new Error('Revision mismatch');
       }
-    } else {
-      // First time saving
-      toSave.lastUpdate = {
-        timestamp: snap.createTime.toMillis(),
-        uid: snapData.uid,
-        revision: 1,
-        history: historyId,
-      };
-
-      await firestore.collection('quoteSources').doc(id).set(toSave);
+    } catch (e: any) {
+      console.error(e);
+      snapData.error = e.toString();
+      await firestore.collection('quoteSourceErrors').add(snapData);
+      await snap.ref.delete();
     }
-  } catch (e:any) {
-    console.error(e);
-    snapData.error = e.toString()
-    await firestore.collection('quoteSourceErrors').add(snapData);
-    await snap.ref.delete();
-  }
-
-
-};
+  };

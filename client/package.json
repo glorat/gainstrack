@@ -4,7 +4,7 @@
   "description": "Gainstrack",
   "productName": "Gainstrack",
   "author": "Kevin Tam <kevin@glorat.net>",
-  "packageManager": "pnpm@10.33.0",
+  "packageManager": "pnpm@11.6.0",
   "scripts": {
     "dev": "quasar dev",
     "build": "quasar build",
@@ -70,20 +70,6 @@
   "engines": {
     "node": ">= 24",
     "pnpm": ">= 8"
-  },
-  "pnpm": {
-    "onlyBuiltDependencies": [
-      "@parcel/watcher",
-      "browser-tabs-lock",
-      "core-js",
-      "esbuild",
-      "protobufjs"
-    ],
-    "overrides": {
-      "@firebase/auth>undici": "^8.4.1",
-      "serialize-javascript": "^7.0.5",
-      "tmp": "^0.2.7"
-    }
   },
   "publishConfig": {
     "registry": "https://npm.pkg.github.com"

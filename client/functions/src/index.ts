@@ -1,32 +1,27 @@
-import * as functions from 'firebase-functions';
-import {quoteSourcesHandler, quoteSourcesTableHandler} from "./queries";
+import * as admin from 'firebase-admin';
+import {onRequest, onCall, HttpsError} from 'firebase-functions/https';
+import {onDocumentCreated} from 'firebase-functions/firestore';
+import {quoteSourcesHandler, quoteSourcesTableHandler} from './queries';
 import cors from 'cors';
-import {Request} from "firebase-functions/lib/v1/providers/https";
-import {quoteSourceHistoryCreateHandler} from "./writes";
+import express from 'express';
+import {quoteSourceHistoryCreateHandler} from './writes';
 
-const admin = require('firebase-admin');
 admin.initializeApp();
-
-import express = require('express');
 
 const whitelist = ['https://www.bogleheads.org', 'https://poc.gainstrack.com'];
 const corsOptions: cors.CorsOptions = {
   origin: function (origin, callback) {
     if (origin && whitelist.indexOf(origin) !== -1) {
-      callback(null, true)
+      callback(null, true);
     } else {
-      callback(new Error('Not allowed by CORS'))
+      callback(new Error('Not allowed by CORS'));
     }
   },
 };
 
 const corsHandler = cors(corsOptions);
 
-
-// Start writing Firebase Functions
-// https://firebase.google.com/docs/functions/typescript
-
-const allQs:(req: Request, resp: express.Response) => void | Promise<void>  = async (req, res) => {
+const allQs = async (req: express.Request, res: express.Response) => {
   const x = await admin.firestore().collection('quoteSources').get();
   const ret = x.docs.map((doc: any) => {
     const data = doc.data();
@@ -35,87 +30,61 @@ const allQs:(req: Request, resp: express.Response) => void | Promise<void>  = as
   });
   res.json(ret);
 };
-export const getAllQuoteSources = functions
-  .https
-  .onRequest(allQs);
 
-export const fastGetAllQuoteSources = functions
-  .region('asia-northeast1')
-  .https
-  .onRequest(allQs);
+export const getAllQuoteSources = onRequest(allQs);
+export const fastGetAllQuoteSources = onRequest({region: 'asia-northeast1'}, allQs);
 
+const qsHandler = (req: express.Request, res: express.Response) =>
+  corsHandler(req, res, () => quoteSourcesHandler(admin.firestore())(req, res));
+export const quoteSources = onRequest(qsHandler);
+export const fastQuoteSources = onRequest({region: 'asia-northeast1'}, qsHandler);
 
-const qsHandler: (req: Request, resp: express.Response) => void | Promise<void>
-  = (req,res) => corsHandler(req, res, () => quoteSourcesHandler(admin.firestore())(req,res) )
-export const quoteSources = functions
-  .https.onRequest(qsHandler);
+const qstHandler = (req: express.Request, res: express.Response) =>
+  corsHandler(req, res, () => quoteSourcesTableHandler(admin.firestore())(req, res));
+export const quoteSourceTableQuery = onRequest(qstHandler);
+export const fastQuoteSourceTableQuery = onRequest({region: 'asia-northeast1'}, qstHandler);
 
-export const fastQuoteSources = functions
-  .region('asia-northeast1')
-  .https
-  .onRequest(qsHandler)
+export const upsertQuoteSource = onDocumentCreated(
+  'quoteSourceHistory/{historyId}',
+  quoteSourceHistoryCreateHandler(admin.firestore())
+);
 
-
-const qstHandler: (req: Request, resp: express.Response) => void | Promise<void>
-  = (req,res) => corsHandler(req, res, () => quoteSourcesTableHandler(admin.firestore())(req,res) )
-export const quoteSourceTableQuery = functions
-  .https.onRequest(qstHandler);
-
-export const fastQuoteSourceTableQuery = functions
-  .region('asia-northeast1')
-  .https
-  .onRequest(qstHandler)
-
-export const upsertQuoteSource = functions.firestore
-  .document('quoteSourceHistory/{historyId}')
-  .onCreate(quoteSourceHistoryCreateHandler(admin.firestore()));
-
-export const setDisplayName = functions.https.onCall(async(data,context) => {
+export const setDisplayName = onCall(async (request) => {
   const db = admin.firestore();
   const displayNames = db.collection('displayNames');
   const userRoles = db.collection('userRoles');
 
-
-  const uid = context.auth?.uid
+  const uid = request.auth?.uid;
   if (uid) {
-    const displayName = data.displayName.trim();
+    const displayName = request.data.displayName.trim();
     if (!(typeof displayName === 'string') || displayName.length <= 3) {
-      // Throwing an HttpsError so that the client gets the error details.
-      throw new functions.https.HttpsError('invalid-argument', 'Missing displayName');
+      throw new HttpsError('invalid-argument', 'Missing displayName');
     }
 
-    let unameRef: FirebaseFirestore.DocumentReference = displayNames.doc(displayName);
-    let userRef: FirebaseFirestore.DocumentReference = userRoles.doc(uid);
+    const unameRef: FirebaseFirestore.DocumentReference = displayNames.doc(displayName);
+    const userRef: FirebaseFirestore.DocumentReference = userRoles.doc(uid);
 
     return await db.runTransaction(async (tx: FirebaseFirestore.Transaction) => {
-      const unameDoc: FirebaseFirestore.DocumentSnapshot<FirebaseFirestore.DocumentData> = await tx.get(unameRef);
-      // check if usernmae is already assigned to the current user
+      const unameDoc = await tx.get(unameRef);
       if (unameDoc.exists && unameDoc.data()!.uid === uid) {
-        throw new functions.https.HttpsError('failed-precondition', 'Username already owned by requestor')
+        throw new HttpsError('failed-precondition', 'Username already owned by requestor');
       }
-      // if its not assigned and exists someone else owns it
       if (unameDoc.exists) {
-        throw new functions.https.HttpsError('failed-precondition', 'Username already taken');
+        throw new HttpsError('failed-precondition', 'Username already taken');
       }
 
-      // check if user already has one
       const userDoc = await tx.get(userRef);
       const existingName = userDoc.data()?.displayName;
       if (existingName) {
-        throw new functions.https.HttpsError('failed-precondition', 'Cannot change your display name');
+        throw new HttpsError('failed-precondition', 'Cannot change your display name');
       }
 
-      // All checks passed! Let's update all
+      await tx.set(unameRef, {uid}, {merge: true});
+      await tx.set(userRef, {displayName}, {merge: true});
 
-      // assign the username to the authenticated user
-      await tx.set(unameRef, { uid }, {merge:true});
-      await tx.set(userRef, {displayName}, {merge:true});
-
-      return {displayName, message:'success'};
-    })
-
-
+      return {displayName, message: 'success'};
+    });
   } else {
-    throw new functions.https.HttpsError('failed-precondition', 'Not logged in')
+    throw new HttpsError('failed-precondition', 'Not logged in');
   }
 });

@@ -1,5 +1,4 @@
-import {Request} from "firebase-functions/lib/v1/providers/https";
-import {Response} from "express";
+import {Request, Response} from 'express';
 
 import {quoteSourceFieldProperties} from '../../src/lib/assetdb/AssetSchema';
 import {get} from 'lodash';
@@ -95,7 +94,7 @@ export const quoteSourcesTableHandler:(db: FirebaseFirestore.Firestore) => (req:
   const headers = fields.map(field => findProperty(field, quoteSourceFieldProperties).label);
 
   const tds = rows.map(row => {
-    let td:Record<string,any> = {};
+    const td:Record<string,any> = {};
     // Mandatory fields
     td['id'] = row['id'];
     td['name']  = row['name'];

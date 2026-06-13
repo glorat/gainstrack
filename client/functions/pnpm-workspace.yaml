@@ -1,0 +1,11 @@
+allowBuilds:
+  '@firebase/util': true
+  protobufjs: true
+  unrs-resolver: true
+
+# Temporary pins for packages published 2026-06-12; remove once all are >24h old (~18:00 UTC 2026-06-13)
+overrides:
+  eslint: '10.4.1'
+  protobufjs: '7.6.3'
+  form-data: '2.5.5'
+  baseline-browser-mapping: '2.10.36'

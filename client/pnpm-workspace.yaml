@@ -1,0 +1,16 @@
+overrides:
+  '@firebase/auth>undici': '^8.4.1'
+  serialize-javascript: '^7.0.5'
+  tmp: '^0.2.7'
+  # Temporary pins for packages published 2026-06-12; remove once all are >24h old (~18:00 UTC 2026-06-13)
+  eslint: '10.4.1'
+  protobufjs: '7.6.3'
+  bare-stream: '2.13.2'
+
+allowBuilds:
+  '@firebase/util': true
+  '@parcel/watcher': true
+  browser-tabs-lock: true
+  core-js: true
+  esbuild: true
+  protobufjs: true
