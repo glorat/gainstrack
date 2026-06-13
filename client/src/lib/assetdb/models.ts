@@ -93,7 +93,6 @@ export interface NetworthByAsset {
 export interface AssetColumn {
     name: string,
     label: string | number
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     field: string | ((row: any) => any)
     classes?: string[]
     align?: string

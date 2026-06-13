@@ -13,7 +13,6 @@ import { LocalDate } from '@js-joda/core';
 import { AccountCommandDTO, Amount } from 'src/lib/assetdb/models';
 
 // Display `description` and a couple of derived fields read known-present amounts.
-/* eslint-disable @typescript-eslint/no-non-null-assertion */
 
 export interface ParserMessage {
   message: string;

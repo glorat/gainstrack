@@ -29,7 +29,6 @@
 </template>
 
 <script lang="ts">
-  // eslint-disable-next-line no-unused-vars
   import { SingleFXConversion, SingleFXConverter } from '../lib/fx';
   import { TimeSeries } from '../stores';
   import {defineComponent} from 'vue';

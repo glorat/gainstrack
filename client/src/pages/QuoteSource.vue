@@ -141,7 +141,6 @@
         return !!this.editingData && !!this.editingData.id;
       },
       saveLabel(): string {
-        /* eslint-disable @typescript-eslint/no-non-null-assertion */
         return 'Save' + (this.canSaveQuoteSource ? ' ' + this.editingData!.id : '');
       },
       displayTab(): string {

@@ -11,7 +11,6 @@ export function propDefined(props: Record<string, any>, name: string): boolean {
 }
 
 // Typescript can't link the commandIsValid checks to the toGainstrack we we liberally use non-null-assertions
-/* eslint-disable @typescript-eslint/no-non-null-assertion */
 export function commandIsValid(c: AccountCommandEditing):boolean {
   if (c.commandType === 'bal')
     return !!c.accountId && !!c.date && !!c.balance && c.balance.number!==undefined && !!c.balance.ccy && !!c.otherAccount;

@@ -27,7 +27,7 @@ import RebalanceCalc from 'components/RebalanceCalc.vue';
 import Login from 'pages/Login.vue';
 import UserProfile from 'pages/UserProfile.vue';
 import ForecastView from 'components/forecast/ForecastView.vue';
-import {AsyncComponentLoader} from '@vue/runtime-core';
+import {AsyncComponentLoader} from 'vue';
 
 const commonRoutes: RouteRecordRaw[] = [
   {path: '/assetdb', meta: {title:'Asset DB'}, component: () => import('../pages/AssetDb.vue')},

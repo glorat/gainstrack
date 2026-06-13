@@ -24,7 +24,6 @@ export function assetReport(pSet: Record<string, number> , pricer: SingleFXConve
 
   if (allDates.length > 0) {
     let columns: any[] = [];
-    let baseDate = '';
     const maxDate = maxBy(allDates, dt => dt) as string;
     // const cutOff = sub(maxDate, {days: 4});
     // const recentDts = allDates.filter(dt => isAfter(dt, cutOff))
@@ -32,8 +31,7 @@ export function assetReport(pSet: Record<string, number> , pricer: SingleFXConve
     // console.error(bestDate);
     // It just isn't as concise outside of Scala to get a most common element!
     const bestDate = LocalDate.parse(maxDate)
-
-    baseDate = bestDate.toString();
+    const baseDate = bestDate.toString();
 
     const dates = [
       bestDate.minusDays(1),

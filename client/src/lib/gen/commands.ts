@@ -6,7 +6,6 @@ import { Parsed, Kind } from 'src/lib/GainstrackParser';
 import { GAmount } from 'src/lib/gen/money';
 
 // Fields are guaranteed present per command kind by the parser (validated upstream).
-/* eslint-disable @typescript-eslint/no-non-null-assertion */
 
 export interface GAccountOptions {
   tradingAccount: boolean;

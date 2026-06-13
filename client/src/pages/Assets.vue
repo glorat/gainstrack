@@ -8,7 +8,6 @@
   import AssetView from '../components/AssetView.vue';
   import {defineComponent} from 'vue';
   import axios from 'axios';
-  // eslint-disable-next-line no-unused-vars
   import {AssetResponse, PostingEx} from '../lib/assetdb/models';
   import {SingleFXConverter} from 'src/lib/fx';
   import {LocalDate} from '@js-joda/core';

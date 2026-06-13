@@ -106,7 +106,7 @@ export class GAccountState {
     const parentId = Acct.parentAccountId(accountId);
     if (parentId === undefined) throw new Error(`'${accountId}' is missing parent`);
     this.ensureExists(parentId);
-    const parent = this.accounts.get(parentId)!; // eslint-disable-line @typescript-eslint/no-non-null-assertion
+    const parent = this.accounts.get(parentId)!;
     this.accounts.set(accountId, mkAccount(parent.date, accountId, parent.assetId, defaultOptions({ generatedAccount: true })));
   }
 

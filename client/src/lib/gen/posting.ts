@@ -4,7 +4,6 @@ import { Posting as DTOPosting } from 'src/lib/assetdb/models';
 import { GAmount } from 'src/lib/gen/money';
 
 // A posting that reaches toDTO always has a value (empty postings are interpolated away).
-/* eslint-disable @typescript-eslint/no-non-null-assertion */
 
 export class GPosting {
   constructor(

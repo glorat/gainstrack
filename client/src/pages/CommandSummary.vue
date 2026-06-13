@@ -55,7 +55,6 @@ export default defineComponent({
       this.data = data;
     },
     onRowClick(ev: any, row: Record<string, any>): void {
-      // eslint-disable-next-line @typescript-eslint/no-empty-function
       this.$router.push({name: 'account', params: {accountId: row.accountId}}).catch(() => {});
     },
   },

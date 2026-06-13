@@ -1,127 +1,103 @@
 <template>
-    <div class="source-editor-wrapper">
-        <textarea></textarea>
-    </div>
+  <div ref="container" class="source-editor-wrapper"></div>
 </template>
 
-<script>
-    import CodeMirror from 'codemirror/lib/codemirror.js';
-    import('codemirror/lib/codemirror.css');
-    export default {
-        name: 'codemirror',
-        props: {
-            modelValue: {
-                type: String,
-                default: '',
-            },
-            options: {
-                type: Object,
-                default() {
-                    return {
-                        mode: 'text/javascript',
-                        lineNumbers: true,
-                        lineWrapping: true,
-                    }
-                }
-            },
-            errors: {
-                type: Array,
-                default() {
-                    return [];
-                }
-            }
-        },
-        data() {
-          return {
-            value: this.modelValue,
-            skipNextChangeEvent: false,
-            myMarks: [],
-          }
-        },
-        ready() {
-            this.editor = CodeMirror.fromTextArea(this.$el.querySelector('textarea'), this.options);
-            this.editor.setValue(this.value);
-            this.editor.on('change', cm => {
-                if (this.skipNextChangeEvent) {
-                  this.skipNextChangeEvent = false;
-                    return
-                }
-              this.value = cm.getValue();
-                if (this.$emit) {
-                  this.$emit('change', this.value)
-                  this.$emit('update:modelValue', this.value)
-                }
-            });
-        },
-        mounted() {
-            this.editor = CodeMirror.fromTextArea(this.$el.querySelector('textarea'), this.options);
-            this.editor.setValue(this.value);
-            this.editor.on('change', (cm) => {
-                if (this.skipNextChangeEvent) {
-                  this.skipNextChangeEvent = false;
-                    return
-                }
-                if (this.$emit) {
-                  this.$emit('change', cm.getValue());
-                  this.$emit('update:modelValue', cm.getValue())
-                }
-            });
-        },
-        watch: {
-            modelValue(newVal) {
-                const editorValue = this.editor.getValue();
-                if (newVal !== editorValue) {
-                    this.skipNextChangeEvent = true;
-                    this.editor.setValue(newVal);
-                    // Scroll to specific line if specified, otherwise to previous position
-                    if (this.$route.query.line > 0) {
-                        const t = this.editor.charCoords({line: this.$route.query.line, ch: 0}, 'local').top;
-                        const middleHeight = this.editor.getScrollerElement().offsetHeight / 2;
-                        this.editor.scrollTo(null, t - middleHeight - 5);
+<script setup lang="ts">
+import { onMounted, onBeforeUnmount, ref, watch } from 'vue'
+import { useRoute } from 'vue-router'
+import { EditorState, StateEffect, StateField } from '@codemirror/state'
+import { EditorView, Decoration } from '@codemirror/view'
+import type { DecorationSet } from '@codemirror/view'
+import { basicSetup } from 'codemirror'
 
-                        // this.editor.scrollIntoView({line: this.$route.query.line, ch: 0});
-                    } else {
-                        const scrollInfo = this.editor.getScrollInfo();
-                        this.editor.scrollTo(scrollInfo.left, scrollInfo.top)
-                    }
-                    this.applyErrors(this.errors);
-                }
-            },
-            options(newOptions) {
-                if (typeof newOptions === 'object') {
-                    for (const optionName in newOptions) {
-                        // eslint-disable-next-line no-prototype-builtins
-                        if (newOptions.hasOwnProperty(optionName)) {
-                            this.editor.setOption(optionName, newOptions[optionName])
-                        }
-                    }
-                }
-            },
-            errors(newErrors) {
-                this.applyErrors(newErrors)
-            }
-        },
-        methods: {
-            applyErrors(newErrors) {
-                this.myMarks.forEach(mark => mark.clear());
+const setErrorLines = StateEffect.define<number[]>()
 
-                newErrors.forEach(err => {
-                    const line = err.line;
-                    const from = {line: line - 1, ch: 0};
-                    const to = {line: line + 0, ch: 0};
-                    // .getDoc()
-                    this.myMarks.push(this.editor.markText(from, to, {css: 'background-color: yellow'}));
-                })
-            },
-        },
-        beforeUnmount() {
-            if (this.editor) {
-                this.editor.toTextArea()
-            }
-        }
+const errorLineField = StateField.define<DecorationSet>({
+  create: () => Decoration.none,
+  update(deco, tr) {
+    deco = deco.map(tr.changes)
+    for (const e of tr.effects) {
+      if (e.is(setErrorLines)) {
+        const sorted = [...e.value].sort((a, b) => a - b)
+        deco = Decoration.set(
+          sorted
+            .filter(l => l >= 1 && l <= tr.state.doc.lines)
+            .map(l => Decoration.line({ class: 'cm-error-line' }).range(tr.state.doc.line(l).from))
+        )
+      }
     }
+    return deco
+  },
+  provide: f => EditorView.decorations.from(f)
+})
+
+const props = defineProps<{
+  modelValue: string
+  errors?: Array<{ line: number }>
+}>()
+
+const emit = defineEmits<{
+  'update:modelValue': [value: string]
+  'change': [value: string]
+}>()
+
+const container = ref<HTMLElement>()
+const route = useRoute()
+let view: EditorView | null = null
+let externalUpdate = false
+
+onMounted(() => {
+  view = new EditorView({
+    state: EditorState.create({
+      doc: props.modelValue,
+      extensions: [
+        basicSetup,
+        EditorView.lineWrapping,
+        errorLineField,
+        EditorView.updateListener.of(update => {
+          if (update.docChanged && !externalUpdate) {
+            const val = update.state.doc.toString()
+            emit('update:modelValue', val)
+            emit('change', val)
+          }
+        })
+      ]
+    }),
+    parent: container.value!
+  })
+  applyErrors(props.errors ?? [])
+})
+
+onBeforeUnmount(() => {
+  view?.destroy()
+})
+
+watch(() => props.modelValue, (newVal) => {
+  if (!view || newVal === view.state.doc.toString()) return
+
+  externalUpdate = true
+  view.dispatch({ changes: { from: 0, to: view.state.doc.length, insert: newVal } })
+  externalUpdate = false
+
+  const lineNum = Number(route.query.line)
+  if (lineNum >= 1 && lineNum <= view.state.doc.lines) {
+    const pos = view.state.doc.line(lineNum).from
+    view.dispatch({ effects: EditorView.scrollIntoView(pos, { y: 'center' }) })
+  }
+
+  applyErrors(props.errors ?? [])
+})
+
+watch(() => props.errors, (newErrors) => {
+  applyErrors(newErrors ?? [])
+})
+
+function applyErrors(errors: Array<{ line: number }>) {
+  if (!view) return
+  view.dispatch({ effects: setErrorLines.of(errors.map(e => e.line)) })
+}
 </script>
 
-<style scoped>
-
+<style>
+.cm-error-line { background-color: yellow; }
 </style>
