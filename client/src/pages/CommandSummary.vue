@@ -27,11 +27,13 @@
 <script lang="ts">
 import {defineComponent} from 'vue';
 import {apiAccountSummary} from 'src/lib/apiFacade';
+import {useAppStore} from 'src/stores';
 import {sum} from 'lodash';
 import {formatNumber} from 'src/lib/utils';
 import NetworthSunburst from 'components/NetworthSunburst.vue';
 
 export default defineComponent({
+  setup() { return { store: useAppStore() } },
   name: 'CommandSummary',
   components: {NetworthSunburst},
   data() {
@@ -48,7 +50,7 @@ export default defineComponent({
   },
   methods: {
     async refresh() {
-      const {columns, data} = await apiAccountSummary(this.$store, {accountId: this.accountId})
+      const {columns, data} = await apiAccountSummary(this.store, {accountId: this.accountId})
       this.columns = columns;
       this.data = data;
     },

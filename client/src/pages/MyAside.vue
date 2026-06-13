@@ -37,6 +37,7 @@
   import LoginForm from '../components/LoginForm.vue';
   import {defineComponent} from 'vue'
   import {appRoutes, navBar} from 'src/router/routes';
+  import {useAppStore} from 'src/stores';
 
   export default defineComponent({
     props: {
@@ -52,15 +53,16 @@
       }
     },
     components: {LoginForm},
+    setup() { return { store: useAppStore() } },
     computed: {
       version() {
         return this.$appVersion;
       },
       errors() {
-        return this.$store.state.parseState.errors;
+        return this.store.parseState.errors;
       },
       errorClass() {
-        const errs = (this.$store.state.parseState.errors as string[]) ?? []
+        const errs = (this.store.parseState.errors as string[]) ?? []
         return errs.length > 0 ? 'error' : 'error hidden';
       }
     }

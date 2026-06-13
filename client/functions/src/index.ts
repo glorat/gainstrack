@@ -1,5 +1,4 @@
 import * as functions from 'firebase-functions';
-import {authHandler, firebaseHandler, tokenHandler} from './auth';
 import {quoteSourcesHandler, quoteSourcesTableHandler} from "./queries";
 import cors from 'cors';
 import {Request} from "firebase-functions/lib/v1/providers/https";
@@ -7,10 +6,6 @@ import {quoteSourceHistoryCreateHandler} from "./writes";
 
 const admin = require('firebase-admin');
 admin.initializeApp();
-// import jwt = require('express-jwt');
-import {expressjwt as jwt, GetVerificationKey} from 'express-jwt'
-
-import jwks = require('jwks-rsa');
 
 import express = require('express');
 
@@ -26,33 +21,6 @@ const corsOptions: cors.CorsOptions = {
 };
 
 const corsHandler = cors(corsOptions);
-
-
-const devConfig = {
-  AUTH0_DOMAIN: 'dev-q-172al0.auth0.com', // e.g., you.auth0.com
-  AUTH0_API_AUDIENCE: 'http://localhost:8080', // e.g., http://localhost:1337/
-};
-
-const jpConfig = {
-  AUTH0_DOMAIN: 'gainstrack.jp.auth0.com', // e.g., you.auth0.com
-  AUTH0_API_AUDIENCE: 'https://www.gainstrack.com', // e.g., http://localhost:1337/
-};
-
-// Defaulted to true for safety since only production should be minting firebase tokens
-const isProd = process.env.DEV ? false : true
-const config = isProd ? jpConfig : devConfig
-
-const jwtCheck = jwt({
-  secret: jwks.expressJwtSecret({
-    cache: true,
-    rateLimit: true,
-    jwksRequestsPerMinute: 5,
-    jwksUri: `https://${config.AUTH0_DOMAIN}/.well-known/jwks.json`,
-  }) as GetVerificationKey,
-  audience: config.AUTH0_API_AUDIENCE,
-  issuer: `https://${config.AUTH0_DOMAIN}/`,
-  algorithms: ['RS256'],
-});
 
 
 // Start writing Firebase Functions
@@ -87,16 +55,6 @@ export const fastQuoteSources = functions
   .https
   .onRequest(qsHandler)
 
-// const qsqHandler: (req: Request, resp: express.Response) => void | Promise<void>
-//   = (req,res) => corsHandler(req, res, () => quoteSourcesQueryHandler(admin.firestore())(req,res) )
-// export const quoteSourceQuery = functions
-//   .https.onRequest(qsqHandler);
-//
-// export const fastQuoteSourceQuery = functions
-//   .region('asia-northeast1')
-//   .https
-//   .onRequest(qsqHandler)
-
 
 const qstHandler: (req: Request, resp: express.Response) => void | Promise<void>
   = (req,res) => corsHandler(req, res, () => quoteSourcesTableHandler(admin.firestore())(req,res) )
@@ -107,21 +65,6 @@ export const fastQuoteSourceTableQuery = functions
   .region('asia-northeast1')
   .https
   .onRequest(qstHandler)
-
-const app = express();
-
-
-app.post('/firebase', jwtCheck, firebaseHandler(admin.auth()));
-app.post('/functions/auth/firebase', jwtCheck, firebaseHandler(admin.auth()));
-app.get('/authorize', authHandler);
-app.post('/token', tokenHandler);
-app.post('/functions/auth/token', tokenHandler);
-app.get('/functions/auth/authorize', authHandler);
-
-export const auth = functions
-  // .region('asia-northeast1')
-  .https
-  .onRequest(app)
 
 export const upsertQuoteSource = functions.firestore
   .document('quoteSourceHistory/{historyId}')

@@ -88,7 +88,7 @@
         return this.findAccount(this.dc.accountId);
       },
       balanceableAccounts() {
-        return this.$store.state.allState.accounts.filter(acct => {
+        return this.allState.accounts.filter(acct => {
           const id = acct.accountId;
           const t = (/^(Asset|Liabilities|Equity)/.test(id));
           return (acct.options.generatedAccount === false) && t

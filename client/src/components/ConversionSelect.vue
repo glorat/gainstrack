@@ -11,15 +11,18 @@
 </template>
 
 <script>
+    import {useAppStore} from 'src/stores';
+
     export default {
         name: 'ConversionSelect',
+        setup() { return { store: useAppStore() } },
         data() {
-            return {value: this.$store.state.conversion}
+            return {value: this.store.conversion}
         },
         methods: {
             async conversionChange(e) {
-                await this.$store.dispatch('conversion', e.target.value);
-                this.value = this.$store.state.conversion;
+                await this.store.setConversion(e.target.value);
+                this.value = this.store.conversion;
             },
         },
     }

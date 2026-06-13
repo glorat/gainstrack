@@ -5,7 +5,8 @@
 <script lang="ts">
     import {defineComponent} from 'vue';
     import { VuePlotly } from '../lib/loader'
-    import {mapGetters} from 'vuex';
+    import {mapState} from 'pinia';
+    import {useAppStore} from 'src/stores';
     import {AccountDTO, Posting} from 'src/lib/assetdb/models';
     import {
       convertedPositionSet,
@@ -40,6 +41,7 @@
 
     export default defineComponent({
         name: 'AccountGraph',
+        setup() { return { store: useAppStore() } },
         components: {VuePlotly},
         props: ['accountId'],
         data() {
@@ -67,7 +69,7 @@
             }
         },
       computed: {
-        ...mapGetters([
+        ...mapState(useAppStore, [
           'findAccount',
           'allTxs',
           'fxConverter',
@@ -81,7 +83,7 @@
           return this.findAccount(this.accountId)
         },
         conversion (): string {
-          return this.$store.state.conversion;
+          return this.store.conversion;
         },
         mySeries():any {
           const account = this.myAccount;

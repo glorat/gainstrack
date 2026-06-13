@@ -22,7 +22,7 @@
 
 <script lang="ts">
     import {defineComponent} from 'vue';
-    import { mapGetters } from 'vuex';
+    import {useAppStore} from 'src/stores';
     import {TreeTableDTO} from 'src/lib/assetdb/models';
 
     export default defineComponent({
@@ -31,10 +31,13 @@
           node: Object as () => TreeTableDTO,
           depth: { type: Number, required: true },
         },
+        setup() {
+          return { store: useAppStore() }
+        },
         data(): {toggled: Record<string, boolean>} {
           const ret: {toggled: Record<string, boolean>} = {
                 toggled: this.node?.children.reduce((map: Record<string, boolean>, obj) => {
-                    map[obj.name] = this.$store.getters.mainAccounts.includes(obj.name);
+                    map[obj.name] = this.store.mainAccounts.includes(obj.name);
                     return map;
                 }, {}) || {},
             };
@@ -46,7 +49,7 @@
                 ret['depth-' + this.depth] = true;
                 return ret;
             },
-            ...mapGetters(['mainAccounts']),
+            mainAccounts(): string[] { return this.store.mainAccounts },
         },
         methods: {
             onToggle(acct: TreeTableDTO) {

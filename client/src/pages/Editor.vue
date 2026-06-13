@@ -28,9 +28,11 @@
 <script>
     import axios from 'axios';
     import {codemirror} from 'src/lib/loader';
+    import {useAppStore} from 'src/stores';
 
     export default {
         name: 'Editor',
+        setup() { return { store: useAppStore() } },
         data() {
             return {info: {source: 'Loading...'}}
         },
@@ -40,26 +42,26 @@
         },
         computed: {
             errors() {
-                return this.$store.state.parseState.errors;
+                return this.store.parseState.errors;
             },
         },
         methods: {
             editorReset() {
-                this.$store.dispatch('reload')
+                this.store.reload()
                     .then( () => this.reload());
             },
             editorSave() {
-                this.$store.commit('gainstrackText', this.info.source);
+                this.store.setGainstrackText(this.info.source);
                 const notify = this.$notify;
 
                 // Not logged in: compute AllState locally (TS generator), no backend round-trip.
-                if (!this.$store.getters.isAuthenticated) {
-                    this.$store.dispatch('loadLocalText', this.info.source).then(res => {
+                if (!this.store.isAuthenticated) {
+                    this.store.loadLocalText(this.info.source).then(res => {
                         if (res.ok) {
-                            this.$store.dispatch('parseState', { errors: [] });
+                            this.store.setParseState({ errors: [] });
                             notify.success('Computed locally');
                         } else {
-                            this.$store.dispatch('parseState', { errors: res.errors });
+                            this.store.setParseState({ errors: res.errors });
                             notify.warning('There are errors...');
                         }
                     });
@@ -68,12 +70,12 @@
 
                 axios.post('/api/post/source', {source: this.info.source, filePath: '', entryHash: '', sha256sum: ''})
                     .then(response => {
-                        this.$store.dispatch('parseState', response.data);
+                        this.store.setParseState(response.data);
                         if (response.data.errors.length > 0) {
                             notify.warning('There are errors...')
                         } else {
                             notify.success('Saved');
-                            this.$store.dispatch('reload')
+                            this.store.reload()
                                 .then( () => this.reload());
                         }
                     })
@@ -81,7 +83,7 @@
             },
             reload() {
                 const notify = this.$notify;
-                this.$store.dispatch('gainstrackText')
+                this.store.fetchGainstrackText()
                     .then(source => this.info.source = source)
                     .catch(error => notify.error(error))
             },

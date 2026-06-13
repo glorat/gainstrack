@@ -47,7 +47,7 @@
             return dc;
           },
             fundableAccounts() {
-                const all = this.$store.state.allState.accounts;
+                const all = this.allState.accounts;
                 const acctMatch = /^(Assets|Liabilities)/;
                 const scope = all.filter(x => acctMatch.test(x.accountId) && !x.options.generatedAccount);
                 return scope.map(x => x.accountId).sort();

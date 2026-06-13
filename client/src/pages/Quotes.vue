@@ -16,6 +16,7 @@
   import {defineComponent} from 'vue';
   import {VuePlotly} from 'src/lib/loader';
   import {QuoteSource} from 'src/lib/assetdb/assetDb';
+  import {useAppStore} from 'src/stores';
 
   interface MyData {
     pagination: unknown,
@@ -33,8 +34,9 @@
     components: {
       VuePlotly
     },
+    setup() { return { store: useAppStore() } },
     data(): MyData {
-      const cfg = this.$store.state.quoteConfig;
+      const cfg = this.store.quoteConfig;
 
       const defaultColumn= (col: {name:string}) => ({field: col.name, align: 'left', sortable: true})
       const columns = [
@@ -87,7 +89,7 @@
     methods: {
       async handleCurrentChange(val: QuoteSource) {
         this.currentRow = val;
-        const response = {data: await this.$store.dispatch('loadQuotes', val.id)};
+        const response = {data: await this.store.loadQuotes(val.id)};
         // const response = await axios.get('/api/quotes/ticker/' + val.avSymbol);
         const series = {
           ...response.data,

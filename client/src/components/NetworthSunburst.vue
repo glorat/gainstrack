@@ -5,7 +5,8 @@
 <script lang="ts">
   import {defineComponent} from 'vue';
   import {VuePlotly} from 'src/lib/loader';
-  import {mapGetters} from 'vuex';
+  import {mapState} from 'pinia';
+  import {useAppStore} from 'src/stores';
   import {
     isSubAccountOf,
     parentAccountIdOf, positionSetAdd,
@@ -26,7 +27,7 @@
       accountId: String,
     },
     computed: {
-      ...mapGetters([
+      ...mapState(useAppStore, [
         'allTxs',
         'fxConverter',
         'baseCcy',

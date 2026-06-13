@@ -1,0 +1,68 @@
+# Keep this conservative: Cloud Build needs Dockerfiles, build files, lockfiles,
+# source, tests, and deployment config in the uploaded context.
+
+# VCS metadata
+.git/
+.gitignore
+
+# Local editor and OS state
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.iml
+*.swp
+*.swo
+*.bak
+*.orig
+*.rej
+
+# Build output and tool caches
+target/
+**/target/
+.bloop/
+.bsp/
+.metals/
+metals.sbt
+project/project/
+lib_managed/
+.cache/
+.cache-main/
+.cache-tests/
+*.class
+
+# Runtime data and local generated state
+data/
+db/
+eventstore/
+dlcrypto/
+dlstore/
+.dummy_dlstore_dlstore/
+gainstrack*.json
+*-firebase-adminsdk-*.json
+
+# Python local environments and caches
+.venv/
+python/env/
+**/__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.egg-info/
+
+# JavaScript dependencies and generated output
+node_modules/
+client/node_modules/
+client/functions/node_modules/
+client/dist/
+client/.quasar/
+client/.firebase/
+client/firebase-debug.log
+npm-debug.log
+yarn-debug.log
+yarn-error.log
+pnpm-debug.log
+
+# Logs and temporary files
+*.log
+*.tmp

@@ -11,9 +11,9 @@
   // import axios from 'axios'
   import JournalTable from '../components/JournalTable.vue'
   import {AccountTxDTO, journalEntries} from 'src/lib/utils'
-  import { mapGetters } from 'vuex'
+  import {mapState} from 'pinia';
   import {defineComponent} from 'vue';
-  import { MyState } from 'src/store';
+  import {useAppStore} from 'src/stores';
   import {SingleFXConverter} from 'src/lib/fx';
 
   export default defineComponent({
@@ -26,14 +26,13 @@
       }
     },
     computed: {
-      ...mapGetters(['fxConverter', 'allTxs'])
+      ...mapState(useAppStore, ['fxConverter', 'allTxs', 'allState'])
     },
     mounted () {
-      const state: MyState = this.$store.state;
       const fxConverter: SingleFXConverter = this.fxConverter
       const txs = this.allTxs.reverse();
-      const cmds = state.allState.commands;
-      const baseCcy = state.allState.baseCcy;
+      const cmds = this.allState.commands;
+      const baseCcy = this.allState.baseCcy;
 
       this.info = {rows: journalEntries(fxConverter, txs, cmds, baseCcy)}
     },

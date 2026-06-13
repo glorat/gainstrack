@@ -29,11 +29,13 @@
 <script>
   import MyAside from '../pages/MyAside.vue';
   import { matMenu } from '@quasar/extras/material-icons';
+  import {useAppStore} from 'src/stores';
 
 
   export default {
     name: 'BoglebotCom',
     components: { MyAside },
+    setup() { return { store: useAppStore() } },
     mounted() {
       this.$router.afterEach((to) => {
         this.pageTitle = (to.meta.title || 'Boglebot');
@@ -42,7 +44,7 @@
       this.pageTitle = route.value.meta.title;
 
       // Get some state on startup
-      this.$store.dispatch('reload');
+      this.store.reload();
 
     },
     data () {

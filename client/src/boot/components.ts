@@ -3,7 +3,6 @@ import { LoadingBar } from 'quasar'
 
 import version from '../../package.json';
 import {boot} from 'quasar/wrappers';
-import {useAuth} from '../auth';
 
 export default boot(({app}) => {
   // FIXME: globally register MyPage
@@ -17,22 +16,6 @@ export default boot(({app}) => {
   })
 
   app.config.globalProperties.$appVersion = version.version
-
-  // Import the plugin here
-  useAuth().initializeAuth({
-    domain: import.meta.env.VITE_AUTH0_ID + '.auth0.com',
-    client_id: import.meta.env.VITE_AUTH0_CLIENT as string,
-    audience: import.meta.env.VITE_AUTH0_AUDIENCE,
-    // lint-ignore
-    // onRedirectCallback: appState => {
-    //   router.push(
-    //       appState && appState.targetUrl
-    //           ? appState.targetUrl
-    //           : window.location.pathname
-    //   );
-    // }
-  });
-
 })
 
 declare module '@vue/runtime-core' {

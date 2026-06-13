@@ -1,4 +1,5 @@
-import {mapGetters} from 'vuex';
+import {mapState} from 'pinia';
+import {useAppStore} from '../stores';
 import EventBus from '../event-bus';
 import HelpTip from '../components/HelpTip.vue';
 import CommandDateEditor from '../components/CommandDateEditor.vue';
@@ -59,13 +60,14 @@ export const CommandEditorMixin = {
         }
     },
     computed: {
-        ...mapGetters([
+        ...mapState(useAppStore, [
             'tradeableAccounts',
             'findAccount',
             'mainAccounts',
             'mainAssetAccounts',
             'fxConverter',
-          'allStateEx',
+            'allStateEx',
+            'allState',
         ]),
         accountId() {return this.dc.accountId},
       hideAccount() {

@@ -1,4 +1,4 @@
-import {TimeSeries} from '../store';
+import {TimeSeries} from '../stores/app';
 import {mapValues, uniq} from 'lodash';
 import {
   intDateToIsoDate,

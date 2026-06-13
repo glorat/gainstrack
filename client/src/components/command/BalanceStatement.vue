@@ -42,7 +42,7 @@
                 if (acct) {
                     this.c.balance.ccy = acct.ccy;
                 }
-                const allCmds /*: AccountCommandDTO[]*/ = [...this.$store.state.allState.commands].reverse();
+                const allCmds /*: AccountCommandDTO[]*/ = [...this.allState.commands].reverse();
                 const prev = allCmds.find(
                     x => x.accountId === this.c.accountId && x.commandType === 'bal');
                 if (prev) {
@@ -56,7 +56,7 @@
         },
         computed: {
             balanceableAccounts() {
-                return this.$store.state.allState.accounts.filter(acct => {
+                return this.allState.accounts.filter(acct => {
                     const id = acct.accountId;
                     const t = (/^(Asset|Liabilities|Equity)/.test(id));
                     return (acct.options.generatedAccount === false) && t

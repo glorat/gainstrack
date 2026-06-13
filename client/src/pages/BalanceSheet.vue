@@ -28,23 +28,26 @@
     import AccountGraph from 'src/components/AccountGraph.vue';
     import NetworthSunburst from 'components/NetworthSunburst.vue';
 
+    import {useAppStore} from 'src/stores';
+
     export default {
         name: 'BalanceSheet',
       // eslint-disable-next-line vue/no-unused-components
         components: {AccountGraph, ConversionSelect, TreeTable, NetworthSunburst},
+        setup() { return { store: useAppStore() } },
         data() {
             return {};
         },
         computed: {
             info() {
-                return this.$store.state.balances
+                return this.store.balances
             },
             conversion() {
-                return this.$store.state.allState.conversion;
+                return this.store.allState.conversion;
             },
         },
         mounted() {
-            this.$store.dispatch('balances')
+            this.store.computeBalances()
                 .catch(error => this.$notify.error(error))
         },
     }

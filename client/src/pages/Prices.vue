@@ -6,9 +6,11 @@
           <h6>{{ series.name }}</h6>
           <table class="sortable" style="margin: 5px">
             <thead>
-            <th data-sort="string" data-sort-default="desc" data-order="asc">Date</th>
-            <th data-sort="num">Trade Price</th>
-            <th data-sort="num" v-if="series.cvalues[0]">Market Price</th>
+            <tr>
+              <th data-sort="string" data-sort-default="desc" data-order="asc">Date</th>
+              <th data-sort="num">Trade Price</th>
+              <th data-sort="num" v-if="series.cvalues[0]">Market Price</th>
+            </tr>
             </thead>
             <tbody>
             <tr v-for="(date, index) in series.dates">
@@ -29,9 +31,9 @@
 <script lang="ts">
   // eslint-disable-next-line no-unused-vars
   import { SingleFXConversion, SingleFXConverter } from '../lib/fx';
-  // eslint-disable-next-line no-unused-vars
-  import { MyState, TimeSeries } from '../store';
+  import { TimeSeries } from '../stores';
   import {defineComponent} from 'vue';
+  import {useAppStore} from 'src/stores';
   import {LocalDate} from '@js-joda/core';
 
   interface Price {
@@ -45,6 +47,7 @@
 
   export default defineComponent({
     name: 'Prices',
+    setup() { return { store: useAppStore() } },
     data() {
       return {
         prices: [/*
@@ -59,8 +62,7 @@
     },
     methods: {
       tradeFxConverter(): SingleFXConversion {
-        const state: MyState = this.$store.state;
-        const allState = state.allState;
+        const allState = this.store.allState;
         if (allState) {
           const tradeFxData: { baseCcy: string; data: Record<string, { ks: string[]; vs: number[] }> } | undefined = allState.tradeFx;
           if (tradeFxData) {
@@ -70,8 +72,7 @@
         return SingleFXConversion.empty();
       },
       fxConverter(): SingleFXConverter {
-        return this.$store.getters.fxConverter;
-
+        return this.store.fxConverter as SingleFXConverter;
       },
       reloadQuotes() {
         const fx = this.fxConverter();
@@ -86,9 +87,7 @@
     },
     computed: {
       quotes(): Record<string, TimeSeries> {
-        const myState: MyState = this.$store.state;
-        const quotes = myState.quotes;
-        return quotes;
+        return this.store.quotes;
       },
 
     },

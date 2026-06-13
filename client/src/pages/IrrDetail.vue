@@ -28,12 +28,14 @@
 </template>
 
 <script>
-  import { mapGetters } from 'vuex'
+  import { mapState } from 'pinia'
+  import { useAppStore } from 'src/stores'
   import { apiIrrDetail } from 'src/lib/apiFacade'
 
   export default {
         name: 'IrrDetail',
         props: ['accountId'],
+        setup() { return { store: useAppStore() } },
         data() {
             return {detail: []}
         },
@@ -41,7 +43,7 @@
         async refresh() {
           const notify = this.$notify;
           try {
-            this.detail = await apiIrrDetail(this.$store, this.$props);
+            this.detail = await apiIrrDetail(this.store, this.$props);
           } catch (error) {
             console.log(error);
             notify.error(error);
@@ -49,7 +51,7 @@
         }
       },
       computed: {
-        ...mapGetters([
+        ...mapState(useAppStore, [
           'baseCcy',
           'allPostingsEx',
           'allTxs',

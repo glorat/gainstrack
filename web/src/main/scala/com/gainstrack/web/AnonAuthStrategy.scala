@@ -1,6 +1,5 @@
 package com.gainstrack.web
 
-import com.auth0.jwt.exceptions.JWTVerificationException
 import com.gainstrack.lifecycle.FirebaseFactory
 import com.google.firebase.auth.FirebaseAuthException
 import javax.servlet.http.{HttpServletRequest, HttpServletResponse}

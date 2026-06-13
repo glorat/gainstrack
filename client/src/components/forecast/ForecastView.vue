@@ -67,9 +67,11 @@ import {ForecastStateEx, ModelSpec, performForecast} from 'src/lib/forecast/fore
 import {LocalDate} from '@js-joda/core';
 import {round} from 'lodash';
 import { defineComponent } from 'vue'
+import {useForecastStore} from 'src/stores';
 
 export default defineComponent({
   name: 'ForecastView',
+  setup() { return { forecastStore: useForecastStore() } },
   data() {
     const income = 50000;
     const expenses = 20000;
@@ -91,9 +93,9 @@ export default defineComponent({
 
   },
   mounted() {
-    if (this.$store.state.forecast?.params) {
-      this.input = this.$store.state.forecast.params.input
-      this.strategy = this.$store.state.forecast.params.strategy
+    if (this.forecastStore.params) {
+      this.input = this.forecastStore.params.input
+      this.strategy = this.forecastStore.params.strategy
     }
     this.input.timeunit = LocalDate.now().year();
   },
@@ -137,7 +139,7 @@ export default defineComponent({
   methods: {
     onParamsUpdated() {
       const params = {input: this.input, strategy: this.strategy};
-      this.$store.dispatch('forecast/updateForecastParams', params );
+      this.forecastStore.updateForecastParams(params);
     },
     onSavingsRateChange(ev: string | number) {
       const newRate = +ev;

@@ -71,7 +71,8 @@ import {apiAssetsReport} from 'src/lib/apiFacade';
 import {difference, includes, sum, sortBy} from 'lodash';
 import {formatPerc} from 'src/lib/utils';
 import { VuePlotly } from '../lib/loader'
-import {mapGetters} from 'vuex';
+import {mapState} from 'pinia';
+import {useAppStore} from 'src/stores';
 import {
   ContributionCalculator,
   ContributionCalculatorEntries,
@@ -87,6 +88,7 @@ function trim(num: number | undefined): number {
 
 export default defineComponent({
   name: 'RebalanceCalc',
+  setup() { return { store: useAppStore() } },
   props: {
     accountId: String,
   },
@@ -110,9 +112,9 @@ export default defineComponent({
   methods: {
     async refresh(props?: Record<string, any>): Promise<void> {
 
-      const acct: AccountDTO | undefined = this.$store.getters.findAccount(this.accountId);
+      const acct: AccountDTO | undefined = this.findAccount(this.accountId);
       try {
-        this.assets = await apiAssetsReport(this.$store, props ?? this.$props);
+        this.assets = await apiAssetsReport(this.store, props ?? this.$props);
         this.assetsToBalance = [];
         this.contribution = {number: 0, ccy: acct?.ccy ?? 'USD'}
       } catch (error) {
@@ -137,7 +139,7 @@ export default defineComponent({
     }
   },
   computed: {
-    ...mapGetters([
+    ...mapState(useAppStore, [
       'findAccount'
     ]),
     baseCcy(): string {

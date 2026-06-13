@@ -41,9 +41,9 @@
   import AccountGraph from '../components/AccountGraph.vue'
   import AccountJournal from '../components/AccountJournal.vue'
   import AssetView from '../components/AssetView.vue'
-  import {mapGetters} from 'vuex'
+  import {mapState} from 'pinia'
   import {matAccountBalance, matAssignment, matEdit} from '@quasar/extras/material-icons'
-  import {MyState} from 'src/store'
+  import {useAppStore} from 'src/stores'
   import {
     commandPostingsWithBalance,
     CommandPostingsWithBalance,
@@ -58,6 +58,7 @@
 
   export default defineComponent({
     name: 'Account',
+    setup() { return { store: useAppStore() } },
     components: {
       AccountGraph,
       ConversionSelect,
@@ -80,7 +81,7 @@
       }
     },
     computed: {
-      ...mapGetters([
+      ...mapState(useAppStore, [
         'baseCcy',
         'findAccount',
         'mainAccounts',
@@ -89,6 +90,8 @@
         'fxConverter',
         'tradeFxConverter',
         'allPostingsEx',
+        'conversion',
+        'allState',
       ]),
       myAccount(): AccountDTO | undefined {
         return this.findAccount(this.accountId)
@@ -96,15 +99,9 @@
       hasJournal(): boolean {
         return this.mainAccounts.includes(this.accountId)
       },
-      conversion(): string {
-        return this.$store.state.conversion
-      },
       entries(): CommandPostingsWithBalance[] {
-        const state: MyState = this.$store.state;
-        //const fxConverter: SingleFXConverter = this.fxConverter;
         const txs = this.allTxs;
-        const cmds = state.allState.commands;
-        // const baseCcy = state.allState.baseCcy;
+        const cmds = this.allState.commands;
         const res = postingsByCommand(txs, cmds, (p: Posting) => isSubAccountOf(p.account, this.accountId));
         return commandPostingsWithBalance(res);
       },
@@ -143,7 +140,7 @@
       },
       async refresh (props?: Record<string, any>) {
         try {
-          this.assetResponse = await apiAssetsReport(this.$store, props ?? this.$props);
+          this.assetResponse = await apiAssetsReport(this.store, props ?? this.$props);
         } catch (error) {
           const e:any = error;
           console.error(error)

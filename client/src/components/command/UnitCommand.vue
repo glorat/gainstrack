@@ -24,7 +24,8 @@
     import { defineComponent } from 'vue';
     import AccountSelector from '../AccountSelector.vue';
     import BalanceEditor from '../../lib/assetdb/components/BalanceEditor.vue';
-    import { mapGetters } from 'vuex'
+    import {mapState} from 'pinia';
+    import {useAppStore} from 'src/stores';
     import { LocalDate } from '@js-joda/core'
 
     export default defineComponent({
@@ -63,7 +64,7 @@
           }
         },
         computed: {
-          ...mapGetters(['fxConverter']),
+          ...mapState(useAppStore, ['fxConverter']),
             toGainstrack() {
             const c = this.c;
             debugger;

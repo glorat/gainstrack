@@ -15,7 +15,8 @@
 
 <script lang="ts">
   import {defineComponent} from 'vue';
-  import {mapGetters} from 'vuex';
+  import {mapState} from 'pinia';
+  import {useAppStore} from 'src/stores';
 
   export default defineComponent({
     name: 'AccountSelector',
@@ -33,7 +34,7 @@
       };
     },
     computed: {
-      ...mapGetters(['accountIds']),
+      ...mapState(useAppStore, ['accountIds']),
       resolvedPlaceholder(): string {
         return this.placeholder || 'Account';
       },

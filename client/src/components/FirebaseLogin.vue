@@ -17,21 +17,21 @@ import 'firebase/compat/auth';
 import 'firebaseui/dist/firebaseui.css'
 
 import * as firebaseui from 'firebaseui'
-import {MyState} from 'src/store'
+import {useAppStore} from 'src/stores'
 
 export default defineComponent({
   name: 'FirebaseLogin',
+  setup() { return { store: useAppStore() } },
   methods: {
     async logout(): Promise<void> {
       const fauth = firebase.auth()
       await fauth.signOut()
-      await this.$store.dispatch('logout')
+      await this.store.logout()
     }
   },
   computed: {
     user(): firebase.User | undefined {
-      const state: MyState = this.$store.state
-      return state.user
+      return this.store.user
     }
   },
   mounted() {

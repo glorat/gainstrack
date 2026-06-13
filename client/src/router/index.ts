@@ -5,7 +5,6 @@ import {
   createWebHashHistory,
   createWebHistory, Router,
 } from 'vue-router';
-import {MyState} from '../store'
 import routes, { appTitle, appDescription } from './routes'
 
 /*
@@ -15,7 +14,7 @@ import routes, { appTitle, appDescription } from './routes'
 
 export let router: Router;
 
-export default route<MyState>(function(/* { store, ssrContext } */) {
+export default route(function(/* { ssrContext } */) {
   const createHistory = process.env.SERVER
     ? createMemoryHistory
     : (process.env.VUE_ROUTER_MODE === 'history' ? createWebHistory : createWebHashHistory);

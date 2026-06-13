@@ -20,22 +20,25 @@
   import TreeTable from '../components/TreeTable.vue'
   import ConversionSelect from '../components/ConversionSelect.vue'
 
+  import {useAppStore} from 'src/stores';
+
   export default {
     name: 'IncomeStatement',
     components: {
       ConversionSelect,
       TreeTable
     },
+    setup() { return { store: useAppStore() } },
     data () {
       return {}
     },
     computed: {
       info () {
-        return this.$store.state.balances
+        return this.store.balances
       }
     },
     mounted () {
-      this.$store.dispatch('balances')
+      this.store.computeBalances()
         .catch(error => this.$notify.error(error))
     },
   }

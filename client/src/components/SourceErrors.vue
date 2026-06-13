@@ -24,6 +24,7 @@
 
 <script lang="ts">
     import {defineComponent} from 'vue'
+    import {useAppStore} from 'src/stores';
 
     interface MyError {
         line: number
@@ -33,9 +34,10 @@
     export default defineComponent({
         name: 'SourceErrors',
         props: {errs: Array as () => MyError[]},
+        setup() { return { store: useAppStore() } },
         computed: {
             errors(): MyError[] {
-                return this.errs ? this.errs : (this.$store.state.parseState.errors as MyError[]);
+                return this.errs ? this.errs : (this.store.parseState.errors as MyError[]);
             }
         },
         methods: {

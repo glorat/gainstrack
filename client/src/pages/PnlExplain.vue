@@ -113,14 +113,14 @@ import {apiPnlExplainMonthly} from '../lib/apiFacade';
 import {matAddCircleOutline, matAnalytics, matRemoveCircleOutline} from '@quasar/extras/material-icons';
 import {PLExplainDTO} from 'src/lib/PLExplain';
 import {qnotify} from 'boot/notify';
-import {useStore} from 'src/store';
+import {useAppStore} from 'src/stores';
 import {router} from 'src/router';
 
-const store = useStore();
+const store = useAppStore();
 const explains = ref<PLExplainDTO[]>([]);
-const baseCcy = computed(() => store.getters.baseCcy);
-const allPostingsEx = computed(() => store.getters.allPostingsEx);
-const fxConverter = computed(() => store.getters.fxConverter);
+const baseCcy = computed(() => store.baseCcy);
+const allPostingsEx = computed(() => store.allPostingsEx);
+const fxConverter = computed(() => store.fxConverter);
 const expansions = reactive<Record<string, boolean>>({})
 
 const refresh = async () => {

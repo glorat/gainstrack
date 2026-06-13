@@ -12,12 +12,11 @@
 <script lang="ts">
 import {defineComponent} from 'vue';
 import {QuoteSource} from '../assetDb';
+import {useAppStore} from 'src/stores';
 
-/**
- * Depends on $store.state.quoteConfig: QuoteSource[]
- */
 export default defineComponent({
   name: 'TickerSelect',
+  setup() { return { store: useAppStore() } },
   props: {
     value: String,
   },
@@ -30,7 +29,7 @@ export default defineComponent({
     tickerSearch (queryString: string, update: any) {
 
       update(() => {
-        let cfgs:QuoteSource[] = this.$store.state.quoteConfig;
+        let cfgs:QuoteSource[] = this.store.quoteConfig;
         if (queryString) {
           cfgs = cfgs.filter(x => x.id.indexOf(queryString.toUpperCase()) > -1)
         }

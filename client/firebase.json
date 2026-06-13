@@ -17,10 +17,6 @@
           }
         },
         {
-          "source": "/functions/auth/**",
-          "function": "auth"
-        },
-        {
           "source": "/functions/getAllQuoteSources",
           "function": "getAllQuoteSources"
         },
@@ -65,10 +61,6 @@
             "serviceId": "appserver",
             "region": "asia-northeast1"
           }
-        },
-        {
-          "source": "/functions/auth/**",
-          "function": "auth"
         },
         {
           "source": "/functions/getAllQuoteSources",

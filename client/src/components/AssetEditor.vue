@@ -31,12 +31,14 @@
 import AssetId from '../lib/assetdb/components/AssetId.vue';
 import {defineComponent} from 'vue';
 import {AllState, AssetDTO} from '../lib/assetdb/models';
+import {useAppStore} from 'src/stores';
 import { keys, cloneDeep } from 'lodash';
 import {toCommodityGainstrack} from 'src/lib/commandDefaulting';
 
 export default defineComponent({
   name: 'AssetEditor',
   components: {AssetId},
+  setup() { return { store: useAppStore() } },
   props: {
     assetId: String
   },
@@ -53,7 +55,7 @@ export default defineComponent({
     async onSubmit() {
       try {
         this.upserting = true
-        await this.$store.dispatch('upsertAsset', this.asset)
+        await this.store.upsertAsset(this.asset)
         this.$emit('ok', this.asset)
       }
       catch (error) {
@@ -71,7 +73,7 @@ export default defineComponent({
   },
   computed: {
     allState(): AllState {
-      return this.$store.state.allState;
+      return this.store.allState;
     },
     originalAsset(): AssetDTO|undefined {
       return this.originalAssetFor(this.assetId);

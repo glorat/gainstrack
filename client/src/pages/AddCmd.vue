@@ -44,7 +44,7 @@
           <th>Value Change</th>
         </tr>
         </thead>
-
+        <tbody>
         <tr v-for="change in result.accountChanges" :key="change.accountId">
           <td>
             <router-link :to="{name: 'account', params: {accountId: change.accountId}}">{{ change.accountId }}
@@ -59,6 +59,7 @@
           <td class="subtotal"></td>
           <td class="subtotal num">{{ result.networthChange }}</td>
         </tr>
+        </tbody>
       </table>
       <button class="c-cancel" type="button" v-on:click="cancel" v-if="success && hasCancel">Done</button>
       <template v-if="!hideJournal">
@@ -78,11 +79,13 @@
   import SourceErrors from '../components/SourceErrors.vue'
   import { debounce } from 'lodash'
   import EventBus from '../event-bus'
-  import { mapGetters } from 'vuex'
+  import { mapState } from 'pinia'
+  import { useAppStore } from 'src/stores'
   import { apiCmdTest } from 'src/lib/apiFacade'
 
   export default {
     name: 'AddCmd',
+    setup() { return { store: useAppStore() } },
     components: {
       CommandTable,
       CommandEditor,
@@ -131,7 +134,7 @@
       }
     },
     computed: {
-      ...mapGetters(['baseCcy']),
+      ...mapState(useAppStore, ['baseCcy']),
       c () {
         let c = {}
         if (this.modelValue) {
@@ -162,7 +165,7 @@
         try {
           if (str) {
             this.testing = true;
-            this.result = await apiCmdTest(this.$store, {str});
+            this.result = await apiCmdTest(this.store, {str});
           }
         } catch (error) {
           console.error(error);
@@ -184,7 +187,7 @@
               this.added = response.data.added
               this.success = true
               this.$notify.success(`${this.added.length} entries added`)
-              this.$store.dispatch('reload')
+              this.store.reload()
               this.$emit('command-added', str)
               EventBus.$emit('command-added', str)
             }

@@ -11,8 +11,6 @@ libraryDependencies ++= Seq(
   "org.eclipse.jetty" % "jetty-webapp" % "9.4.35.v20201120" % "container;compile",
   "org.eclipse.jetty" % "jetty-proxy" % "9.4.35.v20201120",
   "javax.servlet" % "javax.servlet-api" % "3.1.0" % "provided",
-  "com.auth0" % "java-jwt" % "4.0.0",
-  "com.auth0" % "jwks-rsa" % "0.21.2"
 )
 
 javaOptions ++= Seq(

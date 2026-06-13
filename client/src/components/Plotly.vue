@@ -2,15 +2,7 @@
     <div ref="container" class="vue-plotly"/>
 </template>
 <script>
-    // Full bundle
-    // import Plotly from 'plotly.js'
-    // Partial bundle from full plotly.js
-    // import Plotly from 'plotly.js/lib/index-basic'
-    // Compiled partial bundle from plotly.js-basic-dist
-    // import Plotly from 'plotly.js-basic-dist'
-    // Preprared full dist
     import Plotly from 'plotly.js-dist'
-
     import debounce from 'lodash/debounce'
     import defaults from 'lodash/defaults'
 
@@ -95,22 +87,15 @@
             Plotly.purge(this.$refs.container)
         },
         methods: {
-          // The watch needs to be indirect or some infinite recursion happens on Vue 3
-          relayoutOnWatch() {
-            this.relayout();
-          },
+            relayoutOnWatch() {
+                this.relayout()
+            },
             initEvents() {
-                // https://github.com/statnett/vue-plotly/issues/20
                 if (this.autoResize) {
                     this.__resizeListener = debounce(() => {
                         this.internalLayout.datarevision++
                         this.react()
                     }, 200)
-                    //
-                    // this.__resizeListener = () => {
-                    //     this.internalLayout.datarevision++
-                    //     debounce(this.react, 200)
-                    // }
                     window.addEventListener('resize', this.__resizeListener)
                 }
 
@@ -157,7 +142,6 @@
                 const el = this.$refs.container
                 let opts = this.options
 
-                // if width/height is not specified for toImageButton, default to el.clientWidth/clientHeight
                 if (!opts) {
                     opts = {}
                 }

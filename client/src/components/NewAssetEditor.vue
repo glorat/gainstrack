@@ -53,11 +53,13 @@ import {defaultedBalanceOrUnit, toGainstrack} from 'src/lib/commandDefaulting';
 import {AllStateEx} from 'src/lib/AllStateEx';
 import axios from 'axios';
 import {FieldProperty, Schema} from 'src/lib/assetdb/schema';
+import {useAppStore} from 'src/stores';
 
 
 export default defineComponent({
   name: 'NewAssetEditor',
   components: {FieldEditor},
+  setup() { return { store: useAppStore() } },
   props: {
     accountId: {
       type: String,
@@ -79,7 +81,7 @@ export default defineComponent({
     onFieldUpdate(field:string, newValue: any) {
       this.properties[field] = newValue;
       if (newValue && schemaFor(field).fieldType==='ticker') {
-        this.$store.dispatch('loadQuotes', newValue);
+        this.store.loadQuotes(newValue);
       }
     },
     onRemove(propType: FieldProperty) {
@@ -108,13 +110,13 @@ export default defineComponent({
       return !!this.assetGainstrack;
     },
     baseCcy(): string {
-      return this.$store.getters.baseCcy;
+      return this.store.baseCcy;
     },
     allStateEx(): AllStateEx {
-      return this.$store.getters.allStateEx;
+      return this.store.allStateEx;
     },
     globalPricer (): GlobalPricer {
-      return this.$store.getters.fxConverter;
+      return this.store.fxConverter as GlobalPricer;
     },
     schemas(): FieldProperty[] {
       return this.schema.selectedPropertiesForAsset(this.properties);

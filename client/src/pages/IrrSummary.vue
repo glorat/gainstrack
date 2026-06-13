@@ -28,11 +28,13 @@
 <script>
   import numbro from 'numbro'
   import { apiIrrSummary } from 'src/lib/apiFacade'
-  import { mapGetters } from 'vuex'
+  import { mapState } from 'pinia'
+  import { useAppStore } from 'src/stores'
   import { formatNumber, formatPerc } from 'src/lib/utils'
 
   export default {
     name: 'IrrSummary',
+    setup() { return { store: useAppStore() } },
     data () {
       const columns = [{
         name: 'account',
@@ -78,7 +80,7 @@
       async refresh () {
         const notify = this.$notify;
         try {
-          this.info = await apiIrrSummary(this.$store)
+          this.info = await apiIrrSummary(this.store)
           this.totalPnl = this.info.reduce((prev, curr) => prev+curr.pnlGain + curr.flowGain, 0);
         } catch (error) {
           console.error(error);
@@ -90,7 +92,7 @@
       }
     },
     computed: {
-      ...mapGetters([
+      ...mapState(useAppStore, [
         'fxConverter',
       ]),
     },

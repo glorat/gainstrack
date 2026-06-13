@@ -14,7 +14,8 @@
   import {LocalDate} from '@js-joda/core';
   import {assetReport} from 'src/lib/assetReport';
   import {isSubAccountOf, postingsToPositionSet} from 'src/lib/utils';
-  import {mapGetters} from 'vuex';
+  import {mapState} from 'pinia';
+  import {useAppStore} from 'src/stores';
 
   export default defineComponent({
     name: 'Assets',
@@ -26,7 +27,7 @@
       };
     },
     computed: {
-      ...mapGetters([
+      ...mapState(useAppStore, [
         'allPostingsEx',
         'fxConverter',
         'baseCcy'

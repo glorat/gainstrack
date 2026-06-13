@@ -55,7 +55,8 @@
     import {NetworthByAsset, AssetColumn, AssetResponse, AssetDTO} from '../lib/assetdb/models';
     import {matEdit, matAdd, matAddCircleOutline ,matSwapHoriz} from '@quasar/extras/material-icons';
     import CommandEditorDialog from 'components/CommandEditorDialog.vue';
-    import {mapGetters} from 'vuex';
+    import {mapState} from 'pinia';
+    import {useAppStore} from 'src/stores';
     import {LocalDate} from '@js-joda/core';
     import AssetEditorDialog from 'components/AssetEditorDialog.vue';
     import {sum} from 'lodash';
@@ -182,7 +183,7 @@
         }
       },
         computed: {
-          ...mapGetters(['mainAccounts', 'baseCcy', 'fxConverter']),
+          ...mapState(useAppStore, ['mainAccounts', 'baseCcy', 'fxConverter']),
           columns(): AssetColumn[] {
             return [{
               name: 'assetId',
@@ -199,7 +200,7 @@
             }, {
               name: 'value',
               field: 'value',
-              label: this.$store.getters.baseCcy + ' Value',
+              label: this.baseCcy + ' Value',
               classes: ['num'],
               sortable: true,
               format: formatNumber

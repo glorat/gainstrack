@@ -27,9 +27,11 @@
     import { matCloudUpload } from '@quasar/extras/material-icons';
     import {defineComponent} from 'vue';
     import axios from 'axios';
+    import {useAppStore} from 'src/stores';
 
     export default defineComponent({
         name: 'Port',
+        setup() { return { store: useAppStore() } },
       data() {
         return {
           matCloudUpload,
@@ -45,7 +47,7 @@
           },
             beforeUpload(file: File) {
                 const notify = this.$notify;
-                const store = this.$store;
+                const store = this.store;
 
                 if (file.name.match(/\.gainstrack$/)) {
                     // console.log(`Trying to upload a ${file.type} of size ${file.size}`);
@@ -54,14 +56,14 @@
                         const text = reader.result;
                         axios.post('/api/post/source', {source: text, filePath: '', entryHash: '', sha256sum: ''})
                             .then(response => {
-                                store.dispatch('parseState', response.data);
+                                store.setParseState(response.data);
                                 if (response.data.errors.length > 0) {
                                     notify.warning('There are errors...');
                                     this.$router.push({name: 'errors'});
                                 } else {
                                     notify.success('Saved');
-                                    store.dispatch('reload');
-                                    store.dispatch('gainstrackText'); // Clear editor
+                                    store.reload();
+                                    store.fetchGainstrackText(); // Clear editor
                                     // A bit of a hack to force a refresh of local state in current view
                                     this.$router.go(0);
                                 }

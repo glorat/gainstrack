@@ -16,6 +16,7 @@
 
 <script lang="ts">
   import { defineComponent } from 'vue'
+  import {useAppStore} from 'src/stores';
 
   interface MyOpt {
     value: string
@@ -27,6 +28,7 @@
    */
   export default defineComponent({
     name: 'AssetId',
+    setup() { return { store: useAppStore() } },
     props: {value: String, label: String, inputClass: {}},
     emits: ['update:modelValue'],
     data() {
@@ -37,7 +39,7 @@
     },
     computed: {
       options(): MyOpt[] {
-        const stateCcys: string[] = this.$store.getters.allCcys;
+        const stateCcys: string[] = this.store.allCcys;
         const ccys:string[] = ['', ...this.moreOptions, ...(stateCcys.length>0 ? stateCcys : ['USD'])];
         return ccys.map(ccy => {
           return {value: ccy, label: ccy};

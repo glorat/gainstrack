@@ -2,16 +2,19 @@
   <div>
     <markdown-render page="settings-help.md"></markdown-render>
     <table>
-      <tr>
-        <th>Asset</th>
-        <th>Units</th>
-        <th>Pricer</th>
-        <th>Price</th>
-        <th>Live ticker</th>
-        <th>Live proxy</th>
-        <th>Tags</th>
-        <th>Actions</th>
-      </tr>
+      <thead>
+        <tr>
+          <th>Asset</th>
+          <th>Units</th>
+          <th>Pricer</th>
+          <th>Price</th>
+          <th>Live ticker</th>
+          <th>Live proxy</th>
+          <th>Tags</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
       <tr v-for="asset in assets" :key="asset.asset" :tag="asset.asset">
         <td>
           {{ asset.asset }}
@@ -62,7 +65,7 @@
           <q-btn color="primary" size="sm" :disable="!asset.dirty" :icon="matCheck" round @click="assetSave(asset)"/>
         </td>
       </tr>
-
+      </tbody>
     </table>
   </div>
 </template>
@@ -74,9 +77,9 @@
   import { MarkdownRender } from 'src/lib/loader'
   import {defineComponent} from 'vue';
   import {GlobalPricer} from 'src/lib/pricer';
-  import {MyState} from 'src/store';
   import {AccountCommandDTO} from 'src/lib/assetdb/models';
-  import {mapGetters} from 'vuex';
+  import {mapState} from 'pinia';
+  import {useAppStore} from 'src/stores';
   import {LocalDate} from '@js-joda/core';
   import {formatNumber} from 'src/lib/utils';
   import {toCommodityGainstrack} from 'src/lib/commandDefaulting';
@@ -86,6 +89,7 @@
     components: {
       MarkdownRender,
     },
+    setup() { return { store: useAppStore() } },
     data () {
       return {
         // All commands that are asset commands
@@ -99,19 +103,19 @@
       }
     },
     computed: {
-      ...mapGetters([
+      ...mapState(useAppStore, [
         'baseCcy',
+        'fxConverter',
+        'quoteConfig',
       ]),
       globalPricer (): GlobalPricer {
-        return this.$store.getters.fxConverter;
+        return this.fxConverter as GlobalPricer;
       },
       allTags (): string[] {
         return uniq(flatten(this.assets.map(x => x.options?.tags)))
       },
       allTickers (): string[] {
-        const state: MyState = this.$store.state;
-        let cfgs = state.quoteConfig;
-        return uniq(cfgs.map(cfg => cfg.id)).sort()
+        return uniq(this.quoteConfig.map((cfg: any) => cfg.id)).sort()
       },
     },
     methods: {
@@ -138,15 +142,12 @@
         a['dirty'] = false
       },
       tickerSearch (queryString: string, update: any) {
-
         update(() => {
-          const state: MyState = this.$store.state;
-          let cfgs = state.quoteConfig
+          let cfgs = this.quoteConfig
           if (queryString) {
-            cfgs = cfgs.filter(x => x.id.indexOf(queryString.toUpperCase()) > -1)
+            cfgs = cfgs.filter((x: any) => x.id.indexOf(queryString.toUpperCase()) > -1)
           }
-          const elems = cfgs.map(cfg => cfg.id);
-          this.tickerOptions = elems;
+          this.tickerOptions = cfgs.map((cfg: any) => cfg.id);
         });
       },
       toGainstrack (asset: AccountCommandDTO) {

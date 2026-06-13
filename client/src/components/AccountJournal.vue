@@ -22,14 +22,15 @@
   import axios from 'axios';
   // eslint-disable-next-line no-unused-vars
   import {CommandConfig, commands, defaultCommand} from '../config/commands';
-  import {mapGetters} from 'vuex';
+  import {mapState} from 'pinia';
   import {defineComponent} from 'vue';
-  import {MyState} from 'src/store';
+  import {useAppStore} from 'src/stores';
 
   export default defineComponent({
     name: 'AccountJournal',
     components: {AddCmd, CommandTable},
     props: ['accountId'],
+    setup() { return { store: useAppStore() } },
     data() {
       return {
         c: {} as AccountCommandDTO,
@@ -59,7 +60,7 @@
         try {
           const response = await axios.post('/api/post/add', {str});
           this.$notify.success(response.data);
-          await this.$store.dispatch('reload');
+          await this.store.reload();
         } catch (error) {
           const e:any = error;
           this.$notify.error(e?.response?.data || e)
@@ -89,15 +90,15 @@
           return [];
         }
       },
-      ...mapGetters([
+      ...mapState(useAppStore, [
         'findAccount',
         'allTxs',
         'fxConverter',
+        'allState',
       ]),
       myCommands(): AccountCommandDTO[] {
-        const state: MyState = this.$store.state;
-        const cmds = state.allState.commands;
-        const myCmds = cmds.filter(cmd => cmd.accountId == this.accountId).reverse();
+        const cmds = this.allState.commands;
+        const myCmds = cmds.filter((cmd: any) => cmd.accountId == this.accountId).reverse();
         return myCmds;
       },
     },

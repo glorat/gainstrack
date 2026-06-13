@@ -73,7 +73,10 @@
         <td class="total num change">{{ amount(explainData.actual) }}</td>
       </tr>
 
-      Financial independence forecast: <span class="text-h4">{{ targetYear }}</span>
+      <tr>
+        <td>Financial independence forecast:</td>
+        <td><span class="text-h4">{{ targetYear }}</span></td>
+      </tr>
 
       <tr v-if="deltas.length">
         <td></td>
@@ -152,7 +155,8 @@
 </template>
 
 <script lang="ts">
-import {mapGetters} from 'vuex';
+import {mapState} from 'pinia';
+import {useAppStore} from 'src/stores';
 import {apiPnlExplainDetail} from 'src/lib/apiFacade';
 import {forecastFromPnl} from 'src/lib/forecastFromPnl';
 import {
@@ -170,8 +174,9 @@ export default defineComponent({
   name: 'PnlExplainDetail',
   props: ['fromDate', 'toDate'],
   components: {CommandDateEditor},
+  setup() { return { store: useAppStore() } },
   computed: {
-    ...mapGetters([
+    ...mapState(useAppStore, [
       'baseCcy',
       'allPostingsEx',
       'fxConverter',
@@ -217,7 +222,7 @@ export default defineComponent({
       try {
         const {fromDate, toDate} = params;
         if (!fromDate) debugger;
-        this.explains = await apiPnlExplainDetail(this.$store, {fromDate, toDate});
+        this.explains = await apiPnlExplainDetail(this.store, {fromDate, toDate});
       } catch (error) {
         const e:any = error;
         console.error(error);

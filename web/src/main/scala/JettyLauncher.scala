@@ -1,7 +1,6 @@
 import java.net.InetAddress
 
 import com.gainstrack.quotes.av.SyncUp
-import com.gainstrack.web.Auth0Config.getClass
 import com.typesafe.config.ConfigFactory
 import controllers.ServerQuoteSource
 import io.grpc.ManagedChannelProvider
