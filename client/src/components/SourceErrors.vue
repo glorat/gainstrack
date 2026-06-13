@@ -22,32 +22,23 @@
     </div>
 </template>
 
-<script lang="ts">
-    import {defineComponent} from 'vue'
-    import {useAppStore} from 'src/stores';
+<script setup lang="ts">
+import { computed } from 'vue'
+import { useRouter } from 'vue-router'
+import { useAppStore } from 'src/stores'
+import type { ParseError } from 'src/lib/assetdb/models'
 
-    interface MyError {
-        line: number
-        message: string
-    }
+const props = defineProps<{ errs?: ParseError[] }>()
+const store = useAppStore()
+const router = useRouter()
 
-    export default defineComponent({
-        name: 'SourceErrors',
-        props: {errs: Array as () => MyError[]},
-        setup() { return { store: useAppStore() } },
-        computed: {
-            errors(): MyError[] {
-                return this.errs ? this.errs : (this.store.parseState.errors as MyError[]);
-            }
-        },
-        methods: {
-            onRowClick(error: MyError) {
-                if (error.line) {
-                    this.$router.push({ path: 'editor', query: { line: error.line.toString() } });
-                }
-            }
-        }
-    })
+const errors = computed((): ParseError[] => props.errs ?? store.parseState.errors)
+
+function onRowClick(error: ParseError) {
+  if (error.line) {
+    void router.push({ path: 'editor', query: { line: error.line.toString() } })
+  }
+}
 </script>
 
 <style scoped>

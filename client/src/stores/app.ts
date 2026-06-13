@@ -6,6 +6,7 @@ import {
   AccountDTO,
   AllState, AssetDTO,
   emptyAllState,
+  ParseError,
   PostingEx,
   Transaction, TreeTableDTO
 } from '../lib/assetdb/models'
@@ -62,7 +63,7 @@ export const useAppStore = defineStore('app', () => {
   const count = ref(0)
   const quoteConfig = ref<QuoteSource[]>([])
   const balances = ref<AccountBalances>({})
-  const parseState = ref<Record<string, unknown>>({ errors: [] })
+  const parseState = ref<{ errors: ParseError[] }>({ errors: [] })
   const gainstrackText = ref('')
   const quotes = ref<Record<string, TimeSeries>>({})
   const conversion = ref('parent')
@@ -269,7 +270,7 @@ export const useAppStore = defineStore('app', () => {
     return await loadAllState()
   }
 
-  function setParseState(data: Record<string, unknown>) {
+  function setParseState(data: { errors: ParseError[] }) {
     parseState.value = data
   }
 

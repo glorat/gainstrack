@@ -105,7 +105,7 @@ export default defineComponent({
       entries: [] as ContributionCalculatorInput[],
       results: [] as ContributionCalculatorEntries[],
       contribution: {number: 0, ccy: ''} as Amount,
-      sankey: {},
+      sankey: [] as unknown[],
       formatPerc
     }
   },

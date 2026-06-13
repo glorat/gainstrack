@@ -27,43 +27,28 @@
     </my-page>
 </template>
 
-<script>
-  import { mapState } from 'pinia'
-  import { useAppStore } from 'src/stores'
-  import { apiIrrDetail } from 'src/lib/apiFacade'
+<script setup lang="ts">
+import { useAppStore } from 'src/stores'
+import { apiIrrDetail } from 'src/lib/apiFacade'
+import { ref, onMounted } from 'vue'
+import { qnotify } from 'src/boot/notify'
 
-  export default {
-        name: 'IrrDetail',
-        props: ['accountId'],
-        setup() { return { store: useAppStore() } },
-        data() {
-            return {detail: []}
-        },
-      methods: {
-        async refresh() {
-          const notify = this.$notify;
-          try {
-            this.detail = await apiIrrDetail(this.store, this.$props);
-          } catch (error) {
-            console.log(error);
-            notify.error(error);
-          }
-        }
-      },
-      computed: {
-        ...mapState(useAppStore, [
-          'baseCcy',
-          'allPostingsEx',
-          'allTxs',
-          'fxConverter',
-          'mainAccounts',
-          'mainAssetAccounts',
-        ]),
-      },
-      mounted() {
-        this.refresh()
-      },
-    }
+type IrrDetailData = Awaited<ReturnType<typeof apiIrrDetail>>
+
+const props = defineProps<{ accountId: string }>()
+const store = useAppStore()
+const detail = ref<IrrDetailData>({ name: '', units: [], dates: [], values: [], cvalues: [], description: [] } as unknown as IrrDetailData)
+
+async function refresh() {
+  try {
+    detail.value = await apiIrrDetail(store, props)
+  } catch (error) {
+    console.log(error)
+    qnotify.error(String(error))
+  }
+}
+
+onMounted(() => { void refresh() })
 </script>
 
 <style scoped>

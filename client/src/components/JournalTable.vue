@@ -51,80 +51,58 @@
   </div>
 </template>
 
-<script>
-  import ButtonToggle from '../components/ButtonToggle.vue'
-  import { uniq } from 'lodash'
+<script setup lang="ts">
+import ButtonToggle from '../components/ButtonToggle.vue'
+import { uniq } from 'lodash'
+import { ref, computed } from 'vue'
+import type { Posting } from 'src/lib/assetdb/models'
 
-  export default {
-    name: 'JournalTable',
-    components: { ButtonToggle },
-    props: {
-      entries: Array,
-      showBalance: Boolean
-    },
-    data () {
+interface JournalEntry {
+  cmdType: string
+  date: string
+  description: string
+  change: string
+  position?: string
+  postings: Posting[]
+}
 
+const props = defineProps<{
+  entries: JournalEntry[]
+  showBalance?: boolean
+}>()
 
-      const pagination = {
-        rowsPerPage: 10,
-      };
+const visiblePostings = ref<Record<string, boolean>>({})
+const offState = ref<Record<string, boolean>>({})
+const pagination = ref({ rowsPerPage: 10 })
 
-      return {
-        visiblePostings: {},
-        offState: {},
-        pagination,
-      }
-    },
-    methods: {
-      rowClick (row) {
-        this.visiblePostings[row] = !this.visiblePostings[row]
-      },
-    },
-    computed: {
-      filteredEntries () {
-        let ret = this.entries
-        const types = this.entryTypes
-        types.forEach(t => {
-          if (this.offState[t]) {
-            ret = ret.filter(e => e.cmdType !== t)
-          }
-        })
-        return ret
-      },
-      entryTypes () {
-        return uniq(this.entries.map(x => x.cmdType))
-      },
-      columns () {
-        const columns = [
-          {
-            name: 'date',
-            label: 'Date',
-            field: 'date',
-            classes: ['datecell']
-          }, {
-            name: 'description',
-            label: 'Description',
-            field: 'description',
-            align: 'left',
-          }, {
-            name: 'detail',
-            label: '',
-            field: () => ''
-          }, {
-            name: 'change',
-            label: 'Change',
-            field: 'change',
-            align: 'right',
-            classes: ['num']
-          }];
-        if (this.showBalance) {
-          columns.push({name: 'balance', label: 'Balance', field: 'position', classes:['num']})
-        }
-        return columns;
+function rowClick(row: string) {
+  visiblePostings.value[row] = !visiblePostings.value[row]
+}
 
-      }
+const entryTypes = computed(() => uniq(props.entries.map(x => x.cmdType)))
+
+const filteredEntries = computed(() => {
+  let ret = props.entries
+  entryTypes.value.forEach(t => {
+    if (offState.value[t]) {
+      ret = ret.filter(e => e.cmdType !== t)
     }
+  })
+  return ret
+})
+
+const columns = computed(() => {
+  const cols = [
+    { name: 'date', label: 'Date', field: 'date', classes: 'datecell' },
+    { name: 'description', label: 'Description', field: 'description', align: 'left' as const },
+    { name: 'detail', label: '', field: () => '' },
+    { name: 'change', label: 'Change', field: 'change', align: 'right' as const, classes: 'num' },
+  ]
+  if (props.showBalance) {
+    cols.push({ name: 'balance', label: 'Balance', field: 'position', classes: 'num' })
   }
+  return cols
+})
 </script>
 
 <style>

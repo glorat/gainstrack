@@ -12,31 +12,26 @@
     </div>
 </template>
 
-<script>
-import { signOut } from 'firebase/auth';
-import { myAuth } from 'src/lib/assetdb/myfirebase';
-import {useAppStore} from 'src/stores';
+<script setup lang="ts">
+import { signOut } from 'firebase/auth'
+import { myAuth } from 'src/lib/assetdb/myfirebase'
+import { useAppStore } from 'src/stores'
+import { useRouter } from 'vue-router'
+import { computed } from 'vue'
 
-export default {
-    name: 'LoginForm',
-    setup() { return { store: useAppStore() } },
-    computed: {
-      isAuthenticated() {
-        return !!this.store.user;
-      },
-      authName() {
-        return this.store.user?.displayName ?? 'User';
-      }
-    },
-    methods: {
-        login() {
-          this.$router.push('/login');
-        },
-        async logout() {
-          await signOut(myAuth());
-          await this.store.logout();
-        },
-    },
+const store = useAppStore()
+const router = useRouter()
+
+const isAuthenticated = computed(() => !!store.user)
+const authName = computed(() => store.user?.displayName ?? 'User')
+
+function login() {
+  void router.push('/login')
+}
+
+async function logout() {
+  await signOut(myAuth())
+  await store.logout()
 }
 </script>
 

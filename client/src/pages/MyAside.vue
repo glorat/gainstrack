@@ -57,12 +57,11 @@
       version() {
         return this.$appVersion;
       },
-      errors(): string[] {
-        return (this.store.parseState?.errors ?? []) as string[];
+      errors() {
+        return this.store.parseState?.errors ?? [];
       },
       errorClass() {
-        const errs = (this.store.parseState.errors as string[]) ?? []
-        return errs.length > 0 ? 'error' : 'error hidden';
+        return (this.store.parseState.errors?.length ?? 0) > 0 ? 'error' : 'error hidden';
       }
     }
   })

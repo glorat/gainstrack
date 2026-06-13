@@ -56,41 +56,36 @@
   </div>
 </template>
 
-<script>
-  import Transfer from './command/Transfer.vue'
-  import FundCommand from './command/FundCommand.vue'
-  import AccountCreation from './command/AccountCreation.vue'
-  import EarnEditor from './command/EarnEditor.vue'
-  import YieldEditor from './command/YieldEditor.vue'
-  import SpendEditor from '../components/command/SpendEditor.vue'
-  import BalanceOrUnit from 'components/command/BalanceOrUnit.vue'
+<script setup lang="ts">
+import Transfer from './command/Transfer.vue'
+import FundCommand from './command/FundCommand.vue'
+import AccountCreation from './command/AccountCreation.vue'
+import EarnEditor from './command/EarnEditor.vue'
+import YieldEditor from './command/YieldEditor.vue'
+import SpendEditor from '../components/command/SpendEditor.vue'
+import BalanceOrUnit from 'components/command/BalanceOrUnit.vue'
+import { computed } from 'vue'
+import type { AccountCommandDTO } from 'src/lib/assetdb/models'
 
-  export default {
-    name: 'CommandEditor',
-    components: {
-      YieldEditor,
-      SpendEditor,
-      EarnEditor,
-      FundCommand,
-      Transfer,
-      AccountCreation,
-      BalanceOrUnit
-    },
-    methods: {
-      gainstrackChanged (str) {
-        this.$emit('gainstrack-changed', str)
-      },
-      inputChanged () {
-        this.$emit('update:modelValue', this.modelValue)
-      },
-    },
-    computed: {
-      type () {
-        return this.modelValue.commandType
-      }
-    },
-    props: { modelValue: Object, options: Object },
-  }
+const props = defineProps<{
+  modelValue: Partial<AccountCommandDTO>
+  options?: Record<string, unknown>
+}>()
+
+const emit = defineEmits<{
+  'gainstrack-changed': [str: string]
+  'update:modelValue': [val: Partial<AccountCommandDTO>]
+}>()
+
+const type = computed(() => props.modelValue.commandType ?? '')
+
+function gainstrackChanged(str: string) {
+  emit('gainstrack-changed', str)
+}
+
+function inputChanged() {
+  emit('update:modelValue', props.modelValue)
+}
 </script>
 
 <style>

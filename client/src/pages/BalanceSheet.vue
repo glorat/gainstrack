@@ -22,35 +22,22 @@
     </my-page>
 </template>
 
-<script>
-    import TreeTable from 'src/components/TreeTable.vue';
-    import ConversionSelect from 'src/components/ConversionSelect.vue';
-    import AccountGraph from 'src/components/AccountGraph.vue';
-    import NetworthSunburst from 'components/NetworthSunburst.vue';
+<script setup lang="ts">
+import TreeTable from 'src/components/TreeTable.vue'
+import ConversionSelect from 'src/components/ConversionSelect.vue'
+import NetworthSunburst from 'components/NetworthSunburst.vue'
+import { useAppStore } from 'src/stores'
+import { computed, onMounted } from 'vue'
+import { qnotify } from 'src/boot/notify'
 
-    import {useAppStore} from 'src/stores';
+const store = useAppStore()
 
-    export default {
-        name: 'BalanceSheet',
-      // eslint-disable-next-line vue/no-unused-components
-        components: {AccountGraph, ConversionSelect, TreeTable, NetworthSunburst},
-        setup() { return { store: useAppStore() } },
-        data() {
-            return {};
-        },
-        computed: {
-            info() {
-                return this.store.balances
-            },
-            conversion() {
-                return this.store.allState.conversion;
-            },
-        },
-        mounted() {
-            this.store.computeBalances()
-                .catch(error => this.$notify.error(error))
-        },
-    }
+const info = computed(() => store.balances)
+const conversion = computed(() => store.conversion)
+
+onMounted(() => {
+  store.computeBalances().catch((error: unknown) => qnotify.error(String(error)))
+})
 </script>
 
 <style scoped>

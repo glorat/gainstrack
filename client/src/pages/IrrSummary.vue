@@ -25,86 +25,41 @@
 
 </template>
 
-<script>
-  import numbro from 'numbro'
-  import { apiIrrSummary } from 'src/lib/apiFacade'
-  import { mapState } from 'pinia'
-  import { useAppStore } from 'src/stores'
-  import { formatNumber, formatPerc } from 'src/lib/utils'
+<script setup lang="ts">
+import { apiIrrSummary } from 'src/lib/apiFacade'
+import { useAppStore } from 'src/stores'
+import { formatNumber, formatPerc } from 'src/lib/utils'
+import { ref, watch, onMounted } from 'vue'
+import { qnotify } from 'src/boot/notify'
 
-  export default {
-    name: 'IrrSummary',
-    setup() { return { store: useAppStore() } },
-    data () {
-      const columns = [{
-        name: 'account',
-        label: 'Account',
-        field: 'accountId',
-        align: 'left',
-        sortable: true
-      }, {
-        name: 'start',
-        field: 'start',
-        label: 'start',
-        classes: ['num']
-      }, {
-        name: 'end',
-        field: 'end',
-        label: 'end',
-        classes: ['num']
-      }, {
-        name: 'irr',
-        field: 'irr',
-        label: 'irr',
-        classes: ['num'],
-        sortable: true,
-        format: formatPerc
-      }, {
-        name: 'pnl',
-        label: 'pnl',
-        field: (row) => (row.pnlGain + row.flowGain),
-        classes: ['num'],
-        sortable: true,
-        format: formatNumber
-      }];
+type IrrRow = Awaited<ReturnType<typeof apiIrrSummary>>[number]
 
-      const pagination = {
-          rowsPerPage: 10,
-          sortBy: 'pnl',
-          descending: true,
-        };
+const store = useAppStore()
 
-      return { info: [], totalPnl:0, columns, pagination }
-    },
-    methods: {
-      async refresh () {
-        const notify = this.$notify;
-        try {
-          this.info = await apiIrrSummary(this.store)
-          this.totalPnl = this.info.reduce((prev, curr) => prev+curr.pnlGain + curr.flowGain, 0);
-        } catch (error) {
-          console.error(error);
-          notify.error(error)
-        }
-      },
-      perc(value) {
-        return numbro(value).format('0.00%')
-      }
-    },
-    computed: {
-      ...mapState(useAppStore, [
-        'fxConverter',
-      ]),
-    },
-    watch: {
-      fxConverter () {
-        this.refresh()
-      }
-    },
-    mounted () {
-      this.refresh();
-    }
+const columns = [
+  { name: 'account', label: 'Account', field: 'accountId', align: 'left' as const, sortable: true },
+  { name: 'start', field: 'start', label: 'start', classes: 'num' },
+  { name: 'end', field: 'end', label: 'end', classes: 'num' },
+  { name: 'irr', field: 'irr', label: 'irr', classes: 'num', sortable: true, format: formatPerc },
+  { name: 'pnl', label: 'pnl', field: (row: IrrRow) => (row.pnlGain + row.flowGain), classes: 'num', sortable: true, format: formatNumber },
+]
+
+const pagination = ref({ rowsPerPage: 10, sortBy: 'pnl', descending: true })
+const info = ref<IrrRow[]>([])
+const totalPnl = ref(0)
+
+async function refresh() {
+  try {
+    info.value = await apiIrrSummary(store)
+    totalPnl.value = info.value.reduce((prev, curr) => prev + curr.pnlGain + curr.flowGain, 0)
+  } catch (error) {
+    console.error(error)
+    qnotify.error(String(error))
   }
+}
+
+watch(() => store.fxConverter, () => { void refresh() })
+onMounted(() => { void refresh() })
 </script>
 
 <style scoped>

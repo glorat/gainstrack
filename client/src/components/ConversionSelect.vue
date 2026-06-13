@@ -1,5 +1,5 @@
 <template>
-    <select name="conversion" id="conversion" v-model="value" v-on:change="conversionChange">
+    <select name="conversion" id="conversion" :value="store.conversion" v-on:change="conversionChange">
         <!--<option value="at_cost">At Cost</option>
         <option value="at_value">At Market Value</option>-->
         <option value="global">Base Currency</option>
@@ -10,22 +10,14 @@
     </select>
 </template>
 
-<script>
-    import {useAppStore} from 'src/stores';
+<script setup lang="ts">
+import { useAppStore } from 'src/stores'
 
-    export default {
-        name: 'ConversionSelect',
-        setup() { return { store: useAppStore() } },
-        data() {
-            return {value: this.store.conversion}
-        },
-        methods: {
-            async conversionChange(e) {
-                await this.store.setConversion(e.target.value);
-                this.value = this.store.conversion;
-            },
-        },
-    }
+const store = useAppStore()
+
+async function conversionChange(e: Event) {
+  await store.setConversion((e.target as HTMLSelectElement).value)
+}
 </script>
 
 <style scoped>

@@ -25,78 +25,62 @@
 <!--    </form>-->
 </template>
 
-<script>
-    import axios from 'axios';
-    import {codemirror} from 'src/lib/loader';
-    import {useAppStore} from 'src/stores';
+<script setup lang="ts">
+import axios from 'axios'
+import { codemirror } from 'src/lib/loader'
+import { useAppStore } from 'src/stores'
+import { computed, reactive, onMounted } from 'vue'
+import { axiosErrorMessage, qnotify } from 'src/boot/notify'
+import type { ParseError } from 'src/lib/assetdb/models'
 
-    export default {
-        name: 'Editor',
-        setup() { return { store: useAppStore() } },
-        data() {
-            return {info: {source: 'Loading...'}}
-        },
-        components: {codemirror},
-        mounted() {
-            this.reload();
-        },
-        computed: {
-            errors() {
-                return this.store.parseState.errors;
-            },
-        },
-        methods: {
-            editorReset() {
-                this.store.reload()
-                    .then( () => this.reload());
-            },
-            editorSave() {
-                this.store.setGainstrackText(this.info.source);
-                const notify = this.$notify;
+const store = useAppStore()
+const info = reactive({ source: 'Loading...' })
+const errors = computed(() => store.parseState.errors)
 
-                // Not logged in: compute AllState locally (TS generator), no backend round-trip.
-                if (!this.store.isAuthenticated) {
-                    this.store.loadLocalText(this.info.source).then(res => {
-                        if (res.ok) {
-                            this.store.setParseState({ errors: [] });
-                            notify.success('Computed locally');
-                        } else {
-                            this.store.setParseState({ errors: res.errors });
-                            notify.warning('There are errors...');
-                        }
-                    });
-                    return;
-                }
+async function reload() {
+  try {
+    info.source = await store.fetchGainstrackText()
+  } catch (error) {
+    qnotify.error(String(error))
+  }
+}
 
-                axios.post('/api/post/source', {source: this.info.source, filePath: '', entryHash: '', sha256sum: ''})
-                    .then(response => {
-                        this.store.setParseState(response.data);
-                        if (response.data.errors.length > 0) {
-                            notify.warning('There are errors...')
-                        } else {
-                            notify.success('Saved');
-                            this.store.reload()
-                                .then( () => this.reload());
-                        }
-                    })
-                    .catch(error => notify.error( error.response || error))
-            },
-            reload() {
-                const notify = this.$notify;
-                this.store.fetchGainstrackText()
-                    .then(source => this.info.source = source)
-                    .catch(error => notify.error(error))
-            },
-          pageStyle(offset) {
-            // "offset" is a Number (pixels) that refers to the total
-            // height of header + footer that occupies on screen,
-            // based on the QLayout "view" prop configuration
+function editorReset() {
+  store.reload().then(() => reload())
+}
 
-            // this is actually what the default style-fn does in Quasar
-            return { minHeight: offset ? `calc(100vh - ${offset+40}px)` : '100vh' };
-          }
-        }
-    }
+function editorSave() {
+  store.setGainstrackText(info.source)
+
+  // Not logged in: compute AllState locally (TS generator), no backend round-trip.
+  if (!store.isAuthenticated) {
+    store.loadLocalText(info.source).then(res => {
+      if (res.ok) {
+        store.setParseState({ errors: [] })
+        qnotify.success('Computed locally')
+      } else {
+        store.setParseState({ errors: res.errors })
+        qnotify.warning('There are errors...')
+      }
+    })
+    return
+  }
+
+  axios.post('/api/post/source', { source: info.source, filePath: '', entryHash: '', sha256sum: '' })
+    .then(response => {
+      const data = response.data as { errors: ParseError[] }
+      store.setParseState(data)
+      if (data.errors.length > 0) {
+        qnotify.warning('There are errors...')
+      } else {
+        qnotify.success('Saved')
+        store.reload().then(() => reload())
+      }
+    })
+    .catch((error: unknown) => qnotify.error(axiosErrorMessage(error)))
+}
+
+onMounted(() => { void reload() })
 </script>
 
 <style>

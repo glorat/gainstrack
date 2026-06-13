@@ -1,3 +1,4 @@
+import axios from 'axios'
 import { Notify } from 'quasar';
 import {boot} from 'quasar/wrappers';
 
@@ -38,6 +39,15 @@ declare module 'vue' {
   interface ComponentCustomProperties {
     $notify: MyNotify
   }
+}
+
+export function axiosErrorMessage(error: unknown): string {
+  if (!axios.isAxiosError(error)) return String(error)
+  const data = error.response?.data
+  if (typeof data === 'string') return data
+  if (data && typeof data === 'object' && 'message' in data) return String((data as Record<string, unknown>)['message'])
+  if (data) return JSON.stringify(data)
+  return error.message
 }
 
 export default boot(({app}) => {

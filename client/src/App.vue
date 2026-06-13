@@ -9,10 +9,6 @@
 
 </style>
 
-<script>
+<script setup lang="ts">
 import { MyFirebase } from './lib/loader'
-
-export default {
-  components: { MyFirebase }
-}
 </script>

@@ -16,32 +16,20 @@
   </my-page>
 </template>
 
-<script>
-  import TreeTable from '../components/TreeTable.vue'
-  import ConversionSelect from '../components/ConversionSelect.vue'
+<script setup lang="ts">
+import TreeTable from '../components/TreeTable.vue'
+import ConversionSelect from '../components/ConversionSelect.vue'
+import { useAppStore } from 'src/stores'
+import { computed, onMounted } from 'vue'
+import { qnotify } from 'src/boot/notify'
 
-  import {useAppStore} from 'src/stores';
+const store = useAppStore()
 
-  export default {
-    name: 'IncomeStatement',
-    components: {
-      ConversionSelect,
-      TreeTable
-    },
-    setup() { return { store: useAppStore() } },
-    data () {
-      return {}
-    },
-    computed: {
-      info () {
-        return this.store.balances
-      }
-    },
-    mounted () {
-      this.store.computeBalances()
-        .catch(error => this.$notify.error(error))
-    },
-  }
+const info = computed(() => store.balances)
+
+onMounted(() => {
+  store.computeBalances().catch((error: unknown) => qnotify.error(String(error)))
+})
 </script>
 
 <style scoped>

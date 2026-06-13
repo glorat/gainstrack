@@ -198,6 +198,17 @@ export const emptyAllState: AllState = {
   proxyMapper:{},
 };
 
+export interface ParseError {
+  line: number
+  message: string
+}
+
+export interface AccountChange {
+  accountId: string
+  unitChange: Array<{ number: string; ccy: string }>
+  valueChange: string
+}
+
 export interface TreeTableDTO {
   name: string
   shortName: string

@@ -15,22 +15,27 @@
     </my-page>
 </template>
 
-<script>
-    import axios from 'axios';
+<script setup lang="ts">
+import axios from 'axios'
+import { ref, onMounted } from 'vue'
+import { qnotify } from 'src/boot/notify'
 
-    export default {
-        name: 'History',
-        data() {
-          return {
-              commits: [],
-          }
-        },
-        mounted() {
-            axios.post('/api/history')
-                .then(response => this.commits = response.data)
-                .catch(error => this.$notify.error(error))
-        },
-    }
+interface HistoryEvent {
+  adds?: string[][]
+  removes?: string[][]
+}
+
+interface Commit {
+  event?: HistoryEvent
+}
+
+const commits = ref<Commit[]>([])
+
+onMounted(() => {
+  axios.post<Commit[]>('/api/history')
+    .then(response => { commits.value = response.data })
+    .catch((error: unknown) => qnotify.error(String(error)))
+})
 </script>
 
 <style scoped>

@@ -1,5 +1,5 @@
 import axios, {AxiosInstance, AxiosPromise} from 'axios';
-import {PostingEx} from 'src/lib/assetdb/models';
+import {AccountChange, AccountCommandDTO, ParseError, PostingEx} from 'src/lib/assetdb/models';
 import {SingleFXConverter} from 'src/lib/fx';
 import {LocalDate} from 'app/node_modules/@js-joda/core';
 import {convertedPositionSet, formatNumber, isSubAccountOf, positionUnderAccount} from 'src/lib/utils';
@@ -49,9 +49,10 @@ export async function apiAccountSummary(store: AppStore, props: Record<string, a
 
 // Type safe command functions
 export interface CmdTestResponse {
-  added: string[]
-  accountChanges: unknown[]
-  errors: string[]
+  added: AccountCommandDTO[]
+  accountChanges: AccountChange[]
+  errors: ParseError[]
+  networthChange: number
 }
 
 export async function apiCmdTest(store: AppStore, props: Record<string, any>): Promise<CmdTestResponse> {

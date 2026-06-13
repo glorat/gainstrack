@@ -21,28 +21,16 @@
 
 </template>
 
-<script>
-  import { commands } from '../config/commands'
-  import { matAddCircleOutline } from '@quasar/extras/material-icons'
+<script setup lang="ts">
+import { commands, type CommandConfig } from '../config/commands'
+import { matAddCircleOutline } from '@quasar/extras/material-icons'
+import { useRouter } from 'vue-router'
 
-  export default {
-    name: 'Add',
-    methods: {
-      go (cmd) {
-        this.$router.push({
-          path: '/add/cmd',
-          query: { cmd: cmd.prefix }
-        })
-      },
-    },
-    data () {
-      return {
-        commands,
-        matAddCircleOutline
-      }
-    },
-    components: {}
-  }
+const router = useRouter()
+
+function go(cmd: CommandConfig) {
+  void router.push({ path: '/add/cmd', query: { cmd: cmd.prefix } })
+}
 </script>
 
 <style scoped>

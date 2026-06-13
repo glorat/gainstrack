@@ -12,75 +12,59 @@
     </my-page>
 </template>
 
-<script>
+<script setup lang="ts">
+import axios from 'axios'
+import TreeTable from '../components/TreeTable.vue'
+import { VuePlotly } from '../lib/loader'
+import { ref, onMounted } from 'vue'
+import { qnotify } from 'src/boot/notify'
+import type { TreeTableDTO } from 'src/lib/assetdb/models'
 
-    import axios from 'axios';
-    import TreeTable from '../components/TreeTable.vue';
-    import { VuePlotly } from '../lib/loader'
+interface AssetAllocationTable {
+  name: string
+  rows: TreeTableDTO
+}
 
-    export default {
-        name: 'AssetAllocation',
-        components: {TreeTable, VuePlotly},
-        data() {
-            return {
-                treeData: [{
-                    type: 'sunburst',
-                    ids: [
-                        'loading'
-                    ],
-                    labels: [
-                        'Loading'
-                    ],
-                    parents: [
-                        ''
-                    ],
-                }],
-                treeLayout: {
-                    autosize: true,
-                    margin: {l: 0, r: 0, b: 0, t: 0},
-                    sunburstcolorway: ['#636efa', '#ef553b', '#00cc96'],
-                },
-                treeOptions: {
-                    displaylogo: false
-                },
-                // table
-                tables: [],
-            }
-        },
-        mounted() {
-            const notify = this.$notify;
+const treeData = ref<Record<string, unknown>[]>([{
+  type: 'sunburst',
+  ids: ['loading'],
+  labels: ['Loading'],
+  parents: [''],
+}])
 
-            axios.post('/api/aa/tree')
-                .then(response => {
-                    const data = response.data;
+const treeLayout = ref({
+  autosize: true,
+  margin: { l: 0, r: 0, b: 0, t: 0 },
+  sunburstcolorway: ['#636efa', '#ef553b', '#00cc96'],
+})
 
-                    const plotlys = [{
-                        ...data,
-                        type: 'sunburst',
-                        name: 'Networth',
-                        branchvalues: 'total',
-                        hovertemplate: '%{label}<br>%{value:,f}<br>%{percentParent:.1%}<br>%{percentRoot:.1%}',
+const treeOptions = ref({ displaylogo: false })
+const tables = ref<AssetAllocationTable[]>([])
 
-                    }];
-                    // Root element doesn't accept percentParent so we stub out the template
-                    const ts = Array(plotlys[0].ids.length).fill('%{label}<br>%{percentParent:.1%}');
-                    ts.unshift('Networth');
-                    plotlys[0].texttemplate = ts;
+onMounted(() => {
+  axios.post('/api/aa/tree')
+    .then(response => {
+      const data = response.data as Record<string, unknown>
+      const plotly: Record<string, unknown> = {
+        ...data,
+        type: 'sunburst',
+        name: 'Networth',
+        branchvalues: 'total',
+        hovertemplate: '%{label}<br>%{value:,f}<br>%{percentParent:.1%}<br>%{percentRoot:.1%}',
+      }
+      // Root element doesn't accept percentParent so we stub out the template
+      const ids = plotly.ids as string[]
+      const ts: string[] = Array(ids.length).fill('%{label}<br>%{percentParent:.1%}')
+      ts.unshift('Networth')
+      plotly.texttemplate = ts
+      treeData.value = [plotly]
+    })
+    .catch((error: unknown) => qnotify.error(String(error)))
 
-                    this.treeData = plotlys;
-
-                })
-                .catch(error => notify.error(error));
-
-
-
-            axios.post('/api/aa/table')
-                .then(response => {
-                    this.tables = response.data;
-                })
-                .catch(error => notify.error(error));
-        },
-    }
+  axios.post('/api/aa/table')
+    .then(response => { tables.value = response.data as AssetAllocationTable[] })
+    .catch((error: unknown) => qnotify.error(String(error)))
+})
 </script>
 
 <style scoped>

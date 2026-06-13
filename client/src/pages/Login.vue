@@ -4,14 +4,8 @@
   </my-page>
 </template>
 
-<script>
+<script setup lang="ts">
 import {FirebaseLogin} from '../lib/loader';
-import { defineComponent } from 'vue'
-
-export default defineComponent({
-  name: 'Login',
-  components: {FirebaseLogin},
-})
 </script>
 
 <style scoped>
