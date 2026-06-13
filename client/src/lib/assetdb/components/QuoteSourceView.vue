@@ -72,6 +72,7 @@ import {
 import ObjectFieldView from './ObjectFieldView.vue';
 
 import {applyQueries, searchObjToQuery} from '../schema';
+import { query, limit as firestoreLimit, CollectionReference } from 'firebase/firestore';
 
 export default defineComponent({
   name: 'QuoteSourceView',
@@ -102,7 +103,7 @@ export default defineComponent({
         const level = 1; // TODO: Iterate up levels until we get results
         const limit = 5;
         const cq = searchObjToQuery(this.qsrc, quoteSourceFieldProperties, fld => fld.searchLevel?fld.searchLevel<=level:false)
-        const filter = limit ? (col: any) => applyQueries(col, cq).limit(limit) : (col: any) => applyQueries(col, cq)
+        const filter = limit ? (col: CollectionReference) => query(applyQueries(col, cq), firestoreLimit(limit)) : (col: CollectionReference) => applyQueries(col, cq)
         this.related = await getAllQuoteSources(filter)
       }
       catch (e) {

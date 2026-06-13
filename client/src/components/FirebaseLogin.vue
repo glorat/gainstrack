@@ -84,8 +84,12 @@
 
 <script lang="ts">
 import { defineComponent, ref, computed } from 'vue'
-import firebase from 'firebase/compat/app'
-import 'firebase/compat/auth'
+import {
+  GoogleAuthProvider, signInWithPopup,
+  signInWithEmailAndPassword, createUserWithEmailAndPassword,
+  signOut
+} from 'firebase/auth'
+import { myAuth } from 'src/lib/assetdb/myfirebase'
 import { useAppStore } from 'src/stores'
 
 export default defineComponent({
@@ -104,7 +108,7 @@ export default defineComponent({
     const user = computed(() => store.user)
 
     async function logout(): Promise<void> {
-      await firebase.auth().signOut()
+      await signOut(myAuth())
       await store.logout()
     }
 
@@ -112,8 +116,8 @@ export default defineComponent({
       errorMsg.value = ''
       googleLoading.value = true
       try {
-        const provider = new firebase.auth.GoogleAuthProvider()
-        await firebase.auth().signInWithPopup(provider)
+        const provider = new GoogleAuthProvider()
+        await signInWithPopup(myAuth(), provider)
       } catch (err: unknown) {
         errorMsg.value = (err as { message?: string }).message ?? 'Google sign-in failed'
       } finally {
@@ -130,9 +134,9 @@ export default defineComponent({
       emailLoading.value = true
       try {
         if (isSignUp.value) {
-          await firebase.auth().createUserWithEmailAndPassword(email.value, password.value)
+          await createUserWithEmailAndPassword(myAuth(), email.value, password.value)
         } else {
-          await firebase.auth().signInWithEmailAndPassword(email.value, password.value)
+          await signInWithEmailAndPassword(myAuth(), email.value, password.value)
         }
         password.value = ''
       } catch (err: unknown) {

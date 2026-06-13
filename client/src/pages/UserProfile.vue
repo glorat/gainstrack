@@ -28,7 +28,7 @@
 <script lang="ts">
   import {defineComponent} from 'vue';
   import {useAppStore} from 'src/stores';
-  import firebase from 'firebase/compat/app';
+  import { User } from 'firebase/auth';
   import {getUserRole, setDisplayName} from 'src/lib/assetdb/assetDb';
   import {DocumentData} from  'firebase/firestore';
   import {matLogin} from '@quasar/extras/material-icons';
@@ -99,7 +99,7 @@
       isAuthenticated():boolean {
         return this.firebaseAuthed;
       },
-      firebaseUser(): firebase.User|undefined {
+      firebaseUser(): User|undefined {
         return this.store.user;
       },
       authName():string {

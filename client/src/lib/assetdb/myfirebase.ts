@@ -1,12 +1,8 @@
-import firebase from 'firebase/compat/app';
-
-import 'firebase/compat/auth';
-// Add the Firebase services that you want to use
-import 'firebase/compat/analytics';
-import 'firebase/compat/firestore';
-import 'firebase/compat/functions';
-
-let inited = false;
+import { initializeApp, getApps, FirebaseApp } from 'firebase/app'
+import { getAuth } from 'firebase/auth'
+import { getAnalytics } from 'firebase/analytics'
+import { getFirestore } from 'firebase/firestore'
+import { getFunctions } from 'firebase/functions'
 
 const firebaseConfig = {
   apiKey: 'AIzaSyBFgCa2tMUSuAWxiyAPa5U90peuqAJNNBo',
@@ -17,40 +13,28 @@ const firebaseConfig = {
   messagingSenderId: '248761590066',
   appId: '1:248761590066:web:dcd7d7a8e1028f7b1bf72b',
   measurementId: 'G-H8SQPQVX1S'
-};
+}
 
-
-function initFirebase() {
-  if (!inited) {
-    inited = true;
-    // Initialize Firebase
-
-    firebase.initializeApp(firebaseConfig);
-    console.log('Firebase initialised');
-
-    if (location.hostname === 'localhost') {
-      //firebase.firestore().useEmulator('localhost', 8091);
-      //firebase.functions().useEmulator('localhost', 5001);
-    }
-  }
+function getOrInitApp(): FirebaseApp {
+  const existing = getApps()
+  if (existing.length > 0) return existing[0]
+  const app = initializeApp(firebaseConfig)
+  console.log('Firebase initialised')
+  return app
 }
 
 export function myFirestore() {
-  initFirebase();
-  return firebase.firestore();
+  return getFirestore(getOrInitApp())
 }
 
 export function myAnalytics() {
-  initFirebase();
-  return firebase.analytics();
+  return getAnalytics(getOrInitApp())
 }
 
 export function myAuth() {
-  initFirebase();
-  return firebase.auth();
+  return getAuth(getOrInitApp())
 }
 
 export function myFunctions() {
-  initFirebase();
-  return firebase.functions();
+  return getFunctions(getOrInitApp())
 }

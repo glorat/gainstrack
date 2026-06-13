@@ -17,7 +17,7 @@ import { balanceTreeTable } from '../lib/TreeTable'
 import { LocalDate } from '@js-joda/core'
 import { toCommodityGainstrack } from '../lib/commandDefaulting'
 import { QuoteSource } from 'src/lib/assetdb/assetDb'
-import firebase from 'firebase/compat/app'
+import { User } from 'firebase/auth'
 import { Notify } from 'quasar'
 
 export interface TimeSeries {
@@ -66,7 +66,7 @@ export const useAppStore = defineStore('app', () => {
   const gainstrackText = ref('')
   const quotes = ref<Record<string, TimeSeries>>({})
   const conversion = ref('parent')
-  const user = ref<firebase.User | undefined>(undefined)
+  const user = ref<User | undefined>(undefined)
   const authToken = ref<string | undefined>(undefined)
 
   // Getters
@@ -119,7 +119,7 @@ export const useAppStore = defineStore('app', () => {
   const allCcys = computed((): string[] => allState.value.ccys)
 
   // Actions
-  function changeUser(userData?: firebase.User | undefined) {
+  function changeUser(userData?: User | undefined) {
     user.value = userData
   }
 

@@ -1,8 +1,6 @@
 import {find, includes, keys, get} from 'lodash';
 import {EnumEntry} from './enums';
-import firebase from 'firebase/compat/app';
-import CollectionReference = firebase.firestore.CollectionReference;
-import Query = firebase.firestore.Query;
+import { CollectionReference, Query, QueryConstraint, query, where, orderBy } from 'firebase/firestore';
 
 export interface FieldProperty {
   name: string
@@ -124,22 +122,16 @@ export function searchObjToQuery(obj: any, fieldProps: FieldProperty[], fldFilte
   return ret;
 }
 
-// but somewhat necessarily since different types are in use in web client sdk vs admin sdk
-export function applyQueries(col: CollectionReference, queries: any[]): Query | CollectionReference {
-  let ret: Query | CollectionReference = col;
-
+export function applyQueries(col: CollectionReference, queries: any[]): Query {
+  const constraints: QueryConstraint[] = [];
   queries.forEach(qry => {
-    if (qry.where) {
-      const where = qry.where;
-      if (where.length === 3) {
-        ret = ret.where(where[0], where[1], where[2])
-      }
+    if (qry.where && qry.where.length === 3) {
+      constraints.push(where(qry.where[0], qry.where[1], qry.where[2]));
     } else if (qry.orderBy) {
-      const orderBy = qry.orderBy;
-      ret = ret.orderBy(orderBy[0], orderBy[1])
+      constraints.push(orderBy(qry.orderBy[0], qry.orderBy[1]));
     }
   });
-  return ret;
+  return query(col, ...constraints);
 }
 
 export function getFieldNameList(props: FieldProperty[], prefix = ''): EnumEntry[] {

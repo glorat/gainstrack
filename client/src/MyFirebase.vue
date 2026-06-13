@@ -4,11 +4,10 @@
 
 <script lang="ts">
   import {defineComponent} from 'vue';
-  import {myfirebase} from 'src/lib/assetdb';
-  import myAnalytics = myfirebase.myAnalytics;
-  import myAuth = myfirebase.myAuth;
+  import { myAnalytics, myAuth } from 'src/lib/assetdb/myfirebase';
+  import { onAuthStateChanged, User } from 'firebase/auth';
+  import { logEvent } from 'firebase/analytics';
   import {useAppStore} from 'src/stores';
-  import firebase from 'firebase/compat/app';
 
   export default defineComponent({
     name: 'MyFirebase',
@@ -19,9 +18,9 @@
     created(): void {
       const store = this.store
       this.$router.afterEach((to) => {
-        myAnalytics().logEvent('page_view', {page_path: to.path})
+        logEvent(myAnalytics(), 'page_view', {page_path: to.path})
       });
-      myAuth().onAuthStateChanged(async (user: firebase.User | null) => {
+      onAuthStateChanged(myAuth(), async (user: User | null) => {
         if (user) {
           try {
             await store.loginWithToken(() => user.getIdToken(false))

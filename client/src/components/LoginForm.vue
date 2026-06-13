@@ -13,8 +13,8 @@
 </template>
 
 <script>
-import firebase from 'firebase/compat/app';
-import 'firebase/compat/auth';
+import { signOut } from 'firebase/auth';
+import { myAuth } from 'src/lib/assetdb/myfirebase';
 import {useAppStore} from 'src/stores';
 
 export default {
@@ -33,7 +33,7 @@ export default {
           this.$router.push('/login');
         },
         async logout() {
-          await firebase.auth().signOut();
+          await signOut(myAuth());
           await this.store.logout();
         },
     },

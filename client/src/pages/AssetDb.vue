@@ -29,6 +29,7 @@ import {getAllQuoteSources, QuoteSource} from 'src/lib/assetdb/assetDb';
 import {debounce} from 'quasar';
 import {quoteSourceFieldProperties} from 'src/lib/assetdb/AssetSchema';
 import {applyQueries, searchObjToQuery} from 'src/lib/assetdb/schema';
+import { query, limit as firestoreLimit, CollectionReference } from 'firebase/firestore';
 import {QuoteSourceFilter, QuoteSourceTable} from 'src/lib/assetdb';
 
 function queryArgsToObj(args: any) {
@@ -92,10 +93,10 @@ export default defineComponent({
         const cq = [...advancedQuery, ...searchObjQuery];
 
         if (cq && cq.length && cq[0].where) {
-          const filter = (col: any) => applyQueries(col, cq).limit(actualLimit);
+          const filter = (col: CollectionReference) => query(applyQueries(col, cq), firestoreLimit(actualLimit));
           this.quoteSources = await getAllQuoteSources(filter)
         } else {
-          this.quoteSources = await getAllQuoteSources((col:any) => col.limit(actualLimit));
+          this.quoteSources = await getAllQuoteSources((col: CollectionReference) => query(col, firestoreLimit(actualLimit)));
         }
       } catch (error) {
         const e:any = error;

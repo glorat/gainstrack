@@ -1,14 +1,10 @@
-import {myAuth, myFirestore} from './myfirebase';
-import firebase from 'firebase/compat/app';
-// import Query = firebase.firestore.Query;
-import FieldValue = firebase.firestore.FieldValue;
-import { uniq, pick } from 'lodash';
-
-// interface QuoteSourceProvider {
-//   sourceType: string
-//   ref: string
-//   meta: string
-// }
+import { myAuth, myFirestore, myFunctions } from './myfirebase'
+import {
+  collection, doc, getDoc, getDocs, addDoc,
+  query, where, orderBy, serverTimestamp
+} from 'firebase/firestore'
+import { httpsCallable } from 'firebase/functions'
+import { uniq, pick } from 'lodash'
 
 export interface LastUpdate {
   timestamp: number
@@ -49,116 +45,97 @@ export function emptyQuoteSource(name:string): QuoteSource {
   }
 }
 
-export const quoteSourceDb = () => myFirestore().collection('quoteSources');
-const quoteSourceHistoryDb = () => myFirestore().collection('quoteSourceHistory');
-const userRolesDb = () => myFirestore().collection('userRoles');
+export const quoteSourceDb = () => collection(myFirestore(), 'quoteSources')
+const quoteSourceHistoryDb = () => collection(myFirestore(), 'quoteSourceHistory')
+const userRolesDb = () => collection(myFirestore(), 'userRoles')
 
-let allQuoteSources: QuoteSource[] | undefined = undefined;
+let allQuoteSources: QuoteSource[] | undefined = undefined
 
-const displayNameMap: Record<string, string|undefined> = {}; // uid -> displayName
+const displayNameMap: Record<string, string|undefined> = {} // uid -> displayName
 export async function getDisplayNames(uids: string[]): Promise<Record<string,(string|undefined)>> {
-  const missing = uniq(uids.filter(uid => !displayNameMap[uid]));
+  const missing = uniq(uids.filter(uid => !displayNameMap[uid]))
   if (missing.length > 0) {
-    // Populate cache with missing entries
-    const missingDocsPromises = missing.map(async m => (await userRolesDb().doc(m).get()).data());
-    const missingDocs = await Promise.all(missingDocsPromises);
-    missingDocs.forEach( (doc,idx) => {
-      displayNameMap[missing[idx]] = doc?.displayName;
+    const missingDocsPromises = missing.map(async m => (await getDoc(doc(myFirestore(), 'userRoles', m))).data())
+    const missingDocs = await Promise.all(missingDocsPromises)
+    missingDocs.forEach((docData, idx) => {
+      displayNameMap[missing[idx]] = docData?.displayName
     })
   }
-  // Assume cache is all populated now
-  return pick(displayNameMap, uids);
-
+  return pick(displayNameMap, uids)
 }
 
-export async function getUserRole(uid: string): Promise<firebase.firestore.DocumentData | undefined> {
-  const ret = await userRolesDb().doc(uid).get();
-  return ret.data();
+export async function getUserRole(uid: string) {
+  const snap = await getDoc(doc(myFirestore(), 'userRoles', uid))
+  return snap.data()
 }
 
 export async function setDisplayName(displayName: string) {
-  const fn = firebase.functions().httpsCallable('setDisplayName');
-  const result = await fn({ displayName });
-  return result.data;
-
+  const fn = httpsCallable(myFunctions(), 'setDisplayName')
+  const result = await fn({ displayName })
+  return result.data
 }
 
 export async function createQuoteSource(name: string): Promise<QuoteSource> {
-  const doc = emptyQuoteSource(name)
-
-  const ret = await quoteSourceDb().add(doc);
-  const ref = await ret.get();
-  const newDoc = ref.data() as QuoteSource;
-  newDoc.id = ret.id;
-  return newDoc;
+  const qsrc = emptyQuoteSource(name)
+  const docRef = await addDoc(quoteSourceDb(), qsrc)
+  const snap = await getDoc(docRef)
+  const newDoc = snap.data() as QuoteSource
+  newDoc.id = docRef.id
+  return newDoc
 }
 
 export async function upsertQuoteSource(qsrc: QuoteSource): Promise<void> {
-  const id = `${qsrc.ticker}.${qsrc.marketRegion}`;
+  const id = `${qsrc.ticker}.${qsrc.marketRegion}`
   if (qsrc.id !== id) {
     throw new Error(`QuoteSource id must be ${id}`)
   }
   if (!qsrc.ticker || !qsrc.marketRegion) {
-    // This is just a client side sanity check
     throw new Error('QuoteSource must have ticker and marketRegion')
   }
 
-
-  const safeQsrc = prepareQuoteSourceForSave(qsrc);
+  const safeQsrc = prepareQuoteSourceForSave(qsrc)
 
   const data = {
     payload: safeQsrc,
     action: 'upsert',
-    createTime: FieldValue.serverTimestamp(),
+    createTime: serverTimestamp(),
     uid: myAuth().currentUser?.uid,
-  };
-  await quoteSourceHistoryDb().add(data);
+  }
+  await addDoc(quoteSourceHistoryDb(), data)
 
-  // Update local cache without server side sync
   if (allQuoteSources) {
-    const idx = allQuoteSources.findIndex(x => x.id === id);
-    if (idx>=0) {
+    const idx = allQuoteSources.findIndex(x => x.id === id)
+    if (idx >= 0) {
       allQuoteSources[idx] = safeQsrc
     } else {
-      allQuoteSources = [...allQuoteSources, safeQsrc];
+      allQuoteSources = [...allQuoteSources, safeQsrc]
     }
   }
 }
 
-//
-// export async function getQuoteSource(id: string): Promise<QuoteSource|undefined> {
-//   const all = await getAllQuoteSources();
-//   return all.find(x => x.id === id)
-// }
-
-export async function getAllQuoteSources(filter?: any): Promise<QuoteSource[]> {
-  const dataRef = quoteSourceDb();
-  const filteredRef = filter? filter(dataRef) : dataRef;
-
-  const snapshot = await filteredRef.get();
-  const ret:QuoteSource[] = [];
-  snapshot.forEach((doc:any) => {
-    const data = doc.data();
-    data.id = doc.id;
-    const qs = sanitiseQuoteSource(data);
-    ret.push(qs);
-  });
-  allQuoteSources = ret;
-  return ret;
+export async function getAllQuoteSources(filter?: (col: ReturnType<typeof quoteSourceDb>) => ReturnType<typeof query>): Promise<QuoteSource[]> {
+  const dataRef = quoteSourceDb()
+  const filteredRef = filter ? filter(dataRef) : dataRef
+  const snapshot = await getDocs(filteredRef)
+  const ret: QuoteSource[] = []
+  snapshot.forEach((docSnap) => {
+    const data = docSnap.data() as Record<string, any>
+    data.id = docSnap.id
+    const qs = sanitiseQuoteSource(data)
+    ret.push(qs)
+  })
+  allQuoteSources = ret
+  return ret
 }
 
 export function sanitiseQuoteSource(qs: any): QuoteSource {
-  // TODO: Do a robust version of this function
-  if (!qs.asset) qs.asset = {};
+  if (!qs.asset) qs.asset = {}
   if (!qs.providers && qs.sources) {
-    // Version convert sources from array to map
-    qs.providers = {};
+    qs.providers = {}
     qs.sources.forEach((src:any) => {
       qs.providers[src.sourceType] = src
     })
   }
-
-  // if (qs.ddd)
   return qs as QuoteSource
 }
 
@@ -168,25 +145,24 @@ function prepareQuoteSourceForSave(qs: QuoteSource) {
     if (src.sourceType) {
       providers[src.sourceType] = src
     }
-  });
-  return {...qs, providers};
+  })
+  return {...qs, providers}
 }
 
-
 export async function getQuoteSourceHistory(id: string): Promise<QuoteSourceHistory[]> {
-  const ref = quoteSourceHistoryDb()
-  .where('payload.id', '==', id)
-  .orderBy('createTime', 'desc'); // orderBy createTime
-  const snapshot = await ref.get()
-  const ret:QuoteSourceHistory[] = [];
-  snapshot.forEach(doc => {
-    const data = doc.data();
-    data.id = doc.id;
-    // const qsh = sanitiseQuoteSourceHistory(data);
-    const qsh = data as QuoteSourceHistory
-    ret.push(qsh);
-  });
-  return ret;
+  const q = query(
+    quoteSourceHistoryDb(),
+    where('payload.id', '==', id),
+    orderBy('createTime', 'desc')
+  )
+  const snapshot = await getDocs(q)
+  const ret: QuoteSourceHistory[] = []
+  snapshot.forEach(docSnap => {
+    const data = docSnap.data()
+    data.id = docSnap.id
+    ret.push(data as QuoteSourceHistory)
+  })
+  return ret
 }
 
 export interface AssetEntry {
@@ -197,18 +173,15 @@ export interface AssetEntry {
   sources: any
   ticker: string
   type: 'ETF' | 'Stock'
-
 }
 
 export async function getAllAssets(): Promise<AssetEntry[]> {
-  const db = myFirestore();
-  const snapshot = await db.collection('assets').get();
-  const ret: AssetEntry[] = [];
-  snapshot.forEach(doc => {
-    const pSeries = doc.data() as AssetEntry;
-    pSeries.id = doc.id;
-    ret.push(pSeries as AssetEntry);
-  });
-  return ret;
+  const snapshot = await getDocs(collection(myFirestore(), 'assets'))
+  const ret: AssetEntry[] = []
+  snapshot.forEach(docSnap => {
+    const pSeries = docSnap.data() as AssetEntry
+    pSeries.id = docSnap.id
+    ret.push(pSeries)
+  })
+  return ret
 }
-
