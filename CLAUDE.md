@@ -106,8 +106,8 @@ Frontend auth is configured via `.env.development` in `client/` (Auth0 client/do
 
 - **Scala tests** live in `core/src/test/scala/` and `web/src/test/scala/`; use ScalaTest
 - **TypeScript/Vue tests** live in `client/test/unit/` and `client/src/lib/__tests__/`; use Vitest
-- Test files use `.spec.ts`, `.test.ts`, or `.jest.spec.ts` suffixes (`.jest.spec.ts` is a legacy naming convention, not actual Jest)
-- Run tests with `pnpm run test:unit` from `client/`; do **not** use `npx jest` or `npm run`
+- Test files use `.spec.ts` or `.test.ts` suffixes
+- Run tests with `pnpm run test:unit` from `client/`
 
 ## Data Flow
 
