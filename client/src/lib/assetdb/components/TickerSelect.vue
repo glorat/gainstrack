@@ -2,7 +2,7 @@
   <q-select
     use-input
     clearable
-    :modelValue="value"
+    :modelValue="modelValue"
     @update:modelValue="$emit('update:modelValue', $event)"
     :options="tickerOptions"
     @filter="tickerSearch"
@@ -14,7 +14,7 @@ import { ref } from 'vue';
 import {QuoteSource} from '../assetDb';
 import {useAppStore} from 'src/stores';
 
-defineProps<{ value?: string }>();
+defineProps<{ modelValue?: string }>();
 defineEmits<{ 'update:modelValue': [value: string] }>();
 
 const store = useAppStore();

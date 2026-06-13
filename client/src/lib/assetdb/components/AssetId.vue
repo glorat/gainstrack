@@ -1,7 +1,7 @@
 <template>
   <q-select
     :label="label || 'Asset'"
-    :modelValue="value"
+    :modelValue="modelValue"
     @update:modelValue="onSelectChanged"
     use-input
     hide-selected
@@ -24,7 +24,7 @@ interface MyOpt {
 }
 
 const props = defineProps<{
-  value?: string
+  modelValue?: string
   label?: string
   inputClass?: string | object | any[]
 }>();
@@ -67,7 +67,7 @@ function filterFn(val: string, update: any) {
 }
 
 function onSelectChanged(ev: any) {
-  if (ev.value !== props.value) {
+  if (ev.value !== props.modelValue) {
     emit('update:modelValue', ev.value.toUpperCase());
   }
 }

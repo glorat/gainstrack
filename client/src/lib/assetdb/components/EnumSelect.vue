@@ -18,7 +18,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from 'vue';
+import { computed, ref, watch } from 'vue';
 import {EnumEntry} from '../enums';
 
 const props = defineProps<{
@@ -35,6 +35,7 @@ defineEmits<{
 }>();
 
 const displayOptions = ref<EnumEntry[]>(props.options ?? []);
+watch(() => props.options, opts => { displayOptions.value = opts ?? [] });
 
 function filterFn(val: string, update: (fn: () => void) => void) {
   update(() => {

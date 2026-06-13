@@ -108,19 +108,20 @@ function cleared() {
 }
 
 function arrayCleared(idx: number) {
-  const orig: any = props.modelValue;
+  const orig: any[] = props.modelValue;
   if (orig.length > 1) {
-    orig.splice(idx, 1);
-    emit('update:modelValue', orig);
+    const copy = [...orig];
+    copy.splice(idx, 1);
+    emit('update:modelValue', copy);
   } else {
     emit('clear');
   }
 }
 
 function arrayInput(idx: number, ev: any) {
-  const orig: any = props.modelValue;
-  orig[idx] = ev;
-  emit('update:modelValue', orig);
+  const copy = [...props.modelValue];
+  copy[idx] = ev;
+  emit('update:modelValue', copy);
 }
 
 function arrayAdd() {

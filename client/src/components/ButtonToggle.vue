@@ -1,16 +1,14 @@
 <template>
-    <button type="button" :title="`Toggle ${name} entries`" :class="{inactive : offState[name]}" @click="onClick">{{ name }}</button>
+    <button type="button" :title="`Toggle ${name} entries`" :class="{inactive: modelValue}" @click="emit('update:modelValue', !modelValue)">{{ name }}</button>
 </template>
 
 <script setup lang="ts">
-const props = defineProps<{
+defineProps<{
   name: string
-  offState: Record<string, boolean>
+  modelValue: boolean
 }>();
 
-function onClick() {
-    props.offState[props.name] = !props.offState[props.name];
-}
+const emit = defineEmits<{ 'update:modelValue': [value: boolean] }>();
 </script>
 
 <style scoped>

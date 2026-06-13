@@ -3,8 +3,7 @@
     <form id="entry-filters" class="wide-form">
       <span class="spacer"></span>
       <span>Filters: </span>
-      <!-- FIXME: Mutating object in child component -->
-      <button-toggle v-for="t in entryTypes" :key="t" :name="t" :off-state="offState"></button-toggle>
+      <button-toggle v-for="t in entryTypes" :key="t" :name="t" v-model="offState[t]"></button-toggle>
 
     </form>
 
