@@ -1,5 +1,5 @@
 <template>
-  <q-dialog ref="dialog" @hide="onDialogHide" full-width full-height>
+  <q-dialog ref="dialogRef" @hide="onDialogHide" full-width full-height>
     <new-asset-editor
       :account-id="accountId"
       @cancel="onDialogHide"
@@ -9,57 +9,19 @@
   </q-dialog>
 </template>
 
-<script lang="ts">
-import {defineComponent} from 'vue';
-
-import {QDialog} from 'quasar';
+<script setup lang="ts">
+import { useDialogPluginComponent } from 'quasar';
 import NewAssetEditor from 'components/NewAssetEditor.vue';
-import {AssetDTO} from 'src/lib/assetdb/models';
+import { AssetDTO } from 'src/lib/assetdb/models';
 
-export default defineComponent({
-  name: 'NewAssetDialog',
-  components: {NewAssetEditor},
-  props: {
-    accountId: String
-  },
-  methods: {
-    // following method is REQUIRED
-    // (don't change its name --> "show")
-    show() {
-      const dialog = this.$refs.dialog as QDialog;
-      dialog.show();
-    },
+const props = defineProps<{ accountId?: string }>();
+defineEmits([...useDialogPluginComponent.emits]);
 
-    // following method is REQUIRED
-    // (don't change its name --> "hide")
-    hide() {
-      const dialog = this.$refs.dialog as QDialog;
-      dialog.hide()
-    },
+const { dialogRef, onDialogHide, onDialogOK } = useDialogPluginComponent();
 
-    onDialogHide() {
-      // required to be emitted
-      // when QDialog emits "hide" event
-      this.$emit('hide')
-    },
-
-    onOKClick (asset:AssetDTO) {
-      // on OK, it is REQUIRED to
-      // emit "ok" event (with optional payload)
-      // before hiding the QDialog
-      this.$emit('ok', asset);
-      // or with payload: this.$emit('ok', { ... })
-
-      // then hiding dialog
-      this.hide()
-    },
-  },
-  computed: {
-    options() {
-      return {hideAccount:true};
-    }
-  }
-})
+function onOKClick(asset: AssetDTO) {
+  onDialogOK(asset);
+}
 </script>
 
 <style scoped>

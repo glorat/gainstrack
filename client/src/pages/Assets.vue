@@ -4,67 +4,48 @@
   </my-page>
 </template>
 
-<script lang="ts">
-  import AssetView from '../components/AssetView.vue';
-  import {defineComponent} from 'vue';
-  import axios from 'axios';
-  import {AssetResponse, PostingEx} from '../lib/assetdb/models';
-  import {SingleFXConverter} from 'src/lib/fx';
-  import {LocalDate} from '@js-joda/core';
-  import {assetReport} from 'src/lib/assetReport';
-  import {isSubAccountOf, postingsToPositionSet} from 'src/lib/utils';
-  import {mapState} from 'pinia';
-  import {useAppStore} from 'src/stores';
+<script setup lang="ts">
+import { ref, onMounted } from 'vue';
+import AssetView from '../components/AssetView.vue';
+import axios from 'axios';
+import {AssetResponse, PostingEx} from '../lib/assetdb/models';
+import {LocalDate} from '@js-joda/core';
+import {assetReport} from 'src/lib/assetReport';
+import {isSubAccountOf, postingsToPositionSet} from 'src/lib/utils';
+import {useAppStore} from 'src/stores';
+import {qnotify} from 'src/boot/notify';
 
-  export default defineComponent({
-    name: 'Assets',
-    components: {AssetView},
-    data() {
-      return {
-        assetResponse: {rows: [], columns: [], totals: []} as AssetResponse,
-        loading: true
-      };
-    },
-    computed: {
-      ...mapState(useAppStore, [
-        'allPostingsEx',
-        'fxConverter',
-        'baseCcy'
-      ])
-    },
-    methods: {
-      async reloadAll(): Promise<void> {
-        const localCompute = true;
-        try {
-          if (localCompute) {
-            const allPostings: PostingEx[] = this.allPostingsEx;
-            const pricer: SingleFXConverter = this.fxConverter;
-            const baseCcy = this.baseCcy;
-            const date = LocalDate.now();
-            const networthFilter = (p:PostingEx) => isSubAccountOf(p.account, 'Assets')||isSubAccountOf(p.account, 'Liabilities');
-            const networthPs = allPostings.filter(networthFilter);
-            const pSet = postingsToPositionSet(networthPs);
-            const assetResponse = assetReport(pSet, pricer, baseCcy, date);
-            this.assetResponse = assetResponse;
-          } else {
-            const response = await axios.post('/api/assets/networth')
-            const assetResponse: AssetResponse = response.data;
-            this.assetResponse = assetResponse;
-          }
-        } catch (error) {
-          const e:any = error;
-          console.error(error);
-          this.$notify.error(e.toString());
-        } finally {
-          this.loading = false;
-        }
+const store = useAppStore();
 
-      }
-    },
-    mounted() {
-      this.reloadAll();
+const assetResponse = ref<AssetResponse>({rows: [], columns: [], totals: []});
+const loading = ref(true);
+
+async function reloadAll(): Promise<void> {
+  const localCompute = true;
+  try {
+    if (localCompute) {
+      const allPostings: PostingEx[] = store.allPostingsEx;
+      const pricer = store.fxConverter;
+      const baseCcy = store.baseCcy;
+      const date = LocalDate.now();
+      const networthFilter = (p: PostingEx) => isSubAccountOf(p.account, 'Assets') || isSubAccountOf(p.account, 'Liabilities');
+      const networthPs = allPostings.filter(networthFilter);
+      const pSet = postingsToPositionSet(networthPs);
+      assetResponse.value = assetReport(pSet, pricer, baseCcy, date);
+    } else {
+      const response = await axios.post('/api/assets/networth');
+      assetResponse.value = response.data as AssetResponse;
     }
-  });
+  } catch (error) {
+    const e: any = error;
+    console.error(error);
+    qnotify.error(e.toString());
+  } finally {
+    loading.value = false;
+  }
+}
+
+onMounted(() => { reloadAll(); });
 </script>
 
 <style scoped>

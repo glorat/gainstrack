@@ -24,58 +24,39 @@
   </my-page>
 </template>
 
-<script lang="ts">
-import {defineComponent} from 'vue';
+<script setup lang="ts">
+import { computed, ref, watch, onMounted } from 'vue';
 import {apiAccountSummary} from 'src/lib/apiFacade';
 import {useAppStore} from 'src/stores';
 import {sum} from 'lodash';
 import {formatNumber} from 'src/lib/utils';
 import NetworthSunburst from 'components/NetworthSunburst.vue';
+import {useRouter} from 'vue-router';
 
-export default defineComponent({
-  setup() { return { store: useAppStore() } },
-  name: 'CommandSummary',
-  components: {NetworthSunburst},
-  data() {
-    return {
-      columns: [] as any[],
-      data: [] as Record<string, any>[],
-      pagination: {
-        rowsPerPage: 30,
-        sortBy: 'accountId',
-        descending: false,
-      },
-      accountId: 'Assets'
-    }
-  },
-  methods: {
-    async refresh() {
-      const {columns, data} = await apiAccountSummary(this.store, {accountId: this.accountId})
-      this.columns = columns;
-      this.data = data;
-    },
-    onRowClick(ev: any, row: Record<string, any>): void {
-      this.$router.push({name: 'account', params: {accountId: row.accountId}}).catch(() => {});
-    },
-  },
-  watch: {
-    accountId() {
-      this.refresh();
-    }
-  },
-  computed: {
-    totalValue():number {
-      const allVals = this.data.map(row => row.balance);
-      return sum(allVals);
-    },
-    totalValueStr():string {
-      return formatNumber(this.totalValue);
-    },
-  },
-  mounted() {
-    this.refresh()
-  }
-})
+const store = useAppStore();
+const router = useRouter();
+
+const columns = ref<any[]>([]);
+const data = ref<Record<string, any>[]>([]);
+const pagination = ref({rowsPerPage: 30, sortBy: 'accountId', descending: false});
+const accountId = ref('Assets');
+
+async function refresh() {
+  const result = await apiAccountSummary(store, {accountId: accountId.value});
+  columns.value = result.columns;
+  data.value = result.data;
+}
+
+function onRowClick(ev: any, row: Record<string, any>): void {
+  router.push({name: 'account', params: {accountId: row.accountId}}).catch(() => {});
+}
+
+watch(accountId, () => { refresh(); });
+
+const totalValue = computed((): number => sum(data.value.map(row => row.balance)));
+const totalValueStr = computed((): string => formatNumber(totalValue.value));
+
+onMounted(() => { refresh(); });
 </script>
 
 <style scoped>

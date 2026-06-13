@@ -23,63 +23,51 @@
     </my-page>
 </template>
 
-<script lang="ts">
-    import { matCloudUpload } from '@quasar/extras/material-icons';
-    import {defineComponent} from 'vue';
-    import axios from 'axios';
-    import {useAppStore} from 'src/stores';
+<script setup lang="ts">
+import { ref } from 'vue';
+import {matCloudUpload} from '@quasar/extras/material-icons';
+import axios from 'axios';
+import {useAppStore} from 'src/stores';
+import {useRouter} from 'vue-router';
+import {qnotify} from 'src/boot/notify';
 
-    export default defineComponent({
-        name: 'Port',
-        setup() { return { store: useAppStore() } },
-      data() {
-        return {
-          matCloudUpload,
-          file: undefined as undefined | File
-        }
-      },
-        methods: {
-          onFileInput() {
-            const file = this.file;
-            if (file) {
-              this.beforeUpload(file);
-            }
-          },
-            beforeUpload(file: File) {
-                const notify = this.$notify;
-                const store = this.store;
+const store = useAppStore();
+const router = useRouter();
+const file = ref<File | undefined>(undefined);
 
-                if (file.name.match(/\.gainstrack$/)) {
-                    // console.log(`Trying to upload a ${file.type} of size ${file.size}`);
-                    const reader = new FileReader();
-                    reader.onload = () => {
-                        const text = reader.result;
-                        axios.post('/api/post/source', {source: text, filePath: '', entryHash: '', sha256sum: ''})
-                            .then(response => {
-                                store.setParseState(response.data);
-                                if (response.data.errors.length > 0) {
-                                    notify.warning('There are errors...');
-                                    this.$router.push({name: 'errors'});
-                                } else {
-                                    notify.success('Saved');
-                                    store.reload();
-                                    store.fetchGainstrackText(); // Clear editor
-                                    // A bit of a hack to force a refresh of local state in current view
-                                    this.$router.go(0);
-                                }
-                            });
-                    };
-                    reader.onerror = () => {
-                        notify.error(reader.result as string);
-                    };
-                    reader.readAsText(file);
-                } else {
-                    notify.warning('Can only upload .gainstrack files');
-                }
-                return false;
-            }
-        }
-    });
+function onFileInput() {
+  if (file.value) {
+    beforeUpload(file.value);
+  }
+}
+
+function beforeUpload(uploadFile: File) {
+  if (uploadFile.name.match(/\.gainstrack$/)) {
+    const reader = new FileReader();
+    reader.onload = () => {
+      const text = reader.result;
+      axios.post('/api/post/source', {source: text, filePath: '', entryHash: '', sha256sum: ''})
+        .then(response => {
+          store.setParseState(response.data);
+          if (response.data.errors.length > 0) {
+            qnotify.warning('There are errors...');
+            router.push({name: 'errors'});
+          } else {
+            qnotify.success('Saved');
+            store.reload();
+            store.fetchGainstrackText();
+            router.go(0);
+          }
+        });
+    };
+    reader.onerror = () => {
+      qnotify.error(reader.result as string);
+    };
+    reader.readAsText(uploadFile);
+  } else {
+    qnotify.warning('Can only upload .gainstrack files');
+  }
+}
 </script>
 
 <style scoped>

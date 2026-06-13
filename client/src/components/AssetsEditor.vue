@@ -70,119 +70,98 @@
   </div>
 </template>
 
-<script lang="ts">
-  import axios from 'axios'
-  import { flatten, uniq, cloneDeep } from 'lodash'
-  import { matCheck, matRefresh } from '@quasar/extras/material-icons'
-  import { MarkdownRender } from 'src/lib/loader'
-  import {defineComponent} from 'vue';
-  import {GlobalPricer} from 'src/lib/pricer';
-  import {AccountCommandDTO} from 'src/lib/assetdb/models';
+<script setup lang="ts">
+import { computed, ref, onMounted } from 'vue';
+import axios from 'axios';
+import {flatten, uniq, cloneDeep} from 'lodash';
+import {matCheck, matRefresh} from '@quasar/extras/material-icons';
+import {MarkdownRender} from 'src/lib/loader';
+import {GlobalPricer} from 'src/lib/pricer';
+import {AccountCommandDTO} from 'src/lib/assetdb/models';
+import {useAppStore} from 'src/stores';
+import {LocalDate} from '@js-joda/core';
+import {formatNumber} from 'src/lib/utils';
+import {toCommodityGainstrack} from 'src/lib/commandDefaulting';
+import {qnotify} from 'src/boot/notify';
 
-  type AssetRecord = Omit<AccountCommandDTO, 'options'> & {
-    options: Record<string, any>
-    dirty?: boolean
-  }
-  import {mapState} from 'pinia';
-  import {useAppStore} from 'src/stores';
-  import {LocalDate} from '@js-joda/core';
-  import {formatNumber} from 'src/lib/utils';
-  import {toCommodityGainstrack} from 'src/lib/commandDefaulting';
+type AssetRecord = Omit<AccountCommandDTO, 'options'> & {
+  options: Record<string, any>
+  dirty?: boolean
+}
 
-  export default defineComponent({
-    name: 'AssetsEditor',
-    components: {
-      MarkdownRender,
-    },
-    setup() { return { store: useAppStore() } },
-    data () {
-      return {
-        // All commands that are asset commands
-        assets: [] as AssetRecord[],
-        originalAssets: [] as AccountCommandDTO[],
-        positions: {} as Record<string, any>,
-        tickerOptions: [] as string[],
-        matRefresh,
-        matCheck,
-        formatNumber,
-      }
-    },
-    computed: {
-      ...mapState(useAppStore, [
-        'baseCcy',
-        'fxConverter',
-        'quoteConfig',
-      ]),
-      globalPricer (): GlobalPricer {
-        return this.fxConverter as GlobalPricer;
-      },
-      allTags (): string[] {
-        return uniq(flatten(this.assets.map(x => x.options?.tags)))
-      },
-      allTickers (): string[] {
-        return uniq(this.quoteConfig.map((cfg: any) => cfg.id)).sort()
-      },
-    },
-    methods: {
-      pricerLabelFor(asset: AccountCommandDTO) {
-        const pricer = this.globalPricer;
-        const model = pricer.modelForAssetId(asset.asset || '');
-        return model?.label;
-      },
-      priceFor(asset: AccountCommandDTO) {
-        const pricer = this.globalPricer;
-        const today = LocalDate.now();
-        const price = pricer.getFX(asset.asset??'', this.baseCcy, today);
-        return formatNumber(price);
-      },
-      assetTouched (asset: AssetRecord) {
-        asset.dirty = true
-      },
-      assetReset (asset: AssetRecord) {
-        const orig = this.originalAssets.find(x => x.asset === asset.asset)
-        const idx = this.assets.indexOf(asset)
-        Object.assign(this.assets[idx], cloneDeep(orig))
-        this.assets[idx].dirty = false
-      },
-      tickerSearch (queryString: string, update: any) {
-        update(() => {
-          let cfgs = this.quoteConfig
-          if (queryString) {
-            cfgs = cfgs.filter((x: any) => x.id.indexOf(queryString.toUpperCase()) > -1)
-          }
-          this.tickerOptions = cfgs.map((cfg: any) => cfg.id);
-        });
-      },
-      toGainstrack (asset: AssetRecord) {
-        return toCommodityGainstrack(asset)
-      },
-      assetSave (asset: AssetRecord) {
-        const str = this.toGainstrack(asset)
-        axios.post('/api/post/asset', { str })
-          .then(response => {
-            this.$notify.success(response.data)
-            const orig = this.originalAssets.find(x => x.asset === asset.asset)
-            if (orig === undefined) throw new Error('Invariant violation in assetSave')
-            const idx = this.originalAssets.indexOf(orig)
-            Object.assign(this.originalAssets[idx], cloneDeep(asset))
-            asset.dirty = false
-          })
-          .catch(error => this.$notify.error(error.response.data))
-      },
-      async reloadAll (): Promise<void> {
-        await axios.post('/api/assets')
-          .then(response => {
-            this.originalAssets = response.data.commands // TODO:Get from vuex
-            this.positions = response.data.positions
-          })
-          .catch(error => this.$notify.error(error))
-      },
-    },
-    async mounted () {
-      await this.reloadAll()
-      this.assets = cloneDeep(this.originalAssets) as AssetRecord[]
-    },
-  })
+const store = useAppStore();
+
+const assets = ref<AssetRecord[]>([]);
+const originalAssets = ref<AccountCommandDTO[]>([]);
+const positions = ref<Record<string, any>>({});
+const tickerOptions = ref<string[]>([]);
+
+const globalPricer = computed((): GlobalPricer => store.fxConverter as GlobalPricer);
+const allTags = computed((): string[] => uniq(flatten(assets.value.map(x => x.options?.tags))));
+
+function pricerLabelFor(asset: AccountCommandDTO) {
+  const model = globalPricer.value.modelForAssetId(asset.asset || '');
+  return model?.label;
+}
+
+function priceFor(asset: AccountCommandDTO) {
+  const today = LocalDate.now();
+  const price = globalPricer.value.getFX(asset.asset ?? '', store.baseCcy, today);
+  return formatNumber(price);
+}
+
+function assetTouched(asset: AssetRecord) {
+  asset.dirty = true;
+}
+
+function assetReset(asset: AssetRecord) {
+  const orig = originalAssets.value.find(x => x.asset === asset.asset);
+  const idx = assets.value.indexOf(asset);
+  Object.assign(assets.value[idx], cloneDeep(orig));
+  assets.value[idx].dirty = false;
+}
+
+function tickerSearch(queryString: string, update: any) {
+  update(() => {
+    let cfgs = store.quoteConfig;
+    if (queryString) {
+      cfgs = cfgs.filter((x: any) => x.id.indexOf(queryString.toUpperCase()) > -1);
+    }
+    tickerOptions.value = cfgs.map((cfg: any) => cfg.id);
+  });
+}
+
+function toGainstrack(asset: AssetRecord) {
+  return toCommodityGainstrack(asset);
+}
+
+function assetSave(asset: AssetRecord) {
+  const str = toGainstrack(asset);
+  axios.post('/api/post/asset', {str})
+    .then(response => {
+      qnotify.success(response.data);
+      const orig = originalAssets.value.find(x => x.asset === asset.asset);
+      if (orig === undefined) throw new Error('Invariant violation in assetSave');
+      const idx = originalAssets.value.indexOf(orig);
+      Object.assign(originalAssets.value[idx], cloneDeep(asset));
+      asset.dirty = false;
+    })
+    .catch(error => qnotify.error(error.response.data));
+}
+
+async function reloadAll(): Promise<void> {
+  await axios.post('/api/assets')
+    .then(response => {
+      originalAssets.value = response.data.commands;
+      positions.value = response.data.positions;
+    })
+    .catch(error => qnotify.error(error));
+}
+
+onMounted(async () => {
+  await reloadAll();
+  assets.value = cloneDeep(originalAssets.value) as AssetRecord[];
+});
 </script>
 
 <style scoped>

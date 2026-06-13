@@ -64,14 +64,13 @@
   </div>
 </template>
 
-<script lang="ts">
-import {defineComponent} from 'vue';
+<script setup lang="ts">
+import { computed, ref, onMounted } from 'vue';
 import {AccountDTO, Amount, AssetResponse, NetworthByAsset} from '../lib/assetdb/models';
 import {apiAssetsReport} from 'src/lib/apiFacade';
 import {difference, includes, sum, sortBy} from 'lodash';
 import {formatPerc} from 'src/lib/utils';
-import { VuePlotly } from '../lib/loader'
-import {mapState} from 'pinia';
+import {VuePlotly} from '../lib/loader';
 import {useAppStore} from 'src/stores';
 import {
   ContributionCalculator,
@@ -80,92 +79,62 @@ import {
 } from 'src/lib/ContributionCalculator';
 import ContributionCalculatorResultView from 'components/ContributionCalculatorResultView.vue';
 import ContributionCalculatorInputEditor from 'components/ContributionCalculatorInputEditor.vue';
+import {qnotify} from 'src/boot/notify';
 
 function trim(num: number | undefined): number {
   if (num === undefined) return 0;
-  return Math.round((num + Number.EPSILON) * 10) / 10
+  return Math.round((num + Number.EPSILON) * 10) / 10;
 }
 
-export default defineComponent({
-  name: 'RebalanceCalc',
-  setup() { return { store: useAppStore() } },
-  props: {
-    accountId: String,
-  },
-  components: {
-    ContributionCalculatorResultView,
-    ContributionCalculatorInputEditor,
-    VuePlotly,
-  },
-  data() {
-    return {
-      step: 1,
-      assets: {rows: [], columns: [], totals: []} as AssetResponse,
-      assetsToBalance: [] as string[],
-      entries: [] as ContributionCalculatorInput[],
-      results: [] as ContributionCalculatorEntries[],
-      contribution: {number: 0, ccy: ''} as Amount,
-      sankey: [] as unknown[],
-      formatPerc
-    }
-  },
-  methods: {
-    async refresh(props?: Record<string, any>): Promise<void> {
+const props = defineProps<{ accountId?: string }>();
 
-      const acct: AccountDTO | undefined = this.findAccount(this.accountId ?? '');
-      try {
-        this.assets = await apiAssetsReport(this.store, props ?? this.$props);
-        this.assetsToBalance = [];
-        this.contribution = {number: 0, ccy: acct?.ccy ?? 'USD'}
-      } catch (error) {
-        const e:any = error;
-        console.error(error);
-        this.$notify.error(e.toString())
-      }
-    },
-    selectAssets(): void {
-      const total = sum(this.rowsToBalance.map(row => row.value));
-      this.entries = sortBy(this.rowsToBalance.map(row => {
-        return {...row, target: trim(100 * row.value / total)}
-      }), row => -row.value);
-      this.step = 2
-    },
-    calculate(): void {
-      const calc = new ContributionCalculator(this.entries, this.contribution.ccy);
-      calc.contribute(this.contribution.number);
-      this.results = calc.entries;
-      this.step = 3;
-      this.sankey = [calc.makeSankeyData()];
-    }
-  },
-  computed: {
-    ...mapState(useAppStore, [
-      'findAccount'
-    ]),
-    baseCcy(): string {
-      return this.contribution.ccy
-    },
-    totalOriginalValue(): number {
-      return sum(this.entries.map(e => e.value))
-    },
-    totalTargetPerc(): number {
-      return sum(this.entries.map(row => row.target || 0))
-    },
-    canCalculate(): boolean {
-      return this.totalTargetPerc === 100 && this.contribution.number > 0.0;
-    },
-    remainingAssets(): string[] {
-      const allAssets = this.assets.rows.map(row => row.assetId);
-      return difference(allAssets, this.assetsToBalance)
-    },
-    rowsToBalance(): NetworthByAsset[] {
-      return this.assets.rows.filter(row => includes(this.assetsToBalance, row.assetId))
-    },
-  },
-  mounted(): void {
-    this.refresh();
-  },
-})
+const store = useAppStore();
+
+const step = ref(1);
+const assets = ref<AssetResponse>({rows: [], columns: [], totals: []});
+const assetsToBalance = ref<string[]>([]);
+const entries = ref<ContributionCalculatorInput[]>([]);
+const results = ref<ContributionCalculatorEntries[]>([]);
+const contribution = ref<Amount>({number: 0, ccy: ''});
+const sankey = ref<unknown[]>([]);
+
+async function refresh(refreshProps?: Record<string, any>): Promise<void> {
+  const acct: AccountDTO | undefined = store.findAccount(props.accountId ?? '');
+  try {
+    assets.value = await apiAssetsReport(store, refreshProps ?? props);
+    assetsToBalance.value = [];
+    contribution.value = {number: 0, ccy: acct?.ccy ?? 'USD'};
+  } catch (error) {
+    const e: any = error;
+    console.error(error);
+    qnotify.error(e.toString());
+  }
+}
+
+function selectAssets(): void {
+  const total = sum(rowsToBalance.value.map(row => row.value));
+  entries.value = sortBy(rowsToBalance.value.map(row => ({
+    ...row, target: trim(100 * row.value / total)
+  })), row => -row.value);
+  step.value = 2;
+}
+
+function calculate(): void {
+  const calc = new ContributionCalculator(entries.value, contribution.value.ccy);
+  calc.contribute(contribution.value.number);
+  results.value = calc.entries;
+  step.value = 3;
+  sankey.value = [calc.makeSankeyData()];
+}
+
+const baseCcy = computed((): string => contribution.value.ccy);
+const totalOriginalValue = computed((): number => sum(entries.value.map(e => e.value)));
+const totalTargetPerc = computed((): number => sum(entries.value.map(row => row.target || 0)));
+const canCalculate = computed((): boolean => totalTargetPerc.value === 100 && contribution.value.number > 0.0);
+const remainingAssets = computed((): string[] => difference(assets.value.rows.map(row => row.assetId), assetsToBalance.value));
+const rowsToBalance = computed((): NetworthByAsset[] => assets.value.rows.filter(row => includes(assetsToBalance.value, row.assetId)));
+
+onMounted(() => { refresh(); });
 </script>
 
 <style scoped>

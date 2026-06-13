@@ -14,103 +14,82 @@
   </div>
 </template>
 
-<script lang="ts">
-  import AddCmd from '../pages/AddCmd.vue';
-  import CommandTable from '..//components/CommandTable.vue';
-  import {AccountCommandDTO, Amount} from '../lib/assetdb/models';
-  import axios from 'axios';
-  import {CommandConfig, commands, defaultCommand} from '../config/commands';
-  import {mapState} from 'pinia';
-  import {defineComponent} from 'vue';
-  import {useAppStore} from 'src/stores';
+<script setup lang="ts">
+import { computed, ref } from 'vue';
+import AddCmd from '../pages/AddCmd.vue';
+import CommandTable from '../components/CommandTable.vue';
+import {AccountCommandDTO} from '../lib/assetdb/models';
+import axios from 'axios';
+import {CommandConfig, commands, defaultCommand} from '../config/commands';
+import {useAppStore} from 'src/stores';
+import {qnotify} from 'src/boot/notify';
 
-  export default defineComponent({
-    name: 'AccountJournal',
-    components: {AddCmd, CommandTable},
-    props: ['accountId'],
-    setup() { return { store: useAppStore() } },
-    data() {
-      return {
-        c: {} as AccountCommandDTO,
-        commandStr: '',
-      };
-    },
-    methods: {
-      setupCommand(cmd: CommandConfig): void {
-        const c = {accountId: this.accountId, commandType: cmd.prefix};
+const props = defineProps<{ accountId: string }>();
 
-        this.c = defaultCommand(c);
-      },
-      addCancel(): void {
-        this.c = {} as AccountCommandDTO;
-      },
-      gainstrackChange(ev: string): void {
-        this.commandStr = ev;
-      },
-      testCommand(): void {
-        const str = this.commandStr;
-        axios.post('/api/post/test', {str})
-          .then(response => this.$notify.success(response.data.success))
-          .catch(error => this.$notify.error(error.response.data));
-      },
-      async addCommand(): Promise<void> {
-        const str = this.commandStr;
-        try {
-          const response = await axios.post('/api/post/add', {str});
-          this.$notify.success(response.data);
-          await this.store.reload();
-        } catch (error) {
-          const e:any = error;
-          this.$notify.error(e?.response?.data || e)
-        }
-      },
-    },
-    computed: {
-      scopedCommands(): CommandConfig[] {
-        const acct = this.findAccount(this.accountId);
-        return commands.filter(c => acct && c.appliesTo(acct));
-      },
-      displayCommands(): AccountCommandDTO[] {
-        // const commands = this.info.commands;
-        const commands = this.myCommands;
-        if (this.c.commandType) {
-          return commands.filter(c => c.commandType === this.c.commandType);
-        } else {
-          return commands;
-        }
-      },
-      commandTableColumns(): string[] {
-        if (this.c.commandType) {
-          const cfg = commands.find(c => c.prefix === this.c.commandType);
-          const cols = cfg ? [...cfg.columns, 'date', 'description'] : [];
-          return cols;
-        } else {
-          return [];
-        }
-      },
-      ...mapState(useAppStore, [
-        'findAccount',
-        'allTxs',
-        'fxConverter',
-        'allState',
-      ]),
-      myCommands(): AccountCommandDTO[] {
-        const cmds = this.allState.commands;
-        const myCmds = cmds.filter((cmd: any) => cmd.accountId == this.accountId).reverse();
-        return myCmds;
-      },
-    },
-    filters: {
-      amount(value: Amount): string {
-        if (!value) {
-          return '';
-        } else {
-          return `${value.number} ${value.ccy}`;
-        }
+const store = useAppStore();
 
-      }
-    }
-  });
+const c = ref<AccountCommandDTO>({} as AccountCommandDTO);
+const commandStr = ref('');
+
+function setupCommand(cmd: CommandConfig): void {
+  c.value = defaultCommand({accountId: props.accountId, commandType: cmd.prefix});
+}
+
+function addCancel(): void {
+  c.value = {} as AccountCommandDTO;
+}
+
+function gainstrackChange(ev: string): void {
+  commandStr.value = ev;
+}
+
+function testCommand(): void {
+  const str = commandStr.value;
+  axios.post('/api/post/test', {str})
+    .then(response => qnotify.success(response.data.success))
+    .catch(error => qnotify.error(error.response.data));
+}
+
+async function addCommand(): Promise<void> {
+  const str = commandStr.value;
+  try {
+    const response = await axios.post('/api/post/add', {str});
+    qnotify.success(response.data);
+    await store.reload();
+  } catch (error) {
+    const e: any = error;
+    qnotify.error(e?.response?.data || e);
+  }
+}
+
+const myCommands = computed((): AccountCommandDTO[] => {
+  const cmds = store.allState.commands;
+  return cmds.filter((cmd: any) => cmd.accountId == props.accountId).reverse();
+});
+
+const scopedCommands = computed((): CommandConfig[] => {
+  const acct = store.findAccount(props.accountId);
+  return commands.filter(cmd => acct && cmd.appliesTo(acct));
+});
+
+const displayCommands = computed((): AccountCommandDTO[] => {
+  const cmds = myCommands.value;
+  if (c.value.commandType) {
+    return cmds.filter(cmd => cmd.commandType === c.value.commandType);
+  } else {
+    return cmds;
+  }
+});
+
+const commandTableColumns = computed((): string[] => {
+  if (c.value.commandType) {
+    const cfg = commands.find(cmd => cmd.prefix === c.value.commandType);
+    const cols = cfg ? [...cfg.columns, 'date', 'description'] : [];
+    return cols;
+  } else {
+    return [];
+  }
+});
 </script>
 
 <style scoped>
