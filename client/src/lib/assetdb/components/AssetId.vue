@@ -14,68 +14,63 @@
 <!--  hint="Asset/Ccy"-->
 </template>
 
-<script lang="ts">
-  import { defineComponent } from 'vue'
-  import {useAppStore} from 'src/stores';
+<script setup lang="ts">
+import { computed, ref } from 'vue';
+import {useAppStore} from 'src/stores';
 
-  interface MyOpt {
-    value: string
-    label: string
-  }
+interface MyOpt {
+  value: string
+  label: string
+}
 
-  /**
-   * Depends on $store.getters.allCcys: string[]
-   */
-  export default defineComponent({
-    name: 'AssetId',
-    setup() { return { store: useAppStore() } },
-    props: {value: String, label: String, inputClass: { type: [String, Object, Array], default: undefined }},
-    emits: ['update:modelValue'],
-    data() {
-      return {
-        filteredOptions: [] as MyOpt[],
-        moreOptions: [] as string[]
-      }
-    },
-    computed: {
-      options(): MyOpt[] {
-        const stateCcys: string[] = this.store.allCcys;
-        const ccys:string[] = ['', ...this.moreOptions, ...(stateCcys.length>0 ? stateCcys : ['USD'])];
-        return ccys.map(ccy => {
-          return {value: ccy, label: ccy};
-        });
-      },
-    },
-    methods: {
-      createValue(val: string, done: any) {
-        if (val.length > 0) {
-          if (!this.moreOptions.includes(val)) {
-            this.moreOptions.push(val)
-          }
-          done(val, 'toggle')
-        }
-      },
-      filterFn(val: string, update: any) {
-        update(() => {
-          const needle = val.toUpperCase();
-          // FIXME: Support start of string matching first
-          // FIXME: Also support matching blank
-          this.filteredOptions = this.options.filter(v => v.value.toUpperCase().indexOf(needle) > -1)
-        },
-          (ref:any) => {
-          if (val !== '' && ref.options.length > 0) {
-            ref.setOptionIndex(-1) // reset optionIndex in case there is something selected
-            ref.moveOptionSelection(1, true) // focus the first selectable option and do not update the input-value
-          }
-        })
-      },
-      onSelectChanged(ev: any) {
-        if (ev.value !== this.value) {
-          this.$emit('update:modelValue', ev.value.toUpperCase());
-        }
-      },
+const props = defineProps<{
+  value?: string
+  label?: string
+  inputClass?: string | object | any[]
+}>();
+
+const emit = defineEmits<{ 'update:modelValue': [value: string] }>();
+
+const store = useAppStore();
+
+const filteredOptions = ref<MyOpt[]>([]);
+const moreOptions = ref<string[]>([]);
+
+const options = computed((): MyOpt[] => {
+  const stateCcys: string[] = store.allCcys;
+  const ccys: string[] = ['', ...moreOptions.value, ...(stateCcys.length > 0 ? stateCcys : ['USD'])];
+  return ccys.map(ccy => ({value: ccy, label: ccy}));
+});
+
+function createValue(val: string, done: any) {
+  if (val.length > 0) {
+    if (!moreOptions.value.includes(val)) {
+      moreOptions.value.push(val);
     }
-  })
+    done(val, 'toggle');
+  }
+}
+
+function filterFn(val: string, update: any) {
+  update(
+    () => {
+      const needle = val.toUpperCase();
+      filteredOptions.value = options.value.filter(v => v.value.toUpperCase().indexOf(needle) > -1);
+    },
+    (ref: any) => {
+      if (val !== '' && ref.options.length > 0) {
+        ref.setOptionIndex(-1);
+        ref.moveOptionSelection(1, true);
+      }
+    }
+  );
+}
+
+function onSelectChanged(ev: any) {
+  if (ev.value !== props.value) {
+    emit('update:modelValue', ev.value.toUpperCase());
+  }
+}
 </script>
 
 <style scoped>

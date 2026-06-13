@@ -20,44 +20,34 @@
 </template>
 
 
-<script lang="ts">
-    import {defineComponent} from 'vue';
-    import {useAppStore} from 'src/stores';
-    import {TreeTableDTO} from 'src/lib/assetdb/models';
+<script setup lang="ts">
+import { computed, ref } from 'vue';
+import {useAppStore} from 'src/stores';
+import {TreeTableDTO} from 'src/lib/assetdb/models';
 
-    export default defineComponent({
-        name: 'TreeTableNode',
-        props: {
-          node: Object as () => TreeTableDTO,
-          depth: { type: Number, required: true },
-        },
-        setup() {
-          return { store: useAppStore() }
-        },
-        data(): {toggled: Record<string, boolean>} {
-          const mainAccounts = useAppStore().mainAccounts;
-          const ret: {toggled: Record<string, boolean>} = {
-                toggled: this.node?.children.reduce((map: Record<string, boolean>, obj) => {
-                    map[obj.name] = mainAccounts.includes(obj.name);
-                    return map;
-                }, {}) || {},
-            };
-          return ret;
-        },
-        computed: {
-            classObject(): Record<string, any> {
-                const ret: Record<string, any> = {};
-                ret['depth-' + this.depth] = true;
-                return ret;
-            },
-            mainAccounts(): string[] { return this.store.mainAccounts },
-        },
-        methods: {
-            onToggle(acct: TreeTableDTO) {
-                this.toggled[acct.name] = !this.toggled[acct.name];
-            }
-        }
-    })
+const props = defineProps<{
+  node?: TreeTableDTO
+  depth: number
+}>();
+
+const store = useAppStore();
+
+const toggled = ref<Record<string, boolean>>(
+  props.node?.children.reduce((map: Record<string, boolean>, obj) => {
+    map[obj.name] = store.mainAccounts.includes(obj.name);
+    return map;
+  }, {}) ?? {}
+);
+
+const classObject = computed((): Record<string, any> => {
+  const ret: Record<string, any> = {};
+  ret['depth-' + props.depth] = true;
+  return ret;
+});
+
+function onToggle(acct: TreeTableDTO) {
+  toggled.value[acct.name] = !toggled.value[acct.name];
+}
 </script>
 
 <style scoped>

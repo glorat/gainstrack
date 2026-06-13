@@ -7,36 +7,25 @@
   </my-page>
 </template>
 
-<script lang="ts">
-  // import axios from 'axios'
-  import JournalTable from '../components/JournalTable.vue'
-  import {AccountTxDTO, journalEntries} from 'src/lib/utils'
-  import {mapState} from 'pinia';
-  import {defineComponent} from 'vue';
-  import {useAppStore} from 'src/stores';
-  import {SingleFXConverter} from 'src/lib/fx';
+<script setup lang="ts">
+import { ref, onMounted } from 'vue';
+import JournalTable from '../components/JournalTable.vue';
+import {AccountTxDTO, journalEntries} from 'src/lib/utils';
+import {useAppStore} from 'src/stores';
 
-  export default defineComponent({
-    name: 'Journal',
-    components: { JournalTable },
-    props: ['accountId'],
-    data () {
-      return {
-        info: { rows: [] as AccountTxDTO[] },
-      }
-    },
-    computed: {
-      ...mapState(useAppStore, ['fxConverter', 'allTxs', 'allState'])
-    },
-    mounted () {
-      const fxConverter: SingleFXConverter = this.fxConverter
-      const txs = this.allTxs.reverse();
-      const cmds = this.allState.commands;
-      const baseCcy = this.allState.baseCcy;
+defineProps<{ accountId?: string }>();
 
-      this.info = {rows: journalEntries(fxConverter, txs, cmds, baseCcy)}
-    },
-  })
+const store = useAppStore();
+
+const info = ref<{ rows: AccountTxDTO[] }>({rows: []});
+
+onMounted(() => {
+  const fxConverter = store.fxConverter;
+  const txs = store.allTxs.reverse();
+  const cmds = store.allState.commands;
+  const baseCcy = store.allState.baseCcy;
+  info.value = {rows: journalEntries(fxConverter, txs, cmds, baseCcy)};
+});
 </script>
 
 <style>

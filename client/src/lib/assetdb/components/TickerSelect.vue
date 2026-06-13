@@ -9,36 +9,26 @@
   />
 </template>
 
-<script lang="ts">
-import {defineComponent} from 'vue';
+<script setup lang="ts">
+import { ref } from 'vue';
 import {QuoteSource} from '../assetDb';
 import {useAppStore} from 'src/stores';
 
-export default defineComponent({
-  name: 'TickerSelect',
-  setup() { return { store: useAppStore() } },
-  props: {
-    value: String,
-  },
-  data() {
-    return {
-      tickerOptions: [] as string[],
-    }
-  },
-  methods: {
-    tickerSearch (queryString: string, update: any) {
+defineProps<{ value?: string }>();
+defineEmits<{ 'update:modelValue': [value: string] }>();
 
-      update(() => {
-        let cfgs:QuoteSource[] = this.store.quoteConfig;
-        if (queryString) {
-          cfgs = cfgs.filter(x => x.id.indexOf(queryString.toUpperCase()) > -1)
-        }
-        const elems = cfgs.map(cfg => cfg.id);
-        this.tickerOptions = elems;
-      });
-    },
-  }
-})
+const store = useAppStore();
+const tickerOptions = ref<string[]>([]);
+
+function tickerSearch(queryString: string, update: any) {
+  update(() => {
+    let cfgs: QuoteSource[] = store.quoteConfig;
+    if (queryString) {
+      cfgs = cfgs.filter(x => x.id.indexOf(queryString.toUpperCase()) > -1);
+    }
+    tickerOptions.value = cfgs.map(cfg => cfg.id);
+  });
+}
 </script>
 
 <style scoped>

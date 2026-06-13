@@ -76,8 +76,8 @@
   <div v-else>UNKNOWN TYPE {{ type }}</div>
 </template>
 
-<script lang="ts">
-import {defineComponent, PropType, type Component} from 'vue';
+<script setup lang="ts">
+import { computed } from 'vue';
 import CommandDateEditor from 'components/CommandDateEditor.vue';
 import BalanceEditor from './BalanceEditor.vue';
 import AssetId from './AssetId.vue';
@@ -87,62 +87,51 @@ import EnumSelect from './EnumSelect.vue';
 import MultiEnumSelect from './MultiEnumSelect.vue';
 import {FieldProperty} from '../schema';
 
-export default defineComponent({
-  name: 'FieldEditor',
-  components: {CommandDateEditor, BalanceEditor, AssetId, TickerSelect, EnumSelect, MultiEnumSelect},
-  // Forward looking for vue-3
-  model: {
-    prop: 'modelValue',
-  },
-  props: {
-    modelValue: { type: null as unknown as PropType<any>, default: undefined },
-    schema: {
-      type: (Object as unknown) as PropType<FieldProperty>,
-      required: true,
-    },
-    clearable: Boolean,
-    dense: Boolean,
-  },
-  data() {
-    return {
-      assetCategories
-    }
-  },
-  methods: {
-    inputChanged($event:any) {
-      this.$emit('update:modelValue', $event)
-    },
-    cleared() {
-      this.$emit('clear')
-    },
-    arrayCleared(idx: number) {
-      const orig:any = this.modelValue;
-      if (orig.length>1) {
-        orig.splice(idx, 1);
-        this.$emit('update:modelValue', orig);
-      } else {
-        // Last element cleared, remove the whole lot
-        this.$emit('clear');
-      }
+const props = defineProps<{
+  modelValue?: any
+  schema: FieldProperty
+  clearable?: boolean
+  dense?: boolean
+}>();
 
-    },
-    arrayInput(idx: number, ev: any) {
-      const orig:any = this.modelValue; // To clone or not to clone???
-      orig[idx] = ev;
-      this.$emit('update:modelValue', orig);
-    },
-    arrayAdd() {
-      const orig:any = this.modelValue ?? [];
-      this.$emit('update:modelValue', [...orig, undefined]);
-    }
-  },
-  computed: {
-    type():string {
-      const s:FieldProperty = this.schema;
-      return s.fieldType
-    }
+const emit = defineEmits<{
+  'update:modelValue': [value: any]
+  'clear': []
+}>();
+
+function inputChanged($event: any) {
+  emit('update:modelValue', $event);
+}
+
+function cleared() {
+  emit('clear');
+}
+
+function arrayCleared(idx: number) {
+  const orig: any = props.modelValue;
+  if (orig.length > 1) {
+    orig.splice(idx, 1);
+    emit('update:modelValue', orig);
+  } else {
+    emit('clear');
   }
-})
+}
+
+function arrayInput(idx: number, ev: any) {
+  const orig: any = props.modelValue;
+  orig[idx] = ev;
+  emit('update:modelValue', orig);
+}
+
+function arrayAdd() {
+  const orig: any = props.modelValue ?? [];
+  emit('update:modelValue', [...orig, undefined]);
+}
+
+const type = computed((): string => {
+  const s: FieldProperty = props.schema;
+  return s.fieldType;
+});
 </script>
 
 <style scoped>

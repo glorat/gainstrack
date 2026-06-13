@@ -4,16 +4,10 @@
   </my-page>
 </template>
 
-<script lang="ts">
-  import AccountJournal from '../components/AccountJournal.vue';
+<script setup lang="ts">
+import AccountJournal from '../components/AccountJournal.vue';
 
-  import {defineComponent} from 'vue';
-
-  export default defineComponent({
-    name: 'Command',
-    components: {AccountJournal},
-    props: ['accountId'],
-  });
+defineProps<{ accountId: string }>();
 </script>
 
 <style scoped>

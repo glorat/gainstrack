@@ -17,43 +17,35 @@
   </q-select>
 </template>
 
-<script lang="ts">
-import {defineComponent} from 'vue';
+<script setup lang="ts">
+import { computed, ref } from 'vue';
 import {EnumEntry} from '../enums';
 
-export default defineComponent({
-  name: 'EnumSelect',
-  // Forward looking for vue-3
-  model: {
-    prop: 'modelValue',
-  },
-  props: {
-    modelValue: String,
-    options: Array as () => EnumEntry[],
-    label: String,
-    clearable: Boolean,
-    dense: Boolean,
-  },
-  data() {
-    const displayOptions: EnumEntry[] = this.options ?? []
-    return {
-      displayOptions,
-    }
-  },
-  methods: {
-    filterFn (val: string, update: any) {
-      update(() => {
-        const needle = val.toLowerCase()
-        this.displayOptions = this.options?.filter(v => v.value.toLowerCase().indexOf(needle) > -1) ?? []
-      })
-    }
-  },
-  computed: {
-    displayValue(): string|undefined {
-      return this.options?.find(x => x.value === this.modelValue)?.label
-    },
-  }
-})
+const props = defineProps<{
+  modelValue?: string
+  options?: EnumEntry[]
+  label?: string
+  clearable?: boolean
+  dense?: boolean
+}>();
+
+defineEmits<{
+  'update:modelValue': [value: string]
+  'clear': []
+}>();
+
+const displayOptions = ref<EnumEntry[]>(props.options ?? []);
+
+function filterFn(val: string, update: (fn: () => void) => void) {
+  update(() => {
+    const needle = val.toLowerCase();
+    displayOptions.value = props.options?.filter(v => v.value.toLowerCase().indexOf(needle) > -1) ?? [];
+  });
+}
+
+const displayValue = computed((): string | undefined => {
+  return props.options?.find(x => x.value === props.modelValue)?.label;
+});
 </script>
 
 <style scoped>

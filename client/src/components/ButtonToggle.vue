@@ -2,21 +2,15 @@
     <button type="button" :title="`Toggle ${name} entries`" :class="{inactive : offState[name]}" @click="onClick">{{ name }}</button>
 </template>
 
-<script lang="ts">
-    import {defineComponent} from 'vue'
+<script setup lang="ts">
+const props = defineProps<{
+  name: string
+  offState: Record<string, boolean>
+}>();
 
-    export default defineComponent({
-        name: 'ButtonToggle',
-        props: {
-            name: { type: String, required: true as const },
-            offState: { type: Object as () => Record<string, boolean>, required: true as const }
-        },
-        methods: {
-          onClick() {
-              this.offState[this.name] = !this.offState[this.name];
-          }
-        }
-    })
+function onClick() {
+    props.offState[props.name] = !props.offState[props.name];
+}
 </script>
 
 <style scoped>

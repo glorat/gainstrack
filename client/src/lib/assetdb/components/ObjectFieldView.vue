@@ -12,41 +12,30 @@
   </div>
 </template>
 
-<script lang="ts">
-  import {defineComponent} from 'vue';
-  import {includes} from 'lodash';
-  import {FieldProperty} from '../schema';
+<script setup lang="ts">
+import { computed } from 'vue';
+import {includes} from 'lodash';
+import {FieldProperty} from '../schema';
 
-  export default defineComponent({
-    name: 'ObjectFieldView',
-    props: {
-      fieldProperties: {
-        type: Array as () => FieldProperty[]
-        , required: true},
-      object: {
-        type: Object as () => Record<string, any>,
-        required: true,
-      }
-    },
-    methods: {
-      fieldString(object: Record<string, any>, field: FieldProperty) {
-        const val = object[field.name];
-        if (field.fieldType === 'multiEnum') {
-          return Object.keys(val??[]).join(', ');
-        } else {
-          return val;
-        }
-      }
-    },
-    computed: {
-      displayFields():FieldProperty[] {
-        const props: FieldProperty[] = this.fieldProperties;
-        return props.filter(x => (
-          (!includes(['object', 'array'], x.fieldType)) && (!x.valid || x.valid(this.object))
-        ))
-      }
-    }
-  })
+const props = defineProps<{
+  fieldProperties: FieldProperty[]
+  object: Record<string, any>
+}>();
+
+function fieldString(object: Record<string, any>, field: FieldProperty) {
+  const val = object[field.name];
+  if (field.fieldType === 'multiEnum') {
+    return Object.keys(val??[]).join(', ');
+  } else {
+    return val;
+  }
+}
+
+const displayFields = computed((): FieldProperty[] => {
+  return props.fieldProperties.filter(x => (
+    (!includes(['object', 'array'], x.fieldType)) && (!x.valid || x.valid(props.object))
+  ))
+})
 </script>
 
 <style scoped>

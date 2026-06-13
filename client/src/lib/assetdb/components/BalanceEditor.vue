@@ -6,48 +6,38 @@
     </div>
 </template>
 
-<script lang="ts">
-    import {defineComponent} from 'vue';
-    import AssetId from './AssetId.vue';
-    import {AmountEditing} from 'src/lib/assetdb/models';
-    export default defineComponent({
-        name: 'BalanceEditor',
-        components: {
-            AssetId
-        },
-        props: {
-          modelValue: {
-            type: Object as () => AmountEditing,
-            default: () => {return {number:undefined, ccy: undefined} as AmountEditing}
-          },
-          label: String,
-          original: Object as () => AmountEditing|undefined
-        },
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      emits: {'update:modelValue': (payload: AmountEditing) => true},
-        methods: {
-          onCcyChanged(ev:any) {
-            const ret = {...this.modelValue, ccy:ev};
-            this.$emit('update:modelValue', ret);
-            // this.$emit('ccyChanged', this.v.ccy);
-            // this.onChanged();
-          },
-            onChanged(ev:any) {
-              const ret = {...this.modelValue, number: parseFloat(ev)};
-              this.$emit('update:modelValue', ret);
-            }
-        },
-      computed: {
-        amountClass(): any {
-          const defaulted = this.original && (this.modelValue.number !== this.original.number);
-          return {'defaulted-input': defaulted}
-        },
-        ccyClass(): any {
-          const defaulted = this.original && (this.modelValue.ccy !== this.original.ccy);
-          return {'defaulted-input': defaulted}
-        },
-      }
-    })
+<script setup lang="ts">
+import { computed } from 'vue';
+import AssetId from './AssetId.vue';
+import {AmountEditing} from 'src/lib/assetdb/models';
+
+const props = withDefaults(defineProps<{
+  modelValue?: AmountEditing
+  label?: string
+  original?: AmountEditing
+}>(), {
+  modelValue: () => ({number: undefined, ccy: undefined} as AmountEditing)
+});
+
+const emit = defineEmits<{ 'update:modelValue': [payload: AmountEditing] }>();
+
+function onCcyChanged(ev: any) {
+  emit('update:modelValue', {...(props.modelValue ?? {}), ccy: ev} as AmountEditing);
+}
+
+function onChanged(ev: any) {
+  emit('update:modelValue', {...(props.modelValue ?? {}), number: parseFloat(ev)} as AmountEditing);
+}
+
+const amountClass = computed(() => {
+  const defaulted = props.original && (props.modelValue.number !== props.original.number);
+  return {'defaulted-input': defaulted};
+});
+
+const ccyClass = computed(() => {
+  const defaulted = props.original && (props.modelValue.ccy !== props.original.ccy);
+  return {'defaulted-input': defaulted};
+});
 </script>
 
 <style scoped>

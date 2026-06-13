@@ -18,63 +18,52 @@
   </q-card-section>
 </template>
 
-<script lang="ts">
-  import {defineComponent} from 'vue';
-  import FieldEditor from './FieldEditor.vue';
-  import {
-    userAssetSchema
-  } from '../AssetSchema';
-  import {FieldProperty, Schema} from '../schema';
+<script setup lang="ts">
+import { computed } from 'vue';
+import FieldEditor from './FieldEditor.vue';
+import {userAssetSchema} from '../AssetSchema';
+import {FieldProperty, Schema} from '../schema';
 
-  export default defineComponent({
-    name: 'PropertyEditor',
-    components: {FieldEditor},
-    props: {
-      schema: {
-        type: Object as () => Schema,
-        default: () => userAssetSchema
-      },
-      modelValue: {
-        type: Object as () => Record<string, any>,
-        default: () => ({} as Record<string, any>)
-      },
-      dense: Boolean,
-    },
-    methods: {
-      onFieldUpdate(field:string, newValue: any) {
-        const ret = {...this.modelValue, [field]:newValue};
-        this.$emit('update:modelValue', ret);
-        // if (newValue && schemaFor(field).schema==='ticker') {
-        //   this.$store.dispatch('loadQuotes', newValue);
-        // }
-      },
-      onFieldCleared(field: string) {
-        console.log(`${field} cleared`);
-        const ret = {...this.modelValue};
-        delete ret[field];
-        this.$emit('update:modelValue', ret);
-        this.$emit('property-removed', field);
-      },
-      onFieldAdd(name: string) {
-        const ret = {...this.modelValue, [name]:undefined};
-        this.$emit('property-added', name);
-        this.$emit('update:modelValue', ret);
-      },
-      onRemove(propType: FieldProperty) {
-        const ret = {...this.modelValue};
-        delete ret[propType.name]
-        this.$emit('update:modelValue', ret);
-      },
-    },
-    computed: {
-      assetProperties(): FieldProperty[] {
-        return this.schema.selectedPropertiesForAsset(this.modelValue);
-      },
-      availableTags(): FieldProperty[] {
-        return this.schema.availablePropertiesForAsset(this.modelValue)
-      },
-    }
-  })
+const props = withDefaults(defineProps<{
+  schema?: Schema
+  modelValue?: Record<string, any>
+  dense?: boolean
+}>(), {
+  schema: () => userAssetSchema,
+  modelValue: () => ({} as Record<string, any>)
+});
+
+const emit = defineEmits<{
+  'update:modelValue': [value: Record<string, any>]
+  'property-removed': [field: string]
+  'property-added': [name: string]
+}>();
+
+function onFieldUpdate(field: string, newValue: any) {
+  emit('update:modelValue', {...props.modelValue, [field]: newValue});
+}
+
+function onFieldCleared(field: string) {
+  console.log(`${field} cleared`);
+  const ret = {...props.modelValue};
+  delete ret[field];
+  emit('update:modelValue', ret);
+  emit('property-removed', field);
+}
+
+function onFieldAdd(name: string) {
+  emit('property-added', name);
+  emit('update:modelValue', {...props.modelValue, [name]: undefined});
+}
+
+function onRemove(propType: FieldProperty) {
+  const ret = {...props.modelValue};
+  delete ret[propType.name];
+  emit('update:modelValue', ret);
+}
+
+const assetProperties = computed((): FieldProperty[] => props.schema!.selectedPropertiesForAsset(props.modelValue!));
+const availableTags = computed((): FieldProperty[] => props.schema!.availablePropertiesForAsset(props.modelValue!));
 </script>
 
 <style scoped>

@@ -24,29 +24,21 @@
     </ol>
 </template>
 
-<script lang="ts">
-    import {defineComponent} from 'vue';
-    import TreeTableNode from './TreeTableNode.vue';
-    import { TreeTableDTO } from 'src/lib/assetdb/models';
+<script setup lang="ts">
+import { computed } from 'vue';
+import TreeTableNode from './TreeTableNode.vue';
+import { TreeTableDTO } from 'src/lib/assetdb/models';
 
-    export default defineComponent({
-        name: 'TreeTable',
-        props: {node: Object as () => TreeTableDTO},
-        data() {
-            return {
-                depth: 0,
-            }
-        },
-        computed: {
-            classObject(): Record<string, any> {
-                const ret:Record<string, any> = {};
-                ret['depth-' + this.depth] = true;
-                ret['has-children'] = this.node?.children && this.node?.children.length > 0;
-                return ret;
-            }
-        },
-        components: {TreeTableNode}
-    })
+const props = defineProps<{ node?: TreeTableDTO }>();
+
+const depth = 0;
+
+const classObject = computed((): Record<string, any> => {
+    const ret: Record<string, any> = {};
+    ret['depth-' + depth] = true;
+    ret['has-children'] = props.node?.children && props.node?.children.length > 0;
+    return ret;
+});
 </script>
 
 <style>

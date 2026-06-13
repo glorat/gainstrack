@@ -23,51 +23,42 @@
   </q-page>
 </template>
 
-<script lang="ts">
-  import {defineComponent} from 'vue';
-  import {mdiAlert} from '@quasar/extras/mdi-v5';
+<script setup lang="ts">
+import { useRouter } from 'vue-router';
+import {mdiAlert} from '@quasar/extras/mdi-v5';
 
-  interface Tool {
-    target: string
-    title: string
-    subtitle?: string
-    description: string
-    icon: string
+interface Tool {
+  target: string
+  title: string
+  subtitle?: string
+  description: string
+  icon: string
+}
+
+const router = useRouter();
+
+const tools: Tool[] = [
+  {target: 'play', title: 'Two Fund Portfolio Guide',
+    description: 'Giving you options on implementing an international flavour of the Boglehead inspired "two fund portfolio"',
+    icon: 'img:icons/boglebot.svg'
+  },
+  {target: 'forecast', title: 'Retirement Target Calculator',
+    description: 'In 30 seconds, calculate the year by which you can retire',
+    icon: 'img:icons/boglebot.svg'
+  },
+  {target: 'investments', title: 'Portfolio Tools', subtitle: 'Under development!',
+    description: 'Tools for helping you manage your portfolio of investments',
+    icon: mdiAlert
+  },
+  {target: 'assetdb', title: 'Investment DB', subtitle: 'Under development!',
+    description: 'Crowd-sourced database of ETFs and other investment assets',
+    icon: mdiAlert
   }
+];
 
-  export default defineComponent({
-    name: 'BogleTools',
-    methods: {
-      onClick(tool:Tool) {
-        this.$router.push({
-          path: tool.target,
-          // query: { cmd: cmd.prefix }
-        })
-      }
-    },
-    data() {
-      const tools: Tool[] = [
-        {target: 'play', title: 'Two Fund Portfolio Guide',
-          description: 'Giving you options on implementing an international flavour of the Boglehead inspired "two fund portfolio"',
-          icon: 'img:icons/boglebot.svg'
-        },
-        {target: 'forecast', title: 'Retirement Target Calculator',
-          description: 'In 30 seconds, calculate the year by which you can retire',
-          icon: 'img:icons/boglebot.svg'
-        },
-
-        {target: 'investments', title: 'Portfolio Tools', subtitle: 'Under development!',
-          description: 'Tools for helping you manage your portfolio of investments',
-          icon: mdiAlert
-        },
-        {target: 'assetdb', title: 'Investment DB', subtitle: 'Under development!',
-          description: 'Crowd-sourced database of ETFs and other investment assets',
-          icon: mdiAlert
-        }
-      ];
-      return {tools};
-    }
-  })
+function onClick(tool: Tool) {
+  router.push({path: tool.target});
+}
 </script>
 
 <style lang="sass" scoped>

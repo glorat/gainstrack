@@ -33,38 +33,25 @@
 </template>
 
 
-<script lang="ts">
-  import LoginForm from '../components/LoginForm.vue';
-  import {defineComponent} from 'vue'
-  import {appRoutes, navBar} from 'src/router/routes';
-  import {useAppStore} from 'src/stores';
+<script setup lang="ts">
+import { computed } from 'vue';
+import LoginForm from '../components/LoginForm.vue';
+import {appRoutes, navBar} from 'src/router/routes';
+import {useAppStore} from 'src/stores';
+import pkgJson from '../../package.json';
 
-  export default defineComponent({
-    props: {
-      hideLogin: Boolean
-    },
-    data() {
-      return {
-        menuItemsList: navBar.map(ss =>
-          ss.map((key: string) => appRoutes.find(rt => rt.path === `/${key}`))
-            .filter((rt): rt is (typeof appRoutes)[number] => Boolean(rt))
-        )
-      }
-    },
-    components: {LoginForm},
-    setup() { return { store: useAppStore() } },
-    computed: {
-      version() {
-        return this.$appVersion;
-      },
-      errors() {
-        return this.store.parseState?.errors ?? [];
-      },
-      errorClass() {
-        return (this.store.parseState.errors?.length ?? 0) > 0 ? 'error' : 'error hidden';
-      }
-    }
-  })
+defineProps<{ hideLogin?: boolean }>();
+
+const store = useAppStore();
+
+const version = pkgJson.version;
+
+const menuItemsList = navBar.map(ss =>
+  ss.map((key: string) => appRoutes.find(rt => rt.path === `/${key}`))
+    .filter((rt): rt is (typeof appRoutes)[number] => Boolean(rt))
+);
+
+const errors = computed(() => store.parseState?.errors ?? []);
 </script>
 
 <style>

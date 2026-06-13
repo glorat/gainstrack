@@ -4,15 +4,10 @@
   </my-page>
 </template>
 
-<script lang="ts">
-  import {defineComponent} from 'vue';
-  import {MarkdownRender} from 'src/lib/loader';
+<script setup lang="ts">
+import {MarkdownRender} from 'src/lib/loader';
 
-  export default defineComponent({
-    name: 'Markdown',
-    props: ['page'],
-    components: {MarkdownRender},
-  });
+defineProps<{ page: string }>();
 </script>
 
 <style scoped>

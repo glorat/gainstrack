@@ -20,71 +20,47 @@
   </div>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
+import { computed } from 'vue';
 import {ContributionCalculatorInput} from '../lib/ContributionCalculator';
 import BalanceEditor from 'src/lib/assetdb/components/BalanceEditor.vue';
 import {formatNumber, formatPerc} from 'src/lib/utils';
 import {sum} from 'lodash';
-import {Amount} from 'src/lib/assetdb/models';
-import { defineComponent, PropType } from 'vue'
+import {Amount, AmountEditing} from 'src/lib/assetdb/models';
 
-export default defineComponent({
-  name: 'ContributionCalculatorInputEditor',
-  components: {
-    BalanceEditor
-  },
-  props: {
-    entries: {
-      type: (Array as unknown) as PropType<ContributionCalculatorInput[]>,
-      required: true
-    },
-    contribution: (Object as unknown) as PropType<Amount>,
-  },
-  data() {
-    const pagination = {rowsPerPage: 100}
-    const c = this.contribution;
-    return {
-      formatPerc,
-      formatNumber,
-      pagination,
-      c
-    }
-  },
-  computed: {
-    columns(): any[] {
-      return [
-        {name: 'AssetId', field: 'assetId', label: 'Asset'},
-        {
-          name: 'actual',
-          field: (row: ContributionCalculatorInput) => row.value / this.totalOriginalValue,
-          label: 'Current%',
-          format: formatPerc
-        },
-        {name: 'value', field: 'value', label: 'Current Value', format: formatNumber},
-        {name: 'target', field: 'target', label: 'Target%'},
+const props = defineProps<{
+  entries: ContributionCalculatorInput[]
+  contribution?: Amount
+}>();
 
-      ];
-    },
-    totalOriginalValue(): number {
-      return sum(this.entries.map(e => e.value))
-    },
-    totalTargetPerc():number {
-      return sum(this.entries.map(row => row.target || 0))
-    },
-    totalRow(): ContributionCalculatorInput {
-      return {
-        assetId: 'Total',
-        value: this.totalOriginalValue,
-        target: this.totalTargetPerc,
-        units: undefined,
-        price: undefined
-      }
-    },
-    displayEntries(): ContributionCalculatorInput[] {
-      return [...this.entries, this.totalRow]
-    }
-  }
-})
+defineEmits<{ 'update:contribution': [value: AmountEditing] }>();
+
+const pagination = {rowsPerPage: 100};
+
+const totalOriginalValue = computed((): number => sum(props.entries.map(e => e.value)));
+const totalTargetPerc = computed((): number => sum(props.entries.map(row => row.target || 0)));
+
+const totalRow = computed((): ContributionCalculatorInput => ({
+  assetId: 'Total',
+  value: totalOriginalValue.value,
+  target: totalTargetPerc.value,
+  units: undefined,
+  price: undefined,
+}));
+
+const displayEntries = computed((): ContributionCalculatorInput[] => [...props.entries, totalRow.value]);
+
+const columns = computed(() => [
+  {name: 'AssetId', field: 'assetId', label: 'Asset'},
+  {
+    name: 'actual',
+    field: (row: ContributionCalculatorInput) => row.value / totalOriginalValue.value,
+    label: 'Current%',
+    format: formatPerc,
+  },
+  {name: 'value', field: 'value', label: 'Current Value', format: formatNumber},
+  {name: 'target', field: 'target', label: 'Target%'},
+]);
 </script>
 
 <style scoped>

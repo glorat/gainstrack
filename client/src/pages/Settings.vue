@@ -7,14 +7,8 @@
   </my-page>
 </template>
 
-<script lang="ts">
-  import AssetsEditor from '../components/AssetsEditor.vue';
-
-  export default {
-    name: 'Settings',
-    components: {AssetsEditor},
-    computed: {}
-  }
+<script setup lang="ts">
+import AssetsEditor from '../components/AssetsEditor.vue';
 </script>
 
 <style scoped>

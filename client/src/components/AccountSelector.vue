@@ -13,67 +13,50 @@
   />
 </template>
 
-<script lang="ts">
-  import {defineComponent} from 'vue';
-  import {mapState} from 'pinia';
-  import {useAppStore} from 'src/stores';
+<script setup lang="ts">
+import { computed, ref } from 'vue';
+import {useAppStore} from 'src/stores';
 
-  export default defineComponent({
-    name: 'AccountSelector',
-    props: {
-      modelValue: String,
-      original: {},
-      accountList: Array as () => string[],
-      placeholder: String
-    },
-    emits: ['update:modelValue'],
-    data() {
-      return {
-        filteredOptions: [] as {value: string, label:string}[]
-        // items: this.$store.state.summary.accountIds
-      };
-    },
-    computed: {
-      ...mapState(useAppStore, ['accountIds']),
-      resolvedPlaceholder(): string {
-        return this.placeholder || 'Account';
-      },
-      accounts(): string[] {
-        return this.accountList || this.accountIds;
-      },
-      options(): { value: string, label: string }[] {
-        return this.accounts.map(acctId => {
-          return {value: acctId, label: acctId};
-        }).sort();
+const props = defineProps<{
+  modelValue?: string
+  original?: any
+  accountList?: string[]
+  placeholder?: string
+}>();
 
-      },
-      selectClass(): any {
-        const defaulted = this.modelValue !== this.original;
-        return {'defaulted-input': defaulted}
-      },
-    },
-    methods: {
-      onChanged(ev: any) {
-        this.$emit('update:modelValue', ev.target.value);
-      },
-      onQSelectChanged(ev: { label: string, value: string }) {
-        this.$emit('update:modelValue', ev.value);
-      },
-      filterFn(val: string, update: any) {
-        update(() => {
-            const needle = val.toUpperCase();
-            this.filteredOptions = this.options.filter(v => v.value.toUpperCase().indexOf(needle) > -1)
-          },
-          (ref:any) => {
-            if (val !== '' && ref.options.length > 0) {
-              ref.setOptionIndex(-1) // reset optionIndex in case there is something selected
-              ref.moveOptionSelection(1, true) // focus the first selectable option and do not update the input-value
-            }
-          })
-      },
-    },
+const emit = defineEmits<{ 'update:modelValue': [value: string] }>();
 
-  });
+const store = useAppStore();
+
+const filteredOptions = ref<{value: string, label: string}[]>([]);
+
+const resolvedPlaceholder = computed((): string => props.placeholder || 'Account');
+const accounts = computed((): string[] => props.accountList || store.accountIds);
+const options = computed(() => accounts.value.map(acctId => ({value: acctId, label: acctId})).sort());
+
+const selectClass = computed(() => {
+  const defaulted = props.modelValue !== props.original;
+  return {'defaulted-input': defaulted};
+});
+
+function onQSelectChanged(ev: { label: string, value: string }) {
+  emit('update:modelValue', ev.value);
+}
+
+function filterFn(val: string, update: any) {
+  update(
+    () => {
+      const needle = val.toUpperCase();
+      filteredOptions.value = options.value.filter(v => v.value.toUpperCase().indexOf(needle) > -1);
+    },
+    (ref: any) => {
+      if (val !== '' && ref.options.length > 0) {
+        ref.setOptionIndex(-1);
+        ref.moveOptionSelection(1, true);
+      }
+    }
+  );
+}
 </script>
 
 <style scoped>

@@ -2,121 +2,69 @@
     <vue-plotly :data="mySeries" :layout="layout" :options="options" auto-resize></vue-plotly>
 </template>
 
-<script lang="ts">
-    import {defineComponent} from 'vue';
-    import { VuePlotly } from '../lib/loader'
-    import {mapState} from 'pinia';
-    import {useAppStore} from 'src/stores';
-    import {AccountDTO, Posting} from 'src/lib/assetdb/models';
-    import {
-      convertedPositionSet,
-      postingsByDate,
-      postingsToPositionSet,
-      positionSetAdd,
-      isSubAccountOf
-    } from 'src/lib/utils';
-    import { keys, flatten, uniq } from 'lodash';
-    import {LocalDate} from '@js-joda/core';
+<script setup lang="ts">
+import { computed } from 'vue';
+import { VuePlotly } from '../lib/loader';
+import {useAppStore} from 'src/stores';
+import {AccountDTO, Posting} from 'src/lib/assetdb/models';
+import {
+  convertedPositionSet,
+  postingsByDate,
+  postingsToPositionSet,
+  positionSetAdd,
+  isSubAccountOf
+} from 'src/lib/utils';
+import { keys, flatten, uniq } from 'lodash';
+import {LocalDate} from '@js-joda/core';
 
-    //
-    // const expMovingAverage = (array: {x:unknown, y: number}[], range:number) => {
-    //     const k = 2 / (range + 1);
-    //     // first item is just the same as the first item in the input
-    //     const emaArray = [array[0]];
-    //     // for the rest of the items, they are computed with the previous one
-    //     for (let i = 1; i < array.length; i++) {
-    //         emaArray.push({
-    //             x: array[i].x,
-    //             y: array[i].y * k + emaArray[i - 1].y * (1 - k)
-    //         });
-    //     }
-    //     return emaArray;
-    // };
-    //
-    // function unpack(rows:Record<string, unknown>[], key:string) {
-    //     return rows.map(row => {
-    //         return row[key];
-    //     });
-    // }
+const props = defineProps<{ accountId: string }>();
 
-    export default defineComponent({
-        name: 'AccountGraph',
-        setup() { return { store: useAppStore() } },
-        components: {VuePlotly},
-        props: ['accountId'],
-        data() {
-            return {
-                // plotly
-                // data: [{x: [1, 2, 3, 4, 5], y: [2, 4, 6, 8, 9]}],
-                data: [] as any[],
-                layout: {
-                    autosize: true,
-                    showlegend: true,
-                    xaxis: {nticks: 20},
-                    yaxis: {zeroline: true, hoverformat: ',.0f'},
-                    height: 250,
-                    margin: {
-                        l: 30,
-                        r: 30,
-                        b: 30,
-                        t: 30,
-                        pad: 0
-                    },
-                },
-                options: {
-                    displaylogo: false
-                },
-            }
-        },
-      computed: {
-        ...mapState(useAppStore, [
-          'findAccount',
-          'allTxs',
-          'fxConverter',
-          'baseCcy',
-        ]),
-        myPostingsByDate(): {dates:string[], postings:Posting[][]} {
-          const txs = this.allTxs;
-          return postingsByDate(txs, (p:Posting)=> isSubAccountOf(p.account, this.accountId))
-        },
-        myAccount (): AccountDTO|undefined {
-          return this.findAccount(this.accountId)
-        },
-        conversion (): string {
-          return this.store.conversion;
-        },
-        mySeries():any {
-          const account = this.myAccount;
-          const conversion = this.conversion;
-          const pByDate = this.myPostingsByDate;
-          let poses:any[] = [];
-          let pSetSoFar = {};
-          for (let i=0;i<pByDate.dates.length; i++) {
-            const posting = pByDate.postings[i];
-            const pos = postingsToPositionSet(posting);
-            const date = LocalDate.parse(pByDate.dates[i]);
+const store = useAppStore();
 
-            // Carefully sum on the non-converted pos
-            pSetSoFar = positionSetAdd(pos, pSetSoFar);
-            // But record the converted one
-            const pset = convertedPositionSet(pSetSoFar, this.baseCcy,  conversion, date, account, this.fxConverter );
-            poses.push(pset);
-          }
+const layout = {
+  autosize: true,
+  showlegend: true,
+  xaxis: {nticks: 20},
+  yaxis: {zeroline: true, hoverformat: ',.0f'},
+  height: 250,
+  margin: {l: 30, r: 30, b: 30, t: 30, pad: 0},
+};
 
-          const ccys = uniq(flatten(poses.map(pos => keys(pos))));
-          let ret:Record<string, any>[] = [];
-          ccys.forEach(ccy => {
-            const name = ccy;
-            const x = pByDate.dates;
-            const y = poses.map(pset => pset[name]);
-            const type = 'scatter';
-            ret.push({name, x, y, type});
-          });
-          return ret;
+const options = {displaylogo: false};
 
-        }
-      },
-    })
+const myPostingsByDate = computed(() => {
+  const txs = store.allTxs;
+  return postingsByDate(txs, (p: Posting) => isSubAccountOf(p.account, props.accountId));
+});
+
+const myAccount = computed((): AccountDTO | undefined => store.findAccount(props.accountId));
+
+const mySeries = computed(() => {
+  const account = myAccount.value;
+  const conversion = store.conversion;
+  const pByDate = myPostingsByDate.value;
+  let poses: any[] = [];
+  let pSetSoFar = {};
+  for (let i = 0; i < pByDate.dates.length; i++) {
+    const posting = pByDate.postings[i];
+    const pos = postingsToPositionSet(posting);
+    const date = LocalDate.parse(pByDate.dates[i]);
+    pSetSoFar = positionSetAdd(pos, pSetSoFar);
+    const pset = convertedPositionSet(pSetSoFar, store.baseCcy, conversion, date, account, store.fxConverter);
+    poses.push(pset);
+  }
+
+  const ccys = uniq(flatten(poses.map(pos => keys(pos))));
+  const ret: Record<string, any>[] = [];
+  ccys.forEach(ccy => {
+    const name = ccy;
+    const x = pByDate.dates;
+    const y = poses.map(pset => pset[name]);
+    const type = 'scatter';
+    ret.push({name, x, y, type});
+  });
+  return ret;
+});
 </script>
 
 <style scoped>

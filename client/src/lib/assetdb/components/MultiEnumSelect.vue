@@ -17,57 +17,46 @@
   </q-select>
 </template>
 
-<script lang="ts">
-  import {defineComponent} from 'vue';
-  import {EnumEntry, simpleEnumEntry} from 'src/lib/assetdb/enums';
+<script setup lang="ts">
+import { computed, ref } from 'vue';
+import {EnumEntry, simpleEnumEntry} from 'src/lib/assetdb/enums';
 
-  export default defineComponent({
-    name: 'MultiEnumSelect',
-    // Forward looking for vue-3
-    model: {
-      prop: 'modelValue',
-    },
-    props: {
-      modelValue: Object as ()=>Record<string, boolean>,
-      options: Array as () => EnumEntry[],
-      label: String,
-      clearable: Boolean,
-      dense: Boolean,
-    },
-    data() {
-      const displayOptions: EnumEntry[] = this.options ?? []
-      return {
-        displayOptions,
-      }
-    },
-    methods: {
-      filterFn (val: string, update: any) {
-        update(() => {
-          const needle = val.toLowerCase()
-          this.displayOptions = this.options?.filter(v => v.value.toLowerCase().indexOf(needle) > -1) ?? []
-        })
-      },
-      onInput(vals: EnumEntry[]): void {
-        const ret:Record<string, boolean> = {};
-        vals.forEach(val => {
-          ret[val.value] = true
-        });
+const props = defineProps<{
+  modelValue?: Record<string, boolean>
+  options?: EnumEntry[]
+  label?: string
+  clearable?: boolean
+  dense?: boolean
+}>();
 
-        this.$emit('input', ret);
-      }
-    },
-    computed: {
-      selectValue(): EnumEntry[] {
-        const modelValue = this.modelValue ?? {};
-        return Object.keys(modelValue)
-          .filter(k => modelValue[k]) // only truthy ones
-          .map(key => this.options?.find(o => o.value === key) ?? simpleEnumEntry(key))
-      },
-      // displayValue(): string|undefined {
-      //   return this.options.find(x => x.value === this.modelValue)?.label
-      // },
-    }
-  })
+const emit = defineEmits<{
+  'update:modelValue': [value: Record<string, boolean>]
+  'clear': []
+}>();
+
+const displayOptions = ref<EnumEntry[]>(props.options ?? []);
+
+function filterFn(val: string, update: (fn: () => void) => void) {
+  update(() => {
+    const needle = val.toLowerCase();
+    displayOptions.value = props.options?.filter(v => v.value.toLowerCase().indexOf(needle) > -1) ?? [];
+  });
+}
+
+function onInput(vals: EnumEntry[]): void {
+  const ret: Record<string, boolean> = {};
+  vals.forEach(val => {
+    ret[val.value] = true;
+  });
+  emit('update:modelValue', ret);
+}
+
+const selectValue = computed((): EnumEntry[] => {
+  const modelValue = props.modelValue ?? {};
+  return Object.keys(modelValue)
+    .filter(k => modelValue[k])
+    .map(key => props.options?.find(o => o.value === key) ?? simpleEnumEntry(key));
+});
 </script>
 
 <style scoped>
