@@ -52,9 +52,6 @@ importers:
       firebase:
         specifier: ^12.14.0
         version: 12.14.0
-      firebaseui:
-        specifier: ^6.1.0
-        version: 6.1.0(firebase@12.14.0)
       lodash:
         specifier: ^4.18.1
         version: 4.18.1
@@ -1901,9 +1898,6 @@ packages:
     resolution: {integrity: sha512-Btj2BOOO83o3WyH59e8MgXsxEQVcarkUOpEYrubB0urwnN10yQ364rsiByU11nZlqWYZm05i/of7io4mzihBtQ==}
     engines: {node: '>=8'}
 
-  dialog-polyfill@0.4.10:
-    resolution: {integrity: sha512-j5yGMkP8T00UFgyO+78OxiN5vC5dzRQF3BEio+LhNvDbyfxWBsi3sfPArDm54VloaJwy2hm3erEiDWqHRC8rzw==}
-
   dot-case@3.0.4:
     resolution: {integrity: sha512-Kv5nKlh6yRrdrGvxeJ2e5y2eRUpkUosIW4A2AS38zwSz27zu7ufDwQPi5Jhs3XAlGNetl3bmnGhQsMtkKJnj3w==}
 
@@ -2141,11 +2135,6 @@ packages:
 
   firebase@12.14.0:
     resolution: {integrity: sha512-aEZ/lniDR1hOCYpx/x/V8Nrrqq9pepKDNkqP/4WGZFC69gTv6F59Z4/54W/SUP4L/hFlrRNmWj35aweQq+IHow==}
-
-  firebaseui@6.1.0:
-    resolution: {integrity: sha512-5WiVYVxPGMANuZKxg6KLyU1tyqIsbqf/59Zm4HrdFYwPtM5lxxB0THvgaIk4ix+hCgF0qmY89sKiktcifKzGIA==}
-    peerDependencies:
-      firebase: ^9.1.3 || ^10.0.0
 
   flat-cache@4.0.1:
     resolution: {integrity: sha512-f7ccFPK3SXFHpx15UIGyRJ/FJQctuKZ0zVuN3frBo4HnK3cay9VEW0R6yPYFHC0AgqhukPzKjq22t5DmAyqGyw==}
@@ -2579,10 +2568,6 @@ packages:
   markdown-it@14.2.0:
     resolution: {integrity: sha512-1TGiQiJVRQ3NPmZH6sx5Cfnmg6GQm9jvC1ch4TK511NjSJvjzKLzn5pPfZRNZkRPZP0HqCioSndqH8v2nRaWVQ==}
     hasBin: true
-
-  material-design-lite@1.3.0:
-    resolution: {integrity: sha512-ao76b0bqSTKcEMt7Pui+J/S3eVF0b3GWfuKUwfe2lP5DKlLZOwBq37e0/bXEzxrw7/SuHAuYAdoCwY6mAYhrsg==}
-    engines: {node: '>=0.12.0'}
 
   math-intrinsics@1.1.0:
     resolution: {integrity: sha512-/IXtbwEk5HTPyEwyKX6hGkYXxM9nbj64B+ilVJnC/R6B0pH5G4V3b0pVbL7DBj4tkhBAppbQUlf6F6Xl9LHu1g==}
@@ -5520,8 +5505,6 @@ snapshots:
 
   detect-libc@2.1.2: {}
 
-  dialog-polyfill@0.4.10: {}
-
   dot-case@3.0.4:
     dependencies:
       no-case: 3.0.4
@@ -5842,12 +5825,6 @@ snapshots:
       '@firebase/util': 1.15.1
     transitivePeerDependencies:
       - '@react-native-async-storage/async-storage'
-
-  firebaseui@6.1.0(firebase@12.14.0):
-    dependencies:
-      dialog-polyfill: 0.4.10
-      firebase: 12.14.0
-      material-design-lite: 1.3.0
 
   flat-cache@4.0.1:
     dependencies:
@@ -6249,8 +6226,6 @@ snapshots:
       mdurl: 2.0.0
       punycode.js: 2.3.1
       uc.micro: 2.1.0
-
-  material-design-lite@1.3.0: {}
 
   math-intrinsics@1.1.0: {}
 
