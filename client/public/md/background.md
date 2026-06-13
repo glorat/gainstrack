@@ -62,6 +62,43 @@ Firstly syntactically
 4. Automatically generating expense accounts (e.g. for commission) and income accounts (e.g. for dividends)
 5. Retaining additional source information by recording *why* the transaction appears. E.g. is it some trading cost, or yield of an asset. Plaintextaccounting only records the movement. This additional information will allow the driving of sophisticated networth tracking and P&L explain
 
+## Command syntax: the primary account principle
+
+Each Gainstrack command that involves accounts follows a consistent rule: **the first account is always the primary account** — the one the command is conceptually about. Any second account is optional, because it can be inferred from the primary account's configured options.
+
+For example, when you open an investment account you can declare where its funding normally comes from:
+
+```
+2004-10-14 open Assets:Investment:Stocks GBP
+  fundingAccount: Assets:Bank:England
+  multiAsset: true
+```
+
+Once that relationship is declared, commands that operate on `Assets:Investment:Stocks` can omit the other account entirely:
+
+```
+2006-11-01 fund Assets:Investment:Stocks 1000.0 GBP
+2006-11-15 yield Assets:Investment:Stocks FTSE 10.0 GBP
+```
+
+When the default is wrong for a particular entry, the second account can be supplied explicitly:
+
+```
+2006-11-01 fund Assets:Investment:Stocks Assets:OtherBank 1000.0 GBP
+```
+
+The same principle applies across all transaction commands:
+
+| Command | Primary account | Inferred counterpart |
+|---|---|---|
+| `fund Account …` | The account being funded | Its `fundingAccount` option |
+| `earn IncomeTag …` | The income account | Its `fundingAccount` option |
+| `spend ExpenseTag …` | The expense account | Its `fundingAccount` option |
+| `yield Account …` | The asset account receiving yield | Derived income sub-account |
+| `trade Account …` | The investment account | Auto-generated cash/expense sub-accounts |
+
+`tfr` is the exception: it is a raw primitive that transfers between any two arbitrary accounts with no configured relationship, so both accounts are always required.
+
 ## Transactions must balance or not?
 
 Beancount transactions are [required to balance](https://beancount.github.io/docs/a_comparison_of_beancount_and_ledger_hledger.html), period. hledger allows the use of [virtual accounts](https://ledger-cli.org/doc/ledger3.html#Virtual-postings). The former position maintains the integrity of accounting data. The latter allows more ease of use to those not familiar with accounting principles.

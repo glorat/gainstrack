@@ -165,7 +165,7 @@ Then
 would represent a transfer from Assets:Bank to Assets:Investment:MyBroker of 10000 USD.
 
 Funding source can always be set explicitly, for example
-`2010-01-01 fund Assets:Investment:MyBroker 10000.0 USD Assets:OtherBank`
+`2010-01-01 fund Assets:Investment:MyBroker Assets:OtherBank 10000.0 USD`
 
 ### yield
 Records income generated from an asset. For example
@@ -178,38 +178,50 @@ It can also be used to represent dividend yields in multi-asset accounts. For ex
 `2010-01-01 yield Assets:Investment:MyBroker VWRL 30 USD`
 would give rise to postings of
 * Assets:Investment:MyBroker:USD +30 USD
-* Income:Investment:MyBroker:AGGG -30 USD
+* Income:Investment:MyBroker:VWRL -30 USD
 
 ### earn
 Generate external personal income such as salary. For example, given
 ```
 1900-01-01 open Assets:Bank USD
 1900-01-01 open Assets:OtherBank USD
-1900-01-01 open Income:Salary
-  fundingAccount Assets:Bank
+1900-01-01 open Income:Salary USD
+  fundingAccount: Assets:Bank
 ```
 Then
 `2010-01-01 earn Income:Salary 1000 USD`
 would fund Assets:Bank with 1000 USD from Income:Salary.
 
 The funding account can be specified explicitly if desired:
-`2010-01-01 earn Income:Salary 1000 USD Assets:OtherBank`
+`2010-01-01 earn Income:Salary Assets:OtherBank 1000 USD`
+
+### spend
+Record an expense, deducting from a funding account. For example, given
+```
+1900-01-01 open Assets:Bank USD
+1900-01-01 open Expenses:Taxi USD
+  fundingAccount: Assets:Bank
+```
+Then
+`2010-01-01 spend Expenses:Taxi 20 USD`
+would deduct 20 USD from Assets:Bank and record it as a Taxi expense.
+
+The source account can be specified explicitly if desired:
+`2010-01-01 spend Expenses:Taxi Assets:Bank 20 USD`
 
 ## Balance based commands
 ### bal
 Declare a balance in an account of cash, applied at end of day
 
 For instance, this
-`2014-12-26 bal Liabilities:US:CreditCard   -3492.02 USD`
+`2014-12-26 bal Liabilities:US:CreditCard -3492.02 USD Expenses:General`
 
-asserts that the the account Liabilities:US:CreditCard should hold -3492.02 USD at *end of day*. If a different balance is encountered, a transfer is automatically generated from an adjustment account to the account in order to achieve the balance.
+asserts that the the account Liabilities:US:CreditCard should hold -3492.02 USD at *end of day*. If a different balance is encountered, a transfer is automatically generated from the adjustment account to bring the balance to the declared value.
 
 The general syntax is
-`YYYY-MM-DD bal AccountName AmountValue AmountAsset [AdjustmentAccount]`
+`YYYY-MM-DD bal AccountName AmountValue AmountAsset AdjustmentAccount`
 
-The account against which adjustments are to be made against is determined is chosen from, in order of priority
-* the AdjustmentAccount in the entry
-* TODO: an adjAccount on the account option
+The AdjustmentAccount is required and receives the auto-generated correcting entry.
 
 Typical usage would be to use Expenses:General as an adjustment account for your bank account
 
@@ -265,6 +277,7 @@ For example, defining an ISO currency will allow the website to perform automati
 You can use any date for an asset as the date is never used. `1900-01-01` is a recommended date.
 
 Options include
+* name - human-readable display name for the asset
 * tags - comma separated set of strings, useful for identifying a class of assets (e.g. bond, equity)
 * ticker - ticker symbol for obtaining external prices
 * proxy - a proxy ticker symbol to extrapolate prices based on last trade and an external price source for the proxy ticker
