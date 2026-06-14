@@ -85,7 +85,7 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue';
 import {
-  GoogleAuthProvider, signInWithPopup,
+  GoogleAuthProvider, signInWithRedirect,
   signInWithEmailAndPassword, createUserWithEmailAndPassword,
   signOut
 } from 'firebase/auth';
@@ -112,14 +112,8 @@ async function logout(): Promise<void> {
 async function signInWithGoogle(): Promise<void> {
   errorMsg.value = '';
   googleLoading.value = true;
-  try {
-    const provider = new GoogleAuthProvider();
-    await signInWithPopup(myAuth(), provider);
-  } catch (err: unknown) {
-    errorMsg.value = (err as { message?: string }).message ?? 'Google sign-in failed';
-  } finally {
-    googleLoading.value = false;
-  }
+  const provider = new GoogleAuthProvider();
+  await signInWithRedirect(myAuth(), provider);
 }
 
 async function submitForm(): Promise<void> {

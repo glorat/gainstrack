@@ -72,6 +72,90 @@ function addAsset() {
 
 ---
 
+## 6. AddCmd: `testing` flag set before debounce fires, disabling the Add button for the full debounce period on every keystroke
+
+**File:** `client/src/pages/AddCmd.vue`
+
+`gainstrackChange` sets `testing.value = true` synchronously on every keystroke, before the 1-second debounced `testCommand` fires. Because the Add button uses `:disable="... || testing"`, it is disabled for 1000ms + API latency per keystroke instead of only during the actual API round-trip.
+
+**Fix:** remove `testing.value = true` from `gainstrackChange` and keep it only inside `testCommand`:
+```ts
+function gainstrackChange(ev: string) {
+  commandStr.value = ev
+  testCommand()
+}
+```
+
+---
+
+## 7. AddCmd: `result.errors` not cleared when input is emptied, leaving stale error panel visible
+
+**File:** `client/src/pages/AddCmd.vue`
+
+`testCommand` short-circuits with an early return when `commandStr` is empty, so `result.value` is never reset. After the user types a bad command (parse errors appear) and then clears the input, the error messages remain visible indefinitely. The Add button is correctly disabled by `!commandStr`, but the stale error UI is misleading.
+
+**Fix:** reset `result.value` when `str` is empty:
+```ts
+if (str) {
+  testing.value = true
+  result.value = await apiCmdTest(store, { str })
+} else {
+  result.value = { added: [], accountChanges: [], errors: [], networthChange: 0 }
+}
+```
+
+---
+
+## 8. CommandEditor: `inputChanged()` discards the child's emitted value and re-emits the original prop
+
+**File:** `client/src/components/CommandEditor.vue`
+
+`@update:modelValue="inputChanged()"` in the template calls `inputChanged()` with no argument; the function then emits `props.modelValue` (the unchanged original). The child's updated DTO is silently discarded. Currently no caller of `CommandEditor` binds `@update:modelValue` / `v-model`, so this has no live effect, but the broken contract would surface the moment a parent tries to use `v-model` on `CommandEditor`.
+
+**Fix:** pass the event argument through:
+```ts
+// template: @update:modelValue="inputChanged"
+function inputChanged(val: Partial<AccountCommandDTO>) {
+  emit('update:modelValue', val)
+}
+```
+
+---
+
+## 9. AssetView: `moreColumns` crashes when `assetResponse` is present but `columns` is absent
+
+**File:** `client/src/components/AssetView.vue`
+
+```ts
+props.assetResponse?.columns.map(col => ...) || []
+```
+
+The optional chaining `?.` only guards against `assetResponse` itself being nullish. If `assetResponse` is a defined object but its `columns` field is missing (partial API response, stale cache), `.map` is called on `undefined` and throws a `TypeError`, crashing the component.
+
+**Fix:**
+```ts
+props.assetResponse?.columns?.map(col => ...) ?? []
+```
+
+---
+
+## 10. AssetView: `canEdit` regex has no separator, matching any account name prefixed with "Assets"/"Liabilities"
+
+**File:** `client/src/components/AssetView.vue`
+
+```ts
+!!props.accountId.match('^(Assets|Liabilities)')
+```
+
+The pattern matches any string starting with those words, including hypothetical accounts like `AssetsOld:Cash` or `LiabilitiesBak`. In practice the `mainAccounts.find(x => x === accountId)` exact-match guard prevents false positives with current data, but the regex is imprecise by construction.
+
+**Fix:**
+```ts
+!!props.accountId.match('^(Assets|Liabilities)[/:]')
+```
+
+---
+
 ## 5. AssetDb: double Firestore read and spurious navigation on every mount
 
 **File:** `client/src/pages/AssetDb.vue`
