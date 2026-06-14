@@ -19,13 +19,15 @@ router.afterEach(to => {
 
 onMounted(async () => {
   try {
-    await getRedirectResult(myAuth());
+    const result = await getRedirectResult(myAuth());
+    console.log('[auth] getRedirectResult:', result ? `user=${result.user.email}` : 'null');
   } catch (err: unknown) {
-    console.error('Google redirect sign-in failed:', (err as { message?: string }).message ?? err);
+    console.error('[auth] getRedirectResult error:', (err as { code?: string; message?: string }));
   }
 });
 
 onAuthStateChanged(myAuth(), async (user: User | null) => {
+  console.log('[auth] onAuthStateChanged:', user ? `user=${user.email}` : 'null');
   if (user) {
     try {
       await store.loginWithToken(() => user.getIdToken(false));
