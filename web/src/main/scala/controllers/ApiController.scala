@@ -425,28 +425,26 @@ class ApiController (implicit val ec :ExecutionContext)
 }
 
 object ServerQuoteSource {
-  val logger =  LoggerFactory.getLogger(getClass)
+  val logger = LoggerFactory.getLogger(getClass)
 
-  private var _db: SingleFXConversion = updateDB
+  private var _db: Option[SingleFXConversion] = None
 
-  def db = _db
+  try { _db = Some(updateDB) }
+  catch { case e: Exception => logger.error(s"ServerQuoteSource init failed: ${e.getMessage}") }
 
-  def updateDB:SingleFXConversion = {
+  def db: SingleFXConversion = _db.getOrElse(
+    throw new IllegalStateException("Quote data unavailable — check DB/file store config")
+  )
+
+  def updateDB: SingleFXConversion = {
     val start = Instant.now()
     try {
       val ret = Main.doTheWork
-      _db = ret
+      _db = Some(ret)
       ret
     }
-    catch {
-      case e: Exception => {
-        println(e)
-        throw e
-      }
-    }
     finally {
-      val end = Instant.now()
-      val d = Duration.between(start, end)
+      val d = Duration.between(start, Instant.now())
       logger.info(s"ServerQuoteSource read in ${d.toMillis}ms")
     }
   }

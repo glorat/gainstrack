@@ -27,15 +27,17 @@ onMounted(async () => {
 });
 
 onAuthStateChanged(myAuth(), async (user: User | null) => {
-  console.log('[auth] onAuthStateChanged:', user ? `user=${user.email}` : 'null');
   if (user) {
+    console.log(`[auth] signed in: uid=${user.uid} email=${user.email}`);
     try {
       await store.loginWithToken(() => user.getIdToken(false));
+      console.log('[auth] backend session established');
       await store.changeUser(user);
     } catch (error) {
       console.error('[auth] loginWithToken failed:', error);
     }
   } else {
+    console.log('[auth] signed out');
     store.changeUser(undefined);
   }
 });

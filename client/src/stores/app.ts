@@ -47,14 +47,12 @@ export const useAppStore = defineStore('app', () => {
   )
 
   axios.interceptors.response.use(res => res, function (error) {
-    if (error.response.status === 401) {
+    if (error.response?.status === 401) {
       if (error.request.responseURL.startsWith(window.location.origin)) {
         Notify.create({ message: 'Please log out and in again!', type: 'negative' })
-        return Promise.reject(error)
-      } else {
-        return error
       }
     }
+    return Promise.reject(error)
   })
 
   // State
@@ -223,7 +221,7 @@ export const useAppStore = defineStore('app', () => {
     count.value++
     const quotesToLoad = keys(quoteDeps.value)
     console.log(`Pre-load quotes for ${quotesToLoad.join(',')}`)
-    await loadMultiQuotes(quotesToLoad)
+    await loadMultiQuotes(quotesToLoad).catch(err => console.warn('Pre-load quotes failed:', err))
     console.log('Pre-load of quotes complete')
     await computeBalances()
     return response
