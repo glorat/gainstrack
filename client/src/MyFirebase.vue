@@ -31,14 +31,12 @@ onAuthStateChanged(myAuth(), async (user: User | null) => {
   if (user) {
     try {
       await store.loginWithToken(() => user.getIdToken(false));
+      await store.changeUser(user);
     } catch (error) {
-      console.error(error);
-      await store.logout();
+      console.error('[auth] loginWithToken failed:', error);
     }
-    await store.changeUser(user);
   } else {
-    await store.logout();
-    await store.changeUser(undefined);
+    store.changeUser(undefined);
   }
 });
 </script>
