@@ -32,11 +32,10 @@
         <q-separator></q-separator>
         <q-card-section>
           <ul>
-            <li v-for="row in related" :key="row.id" >
-              <router-link :to="{ name: 'quoteSource', params: { id: row.id }}">{{ row.id}} - {{ row.name }}</router-link>
+            <li v-for="row in related" :key="row.id">
+              <router-link :to="{ name: 'quoteSource', params: { id: row.id }}">{{ row.id }} - {{ row.name }}</router-link>
             </li>
           </ul>
-
         </q-card-section>
         <q-inner-loading :showing="relatedLoading">
           <q-spinner size="50px" color="primary" />
@@ -59,67 +58,43 @@
     </div>
 
   </div>
-
 </template>
 
-<script lang="ts">
-import {defineComponent} from 'vue';
-import {getAllQuoteSources, QuoteSource} from '../assetDb';
-import {
-  investmentAssetProperties,
-  quoteSourceFieldProperties
-} from '../AssetSchema';
+<script setup lang="ts">
+import { ref, onMounted } from 'vue';
+import { getAllQuoteSources, QuoteSource } from '../assetDb';
+import { investmentAssetProperties, quoteSourceFieldProperties } from '../AssetSchema';
 import ObjectFieldView from './ObjectFieldView.vue';
-
-import {applyQueries, searchObjToQuery} from '../schema';
+import { applyQueries, searchObjToQuery } from '../schema';
 import { query, limit as firestoreLimit, CollectionReference } from 'firebase/firestore';
 
-export default defineComponent({
-  name: 'QuoteSourceView',
-  components: {ObjectFieldView},
-  props: {
-    qsrc: {
-      type: Object as () => QuoteSource,
-      required: true
-    }
-  },
-  data() {
-    const related = [] as QuoteSource[];
-    const relatedLoading = false;
-    return {
-      related,
-      relatedLoading,
-      quoteSourceFieldProperties,
-      investmentAssetProperties,
-    }
-  },
-  methods: {
-    hostnameFor(url:string) {
-      return new URL(url).hostname
-    },
-    async refreshRelated() {
-      try {
-        this.relatedLoading = true;
-        const level = 1; // TODO: Iterate up levels until we get results
-        const limit = 5;
-        const cq = searchObjToQuery(this.qsrc, quoteSourceFieldProperties, fld => fld.searchLevel?fld.searchLevel<=level:false)
-        const filter = limit ? (col: CollectionReference) => query(applyQueries(col, cq), firestoreLimit(limit)) : (col: CollectionReference) => applyQueries(col, cq)
-        this.related = await getAllQuoteSources(filter)
-      }
-      catch (e) {
-        console.error(e);
-      } finally {
-        this.relatedLoading = false;
-      }
+const props = defineProps<{ qsrc: QuoteSource }>();
 
-    },
-  },
-  mounted(): void {
-    this.refreshRelated();
-  },
-  computed: {
+const related = ref<QuoteSource[]>([]);
+const relatedLoading = ref(false);
+
+function hostnameFor(url: string) {
+  return new URL(url).hostname;
+}
+
+async function refreshRelated() {
+  try {
+    relatedLoading.value = true;
+    const level = 1;
+    const limit = 5;
+    const cq = searchObjToQuery(props.qsrc, quoteSourceFieldProperties, fld => fld.searchLevel ? fld.searchLevel <= level : false);
+    const filter = limit
+      ? (col: CollectionReference) => query(applyQueries(col, cq), firestoreLimit(limit))
+      : (col: CollectionReference) => applyQueries(col, cq);
+    related.value = await getAllQuoteSources(filter);
+  } catch (e) {
+    console.error(e);
+  } finally {
+    relatedLoading.value = false;
   }
-})
+}
+
+onMounted(() => { refreshRelated(); });
 </script>
 
 <style scoped>

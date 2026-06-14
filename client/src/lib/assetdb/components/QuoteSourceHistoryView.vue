@@ -24,112 +24,79 @@
   </div>
 </template>
 
-<script lang="ts">
-  import {defineComponent} from 'vue';
-  import {getDisplayNames, getQuoteSourceHistory, QuoteSource, QuoteSourceHistory} from '../assetDb';
-  import {mdiAlert} from '@quasar/extras/mdi-v5';
-  import {quoteSourceFieldProperties} from '../AssetSchema';
-  import {get} from 'lodash';
-  import {getFieldNameList} from '../schema';
+<script setup lang="ts">
+import { ref, computed, onMounted } from 'vue';
+import { getDisplayNames, getQuoteSourceHistory, QuoteSource, QuoteSourceHistory } from '../assetDb';
+import { quoteSourceFieldProperties } from '../AssetSchema';
+import { get } from 'lodash';
+import { getFieldNameList } from '../schema';
 
-  interface DiffRow {
-    path: string,
-    label: string,
-    before: any,
-    after: any,
+interface DiffRow { path: string; label: string; before: any; after: any }
+interface QuoteSourceHistoryEx extends QuoteSourceHistory { diffs: DiffRow[] }
+
+function diffQuoteSource(q1: QuoteSource, q2: QuoteSource): DiffRow[] {
+  const flds = getFieldNameList(quoteSourceFieldProperties);
+  const ret: DiffRow[] = [];
+  flds.forEach(fld => {
+    const path = fld.value;
+    const v1 = get(q1, path);
+    const v2 = get(q2, path);
+    if (v1 !== v2) { ret.push({ path, label: fld.label, before: v1, after: v2 }); }
+  });
+  return ret;
+}
+
+function enrichQuoteSourceHistory(history: QuoteSourceHistory[]): QuoteSourceHistoryEx[] {
+  return history.map(row => {
+    const nowRevision = row.payload.lastUpdate?.revision ?? 0;
+    const before = history.find(x => (x.payload.lastUpdate?.revision ?? 0) === nowRevision - 1);
+    const diffs = diffQuoteSource(before?.payload ?? ({} as QuoteSource), row.payload);
+    return { ...row, diffs };
+  });
+}
+
+const props = defineProps<{ qsrc?: QuoteSource }>();
+
+const history = ref<QuoteSourceHistoryEx[]>([]);
+const loading = ref(false);
+const expanded = ref<string[]>([]);
+const displayNameMap = ref<Record<string, string | undefined>>({});
+
+function onRowClick() { console.log('row clicked'); }
+
+async function refresh() {
+  loading.value = true;
+  try {
+    const h = await getQuoteSourceHistory(props.qsrc!.id);
+    history.value = enrichQuoteSourceHistory(h);
+    displayNameMap.value = await getDisplayNames(h.map(x => x.uid));
+  } catch (e) {
+    console.error(e);
+  } finally {
+    loading.value = false;
   }
+}
 
-  interface QuoteSourceHistoryEx extends QuoteSourceHistory {
-    diffs: DiffRow[]
-  }
+const columns = computed(() => [
+  {
+    name: 'revision',
+    label: 'Revision',
+    field: (row: QuoteSourceHistory) => 1 + (row.payload.lastUpdate?.revision ?? 0)
+  },
+  {
+    name: 'timestamp',
+    label: 'Timestamp',
+    field: (row: QuoteSourceHistory) => row.createTime.seconds * 1000,
+    format: (x: number) => new Date(x).toLocaleString()
+  },
+  {
+    name: 'author',
+    label: 'Author Id',
+    field: (row: QuoteSourceHistory) => displayNameMap.value[row.uid] ?? row.uid
+  },
+]);
 
-  function diffQuoteSource(q1: QuoteSource, q2: QuoteSource): DiffRow[] {
-    const flds = getFieldNameList(quoteSourceFieldProperties);
-    const ret:DiffRow[] = [];
-    flds.forEach(fld => {
-      const path = fld.value;
-      const v1 = get(q1, path);
-      const v2 = get(q2, path);
-      if (v1 !== v2) {
-        ret.push({path, label: fld.label,before: v1, after: v2})
-      }
-    });
-    return ret;
-  }
-
-  function enrichQuoteSourceHistory(history: QuoteSourceHistory[]): QuoteSourceHistoryEx[] {
-    const rows = history.map(row => {
-      const nowRevision = (row.payload.lastUpdate?.revision ?? 0);
-      const before = history.find(x => (x.payload.lastUpdate?.revision ?? 0) === nowRevision-1);
-      const diffs = diffQuoteSource(before?.payload ?? ({} as QuoteSource), row.payload);
-      return {...row, diffs}
-    });
-    return rows;
-  }
-
-  export default defineComponent({
-    name: 'QuoteSourceHistoryView',
-    props: {
-      qsrc: Object as () => QuoteSource
-    },
-    data() {
-      const expanded: string[] = [];
-      const history: QuoteSourceHistoryEx[] = [];
-      const loading = false;
-      const displayNameMap: Record<string, string | undefined> = {};
-      return {
-        mdiAlert,
-        history,
-        loading,
-        expanded,
-        displayNameMap,
-      }
-    },
-    methods: {
-      onRowClick() {
-        console.log('row clicked')
-      },
-      async refresh() {
-        this.loading = true;
-        try {
-          const history = await getQuoteSourceHistory(this.qsrc!.id);
-          this.history = enrichQuoteSourceHistory(history);
-          this.displayNameMap = await getDisplayNames(history.map(x => x.uid));
-
-        } catch (e) {
-          console.error(e)
-        } finally {
-          this.loading = false;
-        }
-
-      }
-    },
-    computed: {
-      id(): string {
-        return this.qsrc!.id;
-      },
-      columns(): any[] {
-        return [
-          {name: 'revision', label: 'Revision', field: (row: QuoteSourceHistory) => 1 + (row.payload.lastUpdate?.revision??0)},
-          {
-            name: 'timestamp',
-            label: 'Timestamp',
-            field: (row: QuoteSourceHistory) => row.createTime.seconds*1000,
-            format: (x: number) => new Date(x).toLocaleString()
-          },
-          {
-            name: 'author',
-            label: 'Author Id',
-            field: (row: QuoteSourceHistory) => this.displayNameMap[row.uid] ?? row.uid
-          },
-        ];
-      }
-    },
-    mounted() {
-      this.refresh();
-
-    }
-  })
+onMounted(() => { refresh(); });
 </script>
 
 <style scoped>

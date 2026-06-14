@@ -28,89 +28,51 @@
   </my-page>
 </template>
 
-<script lang="ts">
-  import { SingleFXConversion, SingleFXConverter } from '../lib/fx';
-  import { TimeSeries } from '../stores';
-  import {defineComponent} from 'vue';
-  import {useAppStore} from 'src/stores';
-  import {LocalDate} from '@js-joda/core';
+<script setup lang="ts">
+import { ref, computed, watch, onMounted } from 'vue';
+import { SingleFXConverter } from '../lib/fx';
+import { useAppStore } from 'src/stores';
+import { LocalDate } from '@js-joda/core';
+import { qnotify } from 'src/boot/notify';
 
-  interface Price {
-    name: string
-    unit: string
-    dates: string[]
-    values: number[]
-    cvalues: (number|undefined)[]
-    cvalues2: (number|undefined)[]
-  }
+interface Price {
+  name: string
+  unit: string
+  dates: string[]
+  values: number[]
+  cvalues: (number | undefined)[]
+  cvalues2: (number | undefined)[]
+}
 
-  export default defineComponent({
-    name: 'Prices',
-    setup() { return { store: useAppStore() } },
-    data() {
-      return {
-        prices: [/*
-                    {
-                        name: "GBP/USD",
-                        unit: "USD",
-                        dates: ['1','2'],
-                        values: [0.6,0.7]
-                    }*/
-        ] as Price[]
-      };
-    },
-    methods: {
-      tradeFxConverter(): SingleFXConversion {
-        const allState = this.store.allState;
-        if (allState) {
-          const tradeFxData: { baseCcy: string; data: Record<string, { ks: string[]; vs: number[] }> } | undefined = allState.tradeFx;
-          if (tradeFxData) {
-            return SingleFXConversion.fromDTO(tradeFxData.data, tradeFxData.baseCcy);
-          }
-        }
-        return SingleFXConversion.empty();
-      },
-      fxConverter(): SingleFXConverter {
-        return this.store.fxConverter as SingleFXConverter;
-      },
-      reloadQuotes() {
-        const fx = this.fxConverter();
-        this.prices.forEach(price => {
-          const cvalues2 = price.dates.map(dt => {
-            const val = fx.getFX(price.name.split('/')[0], price.name.split('/')[1], LocalDate.parse(dt));
-            return val ? Math.round(val*100)/100: undefined;
-          });
-          price['cvalues2'] = cvalues2;
-        });
-      },
-    },
-    computed: {
-      quotes(): Record<string, TimeSeries> {
-        return this.store.quotes;
-      },
+const store = useAppStore();
+const prices = ref<Price[]>([]);
 
-    },
-    watch: {
-      quotes: {
-        handler() {
-          // console.error('Quotes updated for Prices');
-          this.reloadQuotes();
-        },
-        deep: true,
-      }
-    },
-    async mounted() {
-      const notify = this.$notify;
-      try {
-        this.reloadQuotes();
+function fxConverter(): SingleFXConverter {
+  return store.fxConverter as SingleFXConverter;
+}
 
-      } catch (error) {
-        const e:any = error;
-        notify.error(e?.toString());
-      }
-
-    }
+function reloadQuotes() {
+  const fx = fxConverter();
+  prices.value.forEach(price => {
+    const cvalues2 = price.dates.map(dt => {
+      const val = fx.getFX(price.name.split('/')[0], price.name.split('/')[1], LocalDate.parse(dt));
+      return val ? Math.round(val * 100) / 100 : undefined;
+    });
+    price['cvalues2'] = cvalues2;
   });
+}
+
+const quotes = computed(() => store.quotes);
+watch(quotes, () => { reloadQuotes(); }, { deep: true });
+
+onMounted(() => {
+  try {
+    reloadQuotes();
+  } catch (error) {
+    const e: any = error;
+    qnotify.error(e?.toString());
+  }
+});
 </script>
 
 <style scoped>

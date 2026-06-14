@@ -24,7 +24,7 @@
       </q-step>
       <q-step :name="3" title="Columns">
         <div class="col-6">
-          <q-select label="Add Column" :options="fieldsToAdd" :model-value="''" emit-value @update:model-value="$emit('update:selected-columns', [...(selectedColumns ?? []), $event])"></q-select>
+          <q-select label="Add Column" :options="fieldsToAdd" :model-value="''" emit-value @update:model-value="$emit('update:selectedColumns', [...(selectedColumns ?? []), $event])"></q-select>
         </div>
       </q-step>
 <!--      <q-step :name="4" title="Search" :icon="matSearch" color="primary">-->
@@ -35,132 +35,92 @@
   </div>
 </template>
 
-<script lang="ts">
-import {defineComponent} from 'vue'
+<script setup lang="ts">
+import { ref, computed, watch } from 'vue';
 import {
   investmentAssetSearchSchema,
   quoteSourceFieldProperties, quoteSourceSearchSchema,
 } from '../AssetSchema';
-import {EnumEntry, whereOps} from '../enums';
-import {matSearch, matFilterAlt} from '@quasar/extras/material-icons';
+import { EnumEntry, whereOps } from '../enums';
+import { matFilterAlt } from '@quasar/extras/material-icons';
 import FieldEditor from './FieldEditor.vue';
-import {includes} from 'lodash';
+import { includes } from 'lodash';
 import PropertyEditor from './PropertyEditor.vue';
-import {FieldProperty, findProperty, getFieldNameList} from '../schema';
+import { FieldProperty, findProperty, getFieldNameList } from '../schema';
 
-export default defineComponent({
-  name: 'QuoteSourceFilter',
-  components: {FieldEditor, PropertyEditor},
-  props: {
-    params: {
-      type: Object,
-      required: true,
-    },
-    selectedColumns: {
-      type: Array as () => string[],
-    },
-    columnEditing: {
-      type: Boolean
-    }
-  },
-  data() {
-    const step = 1;
-    return {
-      step,
-      whereOps,
-      matSearch,
-      matFilterAlt,
-      investmentAssetSearchSchema,
-      quoteSourceSearchSchema,
+const props = defineProps<{
+  params: Record<string, any>
+  selectedColumns?: string[]
+  columnEditing?: boolean
+}>();
 
-    }
-  },
-  computed: {
-    query(): any[] {
-      return this.params.query;
-    },
-    searchObj(): any {
-      return this.params.searchObj;
-    },
-    fieldList(): EnumEntry[] {
-      return getFieldNameList(quoteSourceFieldProperties)
-    },
-    fieldsToAdd(): EnumEntry[] {
-      return this.fieldList.filter(en => !includes(this.selectedColumns, en.value))
-    },
-    queryFieldProperties(): FieldProperty[] {
-      const names: string[] = this.params.query.map((row:any) => row.where[0]);
-      return names.map(nm => findProperty(nm ?? '', quoteSourceFieldProperties))
-    },
-  },
-  watch: {
-    step(newVal: number) {
-      if (newVal === 3) {
-        this.$emit('update:column-editing', true)
-      } else if (newVal === 4) {
-        this.onSearch();
-      } else {
-        this.$emit('update:column-editing', false)
-      }
-    }
-  },
-  methods: {
-    onSearch() {
-      const params = {...this.params};
-      params.fields = this.selectedColumns;
-      this.$emit('search', params);
-      this.$emit('update:column-editing', false)
-    },
-    onAssetUpdate(asset:any) {
-      const searchObj = {...this.params.searchObj, asset};
-      const params = {...this.params, searchObj};
-      this.$emit('update:params', params)
-    },
-    onObjUpdated(searchObj:any) {
-      const params = {...this.params, searchObj};
-      this.$emit('update:params', params);
-    },
-    // onPropAdded(field: string, path?: string) {
-    onPropAdded() {
-      this.refreshColumns();
-      // const fullPath = path ? `${path}.${field}` : field;
-      // const idx = this.selectedColumns.findIndex(x => x === fullPath);
-      // if (idx>=0) {
-      //   // Remove a column we are filtering on (since all values would be the same)
-      //   this.selectedColumns.splice(idx, 1);
-      //   // But try to add back one
-      //   const avail = investmentAssetSearchSchema.availablePropertiesForAsset(this.searchObj.asset);
-      //   const toAdd = avail.find(candidate => !this.selectedColumns.find(col => col === `asset.${candidate.name}`));
-      //   if (toAdd) {
-      //     this.selectedColumns.push(`asset.${toAdd.name}`)
-      //   }
-      // }
-    },
-    refreshColumns() {
-      if (!this.columnEditing) {
-        // Automatically determine columns
-        const columnCount = 8; // How many to have... a sensible hardcoded number
-        const searchObj = this.params.searchObj;
-        const name = 'name'; // mandatory
-        const one = quoteSourceSearchSchema.availablePropertiesForAsset(searchObj).map(x => x.name);
-        let final;
-        if (one.length >= columnCount) {
-          final = [name, ...one.slice(0, columnCount)];
-        } else {
-          const two = investmentAssetSearchSchema.availablePropertiesForAsset(searchObj.asset)
-            .slice(0, columnCount-one.length)
-            .map( x => `asset.${x.name}`);
-          final = [name, ...one, ...two];
-        }
-        const a = [...this.selectedColumns ?? []];
+const emit = defineEmits<{
+  'update:params': [value: Record<string, any>]
+  'update:column-editing': [value: boolean]
+  'update:selectedColumns': [value: string[]]
+  'search': [params: Record<string, any>]
+}>();
 
-        a.splice(0, this.selectedColumns!.length, ...final);
-        this.$emit('update:selectedColumns', a);
+const step = ref(1);
 
-      }
-    }
+const query = computed((): any[] => props.params.query);
+const searchObj = computed(() => props.params.searchObj);
+const fieldList = computed((): EnumEntry[] => getFieldNameList(quoteSourceFieldProperties));
+const fieldsToAdd = computed((): EnumEntry[] => fieldList.value.filter(en => !includes(props.selectedColumns, en.value)));
+const queryFieldProperties = computed((): FieldProperty[] => {
+  const names: string[] = props.params.query.map((row: any) => row.where[0]);
+  return names.map(nm => findProperty(nm ?? '', quoteSourceFieldProperties));
+});
+
+watch(step, newVal => {
+  if (newVal === 3) {
+    emit('update:column-editing', true);
+  } else if (newVal === 4) {
+    onSearch();
+  } else {
+    emit('update:column-editing', false);
   }
-})
+});
+
+function onSearch() {
+  const params = { ...props.params };
+  params.fields = props.selectedColumns;
+  emit('search', params);
+  emit('update:column-editing', false);
+}
+
+function onAssetUpdate(asset: any) {
+  emit('update:params', { ...props.params, searchObj: { ...props.params.searchObj, asset } });
+}
+
+function onObjUpdated(searchObjVal: any) {
+  emit('update:params', { ...props.params, searchObj: searchObjVal });
+}
+
+function onPropAdded() {
+  refreshColumns();
+}
+
+function refreshColumns() {
+  if (!props.columnEditing) {
+    const columnCount = 8;
+    const searchObjVal = props.params.searchObj;
+    const name = 'name';
+    const one = quoteSourceSearchSchema.availablePropertiesForAsset(searchObjVal).map((x: any) => x.name);
+    let final: string[];
+    if (one.length >= columnCount) {
+      final = [name, ...one.slice(0, columnCount)];
+    } else {
+      const two = investmentAssetSearchSchema.availablePropertiesForAsset(searchObjVal.asset)
+        .slice(0, columnCount - one.length)
+        .map((x: any) => `asset.${x.name}`);
+      final = [name, ...one, ...two];
+    }
+    const a = [...(props.selectedColumns ?? [])];
+    a.splice(0, props.selectedColumns!.length, ...final);
+    emit('update:selectedColumns', a);
+  }
+}
 </script>
 
 <style scoped>

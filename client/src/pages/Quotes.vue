@@ -12,94 +12,55 @@
   </my-page>
 </template>
 
-<script lang="ts">
-  import {defineComponent} from 'vue';
-  import {VuePlotly} from 'src/lib/loader';
-  import {QuoteSource} from 'src/lib/assetdb/assetDb';
-  import {useAppStore} from 'src/stores';
+<script setup lang="ts">
+import { ref, watch } from 'vue';
+import { VuePlotly } from 'src/lib/loader';
+import { QuoteSource } from 'src/lib/assetdb/assetDb';
+import { useAppStore } from 'src/stores';
 
-  interface MyData {
-    pagination: { rowsPerPage: number },
-    selected: QuoteSource[],
-    columns: any[],
-    quoteConfig: QuoteSource[],
-    currentRow?: QuoteSource,
-    series: Record<string, unknown>[],
-    layout: Record<string, unknown>,
-    options: Record<string, unknown>
-  }
+const store = useAppStore();
 
-  export default defineComponent({
-    name: 'Quotes',
-    components: {
-      VuePlotly
-    },
-    setup() { return { store: useAppStore() } },
-    data(): MyData {
-      const cfg = useAppStore().quoteConfig;
+const defaultColumn = (col: { name: string }) => ({ field: col.name, align: 'left' as const, sortable: true });
+const columns: any[] = [
+  { name: 'id', label: 'Id' },
+  { name: 'ticker', label: 'Ticker' },
+  { name: 'marketRegion', label: 'Region' },
+  { name: 'name', label: 'Name', align: 'left' },
+  { name: 'ccy', label: 'Ccy' },
+].map(col => ({ ...defaultColumn(col), ...col }));
 
-      const defaultColumn= (col: {name:string}) => ({field: col.name, align: 'left', sortable: true})
-      const columns = [
-        {name: 'id', label: 'Id'},
-        {name: 'ticker', label: 'Ticker'},
-        {name: 'marketRegion', label: 'Region'},
-        {name: 'name', label: 'Name', align: 'left'},
-        {name: 'ccy', label: 'Ccy'},
-      ].map(col => ({...defaultColumn(col), ...col}))
+const pagination = ref({ rowsPerPage: 50 });
+const selected = ref<QuoteSource[]>([]);
+const quoteConfig = store.quoteConfig;
+const currentRow = ref<QuoteSource | undefined>(undefined);
+const series = ref<Record<string, unknown>[]>([{
+  x: [],
+  y: [],
+  type: 'scatter',
+  hoverinfo: 'x+y',
+}]);
+const layout = {
+  autosize: true,
+  showlegend: true,
+  xaxis: { nticks: 20 },
+  yaxis: { zeroline: true, hoverformat: ',.0f' },
+  height: 250,
+  hovermode: 'closest',
+  margin: { l: 30, r: 30, b: 50, t: 30, pad: 0 },
+};
+const options = { displaylogo: false };
 
+async function handleCurrentChange(val: QuoteSource) {
+  currentRow.value = val;
+  const response = { data: await store.loadQuotes(val.id) };
+  series.value = [{
+    ...response.data,
+    type: 'scatter',
+    hoverinfo: 'x+y',
+  }];
+}
 
-      return {
-        pagination: {
-          rowsPerPage: 50
-        },
-        selected: [],
-        columns: columns,
-        quoteConfig: cfg,
-        currentRow: undefined,
-        series: [{
-          x: [],
-          y: [],
-          type: 'scatter',
-          hoverinfo: 'x+y',
-        }
-        ],
-        layout: {
-          autosize: true,
-          showlegend: true,
-          xaxis: {nticks: 20},
-          yaxis: {zeroline: true, hoverformat: ',.0f'},
-          height: 250,
-          hovermode: 'closest',
-          margin: {
-            l: 30,
-            r: 30,
-            b: 50,
-            t: 30,
-            pad: 0
-          },
-        },
-        options: {displaylogo: false},
-      };
-    },
-    watch: {
-      selected(val:QuoteSource[]) {
-        this.handleCurrentChange(val[0])
-      }
-    },
-    methods: {
-      async handleCurrentChange(val: QuoteSource) {
-        this.currentRow = val;
-        const response = {data: await this.store.loadQuotes(val.id)};
-        // const response = await axios.get('/api/quotes/ticker/' + val.avSymbol);
-        const series = {
-          ...response.data,
-          type: 'scatter',
-          hoverinfo: 'x+y',
-        };
-        this.series = [series];
-      }
-    }
-  })
+watch(selected, val => { handleCurrentChange(val[0]); });
 </script>
 
 <style scoped>

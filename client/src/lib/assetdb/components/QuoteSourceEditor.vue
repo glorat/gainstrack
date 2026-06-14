@@ -32,54 +32,36 @@
   </q-card>
 </template>
 
-<script lang="ts">
-  import {defineComponent} from 'vue';
-  import {QuoteSource} from '../assetDb';
-  import EnumSelect from './EnumSelect.vue';
-  import PropertyEditor from './PropertyEditor.vue';
-  import {investmentAssetSchema} from '../AssetSchema';
-  import {marketRegions, quoteSourceTypes} from '../enums';
+<script setup lang="ts">
+import { computed, watch } from 'vue';
+import { QuoteSource } from '../assetDb';
+import EnumSelect from './EnumSelect.vue';
+import PropertyEditor from './PropertyEditor.vue';
+import { investmentAssetSchema } from '../AssetSchema';
+import { marketRegions, quoteSourceTypes } from '../enums';
 
-  export default defineComponent({
-    name: 'QuoteSourceEditor',
-    components: {EnumSelect, PropertyEditor},
-    props: {
-      modelValue: { type: Object as () => QuoteSource, required: true as const }
-    },
-    data() {
-      const qsrc = this.modelValue;
-      return {
-        qsrc,
-        marketRegions,
-        quoteSourceTypes,
-        investmentAssetSchema
-      }
-    },
-    methods: {
-      removeSource(src: any) {
-        const qsrc: QuoteSource = this.qsrc!;
-        qsrc.sources = qsrc.sources.filter(s => s!==src)
-      }
-    },
-    computed: {
-      autoId() : string {
-        const qsrc = this.qsrc!;
-        if (qsrc?.ticker && qsrc?.marketRegion) {
-          if (qsrc.marketRegion === 'GLOBAL') {
-            return qsrc.ticker.toUpperCase()
-          } else {
-            return `${qsrc.ticker.toUpperCase()}.${qsrc.marketRegion.toUpperCase()}`;
-          }
-        }
-        return '';
-      }
-    },
-    watch: {
-      autoId() {
-        this.qsrc!.id = this.autoId;
-      }
+const qsrc = defineModel<QuoteSource>({ required: true });
+
+function removeSource(src: any) {
+  if (qsrc.value) {
+    qsrc.value.sources = qsrc.value.sources.filter(s => s !== src);
+  }
+}
+
+const autoId = computed((): string => {
+  if (qsrc.value?.ticker && qsrc.value?.marketRegion) {
+    if (qsrc.value.marketRegion === 'GLOBAL') {
+      return qsrc.value.ticker.toUpperCase();
+    } else {
+      return `${qsrc.value.ticker.toUpperCase()}.${qsrc.value.marketRegion.toUpperCase()}`;
     }
-  })
+  }
+  return '';
+});
+
+watch(autoId, newId => {
+  if (qsrc.value) qsrc.value.id = newId;
+});
 </script>
 
 <style scoped>

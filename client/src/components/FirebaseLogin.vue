@@ -82,85 +82,74 @@
   </q-card>
 </template>
 
-<script lang="ts">
-import { defineComponent, ref, computed } from 'vue'
+<script setup lang="ts">
+import { ref, computed } from 'vue';
 import {
   GoogleAuthProvider, signInWithPopup,
   signInWithEmailAndPassword, createUserWithEmailAndPassword,
   signOut
-} from 'firebase/auth'
-import { myAuth } from 'src/lib/assetdb/myfirebase'
-import { useAppStore } from 'src/stores'
+} from 'firebase/auth';
+import { myAuth } from 'src/lib/assetdb/myfirebase';
+import { useAppStore } from 'src/stores';
 
-export default defineComponent({
-  name: 'FirebaseLogin',
-  setup() {
-    const store = useAppStore()
+const store = useAppStore();
 
-    const email = ref('')
-    const password = ref('')
-    const isSignUp = ref(false)
-    const showPassword = ref(false)
-    const errorMsg = ref('')
-    const emailLoading = ref(false)
-    const googleLoading = ref(false)
+const email = ref('');
+const password = ref('');
+const isSignUp = ref(false);
+const showPassword = ref(false);
+const errorMsg = ref('');
+const emailLoading = ref(false);
+const googleLoading = ref(false);
 
-    const user = computed(() => store.user)
+const user = computed(() => store.user);
 
-    async function logout(): Promise<void> {
-      await signOut(myAuth())
-      await store.logout()
-    }
+async function logout(): Promise<void> {
+  await signOut(myAuth());
+  await store.logout();
+}
 
-    async function signInWithGoogle(): Promise<void> {
-      errorMsg.value = ''
-      googleLoading.value = true
-      try {
-        const provider = new GoogleAuthProvider()
-        await signInWithPopup(myAuth(), provider)
-      } catch (err: unknown) {
-        errorMsg.value = (err as { message?: string }).message ?? 'Google sign-in failed'
-      } finally {
-        googleLoading.value = false
-      }
-    }
-
-    async function submitForm(): Promise<void> {
-      errorMsg.value = ''
-      if (!email.value || !password.value) {
-        errorMsg.value = 'Email and password are required'
-        return
-      }
-      emailLoading.value = true
-      try {
-        if (isSignUp.value) {
-          await createUserWithEmailAndPassword(myAuth(), email.value, password.value)
-        } else {
-          await signInWithEmailAndPassword(myAuth(), email.value, password.value)
-        }
-        password.value = ''
-      } catch (err: unknown) {
-        const code = (err as { code?: string }).code ?? ''
-        const msg = (err as { message?: string }).message ?? 'Authentication failed'
-        if (code === 'auth/user-not-found' || code === 'auth/wrong-password' || code === 'auth/invalid-credential') {
-          errorMsg.value = 'Invalid email or password'
-        } else if (code === 'auth/email-already-in-use') {
-          errorMsg.value = 'An account with this email already exists'
-        } else if (code === 'auth/weak-password') {
-          errorMsg.value = 'Password must be at least 6 characters'
-        } else {
-          errorMsg.value = msg
-        }
-      } finally {
-        emailLoading.value = false
-      }
-    }
-
-    return {
-      email, password, isSignUp, showPassword, errorMsg,
-      emailLoading, googleLoading, user,
-      logout, signInWithGoogle, submitForm,
-    }
+async function signInWithGoogle(): Promise<void> {
+  errorMsg.value = '';
+  googleLoading.value = true;
+  try {
+    const provider = new GoogleAuthProvider();
+    await signInWithPopup(myAuth(), provider);
+  } catch (err: unknown) {
+    errorMsg.value = (err as { message?: string }).message ?? 'Google sign-in failed';
+  } finally {
+    googleLoading.value = false;
   }
-})
+}
+
+async function submitForm(): Promise<void> {
+  errorMsg.value = '';
+  if (!email.value || !password.value) {
+    errorMsg.value = 'Email and password are required';
+    return;
+  }
+  emailLoading.value = true;
+  try {
+    if (isSignUp.value) {
+      await createUserWithEmailAndPassword(myAuth(), email.value, password.value);
+    } else {
+      await signInWithEmailAndPassword(myAuth(), email.value, password.value);
+    }
+    password.value = '';
+  } catch (err: unknown) {
+    const code = (err as { code?: string }).code ?? '';
+    const msg = (err as { message?: string }).message ?? 'Authentication failed';
+    if (code === 'auth/user-not-found' || code === 'auth/wrong-password' || code === 'auth/invalid-credential') {
+      errorMsg.value = 'Invalid email or password';
+    } else if (code === 'auth/email-already-in-use') {
+      errorMsg.value = 'An account with this email already exists';
+    } else if (code === 'auth/weak-password') {
+      errorMsg.value = 'Password must be at least 6 characters';
+    } else {
+      errorMsg.value = msg;
+    }
+  } finally {
+    emailLoading.value = false;
+  }
+}
 </script>

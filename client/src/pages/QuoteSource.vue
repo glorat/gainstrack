@@ -32,141 +32,100 @@
   </my-page>
 </template>
 
-<script lang="ts">
-  import {defineComponent} from 'vue';
-  import {emptyQuoteSource, QuoteSource, quoteSourceDb, sanitiseQuoteSource, upsertQuoteSource} from 'src/lib/assetdb/assetDb';
-  import { extend } from 'quasar'
-  import {QuoteSourceEditor, QuoteSourceHistoryView, QuoteSourceView} from 'src/lib/assetdb';
-  import { query, where, onSnapshot } from 'firebase/firestore';
+<script setup lang="ts">
+import { ref, computed, onMounted, onBeforeUnmount } from 'vue';
+import { emptyQuoteSource, QuoteSource, quoteSourceDb, sanitiseQuoteSource, upsertQuoteSource } from 'src/lib/assetdb/assetDb';
+import { extend, useMeta } from 'quasar';
+import { QuoteSourceEditor, QuoteSourceHistoryView, QuoteSourceView } from 'src/lib/assetdb';
+import { query, where, onSnapshot } from 'firebase/firestore';
+import { onBeforeRouteUpdate, useRouter } from 'vue-router';
+import { qnotify } from 'src/boot/notify';
 
-  export default defineComponent({
-    name: 'QuoteSource',
-    components: {QuoteSourceEditor, QuoteSourceHistoryView, QuoteSourceView},
-    props: {
-      id: {
-        type: String,
-        required: false,
-      }
-    },
-    data() {
-      const data = undefined as QuoteSource|undefined;
-      const editingData = undefined as QuoteSource|undefined;
-      const loading = true;
-      const tab = 'view';
-      const subscribeId: string|null = null;
-      return {data, editingData, loading, tab, unsubscribe: null as null|(()=>void), subscribeId}
-    },
-    meta (): any {
-      // Meta plug-in doesn't make type info available so this is a workaround
-      const self = this as unknown as {data: QuoteSource|undefined};
-      const data = self.data;
-      const name = data?.name ?? 'AssetDB';
-      const id = data?.id ?? 'Loading...';
-      const title = `${name} | ${id}`;
-      const description = `Key facts for ${name}`;
+const props = defineProps<{ id?: string }>();
 
-      return {
-        title,
-        description
-      }
-    },
-    methods: {
-      async refresh (props?: Record<string, any>) {
-        const args = props ?? this.$props;
-        const id = args.id;
-        try {
-          if (id !== this.subscribeId) {
-            // Subscribing to something new
+const router = useRouter();
 
-            // First clear existing subscription
-            const existingSub = this.unsubscribe;
-            if (existingSub !== null) {
-              await existingSub()
-            }
+const data = ref<QuoteSource | undefined>(undefined);
+const editingData = ref<QuoteSource | undefined>(undefined);
+const loading = ref(true);
+const tab = ref('view');
+const unsubscribe = ref<(() => void) | null>(null);
+const subscribeId = ref<string | null>(null);
 
-            // Subscribe to new thing
-            this.subscribeId = id;
-            if (id) {
-              this.loading = true;
-              const q = query(quoteSourceDb(), where('id', '==', id));
-              this.unsubscribe = onSnapshot(q, items => {
-                this.loading = false;
-                const item = items.docs[0];
-                const doc = item.data();
-                this.data = sanitiseQuoteSource(doc);
-                this.editingData = extend(true, {}, doc);
-              });
-            } else {
-              // No id, new record
-              const doc = emptyQuoteSource('');
-              this.data = doc;
-              this.editingData = extend(true, {}, doc);
-              this.tab = 'edit';
-              this.loading = false;
-            }
-
-
-          }
-        } catch (error) {
-          const e:any = error;
-          console.error(error)
-          this.$notify.error(e.toString())
-        } finally {
-          // this.loading = false;
-        }
-      },
-      async saveQuoteSource() {
-        try {
-          this.loading = true;
-          const editing = this.editingData;
-          if (editing && editing.id) {
-            await upsertQuoteSource(editing);
-            this.$notify.success(`Save submitted for ${editing.id}. It will appear in a minute`);
-            if (editing.id !== this.subscribeId) {
-              // Probably added something new
-              await this.$router.push('/assetdb');
-            }
-          }
-        }
-        catch (error) {
-          const e:any = error;
-          console.error(error);
-          this.$notify.error(e?.message || e.toString());
-        }
-        finally {
-          this.loading = false
-        }
-      }
-    },
-    computed: {
-      canSaveQuoteSource(): boolean {
-        return !!this.editingData && !!this.editingData.id;
-      },
-      saveLabel(): string {
-        return 'Save' + (this.canSaveQuoteSource ? ' ' + this.editingData!.id : '');
-      },
-      displayTab(): string {
-        // Don't have a ready view tab yet
-        // return this.tab==='view' ? 'edit' : this.tab;
-        return this.tab;
-      }
-    },
-    mounted(): void {
-      this.refresh();
-    },
-    beforeUnmount() {
-      const unsub = this.unsubscribe;
-      if (unsub) {
-        unsub();
-      }
-    },
-    beforeRouteUpdate(to, from, next) {
-      // react to route changes...
-      // don't forget to call next()
-      this.refresh(to.params)
-      next()
+useMeta(() => {
+  const name = data.value?.name ?? 'AssetDB';
+  const id = data.value?.id ?? 'Loading...';
+  return {
+    title: `${name} | ${id}`,
+    meta: {
+      description: { name: 'description', content: `Key facts for ${name}` }
     }
-  })
+  };
+});
+
+async function refresh(refreshProps?: Record<string, any>) {
+  const args = refreshProps ?? props;
+  const id = args.id;
+  try {
+    if (id !== subscribeId.value) {
+      const existingSub = unsubscribe.value;
+      if (existingSub !== null) {
+        await existingSub();
+      }
+
+      subscribeId.value = id;
+      if (id) {
+        loading.value = true;
+        const q = query(quoteSourceDb(), where('id', '==', id));
+        unsubscribe.value = onSnapshot(q, items => {
+          loading.value = false;
+          const item = items.docs[0];
+          const doc = item.data();
+          data.value = sanitiseQuoteSource(doc);
+          editingData.value = extend(true, {}, doc);
+        });
+      } else {
+        const doc = emptyQuoteSource('');
+        data.value = doc;
+        editingData.value = extend(true, {}, doc);
+        tab.value = 'edit';
+        loading.value = false;
+      }
+    }
+  } catch (error) {
+    const e: any = error;
+    console.error(error);
+    qnotify.error(e.toString());
+  }
+}
+
+async function saveQuoteSource() {
+  try {
+    loading.value = true;
+    const editing = editingData.value;
+    if (editing && editing.id) {
+      await upsertQuoteSource(editing);
+      qnotify.success(`Save submitted for ${editing.id}. It will appear in a minute`);
+      if (editing.id !== subscribeId.value) {
+        await router.push('/assetdb');
+      }
+    }
+  } catch (error) {
+    const e: any = error;
+    console.error(error);
+    qnotify.error(e?.message || e.toString());
+  } finally {
+    loading.value = false;
+  }
+}
+
+const canSaveQuoteSource = computed((): boolean => !!editingData.value?.id);
+const saveLabel = computed((): string => 'Save' + (canSaveQuoteSource.value ? ' ' + editingData.value!.id : ''));
+const displayTab = computed((): string => tab.value);
+
+onMounted(() => { refresh(); });
+onBeforeUnmount(() => { unsubscribe.value?.(); });
+onBeforeRouteUpdate((to, from, next) => { refresh(to.params as Record<string, any>); next(); });
 </script>
 
 <style scoped>

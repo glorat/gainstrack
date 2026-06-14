@@ -154,105 +154,71 @@
   </my-page>
 </template>
 
-<script lang="ts">
-import {mapState} from 'pinia';
-import {useAppStore} from 'src/stores';
-import {apiPnlExplainDetail} from 'src/lib/apiFacade';
-import {forecastFromPnl} from 'src/lib/forecastFromPnl';
+<script setup lang="ts">
+import { ref, computed, watch, onMounted } from 'vue';
+import { useAppStore } from 'src/stores';
+import { apiPnlExplainDetail } from 'src/lib/apiFacade';
+import { forecastFromPnl } from 'src/lib/forecastFromPnl';
 import {
   defaultForecastModels,
   ForecastState,
   ForecastStateEx,
-  ModelSpec,
   performForecast
 } from 'src/lib/forecast/forecast';
-import {PLExplainDTO} from 'src/lib/PLExplain';
+import { PLExplainDTO } from 'src/lib/PLExplain';
 import CommandDateEditor from 'components/CommandDateEditor.vue';
-import {defineComponent} from 'vue';
+import { onBeforeRouteUpdate, useRouter } from 'vue-router';
+import { qnotify } from 'src/boot/notify';
 
-export default defineComponent({
-  name: 'PnlExplainDetail',
-  props: ['fromDate', 'toDate'],
-  components: {CommandDateEditor},
-  setup() { return { store: useAppStore() } },
-  computed: {
-    ...mapState(useAppStore, [
-      'baseCcy',
-      'allPostingsEx',
-      'fxConverter',
-      'allStateEx',
-    ]),
-    explainData(): PLExplainDTO {
-      return this.explains[0];
-    },
-    deltas(): any[] {
-      // Use of concat to sort a copy
-      return this.explainData.delta.concat().sort((a, b) => Math.abs(b.explain) - Math.abs(a.explain));
-    },
-    forecastStrategy(): ModelSpec[] {
-      return defaultForecastModels;
-    },
+const props = defineProps<{ fromDate?: string; toDate?: string }>();
 
-    // Below fns are dupe from ForecastView. Mixin?
-    forecastState(): ForecastState {
-      return forecastFromPnl(this.explainData);
-    },
-    forecastEntries(): ForecastStateEx[] {
-      let entries = performForecast(this.forecastState, this.forecastStrategy);
-      return entries;
-    },
-    targetYear(): number|undefined {
-      const strategy =   {inflation: 3, roi: 7, expenseMultiple: 25};
-      return this.forecastEntries.find(e => e.networth > e.expenses * strategy.expenseMultiple)?.timeunit
+const store = useAppStore();
+const router = useRouter();
 
-    },
-  },
-  methods: {
-    amount: (value:number) => value.toFixed(2),
-    fromDateChanged(ev:string) {
-      this.$router.push({name: 'pnldetail', params: {fromDate: ev, toDate: this.explainData.toDate}});
-    },
-    toDateChanged(ev:string) {
-      this.$router.push({name: 'pnldetail', params: {fromDate: this.explainData.fromDate, toDate: ev}});
-    },
-    async refresh(args?: any) {
-      const notify = this.$notify;
-      const params = args ?? this.$props;
-      if (!params) debugger;
-      try {
-        const {fromDate, toDate} = params;
-        if (!fromDate) debugger;
-        this.explains = await apiPnlExplainDetail(this.store, {fromDate, toDate});
-      } catch (error) {
-        const e:any = error;
-        console.error(error);
-        notify.error(e?.response || e.toString());
-      }
-    },
-  },
-  watch: {
-    fxConverter() {
-      this.refresh();
-    }
-  },
-  mounted() {
-    this.refresh();
-  },
-  data() {
-    const explains: PLExplainDTO[] = [];
-    const expansions: Record<string, boolean> = {};
-    return {
-      expansions,
-      explains,
-    };
-  },
-  beforeRouteUpdate(to, from, next): void {
-    // react to route changes...
-    // don't forget to call next()
-    this.refresh(to.params);
-    next();
-  },
+const explains = ref<PLExplainDTO[]>([]);
+const expansions = ref<Record<string, boolean>>({});
+
+const baseCcy = computed(() => store.baseCcy);
+
+const explainData = computed((): PLExplainDTO => explains.value[0]);
+const deltas = computed((): any[] =>
+  explainData.value.delta.concat().sort((a, b) => Math.abs(b.explain) - Math.abs(a.explain))
+);
+
+const forecastStrategy = defaultForecastModels;
+const forecastState = computed((): ForecastState => forecastFromPnl(explainData.value));
+const forecastEntries = computed((): ForecastStateEx[] => performForecast(forecastState.value, forecastStrategy));
+const targetYear = computed((): number | undefined => {
+  const strategy = { inflation: 3, roi: 7, expenseMultiple: 25 };
+  return forecastEntries.value.find(e => e.networth > e.expenses * strategy.expenseMultiple)?.timeunit;
 });
+
+function amount(value: number) { return value.toFixed(2); }
+
+function fromDateChanged(ev: string) {
+  router.push({ name: 'pnldetail', params: { fromDate: ev, toDate: explainData.value.toDate } });
+}
+
+function toDateChanged(ev: string) {
+  router.push({ name: 'pnldetail', params: { fromDate: explainData.value.fromDate, toDate: ev } });
+}
+
+async function refresh(args?: any) {
+  const params = args ?? props;
+  try {
+    const { fromDate, toDate } = params;
+    explains.value = await apiPnlExplainDetail(store, { fromDate, toDate });
+  } catch (error) {
+    const e: any = error;
+    console.error(error);
+    qnotify.error(e?.response || e.toString());
+  }
+}
+
+watch(() => store.fxConverter, () => refresh());
+
+onMounted(() => { refresh(); });
+onBeforeRouteUpdate((to, from, next) => { refresh(to.params); next(); });
 </script>
 
 <style scoped>

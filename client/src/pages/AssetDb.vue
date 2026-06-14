@@ -56,7 +56,7 @@ export default defineComponent({
     const params: any = defaultParams();
     const previewQuery: any = undefined;
     const loading = false;
-    const selectedColumns = undefined;
+    const selectedColumns = undefined as string[] | undefined;
     const columnEditing = false;
     const previewing = false;
     return {quoteSources, params, loading, selectedColumns, columnEditing, previewQuery, previewing};

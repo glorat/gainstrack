@@ -48,101 +48,74 @@
   </q-table>
 </template>
 
-<script lang="ts">
-  import {defineComponent} from 'vue';
-  import {QuoteSource} from '../assetDb';
-  import {quoteSourceFieldProperties} from '../AssetSchema';
-  import {matArchive} from '@quasar/extras/material-icons';
-  import {stringify} from 'csv-stringify/browser/esm/sync';
-  import {exportFile} from 'quasar';
-  import {pathToTableColumn} from '../schema';
+<script setup lang="ts">
+import { ref, computed, onMounted } from 'vue';
+import { QuoteSource } from '../assetDb';
+import { quoteSourceFieldProperties } from '../AssetSchema';
+import { matArchive } from '@quasar/extras/material-icons';
+import { stringify } from 'csv-stringify/browser/esm/sync';
+import { exportFile, useQuasar } from 'quasar';
+import { pathToTableColumn } from '../schema';
 
-  export default defineComponent({
-    name: 'QuoteSourceTable',
-    props: {
-      quoteSources: {
-        type: Array as () => QuoteSource[],
-        required: true
-      },
-      loading: Boolean,
-      selectedColumns: {
-        type: Array as () => string[],
-        default: ():string[] => {
-          const d = ['name', 'ticker', 'marketRegion', 'ccy', 'asset.type'];
-          return d;
-        }
-      },
-      columnEditing: Boolean,
-      previewing: Boolean,
-    },
-    data() {
-      const pagination = {
-        rowsPerPage: 20
-      };
-      return {
-        // columns,
-        pagination,
-        matArchive,
-      }
-    },
-    emits:['row-click', 'update:selected-columns'],
-    methods: {
-      onRowClick(ev: any, data: QuoteSource) {
-        this.$emit('row-click', data)
-      },
-      deleteColumn(idx: number): void {
-        const a = [...this.selectedColumns];
-        a.splice(idx,1);
-        this.$emit('update:selected-columns', a);
-      },
-      swapLeft(idx:number):void {
-        const a = [...this.selectedColumns];
-        const tmp = a[idx];
-        a[idx] = a[idx-1];
-        a[idx-1] = tmp;
-        this.$emit('update:selected-columns', a);
-      },
-      exportTable() {
-        const tableColumns = this.columns;
+const props = withDefaults(defineProps<{
+  quoteSources: QuoteSource[]
+  loading?: boolean
+  selectedColumns?: string[]
+  columnEditing?: boolean
+  previewing?: boolean
+}>(), {
+  selectedColumns: (): string[] => ['name', 'ticker', 'marketRegion', 'ccy', 'asset.type']
+});
 
-        const records = this.quoteSources.map( (qs:Record<string, any>) => {
-          const row:Record<string, any> = {};
-          tableColumns.forEach(col => {
-            row[col.label] = col.field ? col.field(qs) : qs[col.name]
-          });
-          return row;
-        });
-        const columns = tableColumns.map(col => col.label ?? col.name);
-        const options = {columns, header: true};
-        const data = stringify(records, options);
-        // const data = '';
-        const status = exportFile(
-          'table-export.csv',
-          data,
-          'text/csv'
-        );
+const emit = defineEmits<{
+  'row-click': [data: QuoteSource]
+  'update:selected-columns': [value: string[]]
+}>();
 
-        if (status !== true) {
-          this.$q.notify({
-            message: 'Browser denied file download...',
-            color: 'negative',
-            icon: 'warning'
-          })
-        }
-      }
-    },
-    computed: {
-      columns(): any[] {
-        return this.selectedColumns
-          .map(col => pathToTableColumn(quoteSourceFieldProperties, col))
-          .map(col => ({...col, sortable: true}));
-      },
-    },
-    mounted(): void {
-      // We are the master
-      this.$emit('update:selected-columns', this.selectedColumns);
-    }
-  })
+const $q = useQuasar();
+const pagination = ref({ rowsPerPage: 20 });
+
+const columns = computed((): any[] =>
+  props.selectedColumns
+    .map(col => pathToTableColumn(quoteSourceFieldProperties, col))
+    .map(col => ({ ...col, sortable: true }))
+);
+
+function onRowClick(ev: any, data: QuoteSource) {
+  emit('row-click', data);
+}
+
+function deleteColumn(idx: number): void {
+  const a = [...props.selectedColumns];
+  a.splice(idx, 1);
+  emit('update:selected-columns', a);
+}
+
+function swapLeft(idx: number): void {
+  const a = [...props.selectedColumns];
+  const tmp = a[idx];
+  a[idx] = a[idx - 1];
+  a[idx - 1] = tmp;
+  emit('update:selected-columns', a);
+}
+
+function exportTable() {
+  const tableColumns = columns.value;
+  const records = props.quoteSources.map(qs => {
+    const row: Record<string, any> = {};
+    const qsRecord = qs as unknown as Record<string, any>;
+    tableColumns.forEach(col => { row[col.label] = col.field ? col.field(qs) : qsRecord[col.name]; });
+    return row;
+  });
+  const columnNames = tableColumns.map(col => col.label ?? col.name);
+  const data = stringify(records, { columns: columnNames, header: true });
+  const status = exportFile('table-export.csv', data, 'text/csv');
+  if (status !== true) {
+    $q.notify({ message: 'Browser denied file download...', color: 'negative', icon: 'warning' });
+  }
+}
+
+onMounted(() => { emit('update:selected-columns', props.selectedColumns); });
 </script>
 
 <style scoped>
