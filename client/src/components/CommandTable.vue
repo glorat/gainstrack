@@ -15,7 +15,7 @@
         </tr>
         </thead>
         <tbody>
-        <tr v-for="cmd in cmds" v-on:click="selectCommand(cmd)">
+        <tr v-for="cmd in cmds">
             <!--            <td colspan="4"><command-editor :cmd="cmd.data" :type="cmd.type"></command-editor></td>-->
             <td v-if="columnShow['accountId']">{{ cmd.accountId }}</td>
             <td>{{ cmd.date }}</td>
@@ -32,45 +32,36 @@
     </table>
 </template>
 
-<script lang="ts">
-  import {AccountCommandDTO, Amount} from '../lib/assetdb/models';
-  import {defineComponent, PropType} from 'vue';
+<script setup lang="ts">
+import { computed } from 'vue';
+import { AccountCommandDTO, Amount } from '../lib/assetdb/models';
 
-    export default defineComponent({
-        name: 'CommandTable',
-        props: {
-            cmds: Array as PropType<AccountCommandDTO[]>,
-            columns: {
-                type: Array as PropType<string[]>,
-                default: () => [],
-            },
-        },
-        methods: {
-            selectCommand(_cmd?: AccountCommandDTO) {
-                // TODO
-            },
-          amount(value: Amount | undefined) {
-            if (!value) {
-              return ''
-            } else {
-              return `${value.number} ${value.ccy}`
-            }
+const props = withDefaults(defineProps<{
+  cmds?: AccountCommandDTO[];
+  columns?: string[];
+}>(), {
+  columns: () => [],
+});
 
-          }
-        },
-        computed: {
-            columnShow(): Record<string, boolean> {
-                const cols = ['accountId', 'date', 'commandType', 'price', 'change', 'asset', 'commission', 'balance',
-                    'otherAccount', 'description'];
-                const map: Record<string, boolean> = {};
-                const show = this.columns.length > 0 ? this.columns : cols;
-                show.forEach(s => {
-                    map[s] = true;
-                });
-                return map;
-            }
-        }
-    })
+
+function amount(value: Amount | undefined) {
+  if (!value) {
+    return '';
+  } else {
+    return `${value.number} ${value.ccy}`;
+  }
+}
+
+const columnShow = computed((): Record<string, boolean> => {
+  const cols = ['accountId', 'date', 'commandType', 'price', 'change', 'asset', 'commission', 'balance',
+    'otherAccount', 'description'];
+  const map: Record<string, boolean> = {};
+  const show = props.columns.length > 0 ? props.columns : cols;
+  show.forEach(s => {
+    map[s] = true;
+  });
+  return map;
+});
 </script>
 
 <style scoped>

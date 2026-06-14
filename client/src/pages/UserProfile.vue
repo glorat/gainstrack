@@ -25,87 +25,65 @@
   </my-page>
 </template>
 
-<script lang="ts">
-  import {defineComponent} from 'vue';
-  import {useAppStore} from 'src/stores';
-  import { User } from 'firebase/auth';
-  import {getUserRole, setDisplayName} from 'src/lib/assetdb/assetDb';
-  import {DocumentData} from  'firebase/firestore';
-  import {matLogin} from '@quasar/extras/material-icons';
-  export default defineComponent({
-    name: 'UserProfile',
-    setup() { return { store: useAppStore() } },
-    props: {
-      id: {
-        type: String,
-      }
-    },
-    data() {
-      const userRoles: DocumentData|undefined = undefined;
-      const loading = false;
-      const newDisplayName = '';
-      return {
-        userRoles: userRoles as DocumentData|undefined,
-        loading,
-        newDisplayName,
-        matLogin,
-      }
-    },
-    mounted() {
-      this.refresh();
-    },
-    methods: {
-      async refresh():Promise<void> {
-        this.loading = true;
-        try {
-          if (this.uid) {
-            this.userRoles = await getUserRole(this.uid);
-          } else {
-            this.userRoles = undefined;
-          }
+<script setup lang="ts">
+import { ref, computed, onMounted } from 'vue';
+import { useAppStore } from 'src/stores';
+import { User } from 'firebase/auth';
+import { getUserRole, setDisplayName as setDisplayNameFn } from 'src/lib/assetdb/assetDb';
+import { DocumentData } from 'firebase/firestore';
+import { matLogin } from '@quasar/extras/material-icons';
+import { qnotify } from 'src/boot/notify';
 
-        }
-        catch (e) {
-          console.error(e)
-        }
-        finally {
-          this.loading = false;
-        }
-      },
-      async setDisplayName() {
-        try {
-          this.loading = true;
-          const result = await setDisplayName(this.newDisplayName) as any
-          if (result?.message) this.$notify.success(result.message);
-          this.refresh()
-        }
-        catch (error) {
-          const e:any = error;
-          this.$notify.error(e?.message)
-        } finally {
-          this.loading = false;
-        }
+const props = defineProps<{ id?: string }>();
 
-      }
-    },
-    computed: {
-      uid(): string|undefined {
-        // Prop, else logged in user else nothing
-        return this.id ?? this.firebaseUser?.uid;
-      },
-      firebaseAuthed():boolean {
-        return !!this.store.user;
-      },
-      isAuthenticated():boolean {
-        return this.firebaseAuthed;
-      },
-      firebaseUser(): User|undefined {
-        return this.store.user;
-      },
-      authName():string {
-        return this.store.user?.displayName || 'anon'
-      }
-    },  })
+const store = useAppStore();
+
+const userRoles = ref<DocumentData | undefined>(undefined);
+const loading = ref(false);
+const newDisplayName = ref('');
+
+const uid = computed<string | undefined>(() => {
+  // Prop, else logged in user else nothing
+  return props.id ?? firebaseUser.value?.uid;
+});
+
+const firebaseAuthed = computed<boolean>(() => !!store.user);
+
+const firebaseUser = computed<User | undefined>(() => store.user);
+
+async function refresh(): Promise<void> {
+  loading.value = true;
+  try {
+    if (uid.value) {
+      userRoles.value = await getUserRole(uid.value);
+    } else {
+      userRoles.value = undefined;
+    }
+  }
+  catch (e) {
+    console.error(e);
+  }
+  finally {
+    loading.value = false;
+  }
+}
+
+async function setDisplayName() {
+  try {
+    loading.value = true;
+    const result = await setDisplayNameFn(newDisplayName.value) as any;
+    if (result?.message) qnotify.success(result.message);
+    refresh();
+  }
+  catch (error) {
+    const e: any = error;
+    qnotify.error(e?.message);
+  } finally {
+    loading.value = false;
+  }
+}
+
+onMounted(() => { refresh(); });
 </script>
 
 <style scoped>

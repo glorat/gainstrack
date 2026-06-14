@@ -38,133 +38,110 @@
   </q-card>
 </template>
 
-<script lang="ts">
-import {defineComponent} from 'vue';
+<script setup lang="ts">
+import { computed, reactive, ref } from 'vue';
 import FieldEditor from '../lib/assetdb/components/FieldEditor.vue';
-import {
-  createAssetFromProps,
-  schemaFor, userAssetSchema,
-} from 'src/lib/assetdb/AssetSchema';
-import {AccountCommandDTO, AssetDTO} from 'src/lib/assetdb/models';
-import {GlobalPricer} from 'src/lib/pricer';
-import {LocalDate} from '@js-joda/core';
-import {formatNumber} from 'src/lib/utils';
-import {defaultedBalanceOrUnit, toGainstrack} from 'src/lib/commandDefaulting';
-import {AllStateEx} from 'src/lib/AllStateEx';
+import { createAssetFromProps, schemaFor, userAssetSchema } from 'src/lib/assetdb/AssetSchema';
+import { AccountCommandDTO, AssetDTO } from 'src/lib/assetdb/models';
+import { GlobalPricer } from 'src/lib/pricer';
+import { LocalDate } from '@js-joda/core';
+import { formatNumber } from 'src/lib/utils';
+import { defaultedBalanceOrUnit, toGainstrack } from 'src/lib/commandDefaulting';
+import { AllStateEx } from 'src/lib/AllStateEx';
 import axios from 'axios';
-import {FieldProperty, Schema} from 'src/lib/assetdb/schema';
-import {useAppStore} from 'src/stores';
+import { FieldProperty, Schema } from 'src/lib/assetdb/schema';
+import { useAppStore } from 'src/stores';
+import { qnotify } from 'src/boot/notify';
 
+const props = withDefaults(defineProps<{ accountId?: string; schema?: Schema }>(), {
+  schema: () => userAssetSchema
+});
 
-export default defineComponent({
-  name: 'NewAssetEditor',
-  components: {FieldEditor},
-  setup() { return { store: useAppStore() } },
-  props: {
-    accountId: {
-      type: String,
-    },
-    schema: {
-      type: Object as () => Schema,
-      default: () => userAssetSchema
-    }
-  },
-  data() {
-    const properties: Record<string, any> = {name: '', category:''};
-    const adding = false;
-    return {
-      properties,
-      adding
-    }
-  },
-  methods: {
-    onFieldUpdate(field:string, newValue: any) {
-      this.properties[field] = newValue;
-      if (newValue && schemaFor(field).fieldType==='ticker') {
-        this.store.loadQuotes(newValue);
-      }
-    },
-    onRemove(propType: FieldProperty) {
-      delete this.properties[propType.name];
-    },
-    addAsset() {
-      const str = this.assetGainstrack;
-      if (str) {
+const emit = defineEmits<{ ok: [asset: AssetDTO]; cancel: [] }>();
 
-        axios.post('/api/post/asset', { str })
-          .then(response => {
-            this.$notify.success(response.data);
-            this.$emit('ok', this.generatedAsset);
-          })
-          .catch(error => this.$notify.error(error.response.data))
+const store = useAppStore();
 
-      }
+const properties = reactive<Record<string, any>>({ name: '', category: '' });
+const adding = ref(false);
 
-    },
-    cancel () {
-      this.$emit('cancel')
-    },
-  },
-  computed: {
-    canAdd(): boolean {
-      return !!this.assetGainstrack;
-    },
-    baseCcy(): string {
-      return this.store.baseCcy;
-    },
-    allStateEx(): AllStateEx {
-      return this.store.allStateEx;
-    },
-    globalPricer (): GlobalPricer {
-      return this.store.fxConverter as GlobalPricer;
-    },
-    schemas(): FieldProperty[] {
-      return this.schema.selectedPropertiesForAsset(this.properties);
-    },
-    availableTags(): FieldProperty[] {
-      return this.schema.availablePropertiesForAsset(this.properties)
-    },
-    generatedAsset(): AssetDTO {
-      return createAssetFromProps(this.properties)
-    },
-    generatedAssetCommand(): AccountCommandDTO {
-      return {...this.generatedAsset, commandType: 'commodity', accountId: '', date: '1900-01-01'}
-    },
-    assetPrice():string {
-      const asset = this.generatedAsset;
-      const pricer = this.globalPricer;
-      const baseCcy:string = this.baseCcy;
-      const today = LocalDate.now();
-      const price = pricer.getPrice(asset, baseCcy, today);
-      return formatNumber(price);
-    },
-    assetGainstrack(): string {
-      return toGainstrack(this.generatedAssetCommand)
-    },
-    commandGainstrack(): string {
-      if (this.accountId) {
-        const asset = this.generatedAsset;
-        const today = this.properties['date'] || LocalDate.now();
-        const cmd:AccountCommandDTO = {
-          commandType: 'balunit',
-          accountId: this.accountId,
-          date: today.toString(),
-          balance: {number: this.properties['units'] ?? 1, ccy: asset.asset},
-        };
-        if (this.properties['price']) {
-          cmd.price = this.properties['price']
-        }
-
-        const dcmd = defaultedBalanceOrUnit(cmd, this.allStateEx, this.globalPricer);
-        const gainstrack = toGainstrack(dcmd);
-        return gainstrack;
-      } else {
-        return '';
-      }
-
-    }
+function onFieldUpdate(field: string, newValue: any) {
+  properties[field] = newValue;
+  if (newValue && schemaFor(field).fieldType === 'ticker') {
+    store.loadQuotes(newValue);
   }
-})
+}
+
+function onRemove(propType: FieldProperty) {
+  delete properties[propType.name];
+}
+
+function addAsset() {
+  const str = assetGainstrack.value;
+  if (str) {
+    axios.post('/api/post/asset', { str })
+      .then(response => {
+        qnotify.success(response.data);
+        emit('ok', generatedAsset.value);
+      })
+      .catch(error => qnotify.error(error.response.data));
+  }
+}
+
+function cancel() {
+  emit('cancel');
+}
+
+const baseCcy = computed((): string => store.baseCcy);
+
+const allStateEx = computed((): AllStateEx => store.allStateEx);
+
+const globalPricer = computed((): GlobalPricer => store.fxConverter as GlobalPricer);
+
+const schemas = computed((): FieldProperty[] => props.schema.selectedPropertiesForAsset(properties));
+
+const availableTags = computed((): FieldProperty[] => props.schema.availablePropertiesForAsset(properties));
+
+const generatedAsset = computed((): AssetDTO => createAssetFromProps(properties));
+
+const generatedAssetCommand = computed((): AccountCommandDTO => ({
+  ...generatedAsset.value,
+  commandType: 'commodity',
+  accountId: '',
+  date: '1900-01-01',
+}));
+
+const assetPrice = computed((): string => {
+  const asset = generatedAsset.value;
+  const pricer = globalPricer.value;
+  const ccy: string = baseCcy.value;
+  const today = LocalDate.now();
+  const price = pricer.getPrice(asset, ccy, today);
+  return formatNumber(price);
+});
+
+const assetGainstrack = computed((): string => toGainstrack(generatedAssetCommand.value));
+
+const commandGainstrack = computed((): string => {
+  if (props.accountId) {
+    const asset = generatedAsset.value;
+    const today = properties['date'] || LocalDate.now();
+    const cmd: AccountCommandDTO = {
+      commandType: 'balunit',
+      accountId: props.accountId,
+      date: today.toString(),
+      balance: { number: properties['units'] ?? 1, ccy: asset.asset },
+    };
+    if (properties['price']) {
+      cmd.price = properties['price'];
+    }
+    const dcmd = defaultedBalanceOrUnit(cmd, allStateEx.value, globalPricer.value);
+    return toGainstrack(dcmd);
+  } else {
+    return '';
+  }
+});
+
+const canAdd = computed((): boolean => !!assetGainstrack.value);
 </script>
 
 <style scoped>

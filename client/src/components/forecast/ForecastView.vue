@@ -62,93 +62,67 @@
   </my-page>
 </template>
 
-<script lang="ts">
-import {ForecastStateEx, ModelSpec, performForecast} from 'src/lib/forecast/forecast';
-import {LocalDate} from '@js-joda/core';
-import {round} from 'lodash';
-import { defineComponent } from 'vue'
-import {useForecastStore} from 'src/stores';
+<script setup lang="ts">
+import { ref, computed, watch, onMounted } from 'vue';
+import { ForecastStateEx, ModelSpec, performForecast } from 'src/lib/forecast/forecast';
+import { LocalDate } from '@js-joda/core';
+import { round } from 'lodash';
+import { useForecastStore } from 'src/stores';
 
-export default defineComponent({
-  name: 'ForecastView',
-  setup() { return { forecastStore: useForecastStore() } },
-  data() {
-    const income = 50000;
-    const expenses = 20000;
-    const networth = 0;
-    const timeunit = LocalDate.now().year();
-    const tab = 'basic';
+const forecastStore = useForecastStore();
 
-    const defaultInput = {
-      timeunit,
-      income,
-      expenses,
-      networth
-    };
+const tab = ref('basic');
+const pagination = { rowsPerPage: 30 };
 
-    const input = defaultInput;
-    const strategy =   {inflation: 3, roi: 7, expenseMultiple: 25};
-    const pagination = {rowsPerPage: 30};
-    return {tab, input, pagination, strategy};
-
-  },
-  mounted() {
-    if (this.forecastStore.params) {
-      this.input = this.forecastStore.params.input
-      this.strategy = this.forecastStore.params.strategy
-    }
-    this.input.timeunit = LocalDate.now().year();
-  },
-  computed: {
-    forecastEntries(): ForecastStateEx[] {
-      let entries = performForecast(this.input, this.forecastStrategy);
-      return entries;
-    },
-    targetYear(): number|undefined {
-      return this.forecastEntries.find(e => e.networth > e.expenses * this.strategy.expenseMultiple)?.timeunit
-    },
-    forecastStrategy(): ModelSpec[] {
-      return [
-        {model: 'inflation', args: {inflation: this.strategy.inflation}},
-        {model: 'wageInflation', args: {inflation: this.strategy.inflation}},
-        {model: 'roi', args: {roi: this.strategy.roi}},
-      ]
-      // const rate = (rate: number) => (base: number) => round(base * rate);
-      // return {
-      //   roi: rate(this.strategy.roi / 100),
-      //   inflation: rate(this.strategy.inflation / 100),
-      //   retirementTarget: state => state.networth > state.expenses * this.strategy.expenseMultiple
-      // };
-
-    }
-  },
-  watch: {
-    input: {
-      deep: true,
-      handler() {
-        this.onParamsUpdated()
-      }
-    },
-    strategy: {
-      deep: true,
-      handler() {
-        this.onParamsUpdated()
-      }
-    }
-  },
-  methods: {
-    onParamsUpdated() {
-      const params = {input: this.input, strategy: this.strategy};
-      this.forecastStore.updateForecastParams(params);
-    },
-    onSavingsRateChange(ev: string | number | null) {
-      const newRate = +(ev ?? 0);
-      if (newRate > 0 && newRate <= 100) {
-        this.input.expenses = round(this.input.income * ((100 - newRate) / 100));
-      }
-    }
-  }
+const input = ref<{ timeunit: number; income: number; expenses: number; networth: number }>({
+  timeunit: LocalDate.now().year(),
+  income: 50000,
+  expenses: 20000,
+  networth: 0,
 });
+
+const strategy = ref<{ inflation: number; roi: number; expenseMultiple: number }>({
+  inflation: 3,
+  roi: 7,
+  expenseMultiple: 25,
+});
+
+onMounted(() => {
+  if (forecastStore.params) {
+    input.value = forecastStore.params.input;
+    strategy.value = forecastStore.params.strategy;
+  }
+  input.value.timeunit = LocalDate.now().year();
+});
+
+const forecastStrategy = computed(() => [
+  { model: 'inflation', args: { inflation: strategy.value.inflation } },
+  { model: 'wageInflation', args: { inflation: strategy.value.inflation } },
+  { model: 'roi', args: { roi: strategy.value.roi } },
+] as ModelSpec[]);
+
+const forecastEntries = computed<ForecastStateEx[]>(() =>
+  performForecast(input.value, forecastStrategy.value)
+);
+
+const targetYear = computed<number | undefined>(() =>
+  forecastEntries.value.find(e => e.networth > e.expenses * strategy.value.expenseMultiple)?.timeunit
+);
+
+function onParamsUpdated() {
+  const params = { input: input.value, strategy: strategy.value };
+  forecastStore.updateForecastParams(params);
+}
+
+watch(input, () => { onParamsUpdated(); }, { deep: true });
+watch(strategy, () => { onParamsUpdated(); }, { deep: true });
+
+function onSavingsRateChange(ev: string | number | null) {
+  const newRate = +(ev ?? 0);
+  if (newRate > 0 && newRate <= 100) {
+    input.value.expenses = round(input.value.income * ((100 - newRate) / 100));
+  }
+}
 </script>
 
 <style scoped>

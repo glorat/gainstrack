@@ -20,17 +20,16 @@
   </my-page>
 </template>
 
-<script lang="ts">
-import {defineComponent} from 'vue';
-import {getAllQuoteSources, QuoteSource} from 'src/lib/assetdb/assetDb';
-// import QuoteSourceTable from 'src/lib/assetdb/components/QuoteSourceTable.vue';
-// import QuoteSourceFilter from 'src/lib/assetdb/components/QuoteSourceFilter.vue';
-
-import {debounce} from 'quasar';
-import {quoteSourceFieldProperties} from 'src/lib/assetdb/AssetSchema';
-import {applyQueries, searchObjToQuery} from 'src/lib/assetdb/schema';
+<script setup lang="ts">
+import { ref, watch, onMounted } from 'vue';
+import { useRouter, useRoute } from 'vue-router';
+import { getAllQuoteSources, QuoteSource } from 'src/lib/assetdb/assetDb';
+import { debounce } from 'quasar';
+import { quoteSourceFieldProperties } from 'src/lib/assetdb/AssetSchema';
+import { applyQueries, searchObjToQuery } from 'src/lib/assetdb/schema';
 import { query, limit as firestoreLimit, CollectionReference } from 'firebase/firestore';
-import {QuoteSourceFilter, QuoteSourceTable} from 'src/lib/assetdb';
+import { QuoteSourceFilter, QuoteSourceTable } from 'src/lib/assetdb';
+import { qnotify } from 'src/boot/notify';
 
 function queryArgsToObj(args: any) {
   try {
@@ -48,104 +47,93 @@ function queryArgsToObj(args: any) {
 
 const defaultParams = () => ({query:[], searchObj:{asset:{}}, fields: []});
 
-export default defineComponent({
-  name: 'AssetDb',
-  components: {QuoteSourceTable, QuoteSourceFilter},
-  data() {
-    const quoteSources = [] as QuoteSource[];
-    const params: any = defaultParams();
-    const previewQuery: any = undefined;
-    const loading = false;
-    const selectedColumns = undefined as string[] | undefined;
-    const columnEditing = false;
-    const previewing = false;
-    return {quoteSources, params, loading, selectedColumns, columnEditing, previewQuery, previewing};
-  },
+const router = useRouter();
+const route = useRoute();
 
-  methods: {
-    async refresh() {
-      const queryArgs = this.$route.query['args'];
-      const params = queryArgsToObj(queryArgs) ?? defaultParams();
+const quoteSources = ref<QuoteSource[]>([]);
+const params = ref<any>(defaultParams());
+const previewQuery = ref<any>(undefined);
+const loading = ref(false);
+const selectedColumns = ref<string[] | undefined>(undefined);
+const columnEditing = ref(false);
+const previewing = ref(false);
 
-      // Perform some sanitising/defaulting
-      if (!params.query) params.query = [];
-      if (!params.searchObj) params.searchObj = {asset:{}};
-      if (!params.fields) params.fields = [];
+async function refresh() {
+  const queryArgs = route.query['args'];
+  const newParams = queryArgsToObj(queryArgs) ?? defaultParams();
 
-      this.params = params;
+  // Perform some sanitising/defaulting
+  if (!newParams.query) newParams.query = [];
+  if (!newParams.searchObj) newParams.searchObj = {asset:{}};
+  if (!newParams.fields) newParams.fields = [];
 
-      if (params?.fields && params.fields.length > 0) {
-        this.selectedColumns = params.fields;
-      }
-      this.previewing = false;
-      await this.applyQuery(params);
+  params.value = newParams;
 
-    },
-    async applyQuery(params: any) {
-      const defaultLimit = 20;
-      const actualLimit = defaultLimit;
+  if (newParams?.fields && newParams.fields.length > 0) {
+    selectedColumns.value = newParams.fields;
+  }
+  previewing.value = false;
+  await applyQuery(newParams);
+}
 
-      try {
-        this.loading = true;
-        const {query, searchObj} = params ?? {};
-        const advancedQuery = query ?? [];
-        const searchObjQuery = searchObjToQuery(searchObj ?? {}, quoteSourceFieldProperties);
-        const cq = [...advancedQuery, ...searchObjQuery];
+async function applyQuery(queryParams: any) {
+  const defaultLimit = 20;
+  const actualLimit = defaultLimit;
 
-        if (cq && cq.length && cq[0].where) {
-          const filter = (col: CollectionReference) => query(applyQueries(col, cq), firestoreLimit(actualLimit));
-          this.quoteSources = await getAllQuoteSources(filter)
-        } else {
-          this.quoteSources = await getAllQuoteSources((col: CollectionReference) => query(col, firestoreLimit(actualLimit)));
-        }
-      } catch (error) {
-        const e:any = error;
-        this.$notify.error(e.message ?? e.toString());
-      } finally {
-        this.loading = false;
-      }
-    },
-    onSearch(params: any) {
-      const args = JSON.stringify(params);
-      // Prevent NavigationDuplicated
-      if (this.$route.query?.args !== args) {
-        this.$router.push({query: {args}})
-      }
-    },
-    onPreview(params: any) {
-      this.previewQuery = params;
-      this.doPreview();
-    },
-    doPreview: debounce(async function(this:any) {
-      this.onSearch(this.previewQuery);
-      // await this.applyQuery(this.previewQuery, 10);
-      // this.previewing = true;
-    },1000),
-    createNew() {
-      this.$router.push({name: 'quoteSourceNew'});
-    },
-    quoteRowClick(qsrc: QuoteSource) {
-      if (qsrc.id) {
-        this.$router.push({name: 'quoteSource', params: {id: qsrc.id}});
-      }
+  try {
+    loading.value = true;
+    const { query: queryArr, searchObj } = queryParams ?? {};
+    const advancedQuery = queryArr ?? [];
+    const searchObjQuery = searchObjToQuery(searchObj ?? {}, quoteSourceFieldProperties);
+    const cq = [...advancedQuery, ...searchObjQuery];
+
+    if (cq && cq.length && cq[0].where) {
+      const filter = (col: CollectionReference) => query(applyQueries(col, cq), firestoreLimit(actualLimit));
+      quoteSources.value = await getAllQuoteSources(filter);
+    } else {
+      quoteSources.value = await getAllQuoteSources((col: CollectionReference) => query(col, firestoreLimit(actualLimit)));
     }
-  },
-  computed: {
-  },
-  watch: {
-    params: {
-      handler(val) {
-        this.onPreview(val)
-      }, deep: true
-    },
-    '$route': 'refresh'
-  },
-  mounted() {
-    this.refresh();
-  },
-})
+  } catch (error) {
+    const e: any = error;
+    qnotify.error(e.message ?? e.toString());
+  } finally {
+    loading.value = false;
+  }
+}
 
+function onSearch(searchParams: any) {
+  const args = JSON.stringify(searchParams);
+  // Prevent NavigationDuplicated
+  if (route.query?.args !== args) {
+    router.push({query: {args}});
+  }
+}
 
+function onPreview(previewParams: any) {
+  previewQuery.value = previewParams;
+  doPreview();
+}
+
+const doPreview = debounce(async () => {
+  onSearch(previewQuery.value);
+  // await applyQuery(previewQuery.value, 10);
+  // previewing.value = true;
+}, 1000);
+
+function createNew() {
+  router.push({name: 'quoteSourceNew'});
+}
+
+function quoteRowClick(qsrc: QuoteSource) {
+  if (qsrc.id) {
+    router.push({name: 'quoteSource', params: {id: qsrc.id}});
+  }
+}
+
+watch(params, (val) => { onPreview(val); }, { deep: true });
+watch(route, () => { refresh(); });
+
+onMounted(() => { refresh(); });
 </script>
 
 <style scoped>
