@@ -122,7 +122,6 @@ const c = computed((): Partial<AccountCommandDTO> => {
 
 function gainstrackChange(ev: string) {
   commandStr.value = ev
-  testing.value = true
   testCommand()
 }
 
@@ -140,6 +139,8 @@ const testCommand = debounce(async () => {
     if (str) {
       testing.value = true
       result.value = await apiCmdTest(store, { str })
+    } else {
+      result.value = { added: [], accountChanges: [], errors: [], networthChange: 0 }
     }
   } catch (error) {
     console.error(error)

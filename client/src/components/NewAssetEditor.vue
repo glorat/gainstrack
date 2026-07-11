@@ -78,12 +78,14 @@ function onRemove(propType: FieldProperty) {
 function addAsset() {
   const str = assetGainstrack.value;
   if (str) {
+    adding.value = true;
     axios.post('/api/post/asset', { str })
       .then(response => {
         qnotify.success(response.data);
         emit('ok', generatedAsset.value);
       })
-      .catch(error => qnotify.error(error.response.data));
+      .catch(error => qnotify.error(error.response?.data ?? error.message))
+      .finally(() => { adding.value = false; });
   }
 }
 

@@ -1,49 +1,49 @@
 <template>
   <div v-if="type === 'tfr'">
-    <transfer :cmd="modelValue" @update:modelValue="inputChanged()"
+    <transfer :cmd="modelValue" @update:modelValue="inputChanged"
               v-on:gainstrack-changed="gainstrackChanged($event)"
               :options="options"
     ></transfer>
   </div>
   <div v-else-if="type === 'trade'">
-    <balance-or-unit :cmd="modelValue" @update:modelValue="inputChanged()"
+    <balance-or-unit :cmd="modelValue" @update:modelValue="inputChanged"
                   v-on:gainstrack-changed="gainstrackChanged($event)"
                   :options="options"
     ></balance-or-unit>
   </div>
   <!-- Not a strict string match so that components can provide an ambiguous type -->
   <div v-else-if="type.match('unit|bal')">
-    <balance-or-unit :cmd="modelValue" @update:modelValue="inputChanged()"
+    <balance-or-unit :cmd="modelValue" @update:modelValue="inputChanged"
                   v-on:gainstrack-changed="gainstrackChanged($event)"
                   :options="options"
     ></balance-or-unit>
   </div>
   <div v-else-if="type === 'fund'">
-    <fund-command :cmd="modelValue" @update:modelValue="inputChanged()"
+    <fund-command :cmd="modelValue" @update:modelValue="inputChanged"
                   v-on:gainstrack-changed="gainstrackChanged($event)"
                   :options="options"
     ></fund-command>
   </div>
   <div v-else-if="type === 'open'">
-    <account-creation :cmd="modelValue" @update:modelValue="inputChanged()"
+    <account-creation :cmd="modelValue" @update:modelValue="inputChanged"
                       v-on:gainstrack-changed="gainstrackChanged($event)"
                       :options="options"
     ></account-creation>
   </div>
   <div v-else-if="type === 'earn'">
-    <earn-editor :cmd="modelValue" @update:modelValue="inputChanged()"
+    <earn-editor :cmd="modelValue" @update:modelValue="inputChanged"
                  v-on:gainstrack-changed="gainstrackChanged($event)"
                  :options="options"
     ></earn-editor>
   </div>
   <div v-else-if="type === 'spend'">
-    <spend-editor :cmd="modelValue" @update:modelValue="inputChanged()"
+    <spend-editor :cmd="modelValue" @update:modelValue="inputChanged"
                   v-on:gainstrack-changed="gainstrackChanged($event)"
                   :options="options"
     ></spend-editor>
   </div>
   <div v-else-if="type === 'yield'">
-    <yield-editor :cmd="modelValue" @update:modelValue="inputChanged()"
+    <yield-editor :cmd="modelValue" @update:modelValue="inputChanged"
                   v-on:gainstrack-changed="gainstrackChanged($event)"
                   :options="options"
     ></yield-editor>
@@ -83,8 +83,8 @@ function gainstrackChanged(str: string) {
   emit('gainstrack-changed', str)
 }
 
-function inputChanged() {
-  emit('update:modelValue', props.modelValue)
+function inputChanged(val: Partial<AccountCommandDTO>) {
+  emit('update:modelValue', val)
 }
 </script>
 

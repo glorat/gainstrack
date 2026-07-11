@@ -110,7 +110,7 @@ const selected = ref<NetworthByAsset[]>([]);
 const networthByAsset = computed((): NetworthByAsset[] => props.assetResponse?.rows || []);
 
 const moreColumns = computed((): AssetColumn[] =>
-  props.assetResponse?.columns.map(col => ({
+  props.assetResponse?.columns?.map(col => ({
     ...col,
     field: (row: NetworthByAsset) => row.priceMoves[col.name],
     format: (val: number) => val ? `${(val * 100).toFixed(1)}%` : ''
@@ -118,7 +118,7 @@ const moreColumns = computed((): AssetColumn[] =>
 );
 
 const canEdit = computed((): boolean =>
-  !!props.accountId && !!store.mainAccounts.find((x: string) => x === props.accountId) && !!props.accountId.match('^(Assets|Liabilities)')
+  !!props.accountId && !!store.mainAccounts.find((x: string) => x === props.accountId) && !!props.accountId.match('^(Assets|Liabilities)[/:]')
 );
 
 const canTrade = computed((): boolean => canEdit.value);

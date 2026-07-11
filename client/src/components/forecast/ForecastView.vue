@@ -89,10 +89,11 @@ const strategy = ref<{ inflation: number; roi: number; expenseMultiple: number }
 
 onMounted(() => {
   if (forecastStore.params) {
-    input.value = forecastStore.params.input;
-    strategy.value = forecastStore.params.strategy;
+    input.value = { ...forecastStore.params.input };
+    strategy.value = { ...forecastStore.params.strategy };
+  } else {
+    input.value.timeunit = LocalDate.now().year();
   }
-  input.value.timeunit = LocalDate.now().year();
 });
 
 const forecastStrategy = computed(() => [
