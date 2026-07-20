@@ -24,7 +24,7 @@
     "@quasar/extras": "^1.18.0",
     "@sentry/vue": "^10.57.0",
     "@types/lodash": "^4.17.24",
-    "axios": "1.17.0",
+    "axios": "1.18.0",
     "codemirror": "^6.0.2",
     "csv-stringify": "^6.7.0",
     "decimal.js": "^10.6.0",
