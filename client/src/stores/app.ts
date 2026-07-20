@@ -190,7 +190,9 @@ export const useAppStore = defineStore('app', () => {
     if (!state) return { ok: false, errors }
     allState.value = state
     balances.value = {}
-    gainstrackText.value = ''
+    // Anonymous users have no server-side source; cache the just-computed text
+    // so re-entering the editor restores it instead of fetching /api/editor/.
+    gainstrackText.value = text
     parseState.value = { errors: [] }
     count.value++
     await loadMultiQuotes(keys(quoteDeps.value))
