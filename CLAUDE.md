@@ -8,7 +8,7 @@ Gainstrack is a personal finance/investment tracking application. Users write fi
 
 ## Architecture
 
-The project has four distinct layers:
+The project has five distinct layers:
 
 ### 1. `core/` — Scala domain model
 - `com.gainstrack.command` — Command types (`open`, `earn`, `spend`, `tfr`, `trade`, `adj`, `bal`, `price`, `unit`, `fund`, `yield`, `commodity`) and `GainstrackParser` (text → `AccountCommand` seq)
@@ -20,19 +20,21 @@ The project has four distinct layers:
 
 ### 3. `web/` — Scala HTTP server (Scalatra/Jetty)
 - Entry point: `JettyLauncher` (port 9050 by default, or `$PORT`)
-- Routes registered in `ScalatraBootstrap`: `/api/*` → `ApiController`, `/api/post/*` → `CommandApiController`, `/api/quotes/*` → `QuotesController`, `/api/authn/*` → `AuthnController`, `/api/export/*` → `ExportController`
-- Auth: Auth0 JWT via `Auth0JWTVerifier`; session state via `GainstrackSupport`
+- Routes registered in `ScalatraBootstrap`: `/api/*` → `ApiController`, `/api/post/*` → `CommandApiController`, `/api/quotes/*` → `QuotesController`, `/api/authn/*` → `AuthnController`, `/api/export/*` → `ExportController`, `/api/debug/*` → `DebugController`, plus `/api/quotesAdmin/*` → `QuotesAdminController` when `QUOTES_ADMIN` is set
+- Auth: Firebase ID tokens verified server-side in `OAuthStrategy` (bearer token → `FirebaseAuth.verifyIdToken`); session state via `GainstrackSupport`
 
 ### 4. `client/` — Vue 3 / Quasar SPA (TypeScript)
-- State management: Vuex store (`src/store/index.ts`) holds `AllState` loaded from `/api/allState`
-- **Most reports are computed locally in the browser** (`localCompute = true` in `src/lib/apiFacade.ts`), not on the server. `apiFacade.ts` is the seam between Vuex state and business logic functions.
+- State management: Pinia (`src/stores/`). `useAppStore` (`src/stores/app.ts`) holds `AllState`, obtained either from the server via `/api/allState` or generated entirely in the browser by the TypeScript engine. Persistence via `pinia-plugin-persistedstate`.
+- **TypeScript port of the Scala pipeline**: `src/lib/GainstrackParser.ts` (text → commands) and `src/lib/gen/` (`GainstrackGenerator.ts`, `balanceState.ts`, `transactionState.ts`, `priceState.ts`, …) mirror the Scala core; `generateAllStateSafe(text)` produces `AllState` fully client-side.
+- **Most reports are computed locally in the browser** (`localCompute = true` in `src/lib/apiFacade.ts`), not on the server. `apiFacade.ts` is the seam between the Pinia store and business logic functions.
 - `src/lib/AllStateEx.ts` — wraps `AllState` to derive postings and FX conversion from raw data
 - `src/lib/assetdb/models.ts` — all shared TypeScript types (DTOs)
 - `src/lib/pricer.ts`, `src/lib/fx.ts` — FX conversion chain used for local compute
+- Frontend auth: Firebase Auth with Google sign-in (popup flow); Firebase setup in `src/lib/assetdb/myfirebase.ts`
 
 ### 5. `client/functions/` — Firebase Cloud Functions (Node.js/TypeScript)
-- Auth bridge: exchanges Auth0 JWT for Firebase custom token
-- Firestore reads/writes for quote sources and user data
+- HTTP/callable functions for quote sources (Firestore reads/writes in `queries.ts`/`writes.ts`) and `setDisplayName`
+- Firestore trigger `upsertQuoteSource` on `quoteSourceHistory` document creation
 
 ## Development Setup
 
@@ -52,16 +54,16 @@ pnpm run serve
 **Frontend:**
 ```bash
 cd client
-pnpm run quasar   # runs: quasar dev on port 8080
+pnpm run dev   # quasar dev on port 8080
 ```
 
-The Quasar dev server proxies API calls to `https://poc.gainstrack.com` by default (configured in `quasar.conf.js`). To point at local backend, update the proxy target there.
+The Quasar dev server proxies API calls to `https://poc.gainstrack.com` by default (configured in `quasar.config.js`). To point at local backend, update the proxy target there.
 
 ## Commands
 
 ### Frontend (run from `client/`)
 ```bash
-pnpm run quasar          # dev server (port 8080)
+pnpm run dev             # dev server (port 8080)
 pnpm run build           # production build (quasar build)
 pnpm run lint            # ESLint
 pnpm run type-check      # vue-tsc type check (no emit)
@@ -78,7 +80,7 @@ pnpm run test:unit -- path/to/test.spec.ts
 ### Type checking
 Run `pnpm run type-check` from `client/` after any TypeScript or Vue SFC change to catch type errors before they reach the browser. This uses `vue-tsc --noEmit`, which understands `<script setup lang="ts">` blocks and component prop types. It must pass cleanly before a PR is considered ready.
 
-Known pre-existing errors exist in older Options API components (the 18 `.vue` files without `lang="ts"`) — these are being migrated incrementally. When editing a file, add `lang="ts"` to its `<script>` tag and resolve any new errors introduced by that file before committing.
+When editing a `.vue` file whose `<script>` tag lacks `lang="ts"`, add it and resolve any new errors introduced by that file before committing.
 
 ### Backend (from repo root, via sbt)
 ```bash
@@ -102,11 +104,8 @@ pnpm run deploy    # deploy to Firebase
 | `AV_API_KEY` | Alpha Vantage API key for market quotes |
 | `MYSQL_PASS` / `MYSQL_URL` | Cloud SQL (quotes DB) |
 | `GOOGLE_APPLICATION_CREDENTIALS` | Firestore service account JSON path |
-| `AUTH0_DOMAIN` / `AUTH0_AUDIENCE` / `AUTH0_CLIENT` | Auth0 config |
 | `QUOTES_ADMIN` | Enable quotes admin endpoints |
 | `PORT` | Override Jetty listen port (default 9050) |
-
-Frontend auth is configured via `.env.development` in `client/` (Auth0 client/domain/audience).
 
 ## Testing
 
@@ -118,10 +117,10 @@ Frontend auth is configured via `.env.development` in `client/` (Auth0 client/do
 ## Data Flow
 
 1. User writes gainstrack text (plain-text DSL commands)
-2. `GainstrackParser` tokenizes into `Seq[AccountCommand]`
-3. `GainstrackGenerator` runs multi-pass fold to produce `BalanceState`, `TransactionState`, `PriceState`, etc.
-4. Server serializes to `AllState` JSON via `/api/allState`
-5. Client loads `AllState` into Vuex and locally computes reports (balance trees, IRR, P&L explain) using `apiFacade.ts` → lib functions
+2. `GainstrackParser` tokenizes into commands (Scala on the server; `src/lib/GainstrackParser.ts` in the browser)
+3. `GainstrackGenerator` runs a multi-pass fold to produce `BalanceState`, `TransactionState`, `PriceState`, etc. (Scala `com.gainstrack.report`; TypeScript `src/lib/gen/`)
+4. The client obtains `AllState` either from the server (`/api/allState`) or by running the TypeScript pipeline locally
+5. The Pinia app store holds `AllState`; reports (balance trees, IRR, P&L explain) are computed locally via `apiFacade.ts` → lib functions
 
 ## Build & Deployment
 
