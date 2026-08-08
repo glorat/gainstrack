@@ -8,9 +8,13 @@ const FIXTURES = path.join(__dirname, 'fixtures');
 // Resource files dumped by the Scala harness (DumpParserDTOs) as golden DTOs.
 const GOLDENS = ['basic', 'unit', 'src', 'div', 'balbug', 'james', 'noequity', 'multiadj'];
 
-// Normalize a DTO for comparison: drop the display-only `description`, drop empty
-// arrays and null/undefined (json4s omits `None`; the GlobalCommand emits comments:[]),
-// and round numbers so Scala BigDecimal (34 digits) vs JS float (17 digits) match.
+// Normalize a DTO for comparison: drop empty arrays and null/undefined (json4s omits `None`;
+// the GlobalCommand emits comments:[]), and round numbers so Scala BigDecimal (34 digits) vs
+// JS float (17 digits) match.
+//
+// `description` IS compared — it is not merely display: PLExplain groups activity rows by it
+// (`groupBy(p => allCmds[p.originIndex].description)`), so a drifting template silently merges
+// or splits P&L explain rows.
 function normalize(value: unknown): unknown {
   if (Array.isArray(value)) {
     const arr = value.map(normalize).filter(v => v !== undefined);
@@ -19,9 +23,9 @@ function normalize(value: unknown): unknown {
   if (value && typeof value === 'object') {
     const out: Record<string, unknown> = {};
     for (const [k, v] of Object.entries(value as Record<string, unknown>)) {
-      // `description` is display-only; `comments` only ever leak into the GlobalCommand's
-      // serialized options (no other DTO carries them) — both are out of scope for step 1.
-      if (k === 'description' || k === 'comments') continue;
+      // `comments` only ever leak into the GlobalCommand's serialized options (no other DTO
+      // carries them); the TS parser discards comment lines entirely, which is a known gap.
+      if (k === 'comments') continue;
       const nv = normalize(v);
       if (nv === undefined || nv === null) continue;
       if (Array.isArray(nv) && nv.length === 0) continue;
@@ -29,7 +33,7 @@ function normalize(value: unknown): unknown {
     }
     return out;
   }
-  if (typeof value === 'number') return Math.round(value * 1e6) / 1e6;
+  if (typeof value === 'number') return Math.round(value * 1e12) / 1e12;
   return value;
 }
 

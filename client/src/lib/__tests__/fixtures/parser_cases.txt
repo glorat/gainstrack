@@ -1,3 +1,13 @@
+; Behavioural corpus shared by the Scala parser (DumpParserCases.scala, which writes
+; parser_cases.expected.json) and the TS port (GainstrackParserDiff.spec.ts).
+;
+; NOTE: the six cases below marked "hand-derived" were added without a Scala run
+; (sbt was unavailable). Their expected entries were read off the Scala source rather
+; than executed, so re-run `sbt -DdumpFixtures=1 "core/testOnly ...DumpParserCases"`
+; to confirm them while the Scala parser still exists:
+;   open-invalid-account-type, open-liabilities-account, trade-non-assets-account,
+;   unit-non-assets-account, adj-account-type-not-validated, commodity-duplicate-tags
+
 ### id: open-basic
 2019-01-01 open Assets:Bank GBP
 
@@ -194,3 +204,22 @@ option "operating_currency" "gbp"
 
 ### id: adj-negative-balance
 2019-01-01 adj Assets:Bank -50 USD Equity:Opening
+
+### id: open-invalid-account-type
+2019-01-01 open Foo:Bar GBP
+
+### id: open-liabilities-account
+2019-01-01 open Liabilities:Credit-Card USD
+
+### id: trade-non-assets-account
+2010-01-01 trade Expenses:Broker 10 IVV @12.3 USD
+
+### id: unit-non-assets-account
+2019-01-01 unit Liabilities:Inv 100 FTSE @2.1 GBP
+
+### id: adj-account-type-not-validated
+2019-01-01 adj Foo:Bar 100 USD Equity:Opening
+
+### id: commodity-duplicate-tags
+1900-01-01 commodity VWRD
+  tags: equity,equity,global

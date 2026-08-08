@@ -5,6 +5,7 @@ import { generate } from 'src/lib/gen/GainstrackGenerator';
 // Parity of the TS generator (Slice 1: accounts + txs) against the Scala `allState`, dumped
 // per resource file by DumpGeneratorDTOs.scala. Accounts compared as an unordered set
 // (Scala Set.toSeq order is non-deterministic); txs compared in order with numeric tolerance.
+// `description` is included in the comparison; only the synthetic `id` is stripped.
 
 const FIXTURES = path.join(__dirname, '..', '..', '__tests__', 'fixtures');
 const RESOURCES = ['basic', 'unit', 'src', 'div', 'balbug', 'james', 'noequity', 'multiadj'];
@@ -18,14 +19,16 @@ function normalize(value: unknown): unknown {
   if (value && typeof value === 'object') {
     const out: Record<string, unknown> = {};
     for (const [k, v] of Object.entries(value as Record<string, unknown>)) {
-      if (k === 'description' || k === 'id') continue;
+      // `description` IS compared — transaction descriptions are user-visible in the journal
+      // and are load-bearing as P&L explain grouping keys.
+      if (k === 'id') continue;
       const nv = normalize(v);
       if (nv === undefined || nv === null) continue;
       out[k] = nv;
     }
     return out;
   }
-  if (typeof value === 'number') return Math.round(value * 1e6) / 1e6;
+  if (typeof value === 'number') return Math.round(value * 1e12) / 1e12;
   return value;
 }
 
