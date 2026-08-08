@@ -13,6 +13,7 @@ import {
 import { GlobalPricer } from '../lib/pricer'
 import { AllStateEx } from '../lib/AllStateEx'
 import { generateAllStateSafe } from '../lib/gen/GainstrackGenerator'
+import { loadLedgerText } from '../lib/ledger/firestoreLedger'
 import { cloneDeep, includes, keys, mergeWith } from 'lodash'
 import { balanceTreeTable } from '../lib/TreeTable'
 import { LocalDate } from '@js-joda/core'
@@ -67,6 +68,10 @@ export const useAppStore = defineStore('app', () => {
   const conversion = ref('parent')
   const user = ref<User | undefined>(undefined)
   const authToken = ref<string | undefined>(undefined)
+  // Read the ledger straight from Firestore instead of /api/allState. Opt-in: production
+  // Firestore rules currently grant the user ledger to the Scala service account only, so
+  // enabling this before the rules land just costs a permission error and a fallback.
+  const useDirectLedger = ref(false)
 
   // Getters
   const isAuthenticated = computed(() => !!authToken.value)
@@ -219,6 +224,15 @@ export const useAppStore = defineStore('app', () => {
   }
 
   async function loadAllState() {
+    if (useDirectLedger.value && user.value?.uid) {
+      // Prefer reading the ledger straight from Firestore; fall back to the server on any
+      // failure so a rules/permission problem degrades instead of locking the user out.
+      try {
+        return await loadFromFirestore()
+      } catch (err) {
+        console.warn('Direct ledger read failed, falling back to /api/allState:', err)
+      }
+    }
     const response = await axios.post('/api/allState')
     allState.value = response.data
     balances.value = {}
@@ -231,6 +245,41 @@ export const useAppStore = defineStore('app', () => {
     console.log('Pre-load of quotes complete')
     await computeBalances()
     return response
+  }
+
+  /**
+   * Read the signed-in user's ledger event stream from Firestore, replay it to gainstrack text,
+   * and generate AllState in the browser — no /api/allState, no Scala.
+   *
+   * The TS pipeline is verified byte-identical to the Scala one over a real ledger
+   * (client/src/lib/__tests__/localGoldens.spec.ts), so the resulting AllState matches what the
+   * server would have returned.
+   */
+  async function loadFromFirestore() {
+    const uid = user.value?.uid
+    if (!uid) throw new Error('Cannot read ledger directly: no signed-in Firebase user')
+
+    const { text, ledgerId, replay } = await loadLedgerText(uid)
+    const { discardedRevisions, foreignStreamIds, unparseableEvents } = replay.diagnostics
+    if (discardedRevisions.length || foreignStreamIds.length || unparseableEvents) {
+      // The server truncates silently at a revision gap; at least make it visible here.
+      console.warn(`Ledger ${ledgerId} replay anomalies:`, replay.diagnostics)
+    }
+
+    const { state, errors } = generateAllStateSafe(text, { username: user.value?.email ?? '' })
+    if (!state) {
+      parseState.value = { errors }
+      throw new Error(`Ledger ${ledgerId} failed to generate: ${errors[0]?.message ?? 'unknown'}`)
+    }
+
+    allState.value = state
+    balances.value = {}
+    gainstrackText.value = text
+    parseState.value = { errors: [] }
+    count.value++
+    await loadMultiQuotes(keys(quoteDeps.value)).catch(err => console.warn('Pre-load quotes failed:', err))
+    await computeBalances()
+    return { data: state }
   }
 
   async function setDateOverride(d: string) {
@@ -281,7 +330,7 @@ export const useAppStore = defineStore('app', () => {
   return {
     // State
     allState, dateOverride, count, quoteConfig, balances,
-    parseState, gainstrackText, quotes, conversion, user, authToken,
+    parseState, gainstrackText, quotes, conversion, user, authToken, useDirectLedger,
     // Getters
     isAuthenticated, allStateEx, accountIds, reloadCounter, tradeableAccounts,
     mainAssetAccounts, mainAccounts, findAccount, baseCcy, tradeFxConverter,
@@ -289,6 +338,7 @@ export const useAppStore = defineStore('app', () => {
     // Actions
     changeUser, computeBalances, loadMultiQuotes, loadQuotes, loadQuotesRaw,
     fetchGainstrackText, setGainstrackText, loadLocalText, setConversion, reload, loadAllState,
+    loadFromFirestore,
     setDateOverride, upsertAsset, login, loginWithToken, logout, setParseState
   }
 })

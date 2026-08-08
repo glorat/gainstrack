@@ -14,6 +14,7 @@
     "test:unit:coverage": "vitest run --coverage",
     "test:unit:watch": "vitest",
     "test:unit:ci": "vitest run --reporter=verbose",
+    "fixtures:local": "DUMP_LOCAL_FIXTURES=1 vitest run src/lib/__tests__/dumpLocalFixtures.spec.ts --reporter=verbose",
     "type-check": "vue-tsc --noEmit"
   },
   "dependencies": {

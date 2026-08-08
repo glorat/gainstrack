@@ -43,12 +43,23 @@ type Kind =
 // Where `close` books the period's income and expenses when the command names no account.
 export const RETAINED_EARNINGS_ID = 'Equity:RetainedEarnings';
 
+// DTO fields whose numeric literal is echoed back in a `description` template.
+type RawField = 'change' | 'balance' | 'price' | 'commission';
+
 export interface Parsed {
   kind: Kind;
   dto: AccountCommandDTO;
   // The `tfr` DTO only stores the fx-rate `price` in the SOURCE ccy, so the target amount is
   // not recoverable from the DTO. Carry it here for the generator (does not affect DTO output).
   tfrTarget?: Amount;
+  // Numeric literals exactly as written in the source. Scala renders `description` from
+  // `BigDecimal.toPlainString`, which preserves the literal's scale ("2000.00", "265000.0"),
+  // so display parity needs the original text rather than the parsed JS number.
+  raws?: Partial<Record<RawField, string>>;
+  // earn/spend echo the tag exactly as written (Scala `incomeTag`/`expenseTag`), which is not
+  // recoverable from `accountId` — "Income:Salary" and "Salary" both yield accountId
+  // "Income:Salary" but print differently.
+  tag?: string;
 }
 
 export type { Kind };
@@ -63,8 +74,15 @@ function plainNumber(n: number): string {
   return n.toFixed(10).replace(/0+$/, '').replace(/\.$/, '');
 }
 
-function amtStr(a: Amount): string {
-  return `${plainNumber(a.number)} ${a.ccy}`;
+// Scala prints `Amount` as `${number.bigDecimal.toPlainString} ${ccy}`, so the scale of the
+// source literal survives. Prefer the raw text when we still have it.
+function amtStr(a: Amount, raw?: string): string {
+  return `${raw ?? plainNumber(a.number)} ${a.ccy}`;
+}
+
+// The numeric half of a "<number> <CCY>" capture.
+function numOf(balStr: string): string {
+  return balStr.slice(0, balStr.indexOf(' '));
 }
 
 function shortName(accountId: string): string {
@@ -73,6 +91,26 @@ function shortName(accountId: string): string {
 }
 
 class ParseError extends Error {}
+
+const ACCOUNT_TYPES = new Set(['Assets', 'Liabilities', 'Equity', 'Income', 'Expenses']);
+
+// Mirrors `AccountId.accountType` -> `AccountType.apply`: the segment before the first ':'
+// must name a known account type ('' being the root). Scala throws IllegalArgumentException,
+// which `GainstrackParser` collects as a parser error.
+function accountType(accountId: string): string {
+  const prefix = accountId.split(':')[0];
+  if (prefix !== '' && !ACCOUNT_TYPES.has(prefix)) {
+    throw new ParseError(`${prefix} is not an account type`);
+  }
+  return prefix;
+}
+
+// `SecurityPurchase` and `UnitTrustBalance` both open with `require(accountId.accountType == Assets)`.
+function requireAssetsAccount(accountId: string): void {
+  if (accountType(accountId) !== 'Assets') {
+    throw new ParseError(`requirement failed: ${accountId} is not an Assets account`);
+  }
+}
 
 // Parse "<number> <CCY>" into an Amount (mirrors Amount.parse + parseNumber/AssetId).
 function parseAmount(str: string): Amount {
@@ -107,6 +145,7 @@ const COMMANDS: Record<string, (line: string) => Parsed> = {
     if (!m) throw new ParseError('open command cannot be parsed');
     const [, date, accountId, ccy] = m;
     if (ccy.toUpperCase() !== ccy) throw new ParseError(`Asset id must be all caps: ${ccy}`);
+    accountType(accountId); // AccountKey validates the account type on construction
     return {
       kind: 'open',
       dto: { accountId, date, balance: { number: 0, ccy }, options: defaultAccountOptions() },
@@ -118,11 +157,11 @@ const COMMANDS: Record<string, (line: string) => Parsed> = {
     const short = long ? null : new RegExp(`^${DATE} earn ${ACCT} ${BAL}$`).exec(line);
     if (long) {
       const [, date, tag, tgt, value] = long;
-      return { kind: 'earn', dto: incomeDto(date, tag, parseAmount(value), tgt) };
+      return { kind: 'earn', dto: incomeDto(date, tag, parseAmount(value), tgt), tag, raws: { change: numOf(value) } };
     }
     if (short) {
       const [, date, tag, value] = short;
-      return { kind: 'earn', dto: incomeDto(date, tag, parseAmount(value)) };
+      return { kind: 'earn', dto: incomeDto(date, tag, parseAmount(value)), tag, raws: { change: numOf(value) } };
     }
     throw new ParseError('earn command cannot be parsed');
   },
@@ -132,11 +171,11 @@ const COMMANDS: Record<string, (line: string) => Parsed> = {
     const short = long ? null : new RegExp(`^${DATE} spend ${ACCT} ${BAL}$`).exec(line);
     if (long) {
       const [, date, tag, other, value] = long;
-      return { kind: 'spend', dto: expenseDto(date, tag, parseAmount(value), other) };
+      return { kind: 'spend', dto: expenseDto(date, tag, parseAmount(value), other), tag, raws: { change: numOf(value) } };
     }
     if (short) {
       const [, date, tag, value] = short;
-      return { kind: 'spend', dto: expenseDto(date, tag, parseAmount(value)) };
+      return { kind: 'spend', dto: expenseDto(date, tag, parseAmount(value)), tag, raws: { change: numOf(value) } };
     }
     throw new ParseError('spend command cannot be parsed');
   },
@@ -147,12 +186,15 @@ const COMMANDS: Record<string, (line: string) => Parsed> = {
     if (fx) {
       const [, date, src, dst, sv, tv] = fx;
       const target = parseAmount(tv);
-      return { kind: 'tfr', dto: tfrDto(date, src, dst, parseAmount(sv), target), tfrTarget: target };
+      return {
+        kind: 'tfr', dto: tfrDto(date, src, dst, parseAmount(sv), target),
+        tfrTarget: target, raws: { change: numOf(sv) },
+      };
     }
     if (simple) {
       const [, date, src, dst, v] = simple;
       const amt = parseAmount(v);
-      return { kind: 'tfr', dto: tfrDto(date, src, dst, amt, amt), tfrTarget: amt };
+      return { kind: 'tfr', dto: tfrDto(date, src, dst, amt, amt), tfrTarget: amt, raws: { change: numOf(v) } };
     }
     throw new ParseError('tfr command cannot be parsed');
   },
@@ -162,12 +204,18 @@ const COMMANDS: Record<string, (line: string) => Parsed> = {
     const basic = withComm ? null : new RegExp(`^${DATE} trade ${ACCT} ${BAL} @${BAL}$`).exec(line);
     if (withComm) {
       const [, date, acct, sec, cost, comm] = withComm;
-      return { kind: 'trade', dto: tradeDto(date, acct, parseAmount(sec), parseAmount(cost), parseAmount(comm)) };
+      return {
+        kind: 'trade', dto: tradeDto(date, acct, parseAmount(sec), parseAmount(cost), parseAmount(comm)),
+        raws: { change: numOf(sec), price: numOf(cost), commission: numOf(comm) },
+      };
     }
     if (basic) {
       const [, date, acct, sec, cost] = basic;
       const price = parseAmount(cost);
-      return { kind: 'trade', dto: tradeDto(date, acct, parseAmount(sec), price, { number: 0, ccy: price.ccy }) };
+      return {
+        kind: 'trade', dto: tradeDto(date, acct, parseAmount(sec), price, { number: 0, ccy: price.ccy }),
+        raws: { change: numOf(sec), price: numOf(cost) },
+      };
     }
     throw new ParseError('trade command cannot be parsed');
   },
@@ -176,14 +224,20 @@ const COMMANDS: Record<string, (line: string) => Parsed> = {
     const m = new RegExp(`^${DATE} adj ${ACCT} ${BAL} ${ACCT}$`).exec(line);
     if (!m) throw new ParseError('adj command cannot be parsed');
     const [, date, acct, balance, adjAcct] = m;
-    return { kind: 'adj', dto: { accountId: acct, date, balance: parseAmount(balance), otherAccount: adjAcct } };
+    return {
+      kind: 'adj', dto: { accountId: acct, date, balance: parseAmount(balance), otherAccount: adjAcct },
+      raws: { balance: numOf(balance) },
+    };
   },
 
   bal(line) {
     const m = new RegExp(`^${DATE} bal ${ACCT} ${BAL} ${ACCT}$`).exec(line);
     if (!m) throw new ParseError('bal command cannot be parsed');
     const [, date, acct, balance, adjAcct] = m;
-    return { kind: 'bal', dto: { accountId: acct, date, balance: parseAmount(balance), otherAccount: adjAcct } };
+    return {
+      kind: 'bal', dto: { accountId: acct, date, balance: parseAmount(balance), otherAccount: adjAcct },
+      raws: { balance: numOf(balance) },
+    };
   },
 
   price(line) {
@@ -191,14 +245,19 @@ const COMMANDS: Record<string, (line: string) => Parsed> = {
     if (!m) throw new ParseError('price command cannot be parsed');
     const [, date, assetId, price] = m;
     if (assetId.toUpperCase() !== assetId) throw new ParseError(`Asset id must be all caps: ${assetId}`);
-    return { kind: 'price', dto: { accountId: '', date, asset: assetId, price: parseAmount(price) } };
+    return {
+      kind: 'price', dto: { accountId: '', date, asset: assetId, price: parseAmount(price) },
+      raws: { price: numOf(price) },
+    };
   },
 
   unit(line) {
     const m = new RegExp(`^${DATE} unit ${ACCT} ${BAL} @${BAL}$`).exec(line);
     if (!m) throw new ParseError('unit command cannot be parsed');
     const [, date, acct, sec, price] = m;
-    return { kind: 'unit', dto: { accountId: acct, date, balance: parseAmount(sec), price: parseAmount(price) } };
+    const dto = { accountId: acct, date, balance: parseAmount(sec), price: parseAmount(price) };
+    requireAssetsAccount(acct);
+    return { kind: 'unit', dto, raws: { balance: numOf(sec), price: numOf(price) } };
   },
 
   fund(line) {
@@ -206,11 +265,17 @@ const COMMANDS: Record<string, (line: string) => Parsed> = {
     const simple = long ? null : new RegExp(`^${DATE} fund ${ACCT} ${BAL}$`).exec(line);
     if (long) {
       const [, date, tgt, fundAcct, value] = long;
-      return { kind: 'fund', dto: { accountId: tgt, date, change: parseAmount(value), otherAccount: fundAcct } };
+      return {
+        kind: 'fund', dto: { accountId: tgt, date, change: parseAmount(value), otherAccount: fundAcct },
+        raws: { change: numOf(value) },
+      };
     }
     if (simple) {
       const [, date, tgt, value] = simple;
-      return { kind: 'fund', dto: { accountId: tgt, date, change: parseAmount(value) } };
+      return {
+        kind: 'fund', dto: { accountId: tgt, date, change: parseAmount(value) },
+        raws: { change: numOf(value) },
+      };
     }
     throw new ParseError('fund command cannot be parsed');
   },
@@ -220,11 +285,17 @@ const COMMANDS: Record<string, (line: string) => Parsed> = {
     const simple = withAsset ? null : new RegExp(`^${DATE} yield ${ACCT} ${BAL}$`).exec(line);
     if (withAsset) {
       const [, date, acct, asset, value] = withAsset;
-      return { kind: 'yield', dto: { accountId: acct, date, asset, change: parseAmount(value) } };
+      return {
+        kind: 'yield', dto: { accountId: acct, date, asset, change: parseAmount(value) },
+        raws: { change: numOf(value) },
+      };
     }
     if (simple) {
       const [, date, acct, value] = simple;
-      return { kind: 'yield', dto: { accountId: acct, date, change: parseAmount(value) } };
+      return {
+        kind: 'yield', dto: { accountId: acct, date, change: parseAmount(value) },
+        raws: { change: numOf(value) },
+      };
     }
     throw new ParseError('yield command cannot be parsed');
   },
@@ -283,30 +354,35 @@ function tfrDto(date: string, src: string, dst: string, sv: Amount, tv: Amount):
 }
 
 function tradeDto(date: string, acct: string, security: Amount, price: Amount, commission: Amount): AccountCommandDTO {
+  requireAssetsAccount(acct);
   return { accountId: acct, date, change: security, price, commission };
 }
 
 // ---- description (display only; reproduces Scala templates best-effort) -----
 
-function describe(p: Parsed, raw: { tag?: string }): string {
+function describe(p: Parsed): string {
   const d = p.dto;
+  const r = p.raws ?? {};
   switch (p.kind) {
     case 'open': return 'Account opened';
-    case 'earn': return `Earn ${amtStr(d.change!)} ${raw.tag}`;
-    case 'spend': return `Spend ${amtStr(d.change!)} ${raw.tag}`;
+    case 'earn': return `Earn ${amtStr(d.change!, r.change)} ${p.tag}`;
+    case 'spend': return `Spend ${amtStr(d.change!, r.change)} ${p.tag}`;
     case 'tfr': {
-      const inv = d.change!.ccy === d.price!.ccy ? '' : `@${(1 / d.price!.number).toFixed(6)}`;
-      return `Transfer ${amtStr(d.change!)} ${d.accountId} -> ${d.otherAccount}${inv}`;
+      // Scala compares the SOURCE and TARGET currencies; `price.ccy` is always the source ccy,
+      // so the target has to come from `tfrTarget`.
+      const inv = d.change!.ccy === p.tfrTarget!.ccy ? '' : `@${(1 / d.price!.number).toFixed(6)}`;
+      return `Transfer ${amtStr(d.change!, r.change)} ${d.accountId} -> ${d.otherAccount}${inv}`;
     }
-    case 'trade': return `${d.change!.number > 0 ? 'BUY' : 'SELL'} ${amtStr(d.change!)} @${amtStr(d.price!)}`;
-    case 'adj': return `Account balance ${amtStr(d.balance!)}`;
-    case 'bal': return `Account balance ${amtStr(d.balance!)}`;
-    case 'price': return `${d.price!.ccy}/${d.asset} = ${amtStr(d.price!)}`;
-    case 'unit': return `Unit statement: ${amtStr(d.balance!)} @${amtStr(d.price!)}`;
-    case 'fund': return `Fund ${amtStr(d.change!)}`;
+    case 'trade':
+      return `${d.change!.number > 0 ? 'BUY' : 'SELL'} ${amtStr(d.change!, r.change)} @${amtStr(d.price!, r.price)}`;
+    case 'adj': return `Account balance ${amtStr(d.balance!, r.balance)}`;
+    case 'bal': return `Account balance ${amtStr(d.balance!, r.balance)}`;
+    case 'price': return `${d.price!.ccy}/${d.asset} = ${amtStr(d.price!, r.price)}`;
+    case 'unit': return `Unit statement: ${amtStr(d.balance!, r.balance)} @${amtStr(d.price!, r.price)}`;
+    case 'fund': return `Fund ${amtStr(d.change!, r.change)}`;
     case 'yield': {
       const assetAcct = d.asset ? `${d.accountId}:${d.asset}` : d.accountId;
-      return `${shortName(assetAcct)} yield ${amtStr(d.change!)}`;
+      return `${shortName(assetAcct)} yield ${amtStr(d.change!, r.change)}`;
     }
     case 'commodity': return d.asset ?? '';
     case 'close': return `Close income and expenses to ${d.accountId}`;
@@ -337,7 +413,8 @@ function applyOption(p: Parsed, key: string, value: string): void {
     switch (key) {
       case 'name': opts.name = value; break;
       case 'ticker': opts.ticker = value; break;
-      case 'tags': opts.tags = value.split(',').map(s => s.trim()); break;
+      // Scala stores tags in a `Set[String]`, so duplicates collapse.
+      case 'tags': opts.tags = [...new Set(value.split(',').map(s => s.trim()))]; break;
       default: opts[key] = value; break;
     }
   } else {
@@ -544,8 +621,6 @@ export class GainstrackParser {
 
   private finalize(p: Parsed): AccountCommandDTO {
     const commandType = p.kind === 'global' ? '' : p.kind;
-    // earn/spend embed the raw (un-prefixed) tag in their description.
-    const tag = p.dto.accountId.replace(/^Income:|^Expenses:/, '');
-    return { ...p.dto, commandType, description: describe(p, { tag }) };
+    return { ...p.dto, commandType, description: describe(p) };
   }
 }

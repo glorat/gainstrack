@@ -52,3 +52,6 @@ pnpm-debug.log*
 
 # playwright-cli scratch artifacts (UI test runs)
 .playwright-cli/
+
+# Goldens dumped from a private ledger — machine-local, regenerate with `pnpm run fixtures:local`
+src/lib/__tests__/fixtures/local/

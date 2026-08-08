@@ -23,6 +23,12 @@ db/
 gainstrack*.json
 .venv/
 
+# Private ledgers (real usage profiles). Kept out of git but usable as local regression
+# fixtures — see client/src/lib/__tests__/localFixtures.ts.
+# Anchored so the synthetic ledgers in core/src/test/resources stay tracked.
+/glorat.gainstrack
+/*.private.gainstrack
+
 # Scala build tools (Bloop / Metals / BSP) — machine-local
 .bloop/
 .bsp/
