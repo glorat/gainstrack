@@ -32,11 +32,12 @@ export interface UnitCmd { kind: 'unit'; date: string; accountId: string; securi
 export interface FundCmd { kind: 'fund'; date: string; accountId: string; change: GAmount; source?: string; }
 export interface YieldCmd { kind: 'yield'; date: string; accountId: string; asset?: string; value: GAmount; target?: string; }
 export interface CommodityCmd { kind: 'commodity'; date: string; asset: string; options: Record<string, unknown>; }
+export interface CloseCmd { kind: 'close'; date: string; accountId: string; }
 export interface GlobalCmd { kind: 'global'; operatingCurrency: string; }
 
 export type GCommand =
   | OpenCmd | EarnCmd | SpendCmd | TfrCmd | TradeCmd | AdjCmd | BalCmd
-  | PriceCmd | UnitCmd | FundCmd | YieldCmd | CommodityCmd | GlobalCmd;
+  | PriceCmd | UnitCmd | FundCmd | YieldCmd | CommodityCmd | CloseCmd | GlobalCmd;
 
 function amt(a: DTOAmount): GAmount {
   return GAmount.of(a.number, a.ccy);
@@ -71,6 +72,8 @@ function toGCommand(p: Parsed): GCommand {
       return { kind, date: d.date, accountId: d.accountId, asset: d.asset, value: amt(d.change!), target: d.otherAccount };
     case 'commodity':
       return { kind, date: d.date, asset: d.asset!, options: d.options as Record<string, unknown> };
+    case 'close':
+      return { kind, date: d.date, accountId: d.accountId };
     case 'global':
       return { kind, operatingCurrency: (d.options as { operatingCurrency: string }).operatingCurrency };
   }

@@ -59,6 +59,10 @@ export class GAccountState {
         if (!this.accounts.has(securityAccountId(cmd.accountId, cmd.security.ccy))) this.add(acctSubAccount(base, cmd.security.ccy));
         break;
       }
+      case 'close':
+        // The target equity account is vivified here; `withInterpolatedAccounts` fills in its parents.
+        this.add(mkAccount(cmd.date, cmd.accountId, this.baseCurrency, defaultOptions({ generatedAccount: true })));
+        break;
       case 'yield': {
         const base = this.requireAccount(cmd.accountId);
         if (!this.accounts.has(yieldIncomeAccountId(cmd))) this.add(...yieldRequiredAccounts(cmd, base));

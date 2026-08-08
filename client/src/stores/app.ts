@@ -125,15 +125,19 @@ export const useAppStore = defineStore('app', () => {
   async function computeBalances() {
     if (!balances.value.Assets) {
       const today = (dateOverride.value ?? LocalDate.now()) as LocalDate
-      const forCategory = (cat: string) => balanceTreeTable(
+      const forCategory = (cat: string, postings: PostingEx[] = allPostingsEx.value) => balanceTreeTable(
         cat, today, baseCcy.value, conversion.value,
-        allState.value.accounts, allPostingsEx.value, fxConverter.value
+        allState.value.accounts, postings, fxConverter.value
       )
+      // An income statement reports activity before the books were closed; a `close` command moves
+      // that activity to equity, so including its postings here would net the statement to zero.
+      const cmds = allState.value.commands
+      const preClose = allPostingsEx.value.filter(p => cmds[p.originIndex]?.commandType !== 'close')
       const result: AccountBalances = {
         Assets: forCategory('Assets'),
         Liabilities: forCategory('Liabilities'),
-        Expenses: forCategory('Expenses'),
-        Income: forCategory('Income'),
+        Expenses: forCategory('Expenses', preClose),
+        Income: forCategory('Income', preClose),
         Equities: forCategory('Equity')
       }
       balances.value = result

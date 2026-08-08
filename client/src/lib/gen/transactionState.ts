@@ -5,6 +5,7 @@
 import { Transaction as DTOTransaction } from 'src/lib/assetdb/models';
 import * as Acct from 'src/lib/gen/accountId';
 import { GAccountState } from 'src/lib/gen/accountState';
+import { closingTx } from 'src/lib/gen/closing';
 import type { GBalanceState } from 'src/lib/gen/balanceState';
 import { GCommand } from 'src/lib/gen/commands';
 import { adjustmentDate, adjustmentTransfers, RawTx, tradeToTx, unitToTx } from 'src/lib/gen/expand';
@@ -31,6 +32,11 @@ export function buildTransactions(commands: GCommand[], acct: GAccountState, bal
       const secAcct = Acct.subAccount(cmd.accountId, cmd.security.ccy);
       const oldBalance = balanceState.getBalance(secAcct, minusDay(cmd.date), cmd.security.ccy);
       const tx = unitToTx(cmd, oldBalance, acct.lookup);
+      return tx ? [tx] : [];
+    }
+    if (cmd.kind === 'close') {
+      // Reads the transactions accumulated so far, so it closes exactly what precedes it.
+      const tx = closingTx(cmd, txs);
       return tx ? [tx] : [];
     }
     if (cmd.kind === 'adj' || cmd.kind === 'bal') {

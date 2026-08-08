@@ -38,7 +38,10 @@ const IGNORE_RE = /^\w*$/; // matches blank lines and bare single words (mirrors
 
 type Kind =
   | 'open' | 'earn' | 'spend' | 'tfr' | 'trade' | 'adj' | 'bal'
-  | 'price' | 'unit' | 'fund' | 'yield' | 'commodity' | 'global';
+  | 'price' | 'unit' | 'fund' | 'yield' | 'commodity' | 'close' | 'global';
+
+// Where `close` books the period's income and expenses when the command names no account.
+export const RETAINED_EARNINGS_ID = 'Equity:RetainedEarnings';
 
 export interface Parsed {
   kind: Kind;
@@ -226,6 +229,24 @@ const COMMANDS: Record<string, (line: string) => Parsed> = {
     throw new ParseError('yield command cannot be parsed');
   },
 
+  close(line) {
+    // `<date> close [<equityAccount>]` — closes income and expenses to retained earnings.
+    const withAcct = new RegExp(`^${DATE} close ${ACCT}$`).exec(line);
+    const bare = withAcct ? null : new RegExp(`^${DATE} close$`).exec(line);
+    if (withAcct) {
+      const [, date, accountId] = withAcct;
+      if (accountId !== 'Equity' && !accountId.startsWith('Equity:')) {
+        throw new ParseError(`close must book to an Equity account, got ${accountId}`);
+      }
+      return { kind: 'close', dto: { accountId, date } };
+    }
+    if (bare) {
+      const [, date] = bare;
+      return { kind: 'close', dto: { accountId: RETAINED_EARNINGS_ID, date } };
+    }
+    throw new ParseError('close command cannot be parsed');
+  },
+
   commodity(line) {
     const m = new RegExp(`^${DATE} commodity ${ASSET}$`).exec(line);
     if (!m) throw new ParseError('commodity command cannot be parsed');
@@ -288,6 +309,7 @@ function describe(p: Parsed, raw: { tag?: string }): string {
       return `${shortName(assetAcct)} yield ${amtStr(d.change!)}`;
     }
     case 'commodity': return d.asset ?? '';
+    case 'close': return `Close income and expenses to ${d.accountId}`;
     case 'global': return 'global configuration';
   }
 }
@@ -349,6 +371,8 @@ function classValue(kind: Kind): number {
     case 'adj': return 2;
     case 'bal': return 2;
     case 'unit': return 4;
+    // A close consumes the day's income and expenses, so it must sort after everything else on it.
+    case 'close': return 5;
     default: return 3;
   }
 }
