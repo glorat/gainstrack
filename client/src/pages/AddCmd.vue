@@ -74,7 +74,6 @@
 
 <script setup lang="ts">
 import CommandEditor from '../components/CommandEditor.vue'
-import axios from 'axios'
 import CommandTable from '../components/CommandTable.vue'
 import SourceErrors from '../components/SourceErrors.vue'
 import { debounce } from 'lodash'
@@ -83,7 +82,7 @@ import { apiCmdTest } from 'src/lib/apiFacade'
 import { ref, computed } from 'vue'
 import { useRoute } from 'vue-router'
 import { axiosErrorMessage, qnotify } from 'src/boot/notify'
-import type { AccountCommandDTO, ParseError } from 'src/lib/assetdb/models'
+import type { AccountCommandDTO } from 'src/lib/assetdb/models'
 import type { CmdTestResponse } from 'src/lib/apiFacade'
 
 const props = defineProps<{
@@ -153,15 +152,14 @@ const testCommand = debounce(async () => {
 function addCommand() {
   const str = commandStr.value
   adding.value = true
-  axios.post('/api/post/add', { str })
-    .then(response => {
-      const data = response.data as { errors: ParseError[]; added: AccountCommandDTO[] }
+  // Routes direct to Firestore or via the server depending on store.useDirectLedger.
+  store.addCommand(str)
+    .then(data => {
       if (data.errors.length > 0) {
         qnotify.warning('Errors...' + data.errors[0].message)
       } else {
-        added.value = data.added
         success.value = true
-        qnotify.success(`${added.value.length} entries added`)
+        qnotify.success(`${data.added} entries added`)
         store.reload()
         emit('command-added', str)
       }

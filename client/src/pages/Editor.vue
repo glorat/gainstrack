@@ -26,12 +26,10 @@
 </template>
 
 <script setup lang="ts">
-import axios from 'axios'
 import { codemirror } from 'src/lib/loader'
 import { useAppStore } from 'src/stores'
 import { computed, reactive, onMounted } from 'vue'
 import { axiosErrorMessage, qnotify } from 'src/boot/notify'
-import type { ParseError } from 'src/lib/assetdb/models'
 
 const store = useAppStore()
 const info = reactive({ source: 'Loading...' })
@@ -66,9 +64,9 @@ function editorSave() {
     return
   }
 
-  axios.post('/api/post/source', { source: info.source, filePath: '', entryHash: '', sha256sum: '' })
-    .then(response => {
-      const data = response.data as { errors: ParseError[] }
+  // Routes direct to Firestore or via the server depending on store.useDirectLedger.
+  store.saveSource(info.source)
+    .then(data => {
       store.setParseState(data)
       if (data.errors.length > 0) {
         qnotify.warning('There are errors...')

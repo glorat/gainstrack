@@ -66,6 +66,7 @@ describe('direct Firestore ledger read', () => {
   test('loadAllState ignores the direct path while the flag is off', async () => {
     const store = useAppStore();
     store.user = { uid: 'u' } as never;
+    store.useDirectLedger = false;
     const direct = vi.spyOn(firestoreLedger, 'loadLedgerText');
     await store.loadAllState();
     expect(direct).not.toHaveBeenCalled();
@@ -82,6 +83,21 @@ describe('direct Firestore ledger read', () => {
 
     await store.loadAllState();
     expect(axios.post).toHaveBeenCalledWith('/api/allState');
+  });
+
+  test('a brand-new user with no records gets an empty ledger, not a fallback', async () => {
+    const store = useAppStore();
+    store.user = { uid: 'brand-new-uid' } as never;
+    vi.spyOn(firestoreLedger, 'loadLedgerText').mockResolvedValue({
+      text: toGainstrackText([]), ledgerId: 'brand-new-uid', replay: replayLedger([]),
+    });
+    vi.mocked(axios.post).mockClear(); // call history leaks across tests in this file
+
+    await store.loadAllState();
+    // No history is a valid empty ledger — falling back to the server here would resurrect
+    // whatever the Scala side happens to hold and silently fork the two stores.
+    expect(axios.post).not.toHaveBeenCalledWith('/api/allState');
+    expect(store.allState.txs).toEqual([]);
   });
 
   test('a ledger that fails to generate surfaces parse errors and does not clobber state', async () => {

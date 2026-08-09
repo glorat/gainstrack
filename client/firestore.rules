@@ -1,32 +1,98 @@
 rules_version = '2';
+
+// Gainstrack Firestore security rules.
+//
+// Conventions:
+//  - Everything not matched below is DENIED. There is no catch-all.
+//  - Operations are granted granularly (read / create / update / delete) rather than via the
+//    blanket `write`, so widening access is always a deliberate edit.
+//  - Writes are shape-validated, not just authorised, so a compromised or buggy client cannot
+//    put unreadable documents into a collection.
+//  - The user ledger is authorised purely from the document path, with no `get()` lookup — rule
+//    lookups cost a billable read each and sit on the hot path for every record fetched.
+
 service cloud.firestore {
   match /databases/{database}/documents {
+
     function isSignedIn() {
       return request.auth != null;
     }
 
-    function getRole(role) {
+    // The ledger document id IS the Firebase uid, so ownership is the path itself.
+    function isOwner(uid) {
+      return isSignedIn() && request.auth.uid == uid;
+    }
+
+    function hasRole(role) {
       let userRole = get(/databases/$(database)/documents/userRoles/$(request.auth.uid));
-      return userRole!=null && userRole.data.roles[role]
+      // `.data.roles[role]` errors when the document has no `roles` map — and a rule error
+      // denies rather than returning false. Read defensively so a role-less user is simply false.
+      return userRole != null && userRole.data.get('roles', {}).get(role, false);
     }
 
-    match /assets/{document=**} {
-    	allow read;
-      allow write: if request.auth != null; // TODO: restrict when ready
+    // ---- user ledger -------------------------------------------------------
+    // A portfolio is an append-only CQRS event stream at users/{uid}/records. The browser
+    // replays it to build AllState locally and appends new events directly.
+
+    function isValidLedgerRecord(uid) {
+      let d = request.resource.data;
+      return d.keys().hasOnly(['streamId', 'streamRevision', 'event'])
+        && d.keys().hasAll(['streamId', 'streamRevision', 'event'])
+        && d.streamId == uid
+        && d.streamRevision is int
+        && d.streamRevision > 0
+        && d.event is string
+        && d.event.size() > 0;
     }
+
+    match /users/{uid}/records/{recordId} {
+      allow read: if isOwner(uid);
+      allow create: if isOwner(uid) && isValidLedgerRecord(uid);
+      // Append-only is structural: history cannot be rewritten, even by its owner. Revision
+      // contiguity is enforced by a client transaction — rules cannot range-query.
+      allow update, delete: if false;
+    }
+
+    // Legacy anonymous streams, written by the Scala server only. Anonymous users now compute
+    // state locally and never persist, so the browser has no business here.
+    match /anons/{ledgerId}/records/{recordId} {
+      allow read, write: if false;
+    }
+
+    // ---- asset database ----------------------------------------------------
+    // Public reference data: readable by anyone so the asset DB browses without a login.
+
     match /quoteSources/{document=**} {
-    	allow read;
-      allow write: if isSignedIn() && getRole('admin')
+      allow read;
+      allow create, update, delete: if isSignedIn() && hasRole('admin');
     }
 
+    // Append-only audit log of successful quote-source writes. Anyone may create an entry, but
+    // only attributed to themselves; the Firestore trigger promotes it using the admin SDK,
+    // which bypasses these rules.
     match /quoteSourceHistory/{document=**} {
       allow read;
       allow create: if isSignedIn() && request.auth.uid == request.resource.data.uid;
-      allow write: if isSignedIn() && getRole('admin')
+      allow update, delete: if isSignedIn() && hasRole('admin');
     }
 
-    match /userRoles/{document=**} {
+    // Superseded by quoteSources and read-only in the client. Previously writable by any signed
+    // in user, which was an open door with a TODO on it.
+    match /assets/{document=**} {
       allow read;
+      allow create, update, delete: if isSignedIn() && hasRole('admin');
     }
+
+    // ---- identity ----------------------------------------------------------
+    // uid -> {displayName, roles}. Written only by the setDisplayName callable via the admin
+    // SDK, so no client write is granted. Reads are limited to signed-in users: these documents
+    // are keyed by uid, and world-readable uids are worth avoiding even when nothing depends on
+    // their secrecy. Relax to `allow read;` if anonymous attribution matters.
+    match /userRoles/{document=**} {
+      allow read: if isSignedIn();
+    }
+
+    // displayNames/{displayName} -> {uid} is the reverse index enforcing uniqueness. It is
+    // maintained transactionally by the same callable and is intentionally unreachable here.
   }
 }

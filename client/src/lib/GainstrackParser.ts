@@ -44,7 +44,7 @@ type Kind =
 export const RETAINED_EARNINGS_ID = 'Equity:RetainedEarnings';
 
 // DTO fields whose numeric literal is echoed back in a `description` template.
-type RawField = 'change' | 'balance' | 'price' | 'commission';
+type RawField = 'change' | 'balance' | 'price' | 'commission' | 'tfrTarget';
 
 export interface Parsed {
   kind: Kind;
@@ -60,6 +60,9 @@ export interface Parsed {
   // recoverable from `accountId` — "Income:Salary" and "Salary" both yield accountId
   // "Income:Salary" but print differently.
   tag?: string;
+  // Comment lines immediately preceding this command, without their leading `;`/`#` marker.
+  // Carried so serialization can round-trip them (Scala `AccountCommand.comments`).
+  comments?: string[];
 }
 
 export type { Kind };
@@ -188,13 +191,16 @@ const COMMANDS: Record<string, (line: string) => Parsed> = {
       const target = parseAmount(tv);
       return {
         kind: 'tfr', dto: tfrDto(date, src, dst, parseAmount(sv), target),
-        tfrTarget: target, raws: { change: numOf(sv) },
+        tfrTarget: target, raws: { change: numOf(sv), tfrTarget: numOf(tv) },
       };
     }
     if (simple) {
       const [, date, src, dst, v] = simple;
       const amt = parseAmount(v);
-      return { kind: 'tfr', dto: tfrDto(date, src, dst, amt, amt), tfrTarget: amt, raws: { change: numOf(v) } };
+      return {
+        kind: 'tfr', dto: tfrDto(date, src, dst, amt, amt),
+        tfrTarget: amt, raws: { change: numOf(v), tfrTarget: numOf(v) },
+      };
     }
     throw new ParseError('tfr command cannot be parsed');
   },
@@ -498,6 +504,10 @@ export class GainstrackParser {
   private commands: Parsed[] = [];
   private errors: ParserMessage[] = [];
   private lineCount = 0;
+  // Comment lines accrue and attach to the NEXT command parsed (mirrors Scala `recentComments`).
+  // Required for round-tripping: without this, serializing a parsed ledger deletes the user's
+  // comments.
+  private recentComments: string[] = [];
 
   get parserErrors(): ParserMessage[] {
     return this.errors;
@@ -533,6 +543,10 @@ export class GainstrackParser {
       try {
         const parsed = parser(line);
         this.checkForConflict(parsed);
+        // Scala accrues comments then applies them AFTER the conflict check, so a rejected
+        // command leaves them pending for the next one.
+        parsed.comments = this.recentComments;
+        this.recentComments = [];
         this.commands.push(parsed);
       } catch (e) {
         this.pushError(e instanceof Error ? e.message : String(e), line);
@@ -561,7 +575,11 @@ export class GainstrackParser {
       return;
     }
 
-    if (COMMENT_RE.test(line)) return; // comments are not represented in the DTO
+    const comment = COMMENT_RE.exec(line);
+    if (comment) {
+      this.recentComments.push(comment[1]);
+      return;
+    }
     if (IGNORE_RE.test(line)) return;
 
     this.pushError(`Unparsable: ${line}`, line);
@@ -582,6 +600,9 @@ export class GainstrackParser {
     } else {
       (this.global.dto.options as Record<string, unknown>).operatingCurrency = value;
     }
+    // Scala replaces (not appends) the global's comments on each option line, then clears.
+    this.global.comments = this.recentComments;
+    this.recentComments = [];
   }
 
   private checkForConflict(incoming: Parsed): void {

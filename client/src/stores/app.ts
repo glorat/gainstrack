@@ -13,7 +13,11 @@ import {
 import { GlobalPricer } from '../lib/pricer'
 import { AllStateEx } from '../lib/AllStateEx'
 import { generateAllStateSafe } from '../lib/gen/GainstrackGenerator'
-import { loadLedgerText } from '../lib/ledger/firestoreLedger'
+import { fetchLedgerRecords, loadLedgerText } from '../lib/ledger/firestoreLedger'
+import { appendDelta, diffToDelta } from '../lib/ledger/append'
+import { CommandBlock, replayLedger } from '../lib/ledger/replay'
+import { GainstrackParser } from '../lib/GainstrackParser'
+import { toCommandBlocks } from '../lib/toGainstrack'
 import { cloneDeep, includes, keys, mergeWith } from 'lodash'
 import { balanceTreeTable } from '../lib/TreeTable'
 import { LocalDate } from '@js-joda/core'
@@ -68,10 +72,10 @@ export const useAppStore = defineStore('app', () => {
   const conversion = ref('parent')
   const user = ref<User | undefined>(undefined)
   const authToken = ref<string | undefined>(undefined)
-  // Read the ledger straight from Firestore instead of /api/allState. Opt-in: production
-  // Firestore rules currently grant the user ledger to the Scala service account only, so
-  // enabling this before the rules land just costs a permission error and a fallback.
-  const useDirectLedger = ref(false)
+  // Read and write the ledger straight from Firestore rather than through the Scala server.
+  // The ledger lives at users/{firebaseUid}/records. Set false to route back through
+  // /api/allState and /api/post/*.
+  const useDirectLedger = ref(true)
 
   // Getters
   const isAuthenticated = computed(() => !!authToken.value)
@@ -282,6 +286,88 @@ export const useAppStore = defineStore('app', () => {
     return { data: state }
   }
 
+  /**
+   * Current ledger contents plus the revision they sit at, for an optimistic-concurrency write.
+   *
+   * Refuses to write to a stream with a revision gap: the server silently truncates at the first
+   * gap, so appending past one produces events nobody will ever replay. Better to fail loudly.
+   */
+  async function readLedgerForWrite() {
+    const uid = user.value?.uid
+    if (!uid) throw new Error('Cannot write ledger directly: no signed-in Firebase user')
+    const ledgerId = uid
+
+    const replay = replayLedger(await fetchLedgerRecords(ledgerId))
+    if (replay.diagnostics.discardedRevisions.length > 0) {
+      throw new Error(
+        `Ledger ${ledgerId} has a revision gap (discarded ${replay.diagnostics.discardedRevisions.join(', ')}); refusing to write`,
+      )
+    }
+    // Revisions are contiguous from 1, so the accepted count IS the head revision.
+    return { ledgerId, current: replay.commands, head: replay.diagnostics.revisionCount }
+  }
+
+  /** Refuse to persist anything that will not generate — the ledger must stay loadable. */
+  function assertGenerates(blocks: CommandBlock[]) {
+    const { state, errors } = generateAllStateSafe(blocks.flat().join('\n') + '\n')
+    if (!state) throw new Error(`Would not generate: ${errors[0]?.message ?? 'unknown error'}`)
+  }
+
+  /** Replace the whole ledger with `text` (the editor's save, and Port's import). */
+  async function saveLedgerSource(text: string) {
+    const parser = new GainstrackParser()
+    parser.parseString(text) // throws on parse errors, before anything is written
+    const desired = toCommandBlocks(parser.getTypedCommands())
+    assertGenerates(desired)
+
+    const { ledgerId, current, head } = await readLedgerForWrite()
+    const delta = diffToDelta(current, desired)
+    if (delta) await appendDelta(ledgerId, delta, { expectedHead: head })
+    await loadFromFirestore()
+    return { changed: delta !== null }
+  }
+
+  /** Append one or more new commands (the add-command form). */
+  async function addLedgerCommand(str: string) {
+    const parser = new GainstrackParser()
+    parser.parseString(str)
+    const blocks = toCommandBlocks(parser.getTypedCommands())
+
+    const { ledgerId, current, head } = await readLedgerForWrite()
+    const existing = new Set(current.map(c => JSON.stringify(c)))
+    if (blocks.some(b => existing.has(JSON.stringify(b)))) {
+      throw new Error('Command already exists, no duplicates allowed')
+    }
+    assertGenerates([...current, ...blocks])
+
+    const delta = diffToDelta(current, [...current, ...blocks])
+    if (delta) await appendDelta(ledgerId, delta, { expectedHead: head })
+    await loadFromFirestore()
+    return blocks.length
+  }
+
+  /** Save the editor's source, direct to Firestore when enabled and otherwise via the server. */
+  async function saveSource(text: string) {
+    if (useDirectLedger.value && user.value?.uid) {
+      await saveLedgerSource(text)
+      return { errors: [] as ParseError[] }
+    }
+    const response = await axios.post('/api/post/source',
+      { source: text, filePath: '', entryHash: '', sha256sum: '' })
+    return response.data as { errors: ParseError[] }
+  }
+
+  /** Append a command, direct to Firestore when enabled and otherwise via the server. */
+  async function addCommand(str: string) {
+    if (useDirectLedger.value && user.value?.uid) {
+      const added = await addLedgerCommand(str)
+      return { errors: [] as ParseError[], added }
+    }
+    const response = await axios.post('/api/post/add', { str })
+    const data = response.data as { errors: ParseError[]; added: unknown[] }
+    return { errors: data.errors, added: data.added?.length ?? 0 }
+  }
+
   async function setDateOverride(d: string) {
     await axios.post('/api/state/dateOverride', { dateOverride: d })
     dateOverride.value = LocalDate.parse(d)
@@ -338,7 +424,7 @@ export const useAppStore = defineStore('app', () => {
     // Actions
     changeUser, computeBalances, loadMultiQuotes, loadQuotes, loadQuotesRaw,
     fetchGainstrackText, setGainstrackText, loadLocalText, setConversion, reload, loadAllState,
-    loadFromFirestore,
+    loadFromFirestore, saveSource, addCommand, saveLedgerSource, addLedgerCommand,
     setDateOverride, upsertAsset, login, loginWithToken, logout, setParseState
   }
 })
