@@ -232,8 +232,13 @@ export const useAppStore = defineStore('app', () => {
 
   async function reload() {
     const response = await loadAllState()
-    const quotesConfig = await axios.get('/api/quotes/config')
-    quoteConfig.value = quotesConfig.data
+    // Both layouts await this on mount, so an unguarded failure here white-screens the app —
+    // including the anonymous path, which otherwise needs no server at all. Quotes are the last
+    // remaining server dependency and must degrade, not block: `quoteConfig` only feeds ticker
+    // pickers and the Quotes table, all of which render empty quite happily.
+    await axios.get('/api/quotes/config')
+      .then(res => { quoteConfig.value = res.data })
+      .catch(err => console.warn('Quote config load failed:', err))
     return response
   }
 

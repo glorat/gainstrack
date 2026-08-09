@@ -1,4 +1,3 @@
-import axios, {AxiosInstance, AxiosPromise} from 'axios';
 import {AccountChange, AccountCommandDTO, ParseError, PostingEx} from 'src/lib/assetdb/models';
 import {GainstrackParser} from 'src/lib/GainstrackParser';
 import {generateAllStateSafe} from 'src/lib/gen/GainstrackGenerator';
@@ -15,39 +14,39 @@ import {AllStateEx} from 'src/lib/AllStateEx';
 /*
  * The purpose of this file is to control the wiring between state from Component+Pinia
  * to the dependencies needed by business functions
+ *
+ * Every report here is computed in the browser. These functions used to pick between a local
+ * implementation and an `/api/...` call via a `localCompute` flag, but the Scala reporting
+ * endpoints are gone and are not coming back, so the remote arm has been removed rather than
+ * left as unreachable code suggesting a fallback still exists.
+ *
+ * They stay `async` because callers await them, and because the seam is worth keeping: it is
+ * where a component's Pinia state gets marshalled into plain business-logic arguments.
  */
-
-const noRemote = () => {throw new Error('NotImplementedRemotely')}
 
 // Type-safe client functions
 export async function apiAssetsReport(store: AppStore, props: Record<string, any>) {
-  const localCompute = true;
-  return doGeneric(store, props, localCompute, ax => ax.get('/api/assets/' + props.accountId), apiLocalAssetsReport)
+  return apiLocalAssetsReport(store, props)
 }
 
 export async function apiPnlExplainMonthly(store: AppStore) {
-  const localCompute = true;
-  return doGeneric(store, undefined, localCompute, ax => ax.get('/api/pnlexplain/monthly'), apiLocalPnlExplainMonthly)
+  return apiLocalPnlExplainMonthly(store)
 }
 
 export async function apiPnlExplainDetail(store: AppStore, props: {fromDate:string, toDate:string}) {
-  const localCompute = true;
-  return doGeneric(store, props, localCompute, ax => ax.post('/api/pnlexplain', props), apiLocalPnlExplainDetail)
+  return apiLocalPnlExplainDetail(store, props)
 }
 
 export async function apiIrrSummary(store: AppStore) {
-  const localCompute = true;
-  return doGeneric(store, undefined, localCompute, ax => ax.get('/api/irr/'), apiLocalIrrSummary)
+  return apiLocalIrrSummary(store)
 }
 
 export async function apiIrrDetail(store: AppStore, props: Record<string, any>) {
-  const localCompute = true;
-  return doGeneric(store, props, localCompute, ax => ax.get('/api/irr/' + props.accountId), apiLocalIrrDetail)
+  return apiLocalIrrDetail(store, props)
 }
 
 export async function apiAccountSummary(store: AppStore, props: Record<string, any>) {
-  const localCompute = true;
-  return doGeneric(store, props, localCompute, noRemote, apiLocalAccountSummary)
+  return apiLocalAccountSummary(store, props)
 }
 
 // Type safe command functions
@@ -59,7 +58,7 @@ export interface CmdTestResponse {
 }
 
 export async function apiCmdTest(store: AppStore, props: Record<string, any>): Promise<CmdTestResponse> {
-  return doGeneric(store, props, true, noRemote, apiLocalCmdTest);
+  return apiLocalCmdTest(store, props);
 }
 
 /**
@@ -113,17 +112,6 @@ function apiLocalCmdTest(store: AppStore, args: Record<string, any>): CmdTestRes
   });
 
   return { added, accountChanges, errors: [], networthChange };
-}
-
-
-// The keyhole invoker to manage execution strategies
-async function doGeneric<ARG,RES>(store: AppStore, args:ARG, localCompute:boolean, axiosFn:(ax:AxiosInstance)=>AxiosPromise<RES>, fn: (store: AppStore, args:ARG) => RES) {
-  if (!localCompute) {
-    const res2 = await axiosFn(axios);
-    return res2.data
-  } else {
-    return fn(store, args);
-  }
 }
 
 
