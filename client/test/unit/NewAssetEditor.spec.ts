@@ -1,12 +1,13 @@
 import { shallowMount, flushPromises } from '@vue/test-utils'
 import { vi } from 'vitest'
-import axios from 'axios'
 import NewAssetEditor from 'src/components/NewAssetEditor.vue'
-
-vi.mock('axios')
 
 const mockQnotify = vi.hoisted(() => ({ success: vi.fn(), error: vi.fn(), warning: vi.fn() }))
 vi.mock('src/boot/notify', () => ({ qnotify: mockQnotify }))
+
+// The component now saves through the store (direct to Firestore or via the server) rather
+// than posting to /api/post/asset itself, so the save is driven through this mock.
+const mockStore = vi.hoisted(() => ({ upsertAssetCommand: vi.fn() }))
 
 vi.mock('src/stores', () => ({
   useAppStore: () => ({
@@ -14,6 +15,7 @@ vi.mock('src/stores', () => ({
     fxConverter: { getPrice: vi.fn(() => 0) },
     allStateEx: { tradeFxConverter: vi.fn() },
     loadQuotes: vi.fn(),
+    upsertAssetCommand: mockStore.upsertAssetCommand,
   }),
 }))
 
@@ -58,7 +60,7 @@ describe('NewAssetEditor', () => {
   // button's loading slot never activates and duplicate submissions are possible.
   test('Add button shows loading state while the POST is in flight', async () => {
     let resolvePost!: (v: unknown) => void
-    vi.mocked(axios.post).mockReturnValueOnce(
+    mockStore.upsertAssetCommand.mockReturnValueOnce(
       new Promise(resolve => { resolvePost = resolve })
     )
 

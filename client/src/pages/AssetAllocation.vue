@@ -13,17 +13,15 @@
 </template>
 
 <script setup lang="ts">
-import axios from 'axios'
 import TreeTable from '../components/TreeTable.vue'
 import { VuePlotly } from '../lib/loader'
 import { ref, onMounted } from 'vue'
+import { LocalDate } from '@js-joda/core'
 import { qnotify } from 'src/boot/notify'
-import type { TreeTableDTO } from 'src/lib/assetdb/models'
+import { useAppStore } from 'src/stores'
+import { AllocationTable, allocationTables, allocationTree, networthPositions } from 'src/lib/assetAllocation'
 
-interface AssetAllocationTable {
-  name: string
-  rows: TreeTableDTO
-}
+const store = useAppStore()
 
 const treeData = ref<Record<string, unknown>[]>([{
   type: 'sunburst',
@@ -39,31 +37,32 @@ const treeLayout = ref({
 })
 
 const treeOptions = ref({ displaylogo: false })
-const tables = ref<AssetAllocationTable[]>([])
+const tables = ref<AllocationTable[]>([])
 
 onMounted(() => {
-  axios.post('/api/aa/tree')
-    .then(response => {
-      const data = response.data as Record<string, unknown>
-      const plotly: Record<string, unknown> = {
-        ...data,
-        type: 'sunburst',
-        name: 'Networth',
-        branchvalues: 'total',
-        hovertemplate: '%{label}<br>%{value:,f}<br>%{percentParent:.1%}<br>%{percentRoot:.1%}',
-      }
-      // Root element doesn't accept percentParent so we stub out the template
-      const ids = plotly.ids as string[]
-      const ts: string[] = Array(ids.length).fill('%{label}<br>%{percentParent:.1%}')
-      ts.unshift('Networth')
-      plotly.texttemplate = ts
-      treeData.value = [plotly]
-    })
-    .catch((error: unknown) => qnotify.error(String(error)))
+  try {
+    const date = LocalDate.now()
+    const postings = store.allPostingsEx
+    const positions = networthPositions(postings)
+    const assetState = store.allState.assetState
+    const baseCcy = store.baseCcy
+    const fx = store.fxConverter
 
-  axios.post('/api/aa/table')
-    .then(response => { tables.value = response.data as AssetAllocationTable[] })
-    .catch((error: unknown) => qnotify.error(String(error)))
+    const data = allocationTree(positions, assetState, baseCcy, date, fx)
+    treeData.value = [{
+      ...data,
+      type: 'sunburst',
+      name: 'Networth',
+      branchvalues: 'total',
+      hovertemplate: '%{label}<br>%{value:,f}<br>%{percentParent:.1%}<br>%{percentRoot:.1%}',
+      // The root doesn't accept percentParent, so its template is stubbed out.
+      texttemplate: ['Networth', ...Array(Math.max(data.ids.length - 1, 0)).fill('%{label}<br>%{percentParent:.1%}')],
+    }]
+
+    tables.value = allocationTables(store.allState.accounts, postings, assetState, baseCcy, date, fx)
+  } catch (error: unknown) {
+    qnotify.error(String(error))
+  }
 })
 </script>
 

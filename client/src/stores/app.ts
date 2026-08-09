@@ -14,11 +14,12 @@ import { GlobalPricer } from '../lib/pricer'
 import { AllStateEx } from '../lib/AllStateEx'
 import { generateAllStateSafe } from '../lib/gen/GainstrackGenerator'
 import { fetchLedgerRecords, loadLedgerText } from '../lib/ledger/firestoreLedger'
-import { appendDelta, diffToDelta } from '../lib/ledger/append'
+import { appendDelta, diffToDelta, upsertCommodityBlocks } from '../lib/ledger/append'
 import { CommandBlock, replayLedger } from '../lib/ledger/replay'
+import { BASE_GAINSTRACK, baseLedgerBlocks } from '../lib/ledger/baseLedger'
 import { GainstrackParser } from '../lib/GainstrackParser'
 import { toCommandBlocks } from '../lib/toGainstrack'
-import { cloneDeep, includes, keys, mergeWith } from 'lodash'
+import { includes, keys, mergeWith } from 'lodash'
 import { balanceTreeTable } from '../lib/TreeTable'
 import { LocalDate } from '@js-joda/core'
 import { toCommodityGainstrack } from '../lib/commandDefaulting'
@@ -72,13 +73,20 @@ export const useAppStore = defineStore('app', () => {
   const conversion = ref('parent')
   const user = ref<User | undefined>(undefined)
   const authToken = ref<string | undefined>(undefined)
-  // Read and write the ledger straight from Firestore rather than through the Scala server.
-  // The ledger lives at users/{firebaseUid}/records. Set false to route back through
-  // /api/allState and /api/post/*.
-  const useDirectLedger = ref(true)
 
   // Getters
   const isAuthenticated = computed(() => !!authToken.value)
+  /**
+   * The uid whose Firestore ledger we may read and write, or undefined.
+   *
+   * Anonymous users are client-side only: they compute state in the browser via `loadLocalText`
+   * and never persist. Firebase anonymous sign-in would still produce a uid, so it is excluded
+   * explicitly rather than relying on there being no `signInAnonymously` call today.
+   */
+  const ledgerUid = computed(() =>
+    user.value && !user.value.isAnonymous ? user.value.uid : undefined)
+  /** Whether saving is possible at all — false for anonymous and signed-out users. */
+  const canPersist = computed(() => !!ledgerUid.value)
   const allStateEx = computed(() => new AllStateEx(allState.value))
   const accountIds = computed(() => allState.value.accounts.map(x => x.accountId))
   const reloadCounter = computed(() => count.value)
@@ -186,12 +194,14 @@ export const useAppStore = defineStore('app', () => {
   }
 
   async function fetchGainstrackText(): Promise<string> {
-    if (!gainstrackText.value) {
-      const response = await axios.post('/api/editor/')
-      gainstrackText.value = response.data.source
-      return response.data.source
-    }
-    return gainstrackText.value
+    if (gainstrackText.value) return gainstrackText.value
+
+    // The ledger replay IS the source text. (The old /api/editor/ returned text REGENERATED
+    // from commands and regrouped by account, so this is also more faithful to what was written.)
+    if (!ledgerUid.value) return ''
+    const { text } = await loadLedgerText(ledgerUid.value)
+    gainstrackText.value = text
+    return text
   }
 
   function setGainstrackText(text: string) {
@@ -208,13 +218,13 @@ export const useAppStore = defineStore('app', () => {
     gainstrackText.value = text
     parseState.value = { errors: [] }
     count.value++
-    await loadMultiQuotes(keys(quoteDeps.value))
+    // Quotes are still served by the backend; a quote outage must not stop state from loading.
+    await loadMultiQuotes(keys(quoteDeps.value)).catch(err => console.warn('Pre-load quotes failed:', err))
     await computeBalances()
     return { ok: true, errors: [], accounts: state.accounts.length, txs: state.txs.length, baseCcy: state.baseCcy }
   }
 
   async function setConversion(c: string) {
-    await axios.post('/api/state/conversion', { conversion: c })
     conversion.value = c
     balances.value = {}
     await computeBalances()
@@ -227,28 +237,18 @@ export const useAppStore = defineStore('app', () => {
     return response
   }
 
+  /**
+   * Load portfolio state. Signed-in users replay their Firestore ledger; everyone else gets the
+   * sample ledger to explore locally, mirroring the server's `if (isAuthenticated) bgFromFile
+   * .getOrElse(bgDefault) else bgDefault`. Anonymous state is never persisted.
+   *
+   * There is deliberately NO fallback to /api/allState: it reads the legacy Scala-side stream,
+   * so falling back would silently show stale data and then fork the two stores on next save.
+   * A Firestore failure must surface as a failure.
+   */
   async function loadAllState() {
-    if (useDirectLedger.value && user.value?.uid) {
-      // Prefer reading the ledger straight from Firestore; fall back to the server on any
-      // failure so a rules/permission problem degrades instead of locking the user out.
-      try {
-        return await loadFromFirestore()
-      } catch (err) {
-        console.warn('Direct ledger read failed, falling back to /api/allState:', err)
-      }
-    }
-    const response = await axios.post('/api/allState')
-    allState.value = response.data
-    balances.value = {}
-    gainstrackText.value = ''
-    parseState.value = { errors: [] }
-    count.value++
-    const quotesToLoad = keys(quoteDeps.value)
-    console.log(`Pre-load quotes for ${quotesToLoad.join(',')}`)
-    await loadMultiQuotes(quotesToLoad).catch(err => console.warn('Pre-load quotes failed:', err))
-    console.log('Pre-load of quotes complete')
-    await computeBalances()
-    return response
+    if (ledgerUid.value) return await loadFromFirestore()
+    return await loadLocalText(BASE_GAINSTRACK)
   }
 
   /**
@@ -260,8 +260,8 @@ export const useAppStore = defineStore('app', () => {
    * server would have returned.
    */
   async function loadFromFirestore() {
-    const uid = user.value?.uid
-    if (!uid) throw new Error('Cannot read ledger directly: no signed-in Firebase user')
+    const uid = ledgerUid.value
+    if (!uid) throw new Error('Cannot read ledger: anonymous and signed-out users do not persist')
 
     const { text, ledgerId, replay } = await loadLedgerText(uid)
     const { discardedRevisions, foreignStreamIds, unparseableEvents } = replay.diagnostics
@@ -293,9 +293,8 @@ export const useAppStore = defineStore('app', () => {
    * gap, so appending past one produces events nobody will ever replay. Better to fail loudly.
    */
   async function readLedgerForWrite() {
-    const uid = user.value?.uid
-    if (!uid) throw new Error('Cannot write ledger directly: no signed-in Firebase user')
-    const ledgerId = uid
+    const ledgerId = ledgerUid.value
+    if (!ledgerId) throw new Error('Cannot write ledger: anonymous and signed-out users do not persist')
 
     const replay = replayLedger(await fetchLedgerRecords(ledgerId))
     if (replay.diagnostics.discardedRevisions.length > 0) {
@@ -303,8 +302,15 @@ export const useAppStore = defineStore('app', () => {
         `Ledger ${ledgerId} has a revision gap (discarded ${replay.diagnostics.discardedRevisions.join(', ')}); refusing to write`,
       )
     }
+    // `current` is what is actually PERSISTED — the diff and revision must be computed against
+    // it. `effective` additionally seeds the starter ledger for an empty stream: those commands
+    // exist for generation purposes but have never been written, so they must appear in `desired`
+    // and therefore get persisted by the first save (mirroring the server, whose first
+    // `saveGainstrack` starts from `defaultBase` and commits it).
+    const current = replay.commands
+    const effective = current.length === 0 ? baseLedgerBlocks() : current
     // Revisions are contiguous from 1, so the accepted count IS the head revision.
-    return { ledgerId, current: replay.commands, head: replay.diagnostics.revisionCount }
+    return { ledgerId, current, effective, head: replay.diagnostics.revisionCount }
   }
 
   /** Refuse to persist anything that will not generate — the ledger must stay loadable. */
@@ -333,63 +339,59 @@ export const useAppStore = defineStore('app', () => {
     parser.parseString(str)
     const blocks = toCommandBlocks(parser.getTypedCommands())
 
-    const { ledgerId, current, head } = await readLedgerForWrite()
-    const existing = new Set(current.map(c => JSON.stringify(c)))
+    const { ledgerId, current, effective, head } = await readLedgerForWrite()
+    const existing = new Set(effective.map(c => JSON.stringify(c)))
     if (blocks.some(b => existing.has(JSON.stringify(b)))) {
       throw new Error('Command already exists, no duplicates allowed')
     }
-    assertGenerates([...current, ...blocks])
+    const desired = [...effective, ...blocks]
+    assertGenerates(desired)
 
-    const delta = diffToDelta(current, [...current, ...blocks])
+    const delta = diffToDelta(current, desired)
     if (delta) await appendDelta(ledgerId, delta, { expectedHead: head })
     await loadFromFirestore()
     return blocks.length
   }
 
-  /** Save the editor's source, direct to Firestore when enabled and otherwise via the server. */
+  /** Save the editor's source to the user's ledger. */
   async function saveSource(text: string) {
-    if (useDirectLedger.value && user.value?.uid) {
-      await saveLedgerSource(text)
-      return { errors: [] as ParseError[] }
-    }
-    const response = await axios.post('/api/post/source',
-      { source: text, filePath: '', entryHash: '', sha256sum: '' })
-    return response.data as { errors: ParseError[] }
+    await saveLedgerSource(text)
+    return { errors: [] as ParseError[] }
   }
 
-  /** Append a command, direct to Firestore when enabled and otherwise via the server. */
+  /** Append a command to the user's ledger. */
   async function addCommand(str: string) {
-    if (useDirectLedger.value && user.value?.uid) {
-      const added = await addLedgerCommand(str)
-      return { errors: [] as ParseError[], added }
-    }
-    const response = await axios.post('/api/post/add', { str })
-    const data = response.data as { errors: ParseError[]; added: unknown[] }
-    return { errors: data.errors, added: data.added?.length ?? 0 }
+    const added = await addLedgerCommand(str)
+    return { errors: [] as ParseError[], added }
   }
 
   async function setDateOverride(d: string) {
-    await axios.post('/api/state/dateOverride', { dateOverride: d })
     dateOverride.value = LocalDate.parse(d)
     balances.value = {}
     await computeBalances()
   }
 
-  async function upsertAsset(asset: AssetDTO) {
-    const str = toCommodityGainstrack(asset)
-    const res = await axios.post('/api/post/asset', { str })
-    const originalAssets = allState.value.assetState
-    const orig = originalAssets.find(x => x.asset === asset.asset)
-    if (orig === undefined) throw new Error('Invariant violation in assetSave')
-    const idx = originalAssets.indexOf(orig)
-    Object.assign(originalAssets[idx], cloneDeep(asset))
-    return res
+  /**
+   * Upsert an asset declaration from its gainstrack text. Commodity commands are declared once
+   * per asset, so this REPLACES any existing declaration rather than appending a duplicate.
+   */
+  async function upsertAssetCommand(str: string) {
+    const parser = new GainstrackParser()
+    parser.parseString(str)
+    const incoming = toCommandBlocks(parser.getTypedCommands())
+
+    const { ledgerId, current, effective, head } = await readLedgerForWrite()
+    const desired = upsertCommodityBlocks(effective, incoming)
+    assertGenerates(desired)
+
+    const delta = diffToDelta(current, desired)
+    if (delta) await appendDelta(ledgerId, delta, { expectedHead: head })
+    await loadFromFirestore()
+    return { data: 'ok' }
   }
 
-  async function login(data: Record<string, unknown>) {
-    const summary = await axios.post('/api/authn/login', data)
-    await loadAllState()
-    return summary
+  async function upsertAsset(asset: AssetDTO) {
+    return await upsertAssetCommand(toCommodityGainstrack(asset))
   }
 
   async function loginWithToken(getToken: () => Promise<string>) {
@@ -416,16 +418,16 @@ export const useAppStore = defineStore('app', () => {
   return {
     // State
     allState, dateOverride, count, quoteConfig, balances,
-    parseState, gainstrackText, quotes, conversion, user, authToken, useDirectLedger,
+    parseState, gainstrackText, quotes, conversion, user, authToken,
     // Getters
     isAuthenticated, allStateEx, accountIds, reloadCounter, tradeableAccounts,
-    mainAssetAccounts, mainAccounts, findAccount, baseCcy, tradeFxConverter,
+    mainAssetAccounts, mainAccounts, findAccount, baseCcy, tradeFxConverter, ledgerUid, canPersist,
     customFxConverter, fxConverter, quoteDeps, allTxs, allPostings, allPostingsEx, allCcys,
     // Actions
     changeUser, computeBalances, loadMultiQuotes, loadQuotes, loadQuotesRaw,
     fetchGainstrackText, setGainstrackText, loadLocalText, setConversion, reload, loadAllState,
     loadFromFirestore, saveSource, addCommand, saveLedgerSource, addLedgerCommand,
-    setDateOverride, upsertAsset, login, loginWithToken, logout, setParseState
+    setDateOverride, upsertAsset, upsertAssetCommand, loginWithToken, logout, setParseState
   }
 })
 

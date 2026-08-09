@@ -50,8 +50,8 @@ function editorReset() {
 function editorSave() {
   store.setGainstrackText(info.source)
 
-  // Not logged in: compute AllState locally (TS generator), no backend round-trip.
-  if (!store.isAuthenticated) {
+  // Anonymous or signed out: compute AllState locally (TS generator) and do not persist.
+  if (!store.canPersist) {
     store.loadLocalText(info.source).then(res => {
       if (res.ok) {
         store.setParseState({ errors: [] })

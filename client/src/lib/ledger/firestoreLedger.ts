@@ -11,6 +11,7 @@
 import { collection, getDocs, orderBy, query } from 'firebase/firestore';
 import { myFirestore } from 'src/lib/assetdb/myfirebase';
 import { LedgerRecord, ReplayResult, replayLedger, toGainstrackText } from 'src/lib/ledger/replay';
+import { BASE_GAINSTRACK } from 'src/lib/ledger/baseLedger';
 
 export interface LedgerSource {
   text: string;
@@ -29,10 +30,13 @@ export async function fetchLedgerRecords(firebaseUid: string): Promise<LedgerRec
 /**
  * Fetch and replay a user's ledger into gainstrack source text.
  *
- * A user with no history is not an error — it replays to an empty ledger, which generates a
- * valid empty AllState.
+ * A user with no history is not an error: they get the starter ledger, mirroring the server's
+ * `bgFromFile.getOrElse(bgDefault)`. Those accounts are load-bearing — `fund` defaults to
+ * Equity:Opening and earn/spend resolve via fundingAccount — so an empty ledger would reject
+ * the user's very first command.
  */
 export async function loadLedgerText(firebaseUid: string): Promise<LedgerSource> {
   const replay = replayLedger(await fetchLedgerRecords(firebaseUid));
-  return { text: toGainstrackText(replay.commands), ledgerId: firebaseUid, replay };
+  const text = replay.commands.length === 0 ? BASE_GAINSTRACK : toGainstrackText(replay.commands);
+  return { text, ledgerId: firebaseUid, replay };
 }

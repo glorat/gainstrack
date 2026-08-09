@@ -26,7 +26,6 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import {matCloudUpload} from '@quasar/extras/material-icons';
-import axios from 'axios';
 import {useAppStore} from 'src/stores';
 import {useRouter} from 'vue-router';
 import {qnotify} from 'src/boot/notify';
@@ -46,17 +45,27 @@ function beforeUpload(uploadFile: File) {
     const reader = new FileReader();
     reader.onload = () => {
       const text = reader.result;
-      axios.post('/api/post/source', {source: text, filePath: '', entryHash: '', sha256sum: ''})
+      // Anonymous users have no ledger to persist to — compute locally, as the editor does.
+      const save = store.canPersist
+        ? store.saveSource(text as string)
+        : store.loadLocalText(text as string).then(r => ({ errors: r.errors }));
+      save
         .then(response => {
-          store.setParseState(response.data);
-          if (response.data.errors.length > 0) {
+          store.setParseState(response);
+          if (response.errors.length > 0) {
             qnotify.warning('There are errors...');
             router.push({name: 'errors'});
           } else {
             qnotify.success('Saved');
-            store.reload();
-            store.fetchGainstrackText();
-            router.go(0);
+            // An anonymous import exists only in memory: reloading would throw it away and
+            // re-seed the sample, so only signed-in users refresh from the ledger.
+            if (store.canPersist) {
+              store.reload();
+              store.fetchGainstrackText();
+              router.go(0);
+            } else {
+              router.push('/');
+            }
           }
         });
     };

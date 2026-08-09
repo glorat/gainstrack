@@ -7,7 +7,6 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
 import AssetView from '../components/AssetView.vue';
-import axios from 'axios';
 import {AssetResponse, PostingEx} from '../lib/assetdb/models';
 import {LocalDate} from '@js-joda/core';
 import {assetReport} from 'src/lib/assetReport';
@@ -21,21 +20,15 @@ const assetResponse = ref<AssetResponse>({rows: [], columns: [], totals: []});
 const loading = ref(true);
 
 async function reloadAll(): Promise<void> {
-  const localCompute = true;
   try {
-    if (localCompute) {
-      const allPostings: PostingEx[] = store.allPostingsEx;
-      const pricer = store.fxConverter;
-      const baseCcy = store.baseCcy;
-      const date = LocalDate.now();
-      const networthFilter = (p: PostingEx) => isSubAccountOf(p.account, 'Assets') || isSubAccountOf(p.account, 'Liabilities');
-      const networthPs = allPostings.filter(networthFilter);
-      const pSet = postingsToPositionSet(networthPs);
-      assetResponse.value = assetReport(pSet, pricer, baseCcy, date);
-    } else {
-      const response = await axios.post('/api/assets/networth');
-      assetResponse.value = response.data as AssetResponse;
-    }
+    const allPostings: PostingEx[] = store.allPostingsEx;
+    const pricer = store.fxConverter;
+    const baseCcy = store.baseCcy;
+    const date = LocalDate.now();
+    const networthFilter = (p: PostingEx) => isSubAccountOf(p.account, 'Assets') || isSubAccountOf(p.account, 'Liabilities');
+    const networthPs = allPostings.filter(networthFilter);
+    const pSet = postingsToPositionSet(networthPs);
+    assetResponse.value = assetReport(pSet, pricer, baseCcy, date);
   } catch (error) {
     const e: any = error;
     console.error(error);

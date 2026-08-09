@@ -72,7 +72,6 @@
 
 <script setup lang="ts">
 import { computed, ref, onMounted } from 'vue';
-import axios from 'axios';
 import {flatten, uniq, cloneDeep} from 'lodash';
 import {matCheck, matRefresh} from '@quasar/extras/material-icons';
 import {MarkdownRender} from 'src/lib/loader';
@@ -80,7 +79,8 @@ import {GlobalPricer} from 'src/lib/pricer';
 import {AccountCommandDTO} from 'src/lib/assetdb/models';
 import {useAppStore} from 'src/stores';
 import {LocalDate} from '@js-joda/core';
-import {formatNumber} from 'src/lib/utils';
+import {formatNumber, positionSetFx} from 'src/lib/utils';
+import {networthPositions} from 'src/lib/assetAllocation';
 import {toCommodityGainstrack} from 'src/lib/commandDefaulting';
 import {qnotify} from 'src/boot/notify';
 
@@ -137,9 +137,9 @@ function toGainstrack(asset: AssetRecord) {
 
 function assetSave(asset: AssetRecord) {
   const str = toGainstrack(asset);
-  axios.post('/api/post/asset', {str})
-    .then(response => {
-      qnotify.success(response.data);
+  store.upsertAssetCommand(str)
+    .then(() => {
+      qnotify.success('Saved');
       const orig = originalAssets.value.find(x => x.asset === asset.asset);
       if (orig === undefined) throw new Error('Invariant violation in assetSave');
       const idx = originalAssets.value.indexOf(orig);
@@ -150,13 +150,23 @@ function assetSave(asset: AssetRecord) {
 }
 
 async function reloadAll(): Promise<void> {
-  await axios.post('/api/assets')
-    .then(response => {
-      originalAssets.value = response.data.commands;
-      positions.value = response.data.positions;
-    })
-    .catch(error => qnotify.error(error));
+  // assetState plus each asset's networth position — both derivable from local state.
+  const assets = [...store.allState.assetState].sort((a, b) => (a.asset ?? '').localeCompare(b.asset ?? ''));
+  const date = LocalDate.now();
+  const baseCcy = store.baseCcy;
+  const fx = store.fxConverter;
+  const nw = networthPositions(store.allPostingsEx);
+
+  originalAssets.value = assets as unknown as AccountCommandDTO[];
+  positions.value = Object.fromEntries(assets.map(a => {
+    const units = nw[a.asset] ?? 0;
+    return [a.asset, {
+      units: { number: units, ccy: a.asset },
+      value: { number: positionSetFx({ [a.asset]: units }, baseCcy, date, fx), ccy: baseCcy },
+    }];
+  }));
 }
+
 
 onMounted(async () => {
   await reloadAll();

@@ -16,9 +16,12 @@
 </template>
 
 <script setup lang="ts">
-import axios from 'axios'
 import { ref, onMounted } from 'vue'
 import { qnotify } from 'src/boot/notify'
+import { useAppStore } from 'src/stores'
+import { fetchLedgerRecords } from 'src/lib/ledger/firestoreLedger'
+
+const store = useAppStore()
 
 interface HistoryEvent {
   adds?: string[][]
@@ -31,10 +34,18 @@ interface Commit {
 
 const commits = ref<Commit[]>([])
 
-onMounted(() => {
-  axios.post<Commit[]>('/api/history')
-    .then(response => { commits.value = response.data })
-    .catch((error: unknown) => qnotify.error(String(error)))
+onMounted(async () => {
+  const uid = store.ledgerUid
+  if (!uid) return // anonymous users have no persisted history
+  try {
+    const records = await fetchLedgerRecords(uid)
+    // `event` is stored as a JSON string; most recent commit first.
+    commits.value = records
+      .sort((a, b) => b.streamRevision - a.streamRevision)
+      .map(r => ({ event: JSON.parse(r.event) as HistoryEvent }))
+  } catch (error: unknown) {
+    qnotify.error(String(error))
+  }
 })
 </script>
 

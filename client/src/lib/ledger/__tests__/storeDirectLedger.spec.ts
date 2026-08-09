@@ -28,7 +28,8 @@ beforeEach(() => {
   // The store pre-loads quotes and computes balances off whatever /api/allState returns, so the
   // stub has to be a structurally valid AllState rather than a bare {}.
   vi.mocked(axios.get).mockResolvedValue({ data: {} });
-  vi.mocked(axios.post).mockResolvedValue({ data: emptyAllState });
+  vi.mocked(axios.post).mockImplementation((url: string) =>
+    Promise.resolve({ data: url === '/api/quotes/tickers' ? [] : emptyAllState }) as never);
 });
 
 describe('direct Firestore ledger read', () => {
@@ -38,7 +39,7 @@ describe('direct Firestore ledger read', () => {
 
   test('loadFromFirestore yields the same AllState as generating from text', async () => {
     const store = useAppStore();
-    store.user = { uid: 'firebase-uid-123', email: 'a@b.com' } as never;
+    store.user = { uid: 'firebase-uid-123', email: 'a@b.com', isAnonymous: false } as never;
     vi.spyOn(firestoreLedger, 'loadLedgerText').mockResolvedValue({
       text: TEXT,
       ledgerId: 'derived-id',
@@ -60,34 +61,34 @@ describe('direct Firestore ledger read', () => {
   test('refuses to read when there is no signed-in Firebase user', async () => {
     const store = useAppStore();
     store.user = undefined;
-    await expect(store.loadFromFirestore()).rejects.toThrow(/no signed-in Firebase user/);
+    await expect(store.loadFromFirestore()).rejects.toThrow(/do not persist/);
   });
 
-  test('loadAllState ignores the direct path while the flag is off', async () => {
+  test('with no signed-in user, state is empty and the server is not consulted', async () => {
     const store = useAppStore();
-    store.user = { uid: 'u' } as never;
-    store.useDirectLedger = false;
-    const direct = vi.spyOn(firestoreLedger, 'loadLedgerText');
+    store.user = undefined;
+    vi.mocked(axios.post).mockClear();
+
     await store.loadAllState();
-    expect(direct).not.toHaveBeenCalled();
-    expect(axios.post).toHaveBeenCalledWith('/api/allState');
+    expect(axios.post).not.toHaveBeenCalledWith('/api/allState');
+    expect(store.allState.txs).toEqual([]);
   });
 
-  test('a permission error falls back to /api/allState instead of locking the user out', async () => {
+  test('a permission error surfaces — it does NOT fall back to the server', async () => {
     const store = useAppStore();
-    store.user = { uid: 'u' } as never;
-    store.useDirectLedger = true;
+    store.user = { uid: 'u', isAnonymous: false } as never;
     vi.spyOn(firestoreLedger, 'loadLedgerText')
       .mockRejectedValue(new Error('Missing or insufficient permissions.'));
-    vi.spyOn(console, 'warn').mockImplementation(() => undefined);
+    vi.mocked(axios.post).mockClear();
 
-    await store.loadAllState();
-    expect(axios.post).toHaveBeenCalledWith('/api/allState');
+    // Falling back would serve the legacy Scala stream: stale data, then a forked store on save.
+    await expect(store.loadAllState()).rejects.toThrow(/insufficient permissions/);
+    expect(axios.post).not.toHaveBeenCalledWith('/api/allState');
   });
 
   test('a brand-new user with no records gets an empty ledger, not a fallback', async () => {
     const store = useAppStore();
-    store.user = { uid: 'brand-new-uid' } as never;
+    store.user = { uid: 'brand-new-uid', isAnonymous: false } as never;
     vi.spyOn(firestoreLedger, 'loadLedgerText').mockResolvedValue({
       text: toGainstrackText([]), ledgerId: 'brand-new-uid', replay: replayLedger([]),
     });
@@ -102,7 +103,7 @@ describe('direct Firestore ledger read', () => {
 
   test('a ledger that fails to generate surfaces parse errors and does not clobber state', async () => {
     const store = useAppStore();
-    store.user = { uid: 'u' } as never;
+    store.user = { uid: 'u', isAnonymous: false } as never;
     vi.spyOn(firestoreLedger, 'loadLedgerText').mockResolvedValue({
       text: '2019-01-01 open Assets:Bank USD\n2019-01-02 tfr Assets:Bank Assets:Nope 5 USD\n',
       ledgerId: 'derived-id',

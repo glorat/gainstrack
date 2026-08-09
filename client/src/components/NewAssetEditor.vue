@@ -48,7 +48,6 @@ import { LocalDate } from '@js-joda/core';
 import { formatNumber } from 'src/lib/utils';
 import { defaultedBalanceOrUnit, toGainstrack } from 'src/lib/commandDefaulting';
 import { AllStateEx } from 'src/lib/AllStateEx';
-import axios from 'axios';
 import { FieldProperty, Schema } from 'src/lib/assetdb/schema';
 import { useAppStore } from 'src/stores';
 import { qnotify } from 'src/boot/notify';
@@ -79,9 +78,9 @@ function addAsset() {
   const str = assetGainstrack.value;
   if (str) {
     adding.value = true;
-    axios.post('/api/post/asset', { str })
-      .then(response => {
-        qnotify.success(response.data);
+    store.upsertAssetCommand(str)
+      .then(() => {
+        qnotify.success('Saved');
         emit('ok', generatedAsset.value);
       })
       .catch(error => qnotify.error(error.response?.data ?? error.message))

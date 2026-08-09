@@ -37,13 +37,19 @@ import MyAside from '../pages/MyAside.vue'
 import FilterForm from '../components/FilterForm.vue'
 import { matMenu } from '@quasar/extras/material-icons'
 import { useAppStore } from 'src/stores'
+import { myAuth } from 'src/lib/assetdb/myfirebase'
 import { ref, onMounted } from 'vue'
 
 const store = useAppStore()
 const drawer = ref(false)
 
-onMounted(() => {
-  store.reload()
+onMounted(async () => {
+  // Firebase restores the session asynchronously. Loading before it settles makes a returning
+  // signed-in user render as anonymous, then flip once the listener fires.
+  const auth = myAuth()
+  await auth.authStateReady()
+  if (auth.currentUser) store.changeUser(auth.currentUser)
+  await store.reload()
 })
 </script>
 

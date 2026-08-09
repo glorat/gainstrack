@@ -1,8 +1,11 @@
 import axios, {AxiosInstance, AxiosPromise} from 'axios';
 import {AccountChange, AccountCommandDTO, ParseError, PostingEx} from 'src/lib/assetdb/models';
+import {GainstrackParser} from 'src/lib/GainstrackParser';
+import {generateAllStateSafe} from 'src/lib/gen/GainstrackGenerator';
+import {groupBy} from 'lodash';
 import {SingleFXConverter} from 'src/lib/fx';
 import {LocalDate} from 'app/node_modules/@js-joda/core';
-import {convertedPositionSet, formatNumber, isSubAccountOf, positionUnderAccount} from 'src/lib/utils';
+import {convertedPositionSet, formatNumber, isSubAccountOf, positionSetFx, positionUnderAccount, postingsToPositionSet} from 'src/lib/utils';
 import {assetReport} from 'src/lib/assetReport';
 import {AppStore} from 'src/stores';
 import {PLExplainDTO, pnlExplain, pnlExplainMonthly} from 'src/lib/PLExplain';
@@ -56,8 +59,60 @@ export interface CmdTestResponse {
 }
 
 export async function apiCmdTest(store: AppStore, props: Record<string, any>): Promise<CmdTestResponse> {
-  const stub : (store: AppStore, args:Record<string, any>) => CmdTestResponse = apiStub
-  return doGeneric(store, props, false, ax => ax.post('/api/post/test', props), stub);
+  return doGeneric(store, props, true, noRemote, apiLocalCmdTest);
+}
+
+/**
+ * Preview the effect of a candidate command, mirroring the server's `gainstrackChange`:
+ * generate the prospective ledger, attribute the new postings to the added commands, and report
+ * the per-account position/value change plus the net worth impact.
+ */
+function apiLocalCmdTest(store: AppStore, args: Record<string, any>): CmdTestResponse {
+  const empty: CmdTestResponse = { added: [], accountChanges: [], errors: [], networthChange: 0 };
+  const str = String(args?.str ?? '');
+  if (!str.trim()) return empty;
+
+  // Parse the candidate alone first, so a syntax error is reported against what was typed.
+  const parser = new GainstrackParser();
+  try {
+    parser.parseString(str);
+  } catch {
+    return { ...empty, errors: parser.parserErrors };
+  }
+  const added = parser.getCommands();
+  if (added.length === 0) return empty;
+
+  const current = store.gainstrackText;
+  const prospective = `${current.endsWith('\n') ? current : current + '\n'}${str}\n`;
+  const { state, errors } = generateAllStateSafe(prospective);
+  if (!state) return { ...empty, errors };
+
+  // Attribute postings to the newly added commands via each posting's originIndex.
+  const addedKeys = new Set(added.map(c => JSON.stringify(c)));
+  const isNew = (p: PostingEx) => addedKeys.has(JSON.stringify(state.commands[p.originIndex]));
+  const newPostings = new AllStateEx(state).allPostingsEx().filter(isNew);
+
+  const date = LocalDate.now();
+  const fx = store.fxConverter;
+  const baseCcy = state.baseCcy;
+  const byAccount = groupBy(newPostings, p => p.account);
+
+  let networthChange = 0;
+  const accountChanges: AccountChange[] = Object.keys(byAccount).sort().map(accountId => {
+    const positions = postingsToPositionSet(byAccount[accountId]);
+    const value = positionSetFx(positions, baseCcy, date, fx);
+    // Net worth is Assets + Liabilities only, matching the server's NetworthPnl filter.
+    if (isSubAccountOf(accountId, 'Assets') || isSubAccountOf(accountId, 'Liabilities')) {
+      networthChange += value;
+    }
+    return {
+      accountId,
+      unitChange: Object.entries(positions).map(([ccy, number]) => ({ number: formatNumber(number), ccy })),
+      valueChange: formatNumber(value),
+    };
+  });
+
+  return { added, accountChanges, errors: [], networthChange };
 }
 
 
@@ -154,6 +209,3 @@ function postProcessIrrDetail(report: { accountId: any; balance?: number; start?
   return detail;
 }
 
-function apiStub<RES>():RES {
-  throw new Error('No local implementation available')
-}

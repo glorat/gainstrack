@@ -33,8 +33,7 @@ function stubLedger(blocks = LEDGER) {
 
 function signedInStore() {
   const store = useAppStore();
-  store.user = { uid: 'uid-1', email: 'a@b.com' } as never;
-  store.useDirectLedger = true;
+  store.user = { uid: 'uid-1', email: 'a@b.com', isAnonymous: false } as never;
   return store;
 }
 
@@ -102,14 +101,13 @@ describe('saveSource', () => {
     expect(appendSpy).not.toHaveBeenCalled();
   });
 
-  test('falls back to the server when the direct path is off', async () => {
+  test('refuses to save with no signed-in user, rather than posting to the server', async () => {
     const store = useAppStore();
-    store.user = { uid: 'uid-1' } as never;
-    store.useDirectLedger = false;
-    vi.mocked(axios.post).mockResolvedValue({ data: { errors: [] } });
+    store.user = undefined;
+    vi.mocked(axios.post).mockClear();
 
-    await store.saveSource(TEXT);
-    expect(axios.post).toHaveBeenCalledWith('/api/post/source', expect.objectContaining({ source: TEXT }));
+    await expect(store.saveSource(TEXT)).rejects.toThrow(/do not persist/);
+    expect(axios.post).not.toHaveBeenCalledWith('/api/post/source', expect.anything());
   });
 });
 
@@ -137,14 +135,13 @@ describe('addCommand', () => {
     expect(appendSpy).not.toHaveBeenCalled();
   });
 
-  test('falls back to the server when the direct path is off', async () => {
+  test('refuses to add with no signed-in user, rather than posting to the server', async () => {
     const store = useAppStore();
-    store.user = { uid: 'uid-1' } as never;
-    store.useDirectLedger = false;
-    vi.mocked(axios.post).mockResolvedValue({ data: { errors: [], added: [{}] } });
+    store.user = undefined;
+    vi.mocked(axios.post).mockClear();
 
-    const res = await store.addCommand('2019-01-03 fund Assets:Bank 500 USD');
-    expect(axios.post).toHaveBeenCalledWith('/api/post/add', { str: '2019-01-03 fund Assets:Bank 500 USD' });
-    expect(res.added).toBe(1);
+    await expect(store.addCommand('2019-01-03 fund Assets:Bank 500 USD'))
+      .rejects.toThrow(/do not persist/);
+    expect(axios.post).not.toHaveBeenCalledWith('/api/post/add', expect.anything());
   });
 });

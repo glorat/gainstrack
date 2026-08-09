@@ -53,8 +53,9 @@ service cloud.firestore {
       allow update, delete: if false;
     }
 
-    // Legacy anonymous streams, written by the Scala server only. Anonymous users now compute
-    // state locally and never persist, so the browser has no business here.
+    // Anonymous persistence is no longer supported: anonymous users compute state entirely in
+    // the browser and never write. These legacy Scala-era streams stay unreachable from the
+    // client, and the collection is listed explicitly so that remains a deliberate choice.
     match /anons/{ledgerId}/records/{recordId} {
       allow read, write: if false;
     }

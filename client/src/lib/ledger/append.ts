@@ -82,6 +82,29 @@ export async function appendDelta(
 
 const key = (cmd: CommandBlock): string => JSON.stringify(cmd);
 
+/** The asset a `commodity` block declares, or undefined for any other command. */
+function commodityAsset(block: CommandBlock): string | undefined {
+  const line = block.find(l => /^\d{4}-\d{2}-\d{2} commodity \S+$/.test(l));
+  return line?.split(' ')[2];
+}
+
+/**
+ * Upsert commodity blocks: an asset is declared once, so re-saving it REPLACES the existing
+ * declaration rather than appending a second one (Scala `GainstrackGenerator.addAssetCommand`).
+ * Blocks for other assets, and all non-commodity commands, are left untouched.
+ */
+export function upsertCommodityBlocks(
+  current: CommandBlock[],
+  incoming: CommandBlock[],
+): CommandBlock[] {
+  const replacing = new Set(incoming.map(commodityAsset).filter(Boolean));
+  const kept = current.filter(b => {
+    const asset = commodityAsset(b);
+    return asset === undefined || !replacing.has(asset);
+  });
+  return [...kept, ...incoming];
+}
+
 /**
  * Diff current state against a desired set of command blocks (Scala `GainstrackEntity.source`).
  * Returns null when nothing changed, so callers can skip a pointless revision.
