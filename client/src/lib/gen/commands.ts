@@ -21,8 +21,11 @@ export interface GAccountOptions {
 }
 
 export interface OpenCmd { kind: 'open'; date: string; accountId: string; assetId: string; options: GAccountOptions; }
-export interface EarnCmd { kind: 'earn'; date: string; accountId: string; value: GAmount; target?: string; }
-export interface SpendCmd { kind: 'spend'; date: string; accountId: string; value: GAmount; other?: string; }
+// `tag` is the income/expense tag exactly as written ("Salary", or "Income:Salary" if the user
+// qualified it). Scala keeps it as `incomeTag`/`expenseTag` and narrates transactions with it,
+// so it is not recoverable from the resolved `accountId`.
+export interface EarnCmd { kind: 'earn'; date: string; accountId: string; value: GAmount; target?: string; tag: string; }
+export interface SpendCmd { kind: 'spend'; date: string; accountId: string; value: GAmount; other?: string; tag: string; }
 export interface TfrCmd { kind: 'tfr'; date: string; source: string; dest: string; sourceValue: GAmount; targetValue: GAmount; }
 export interface TradeCmd { kind: 'trade'; date: string; accountId: string; security: GAmount; price: GAmount; commission: GAmount; }
 export interface AdjCmd { kind: 'adj'; date: string; accountId: string; balance: GAmount; adjAccount: string; }
@@ -51,9 +54,9 @@ function toGCommand(p: Parsed): GCommand {
     case 'open':
       return { kind, date: d.date, accountId: d.accountId, assetId: d.balance!.ccy, options: d.options as unknown as GAccountOptions };
     case 'earn':
-      return { kind, date: d.date, accountId: d.accountId, value: amt(d.change!), target: d.otherAccount };
+      return { kind, date: d.date, accountId: d.accountId, value: amt(d.change!), target: d.otherAccount, tag: p.tag ?? d.accountId };
     case 'spend':
-      return { kind, date: d.date, accountId: d.accountId, value: amt(d.change!), other: d.otherAccount };
+      return { kind, date: d.date, accountId: d.accountId, value: amt(d.change!), other: d.otherAccount, tag: p.tag ?? d.accountId };
     case 'tfr':
       return { kind, date: d.date, source: d.accountId, dest: d.otherAccount!, sourceValue: amt(d.change!), targetValue: amt(p.tfrTarget!) };
     case 'trade':

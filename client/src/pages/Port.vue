@@ -2,11 +2,11 @@
     <my-page padding>
         Your data can be exported and saved to your local computer in Gainstrack format - a simple text based format
         <ul>
-            <li><a href="/api/export/gainstrack">Export Gainstrack...</a></li>
+            <li><a href="#" @click.prevent="exportGainstrack">Export Gainstrack...</a></li>
         </ul>
         Your data can also be exported to Beancount format - a popular open source text based accounting software package
         <ul>
-            <li><a href="/api/export/beancount">Export Beancount...</a></li>
+            <li><a href="#" @click.prevent="exportBeancount">Export Beancount...</a></li>
         </ul>
 
         If you have exported your Gainstrack file, you can re-upload and apply it here
@@ -29,10 +29,32 @@ import {matCloudUpload} from '@quasar/extras/material-icons';
 import {useAppStore} from 'src/stores';
 import {useRouter} from 'vue-router';
 import {qnotify} from 'src/boot/notify';
+import {GainstrackParser} from 'src/lib/GainstrackParser';
+import {toGainstrackFile} from 'src/lib/export/gainstrackExport';
+import {toBeancountFile} from 'src/lib/export/beancountExport';
+import {downloadText} from 'src/lib/export/download';
 
 const store = useAppStore();
 const router = useRouter();
 const file = ref<File | undefined>(undefined);
+
+/**
+ * Both exports are generated in the browser from the ledger already in memory.
+ *
+ * They used to be <a href="/api/export/*"> links into Scala. Those broke once the ledger moved
+ * to Firestore: a plain navigation carries no Authorization header, so the server saw an
+ * anonymous request and served the starter sample — a plausible-looking file containing
+ * someone else's accounts. Generating locally removes the whole class of problem.
+ */
+async function exportGainstrack() {
+  const parser = new GainstrackParser();
+  parser.parseString(await store.fetchGainstrackText());
+  downloadText('mydata.gainstrack', toGainstrackFile(parser.getTypedCommands()));
+}
+
+async function exportBeancount() {
+  downloadText('mydata.beancount', toBeancountFile(await store.fetchGainstrackText()));
+}
 
 function onFileInput() {
   if (file.value) {

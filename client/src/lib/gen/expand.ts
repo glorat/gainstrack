@@ -42,7 +42,9 @@ export function unitToTx(cmd: UnitCmd, oldBalance: GAmount, lookup: AccountLooku
   } else {
     adjAccount = incomeAccountId;
   }
-  const tfr = makeTransfer(adjAccount, cmd.accountId, cmd.date, cmd.price.scale(newUnits.number), newUnits);
+  // Scala `UnitTrustBalance.description` — the statement as read, not the derived transfer.
+  const description = `Unit statement: ${cmd.security.toString()} @${cmd.price.toString()}`;
+  const tfr = makeTransfer(adjAccount, cmd.accountId, cmd.date, cmd.price.scale(newUnits.number), newUnits, description);
   return transferToTransaction(transferToTransfers(tfr, lookup)[0]);
 }
 
@@ -53,7 +55,10 @@ export function adjustmentTransfers(
 ): GTransfer[] {
   const newUnits = balance.sub(oldValue);
   if (newUnits.isZero) return [];
-  const tfr = makeTransfer(adjAccount, accountId, minusDay(adjDate), newUnits, newUnits);
+  // Scala: `s"Adjustment: ${oldValue} -> ${balance}"` — states what the balance was corrected
+  // FROM, which the generic "Transfer ..." wording cannot express.
+  const description = `Adjustment: ${oldValue.toString()} -> ${balance.toString()}`;
+  const tfr = makeTransfer(adjAccount, accountId, minusDay(adjDate), newUnits, newUnits, description);
   return transferToTransfers(tfr, lookup);
 }
 
