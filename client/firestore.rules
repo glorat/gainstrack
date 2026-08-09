@@ -1,0 +1,32 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function getRole(role) {
+      let userRole = get(/databases/$(database)/documents/userRoles/$(request.auth.uid));
+      return userRole!=null && userRole.data.roles[role]
+    }
+
+    match /assets/{document=**} {
+    	allow read;
+      allow write: if request.auth != null; // TODO: restrict when ready
+    }
+    match /quoteSources/{document=**} {
+    	allow read;
+      allow write: if isSignedIn() && getRole('admin')
+    }
+
+    match /quoteSourceHistory/{document=**} {
+      allow read;
+      allow create: if isSignedIn() && request.auth.uid == request.resource.data.uid;
+      allow write: if isSignedIn() && getRole('admin')
+    }
+
+    match /userRoles/{document=**} {
+      allow read;
+    }
+  }
+}
