@@ -1,0 +1,54 @@
+option "operating_currency" "HKD"
+1900-01-01 commodity BRK-B
+  name: BRK-B Fund
+  tags: equity,global
+  ticker: BRK-B.X
+2010-02-06 open Equity:Opening HKD
+  multiAsset: true
+2010-03-16 open Assets:Bank:B0 HKD
+  fundingAccount: Equity:Opening
+2010-04-09 open Assets:Bank:B1 HKD
+  fundingAccount: Equity:Opening
+2010-05-05 open Assets:Broker:B0 HKD
+  multiAsset: true
+  automaticReinvestment: true
+  fundingAccount: Assets:Bank:B0
+2010-05-16 open Income:Salary HKD
+  fundingAccount: Assets:Bank:B0
+2010-06-01 open Income:Interest HKD
+  fundingAccount: Assets:Bank:B1
+2010-06-25 open Expenses:Food HKD
+  fundingAccount: Assets:Bank:B1
+2010-07-07 open Expenses:Rent HKD
+  fundingAccount: Assets:Bank:B1
+2010-08-06 open Expenses:Travel HKD
+  fundingAccount: Assets:Bank:B1
+2010-08-22 fund Assets:Broker:B0 Equity:Opening 17724.54 HKD
+2010-09-05 tfr Equity:Opening Expenses:Travel 2933.9085 HKD
+2010-09-11 trade Assets:Broker:B0 66 IVV @334 HKD
+2010-10-06 trade Assets:Broker:B0 -17 IVV @129.4281 HKD
+2010-11-11 yield Assets:Broker:B0 IVV 124.59 HKD
+2010-11-19 fund Assets:Bank:B1 Expenses:Travel 16252.886 HKD
+2010-12-15 yield Assets:Bank:B0 2.95 HKD
+2011-01-14 price IVV 208.37 USD
+2011-01-30 bal Assets:Bank:B1 11137 HKD Equity:Opening
+2011-02-11 unit Assets:Broker:B0 421 FTSE @172.0426 HKD
+2011-03-01 trade Assets:Broker:B0 108 IVV @92 HKD
+2011-03-09 earn Salary 6362 HKD
+2011-03-24 trade Assets:Broker:B0 -19 IVV @138 HKD
+2011-04-07 tfr Assets:Bank:B0 Income:Salary 1244.90 HKD
+2011-04-20 yield Assets:Broker:B0 FTSE 73.9089 HKD
+2011-05-03 fund Assets:Bank:B1 Income:Interest 15857 HKD
+2011-06-10 yield Assets:Bank:B0 87.858 HKD extraTokenHere
+2011-07-04 bal Assets:Bank:B0 24287 HKD Equity:Opening
+2011-08-02 trade Assets:Broker:B0 -4 FTSE @371 HKD C2.4299 HKD
+2011-08-05 fund Assets:Bank:B0 11273.6918 HKD
+2011-09-13 bal Assets:Bank:B1 15862.21 HKD Equity:Opening
+2011-09-24 adj Assets:Bank:B0 1854.7107 HKD Equity:Opening
+2011-10-25 adj Assets:Bank:B0 7437.71 HKD Equity:Opening
+2011-12-04 unit Assets:Broker:B0 29 BRK-B @130.2253 HKD
+2011-12-18 tfr Assets:Broker:B0 Income:Salary 4316 HKD
+2012-01-12 price BRK-B 255 GBP
+2012-01-22 fund Assets:Bank:B1 8321 HKD
+2012-01-29 spend Rent Assets:Bank:B0 110 HKD
+2012-02-01 tfr Equity:Opening Assets:Broker:B0 3746 HKD

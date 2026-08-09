@@ -1,0 +1,48 @@
+option "operating_currency" "EUR"
+2010-01-22 open Equity:Opening EUR
+  multiAsset: true
+2010-02-06 open Assets:Bank:B0 EUR
+  fundingAccount: Equity:Opening
+2010-02-20 open Assets:Bank:B1 GBP
+  fundingAccount: Equity:Opening
+2010-03-01 open Assets:Broker:B0 HKD
+  multiAsset: true
+  fundingAccount: Assets:Bank:B0
+2010-03-06 open Assets:Broker:B1 EUR
+  multiAsset: true
+  fundingAccount: Assets:Bank:B1
+2010-03-27 open Income:Salary EUR
+  fundingAccount: Assets:Bank:B1
+2010-04-25 open Income:Interest EUR
+  fundingAccount: Assets:Bank:B0
+2010-05-19 open Expenses:Food EUR
+  fundingAccount: Assets:Bank:B0
+2010-06-20 open Expenses:Rent EUR
+  fundingAccount: Assets:Bank:B0
+2010-07-03 open Expenses:Travel EUR
+  fundingAccount: Assets:Bank:B1
+2010-07-10 open Liabilities:Card EUR
+  fundingAccount: Assets:Bank:B1
+2010-07-31 unit Assets:Broker:B1 34 IVV @177 EUR
+2010-09-05 earn Income:Salary 915.49 EUR
+2010-09-25 spend Food 189.41 EUR
+2010-10-12 fund Assets:Broker:B0 6232 HKD
+2010-10-18 adj Assets:Bank:B0 7300 EUR Equity:Opening
+2010-11-02 tfr Assets:Bank:B0 Expenses:Travel 2714 EUR
+2010-11-20 tfr Assets:Broker:B0 Income:Salary 249.02 HKD
+2010-12-13 yield Assets:Bank:B1 150.9436 GBP
+2010-12-28 unit Assets:Broker:B0 390 BRK-B @196.5074 HKD
+2011-01-20 yield Assets:Bank:B0 87.096 EUR
+2011-02-08 unit Assets:Broker:B1 254 BRK-B @112.386 EUR
+2011-03-14 spend Expenses:Travel 353 EUR
+2011-03-25 spend Rent Assets:Bank:B1 759 EUR
+2011-04-16 bal Assets:Bank:B1 25190.40 GBP Equity:Opening
+2011-05-21 trade Assets:Broker:B1 50 VCSH @24 EUR
+notanumber-06-11 spend Rent Assets:Bank:B1 831.6961 EUR
+2011-07-18 price VWRL 233.779 HKD
+2011-07-31 unit Assets:Broker:B1 498 FTSE @229.868 EUR
+2011-08-24 fund Assets:Broker:B0 16723.92 HKD
+2011-09-07 unit Assets:Broker:B0 346 VWRL @296.453 HKD
+2011-09-20 spend Expenses:Travel Assets:Bank:B1 671.0543 EUR
+2011-10-25 yield Assets:Bank:B1 76.874 GBP
+2011-11-05 spend Expenses:Food 471.16 EUR

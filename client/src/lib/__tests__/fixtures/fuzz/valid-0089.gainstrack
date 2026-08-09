@@ -1,0 +1,28 @@
+option "operating_currency" "SGD"
+1900-01-01 commodity VCSH
+  name: VCSH Fund
+  tags: equity,global
+  ticker: VCSH.X
+2010-02-01 open Equity:Opening SGD
+  multiAsset: true
+2010-03-10 open Assets:Bank:B0 SGD
+  fundingAccount: Equity:Opening
+2010-03-30 open Assets:Broker:B0 SGD
+  multiAsset: true
+  fundingAccount: Assets:Bank:B0
+2010-04-05 open Assets:Broker:B1 HKD
+  multiAsset: true
+  automaticReinvestment: true
+  fundingAccount: Assets:Bank:B0
+2010-04-09 open Income:Bonus SGD
+  fundingAccount: Assets:Bank:B0
+2010-04-13 open Expenses:Rent SGD
+  fundingAccount: Assets:Bank:B0
+2010-05-16 open Expenses:Travel SGD
+  fundingAccount: Assets:Bank:B0
+2010-06-08 spend Expenses:Rent 16 SGD
+2010-06-27 tfr Equity:Opening Income:Bonus 555 SGD
+2010-08-02 unit Assets:Broker:B0 83 VWRL @182.688 SGD
+2010-09-06 adj Assets:Bank:B0 26219 SGD Equity:Opening
+2010-10-07 earn Income:Bonus 1891.70 SGD
+2010-11-01 earn Income:Bonus 3525.0984 SGD

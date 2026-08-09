@@ -1,0 +1,48 @@
+option "operating_currency" "EUR"
+1900-01-01 commodity BRK-B
+  name: BRK-B Fund
+  tags: equity,global
+  ticker: BRK-B.X
+2010-01-22 open Equity:Opening EUR
+  multiAsset: true
+2010-02-13 open Assets:Bank:B0 EUR
+  fundingAccount: Equity:Opening
+2010-02-25 open Assets:Bank:B1 EUR
+  fundingAccount: Equity:Opening
+2010-03-25 open Assets:Bank:B2 EUR
+  fundingAccount: Equity:Opening
+2010-04-03 open Assets:Broker:B0 EUR
+  multiAsset: true
+  fundingAccount: Assets:Bank:B0
+2010-05-10 open Assets:Broker:B1 SGD
+  multiAsset: true
+  automaticReinvestment: true
+  fundingAccount: Assets:Bank:B0
+2010-05-21 open Income:Salary EUR
+  fundingAccount: Assets:Bank:B0
+2010-06-07 open Income:Bonus EUR
+  fundingAccount: Assets:Bank:B1
+2010-06-25 open Income:Interest EUR
+  fundingAccount: Assets:Bank:B0
+2010-08-03 open Expenses:Food EUR
+  fundingAccount: Assets:Bank:B0
+2010-09-09 open Expenses:Rent EUR
+  fundingAccount: Assets:Bank:B1
+2010-10-01 price VWRL 286.12 HKD
+2010-10-14 trade Assets:Broker:B0 191 VTI @273 EUR
+2010-10-27 unit Assets:Broker:B1 247 FTSE @292.149 SGD
+2010-11-09 bal Assets:Bank:B0 29476.9969 EUR Equity:Opening
+2010-11-29 bal Assets:Bank:B0 8950.69 EUR Equity:Opening
+2010-12-26 yield Assets:Broker:B1 FTSE 112.8229 SGD
+2011-01-26 bal Assets:Bank:B1 23199.60 EUR Equity:Opening
+2011-02-04 bal Assets:Bank:B0 15933 EUR Equity:Opening
+2011-03-12 spend Food 148 EUR
+2011-04-20 yield Assets:Bank:B1 169.253 EUR
+2011-05-12 yield Assets:Bank:B2 30 EUR
+2011-05-25 price BRK-B 443.1182 EUR
+2011-06-04 price BRK-B 319.6585 HKD
+2011-07-04 unit Assets:Broker:B0 142 VCSH @10.33 EUR
+2011-07-11 spend Food 511 EUR
+2011-08-09 adj Assets:Bank:B2 5894 EUR Equity:Opening
+2011-08-27 spend Expenses:Food Assets:Bank:B0 415.76 EUR
+2011-09-20 unit Assets:Broker:B1 139 BRK-B @194.55 SGD

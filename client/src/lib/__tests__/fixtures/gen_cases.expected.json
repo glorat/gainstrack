@@ -46,4 +46,25 @@
 }, {
   "id" : "err-yield-nonexistent-account",
   "status" : "error"
+}, {
+  "id" : "err-yield-multiasset-into-itself",
+  "status" : "error"
+}, {
+  "id" : "err-yield-nonmultiasset-names-an-asset",
+  "status" : "error"
+}, {
+  "id" : "err-yield-asset-never-held",
+  "status" : "error"
+}, {
+  "id" : "ok-yield-multiasset-names-a-held-asset",
+  "status" : "ok"
+}, {
+  "id" : "ok-yield-nonmultiasset-plain",
+  "status" : "ok"
+}, {
+  "id" : "err-fund-zero-amount",
+  "status" : "error"
+}, {
+  "id" : "err-tfr-zero-after-parse",
+  "status" : "error"
 } ]

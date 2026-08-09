@@ -1,0 +1,47 @@
+option "operating_currency" "EUR"
+2010-01-06 open Equity:Opening EUR
+  multiAsset: true
+2010-02-06 open Assets:Bank:B0 EUR
+  fundingAccount: Equity:Opening
+2010-03-09 open Assets:Bank:B1 EUR
+  fundingAccount: Equity:Opening
+2010-03-15 open Assets:Broker:B0 GBP
+  multiAsset: true
+  automaticReinvestment: true
+  fundingAccount: Assets:Bank:B0
+2010-04-22 open Income:Salary EUR
+  fundingAccount: Assets:Bank:B1
+2010-04-30 open Income:Bonus EUR
+  fundingAccount: Assets:Bank:B0
+2010-06-07 open Income:Interest EUR
+  fundingAccount: Assets:Bank:B0
+2010-07-01 open Expenses:Food EUR
+  fundingAccount: Assets:Bank:B0
+2010-07-16 open Expenses:Rent EUR
+  fundingAccount: Assets:Bank:B0
+2010-08-23 open Expenses:Travel EUR
+  fundingAccount: Assets:Bank:B1
+2010-09-16 open Liabilities:Card EUR
+  fundingAccount: Assets:Bank:B1
+2010-10-16 adj Assets:Bank:B0 27242.019 EUR Equity:Opening
+2010-11-20 spend Expenses:Travel Assets:Bank:B1 277 EUR
+2010-12-08 tfr Equity:Opening Expenses:Rent 630.505 EUR
+2010-12-09 spend Food 787.4748 EUR
+2011-01-09 unit Assets:Broker:B0 212 IVV @206.71 GBP
+2011-02-10 tfr Assets:Bank:B1 Income:Salary 1756 EUR
+2011-02-12 price IVV 393.5387 HKD
+2011-03-16 unit Assets:Broker:B0 442 VCSH @251 GBP
+2011-04-15 unit Assets:Broker:B0 25 BRK-B @313.76 GBP
+2011-05-20 adj Assets:Bank:B1 29354 EUR Equity:Opening
+2011-06-28 adj Assets:Bank:B1 2236 EUR Equity:Opening
+2011-07-11 price VTI 484 SGD
+2011-07-25 price BRK-B 18.24 HKD
+2011-08-24 fund Assets:Broker:B0 16541.0711 GBP
+2011-09-04 earn Interest Assets:Bank:B0 5016 EUR
+2011-10-02 spend Expenses:Food Assets:Bank:B0 341.427 EUR
+2011-10-04 trade Assets:Broker:B0 48 VWRL @246.1484 GBP C17.28 GBP
+2011-10-14 trade Assets:Broker:B0 -2 IVV @122.6010 GBP
+2011-11-15 spend Rent 70 EUR
+2011-12-06 adj Assets:Bank:B1 15001.136 EUR Equity:Opening
+2012-01-12 earn Bonus 5228 EUR
+2012-02-01 fund Assets:Broker:B0 16487.970 GBP

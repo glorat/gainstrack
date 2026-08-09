@@ -36,9 +36,21 @@ function boolStr(name: string, value: unknown): CommandBlock {
   return value === true ? [`  ${name}:true`] : [];
 }
 
-/** `acctStr` / `stringStr` — emitted only when set and non-empty, with a space after the colon. */
+/** `stringStr` — emitted only when set AND non-empty, with a space after the colon. */
 function stringStr(name: string, value: unknown): CommandBlock {
   return typeof value === 'string' && value !== '' ? [`  ${name}: ${value}`] : [];
+}
+
+/**
+ * `acctStr` — the account-valued options, which are `Option[AccountId]` in Scala and emit
+ * whenever the Option is DEFINED, empty string included. `stringStr` would drop `Some("")`.
+ *
+ * The difference is reachable: `fundingAccount:` with nothing after the colon parses to
+ * `Some("")`. Dropping it on the way out would silently rewrite the user's ledger, and since the
+ * Firestore stream stores these strings, that rewrite is what gets persisted.
+ */
+function acctStr(name: string, value: unknown): CommandBlock {
+  return typeof value === 'string' ? [`  ${name}: ${value}`] : [];
 }
 
 /** `setStr` — a Set, so blanks are dropped and the values are SORTED, not source order. */
@@ -51,10 +63,10 @@ function setStr(name: string, values: unknown): CommandBlock {
 /** AccountOptions.toGainstrack — field order is significant and matches the Scala source. */
 function accountOptionLines(options: Record<string, unknown>): CommandBlock {
   return [
-    ...stringStr('expenseAccount', options.expenseAccount),
+    ...acctStr('expenseAccount', options.expenseAccount),
     ...boolStr('tradingAccount', options.tradingAccount),
-    ...stringStr('incomeAccount', options.incomeAccount),
-    ...stringStr('fundingAccount', options.fundingAccount),
+    ...acctStr('incomeAccount', options.incomeAccount),
+    ...acctStr('fundingAccount', options.fundingAccount),
     ...boolStr('multiAsset', options.multiAsset),
     ...boolStr('automaticReinvestment', options.automaticReinvestment),
     ...boolStr('hidden', options.hidden),

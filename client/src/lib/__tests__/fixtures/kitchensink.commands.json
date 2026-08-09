@@ -1,0 +1,379 @@
+[ {
+  "accountId" : "",
+  "date" : "-999999999-01-01",
+  "options" : {
+    "operatingCurrency" : "GBP",
+    "comments" : [ "Kitchen-sink ledger: every parseable command kind and every settable account option, in one", "place, so the golden parity tests cover the whole surface rather than whatever the organically", "grown fixtures happen to contain.", "", "Deliberately NOT here:", "  - tradingAccount / hidden / placeholder: `AccountOptions.withOption` rejects them, so they", "    cannot be set from text at all (see parser_cases.txt).", "  - close: TypeScript-only, so Scala cannot be an oracle for it (see closing.spec.ts)." ]
+  },
+  "commandType" : "",
+  "description" : "global configuration"
+}, {
+  "accountId" : "",
+  "date" : "1900-01-01",
+  "asset" : "VWRL",
+  "options" : {
+    "assetClass" : "equity",
+    "name" : "Vanguard FTSE All-World",
+    "ticker" : "VWRL.LON",
+    "tags" : [ "equity", "global" ]
+  },
+  "commandType" : "commodity",
+  "description" : "VWRL"
+}, {
+  "accountId" : "",
+  "date" : "1900-01-01",
+  "asset" : "BARE",
+  "options" : {
+    "name" : "",
+    "ticker" : "",
+    "tags" : [ ]
+  },
+  "commandType" : "commodity",
+  "description" : "BARE"
+}, {
+  "accountId" : "Equity:Opening",
+  "date" : "2000-01-01",
+  "balance" : {
+    "number" : 0,
+    "ccy" : "GBP"
+  },
+  "options" : {
+    "tradingAccount" : false,
+    "description" : "",
+    "multiAsset" : true,
+    "automaticReinvestment" : false,
+    "generatedAccount" : false,
+    "hidden" : false,
+    "placeholder" : false
+  },
+  "commandType" : "open",
+  "description" : "Account opened"
+}, {
+  "accountId" : "Assets:Bank:Current",
+  "date" : "2000-01-01",
+  "balance" : {
+    "number" : 0,
+    "ccy" : "GBP"
+  },
+  "options" : {
+    "tradingAccount" : false,
+    "fundingAccount" : "Equity:Opening",
+    "description" : "",
+    "multiAsset" : false,
+    "automaticReinvestment" : false,
+    "generatedAccount" : false,
+    "hidden" : false,
+    "placeholder" : false
+  },
+  "commandType" : "open",
+  "description" : "Account opened"
+}, {
+  "accountId" : "Assets:Bank:Savings",
+  "date" : "2000-01-01",
+  "balance" : {
+    "number" : 0,
+    "ccy" : "USD"
+  },
+  "options" : {
+    "tradingAccount" : false,
+    "fundingAccount" : "Equity:Opening",
+    "description" : "",
+    "multiAsset" : false,
+    "automaticReinvestment" : false,
+    "generatedAccount" : false,
+    "hidden" : false,
+    "placeholder" : false
+  },
+  "commandType" : "open",
+  "description" : "Account opened"
+}, {
+  "accountId" : "Assets:Broker",
+  "date" : "2000-01-01",
+  "balance" : {
+    "number" : 0,
+    "ccy" : "GBP"
+  },
+  "options" : {
+    "expenseAccount" : "Expenses:Broker",
+    "tradingAccount" : false,
+    "incomeAccount" : "Income:Broker",
+    "fundingAccount" : "Assets:Bank:Current",
+    "description" : "",
+    "multiAsset" : true,
+    "automaticReinvestment" : true,
+    "generatedAccount" : false,
+    "hidden" : false,
+    "placeholder" : false
+  },
+  "commandType" : "open",
+  "description" : "Account opened"
+}, {
+  "accountId" : "Liabilities:CreditCard",
+  "date" : "2000-01-01",
+  "balance" : {
+    "number" : 0,
+    "ccy" : "GBP"
+  },
+  "options" : {
+    "tradingAccount" : false,
+    "fundingAccount" : "Assets:Bank:Current",
+    "description" : "",
+    "multiAsset" : false,
+    "automaticReinvestment" : false,
+    "generatedAccount" : false,
+    "hidden" : false,
+    "placeholder" : false
+  },
+  "commandType" : "open",
+  "description" : "Account opened"
+}, {
+  "accountId" : "Income:Salary",
+  "date" : "2000-01-01",
+  "balance" : {
+    "number" : 0,
+    "ccy" : "GBP"
+  },
+  "options" : {
+    "tradingAccount" : false,
+    "fundingAccount" : "Assets:Bank:Current",
+    "description" : "",
+    "multiAsset" : false,
+    "automaticReinvestment" : false,
+    "generatedAccount" : false,
+    "hidden" : false,
+    "placeholder" : false
+  },
+  "commandType" : "open",
+  "description" : "Account opened"
+}, {
+  "accountId" : "Expenses:Food",
+  "date" : "2000-01-01",
+  "balance" : {
+    "number" : 0,
+    "ccy" : "GBP"
+  },
+  "options" : {
+    "tradingAccount" : false,
+    "fundingAccount" : "Assets:Bank:Current",
+    "description" : "",
+    "multiAsset" : false,
+    "automaticReinvestment" : false,
+    "generatedAccount" : false,
+    "hidden" : false,
+    "placeholder" : false
+  },
+  "commandType" : "open",
+  "description" : "Account opened"
+}, {
+  "accountId" : "Assets:Bank:Current",
+  "date" : "2000-01-02",
+  "change" : {
+    "number" : 10000,
+    "ccy" : "GBP"
+  },
+  "commandType" : "fund",
+  "description" : "Fund 10000 GBP"
+}, {
+  "accountId" : "Assets:Bank:Savings",
+  "date" : "2000-01-02",
+  "change" : {
+    "number" : 5000.00,
+    "ccy" : "USD"
+  },
+  "otherAccount" : "Equity:Opening",
+  "commandType" : "fund",
+  "description" : "Fund 5000.00 USD"
+}, {
+  "accountId" : "Income:Salary",
+  "date" : "2000-02-01",
+  "change" : {
+    "number" : 2500.00,
+    "ccy" : "GBP"
+  },
+  "commandType" : "earn",
+  "description" : "Earn 2500.00 GBP Salary"
+}, {
+  "accountId" : "Income:Salary",
+  "date" : "2000-02-02",
+  "change" : {
+    "number" : 2500.00,
+    "ccy" : "GBP"
+  },
+  "otherAccount" : "Assets:Bank:Current",
+  "commandType" : "earn",
+  "description" : "Earn 2500.00 GBP Income:Salary"
+}, {
+  "accountId" : "Expenses:Food",
+  "date" : "2000-02-03",
+  "change" : {
+    "number" : 42.50,
+    "ccy" : "GBP"
+  },
+  "commandType" : "spend",
+  "description" : "Spend 42.50 GBP Food"
+}, {
+  "accountId" : "Expenses:Food",
+  "date" : "2000-02-04",
+  "change" : {
+    "number" : 17.25,
+    "ccy" : "GBP"
+  },
+  "otherAccount" : "Assets:Bank:Current",
+  "commandType" : "spend",
+  "description" : "Spend 17.25 GBP Expenses:Food"
+}, {
+  "accountId" : "Assets:Bank:Current",
+  "date" : "2000-03-01",
+  "change" : {
+    "number" : 3000,
+    "ccy" : "GBP"
+  },
+  "price" : {
+    "number" : 1,
+    "ccy" : "GBP"
+  },
+  "otherAccount" : "Assets:Broker",
+  "commandType" : "tfr",
+  "description" : "Transfer 3000 GBP Assets:Bank:Current -> Assets:Broker"
+}, {
+  "accountId" : "Assets:Bank:Savings",
+  "date" : "2000-03-02",
+  "change" : {
+    "number" : 1000,
+    "ccy" : "USD"
+  },
+  "price" : {
+    "number" : 0.7805,
+    "ccy" : "USD"
+  },
+  "otherAccount" : "Assets:Broker",
+  "commandType" : "tfr",
+  "description" : "Transfer 1000 USD Assets:Bank:Savings -> Assets:Broker@1.281230"
+}, {
+  "accountId" : "Assets:Bank:Current",
+  "date" : "2000-03-03",
+  "change" : {
+    "number" : 250,
+    "ccy" : "GBP"
+  },
+  "price" : {
+    "number" : 1,
+    "ccy" : "GBP"
+  },
+  "otherAccount" : "Liabilities:CreditCard",
+  "commandType" : "tfr",
+  "description" : "Transfer 250 GBP Assets:Bank:Current -> Liabilities:CreditCard"
+}, {
+  "accountId" : "Assets:Broker",
+  "date" : "2000-04-01",
+  "change" : {
+    "number" : 100,
+    "ccy" : "VWRL"
+  },
+  "price" : {
+    "number" : 25.00,
+    "ccy" : "GBP"
+  },
+  "commission" : {
+    "number" : 0,
+    "ccy" : "GBP"
+  },
+  "commandType" : "trade",
+  "description" : "BUY 100 VWRL @25.00 GBP"
+}, {
+  "accountId" : "Assets:Broker",
+  "date" : "2000-04-02",
+  "change" : {
+    "number" : 50,
+    "ccy" : "VWRL"
+  },
+  "price" : {
+    "number" : 26.50,
+    "ccy" : "GBP"
+  },
+  "commission" : {
+    "number" : 9.95,
+    "ccy" : "GBP"
+  },
+  "commandType" : "trade",
+  "description" : "BUY 50 VWRL @26.50 GBP"
+}, {
+  "accountId" : "Assets:Broker",
+  "date" : "2000-05-01",
+  "change" : {
+    "number" : -30,
+    "ccy" : "VWRL"
+  },
+  "price" : {
+    "number" : 28.00,
+    "ccy" : "GBP"
+  },
+  "commission" : {
+    "number" : 9.95,
+    "ccy" : "GBP"
+  },
+  "commandType" : "trade",
+  "description" : "SELL -30 VWRL @28.00 GBP"
+}, {
+  "accountId" : "Assets:Bank:Current",
+  "date" : "2000-06-01",
+  "change" : {
+    "number" : 12.00,
+    "ccy" : "GBP"
+  },
+  "commandType" : "yield",
+  "description" : "Current yield 12.00 GBP"
+}, {
+  "accountId" : "Assets:Broker",
+  "date" : "2000-06-02",
+  "asset" : "VWRL",
+  "change" : {
+    "number" : 31.20,
+    "ccy" : "GBP"
+  },
+  "commandType" : "yield",
+  "description" : "VWRL yield 31.20 GBP"
+}, {
+  "accountId" : "Assets:Bank:Savings",
+  "date" : "2000-07-01",
+  "balance" : {
+    "number" : 4100.00,
+    "ccy" : "USD"
+  },
+  "otherAccount" : "Equity:Opening",
+  "commandType" : "adj",
+  "description" : "Account balance 4100.00 USD"
+}, {
+  "accountId" : "",
+  "date" : "2000-07-01",
+  "asset" : "VWRL",
+  "price" : {
+    "number" : 27.7500,
+    "ccy" : "GBP"
+  },
+  "commandType" : "price",
+  "description" : "GBP/VWRL = 27.7500 GBP"
+}, {
+  "accountId" : "Assets:Broker",
+  "date" : "2000-07-02",
+  "balance" : {
+    "number" : 120,
+    "ccy" : "VWRL"
+  },
+  "price" : {
+    "number" : 27.75,
+    "ccy" : "GBP"
+  },
+  "commandType" : "unit",
+  "description" : "Unit statement: 120 VWRL @27.75 GBP"
+}, {
+  "accountId" : "Assets:Bank:Savings",
+  "date" : "2000-07-03",
+  "balance" : {
+    "number" : 4100.00,
+    "ccy" : "USD"
+  },
+  "otherAccount" : "Equity:Opening",
+  "commandType" : "bal",
+  "description" : "Account balance 4100.00 USD"
+} ]

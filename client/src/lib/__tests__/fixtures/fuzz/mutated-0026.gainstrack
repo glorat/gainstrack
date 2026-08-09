@@ -1,0 +1,59 @@
+option "operating_currency" "HKD"
+2010-01-22 open Equity:Opening HKD
+  multiAsset: true
+2010-03-03 open Assets:Bank:B0 HKD
+  fundingAccount: Equity:Opening
+2010-04-07 open Assets:Broker:B0 GBP
+  multiAsset: true
+  automaticReinvestment: true
+  fundingAccount: Assets:Bank:B0
+2010-05-03 open Assets:Broker:B1 USD
+  multiAsset: true
+  fundingAccount: Assets:Bank:B0
+2010-05-27 open Income:Salary HKD
+  fundingAccount: Assets:Bank:B0
+2010-07-06 open Income:Bonus HKD
+  fundingAccount: Assets:Bank:B0
+2010-08-03 open Income:Interest HKD
+  fundingAccount: Assets:Bank:B0
+2010-08-07 open Expenses:Rent HKD
+  fundingAccount: Assets:Bank:B0
+2010-08-10 open Expenses:Travel HKD
+  fundingAccount: Assets:Bank:B0
+2010-09-05 open Liabilities:Card HKD
+  fundingAccount: Assets:Bank:B0
+2010-09-17 trade Assets:Broker:B0 168 FTSE @383.86 GBP C8.9921 GBP
+2010-09-27 adj Assets:Bank:B0 15180 HKD Equity:Opening
+2010-10-28 fund Assets:Broker:B1 1087
+2010-11-26 spend Travel Assets:Bank:B0 688.74 HKD
+2010-12-13 trade Assets:Broker:B0 136 BRK-B @425.471 GBP
+2011-01-01 unit Assets:Broker:B1 371 VCSH @60.6308 USD
+2011-01-17 adj Assets:Bank:B0 26105.48 HKD Equity:Opening
+2011-02-11 spend Rent 99.7825 HKD
+2011-03-09 spend Travel 537 HKD
+2011-03-10 bal Assets:Bank:B0 29477.3395 HKD Equity:Opening
+2011-03-20 tfr Assets:Broker:B0 Income:Salary 802.7635 GBP
+2011-04-28 unit Assets:Broker:B0 448 FTSE @159 GBP
+2011-05-17 spend Travel 553.00 HKD
+2011-06-14 tfr Assets:Broker:B1 Income:Bonus 1761.8155 USD 4263.3305 HKD
+2011-06-25 spend Expenses:Rent 394.287 HKD
+2011-07-18 yield Assets:Bank:B0 108 HKD
+2011-08-24 bal Assets:Bank:B0 27049.4079 HKD Equity:Opening
+2011-10-01 unit Assets:Broker:B0 293 BRK-B @155.77 GBP
+2011-10-16 earn Bonus 7041 HKD
+2011-11-20 adj Assets:Bank:B0 22575.5227 HKD Equity:Opening
+2011-11-24 unit Assets:Broker:B0 491 VWRL @36.859 GBP
+2011-11-29 tfr Equity:Opening Assets:Broker:B0 3649 HKD
+2011-12-13 trade Assets:Broker:B1 48 BRK-B @225.584 USD C3 USD
+2011-12-22 price BRK-B 288 EUR
+2012-01-07 price IVV 310.034 SGD
+2012-02-12 yield Assets:Broker:B1 BRK-B 189 USD
+2012-03-06 unit Assets:Broker:B1 189 VWRL @16.5807 USD
+2012-03-08 trade Assets:Broker:B0 109 IVV @239.90 GBP
+2012-03-18 tfr Assets:Bank:B0 Income:Interest 4446 HKD
+2012-03-28 price VTI 21.1980 USD
+2012-04-14 adj Assets:Bank:B0 15605.86 HKD Equity:Opening
+2012-05-22 adj Assets:Bank:B0 20275.6875 HKD Equity:Opening
+2012-06-04 earn Income:Interest 6107 HKD
+2012-07-04 tfr Assets:Bank:B0 Income:Bonus 3640 HKD
+2012-07-27 adj Assets:Bank:B0 26338.797 HKD Equity:Opening

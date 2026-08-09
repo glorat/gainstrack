@@ -1,0 +1,48 @@
+option "operating_currency" "EUR"
+2010-02-01 open Equity:Opening EUR
+  multiAsset: true
+2010-03-01 open Assets:Bank:B0 EUR
+  fundingAccount: Equity:Opening
+2010-03-08 open Assets:Bank:B1 HKD
+  fundingAccount: Equity:Opening
+2010-04-14 frobnicate Assets:Bank:B2 EUR
+  fundingAccount: Equity:Opening
+2010-05-08 open Assets:Broker:B0 SGD
+  multiAsset: true
+  automaticReinvestment: true
+  fundingAccount: Assets:Bank:B2
+2010-06-13 open Assets:Broker:B1 EUR
+  multiAsset: true
+  fundingAccount: Assets:Bank:B0
+2010-07-20 open Income:Salary EUR
+  fundingAccount: Assets:Bank:B1
+2010-08-01 open Income:Interest EUR
+  fundingAccount: Assets:Bank:B2
+2010-08-21 open Expenses:Rent EUR
+  fundingAccount: Assets:Bank:B0
+2010-08-26 open Expenses:Travel EUR
+  fundingAccount: Assets:Bank:B2
+2010-08-31 open Liabilities:Card EUR
+  fundingAccount: Assets:Bank:B2
+2010-09-18 trade Assets:Broker:B0 90 BRK-B @93 SGD
+2010-10-22 trade Assets:Broker:B1 70 VCSH @488 EUR
+2010-11-20 tfr Assets:Bank:B1 Assets:Bank:B0 4092.94 HKD 249 EUR
+2010-12-26 adj Assets:Bank:B1 20318.09 HKD Equity:Opening
+2011-01-23 unit Assets:Broker:B0 292 BRK-B @114.93 SGD
+2011-02-03 trade Assets:Broker:B1 104 VCSH @441 EUR
+2011-02-05 tfr Equity:Opening Assets:Bank:B1 1735.669 EUR
+2011-03-05 unit Assets:Broker:B1 104 VWRL @300.4497 EUR
+2011-03-13 earn Income:Interest 1915.377 EUR
+2011-04-19 adj Assets:Bank:B2 28264.1555 EUR Equity:Opening
+2011-04-22 spend Expenses:Rent Assets:Bank:B2 525.6749 EUR
+2011-05-03 adj Assets:Bank:B2 4374.8311 EUR Equity:Opening
+2011-05-05 trade Assets:Broker:B0 158 VWRL @125 SGD
+2011-05-28 yield Assets:Bank:B2 15 EUR
+2011-06-19 unit Assets:Broker:B0 16 VTI @31.8147 SGD
+2011-06-23 spend Travel 291 EUR
+2011-07-07 adj Assets:Bank:B0 10026.54 EUR Equity:Opening
+2011-07-27 bal Assets:Bank:B0 14483.0456 EUR Equity:Opening
+2011-08-18 bal Assets:Bank:B2 8961.75 EUR Equity:Opening
+2011-09-20 spend Rent Assets:Bank:B1 754 EUR
+2011-10-22 tfr Equity:Opening Liabilities:Card 4102.240 EUR
+2011-10-25 unit Assets:Broker:B1 34 VWRL @162 EUR

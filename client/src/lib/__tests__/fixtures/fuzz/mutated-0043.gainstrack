@@ -1,0 +1,51 @@
+option "operating_currency" "SGD"
+1900-01-01 commodity FTSE
+  name: FTSE Fund
+  tags: equity,global
+  ticker: FTSE.X
+2010-01-04 open Equity:Opening SGD
+  multiAsset: true
+2010-01-07 open Assets:Bank:B0 USD
+  fundingAccount: Equity:Opening
+2010-02-14 open Assets:Broker:B0 SGD
+  multiAsset: true
+  fundingAccount: Assets:Bank:B0
+2010-03-01 open Assets:Broker:B1 SGD
+  multiAsset: true
+  automaticReinvestment: true
+  fundingAccount: Assets:Bank:B0
+2010-04-08 open Income:Salary SGD
+  fundingAccount: Assets:Bank:B0
+2010-05-16 open Income:Bonus SGD
+  fundingAccount: Assets:Bank:B0
+2010-06-02 open Income:Interest SGD
+  fundingAccount: Assets:Bank:B0
+2010-07-12 open Expenses:Rent SGD
+  fundingAccount: Assets:Bank:B0
+2010-07-22 open Expenses:Travel SGD
+  fundingAccount: Assets:Bank:B0
+2010-08-26 open Liabilities:Card SGD
+  fundingAccount: Assets:Bank:B0
+2010-10-02 adj Assets:Bank:B0 29973.9923 USD Equity:Opening
+2010-10-14 spend Expenses:Travel Assets:Bank:B0 674.56 SGD
+2010-11-14 earn Interest 8775 SGD
+2010-12-01 fund Assets:Broker:B0 16462.2760 SGD
+2010-12-27 earn Income:Salary 3066.7408 SGD
+2011-02-02 price VCSH 138.28 HKD
+2011-02-04 tfr Assets:Broker:B1 Income:Bonus 3560 SGD
+2011-02-11 unit Assets:Broker:B0 428 BRK-B @77 SGD
+2011-03-13 tfr Assets:Bank:B0 Income:Bonus 4180.133 USD
+2011-03-29 adj Assets:Bank:B0 12503 USD Equity:Opening
+2011-03-30 trade Assets:Broker:B0 69 BRK-B @230.3072 SGD C4 SGD
+2011-04-01 adj Assets:Bank:B0 28222.6104 USD Equity:Opening
+2011-04-07 price IVV 116.967 USD
+2011-04-17 adj Assets:Bank:B0 16049.31 USD Equity:Opening
+2011-04-26 tfr Assets:Bank:B0 Liabilities:Card 4241.2227 USD 2432.855 SGD
+2011-05-16 trade Assets:Broker:B0 193 VCSH @250.638 SGD C16.8313 SGD
+2011-06-05 earn Income:Interest 5060.55 SGD
+2011-07-05 adj Assets:Bank:B0 7491.058 USD Equity:Opening
+2011-07-12 bal Assets:Bank:B0 21078.13 USD Equity:Opening
+2011-07-19 earn Income:Bonus 4180.49 SGD
+2011-08-26 unit Assets:Broker:B1 162 BRK-B @11 SGD
+2011-08-28 spend Travel Assets:Bank:B0 722 SGD
+2011-09-04 price IVV 412 SGD

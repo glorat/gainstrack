@@ -1,0 +1,60 @@
+1900-01-01 commodity IVV
+  name: IVV Fund
+  tags: equity,global
+  ticker: IVV.X
+2010-02-04 open Equity:Opening USD
+  multiAsset: true
+2010-03-04 open Assets:Bank:B0 HKD
+  fundingAccount: Equity:Opening
+2010-03-19 open Assets:Bank:B1 USD
+  fundingAccount: Equity:Opening
+2010-03-24 open Assets:Bank:B2 USD
+  fundingAccount: Equity:Opening
+2010-03-30 open Assets:Broker:B0 SGD
+  multiAsset: true
+  automaticReinvestment: true
+  fundingAccount: Assets:Bank:B1
+2010-05-02 open Assets:Broker:B1 USD
+  multiAsset: true
+  automaticReinvestment: true
+  fundingAccount: Assets:Bank:B0
+2010-06-02 open Income:Salary USD
+  fundingAccount: Assets:Bank:B2
+2010-07-05 open Income:Interest USD
+  fundingAccount: Assets:Bank:B2
+2010-08-02 open Expenses:Food USD
+  fundingAccount: Assets:Bank:B0
+2010-08-22 open Expenses:Rent USD
+  fundingAccount: Assets:Bank:B0
+2010-09-15 open Expenses:Travel USD
+  fundingAccount: Assets:Bank:B1
+2010-10-14 trade Assets:Broker:B0 169 BRK-B @259.9635 SGD C15 SGD
+2010-10-17 earn Salary Assets:Bank:B1 5883.590 USD
+2010-11-08 adj Assets:Bank:B1 27653.28 USD Equity:Opening
+2010-12-08 price IVV 32.277 USD
+2011-01-11 adj Assets:Bank:B2 16536.655 USD Equity:Opening
+2011-01-20 earn Interest 953.1408 USD
+2011-01-30 bal Assets:Bank:B1 9256.5797 USD Equity:Opening
+2011-02-28 spend Expenses:Travel 721.49 USD
+2011-03-19 tfr Assets:Broker:B1 Expenses:Rent 1473 USD
+2011-04-26 spend Rent 65.15 USD
+2011-05-21 bal Assets:Bank:B0 5296 HKD Equity:Opening
+2011-06-29 yield Assets:Bank:B2 30 USD
+2011-07-01 bal Assets:Bank:B0 20503.409 HKD Equity:Opening
+2011-08-09 spend Travel Assets:Bank:B2 225 USD
+2011-08-18 spend Expenses:Rent 277.652 USD
+2011-08-27 adj Assets:Bank:B0 5353.824 HKD Equity:Opening
+2011-09-05 price VCSH 398 HKD
+2011-10-07 bal Assets:Bank:B2 14957.654 USD Equity:Opening
+2011-10-25 tfr Assets:Bank:B2 Expenses:Food 3936.2757 USD
+2011-11-19 price BRK-B 222.47 SGD
+2011-11-22 earn Salary 8058.436 USD
+2011-12-22 spend Food Assets:Bank:B1 163 USD
+2012-01-15 unit Assets:Broker:B1 137 VWRL @151.068 USD
+2012-01-29 tfr Equity:Opening Income:Interest 880.01 USD
+2012-03-06 price VWRL 25.89 GBP
+2012-03-10 trade Assets:Broker:B0 159 VTI @291.660 SGD
+2012-04-05 bal Assets:Bank:B1 28786.4733 USD Equity:Opening
+2012-04-23 adj Assets:Bank:B1 1450 USD Equity:Opening
+2012-05-04 earn Income:Salary Assets:Bank:B1 5392.934 USD
+2012-05-13 tfr Assets:Bank:B2 Expenses:Rent 4417.54 USD

@@ -1,0 +1,43 @@
+2010-02-03 open Equity:Opening USD
+  multiAsset: true
+2010-03-11 open Assets:Bank:B0 USD
+  fundingAccount: Equity:Opening
+2010-04-15 open Assets:Bank:B1 USD
+  fundingAccount: Equity:Opening extraTokenHere
+2010-05-16 open Assets:Broker:B0 USD
+  multiAsset: true
+  fundingAccount: Assets:Bank:B0
+2010-05-18 open Assets:Broker:B1 USD
+  multiAsset: true
+  automaticReinvestment: true
+  fundingAccount: Assets:Bank:B0
+2010-05-27 open Income:Salary USD
+  fundingAccount: Assets:Bank:B1
+2010-06-10 open Income:Bonus USD
+  fundingAccount: Assets:Bank:B1
+2010-06-15 open Income:Interest USD
+  fundingAccount: Assets:Bank:B1
+2010-07-20 open Expenses:Food USD
+  fundingAccount: Assets:Bank:B1
+2010-07-27 open Expenses:Rent USD
+  fundingAccount: Assets:Bank:B1
+2010-08-20 open Expenses:Travel USD
+  fundingAccount: Assets:Bank:B1
+2010-08-29 yield Assets:Bank:B0 92 USD
+2010-10-02 unit Assets:Broker:B0 160 VCSH @210.7797 USD
+2010-10-28 fund Assets:Bank:B0 2834.92 USD
+2010-12-03 bal Assets:Bank:B0 9383 USD Equity:Opening
+2010-12-10 trade Assets:Broker:B0 -8 VCSH @50 USD C12.7311 USD
+2011-01-08 spend Food Assets:Bank:B0 457 USD
+2011-01-20 price BRK-B 101 USD
+2011-02-16 earn Salary 7166 USD
+2011-03-10 spend Expenses:Travel 694.32 USD
+2011-04-09 earn Income:Salary 7027 USD
+2011-05-12 yield Assets:Bank:B1 178.412 USD
+2011-06-17 spend Expenses:Rent 842 USD
+2011-07-23 yield Assets:Bank:B0 23.6034 USD
+2011-07-25 yield Assets:Bank:B1 42.1853 USD
+2011-08-29 bal Assets:Bank:B1 12844.09 USD Equity:Opening
+2011-09-20 spend Expenses:Rent 789.95 USD
+2011-10-27 fund Assets:Bank:B1 11469 USD
+2011-11-09 earn Bonus 974.158 USD

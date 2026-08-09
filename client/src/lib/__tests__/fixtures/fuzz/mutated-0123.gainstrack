@@ -1,0 +1,47 @@
+option "operating_currency" "EUR"
+1900-01-01 commodity VTI
+  name: VTI Fund
+  tags: equity,global
+  ticker: VTI.X
+2010-01-11 open Equity:Opening EUR
+  multiAsset: true
+2010-02-18 open Assets:Bank:B0 SGD
+  fundingAccount: Equity:Opening
+2010-03-15 open Assets:Bank:B1 HKD
+  fundingAccount: Equity:Opening
+2010-03-30 open Assets:Broker:B0 EUR
+  multiAsset: true
+  fundingAccount: Assets:Bank:B0
+2010-04-20 open Assets:Broker:B1 EUR
+  multiAsset: true
+  automaticReinvestment: true
+  fundingAccount: Assets:Bank:B1
+2010-04-22 open Income:Salary EUR
+  fundingAccount: Assets:Bank:B0
+2010-05-25 open Income:Bonus EUR
+  fundingAccount: Assets:Bank:B1
+2010-07-02 open Income:Interest EUR
+  fundingAccount: Assets:Bank:B1
+2010-07-19 open Expenses:Travel EUR
+  fundingAccount: Assets:Bank:B1
+2010-08-10 earn Interest 2347.940 EUR
+2010-09-13 price VTI 166 GBP
+2010-10-07 fund Assets:Broker:B0 16010 EUR
+2010-11-12 earn Bonus 4802.88 EUR
+2010-11-19 price BRK-B 404.61 GBP
+2010-12-25 earn Income:Salary 4952.594 EUR
+2011-01-15 earn Income:Interest 6374 EUR
+2011-02-08 trade Assets:Broker:B1 18 IVV @280 EUR
+2011-03-16 spend Travel 211 EUR
+2011-03-30 fund Assets:Bank:B0 156 SGD
+2011-04-19 earn Interest Assets:Bank:B1 5579 EUR
+2011-05-05 spend Travel 85.472 EUR
+2011-05-15 unit Assets:Broker:B1 166 VTI @314 EUR
+2011-05-18 spend Travel 483 EUR
+2011-05-31 tfr Assets:Bank:B0 Income:Salary 2510 SGD
+2011-06-03 earn Bonus Assets:Bank:B0 1963.160 EUR
+2011-06-26 price VWRL 491.8126 GBP
+2011-07-31 spend Travel 862 EUR
+2011-08-04 fund Assets:Broker:B0 Expenses:Travel 13046.8180 EUR
+2011-08-11 tfr Assets:Broker:B0 Income:Bonus 1438.2275 EUR
+2011-08-12 price BRK-B 204 SGD

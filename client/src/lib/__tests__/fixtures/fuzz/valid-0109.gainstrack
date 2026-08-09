@@ -1,0 +1,52 @@
+option "operating_currency" "SGD"
+2010-01-26 open Equity:Opening SGD
+  multiAsset: true
+2010-02-16 open Assets:Bank:B0 SGD
+  fundingAccount: Equity:Opening
+2010-03-05 open Assets:Broker:B0 SGD
+  multiAsset: true
+  fundingAccount: Assets:Bank:B0
+2010-03-16 open Assets:Broker:B1 SGD
+  multiAsset: true
+  fundingAccount: Assets:Bank:B0
+2010-03-25 open Income:Salary SGD
+  fundingAccount: Assets:Bank:B0
+2010-04-29 open Income:Bonus SGD
+  fundingAccount: Assets:Bank:B0
+2010-05-29 open Income:Interest SGD
+  fundingAccount: Assets:Bank:B0
+2010-07-03 open Expenses:Food SGD
+  fundingAccount: Assets:Bank:B0
+2010-08-10 fund Assets:Broker:B1 Assets:Bank:B0 4032 SGD
+2010-08-23 fund Assets:Broker:B0 Assets:Bank:B0 3326.068 SGD
+2010-09-16 fund Assets:Broker:B1 8188.598 SGD
+2010-10-11 spend Food 704 SGD
+2010-10-29 fund Assets:Bank:B0 Expenses:Food 16945.915 SGD
+2010-11-30 earn Interest 6755 SGD
+2010-12-20 yield Assets:Bank:B0 67 SGD
+2011-01-06 unit Assets:Broker:B1 380 VCSH @12.498 SGD
+2011-02-14 earn Salary 4110.3145 SGD
+2011-03-19 adj Assets:Bank:B0 20838 SGD Equity:Opening
+2011-04-08 spend Expenses:Food 56.171 SGD
+2011-05-08 trade Assets:Broker:B1 84 VTI @439 SGD
+2011-06-16 spend Food 815 SGD
+2011-06-28 earn Income:Bonus 4111 SGD
+2011-07-02 fund Assets:Bank:B0 Assets:Broker:B1 14818 SGD
+2011-07-06 adj Assets:Bank:B0 17566.2329 SGD Equity:Opening
+2011-07-31 unit Assets:Broker:B1 486 BRK-B @170.0662 SGD
+2011-08-07 fund Assets:Broker:B0 Income:Salary 9767 SGD
+2011-09-16 fund Assets:Broker:B0 Equity:Opening 19066.73 SGD
+2011-10-13 spend Expenses:Food Assets:Bank:B0 237 SGD
+2011-11-02 earn Income:Salary Assets:Bank:B0 3228.513 SGD
+2011-11-29 trade Assets:Broker:B1 43 FTSE @67.0105 SGD
+2011-12-25 tfr Assets:Bank:B0 Equity:Opening 2889.11 SGD
+2012-01-20 spend Expenses:Food 203.825 SGD
+2012-02-27 unit Assets:Broker:B0 143 FTSE @345 SGD
+2012-03-28 unit Assets:Broker:B0 157 FTSE @399 SGD
+2012-04-01 tfr Assets:Bank:B0 Income:Bonus 3218.409 SGD
+2012-04-25 unit Assets:Broker:B1 262 IVV @47.400 SGD
+2012-05-22 fund Assets:Broker:B1 205.5674 SGD
+2012-06-19 adj Assets:Bank:B0 17519.8867 SGD Equity:Opening
+2012-07-18 adj Assets:Bank:B0 17361.9870 SGD Equity:Opening
+2012-07-23 fund Assets:Broker:B0 Income:Bonus 1221.20 SGD
+2012-08-28 earn Income:Bonus 7645 SGD

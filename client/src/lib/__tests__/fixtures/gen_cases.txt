@@ -72,3 +72,47 @@
 
 ### id: err-yield-nonexistent-account
 2019-01-01 yield Assets:NoSuch 5 GBP
+
+### id: err-yield-multiasset-into-itself
+2019-01-01 open Assets:Bank USD
+2019-01-01 open Assets:Broker USD
+  multiAsset: true
+  fundingAccount: Assets:Bank
+2019-01-02 yield Assets:Broker 5 USD
+
+### id: err-yield-nonmultiasset-names-an-asset
+2019-01-01 open Assets:Bank USD
+2019-01-02 yield Assets:Bank FTSE 5 USD
+
+### id: err-yield-asset-never-held
+2019-01-01 open Assets:Bank USD
+2019-01-01 open Assets:Broker USD
+  multiAsset: true
+  fundingAccount: Assets:Bank
+2019-01-02 yield Assets:Broker FTSE 5 USD
+
+### id: ok-yield-multiasset-names-a-held-asset
+2019-01-01 open Equity:Opening USD
+2019-01-01 open Assets:Bank USD
+2019-01-01 open Assets:Broker USD
+  multiAsset: true
+  fundingAccount: Assets:Bank
+2019-01-02 fund Assets:Broker 1000 USD
+2019-01-03 trade Assets:Broker 5 FTSE @100 USD
+2019-01-04 yield Assets:Broker FTSE 5 USD
+
+### id: ok-yield-nonmultiasset-plain
+2019-01-01 open Assets:Bank USD
+2019-01-02 yield Assets:Bank 5 USD
+
+### id: err-fund-zero-amount
+2019-01-01 open Equity:Opening USD
+2019-01-01 open Assets:Bank USD
+2019-01-02 fund Assets:Bank 0 USD
+
+### id: err-tfr-zero-after-parse
+2019-01-01 open Equity:Opening USD
+2019-01-01 open Assets:A USD
+2019-01-01 open Assets:B USD
+2019-01-02 fund Assets:A 100 USD
+2019-01-03 earn Salary Assets:B 0 USD

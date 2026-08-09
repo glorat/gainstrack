@@ -1,0 +1,51 @@
+option "operating_currency" "GBP"
+1900-01-01 commodity VTI
+  name: VTI Fund
+  tags: equity,global
+  ticker: VTI.X
+2010-01-19 open Equity:Opening GBP
+  multiAsset: true
+2010-02-01 open Assets:Bank:B0 SGD
+  fundingAccount: Equity:Opening
+2010-02-02 open Assets:Broker:B0 GBP
+  multiAsset: true
+  automaticReinvestment: true
+  fundingAccount: Assets:Bank:B0
+2010-02-06 open Income:Bonus GBP
+  fundingAccount: Assets:Bank:B0
+2010-02-26 open Expenses:Travel GBP
+  fundingAccount: Assets:Bank:B0
+2010-03-05 open Liabilities:Card GBP
+  fundingAccount: Assets:Bank:B0
+2010-03-10 unit Assets:Broker:B0 291 FTSE @28.2405 GBP
+2010-03-17 earn Income:Bonus 5511.3619 GBP
+2010-03-18 bal Assets:Bank:B0 2309.6258 SGD Equity:Opening
+2010-03-27 bal Assets:Bank:B0 10555 SGD Equity:Opening
+2010-04-20 bal Assets:Bank:B0 630.981 SGD Equity:Opening
+2010-04-26 spend Expenses:Travel 183.88 GBP
+2010-06-01 bal Assets:Bank:B0 17279.3349 SGD Equity:Opening
+2010-06-18 unit Assets:Broker:B0 222 FTSE @320.645 GBP
+2010-06-28 adj Assets:Bank:B0 20977.05 SGD Equity:Opening
+2010-07-14 unit Assets:Broker:B0 26 IVV @95 GBP
+2010-07-15 fund Assets:Bank:B0 7657.15 SGD
+2010-08-11 fund Assets:Broker:B0 4705 GBP
+2010-09-02 price IVV 368.3153 GBP
+2010-09-26 bal Assets:Bank:B0 24017 SGD Equity:Opening
+2010-10-24 yield Assets:Bank:B0 84 SGD
+2010-11-07 trade Assets:Broker:B0 -20 IVV @446 GBP
+2010-12-04 tfr Assets:Broker:B0 Income:Bonus 602 GBP
+2010-12-05 price VWRL 154 EUR
+2010-12-10 unit Assets:Broker:B0 104 VCSH @196.2422 GBP
+2010-12-15 earn Bonus 5882.157 GBP
+2010-12-28 unit Assets:Broker:B0 141 VCSH @99.8743 GBP
+2011-01-31 tfr Assets:Bank:B0 Expenses:Travel 527.267 SGD
+2011-02-04 spend Expenses:Travel 855 GBP
+2011-02-28 yield Assets:Bank:B0 17 SGD
+2011-04-03 unit Assets:Broker:B0 245 FTSE @112.0705 GBP
+2011-04-26 spend Travel Assets:Bank:B0 410.8375 GBP
+2011-06-05 earn Income:Bonus Assets:Bank:B0 2099.9953 GBP
+2011-06-23 earn Bonus 2555 GBP
+2011-07-26 spend Travel 700.4025 GBP
+2011-08-06 price VWRL 345.60 HKD
+2011-09-02 tfr Assets:Bank:B0 Liabilities:Card 21.4018 SGD 4755 GBP
+2011-09-08 bal Assets:Bank:B0 7876.9918 SGD Equity:Opening

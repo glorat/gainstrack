@@ -1,0 +1,71 @@
+option "operating_currency" "EUR"
+1900-01-01 commodity IVV
+  name: IVV Fund
+  tags: equity,global
+  ticker: IVV.X
+2010-01-23 open Equity:Opening EUR
+  multiAsset: true
+2010-02-07 open Assets:Bank:B0 HKD
+  fundingAccount: Equity:Opening
+2010-03-11 open Assets:Bank:B1 USD
+  fundingAccount: Equity:Opening
+2010-03-28 open Assets:Bank:B2 EUR
+  fundingAccount: Equity:Opening
+2010-04-12 open Assets:Broker:B0 EUR
+  multiAsset: true
+  fundingAccount: Assets:Bank:B1
+2010-04-15 open Assets:Broker:B1 EUR
+  multiAsset: true
+  fundingAccount: Assets:Bank:B2
+2010-04-16 open Income:Salary EUR
+  fundingAccount: Assets:Bank:B0
+2010-05-26 open Income:Interest EUR
+  fundingAccount: Assets:Bank:B1
+2010-06-09 open Expenses:Food EUR
+  fundingAccount: Assets:Bank:B1
+2010-06-13 open Expenses:Rent EUR
+  fundingAccount: Assets:Bank:B1
+2010-07-16 open Expenses:Travel EUR
+  fundingAccount: Assets:Bank:B2
+2010-07-19 open Liabilities:Card EUR
+  fundingAccount: Assets:Bank:B2
+2010-08-10 earn Income:Interest Assets:Bank:B2 7452.8174 EUR
+2010-08-13 adj Assets:Bank:B2 24844.064 EUR Equity:Opening
+2010-08-15 bal Assets:Bank:B2 16440 EUR Equity:Opening
+2010-09-21 price VTI 175 SGD
+2010-10-04 trade Assets:Broker:B1 184 VCSH @104.341 EUR
+2010-11-02 price IVV 140.144 USD
+2010-11-14 bal Assets:Bank:B0 23309.129 HKD Equity:Opening
+2010-11-30 bal Assets:Bank:B1 29685 USD Equity:Opening
+2010-12-04 adj Assets:Bank:B0 21495.901 HKD Equity:Opening
+2010-12-16 tfr Assets:Bank:B2 Assets:Bank:B0 947.6234 EUR 578.9801 HKD
+2010-12-18 unit Assets:Broker:B1 424 BRK-B @170.66 EUR
+2011-01-22 trade Assets:Broker:B0 93 FTSE @261 EUR
+2011-01-31 price FTSE 260 USD
+2011-02-11 bal Assets:Bank:B0 29327 HKD Equity:Opening
+2011-03-16 tfr Assets:Bank:B0 Expenses:Rent 4557.254 HKD 4469.936 EUR
+2011-04-22 price FTSE 417 GBP
+2011-05-05 earn Salary 2573.97 EUR
+2011-05-14 fund Assets:Broker:B0 11801.960 EUR
+2011-06-18 fund Assets:Broker:B0 17155 EUR
+2011-07-11 earn Income:Salary 5316.28 EUR
+2011-08-08 fund Assets:Broker:B1 Assets:Bank:B1 2174.85 EUR
+2011-09-04 unit Assets:Broker:B1 181 VWRL @205.02 EUR
+2011-10-01 yield Assets:Broker:B0 FTSE 166.127 EUR
+2011-10-27 trade Assets:Broker:B1 -4 BRK-B @12.2054 EUR
+2011-11-06 earn Salary 3927.9373 EUR
+2011-11-23 fund Assets:Bank:B2 7004.543 EUR
+2011-12-25 fund Assets:Broker:B1 3068.487 EUR
+2011-12-26 trade Assets:Broker:B1 -1 VCSH @384 EUR C11.599 EUR
+2012-01-16 adj Assets:Bank:B2 1279.289 EUR Equity:Opening
+2012-01-20 trade Assets:Broker:B0 32 VTI @367.2625 EUR
+2012-01-31 fund Assets:Broker:B0 16209.70 EUR
+2012-03-03 adj Assets:Bank:B1 9912 USD Equity:Opening
+2012-03-25 yield Assets:Broker:B0 FTSE 92.861 EUR
+2012-03-26 fund Assets:Bank:B1 16145.59 USD
+2012-03-29 earn Income:Interest Assets:Bank:B0 1167.793 EUR
+2012-04-18 tfr Assets:Bank:B2 Assets:Broker:B0 3887.967 EUR
+2012-04-22 fund Assets:Broker:B0 Assets:Broker:B1 4702.47 EUR
+2012-05-25 tfr Assets:Broker:B0 Assets:Bank:B2 4208 EUR
+2012-06-02 trade Assets:Broker:B1 165 FTSE @288.43 EUR
+2012-07-10 earn Income:Interest 3557.2235 EUR

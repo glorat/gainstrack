@@ -1,0 +1,48 @@
+option "operating_currency" "SGD"
+2010-01-31 open Equity:Opening SGD
+  multiAsset: true
+2010-02-02 open Assets:Bank:B0 SGD
+  fundingAccount: Equity:Opening
+2010-03-13 open Assets:Broker:B0 SGD
+  multiAsset: true
+  automaticReinvestment: true
+  fundingAccount: Assets:Bank:B0
+2010-04-19 open Assets:Broker:B1 HKD
+  multiAsset: true
+  fundingAccount: Assets:Bank:B0
+2010-05-05 open Income:Salary SGD
+  fundingAccount: Assets:Bank:B0
+2010-05-06 open Income:Bonus SGD
+  fundingAccount: Assets:Bank:B0
+2010-05-31 open Income:Interest SGD
+  fundingAccount: Assets:Bank:B0
+2010-07-09 open Expenses:Travel SGD
+  fundingAccount: Assets:Bank:B0
+2010-08-11 open Liabilities:Card SGD
+  fundingAccount: Assets:Bank:B0
+2010-09-12 bal Assets:Bank:B0 3364 SGD Equity:Opening
+2010-09-30 earn Income:Salary 5010 SGD
+2010-10-05 price FTSE 482.87 USD
+2010-10-08 bal Assets:Bank:B0 8018 SGD Equity:Opening
+2010-10-11 trade Assets:Broker:B0 151 VCSH @361.347 SGD
+2010-11-01 price VWRL 225 HKD
+2010-11-29 tfr Assets:Broker:B0 Expenses:Travel 1476 SGD
+2010-12-23 bal Assets:Bank:B0 19690 SGD Equity:Opening
+2010-12-31 fund Assets:Bank:B0 6436.21 SGD
+2011-02-07 bal Assets:Bank:B0 28634.601 SGD Equity:Opening
+2011-02-16 fund Assets:Bank:B0 Income:Bonus 5975.2157 SGD
+2011-03-28 spend Travel Assets:Bank:B0 78.5835 SGD
+2011-04-02 price IVV 232.818 HKD
+2011-04-22 earn Salary 1366.9474 SGD
+2011-05-26 trade Assets:Broker:B1 72 BRK-B @284.70 HKD C10.5202 HKD
+2011-07-04 price IVV 320.130 EUR
+2011-07-16 price VTI 7.881 EUR
+2011-08-12 trade Assets:Broker:B0 -3 VCSH @181.8037 SGD C8.34 SGD
+2011-09-18 spend Travel 51.2505 SGD
+2011-09-21 earn Interest Assets:Bank:B0 2225.71 SGD
+2011-10-04 tfr Assets:Bank:B0 Assets:Broker:B1 4096.52 SGD
+2011-10-10 earn Interest 4769 SGD
+2011-11-19 trade Assets:Broker:B0 53 FTSE @117.708 SGD C17.7415 SGD
+2011-12-02 earn Interest 8658.51 SGD
+2011-12-31 tfr Assets:Broker:B0 Assets:Bank:B0 1319.0760 SGD
+2012-01-04 earn Income:Salary Assets:Bank:B0 3865 SGD

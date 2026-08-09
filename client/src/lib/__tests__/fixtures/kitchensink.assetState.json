@@ -1,0 +1,46 @@
+[ {
+  "accountId" : "",
+  "date" : "1900-01-01",
+  "asset" : "VWRL",
+  "options" : {
+    "assetClass" : "equity",
+    "name" : "Vanguard FTSE All-World",
+    "ticker" : "VWRL.LON",
+    "tags" : [ "equity", "global" ]
+  },
+  "commandType" : "commodity",
+  "description" : "VWRL"
+}, {
+  "accountId" : "",
+  "date" : "1900-01-01",
+  "asset" : "BARE",
+  "options" : {
+    "name" : "",
+    "ticker" : "",
+    "tags" : [ ]
+  },
+  "commandType" : "commodity",
+  "description" : "BARE"
+}, {
+  "accountId" : "",
+  "date" : "1900-01-01",
+  "asset" : "GBP",
+  "options" : {
+    "name" : "",
+    "ticker" : "",
+    "tags" : [ ]
+  },
+  "commandType" : "commodity",
+  "description" : "GBP"
+}, {
+  "accountId" : "",
+  "date" : "1900-01-01",
+  "asset" : "USD",
+  "options" : {
+    "name" : "",
+    "ticker" : "",
+    "tags" : [ ]
+  },
+  "commandType" : "commodity",
+  "description" : "USD"
+} ]

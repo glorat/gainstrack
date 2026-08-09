@@ -1,0 +1,38 @@
+option "operating_currency" "EUR"
+2010-02-03 open Equity:Opening EUR
+  multiAsset: true
+2010-03-12 open Assets:Bank:B0 EUR
+  fundingAccount: Equity:Opening
+2010-04-09 open Assets:Bank:B1 EUR
+  fundingAccount: Equity:Opening
+2010-04-12 open Assets:Bank:B2 EUR
+  fundingAccount: Equity:Opening
+2010-05-03 open Assets:Broker:B0 EUR
+  multiAsset: true
+  automaticReinvestment: true
+  fundingAccount: Assets:Bank:B2
+2010-05-29 open Assets:Broker:B1 EUR
+  multiAsset: true
+  fundingAccount: Assets:Bank:B1
+2010-07-05 open Income:Salary EUR
+  fundingAccount: Assets:Bank:B1
+2010-07-08 open Income:Bonus EUR
+  fundingAccount: Assets:Bank:B0
+2010-07-29 open Income:Interest EUR
+  fundingAccount: Assets:Bank:B0
+2010-08-18 open Expenses:Food EUR
+  fundingAccount: Assets:Bank:B1
+2010-09-10 bal Assets:Bank:B0 29579.98 EUR Equity:Opening
+2010-09-24 tfr Assets:Bank:B1 Income:Salary 4329.6717 EUR
+2010-10-24 earn Interest 7690.98 EUR
+2010-11-14 bal Assets:Bank:B0 9460 EUR Equity:Opening
+2010-11-16 adj Assets:Bank:B2 27987.432 EUR Equity:Opening
+2010-11-19 trade Assets:Broker:B0 52 BRK-B @52.8402 EUR C5.83 EUR
+2010-12-03 unit Assets:Broker:B1 402 VCSH @108.6186 EUR
+2010-12-08 bal Assets:Bank:B0 9996.063 EUR Equity:Opening
+2010-12-20 price BRK-B 393.8140 GBP
+2010-12-27 tfr Assets:Bank:B2 Equity:Opening 1669.889 EUR
+2010-12-31 trade Assets:Broker:B1 164 VTI @2.414 EUR C4 EUR
+2011-01-24 adj Assets:Bank:B1 10441 EUR Equity:Opening
+2011-02-22 tfr Assets:Bank:B0 Income:Bonus 4118.4854 EUR
+2011-03-09 tfr Equity:Opening Assets:Broker:B1 3290.6770 EUR

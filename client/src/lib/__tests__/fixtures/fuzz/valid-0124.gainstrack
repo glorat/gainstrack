@@ -1,0 +1,38 @@
+option "operating_currency" "EUR"
+1900-01-01 commodity VTI
+  name: VTI Fund
+  tags: equity,global
+  ticker: VTI.X
+2010-01-28 open Equity:Opening EUR
+  multiAsset: true
+2010-03-03 open Assets:Bank:B0 EUR
+  fundingAccount: Equity:Opening
+2010-03-18 open Assets:Bank:B1 USD
+  fundingAccount: Equity:Opening
+2010-04-13 open Assets:Broker:B0 EUR
+  multiAsset: true
+  fundingAccount: Assets:Bank:B0
+2010-04-14 open Income:Salary EUR
+  fundingAccount: Assets:Bank:B0
+2010-05-21 open Income:Interest EUR
+  fundingAccount: Assets:Bank:B1
+2010-05-23 open Expenses:Food EUR
+  fundingAccount: Assets:Bank:B0
+2010-06-20 open Expenses:Travel EUR
+  fundingAccount: Assets:Bank:B1
+2010-07-24 open Liabilities:Card EUR
+  fundingAccount: Assets:Bank:B1
+2010-08-05 price BRK-B 16.257 EUR
+2010-09-03 spend Expenses:Travel Assets:Bank:B1 222.3708 EUR
+2010-09-26 bal Assets:Bank:B0 14900.91 EUR Equity:Opening
+2010-10-09 tfr Assets:Bank:B1 Equity:Opening 1626.19 USD
+2010-10-11 fund Assets:Bank:B0 18071 EUR
+2010-11-15 trade Assets:Broker:B0 102 FTSE @421.47 EUR
+2010-11-28 earn Income:Interest Assets:Bank:B0 199 EUR
+2010-12-07 unit Assets:Broker:B0 269 VTI @6.0060 EUR
+2011-01-07 tfr Equity:Opening Liabilities:Card 3547.7698 EUR
+2011-02-08 yield Assets:Bank:B1 148.76 USD
+2011-03-20 trade Assets:Broker:B0 165 VTI @403.40 EUR C7.02 EUR
+2011-03-31 trade Assets:Broker:B0 160 VTI @208.558 EUR
+2011-04-05 earn Income:Salary 3485.995 EUR
+2011-05-09 yield Assets:Broker:B0 FTSE 133 EUR

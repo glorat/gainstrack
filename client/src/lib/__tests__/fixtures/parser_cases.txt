@@ -1,12 +1,9 @@
 ; Behavioural corpus shared by the Scala parser (DumpParserCases.scala, which writes
 ; parser_cases.expected.json) and the TS port (GainstrackParserDiff.spec.ts).
 ;
-; NOTE: the six cases below marked "hand-derived" were added without a Scala run
-; (sbt was unavailable). Their expected entries were read off the Scala source rather
-; than executed, so re-run `sbt -DdumpFixtures=1 "core/testOnly ...DumpParserCases"`
-; to confirm them while the Scala parser still exists:
-;   open-invalid-account-type, open-liabilities-account, trade-non-assets-account,
-;   unit-non-assets-account, adj-account-type-not-validated, commodity-duplicate-tags
+; Every expected entry has been produced by an actual Scala run, not read off the source.
+; Regenerate after adding cases, while the Scala parser still exists:
+;   sbt -DdumpFixtures=1 "core/testOnly com.gainstrack.core.test.DumpParserCases"
 
 ### id: open-basic
 2019-01-01 open Assets:Bank GBP
@@ -223,3 +220,22 @@ option "operating_currency" "gbp"
 ### id: commodity-duplicate-tags
 1900-01-01 commodity VWRD
   tags: equity,equity,global
+
+; The next three options exist on AccountOptions and ARE emitted by toGainstrack, but
+; `withOption` has no case for them — so they serialize and then fail to parse back. Pinning
+; the rejection keeps the two sides identically broken rather than divergently broken.
+### id: open-tradingAccount-not-parseable
+2019-01-01 open Assets:Broker USD
+  tradingAccount: true
+
+### id: open-hidden-not-parseable
+2019-01-01 open Assets:Bank USD
+  hidden: true
+
+### id: open-placeholder-not-parseable
+2019-01-01 open Assets:Bank USD
+  placeholder: true
+
+### id: open-expenseAccount
+2019-01-01 open Assets:Broker USD
+  expenseAccount: Expenses:Broker

@@ -1,0 +1,33 @@
+1900-01-01 commodity IVV
+  name: IVV Fund
+  tags: equity,global
+  ticker: IVV.X
+2010-01-31 open Equity:Opening USD
+  multiAsset: true
+2010-02-01 open Assets:Bank:B0 USD
+  fundingAccount: Equity:Opening
+2010-02-12 open Assets:Bank:B1 USD
+  fundingAccount: Equity:Opening
+2010-03-19 open Assets:Broker:B0 HKD
+  multiAsset: true
+  automaticReinvestment: true
+  fundingAccount: Assets:Bank:B0
+2010-04-25 open Income:Bonus USD
+  fundingAccount: Assets:Bank:B1
+2010-05-24 open Income:Interest USD
+  fundingAccount: Assets:Bank:B0
+2010-05-27 open Expenses:Rent USD
+  fundingAccount: Assets:Bank:B0
+2010-06-14 open Expenses:Travel USD
+  fundingAccount: Assets:Bank:B0
+2010-06-25 spend Expenses:Rent Assets:Bank:B1 606.1341 USD
+2010-07-01 unit Assets:Broker:B0 168 FTSE @202.687 HKD
+2010-07-17 spend Expenses:Rent 58.40 USD
+2010-08-20 price VCSH 203.5244 EUR
+2010-09-03 trade Assets:Broker:B0 97 VWRL @15.08 HKD C6 HKD
+2010-09-13 spend Expenses:Rent 793.088 USD
+2010-10-06 fund Assets:Bank:B1 548.20 USD
+2010-10-07 earn Interest Assets:Bank:B0 3108.25 USD
+2010-10-25 unit Assets:Broker:B0 490 VWRL @23 HKD
+2010-11-13 frobnicate Assets:Bank:B0 Assets:Broker:B0 1672.63 USD
+2010-12-07 adj Assets:Bank:B1 9604.894 USD Equity:Opening

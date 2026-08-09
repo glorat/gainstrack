@@ -113,14 +113,27 @@ function fundToTransfers(cmd: FundCmd, lookup: AccountLookup): GTransfer[] {
 function yieldToTransfers(cmd: YieldCmd, lookup: AccountLookup): GTransfer[] {
   const account = lookup(cmd.accountId);
   if (!account) throw new Error(`Account ${cmd.accountId} is not defined`);
-  const assetAccount = lookup(yieldAssetAccountId(cmd));
-  if (!assetAccount) throw new Error(`Asset account ${yieldAssetAccountId(cmd)} is not defined`);
+  const assetAccountId = yieldAssetAccountId(cmd);
+  const assetAccount = lookup(assetAccountId);
+  if (!assetAccount) throw new Error(`Asset account ${assetAccountId} is not defined`);
+
+  // `YieldCommand.toTransfers` requires the asset to be named on a multiAsset account and NOT
+  // named otherwise — the two `require`s are mirror images, and without them a yield on a
+  // multiAsset account silently books income into the account itself instead of a holding.
+  if (account.options.multiAsset) {
+    if (assetAccountId === cmd.accountId) {
+      throw new Error(`MultiAsset account ${cmd.accountId} cannot have yields into itself`);
+    }
+  } else if (assetAccountId !== cmd.accountId) {
+    throw new Error(`${cmd.accountId} is not a multi-asset account so cannot yield ${cmd.asset}`);
+  }
+
   const targetAccountId = cmd.target ?? (account.options.multiAsset
     ? cmd.accountId
-    : (assetAccount.options.fundingAccount ?? yieldAssetAccountId(cmd)));
+    : (assetAccount.options.fundingAccount ?? assetAccountId));
   if (!lookup(targetAccountId)) throw new Error(`Target account ${targetAccountId} does not exist`);
   // Scala `YieldCommand.description`: the asset account's SHORT name (last path segment).
-  const shortName = yieldAssetAccountId(cmd).split(':').pop();
+  const shortName = assetAccountId.split(':').pop();
   const description = `${shortName} yield ${cmd.value.toString()}`;
   return transferToTransfers(makeTransfer(yieldIncomeAccountId(cmd), targetAccountId, cmd.date, cmd.value, cmd.value, description), lookup);
 }

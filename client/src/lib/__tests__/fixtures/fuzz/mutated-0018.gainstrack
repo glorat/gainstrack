@@ -1,0 +1,34 @@
+option "operating_currency" "GBP"
+2010-01-23 open Equity:Opening GBP
+  multiAsset: true
+2010-02-21 open Assets:Bank:B0 HKD
+  fundingAccount: Equity:Opening
+2010-03-14 open Assets:Broker:B0 GBP
+  multiAsset: true
+  automaticReinvestment: true
+  fundingAccount: Assets:Bank:B0
+2010-04-09 open Income:Salary GBP
+  fundingAccount: Assets:Bank:B0
+2010-05-07 open Income:Bonus GBP
+  fundingAccount: Assets:Bank:B0
+2010-06-07 open Expenses:Food GBP
+  fundingAccount: Assets:Bank:B0
+2010-06-15 open Expenses:Rent GBP
+  fundingAccount: Assets:Bank:B0
+2010-06-24 open Expenses:Travel GBP
+  fundingAccount: Assets:Bank:B0
+2010-07-07 tfr Assets:Broker:B0 Assets:Bank:B0 4131.715 GBP 1820.360 HKD extraTokenHere
+2010-07-12 trade Assets:Broker:B0 81 FTSE @471.321 GBP C17.29 GBP
+2010-07-22 spend Food 79.974 GBP
+2010-07-31 price IVV 366.5196 HKD
+2010-09-06 price FTSE 269.5746 GBP
+2010-09-09 fund Assets:Broker:B0 18121.1796 GBP
+2010-09-20 adj Assets:Bank:B0 8317 HKD Equity:Opening
+2010-09-23 tfr Assets:Broker:B0 Assets:Bank:B0 2173.12 GBP 3729.098 HKD
+2010-10-30 spend Food Assets:Bank:B0 217 GBP
+2010-11-28 unit Assets:Broker:B0 222 VWRL @98.030 GBP
+2010-12-29 price FTSE 306.865 SGD
+2011-01-04 earn Bonus Assets:Bank:B0 6936.557 GBP
+2011-01-23 tfr Assets:Broker:B0 Assets:Bank:B0 1968.883 GBP
+2011-02-07 yield Assets:Broker:B0 FTSE 191.9749 GBP
+2011-03-09 yield Assets:Bank:B0 127.53 HKD

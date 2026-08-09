@@ -1,0 +1,37 @@
+option "operating_currency" "HKD"
+2010-01-26 open Equity:Opening HKD
+  multiAsset: true
+2010-01-30 open Assets:Bank:B0 HKD
+  fundingAccount: Equity:Opening
+2010-02-24 open Assets:Bank:B1 HKD
+  fundingAccount: Equity:Opening
+2010-03-24 open Assets:Broker:B0 HKD
+  multiAsset: true
+  fundingAccount: Assets:Bank:B0
+2010-04-05 open Income:Salary HKD
+  fundingAccount: Assets:Bank:B0
+2010-04-29 open Income:Bonus HKD
+  fundingAccount: Assets:Bank:B0
+2010-05-23 open Income:Interest HKD
+  fundingAccount: Assets:Bank:B1
+2010-06-25 open Expenses:Food HKD
+  fundingAccount: Assets:Bank:B1
+2010-07-06 open Expenses:Travel HKD
+  fundingAccount: Assets:Bank:B1
+2010-08-15 open Liabilities:Card HKD
+  fundingAccount: Assets:Bank:B1
+2010-08-21 adj Assets:Bank:B0 15710.2705 HKD Equity:Opening
+2010-08-27 bal Assets:Bank:B1 11541 HKD Equity:Opening
+2010-08-31 bal Assets:Bank:B0 15783 HKD Equity:Opening
+2010-09-21 adj Assets:Bank:B0 18611 HKD Equity:Opening
+2010-10-09 yield Assets:Bank:B0 93.77 HKD
+2010-11-08 trade Assets:Broker:B0 111 IVV @60.170 HKD C17 HKD
+2010-11-14 tfr Assets:Bank:B0 Liabilities:Card 4266.039 HKD
+2010-12-21 unit Assets:Broker:B0 258 IVV @4.43 HKD
+2011-01-07 earn Income:Salary 4651 HKD
+2011-01-30 yield Assets:Bank:B1 120.040 HKD
+2011-02-19 fund Assets:Bank:B1 19908.90 HKD
+2011-02-25 yield Assets:Bank:B0 185.1776 HKD
+2011-03-24 fund Assets:Bank:B0 9898.39 HKD
+2011-04-22 tfr Equity:Opening Income:Bonus 1911 HKD
+2011-05-25 price BRK-B 3.5160 HKD

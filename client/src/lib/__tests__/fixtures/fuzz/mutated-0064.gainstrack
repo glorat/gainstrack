@@ -1,0 +1,31 @@
+option "operating_currency" "SGD"
+1900-01-01 commodity FTSE
+  name: FTSE Fund
+  tags: equity,global
+  ticker: FTSE.X
+2010-01-14 open Equity:Opening SGD
+  multiAsset: true
+2010-02-02 open Assets:Bank:B0 EUR
+  fundingAccount: Equity:Opening
+2010-02-27 open Assets:Bank:B1 EUR
+  fundingAccount: Equity:Opening
+2010-03-22 open Assets:Bank:B2 USD
+  fundingAccount: Equity:Opening
+2010-04-24 open Assets:Broker:B0 SGD
+  multiAsset: true
+  fundingAccount: Assets:Bank:B2
+2010-05-28 open Income:Salary SGD
+  fundingAccount: Assets:Bank:B2
+2010-06-09 open Income:Interest SGD
+  fundingAccount: Assets:Bank:B2
+2010-06-13 open Liabilities:Card SGD
+  fundingAccount: Assets:Bank:B1
+2010-06-24 tfr Assets:Broker:B0 Assets:Bank:B0 759 SGD
+2010-07-06 earn Interest Assets:Bank:B1 3497 SGD
+2010-07-16 tfr Equity:Opening Assets:Broker:B0 2500 SGD
+2010-07-25 bal Assets:Bank:B2 28900 USD Equity:Opening
+2010-08-06 yield Assets:Bank:B0 124 EUR
+2010-08-23 unit Assets:Broker:B0 439 BRK-B @66.726 SGD
+2010-09-16 fund Assets:DoesNotExist Income:Interest 13741.6352 EUR
+2010-10-07 tfr Assets:Bank:B2 Assets:Bank:B1 4112.83 USD
+2010-10-08 fund Assets:Bank:B2 Equity:Opening 9910.774 USD

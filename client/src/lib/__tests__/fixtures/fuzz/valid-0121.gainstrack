@@ -1,0 +1,30 @@
+2010-02-02 open Equity:Opening USD
+  multiAsset: true
+2010-02-03 open Assets:Bank:B0 USD
+  fundingAccount: Equity:Opening
+2010-02-12 open Assets:Broker:B0 USD
+  multiAsset: true
+  automaticReinvestment: true
+  fundingAccount: Assets:Bank:B0
+2010-03-23 open Income:Bonus USD
+  fundingAccount: Assets:Bank:B0
+2010-05-01 open Income:Interest USD
+  fundingAccount: Assets:Bank:B0
+2010-05-11 open Expenses:Food USD
+  fundingAccount: Assets:Bank:B0
+2010-05-25 open Expenses:Rent USD
+  fundingAccount: Assets:Bank:B0
+2010-06-15 open Expenses:Travel USD
+  fundingAccount: Assets:Bank:B0
+2010-07-08 bal Assets:Bank:B0 21665 USD Equity:Opening
+2010-07-13 unit Assets:Broker:B0 1 VTI @197.9813 USD
+2010-08-16 price VWRL 164.244 SGD
+2010-09-21 bal Assets:Bank:B0 10225 USD Equity:Opening
+2010-10-09 tfr Assets:Broker:B0 Expenses:Food 1683.4168 USD
+2010-10-19 yield Assets:Bank:B0 100.5550 USD
+2010-11-25 spend Food Assets:Bank:B0 862.627 USD
+2010-12-26 bal Assets:Bank:B0 9346 USD Equity:Opening
+2010-12-30 yield Assets:Broker:B0 VTI 100 USD
+2011-01-16 price VTI 419 GBP
+2011-02-18 tfr Equity:Opening Expenses:Rent 1882 USD
+2011-03-19 price VCSH 372.90 EUR

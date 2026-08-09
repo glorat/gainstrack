@@ -1,0 +1,50 @@
+1900-01-01 commodity VWRL
+  name: VWRL Fund
+  tags: equity,global
+  ticker: VWRL.X
+2010-02-09 open Equity:Opening USD
+  multiAsset: true
+2010-02-21 open Assets:Bank:B0 USD
+  fundingAccount: Equity:Opening
+2010-03-18 open Assets:Bank:B1 USD
+  fundingAccount: Equity:Opening
+2010-04-03 open Assets:Bank:B2 EUR
+  fundingAccount: Equity:Opening
+2010-04-06 open Assets:Broker:B0 USD
+  multiAsset: true
+  fundingAccount: Assets:Bank:B2
+2010-05-13 open Income:Salary USD
+  fundingAccount: Assets:Bank:B2
+2010-05-19 open Income:Interest USD
+  fundingAccount: Assets:Bank:B0
+2010-06-24 open Expenses:Rent USD
+  fundingAccount: Assets:Bank:B1
+2010-07-01 open Expenses:Travel USD
+  fundingAccount: Assets:Bank:B2
+2010-07-22 open Liabilities:Card USD
+  fundingAccount: Assets:Bank:B2
+2010-07-23 spend Rent Assets:Bank:B1 13.3742 USD
+2010-07-31 earn Income:Salary 7337.777 USD
+2010-09-07 yield Assets:Bank:B1 21.851 USD
+2010-09-22 fund Assets:Bank:B1 Expenses:Rent 14536 USD
+2010-10-11 tfr Assets:Bank:B1 Equity:Opening 939 USD
+2010-11-09 adj Assets:Bank:B1 14116.44 USD Equity:Opening
+2010-11-17 trade Assets:Broker:B0 46 VCSH @185.0808 USD
+2010-12-11 spend Expenses:Rent Assets:Bank:B0 346 USD
+2010-12-14 bal Assets:Bank:B2 1321.8676 EUR Equity:Opening
+2010-12-24 adj Assets:Bank:B2 25367.258 EUR Equity:Opening
+2011-01-06 yield Assets:Bank:B2 127.1850 EUR
+2011-01-27 trade Assets:Broker:B0 178 FTSE @46 USD C4.5218 USD
+2011-03-05 spend Travel 166.816 USD
+2011-03-19 unit Assets:Broker:B0 81 BRK-B @92 USD
+2011-03-25 yield Assets:Bank:B0 26 USD
+2011-04-23 fund Assets:Bank:B1 Assets:Broker:B0 3354.4703 USD
+2011-05-01 unit Assets:Broker:B0 158 IVV @251 USD
+2011-05-26 trade Assets:Broker:B0 17 FTSE @154 USD C6.87 USD
+2011-06-12 spend Rent 451.34 USD
+2011-06-29 fund Assets:Broker:B0 14286.274 USD
+2011-07-29 unit Assets:Broker:B0 455 BRK-B @167 USD
+2011-08-03 trade Assets:Broker:B0 183 VWRL @441.2952 USD
+2011-09-09 yield Assets:Bank:B1 33.003 USD
+2011-09-13 price VWRL 218.335 HKD
+2011-10-03 price VWRL 76.581 SGD

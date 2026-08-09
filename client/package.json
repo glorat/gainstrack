@@ -16,7 +16,8 @@
     "test:unit:ci": "vitest run --reporter=verbose",
     "fixtures:local": "DUMP_LOCAL_FIXTURES=1 vitest run src/lib/__tests__/dumpLocalFixtures.spec.ts --reporter=verbose",
     "test:rules": "firebase emulators:exec --only firestore --project gainstrack-rules-test \"vitest run src/lib/ledger/__tests__/firestoreRules.spec.ts\"",
-    "type-check": "vue-tsc --noEmit"
+    "type-check": "vue-tsc --noEmit",
+    "fixtures:fuzz": "DUMP_FUZZ_CORPUS=1 vitest run src/lib/__tests__/dumpFuzzCorpus.spec.ts --reporter=verbose"
   },
   "dependencies": {
     "@codemirror/state": "^6.6.0",

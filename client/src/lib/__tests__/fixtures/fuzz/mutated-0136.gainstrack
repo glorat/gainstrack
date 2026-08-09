@@ -1,0 +1,57 @@
+option "operating_currency" "GBP"
+2010-01-22 open Equity:Opening GBP
+  multiAsset: true
+2010-02-01 open Assets:Bank:B0 EUR
+  fundingAccount: Equity:Opening
+2010-02-27 open Assets:Bank:B1 USD
+  fundingAccount: Equity:Opening
+2010-03-31 open Assets:Broker:B0 HKD
+  multiAsset: true
+  fundingAccount: Assets:Bank:B1
+2010-04-19 open Assets:Broker:B1 GBP
+  multiAsset: true
+  fundingAccount: Assets:Bank:B0
+2010-05-04 open Income:Bonus GBP
+  fundingAccount: Assets:Bank:B1
+2010-06-01 open Income:Interest GBP
+  fundingAccount: Assets:Bank:B0
+2010-06-29 open Expenses:Food GBP
+  fundingAccount: Assets:Bank:B1
+2010-07-02 open Expenses:Rent GBP
+  fundingAccount: Assets:Bank:B1
+2010-08-07 open Expenses:Travel GBP
+  fundingAccount: Assets:Bank:B0
+2010-09-12 open Liabilities:Card GBP
+  fundingAccount: Assets:Bank:B0
+2010-10-19 earn Bonus 7084.053 GBP
+2019-13-45 earn Interest Assets:Bank:B0 8628 GBP
+2010-11-11 trade Assets:Broker:B0 102 FTSE @367.8367 HKD
+2010-11-16 earn Income:Interest 813 GBP
+2010-12-24 bal Assets:Bank:B1 10407.396 USD Equity:Opening
+2011-01-25 fund Assets:Broker:B0 15356.0146 HKD
+2011-02-26 spend Travel 62 GBP
+2011-03-19 price VCSH 211.6279 USD
+2011-04-11 unit Assets:Broker:B0 38 IVV @286.840 HKD
+2011-04-18 spend Expenses:Food 97.6760 GBP
+2011-05-16 spend Expenses:Food 355.985 GBP
+2011-06-24 spend Expenses:Food 294 GBP
+2011-07-03 tfr Assets:Broker:B1 Equity:Opening 4167.2432 GBP
+2011-07-16 tfr Equity:Opening Assets:Bank:B0 2272.384 GBP 1637.0409 EUR
+2011-08-06 trade Assets:Broker:B0 55 VTI @90 HKD
+2011-09-04 earn Interest 3807 GBP
+2011-09-27 earn Income:Interest 3133.0333 GBP
+2011-10-27 earn Income:Bonus 7836.668 GBP
+2011-11-16 earn Income:Bonus 108.20 GBP
+2011-12-22 unit Assets:Broker:B0 490 FTSE @252.8176 HKD
+2012-01-27 trade Assets:Broker:B1 45 VWRL @247 GBP C6.412 GBP
+2012-02-11 price VTI 199 EUR
+2012-03-06 spend Rent 761.54 GBP
+2012-03-25 price VTI 360 GBP
+2012-04-13 spend Travel 662.725 GBP
+2012-04-21 adj Assets:Bank:B1 13785.675 USD Equity:Opening
+2012-04-23 yield Assets:Bank:B1 55.725 USD
+2012-05-02 price VTI 427.708 SGD
+2012-05-27 bal Assets:Bank:B0 1692.5935 EUR Equity:Opening
+2012-06-19 tfr Assets:Bank:B0 Assets:Broker:B0 4841.0934 EUR 2670.16 HKD
+2012-06-23 price VTI 13 HKD
+2012-07-20 price FTSE 234.7728 SGD

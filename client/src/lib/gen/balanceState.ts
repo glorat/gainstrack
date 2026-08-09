@@ -58,13 +58,40 @@ export class GBalanceState {
     return found ? val : ZERO;
   }
 
+  /**
+   * Scala `getAccountValue` wrapped in a caller-supplied currency. Only correct where Scala
+   * likewise supplies the currency itself (the `unit` prior balance, which is denominated in
+   * the security) — see `getAccountBalance` for the case where it must not be assumed.
+   */
   getBalance(accountId: string, dateStr: string, ccy: string): GAmount {
     return new GAmount(this.getAccountValue(accountId, dateStr), ccy);
+  }
+
+  /**
+   * Scala `BalanceState.getBalance`: denominated in the ACCOUNT's own currency, read off its
+   * series — `val ccy = balances(account).ccy`.
+   *
+   * The distinction is load-bearing. An `adj`/`bal` states a balance in some currency, and the
+   * adjustment is the difference between that and the current balance. If the prior value is
+   * stamped with the currency the COMMAND used rather than the one the ACCOUNT is in, the
+   * subtraction can never disagree, and a ledger asserting a SGD balance on a EUR account
+   * silently produces a nonsense adjustment instead of being rejected.
+   */
+  getAccountBalance(accountId: string, dateStr: string): GAmount {
+    const s = this.series.get(accountId);
+    // Scala indexes the map directly, so an unknown account throws rather than defaulting.
+    if (!s) throw new Error(`${accountId} must be populated`);
+    return new GAmount(this.getAccountValue(accountId, dateStr), s.ccy);
   }
 
   private processTx(tx: RawTx): void {
     for (const p of tx.postings) {
       if (!p.value) continue;
+      // `BalanceState.process(tx)`: every posted account must already have a series, which it
+      // gets when the account is opened. Posting to one that has none means the account was
+      // never opened and was not interpolated into existence either — `entry()` would quietly
+      // conjure a series and the ledger would balance against an account that does not exist.
+      if (!this.series.has(p.account)) throw new Error(`${p.account} must be populated`);
       const newBalance = p.value.number.plus(this.latest(p.account));
       this.setPoint(p.account, isoToIntDate(tx.postDate), newBalance);
     }
@@ -91,7 +118,7 @@ export class GBalanceState {
       const account = this.acct.find(cmd.accountId);
       const targetAccountId = account?.options.multiAsset ? Acct.subAccount(cmd.accountId, cmd.balance.ccy) : cmd.accountId;
       const adjDate = adjustmentDate(cmd);
-      const oldValue = this.getBalance(targetAccountId, minusDay(adjDate), cmd.balance.ccy);
+      const oldValue = this.getAccountBalance(targetAccountId, minusDay(adjDate));
       adjustmentTransfers(cmd.accountId, cmd.adjAccount, cmd.balance, oldValue, adjDate, this.acct.lookup)
         .map(transferToTransaction).forEach(tx => this.processTx(tx));
     }

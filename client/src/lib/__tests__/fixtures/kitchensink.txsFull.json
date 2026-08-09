@@ -1,0 +1,335 @@
+[ {
+  "id" : 1,
+  "postDate" : "2000-01-02",
+  "description" : "Fund 10000 GBP",
+  "postings" : [ {
+    "account" : "Equity:Opening:GBP",
+    "value" : {
+      "number" : -10000,
+      "ccy" : "GBP"
+    }
+  }, {
+    "account" : "Assets:Bank:Current",
+    "value" : {
+      "number" : 10000,
+      "ccy" : "GBP"
+    }
+  } ]
+}, {
+  "id" : 2,
+  "postDate" : "2000-01-02",
+  "description" : "Fund 5000.00 USD",
+  "postings" : [ {
+    "account" : "Equity:Opening:USD",
+    "value" : {
+      "number" : -5000.00,
+      "ccy" : "USD"
+    }
+  }, {
+    "account" : "Assets:Bank:Savings",
+    "value" : {
+      "number" : 5000.00,
+      "ccy" : "USD"
+    }
+  } ]
+}, {
+  "id" : 3,
+  "postDate" : "2000-02-01",
+  "description" : "Earn 2500.00 GBP Salary",
+  "postings" : [ {
+    "account" : "Income:Salary",
+    "value" : {
+      "number" : -2500.00,
+      "ccy" : "GBP"
+    }
+  }, {
+    "account" : "Assets:Bank:Current",
+    "value" : {
+      "number" : 2500.00,
+      "ccy" : "GBP"
+    }
+  } ]
+}, {
+  "id" : 4,
+  "postDate" : "2000-02-02",
+  "description" : "Earn 2500.00 GBP Income:Salary",
+  "postings" : [ {
+    "account" : "Income:Salary",
+    "value" : {
+      "number" : -2500.00,
+      "ccy" : "GBP"
+    }
+  }, {
+    "account" : "Assets:Bank:Current",
+    "value" : {
+      "number" : 2500.00,
+      "ccy" : "GBP"
+    }
+  } ]
+}, {
+  "id" : 5,
+  "postDate" : "2000-02-03",
+  "description" : "Spend 42.50 GBP Food",
+  "postings" : [ {
+    "account" : "Assets:Bank:Current",
+    "value" : {
+      "number" : -42.50,
+      "ccy" : "GBP"
+    }
+  }, {
+    "account" : "Expenses:Food",
+    "value" : {
+      "number" : 42.50,
+      "ccy" : "GBP"
+    }
+  } ]
+}, {
+  "id" : 6,
+  "postDate" : "2000-02-04",
+  "description" : "Spend 17.25 GBP Expenses:Food",
+  "postings" : [ {
+    "account" : "Assets:Bank:Current",
+    "value" : {
+      "number" : -17.25,
+      "ccy" : "GBP"
+    }
+  }, {
+    "account" : "Expenses:Food",
+    "value" : {
+      "number" : 17.25,
+      "ccy" : "GBP"
+    }
+  } ]
+}, {
+  "id" : 7,
+  "postDate" : "2000-03-01",
+  "description" : "Transfer 3000 GBP Assets:Bank:Current -> Assets:Broker",
+  "postings" : [ {
+    "account" : "Assets:Bank:Current",
+    "value" : {
+      "number" : -3000,
+      "ccy" : "GBP"
+    }
+  }, {
+    "account" : "Assets:Broker:GBP",
+    "value" : {
+      "number" : 3000,
+      "ccy" : "GBP"
+    }
+  } ]
+}, {
+  "id" : 8,
+  "postDate" : "2000-03-01",
+  "description" : "Transfer 3000 GBP Assets:Bank:Current -> Assets:Broker",
+  "postings" : [ {
+    "account" : "Assets:Broker:GBP",
+    "value" : {
+      "number" : -3000,
+      "ccy" : "GBP"
+    }
+  }, {
+    "account" : "Income:Broker:GBP",
+    "value" : {
+      "number" : 3000,
+      "ccy" : "GBP"
+    }
+  } ]
+}, {
+  "id" : 9,
+  "postDate" : "2000-03-02",
+  "description" : "Transfer 1000 USD Assets:Bank:Savings -> Assets:Broker@1.281230",
+  "postings" : [ {
+    "account" : "Assets:Bank:Savings",
+    "value" : {
+      "number" : -1000,
+      "ccy" : "USD"
+    }
+  }, {
+    "account" : "Assets:Broker:GBP",
+    "value" : {
+      "number" : 780.50,
+      "ccy" : "GBP"
+    },
+    "price" : {
+      "number" : 1.281229980781550288276745675848815,
+      "ccy" : "USD"
+    }
+  } ]
+}, {
+  "id" : 10,
+  "postDate" : "2000-03-02",
+  "description" : "Transfer 1000 USD Assets:Bank:Savings -> Assets:Broker@1.281230",
+  "postings" : [ {
+    "account" : "Assets:Broker:GBP",
+    "value" : {
+      "number" : -780.50,
+      "ccy" : "GBP"
+    }
+  }, {
+    "account" : "Income:Broker:GBP",
+    "value" : {
+      "number" : 780.50,
+      "ccy" : "GBP"
+    }
+  } ]
+}, {
+  "id" : 11,
+  "postDate" : "2000-03-03",
+  "description" : "Transfer 250 GBP Assets:Bank:Current -> Liabilities:CreditCard",
+  "postings" : [ {
+    "account" : "Assets:Bank:Current",
+    "value" : {
+      "number" : -250,
+      "ccy" : "GBP"
+    }
+  }, {
+    "account" : "Liabilities:CreditCard",
+    "value" : {
+      "number" : 250,
+      "ccy" : "GBP"
+    }
+  } ]
+}, {
+  "id" : 12,
+  "postDate" : "2000-04-01",
+  "description" : "BUY 100 VWRL @25.00 GBP",
+  "postings" : [ {
+    "account" : "Assets:Broker:GBP",
+    "value" : {
+      "number" : -2500.00,
+      "ccy" : "GBP"
+    }
+  }, {
+    "account" : "Assets:Broker:VWRL",
+    "value" : {
+      "number" : 100,
+      "ccy" : "VWRL"
+    },
+    "price" : {
+      "number" : 25.00,
+      "ccy" : "GBP"
+    }
+  } ]
+}, {
+  "id" : 13,
+  "postDate" : "2000-04-02",
+  "description" : "BUY 50 VWRL @26.50 GBP",
+  "postings" : [ {
+    "account" : "Assets:Broker:GBP",
+    "value" : {
+      "number" : -1334.95,
+      "ccy" : "GBP"
+    }
+  }, {
+    "account" : "Assets:Broker:VWRL",
+    "value" : {
+      "number" : 50,
+      "ccy" : "VWRL"
+    },
+    "price" : {
+      "number" : 26.50,
+      "ccy" : "GBP"
+    }
+  }, {
+    "account" : "Expenses:Broker:GBP",
+    "value" : {
+      "number" : 9.95,
+      "ccy" : "GBP"
+    }
+  } ]
+}, {
+  "id" : 14,
+  "postDate" : "2000-05-01",
+  "description" : "SELL -30 VWRL @28.00 GBP",
+  "postings" : [ {
+    "account" : "Assets:Broker:GBP",
+    "value" : {
+      "number" : 830.05,
+      "ccy" : "GBP"
+    }
+  }, {
+    "account" : "Assets:Broker:VWRL",
+    "value" : {
+      "number" : -30,
+      "ccy" : "VWRL"
+    },
+    "price" : {
+      "number" : 28.00,
+      "ccy" : "GBP"
+    }
+  }, {
+    "account" : "Expenses:Broker:GBP",
+    "value" : {
+      "number" : 9.95,
+      "ccy" : "GBP"
+    }
+  } ]
+}, {
+  "id" : 15,
+  "postDate" : "2000-06-01",
+  "description" : "Current yield 12.00 GBP",
+  "postings" : [ {
+    "account" : "Income:Bank:Current",
+    "value" : {
+      "number" : -12.00,
+      "ccy" : "GBP"
+    }
+  }, {
+    "account" : "Equity:Opening:GBP",
+    "value" : {
+      "number" : 12.00,
+      "ccy" : "GBP"
+    }
+  } ]
+}, {
+  "id" : 16,
+  "postDate" : "2000-06-02",
+  "description" : "VWRL yield 31.20 GBP",
+  "postings" : [ {
+    "account" : "Income:Broker:VWRL",
+    "value" : {
+      "number" : -31.20,
+      "ccy" : "GBP"
+    }
+  }, {
+    "account" : "Assets:Broker:GBP",
+    "value" : {
+      "number" : 31.20,
+      "ccy" : "GBP"
+    }
+  } ]
+}, {
+  "id" : 17,
+  "postDate" : "2000-06-02",
+  "description" : "VWRL yield 31.20 GBP",
+  "postings" : [ {
+    "account" : "Assets:Broker:GBP",
+    "value" : {
+      "number" : -31.20,
+      "ccy" : "GBP"
+    }
+  }, {
+    "account" : "Income:Broker:GBP",
+    "value" : {
+      "number" : 31.20,
+      "ccy" : "GBP"
+    }
+  } ]
+}, {
+  "id" : 18,
+  "postDate" : "2000-06-30",
+  "description" : "Adjustment: 4000.00 USD -> 4100.00 USD",
+  "postings" : [ {
+    "account" : "Equity:Opening:USD",
+    "value" : {
+      "number" : -100.00,
+      "ccy" : "USD"
+    }
+  }, {
+    "account" : "Assets:Bank:Savings",
+    "value" : {
+      "number" : 100.00,
+      "ccy" : "USD"
+    }
+  } ]
+} ]

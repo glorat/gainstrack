@@ -1,0 +1,52 @@
+option "operating_currency" "GBP"
+2010-01-13 open Equity:Opening GBP
+  multiAsset: true
+2010-01-18 open Assets:Bank:B0 GBP
+  fundingAccount: Equity:Opening
+2010-02-01 open Assets:Broker:B0 EUR
+  multiAsset: true
+  fundingAccount: Assets:Bank:B0
+2010-02-28 open Income:Salary GBP
+  fundingAccount: Assets:Bank:B0
+2010-04-06 open Income:Bonus GBP
+  fundingAccount: Assets:Bank:B0
+2010-05-08 open Income:Interest GBP
+  fundingAccount: Assets:Bank:B0
+2010-06-03 open Expenses:Food GBP
+  fundingAccount: Assets:Bank:B0
+2010-06-11 open Expenses:Rent GBP
+  fundingAccount: Assets:Bank:B0
+2010-06-19 spend Rent 430 GBP
+2010-07-21 bal Assets:Bank:B0 14745.1009 GBP Equity:Opening
+2010-08-21 tfr Assets:Bank:B0 Equity:Opening 4606.653 GBP
+2010-09-29 adj Assets:Bank:B0 -941.8383 GBP Equity:Opening
+2010-11-04 trade Assets:Broker:B0 185 VWRL @475 EUR
+2010-12-11 adj Assets:Bank:B0 23845 GBP Equity:Opening
+2011-01-19 spend Rent 127.99 GBP
+2011-02-23 trade Assets:Broker:B0 128 VWRL @398 EUR C16 EUR
+2011-02-25 tfr Assets:Bank:B0 Assets:Broker:B0 3614.55 GBP
+2011-03-22 fund Assets:Broker:B0 10153.44 EUR
+2011-03-31 yield Assets:Broker:B0 VWRL 162 EUR
+2011-04-23 trade Assets:Broker:B0 -18 VWRL @313.541 EUR
+2011-05-09 adj Assets:Bank:B0 17314.7313 GBP Equity:Opening
+2011-06-04 adj Assets:Bank:B0 22083 GBP Equity:Opening
+2011-06-08 spend Food 594.4661 GBP
+2011-07-15 trade Assets:Broker:B0 143 VWRL @335.56 EUR C12.5698 EUR
+2011-08-08 price VWRL 218.22 USD
+2011-09-15 yield Assets:Bank:B0 29 GBP
+2011-09-17 yield Assets:Broker:B0 VWRL 188 EUR
+2011-10-07 spend Expenses:Food 145.0875 GBP
+2011-11-12 tfr Assets:Broker:B0 Expenses:Food 3200.159 EUR 2436.169 GBP
+2011-12-09 yield Assets:Broker:B0 VWRL 109.024 EUR
+2011-12-10 trade Assets:Broker:B0 -16 VWRL @281 EUR C12 EUR
+2011-12-21 fund Assets:Bank:B0 14294.568 GBP
+2011-12-29 earn Income:Interest 8111 GBP
+2011-12-30 fund Assets:Broker:B0 Assets:Bank:B0 19807.2364 EUR
+2012-01-28 spend Food Assets:Bank:B0 250.8792 GBP
+2012-02-06 spend Expenses:Food Assets:Bank:B0 109 GBP
+2012-02-10 trade Assets:Broker:B0 48 VWRL @145.63 EUR
+2012-03-13 adj Assets:Bank:B0 25599 GBP Equity:Opening
+2012-03-30 fund Assets:Bank:B0 795.8334 GBP
+2012-04-20 fund Assets:Bank:B0 11330.51 GBP
+2012-05-18 yield Assets:Bank:B0 119.9761 GBP
+2012-06-09 adj Assets:Bank:B0 2112 GBP Equity:Opening

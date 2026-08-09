@@ -1,0 +1,35 @@
+option "operating_currency" "EUR"
+1900-01-01 commodity FTSE
+  name: FTSE Fund
+  tags: equity,global
+  ticker: FTSE.X
+2010-01-13 open Equity:Opening EUR
+  multiAsset: true
+2010-02-12 open Assets:Bank:B0 EUR
+  fundingAccount: Equity:Opening
+2010-03-23 open Assets:Bank:B1 HKD
+  fundingAccount: Equity:Opening
+2010-04-01 open Assets:Broker:B0 EUR
+  multiAsset: true
+  fundingAccount: Assets:Bank:B0
+2010-04-14 open Income:Salary EUR
+  fundingAccount: Assets:Bank:B1
+2010-04-19 open Income:Bonus EUR
+  fundingAccount: Assets:Bank:B0
+2010-05-26 open Income:Interest EUR
+  fundingAccount: Assets:Bank:B0
+2010-06-13 open Liabilities:Card EUR
+  fundingAccount: Assets:Bank:B0
+2010-06-23 unit Assets:Broker:B0 47 IVV @332.4988 EUR
+2010-07-25 bal Assets:Bank:B1 18746.82 HKD Equity:Opening
+2010-07-26 tfr Assets:Bank:B0 Income:Salary 1219 EUR
+2010-08-16 trade Assets:Broker:B0 93 VCSH @410 EUR
+2010-09-14 fund Assets:Bank:B0 14478.077 EUR
+2010-10-22 adj Assets:Bank:B1 22017.3703 HKD Equity:Opening
+2010-11-21 earn Bonus Assets:Bank:B0 2818.5879 EUR
+2010-12-24 tfr Assets:Broker:B0 Assets:Bank:B0 4737 EUR
+2010-12-31 unit Assets:Broker:B0 491 IVV @180 EUR
+2011-01-07 bal Assets:Bank:B1 14189 HKD Equity:Opening
+2011-02-16 tfr Assets:Bank:B1 Equity:Opening 2657 HKD 226.94 EUR
+2011-03-06 tfr Equity:Opening Assets:Broker:B0 3709 EUR
+2011-04-07 fund Assets:Bank:B1 2315.58 HKD

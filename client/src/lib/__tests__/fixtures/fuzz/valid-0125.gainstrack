@@ -1,0 +1,55 @@
+option "operating_currency" "SGD"
+2010-01-23 open Equity:Opening SGD
+  multiAsset: true
+2010-02-17 open Assets:Bank:B0 HKD
+  fundingAccount: Equity:Opening
+2010-03-08 open Assets:Broker:B0 SGD
+  multiAsset: true
+  fundingAccount: Assets:Bank:B0
+2010-04-16 open Assets:Broker:B1 SGD
+  multiAsset: true
+  fundingAccount: Assets:Bank:B0
+2010-05-21 open Income:Interest SGD
+  fundingAccount: Assets:Bank:B0
+2010-06-17 open Expenses:Food SGD
+  fundingAccount: Assets:Bank:B0
+2010-07-07 open Expenses:Travel SGD
+  fundingAccount: Assets:Bank:B0
+2010-07-10 fund Assets:Bank:B0 11544.084 HKD
+2010-07-16 fund Assets:Bank:B0 17416.64 HKD
+2010-08-13 yield Assets:Bank:B0 132.80 HKD
+2010-09-19 adj Assets:Bank:B0 4400 HKD Equity:Opening
+2010-10-06 spend Travel 497.66 SGD
+2010-10-21 price VCSH 28.27 EUR
+2010-11-23 unit Assets:Broker:B0 491 VCSH @35.1567 SGD
+2010-12-30 earn Income:Interest Assets:Bank:B0 8688 SGD
+2011-02-02 price BRK-B 26 SGD
+2011-02-10 yield Assets:Bank:B0 44.12 HKD
+2011-03-07 trade Assets:Broker:B1 118 VTI @87.91 SGD
+2011-03-16 earn Income:Interest 8980.32 SGD
+2011-03-31 unit Assets:Broker:B1 34 VTI @263 SGD
+2011-04-29 spend Expenses:Travel 734.4459 SGD
+2011-05-23 tfr Assets:Broker:B1 Equity:Opening 2344.00 SGD
+2011-06-17 bal Assets:Bank:B0 10259.83 HKD Equity:Opening
+2011-07-06 earn Income:Interest Assets:Bank:B0 8787.4963 SGD
+2011-07-29 price BRK-B 257.552 USD
+2011-08-28 tfr Assets:Bank:B0 Expenses:Food 986 HKD 4434 SGD
+2011-09-04 yield Assets:Bank:B0 53 HKD
+2011-09-25 unit Assets:Broker:B0 367 BRK-B @246 SGD
+2011-10-20 earn Interest Assets:Bank:B0 5564.52 SGD
+2011-11-29 unit Assets:Broker:B0 426 VWRL @53.75 SGD
+2011-12-24 tfr Assets:Broker:B0 Assets:Bank:B0 1552.4489 SGD 2305.1266 HKD
+2012-01-09 unit Assets:Broker:B1 58 VWRL @14.9745 SGD
+2012-01-28 earn Interest 2156 SGD
+2012-01-30 bal Assets:Bank:B0 25062 HKD Equity:Opening
+2012-02-11 spend Expenses:Food 734 SGD
+2012-02-15 yield Assets:Broker:B0 VCSH 116.06 SGD
+2012-02-19 fund Assets:Broker:B1 Assets:Bank:B0 6579.546 SGD
+2012-03-22 spend Expenses:Food 107 SGD
+2012-03-26 earn Interest 6658.154 SGD
+2012-04-06 tfr Equity:Opening Assets:Broker:B0 3721.596 SGD
+2012-04-13 tfr Assets:Broker:B1 Equity:Opening 265.789 SGD
+2012-05-03 adj Assets:Bank:B0 7018.04 HKD Equity:Opening
+2012-05-26 trade Assets:Broker:B0 55 VCSH @220.913 SGD C5.65 SGD
+2012-07-01 spend Expenses:Food Assets:Bank:B0 389.66 SGD
+2012-07-20 spend Expenses:Food 446.381 SGD

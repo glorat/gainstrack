@@ -1,0 +1,43 @@
+option "operating_currency" "EUR"
+1900-01-01 commodity IVV
+  name: IVV Fund
+  tags: equity,global
+  ticker: IVV.X
+2010-01-23 open Equity:Opening EUR
+  multiAsset: true
+2010-02-13 open Assets:Bank:B0 EUR
+  fundingAccount: Equity:Opening
+2010-03-16 open Assets:Bank:B1 EUR
+  fundingAccount: Equity:Opening
+2010-03-29 open Assets:Bank:B2 USD
+  fundingAccount: Equity:Opening
+2010-05-08 open Assets:Broker:B0 EUR
+  multiAsset: true
+  automaticReinvestment: true
+  fundingAccount: Assets:Bank:B0
+2010-05-10 open Income:Salary EUR
+  fundingAccount: Assets:Bank:B1
+2010-06-04 open Income:Bonus EUR
+  fundingAccount: Assets:Bank:B0
+2010-06-28 open Income:Interest EUR
+  fundingAccount: Assets:Bank:B2
+2010-07-24 open Expenses:Food EUR
+  fundingAccount: Assets:Bank:B2
+2010-09-01 open Expenses:Rent EUR
+  fundingAccount: Assets:Bank:B0
+2010-09-15 open Expenses:Travel EUR
+  fundingAccount: Assets:Bank:B0
+2010-10-14 price VTI 132 USD
+2010-10-17 adj Assets:Bank:B2 3078.138 USD Equity:Opening
+2010-11-06 fund Assets:Bank:B1 4946.997 EUR
+2010-12-11 trade Assets:Broker:B0 56 VWRL @185 EUR C15.400 EUR
+2011-01-20 price IVV 182.6731 HKD
+2011-02-11 earn Income:Bonus Assets:Bank:B2 3043.9429 EUR
+2011-03-13 earn Income:Interest 6519 EUR
+2011-04-17 tfr Assets:Broker:B0 Expenses:Rent 2064.63 EUR
+2011-04-21 spend Expenses:Travel 147.65 EUR
+2011-05-05 tfr Assets:Bank:B2 Assets:Bank:B0 3469.91 USD 3374.741 EUR
+2011-06-05 spend Travel Assets:Bank:B2 314.88 EUR
+2011-06-11 earn Bonus 8676.91 EUR
+2011-06-13 earn Salary 6627.4734 EUR
+2011-06-23 trade Assets:Broker:B0 -11 VWRL @462.066 EUR

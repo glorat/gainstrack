@@ -1,0 +1,60 @@
+option "operating_currency" "GBP"
+1900-01-01 commodity VCSH
+  name: VCSH Fund
+  tags: equity,global
+  ticker: VCSH.X
+2010-01-26 open Equity:Opening GBP
+  multiAsset: true
+2010-02-19 open Assets:Bank:B0 GBP
+  fundingAccount: Equity:Opening
+2010-03-07 open Assets:Bank:B1 GBP
+  fundingAccount: Equity:Opening
+2010-03-29 open Assets:Bank:B2 GBP
+  fundingAccount: Equity:Opening
+2010-04-10 open Assets:Broker:B0 GBP
+  multiAsset: true
+  automaticReinvestment: true
+  fundingAccount: Assets:Bank:B0
+2010-05-17 open Assets:Broker:B1 GBP
+  multiAsset: true
+  automaticReinvestment: true
+  fundingAccount: Assets:Bank:B2
+2010-06-22 open Income:Salary GBP
+  fundingAccount: Assets:Bank:B0
+2010-07-03 open Income:Interest GBP
+  fundingAccount: Assets:Bank:B2
+2010-07-06 open Expenses:Food GBP
+  fundingAccount: Assets:Bank:B1
+2010-08-03 open Expenses:Travel GBP
+  fundingAccount: Assets:Bank:B0
+2010-08-26 open Liabilities:Card GBP
+  fundingAccount: Assets:Bank:B0
+2010-09-16 price VTI 193.20 GBP
+2010-10-25 bal Assets:Bank:B2 21800 GBP Equity:Opening
+2010-11-23 price BRK-B 8 GBP
+2010-11-30 trade Assets:Broker:B0 98 VCSH @443.272 GBP C8.580 GBP
+2010-12-23 spend Food Assets:Bank:B2 33 GBP
+2011-01-22 bal Assets:Bank:B0 10185.456 GBP Equity:Opening
+2011-02-01 price BRK-B 349.13 EUR
+2011-02-11 adj Assets:Bank:B0 13513 GBP Equity:Opening
+2011-03-20 tfr Assets:Bank:B2 Equity:Opening 1480 GBP
+2011-04-24 earn Income:Salary Assets:Bank:B1 7518.717 GBP
+2011-04-29 price VTI 73.0610 HKD
+2011-06-01 earn Income:Salary Assets:Bank:B1 1419 GBP
+2011-06-16 fund Assets:Broker:B1 6580 GBP
+2011-06-25 fund Assets:Broker:B1 13444.480 GBP
+2011-08-01 price FTSE 116.27 EUR
+2011-08-27 earn Income:Interest 3810 GBP
+2011-09-20 tfr Assets:Bank:B1 Equity:Opening 648.889 GBP
+2011-09-28 adj Assets:Bank:B0 6376 GBP Equity:Opening
+2011-10-26 adj Assets:Bank:B0 12908.865 GBP Equity:Opening
+2011-11-25 fund Assets:Bank:B0 Assets:Bank:B2 17834.5959 GBP
+2011-12-30 yield Assets:Broker:B0 VCSH 40 GBP
+2012-01-14 price BRK-B 122.78
+2012-01-18 price BRK-B 315.7613 EUR
+2012-01-31 bal Assets:Bank:B2 4862.5574 GBP Equity:Opening
+2012-02-12 unit Assets:Broker:B0 297 VCSH @182 GBP
+2012-03-10 trade Assets:Broker:B1 34 IVV @465.82 GBP C11 GBP
+2012-03-16 tfr Assets:Bank:B1 Assets:Bank:B0 2602 GBP
+2012-04-09 fund Assets:Broker:B1 16348 GBP
+2012-04-10 tfr Assets:Broker:B1 Assets:Bank:B1 2026.01 GBP

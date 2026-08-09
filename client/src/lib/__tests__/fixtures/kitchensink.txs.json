@@ -1,0 +1,317 @@
+[ {
+  "originIndex" : 10,
+  "postDate" : "2000-01-02",
+  "postings" : [ {
+    "account" : "Equity:Opening:GBP",
+    "value" : {
+      "number" : -10000,
+      "ccy" : "GBP"
+    }
+  }, {
+    "account" : "Assets:Bank:Current",
+    "value" : {
+      "number" : 10000,
+      "ccy" : "GBP"
+    }
+  } ]
+}, {
+  "originIndex" : 11,
+  "postDate" : "2000-01-02",
+  "postings" : [ {
+    "account" : "Equity:Opening:USD",
+    "value" : {
+      "number" : -5000.00,
+      "ccy" : "USD"
+    }
+  }, {
+    "account" : "Assets:Bank:Savings",
+    "value" : {
+      "number" : 5000.00,
+      "ccy" : "USD"
+    }
+  } ]
+}, {
+  "originIndex" : 12,
+  "postDate" : "2000-02-01",
+  "postings" : [ {
+    "account" : "Income:Salary",
+    "value" : {
+      "number" : -2500.00,
+      "ccy" : "GBP"
+    }
+  }, {
+    "account" : "Assets:Bank:Current",
+    "value" : {
+      "number" : 2500.00,
+      "ccy" : "GBP"
+    }
+  } ]
+}, {
+  "originIndex" : 13,
+  "postDate" : "2000-02-02",
+  "postings" : [ {
+    "account" : "Income:Salary",
+    "value" : {
+      "number" : -2500.00,
+      "ccy" : "GBP"
+    }
+  }, {
+    "account" : "Assets:Bank:Current",
+    "value" : {
+      "number" : 2500.00,
+      "ccy" : "GBP"
+    }
+  } ]
+}, {
+  "originIndex" : 14,
+  "postDate" : "2000-02-03",
+  "postings" : [ {
+    "account" : "Assets:Bank:Current",
+    "value" : {
+      "number" : -42.50,
+      "ccy" : "GBP"
+    }
+  }, {
+    "account" : "Expenses:Food",
+    "value" : {
+      "number" : 42.50,
+      "ccy" : "GBP"
+    }
+  } ]
+}, {
+  "originIndex" : 15,
+  "postDate" : "2000-02-04",
+  "postings" : [ {
+    "account" : "Assets:Bank:Current",
+    "value" : {
+      "number" : -17.25,
+      "ccy" : "GBP"
+    }
+  }, {
+    "account" : "Expenses:Food",
+    "value" : {
+      "number" : 17.25,
+      "ccy" : "GBP"
+    }
+  } ]
+}, {
+  "originIndex" : 16,
+  "postDate" : "2000-03-01",
+  "postings" : [ {
+    "account" : "Assets:Bank:Current",
+    "value" : {
+      "number" : -3000,
+      "ccy" : "GBP"
+    }
+  }, {
+    "account" : "Assets:Broker:GBP",
+    "value" : {
+      "number" : 3000,
+      "ccy" : "GBP"
+    }
+  } ]
+}, {
+  "originIndex" : 16,
+  "postDate" : "2000-03-01",
+  "postings" : [ {
+    "account" : "Assets:Broker:GBP",
+    "value" : {
+      "number" : -3000,
+      "ccy" : "GBP"
+    }
+  }, {
+    "account" : "Income:Broker:GBP",
+    "value" : {
+      "number" : 3000,
+      "ccy" : "GBP"
+    }
+  } ]
+}, {
+  "originIndex" : 17,
+  "postDate" : "2000-03-02",
+  "postings" : [ {
+    "account" : "Assets:Bank:Savings",
+    "value" : {
+      "number" : -1000,
+      "ccy" : "USD"
+    }
+  }, {
+    "account" : "Assets:Broker:GBP",
+    "value" : {
+      "number" : 780.50,
+      "ccy" : "GBP"
+    },
+    "price" : {
+      "number" : 1.281229980781550288276745675848815,
+      "ccy" : "USD"
+    }
+  } ]
+}, {
+  "originIndex" : 17,
+  "postDate" : "2000-03-02",
+  "postings" : [ {
+    "account" : "Assets:Broker:GBP",
+    "value" : {
+      "number" : -780.50,
+      "ccy" : "GBP"
+    }
+  }, {
+    "account" : "Income:Broker:GBP",
+    "value" : {
+      "number" : 780.50,
+      "ccy" : "GBP"
+    }
+  } ]
+}, {
+  "originIndex" : 18,
+  "postDate" : "2000-03-03",
+  "postings" : [ {
+    "account" : "Assets:Bank:Current",
+    "value" : {
+      "number" : -250,
+      "ccy" : "GBP"
+    }
+  }, {
+    "account" : "Liabilities:CreditCard",
+    "value" : {
+      "number" : 250,
+      "ccy" : "GBP"
+    }
+  } ]
+}, {
+  "originIndex" : 19,
+  "postDate" : "2000-04-01",
+  "postings" : [ {
+    "account" : "Assets:Broker:GBP",
+    "value" : {
+      "number" : -2500.00,
+      "ccy" : "GBP"
+    }
+  }, {
+    "account" : "Assets:Broker:VWRL",
+    "value" : {
+      "number" : 100,
+      "ccy" : "VWRL"
+    },
+    "price" : {
+      "number" : 25.00,
+      "ccy" : "GBP"
+    }
+  } ]
+}, {
+  "originIndex" : 20,
+  "postDate" : "2000-04-02",
+  "postings" : [ {
+    "account" : "Assets:Broker:GBP",
+    "value" : {
+      "number" : -1334.95,
+      "ccy" : "GBP"
+    }
+  }, {
+    "account" : "Assets:Broker:VWRL",
+    "value" : {
+      "number" : 50,
+      "ccy" : "VWRL"
+    },
+    "price" : {
+      "number" : 26.50,
+      "ccy" : "GBP"
+    }
+  }, {
+    "account" : "Expenses:Broker:GBP",
+    "value" : {
+      "number" : 9.95,
+      "ccy" : "GBP"
+    }
+  } ]
+}, {
+  "originIndex" : 21,
+  "postDate" : "2000-05-01",
+  "postings" : [ {
+    "account" : "Assets:Broker:GBP",
+    "value" : {
+      "number" : 830.05,
+      "ccy" : "GBP"
+    }
+  }, {
+    "account" : "Assets:Broker:VWRL",
+    "value" : {
+      "number" : -30,
+      "ccy" : "VWRL"
+    },
+    "price" : {
+      "number" : 28.00,
+      "ccy" : "GBP"
+    }
+  }, {
+    "account" : "Expenses:Broker:GBP",
+    "value" : {
+      "number" : 9.95,
+      "ccy" : "GBP"
+    }
+  } ]
+}, {
+  "originIndex" : 22,
+  "postDate" : "2000-06-01",
+  "postings" : [ {
+    "account" : "Income:Bank:Current",
+    "value" : {
+      "number" : -12.00,
+      "ccy" : "GBP"
+    }
+  }, {
+    "account" : "Equity:Opening:GBP",
+    "value" : {
+      "number" : 12.00,
+      "ccy" : "GBP"
+    }
+  } ]
+}, {
+  "originIndex" : 23,
+  "postDate" : "2000-06-02",
+  "postings" : [ {
+    "account" : "Income:Broker:VWRL",
+    "value" : {
+      "number" : -31.20,
+      "ccy" : "GBP"
+    }
+  }, {
+    "account" : "Assets:Broker:GBP",
+    "value" : {
+      "number" : 31.20,
+      "ccy" : "GBP"
+    }
+  } ]
+}, {
+  "originIndex" : 23,
+  "postDate" : "2000-06-02",
+  "postings" : [ {
+    "account" : "Assets:Broker:GBP",
+    "value" : {
+      "number" : -31.20,
+      "ccy" : "GBP"
+    }
+  }, {
+    "account" : "Income:Broker:GBP",
+    "value" : {
+      "number" : 31.20,
+      "ccy" : "GBP"
+    }
+  } ]
+}, {
+  "originIndex" : 24,
+  "postDate" : "2000-06-30",
+  "postings" : [ {
+    "account" : "Equity:Opening:USD",
+    "value" : {
+      "number" : -100.00,
+      "ccy" : "USD"
+    }
+  }, {
+    "account" : "Assets:Bank:Savings",
+    "value" : {
+      "number" : 100.00,
+      "ccy" : "USD"
+    }
+  } ]
+} ]

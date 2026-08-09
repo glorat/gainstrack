@@ -1,0 +1,46 @@
+option "operating_currency" "GBP"
+2010-02-06 open Equity:Opening GBP
+  multiAsset: true
+2010-03-06 open Assets:Bank:B0 HKD
+  fundingAccount: Equity:Opening
+2010-03-28 open Assets:Bank:B1 GBP
+  fundingAccount: Equity:Opening
+2010-04-21 open Assets:Broker:B0 GBP
+  multiAsset: true
+  fundingAccount: Assets:Bank:B1
+2010-05-12 open Assets:Broker:B1 GBP
+  multiAsset: true
+  fundingAccount: Assets:Bank:B0
+2010-05-19 open Income:Salary GBP
+  fundingAccount: Assets:Bank:B1
+2010-06-15 open Income:Bonus GBP
+  fundingAccount: Assets:Bank:B1
+2010-06-27 open Expenses:Food GBP
+  fundingAccount: Assets:Bank:B0
+2010-07-12 open Expenses:Rent GBP
+  fundingAccount: Assets:Bank:B1
+2010-07-25 tfr Assets:Bank:B0 Expenses:Food 2704.426 HKD 4609.20 GBP
+2010-07-31 fund Assets:Broker:B1 18826.10 GBP
+2010-08-24 trade Assets:Broker:B1 118 FTSE @364.4216 GBP C7.90 GBP
+2010-10-03 adj Assets:Bank:B0 3824 HKD Equity:Opening
+2010-10-16 spend Food 874.40 GBP
+2010-10-29 trade Assets:Broker:B0 133 BRK-B @297.3148 GBP C13.020 GBP
+2010-12-02 trade Assets:Broker:B0 112 BRK-B @221 GBP
+2010-12-17 spend Expenses:Rent 601.4904 GBP
+2011-01-13 price IVV 332 HKD
+2011-01-22 price FTSE 319.21 USD
+2011-02-04 price BRK-B 496.7859 EUR
+2011-03-06 trade Assets:Broker:B0 67 VWRL @489.7198 GBP
+2011-03-12 tfr Assets:Bank:B0 Assets:Bank:B1 3486 HKD
+2011-04-07 price VWRL 245 USD
+2011-04-08 adj Assets:Bank:B0 15202.4862 HKD Equity:Opening
+2011-05-15 price VTI 274.029 EUR
+2011-06-23 spend Expenses:Rent 36 GBP
+2011-06-24 yield Assets:Bank:B0 44.889 HKD
+2011-07-11 bal Assets:Bank:B1 21990.5954 GBP Equity:Opening
+2011-08-08 price VCSH 265.2942 SGD
+2011-08-27 adj Assets:Bank:B1 4049 GBP Equity:Opening
+2011-09-21 price BRK-B 396.46 SGD
+2011-10-30 price FTSE 306.4180 USD
+2011-12-08 price IVV 293 SGD
+2011-12-31 unit Assets:Broker:B0 94 IVV @20.237 GBP

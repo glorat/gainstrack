@@ -1,0 +1,64 @@
+2010-01-07 open Equity:Opening USD
+  multiAsset: true
+2010-01-18 open Assets:Bank:B0 EUR
+  fundingAccount: Equity:Opening
+2010-02-13 open Assets:Bank:B1 USD
+  fundingAccount: Equity:Opening
+2010-02-25 open Assets:Bank:B2 HKD
+  fundingAccount: Equity:Opening
+2010-03-19 open Assets:Broker:B0 EUR
+  multiAsset: true
+  automaticReinvestment: true
+  fundingAccount: Assets:Bank:B0
+2010-03-27 open Assets:Broker:B1 HKD
+  multiAsset: true
+  fundingAccount: Assets:Bank:B2
+2010-03-29 open Income:Salary USD
+  fundingAccount: Assets:Bank:B1
+2010-04-18 open Income:Interest USD
+  fundingAccount: Assets:Bank:B1
+2010-05-17 open Expenses:Food USD
+  fundingAccount: Assets:Bank:B2
+2010-06-06 open Expenses:Rent USD
+  fundingAccount: Assets:Bank:B0
+2010-06-18 open Expenses:Travel USD
+  fundingAccount: Assets:Bank:B1
+2010-07-11 earn Income:Interest 7207.737 USD
+2010-08-02 earn Income:Interest 4999.3904 USD
+2010-09-08 fund Assets:Broker:B0 Income:Interest 12837.9781 EUR
+2010-10-15 adj Assets:Bank:B0 19955.88 EUR Equity:Opening
+2010-11-22 yield Assets:Bank:B1 154 USD
+2010-12-21 bal Assets:Bank:B0 17506.59 EUR Equity:Opening
+2011-01-12 spend Expenses:Rent Assets:Bank:B2 516.3768 USD
+2011-01-14 spend Rent 240.131 USD
+2011-01-15 trade Assets:Broker:B0 23 IVV @413 EUR C5 EUR
+2011-02-19 yield Assets:Bank:B1 189.6557 USD
+2011-03-25 trade Assets:Broker:B0 17 VCSH @209.8926 EUR C7.568 EUR
+2011-04-17 bal Assets:Bank:B0 181.5921 EUR Equity:Opening
+2011-05-24 bal Assets:Bank:B2 23366.575 HKD Equity:Opening
+2011-06-12 bal Assets:Bank:B0 11948.709 EUR Equity:Opening
+2011-07-18 fund Assets:Bank:B2 Expenses:Food 8119.793 HKD
+2011-07-26 spend Expenses:Rent 102.0055 USD
+2011-07-27 earn Income:Salary 4182 USD
+2011-08-15 spend Travel 817.46 USD
+2011-08-19 spend Expenses:Rent 369.8803 USD
+2011-08-24 tfr Assets:Broker:B1 Expenses:Rent 1494.35 HKD 858.80 USD
+2011-09-23 trade Assets:Broker:B1 156 VCSH @496 HKD C5.0359 HKD
+2011-09-30 yield Assets:Broker:B1 VCSH 160 HKD
+2011-11-05 adj Assets:Bank:B2 3780 HKD Equity:Opening
+2011-11-20 yield Assets:Bank:B0 198 EUR
+2011-12-14 yield Assets:Bank:B0 154.174 EUR
+2011-12-28 adj Assets:Bank:B2 20819.0193 HKD Equity:Opening
+2012-01-05 tfr Equity:Opening Assets:Broker:B0 3381.40 USD 1679.6775 EUR
+2012-02-13 price VTI 400.47 USD
+2012-03-06 spend Expenses:Travel 690.22 USD
+2012-03-15 yield Assets:Broker:B0 VCSH 29.507 EUR
+2012-03-29 earn Salary 4836.297 USD
+2012-04-29 yield Assets:Broker:B0 IVV 96.6120 EUR
+2012-05-24 bal Assets:Bank:B2 14545.64 HKD Equity:Opening
+2012-06-03 bal Assets:Bank:B2 13137 HKD Equity:Opening
+2012-06-07 bal Assets:Bank:B2 16595 HKD Equity:Opening
+2012-07-01 earn Salary 8969 USD
+2012-07-19 earn Salary 2450.052 USD
+2012-08-22 unit Assets:Broker:B1 184 VTI @195 HKD
+2012-08-24 price IVV 242.469 GBP

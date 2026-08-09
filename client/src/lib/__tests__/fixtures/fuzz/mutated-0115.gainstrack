@@ -1,0 +1,42 @@
+option "operating_currency" "GBP"
+2010-02-08 open Equity:Opening GBP
+  multiAsset: true
+2010-03-08 open Assets:Bank:B0 GBP
+  fundingAccount: Equity:Opening
+2010-04-04 open Assets:Broker:B0 EUR
+  multiAsset: true
+  fundingAccount: Assets:Bank:B0
+2010-05-01 open Income:Salary GBP
+  fundingAccount: Assets:Bank:B0
+2010-06-04 open Income:Bonus GBP
+  fundingAccount: Assets:Bank:B0
+2010-07-08 open Expenses:Food GBP
+  fundingAccount: Assets:Bank:B0
+2010-07-17 open Expenses:Travel GBP
+  fundingAccount: Assets:Bank:B0
+2010-08-05 earn Salary 1880.058 GBP
+2010-08-28 yield Assets:Bank:B0 177.098 GBP
+2010-10-07 tfr Equity:Opening Expenses:Travel 121.028 GBP
+2010-11-07 adj Assets:Bank:B0 24741.7696 GBP Equity:Opening
+2010-11-21 tfr Assets:Bank:B0 Income:Bonus 4443 GBP
+2010-11-28 trade Assets:Broker:B0 100 IVV @75.18 EUR
+2010-12-22 bal Assets:Bank:B0 213.028 GBP Equity:Opening
+2010-12-27 bal Assets:Bank:B0 9604.693 GBP Equity:Opening
+2011-01-26 trade Assets:Broker:B0 111 IVV 93.909 EUR C1.4815 EUR
+2011-02-20 adj Assets:Bank:B0 12202 GBP Equity:Opening
+2011-02-25 yield Assets:Broker:B0 IVV 105.288 EUR
+2011-04-04 earn Bonus 2087.854 GBP
+2011-05-04 fund Assets:Broker:B0 13093 EUR
+2011-06-01 unit Assets:Broker:B0 450 VCSH @297.284 EUR
+2011-06-20 yield Assets:Broker:B0 VCSH 74 EUR
+2011-07-23 bal Assets:Bank:B0 23508.01 GBP Equity:Opening
+2011-08-08 trade Assets:Broker:B0 97 VWRL @410 EUR C8.1717 EUR
+2011-08-11 bal Assets:Bank:B0 29756.341 GBP Equity:Opening
+2011-08-14 unit Assets:Broker:B0 386 BRK-B @361.12 EUR
+2011-08-28 earn Bonus 5014.91 GBP
+2011-10-05 earn Income:Bonus Assets:Bank:B0 7412.05 GBP
+2011-10-29 yield Assets:Broker:B0 VWRL 99.9971 EUR
+2011-10-30 adj Assets:Bank:B0 26691 GBP Equity:Opening
+2011-11-18 bal Assets:Bank:B0 10434.2580 GBP Equity:Opening
+2011-12-23 yield Assets:Bank:B0 188.697 GBP
+2012-01-13 earn Salary 1326 GBP

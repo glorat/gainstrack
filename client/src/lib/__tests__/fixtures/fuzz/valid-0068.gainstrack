@@ -1,0 +1,56 @@
+option "operating_currency" "GBP"
+1900-01-01 commodity VWRL
+  name: VWRL Fund
+  tags: equity,global
+  ticker: VWRL.X
+2010-02-09 open Equity:Opening GBP
+  multiAsset: true
+2010-02-27 open Assets:Bank:B0 GBP
+  fundingAccount: Equity:Opening
+2010-02-28 open Assets:Broker:B0 GBP
+  multiAsset: true
+  fundingAccount: Assets:Bank:B0
+2010-03-07 open Assets:Broker:B1 GBP
+  multiAsset: true
+  fundingAccount: Assets:Bank:B0
+2010-03-18 open Income:Salary GBP
+  fundingAccount: Assets:Bank:B0
+2010-04-19 open Income:Interest GBP
+  fundingAccount: Assets:Bank:B0
+2010-05-29 open Expenses:Food GBP
+  fundingAccount: Assets:Bank:B0
+2010-06-21 open Expenses:Rent GBP
+  fundingAccount: Assets:Bank:B0
+2010-06-23 adj Assets:Bank:B0 1532 GBP Equity:Opening
+2010-06-24 bal Assets:Bank:B0 15252.6204 GBP Equity:Opening
+2010-06-26 price IVV 178.57 GBP
+2010-07-29 fund Assets:Broker:B0 18762.538 GBP
+2010-08-02 bal Assets:Bank:B0 28871.6169 GBP Equity:Opening
+2010-08-09 bal Assets:Bank:B0 11420 GBP Equity:Opening
+2010-09-14 adj Assets:Bank:B0 6695.29 GBP Equity:Opening
+2010-10-03 adj Assets:Bank:B0 -1290 GBP Equity:Opening
+2010-10-19 price VTI 449.49 HKD
+2010-11-18 unit Assets:Broker:B0 15 VCSH @170.646 GBP
+2010-12-12 yield Assets:Bank:B0 199.6657 GBP
+2010-12-26 spend Food 786.70 GBP
+2011-01-17 tfr Assets:Bank:B0 Expenses:Food 2962.7179 GBP
+2011-01-25 adj Assets:Bank:B0 15476 GBP Equity:Opening
+2011-01-26 adj Assets:Bank:B0 3462.058 GBP Equity:Opening
+2011-02-20 unit Assets:Broker:B1 107 VCSH @136.44 GBP
+2011-03-22 price VTI 478.4913 SGD
+2011-04-22 earn Income:Interest 1008.87 GBP
+2011-05-03 spend Food 523 GBP
+2011-05-07 bal Assets:Bank:B0 10834.78 GBP Equity:Opening
+2011-06-05 adj Assets:Bank:B0 24874 GBP Equity:Opening
+2011-06-14 bal Assets:Bank:B0 18909.0956 GBP Equity:Opening
+2011-07-09 price IVV 353.22 EUR
+2011-07-20 yield Assets:Bank:B0 112 GBP
+2011-08-19 spend Food 361.9304 GBP
+2011-09-22 tfr Assets:Bank:B0 Expenses:Rent 267.5985 GBP
+2011-10-28 yield Assets:Bank:B0 39.970 GBP
+2011-11-03 adj Assets:Bank:B0 4700.0309 GBP Equity:Opening
+2011-11-25 fund Assets:Broker:B1 10948 GBP
+2011-12-06 earn Salary 1358 GBP
+2012-01-04 earn Income:Salary 8891.47 GBP
+2012-01-10 trade Assets:Broker:B1 -9 VCSH @16 GBP
+2012-02-02 price FTSE 32.937 USD

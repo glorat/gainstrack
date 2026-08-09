@@ -1,0 +1,45 @@
+option "operating_currency" "EUR"
+1900-01-01 commodity IVV
+  name: IVV Fund
+  tags: equity,global
+  ticker: IVV.X
+2010-01-10 open Equity:Opening EUR
+  multiAsset: true
+2010-02-06 open Assets:Bank:B0 HKD
+  fundingAccount: Equity:Opening
+2010-02-11 open Assets:Bank:B1 USD
+  fundingAccount: Equity:Opening
+2010-03-06 open Assets:Broker:B0 EUR
+  multiAsset: true
+  automaticReinvestment: true
+  fundingAccount: Assets:Bank:B0
+2010-04-07 open Income:Salary EUR
+  fundingAccount: Assets:Bank:B1
+2010-04-12 open Income:Bonus EUR
+  fundingAccount: Assets:Bank:B1
+2010-04-13 open Income:Interest EUR
+  fundingAccount: Assets:Bank:B0
+2010-05-02 open Expenses:Food EUR
+  fundingAccount: Assets:Bank:B1
+2010-06-04 open Expenses:Rent EUR extraTokenHere
+  fundingAccount: Assets:Bank:B0
+2010-06-06 open Expenses:Travel EUR
+  fundingAccount: Assets:Bank:B0
+2010-06-12 open Liabilities:Card EUR
+  fundingAccount: Assets:Bank:B0
+2010-06-28 earn Salary 7180.34 EUR
+2010-07-03 unit Assets:Broker:B0 100 BRK-B @167.321 EUR
+2010-08-08 trade Assets:Broker:B0 -15 BRK-B @302.75 EUR
+2010-08-23 adj Assets:Bank:B0 -405.6604 HKD Equity:Opening
+2010-09-12 bal Assets:Bank:B0 3656 HKD Equity:Opening
+2010-10-07 unit Assets:Broker:B0 149 VTI @57.16 EUR
+2010-10-27 earn Income:Interest 8053 EUR
+2010-11-25 trade Assets:Broker:B0 -9 VTI @267.661 EUR
+2010-11-29 unit Assets:Broker:B0 125 FTSE @195.2092 EUR
+2010-12-19 trade Assets:Broker:B0 -6 VTI @214.623 EUR
+2011-01-18 yield Assets:Bank:B0 159 HKD
+2011-02-01 trade Assets:Broker:B0 133 BRK-B @230.13 EUR
+2011-02-18 trade Assets:Broker:B0 126 IVV @421.2515 EUR
+2011-03-27 tfr Assets:Bank:B1 Assets:Broker:B0 3135 USD 577 EUR
+2011-04-29 tfr Assets:Broker:B0 Expenses:Food 400 EUR
+2011-05-12 earn Income:Salary 294.972 EUR

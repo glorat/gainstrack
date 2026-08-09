@@ -1,0 +1,28 @@
+option "operating_currency" "HKD"
+2010-01-24 open Equity:Opening HKD
+  multiAsset: true
+2010-01-29 open Assets:Bank:B0 HKD
+  fundingAccount: Equity:Opening
+2010-02-17 open Assets:Bank:B1 HKD
+  fundingAccount: Equity:Opening
+2010-02-28 open Assets:Bank:B2 HKD
+  fundingAccount: Equity:Opening
+2010-03-30 open Assets:Broker:B0 HKD
+  multiAsset: true
+  automaticReinvestment: true
+  fundingAccount: Assets:Bank:B0
+2010-04-15 open Income:Salary HKD
+  fundingAccount: Assets:Bank:B0
+2010-05-21 open Income:Bonus HKD
+  fundingAccount: Assets:Bank:B2
+2010-06-02 open Expenses:Travel HKD
+  fundingAccount: Assets:Bank:B0
+2010-06-11 price VTI 415.21 GBP
+2010-07-18 earn Income:Salary 8013 HKD
+2010-08-25 yield Assets:Bank:B2 134 HKD
+2010-09-27 spend Travel 83 HKD
+2010-10-21 yield Assets:Bank:B0 56 HKD
+2010-11-16 earn Income:Salary Assets:Bank:B0 1820.42 HKD
+2010-12-22 yield Assets:Bank:B0 72.00 HKD
+2011-01-23 tfr Assets:Bank:B1 Income:Salary 444 HKD
+2011-01-27 bal Assets:Bank:B2 7516.988 HKD Equity:Opening

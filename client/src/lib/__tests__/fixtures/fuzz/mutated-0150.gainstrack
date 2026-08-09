@@ -1,0 +1,54 @@
+option "operating_currency" "EUR"
+1900-01-01 commodity VCSH
+  name: VCSH Fund
+  tags: equity,global
+  ticker: VCSH.X
+2010-02-02 open Equity:Opening EUR
+  multiAsset: true
+2010-02-04 open Assets:Bank:B0 EUR
+  fundingAccount: Equity:Opening
+2010-02-05 open Assets:Broker:B0 EUR
+  multiAsset: true
+  fundingAccount: Assets:Bank:B0
+2010-03-12 open Assets:Broker:B1 EUR
+  multiAsset: true
+  fundingAccount: Assets:Bank:B0
+2010-04-09 open Income:Salary EUR
+  fundingAccount: Assets:Bank:B0
+2010-05-19 open Income:Interest EUR
+  fundingAccount: Assets:Bank:B0
+2010-06-19 open Expenses:Food EUR
+  fundingAccount: Assets:Bank:B0
+2010-07-01 open Expenses:Rent EUR
+  fundingAccount: Assets:Bank:B0
+2010-07-09 open Expenses:Travel EUR
+  fundingAccount: Assets:Bank:B0
+2010-07-26 open Liabilities:Card EUR
+  fundingAccount: Assets:Bank:B0
+2010-08-12 price IVV 405 HKD
+2010-09-07 spend Expenses:Rent 110 EUR
+2010-09-14 price BRK-B 244 SGD
+2010-09-19 price VTI 109.071 USD
+2010-10-22 earn Salary 5785.54 EUR
+2010-11-12 bal Assets:Bank:B0 17580.8716 EUR Equity:Opening
+2010-12-21 earn Income:Salary Assets:Bank:B0 545.4394 EUR
+2011-01-14 fund Assets:Broker:B0 Income:Salary 5696.463 EUR
+2011-02-14 yield Assets:Bank:B0 150 EUR
+2011-02-17 yield Assets:Bank:B0 152 EUR
+2011-03-16 price FTSE 293 HKD
+2011-04-24 trade Assets:Broker:B1 176 IVV @197 EUR C4 EUR
+2011-05-18 spend Travel Assets:Bank:B0 690 EUR
+2011-05-25 spend Travel 839.096 EUR
+2011-06-08 yield Assets:Broker:B1 IVV 124 EUR
+2011-06-26 bal Assets:Bank:B0 18472 EUR Equity:Opening
+2011-07-11 price VWRL 1 EUR
+2011-07-30 price VCSH 27.684 EUR
+2011-08-15 price IVV 164 EUR
+2011-09-04 fund Assets:Broker:B1 4714 EUR
+2011-10-01 trade Assets:Broker:B1 89 FTSE @8.639 EUR
+2011-10-02 bal Assets:Bank:B0 29970.560 EUR Equity:Opening
+2011-10-18 tfr Equity:Opening Expenses:Travel 943.1314 EUR
+2011-11-01 bal Assets:DoesNotExist 2964.536 EUR Equity:Opening
+2011-11-25 yield Assets:Bank:B0 25.8588 EUR
+2011-12-15 price VTI 239.338 EUR
+2011-12-30 unit Assets:Broker:B0 250 VCSH @219.80 EUR

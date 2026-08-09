@@ -1,0 +1,44 @@
+option "operating_currency" "HKD"
+2010-02-06 open Equity:Opening HKD
+  multiAsset: true
+2010-02-15 open Assets:Bank:B0 HKD
+  fundingAccount: Equity:Opening
+2010-03-04 open Assets:Bank:B1 HKD
+  fundingAccount: Equity:Opening
+2010-03-25 open Assets:Bank:B2 HKD
+  fundingAccount: Equity:Opening
+2010-04-11 open Assets:Broker:B0 GBP
+  multiAsset: true
+  fundingAccount: Assets:Bank:B1
+2010-05-15 open Assets:Broker:B1 HKD
+  multiAsset: true
+  fundingAccount: Assets:Bank:B2
+2010-05-24 open Income:Bonus HKD
+  fundingAccount: Assets:Bank:B2
+2010-07-02 open Income:Interest HKD
+  fundingAccount: Assets:Bank:B0
+2010-07-31 open Expenses:Rent HKD
+  fundingAccount: Assets:Bank:B0
+2010-09-03 open Liabilities:Card HKD
+  fundingAccount: Assets:Bank:B0
+2010-09-28 unit Assets:Broker:B0 109 VWRL @309.54 GBP
+2010-10-30 spend Rent 651 HKD
+2010-12-04 bal Assets:Bank:B2 11125 HKD Equity:Opening
+2011-01-04 price IVV 406.463 GBP
+2011-02-03 price VTI 2.4895 SGD
+2011-02-09 adj Assets:Bank:B2 15655.35 HKD Equity:Opening
+2011-03-12 spend Expenses:Rent Assets:Bank:B1 259.07 HKD
+2011-04-17 tfr Assets:Broker:B0 Expenses:Rent 644 GBP 810.48 HKD
+2011-04-27 adj Assets:Bank:B0 12654 HKD Equity:Opening
+2011-05-16 yield Assets:Broker:B0 VWRL 75 GBP
+2011-05-29 earn Bonus 4547.7179 HKD
+2011-06-23 trade Assets:Broker:B0 -9 VWRL @105 GBP
+2011-07-05 bal Assets:Bank:B0 17913.6461 HKD Equity:Opening
+2011-07-20 trade Assets:Broker:B1 154 VWRL @4.10 HKD
+2011-08-14 earn Income:Interest Assets:Bank:B1 5392.24 HKD
+2011-09-21 adj Assets:Bank:B0 24489.9064 HKD Equity:Opening
+2011-10-23 trade Assets:Broker:B0 166 IVV @319.940 GBP
+2011-11-21 yield Assets:Bank:B2 122.78 HKD
+2011-12-21 fund Assets:Broker:B1 Liabilities:Card 11293.2900 HKD
+2011-12-31 yield Assets:Broker:B1 VWRL 195.7327 HKD
+2012-01-20 spend Expenses:Rent Assets:Bank:B1 597 HKD

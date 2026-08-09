@@ -1,0 +1,43 @@
+option "operating_currency" "SGD"
+1900-01-01 commodity IVV
+  name: IVV Fund
+  tags: equity,global
+  ticker: IVV.X
+2010-01-05 open Equity:Opening SGD
+  multiAsset: true
+2010-01-09 open Assets:Bank:B0 SGD
+  fundingAccount: Equity:Opening
+2010-01-24 open Assets:Broker:B0 SGD
+  multiAsset: true
+  fundingAccount: Assets:Bank:B0
+2010-02-10 open Assets:Broker:B1 HKD
+  multiAsset: true
+  fundingAccount: Assets:Bank:B0
+2010-03-20 open Income:Salary SGD
+  fundingAccount: Assets:Bank:B0
+2010-04-21 open Income:Interest SGD
+  fundingAccount: Assets:Bank:B0
+2010-05-13 open Expenses:Food SGD
+  fundingAccount: Assets:Bank:B0
+2010-05-14 open Expenses:Rent SGD
+  fundingAccount: Assets:Bank:B0
+2010-06-14 open Expenses:Travel SGD
+  fundingAccount: Assets:Bank:B0
+2010-07-01 open Liabilities:Card SGD
+  fundingAccount: Assets:Bank:B0
+2010-07-23 fund Assets:Broker:B0 Expenses:Food 3021.7389 SGD
+2010-08-29 tfr Equity:Opening Expenses:Food 2498 SGD
+2010-09-29 price VWRL 241.3476 HKD
+2010-11-08 spend Travel 633 SGD
+2010-11-18 unit Assets:Broker:B1 37 VCSH @184.7412 HKD
+2010-12-13 spend Travel 859.85 SGD
+2011-01-22 tfr Assets:Broker:B1 Liabilities:Card 2295 HKD
+2011-01-23 earn Income:Interest Assets:Bank:B0 6157.851 SGD
+2011-02-19 price IVV 315.795 SGD
+2011-03-29 adj Assets:Bank:B0 19200.79 SGD Equity:Opening
+2011-04-10 adj Assets:Bank:B0 29982.74 SGD Equity:Opening
+2011-05-11 trade Assets:Broker:B1 139 VWRL @220.207 HKD C18.081 HKD
+2011-05-23 price VCSH 168 EUR
+2011-05-26 bal Assets:Bank:B0 13587.96 SGD Equity:Opening
+2011-06-30 trade Assets:Broker:B1 181 BRK-B @214.689 HKD C9.921 HKD
+2011-07-24 yield Assets:Bank:B0 150.542 SGD

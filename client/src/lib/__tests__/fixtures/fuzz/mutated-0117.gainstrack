@@ -1,0 +1,60 @@
+option "operating_currency" "GBP"
+2010-02-07 open Equity:Opening GBP
+  multiAsset: true
+2010-03-19 open Assets:Bank:B0 SGD
+  fundingAccount: Equity:Opening
+2010-04-24 open Assets:Broker:B0 GBP
+  multiAsset: true
+  fundingAccount: Assets:Bank:B0
+2010-05-02 open Assets:Broker:B1 GBP
+  multiAsset: true
+  automaticReinvestment: true
+  fundingAccount: Assets:Bank:B0
+2010-05-07 open Income:Salary GBP
+  fundingAccount: Assets:Bank:B0
+2010-06-05 open Income:Bonus GBP
+  fundingAccount: Assets:Bank:B0
+2010-06-19 open Expenses:Food GBP
+  fundingAccount: Assets:Bank:B0
+2010-06-26 open Expenses:Rent GBP
+  fundingAccount: Assets:Bank:B0 extraTokenHere
+2010-07-31 open Expenses:Travel GBP
+  fundingAccount: Assets:Bank:B0
+2010-08-30 spend Travel 149 GBP
+2010-09-29 spend Expenses:Travel 43.7061 GBP
+2010-10-29 unit Assets:Broker:B1 118 FTSE @250.4105 GBP
+2010-12-01 tfr Assets:Broker:B0 Income:Bonus 3077.876 GBP
+2010-12-19 tfr Assets:Bank:B0 Assets:Broker:B0 3670.6339 SGD 4444.6229 GBP
+2011-01-03 trade Assets:Broker:B0 62 VWRL @163 GBP C7 GBP
+2011-02-05 trade Assets:Broker:B1 37 VWRL @443.891 GBP C10.25 GBP
+2011-02-28 yield Assets:Bank:B0 116.16 SGD
+2011-03-17 bal Assets:Bank:B0 15541.23 SGD Equity:Opening
+2011-03-27 trade Assets:Broker:B0 -1 VWRL @371 GBP C9 GBP
+2011-05-03 tfr Equity:Opening Expenses:Food 3329 GBP
+2011-06-12 tfr Assets:Bank:B0 Equity:Opening 2324 SGD 3637.05 GBP
+2011-06-16 adj Assets:Bank:B0 17443.50 SGD Equity:Opening
+2011-07-13 fund Assets:Bank:B0 12492 SGD
+2011-07-29 yield Assets:Bank:B0 91 SGD
+2011-09-07 adj Assets:Bank:B0 21290.171 SGD Equity:Opening
+2011-09-09 price FTSE 185.26 SGD
+2011-09-28 fund Assets:Bank:B0 Expenses:Food 19194 SGD
+2011-10-07 price BRK-B 313.46 SGD
+2011-10-23 fund Assets:Bank:B0 7681.335 SGD
+2011-11-27 adj Assets:Bank:B0 22346.188 SGD Equity:Opening
+2011-12-23 spend Food 438.91 GBP
+2011-12-26 tfr Equity:Opening Assets:Broker:B1 1533 GBP
+2011-12-28 tfr Equity:Opening Expenses:Food 177.8606 GBP
+2012-01-19 bal Assets:Bank:B0 5396.394 SGD Equity:Opening
+2012-02-20 trade Assets:Broker:B1 -6 FTSE @67.31 GBP
+2012-03-09 spend Expenses:Rent 821.3664 GBP
+2012-04-06 spend Expenses:Rent Assets:Bank:B0 374 GBP
+2012-04-23 adj Assets:Bank:B0 22118.684 SGD Equity:Opening
+2012-05-10 earn Salary Assets:Bank:B0 6896 GBP
+2012-05-23 spend Rent 867 GBP
+2012-06-09 fund Assets:Broker:B1 10047.025 GBP
+2012-07-19 adj Assets:Bank:B0 20039.1498 SGD Equity:Opening
+2012-07-28 yield Assets:Broker:B1 FTSE 190 GBP
+2012-08-24 spend Rent 432.154 GBP
+2012-09-18 adj Assets:Bank:B0 196.87 SGD Equity:Opening
+2012-10-09 tfr Assets:Bank:B0 Expenses:Travel 3541.545 SGD
+2012-11-07 fund Assets:Broker:B1 17560 GBP

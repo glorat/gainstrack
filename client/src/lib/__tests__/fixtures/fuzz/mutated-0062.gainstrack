@@ -1,0 +1,37 @@
+option "operating_currency" "EUR"
+1900-01-01 commodity IVV
+  name: IVV Fund
+  tags: equity,global
+  ticker: IVV.X
+2010-01-18 open Equity:Opening EUR
+  multiAsset: true
+2010-02-20 open Assets:Bank:B0 EUR
+  fundingAccount: Equity:Opening
+2010-03-07 open Assets:Broker:B0 EUR
+  multiAsset: true
+  fundingAccount: Assets:Bank:B0
+2010-03-29 open Assets:Broker:B1 EUR
+  multiAsset: true
+  fundingAccount: Assets:Bank:B0
+2010-04-11 open Income:Salary EUR
+  fundingAccount: Assets:Bank:B0
+2010-05-19 open Income:Bonus EUR
+  fundingAccount: Assets:Bank:B0
+2010-05-24 open Expenses:Food EUR
+  fundingAccount: Assets:Bank:B0
+2010-06-17 open Expenses:Travel EUR
+  fundingAccount: Assets:Bank:B0
+2010-07-20 open Liabilities:Card
+  fundingAccount: Assets:Bank:B0
+2010-07-24 earn Bonus Assets:Bank:B0 902 EUR
+2010-08-28 yield Assets:Bank:B0 142.5752 EUR
+2010-09-07 fund Assets:Bank:B0 12557.06 EUR
+2010-10-02 fund Assets:Broker:B1 Income:Bonus 11182.2128 EUR
+2010-10-26 spend Expenses:Travel Assets:Bank:B0 865 EUR
+2010-11-13 yield Assets:Bank:B0 135 EUR
+2010-12-17 unit Assets:Broker:B1 57 IVV @277.3703 EUR
+2010-12-30 spend Expenses:Travel 117.30 EUR
+2011-02-08 tfr Equity:Opening Income:Salary 4178.3175 EUR
+2011-02-18 bal Assets:Bank:B0 11910.60 EUR Equity:Opening
+2011-03-09 adj Assets:Bank:B0 11200.1985 EUR Equity:Opening
+2011-03-21 yield Assets:Broker:B1 IVV 149.70 EUR

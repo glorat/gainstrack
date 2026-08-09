@@ -1,0 +1,30 @@
+1900-01-01 commodity BRK-B
+  name: BRK-B Fund
+  tags: equity,global
+  ticker: BRK-B.X
+2010-01-13 open Equity:Opening USD
+  multiAsset: true
+2010-02-18 open Assets:Bank:B0 USD
+  fundingAccount: Equity:Opening
+2010-03-22 open Assets:Bank:B1 USD
+  fundingAccount: Equity:Opening
+2010-03-31 open Assets:Broker:B0 USD
+  multiAsset: true
+  fundingAccount: Assets:Bank:B0
+2010-05-08 open Income:Salary USD
+  fundingAccount: Assets:Bank:B0
+2010-05-13 open Income:Bonus USD
+  fundingAccount: Assets:Bank:B0
+2010-06-10 open Expenses:Food USD
+  fundingAccount: Assets:Bank:B1
+2010-07-06 open Expenses:Rent USD
+  fundingAccount: Assets:Bank:B0
+2010-07-10 open Liabilities:Card USD
+  fundingAccount: Assets:Bank:B0
+2010-08-01 bal Assets:Bank:B1 29535.44 USD Equity:Opening
+2010-09-10 earn Salary 7105.14 USD
+2019-13-45 bal Assets:Bank:B0 9912.97 USD Equity:Opening
+2010-10-11 earn Income:Bonus 4690.23 USD
+2010-11-10 price VCSH 370.5106 SGD
+2010-11-23 price VCSH 32.07 SGD
+2010-12-23 tfr Assets:Bank:B0 Liabilities:Card 448 USD

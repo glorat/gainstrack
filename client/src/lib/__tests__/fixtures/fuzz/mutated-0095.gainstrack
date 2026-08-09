@@ -1,0 +1,53 @@
+option "operating_currency" "EUR"
+2010-01-13 open Equity:Opening EUR
+  multiAsset: true
+2010-02-21 open Assets:Bank:B0 EUR
+  fundingAccount: Equity:Opening
+2010-03-22 open Assets:Bank:B1 GBP
+  fundingAccount: Equity:Opening
+2010-04-05 open Assets:Bank:B2 SGD
+  fundingAccount: Equity:Opening
+2010-04-20 open Assets:Broker:B0 USD
+  multiAsset: true
+  fundingAccount: Assets:Bank:B0
+2010-05-19 open Assets:Broker:B1 HKD
+  multiAsset: true
+  automaticReinvestment: true
+  fundingAccount: Assets:Bank:B1
+2010-05-25 open Income:Salary EUR
+  fundingAccount: Assets:Bank:B1
+2010-06-27 open Income:Bonus EUR
+  fundingAccount: Assets:Bank:B2
+2010-07-09 open Income:Interest EUR
+  fundingAccount: Assets:Bank:B2
+2010-07-15 open Expenses:Food EUR
+  fundingAccount: Assets:Bank:B0
+2010-07-25 open Expenses:Rent EUR
+  fundingAccount: Assets:Bank:B2
+2010-08-21 open Expenses:Travel EUR
+  fundingAccount: Assets:Bank:B0
+2010-09-25 open Liabilities:Card EUR
+  fundingAccount: Assets:Bank:B0
+2010-10-02 fund Assets:Bank:B1 Equity:Opening 10426 GBP
+2010-10-23 tfr Assets:Bank:B1 Income:Salary 1560 GBP
+2010-11-16 price VWRL 458 EUR
+2010-11-30 tfr Assets:Bank:B1 Expenses:Rent 4011.4720 GBP
+2010-12-09 unit Assets:Broker:B0 325 IVV @367 USD
+2010-12-27 earn Interest 1421 EUR
+2011-01-11 bal Assets:Bank:B0 2874.6768 EUR Equity:Opening
+2011-01-25 yield Assets:Broker:B0 IVV 98.0762 USD
+2011-02-19 earn Salary Assets:Bank:B2 8495.665 EUR
+2011-03-15 unit Assets:Broker:B0 276 VTI @310.26 USD
+2011-04-16 yield Assets:Broker:B0 IVV 188.9044 USD
+2011-05-09 adj Assets:Bank:B2 23679.325 SGD Equity:Opening
+2011-06-15 bal Assets:Bank:B1 16457 GBP Equity:Opening
+2011-06-22 trade Assets:Broker:B1 190 VCSH @302.8936 HKD
+2011-07-13 earn Salary 5965.990 EUR
+2011-08-05 fund Assets:Bank:B2 3910 SGD
+2011-08-13 bal Assets:Bank:B2 19861.190 SGD Equity:Opening
+2011-09-10 price VCSH 139.05 USD
+2011-10-14 spend Travel 73.48 EUR
+2011-10-19 fund Assets:Bank:B0 Expenses:Travel 10968.3170 EUR
+2011-11-13 earn Bonus 2319.6559 EUR
+2011-11-27 unit Assets:Broker:B1 265 VTI @366 HKD
+2011-12-27 trade Assets:Broker:B0 157 VCSH @340.203 USD C8.15 USD

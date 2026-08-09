@@ -26,9 +26,7 @@ class DumpParserDTOs extends AnyFlatSpec {
   private val outDir = Paths.get("client/src/lib/__tests__/fixtures")
 
   // Resource files that the parser accepts (todo.gainstrack is legacy beancount, excluded).
-  private val resources = Seq(
-    "basic", "unit", "src", "div", "balbug", "james", "noequity", "multiadj",
-  )
+  private val resources = Fixtures.names
 
   "parser DTO goldens" should "be generated for each resource" in {
     assume(sys.props.contains("dumpFixtures"), "golden dump — run with -DdumpFixtures=1")

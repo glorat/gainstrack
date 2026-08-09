@@ -1,0 +1,53 @@
+option "operating_currency" "GBP"
+2010-01-23 open Equity:Opening GBP
+  multiAsset: true
+2010-02-25 open Assets:Bank:B0 GBP
+  fundingAccount: Equity:Opening
+2010-03-02 open Assets:Bank:B1 GBP
+  fundingAccount: Equity:Opening
+2010-03-29 open Assets:Bank:B2 GBP
+  fundingAccount: Equity:Opening
+2010-04-09 open Assets:Broker:B0 GBP
+  multiAsset: true
+  fundingAccount: Assets:Bank:B0
+2010-05-10 open Income:Salary GBP
+  fundingAccount: Assets:Bank:B1
+2010-06-02 open Income:Bonus GBP
+  fundingAccount: Assets:Bank:B0
+2010-07-11 open Expenses:Food GBP
+  fundingAccount: Assets:Bank:B2
+2010-08-19 open Expenses:Rent GBP
+  fundingAccount: Assets:Bank:B0
+2010-09-16 open Expenses:Travel GBP
+  fundingAccount: Assets:Bank:B1
+2010-09-26 open Liabilities:Card GBP
+  fundingAccount: Assets:Bank:B0
+2010-10-12 price IVV 408.449 EUR
+2010-11-12 spend Rent 147 GBP
+2010-12-08 price FTSE 148.9623 HKD
+2011-01-05 spend Expenses:Travel 138.73 GBP
+2011-01-17 tfr Assets:Broker:B0 Equity:Opening 3896 GBP
+2011-02-09 unit Assets:Broker:B0 500 VWRL @333 GBP
+2011-03-04 adj Assets:Bank:B2 2405 GBP Equity:Opening
+2011-03-21 yield Assets:Broker:B0 VWRL 89 GBP
+2011-03-23 bal Assets:Bank:B1 21685.1446 GBP Equity:Opening
+2011-04-24 bal Assets:Bank:B0 1103.618 GBP Equity:Opening
+2011-05-28 earn Bonus 4854 GBP
+2011-06-16 tfr Equity:Opening Income:Salary 3541 GBP
+2011-07-09 unit Assets:Broker:B0 305 BRK-B @89 GBP
+2011-08-18 trade Assets:Broker:B0 136 VCSH @468.4639 GBP C16 GBP
+2011-09-25 unit Assets:Broker:B0 447 VTI @272 GBP
+2011-10-21 bal Assets:Bank:B0 1363.10 GBP Equity:Opening
+2011-11-30 trade Assets:Broker:B0 167 VCSH @176 GBP
+2011-12-11 earn Income:Salary 1507.720 GBP
+2011-12-28 trade Assets:Broker:B0 46 FTSE @31.3066 GBP C1 GBP
+2012-01-20 bal Assets:Bank:B1 10156.403 GBP Equity:Opening
+2012-02-24 spend Rent 505 GBP
+2012-03-22 adj Assets:Bank:B1 5632.706 GBP Equity:Opening
+2012-04-07 adj Assets:Bank:B1 26794.346 GBP Equity:Opening
+2012-04-28 unit Assets:Broker:B0 114 IVV @150.986 GBP
+2012-05-21 adj Assets:Bank:B2 20940.35 GBP Equity:Opening
+2012-05-24 yield Assets:Bank:B2 90.902 GBP
+2012-05-30 earn Income:Bonus 559.99 GBP
+2012-06-24 unit Assets:Broker:B0 80 IVV @177.4708 GBP
+2012-07-17 tfr Assets:Bank:B1 Equity:Opening 2732.35 GBP

@@ -1,0 +1,48 @@
+2010-01-29 open Equity:Opening USD
+  multiAsset: true
+2010-02-08 open Assets:Bank:B0 USD
+  fundingAccount: Equity:Opening
+2010-03-20 open Assets:Broker:B0 USD
+  multiAsset: true
+  automaticReinvestment: true
+  fundingAccount: Assets:Bank:B0
+2010-04-12 open Assets:Broker:B1 USD
+  multiAsset: true
+  automaticReinvestment: true
+  fundingAccount: Assets:Bank:B0
+2010-04-17 open Income:Salary USD
+  fundingAccount: Assets:Bank:B0
+2010-05-17 open Income:Bonus USD
+  fundingAccount: Assets:Bank:B0
+2010-06-07 open Expenses:Food USD
+  fundingAccount: Assets:Bank:B0
+2010-07-02 open Expenses:Rent USD
+  fundingAccount: Assets:Bank:B0
+2010-07-16 open Expenses:Travel USD
+  fundingAccount: Assets:Bank:B0
+2010-08-19 open Liabilities:Card USD
+  fundingAccount: Assets:Bank:B0
+2010-09-12 unit Assets:Broker:B0 379 BRK-B @25 USD
+2010-09-24 tfr Assets:Broker:B1 Expenses:Rent 94 USD
+2010-11-03 price VWRL 235.907 EUR
+2010-11-08 adj Assets:Bank:B0 6459 USD Equity:Opening
+2010-12-13 spend Expenses:Rent 478 USD
+2010-12-24 trade Assets:Broker:B0 100 VWRL @84.2426 USD
+2011-02-01 spend Rent Assets:Bank:B0 114.94 USD
+2011-03-11 tfr Assets:Broker:B1 Income:Salary 407 USD
+2011-03-26 tfr Assets:Broker:B0 Equity:Opening 1674.121 USD
+2011-03-30 yield Assets:Broker:B0 BRK-B 44 USD
+2011-04-07 tfr Assets:Bank:B0 Equity:Opening 1473 USD
+2011-04-15 bal Assets:Bank:B0 12093.9140 USD Equity:Opening
+2011-05-21 tfr Assets:Broker:B0 Income:Salary 1631.115 USD
+2011-06-14 tfr Equity:Opening Expenses:Travel 2327.759 USD
+2011-06-18 price BRK-B 278.36 USD
+2011-07-15 yield Assets:Bank:B0 73 USD
+2011-08-05 bal Assets:Bank:B0 13718.4957 USD Equity:Opening
+2011-08-28 bal Assets:Bank:B0 26633 USD Equity:Opening
+2011-09-12 trade Assets:Broker:B1 181 IVV @287.3144 USD
+2011-10-21 adj Assets:Bank:B0 18006 USD Equity:Opening
+2011-11-28 adj Assets:Bank:B0 3542 USD Equity:Opening
+2011-12-29 trade Assets:Broker:B0 165 BRK-B @68.4658 USD
+2012-01-01 earn Bonus 6431.681 USD
+2012-01-27 earn Income:Bonus 5492.713 USD

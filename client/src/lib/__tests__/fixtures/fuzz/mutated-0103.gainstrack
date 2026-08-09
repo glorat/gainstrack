@@ -1,0 +1,32 @@
+option "operating_currency" "GBP"
+2010-01-07 open Equity:Opening GBP extraTokenHere
+  multiAsset: true
+2010-01-16 open Assets:Bank:B0 GBP
+  fundingAccount: Equity:Opening
+2010-01-18 open Assets:Bank:B1 GBP
+  fundingAccount: Equity:Opening
+2010-01-20 open Assets:Bank:B2 USD
+  fundingAccount: Equity:Opening
+2010-01-23 open Assets:Broker:B0 GBP
+  multiAsset: true
+  automaticReinvestment: true
+  fundingAccount: Assets:Bank:B0
+2010-02-24 open Income:Salary GBP
+  fundingAccount: Assets:Bank:B1
+2010-03-22 open Income:Bonus GBP
+  fundingAccount: Assets:Bank:B2
+2010-04-09 open Income:Interest GBP
+  fundingAccount: Assets:Bank:B1
+2010-05-17 open Expenses:Food GBP
+  fundingAccount: Assets:Bank:B0
+2010-06-06 open Expenses:Rent GBP
+  fundingAccount: Assets:Bank:B2
+2010-07-07 open Expenses:Travel GBP
+  fundingAccount: Assets:Bank:B0
+2010-07-18 fund Assets:Broker:B0 18115.18 GBP
+2010-07-25 tfr Assets:Bank:B0 Assets:Bank:B1 941.9906 GBP
+2010-08-26 spend Rent 417 GBP
+2010-09-06 trade Assets:Broker:B0 93 VTI @286.2050 GBP
+2010-09-11 earn Bonus Assets:Bank:B1 3548.693 GBP
+2010-09-30 price BRK-B 428 HKD
+2010-11-08 fund Assets:Bank:B1 Expenses:Food 9499.838 GBP

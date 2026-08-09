@@ -1,0 +1,49 @@
+option "operating_currency" "GBP"
+2010-01-12 open Equity:Opening GBP
+  multiAsset: true
+2010-02-07 open Assets:Bank:B0 GBP
+  fundingAccount: Equity:Opening
+2010-03-09 open Assets:Broker:B0 USD
+  multiAsset: true
+  automaticReinvestment: true
+  fundingAccount: Assets:Bank:B0
+2010-03-30 open Income:Salary GBP
+  fundingAccount: Assets:Bank:B0
+2010-04-22 open Income:Bonus GBP
+  fundingAccount: Assets:Bank:B0
+2010-05-14 open Income:Interest GBP
+  fundingAccount: Assets:Bank:B0
+2010-05-26 open Expenses:Food GBP
+  fundingAccount: Assets:Bank:B0
+2010-06-14 open Expenses:Rent GBP
+  fundingAccount: Assets:Bank:B0
+2010-07-06 open Expenses:Travel GBP
+  fundingAccount: Assets:Bank:B0
+2010-08-06 trade Assets:Broker:B0 66 VWRL @127.0303 USD C19.138 USD
+2010-09-06 bal Assets:Bank:B0 17351 GBP Equity:Opening
+2010-10-05 earn Income:Bonus 7531 GBP
+2010-10-10 yield Assets:Broker:B0 VWRL 69.944 USD
+2010-10-17 tfr Equity:Opening Income:Bonus 1019 GBP
+2010-11-10 yield Assets:Broker:B0 VWRL 43 USD
+2010-12-19 tfr Equity:Opening Income:Salary 2478 GBP
+2010-12-28 trade Assets:Broker:B0 39 VTI @332.702 USD C1 USD
+2011-01-01 trade Assets:Broker:B0 171 FTSE @485.3582 USD C10 USD
+2011-01-05 unit Assets:Broker:B0 257 BRK-B @119.436 USD
+2011-01-31 yield Assets:Bank:B0 184 GBP
+2011-02-05 bal Assets:Bank:B0 16524.370 GBP Equity:Opening
+2011-03-01 unit Assets:Broker:B0 19 VWRL @215 USD
+2011-03-31 unit Assets:Broker:B0 39 VWRL @81.824 USD
+2011-04-28 spend Expenses:Travel Assets:Bank:B0 275.2576 GBP
+2011-06-03 adj Assets:Bank:B0 16996.4038 GBP Equity:Opening
+2011-06-23 fund Assets:Broker:B0 15349.929 USD
+2011-06-29 fund Assets:Broker:B0 Income:Interest 2923 USD
+2011-07-04 bal Assets:Bank:B0 4216.161 GBP Equity:Opening
+2011-08-01 bal Assets:Bank:B0 10356.6053 GBP Equity:Opening
+2011-08-22 bal Assets:Bank:B0 13656.615 GBP Equity:Opening
+2011-09-01 tfr Assets:Broker:B0 Expenses:Food 1604 USD 397.182 GBP
+2011-10-06 bal Assets:Bank:B0 26013.86 GBP Equity:Opening
+2011-10-27 bal Assets:Bank:B0 1297 GBP Equity:Opening
+2011-12-06 adj Assets:Bank:B0 29328.38 GBP Equity:Opening
+2012-01-02 tfr Assets:Broker:B0 Assets:Bank:B0 2548 USD 4196.95 GBP
+2012-01-16 trade Assets:Broker:B0 -8 BRK-B @435 USD C4.002 USD
+2012-02-04 trade Assets:Broker:B0 -5 VTI @89 USD

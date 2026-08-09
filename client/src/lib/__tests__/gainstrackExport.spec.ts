@@ -8,10 +8,11 @@ import * as path from 'path';
 import { GainstrackParser } from 'src/lib/GainstrackParser';
 import { toGainstrackFile } from 'src/lib/export/gainstrackExport';
 import { toCommandBlocks } from 'src/lib/toGainstrack';
+import { FIXTURE_NAMES } from 'src/lib/__tests__/fixtureNames';
 
 const FIXTURES = path.join(__dirname, 'fixtures');
 const LOCAL = path.join(FIXTURES, 'local');
-const GOLDENS = ['basic', 'unit', 'src', 'div', 'balbug', 'james', 'noequity', 'multiadj'];
+const GOLDENS = FIXTURE_NAMES;
 
 function exportFor(text: string): string {
   const parser = new GainstrackParser();

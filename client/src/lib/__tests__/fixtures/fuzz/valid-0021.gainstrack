@@ -1,0 +1,54 @@
+option "operating_currency" "HKD"
+1900-01-01 commodity IVV
+  name: IVV Fund
+  tags: equity,global
+  ticker: IVV.X
+2010-01-17 open Equity:Opening HKD
+  multiAsset: true
+2010-01-31 open Assets:Bank:B0 SGD
+  fundingAccount: Equity:Opening
+2010-03-04 open Assets:Bank:B1 HKD
+  fundingAccount: Equity:Opening
+2010-03-08 open Assets:Broker:B0 HKD
+  multiAsset: true
+  automaticReinvestment: true
+  fundingAccount: Assets:Bank:B0
+2010-04-10 open Income:Bonus HKD
+  fundingAccount: Assets:Bank:B1
+2010-04-20 open Income:Interest HKD
+  fundingAccount: Assets:Bank:B0
+2010-04-24 open Expenses:Food HKD
+  fundingAccount: Assets:Bank:B0
+2010-05-30 open Expenses:Rent HKD
+  fundingAccount: Assets:Bank:B1
+2010-06-07 open Expenses:Travel HKD
+  fundingAccount: Assets:Bank:B1
+2010-06-20 open Liabilities:Card HKD
+  fundingAccount: Assets:Bank:B0
+2010-07-08 tfr Assets:Broker:B0 Expenses:Food 3769 HKD
+2010-08-12 price BRK-B 321 HKD
+2010-08-15 earn Income:Interest 2555 HKD
+2010-09-11 bal Assets:Bank:B0 740 SGD Equity:Opening
+2010-09-20 yield Assets:Bank:B0 194 SGD
+2010-10-27 price IVV 123 USD
+2010-11-27 bal Assets:Bank:B1 12325 HKD Equity:Opening
+2010-12-06 trade Assets:Broker:B0 76 IVV @278.958 HKD C11.60 HKD
+2010-12-23 adj Assets:Bank:B0 4302.6257 SGD Equity:Opening
+2011-01-16 price VTI 25.64 EUR
+2011-01-18 adj Assets:Bank:B1 6527.5237 HKD Equity:Opening
+2011-01-27 unit Assets:Broker:B0 314 VTI @364 HKD
+2011-02-26 trade Assets:Broker:B0 117 BRK-B @416.6841 HKD
+2011-03-15 fund Assets:Bank:B0 Expenses:Food 1521.057 SGD
+2011-04-23 spend Rent 302.12 HKD
+2011-05-11 fund Assets:Bank:B0 19562.2409 SGD
+2011-05-29 unit Assets:Broker:B0 74 VTI @117.731 HKD
+2011-06-23 fund Assets:Broker:B0 8621.799 HKD
+2011-07-24 bal Assets:Bank:B0 10617.2585 SGD Equity:Opening
+2011-08-29 spend Expenses:Rent 633 HKD
+2011-09-28 adj Assets:Bank:B0 17865.1660 SGD Equity:Opening
+2011-10-29 unit Assets:Broker:B0 58 FTSE @302.97 HKD
+2011-12-06 earn Income:Interest 5140.88 HKD
+2012-01-09 tfr Assets:Bank:B1 Liabilities:Card 4031.631 HKD
+2012-01-31 yield Assets:Broker:B0 FTSE 160.2880 HKD
+2012-02-25 earn Bonus Assets:Bank:B0 2100.741 HKD
+2012-03-19 spend Expenses:Food 524.559 HKD

@@ -1,0 +1,37 @@
+option "operating_currency" "SGD"
+2010-01-27 open Equity:Opening SGD
+  multiAsset: true
+2010-03-05 open Assets:Bank:B0 HKD
+  fundingAccount: Equity:Opening
+2010-03-08 open Assets:Bank:B1 SGD
+  fundingAccount: Equity:Opening
+2010-04-16 open Assets:Broker:B0 SGD
+  multiAsset: true
+  automaticReinvestment: true
+  fundingAccount: Assets:Bank:B1
+2010-05-15 open Assets:Broker:B1 SGD
+  multiAsset: true
+  automaticReinvestment: true
+  fundingAccount: Assets:Bank:B0
+2010-06-06 open Income:Bonus SGD
+  fundingAccount: Assets:Bank:B0
+2010-06-13 open Income:Interest SGD
+  fundingAccount: Assets:Bank:B0
+2010-06-15 open Expenses:Food SGD
+  fundingAccount: Assets:Bank:B0
+2010-07-12 open Expenses:Travel SGD
+  fundingAccount: Assets:Bank:B0
+2010-08-12 open Liabilities:Card SGD
+  fundingAccount: Assets:Bank:B0
+2010-09-10 trade Assets:Broker:B1 39 IVV @272 SGD
+2010-10-16 adj Assets:Bank:B0 -790 HKD Equity:Opening
+2010-10-17 trade Assets:Broker:B0 26 FTSE @415 SGD C17.649 SGD
+2010-10-26 unit Assets:Broker:B1 299 VCSH @385 SGD
+2010-11-20 spend Expenses:Travel Assets:Bank:B0 569 SGD
+2010-11-29 price VTI 364 GBP
+2010-12-24 spend Expenses:Travel 795 SGD
+2011-01-31 spend Expenses:Travel Assets:Bank:B1 233.89 SGD
+2011-02-26 unit Assets:Broker:B0 428 IVV @128 SGD
+2011-04-07 trade Assets:Broker:B1 146 VTI @479.24 SGD C5 SGD
+2011-04-11 unit Assets:Broker:B0 115 BRK-B @192.844 SGD
+2011-04-20 earn Income:Bonus 3048.565 SGD

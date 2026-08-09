@@ -1,0 +1,48 @@
+2010-02-03 open Equity:Opening USD
+  multiAsset: true
+2010-02-18 open Assets:Bank:B0 EUR
+  fundingAccount: Equity:Opening
+2010-03-21 open Assets:Bank:B1 USD
+  fundingAccount: Equity:Opening
+2010-04-10 open Assets:Broker:B0 USD
+  multiAsset: true
+  fundingAccount: Assets:Bank:B0
+2010-04-14 open Assets:Broker:B1 USD
+  multiAsset: true
+  fundingAccount: Assets:Bank:B0
+2010-05-16 open Income:Salary USD
+  fundingAccount: Assets:Bank:B0
+2010-06-14 open Income:Bonus USD
+  fundingAccount: Assets:Bank:B0
+2010-07-24 open Expenses:Food USD
+  fundingAccount: Assets:Bank:B0
+2010-08-22 open Expenses:Travel USD
+  fundingAccount: Assets:Bank:B0
+2010-09-04 open Liabilities:Card USD
+  fundingAccount: Assets:Bank:B1
+2010-10-03 price IVV 161.612 GBP
+2010-10-25 bal Assets:Bank:B0 4819.320 EUR Equity:Opening
+2010-11-11 spend Expenses:Food 246.35 USD
+2010-12-13 earn Bonus Assets:Bank:B1 6598.835 USD
+2010-12-17 earn Income:Bonus 7027.90 USD
+2010-12-28 adj Assets:Bank:B1 20063 USD Equity:Opening
+2011-01-03 tfr Assets:Bank:B1 Assets:Broker:B0 2782.7006 USD
+2011-02-05 adj Assets:Bank:B1 24016.3188 USD Equity:Opening
+2011-02-23 unit Assets:Broker:B0 427 VTI @150.2084 USD
+2011-02-27 tfr Assets:Bank:B1 Expenses:Food 2076 USD
+2011-04-08 price VCSH 137 SGD
+2011-05-13 adj Assets:Bank:B0 727 EUR Equity:Opening
+2011-05-18 unit Assets:Broker:B0 285 VCSH @267 USD
+2011-06-23 spend Expenses:Food 51.382 USD
+2011-07-19 tfr Assets:Broker:B0 Assets:Broker:B1 2005.748 USD
+2011-08-12 tfr Assets:Broker:B1 Expenses:Travel 1626.0970 USD
+2011-08-20 fund Assets:Bank:B1 Assets:Broker:B0 13067.75 USD
+2011-09-18 price VWRL 211.0618 EUR
+2011-10-09 trade Assets:Broker:B0 37 VWRL @270.53 USD
+2011-10-19 spend Travel 36 USD
+2011-10-20 adj Assets:Bank:B1 1780.5077 USD Equity:Opening
+2011-10-29 adj Assets:Bank:B0 21238 EUR Equity:Opening
+2011-11-13 earn Income:Salary 653 USD
+2011-12-10 earn Bonus 1504 USD
+2012-01-04 yield Assets:Broker:B0 VTI 15.1321 USD
+2012-01-14 earn Income:Bonus 150.98 USD

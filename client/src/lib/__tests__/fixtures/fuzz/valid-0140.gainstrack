@@ -1,0 +1,51 @@
+option "operating_currency" "GBP"
+1900-01-01 commodity IVV
+  name: IVV Fund
+  tags: equity,global
+  ticker: IVV.X
+2010-02-05 open Equity:Opening GBP
+  multiAsset: true
+2010-02-13 open Assets:Bank:B0 USD
+  fundingAccount: Equity:Opening
+2010-03-23 open Assets:Bank:B1 GBP
+  fundingAccount: Equity:Opening
+2010-04-24 open Assets:Broker:B0 GBP
+  multiAsset: true
+  fundingAccount: Assets:Bank:B1
+2010-05-16 open Assets:Broker:B1 GBP
+  multiAsset: true
+  fundingAccount: Assets:Bank:B1
+2010-06-13 open Income:Bonus GBP
+  fundingAccount: Assets:Bank:B0
+2010-07-19 open Income:Interest GBP
+  fundingAccount: Assets:Bank:B1
+2010-08-19 open Expenses:Rent GBP
+  fundingAccount: Assets:Bank:B0
+2010-09-03 open Liabilities:Card GBP
+  fundingAccount: Assets:Bank:B1
+2010-10-06 spend Expenses:Rent 290 GBP
+2010-10-21 bal Assets:Bank:B0 14760.886 USD Equity:Opening
+2010-11-25 unit Assets:Broker:B1 410 VCSH @220 GBP
+2010-11-29 unit Assets:Broker:B0 324 IVV @27.3881 GBP
+2010-12-13 unit Assets:Broker:B0 420 FTSE @34.1756 GBP
+2011-01-20 spend Expenses:Rent 429.5787 GBP
+2011-01-22 tfr Equity:Opening Assets:Bank:B0 1645.3854 GBP
+2011-02-17 trade Assets:Broker:B1 165 VWRL @325.34 GBP C10 GBP
+2011-03-16 bal Assets:Bank:B1 11945 GBP Equity:Opening
+2011-04-12 fund Assets:Broker:B0 Assets:Broker:B1 13945.91 GBP
+2011-04-20 adj Assets:Bank:B0 1640.17 USD Equity:Opening
+2011-05-29 unit Assets:Broker:B1 244 VTI @183 GBP
+2011-06-15 tfr Equity:Opening Assets:Broker:B0 4790 GBP
+2011-07-05 yield Assets:Bank:B0 22.011 USD
+2011-07-29 earn Interest Assets:Bank:B0 6280 GBP
+2011-07-31 spend Rent 81.0635 GBP
+2011-09-07 tfr Equity:Opening Income:Interest 1579 GBP
+2011-10-04 earn Income:Interest 4233.31 GBP
+2011-10-05 trade Assets:Broker:B0 84 VCSH @252.4286 GBP
+2011-10-31 fund Assets:Broker:B1 Assets:Bank:B0 10048.549 GBP
+2011-11-25 yield Assets:Bank:B1 114.69 GBP
+2011-12-15 spend Rent Assets:Bank:B0 696 GBP
+2011-12-22 tfr Assets:Broker:B1 Income:Bonus 1426.95 GBP
+2012-01-29 trade Assets:Broker:B1 160 FTSE @485.76 GBP C13.048 GBP
+2012-02-24 bal Assets:Bank:B0 15994.1199 USD Equity:Opening
+2012-03-12 unit Assets:Broker:B0 136 VCSH @198.06 GBP

@@ -1,0 +1,49 @@
+1900-01-01 commodity VTI
+  name: VTI Fund
+  tags: equity,global
+  ticker: VTI.X
+2010-01-28 open Equity:Opening USD
+  multiAsset: true
+2010-02-14 open Assets:Bank:B0 USD
+  fundingAccount: Equity:Opening
+2010-03-03 open Assets:Broker:B0 USD
+  multiAsset: true
+  automaticReinvestment: true
+  fundingAccount: Assets:Bank:B0
+2010-03-08 open Income:Salary USD
+  fundingAccount: Assets:Bank:B0
+2010-03-18 open Income:Bonus USD
+  fundingAccount: Assets:Bank:B0
+2010-04-06 open Expenses:Travel USD
+  fundingAccount: Assets:Bank:B0
+2010-04-08 tfr Assets:Bank:B0 Income:Salary 3434 USD
+2010-04-09 adj Assets:Bank:B0 18164 USD Equity:Opening
+2010-04-11 fund Assets:Broker:B0 Assets:Bank:B0 11952.2291 USD
+2010-04-30 fund Assets:Broker:B0 Income:Salary 19039.6399 USD
+2010-05-15 earn Income:Bonus Assets:Bank:B0 6247.01 USD
+2010-06-08 price VCSH 265.82 GBP
+2010-07-11 price FTSE 338 GBP
+2010-08-12 spend Expenses:Travel 84.732 USD
+2010-08-30 tfr Assets:Bank:B0 Equity:Opening 4651.59 USD
+2010-10-01 bal Assets:Bank:B0 20193 USD Equity:Opening
+2010-10-10 bal Assets:Bank:B0 28345.19 USD Equity:Opening
+2010-10-12 trade Assets:Broker:B0 96 IVV @77.254 USD C4.58 USD
+2010-11-21 fund Assets:Broker:B0 12099.8154 USD
+2010-12-14 earn Income:Salary 2474.6006 USD
+2010-12-19 price IVV 399.7513 GBP
+2011-01-19 trade Assets:Broker:B0 -7 IVV @256 USD
+2011-02-19 trade Assets:Broker:B0 162 IVV @351 USD
+2011-03-19 unit Assets:Broker:B0 496 VTI @359 USD
+2011-04-11 unit Assets:Broker:B0 210 BRK-B @77 USD
+2011-04-24 price VCSH 221.33 EUR
+2011-05-09 price FTSE 272.83 USD
+2011-05-12 earn Bonus 1778.76 USD
+2011-06-19 adj Assets:Bank:B0 12224 USD Equity:Opening
+2011-06-30 fund Assets:Bank:B0 4989.07 USD
+2011-08-08 adj Assets:Bank:B0 13717.53 USD Equity:Opening
+2011-08-27 trade Assets:Broker:B0 135 BRK-B @224.568 USD
+2011-08-31 trade Assets:Broker:B0 146 FTSE @66.710 USD
+2011-09-02 earn Bonus Assets:Bank:B0 3750.64 USD
+2011-09-27 spend Travel 413.65 USD
+2011-11-03 trade Assets:Broker:B0 133 FTSE @175.7500 USD
+2011-11-19 trade Assets:Broker:B0 130 FTSE @334.4678 USD C12.5035 USD

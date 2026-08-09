@@ -1,0 +1,37 @@
+option "operating_currency" "GBP"
+1900-01-01 commodity IVV
+  name: IVV Fund
+  tags: equity,global
+  ticker: IVV.X
+2010-01-26 open Equity:Opening GBP
+  multiAsset: true
+2010-03-04 open Assets:Bank:B0 SGD
+  fundingAccount: Equity:Opening
+2010-03-08 open Assets:Bank:B1 EUR
+  fundingAccount: Equity:Opening
+2010-04-08 open Assets:Broker:B0 GBP
+  multiAsset: true
+  fundingAccount: Assets:Bank:B0
+2010-05-03 open Assets:Broker:B1 GBP
+  multiAsset: true
+  fundingAccount: Assets:Bank:B0
+2010-05-31 open Expenses:Food GBP
+  fundingAccount: Assets:Bank:B0
+2010-06-09 open Expenses:Rent GBP
+  fundingAccount: Assets:Bank:B0
+2010-06-16 bal Assets:Bank:B1 26487.73 EUR
+2010-07-13 trade Assets:Broker:B0 88 FTSE @151 GBP C4 GBP
+2010-08-11 spend Food 886.588 GBP
+2010-09-14 tfr Equity:Opening Assets:Bank:B0 4822.81 GBP
+2010-09-22 bal Assets:Bank:B0 560.53 SGD Equity:Opening
+2010-10-21 tfr Assets:Bank:B0 Assets:Broker:B0 1618.5558 SGD
+2010-10-22 bal Assets:Bank:B1 23463.710 EUR Equity:Opening
+2010-11-24 tfr Assets:Bank:B0 Equity:Opening 448.410 SGD 2215.510 GBP
+2010-11-27 adj Assets:Bank:B1 14981.5863 EUR Equity:Opening
+2011-01-01 trade Assets:Broker:B1 119 BRK-B @381.709 GBP C19.560 GBP
+2011-02-08 unit Assets:Broker:B0 51 IVV @32.0180 GBP
+2011-02-12 fund Assets:Bank:B1 Equity:Opening 10621.897 EUR
+2011-02-14 bal Assets:Bank:B1 27930 EUR Equity:Opening
+2011-02-20 fund Assets:Broker:B0 Assets:Broker:B1 18461.8502 GBP
+2011-03-18 fund Assets:Bank:B0 Expenses:Food 11670.9879 SGD
+2011-04-26 bal Assets:Bank:B1 21560 EUR Equity:Opening

@@ -1,0 +1,36 @@
+option "operating_currency" "EUR"
+2010-01-30 open Equity:Opening EUR
+  multiAsset: true
+2010-03-05 open Assets:Bank:B0 EUR
+  fundingAccount: Equity:Opening
+2010-03-11 open Assets:Bank:B1 EUR
+  fundingAccount: Equity:Opening
+2010-04-08 open Assets:Bank:B2 HKD
+  fundingAccount: Equity:Opening
+2010-05-07 open Assets:Broker:B0 EUR
+  multiAsset: true
+  automaticReinvestment: true
+  fundingAccount: Assets:Bank:B1
+2010-05-20 open Assets:Broker:B1 EUR
+  multiAsset: true
+  fundingAccount: Assets:Bank:B1
+2010-06-22 open Income:Salary EUR
+  fundingAccount: Assets:Bank:B2
+2010-07-26 open Income:Bonus EUR
+  fundingAccount: Assets:Bank:B2
+2010-09-02 open Expenses:Food EUR
+  fundingAccount: Assets:Bank:B2
+2010-09-26 open Expenses:Travel EUR
+  fundingAccount: Assets:Bank:B1
+2010-10-12 earn Income:Bonus 8769.274 EUR
+2010-10-16 yield Assets:Bank:B2 9.041 HKD
+2010-11-01 unit Assets:Broker:B1 436 IVV @162.916 EUR
+2010-11-03 adj Assets:Bank:B2 6224.352 HKD Equity:Opening
+2010-11-30 spend Expenses:Food 573.10 EUR
+2010-12-23 adj Assets:Bank:B2 20491.6676 HKD Equity:Opening
+2011-01-11 spend Travel 11.7383 EUR
+2011-02-16 price VWRL 58.674 USD
+2011-03-15 fund Assets:Bank:B0 11634.5884 EUR
+2011-03-31 adj Assets:Bank:B1 18604 EUR Equity:Opening
+2011-05-10 tfr Assets:Bank:B0 Expenses:Food 3020 EUR
+2011-05-11 price BRK-B 264 EUR

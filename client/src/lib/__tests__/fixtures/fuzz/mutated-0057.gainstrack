@@ -1,0 +1,31 @@
+option "operating_currency" "EUR"
+1900-01-01 commodity VWRL
+  name: VWRL Fund
+  tags: equity,global
+  ticker: VWRL.X
+2010-01-27 open Equity:Opening EUR
+  multiAsset: true
+2010-02-17 open Assets:Bank:B0 GBP
+  fundingAccount: Equity:Opening
+2010-03-07 open Assets:Bank:B1 EUR
+  fundingAccount: Equity:Opening
+2010-04-09 open Assets:Broker:B0 EUR
+  multiAsset: true
+  automaticReinvestment: true
+  fundingAccount: Assets:Bank:B1
+2010-05-07 open Assets:Broker:B1 EUR
+  multiAsset: true
+  automaticReinvestment: true
+  fundingAccount: Assets:Bank:B1
+2010-05-25 open Expenses:Food EUR
+  fundingAccount: Assets:Bank:B0
+2010-06-20 open Expenses:Rent EUR
+  fundingAccount: Assets:Bank:B0
+2010-07-14 open Expenses:Travel EUR
+  fundingAccount: Assets:Bank:B0
+2010-07-22 spend Rent 210.2809 EUR
+2010-07-31 fund Assets:Broker:B1 19505.1523 EUR
+2010-08-11 price VWRL 333.93 GBP
+2010-08-14 unit Assets:Broker:B1 197 VTI @367 EUR
+2010-08-24 price VTI 362.39 EUR
+2010-08-26 fund Assets:Bank:B1 Assets:Broker:B1 17236 EUR

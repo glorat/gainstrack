@@ -1,0 +1,44 @@
+option "operating_currency" "HKD"
+1900-01-01 commodity BRK-B
+  name: BRK-B Fund
+  tags: equity,global
+  ticker: BRK-B.X
+2010-01-10 open Equity:Opening HKD
+  multiAsset: true
+2010-01-12 open Assets:Bank:B0 EUR
+  fundingAccount: Equity:Opening
+2010-01-25 open Assets:Bank:B1 EUR
+  fundingAccount: Equity:Opening
+2010-02-09 open Assets:Broker:B0 HKD
+  multiAsset: true
+  fundingAccount: Assets:Bank:B0
+2010-03-17 open Income:Salary HKD
+  fundingAccount: Assets:Bank:B1
+2010-04-25 open Income:Bonus HKD
+  fundingAccount: Assets:Bank:B0
+2010-05-12 open Income:Interest HKD
+  fundingAccount: Assets:Bank:B0
+2010-06-13 open Expenses:Travel HKD
+  fundingAccount: Assets:Bank:B0
+2010-06-25 spend Expenses:Travel 220.6030 HKD
+2010-07-10 adj Assets:Bank:B0 18501.173 EUR Equity:Opening
+2010-08-13 bal Assets:Bank:B0 23757 EUR Equity:Opening
+2010-08-16 tfr Assets:Bank:B0 Equity:Opening 947.83 EUR 4701 HKD
+2010-08-24 trade Assets:Broker:B0 94 VTI @244.3282 HKD C10 HKD
+2010-09-27 price BRK-B 324 HKD
+2010-10-06 unit Assets:Broker:B0 49 VWRL @379.747 HKD
+2010-10-15 trade Assets:Broker:B0 50 VWRL @486.42 HKD
+2010-11-11 adj Assets:Bank:B1 8679 EUR Equity:Opening
+2010-11-15 tfr Equity:Opening Expenses:Travel 2867.3527 HKD
+2010-11-20 price VTI 414.271 GBP
+2010-11-30 tfr Assets:Bank:B0 Income:Bonus 2876.0349 EUR
+2011-01-01 yield Assets:Broker:B0 VTI 196.392 HKD
+2011-01-14 yield Assets:Broker:B0 VWRL 118.4009 HKD
+2011-02-03 unit Assets:Broker:B0 90 VWRL @248.38 HKD
+2011-02-14 spend Travel 126.6612 HKD
+2011-03-11 earn Income:Bonus Assets:Bank:B1 5028.1733 HKD
+2011-03-23 spend Travel 252.1514 HKD
+2011-04-14 trade Assets:Broker:B0 -17 VTI @187.21 HKD C2.86 HKD
+2011-05-09 earn Income:Bonus 4340.936 HKD
+2011-05-20 yield Assets:Broker:B0 VTI 32.348 HKD
+2011-06-28 adj Assets:Bank:B0 25944.34 EUR Equity:Opening

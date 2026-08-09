@@ -1,6 +1,7 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import { generate } from 'src/lib/gen/GainstrackGenerator';
+import { FIXTURE_NAMES } from 'src/lib/__tests__/fixtureNames';
 
 // Parity of the TS generator (Slice 1: accounts + txs) against the Scala `allState`, dumped
 // per resource file by DumpGeneratorDTOs.scala. Accounts compared as an unordered set
@@ -8,7 +9,7 @@ import { generate } from 'src/lib/gen/GainstrackGenerator';
 // `description` is included in the comparison; only the synthetic `id` is stripped.
 
 const FIXTURES = path.join(__dirname, '..', '..', '__tests__', 'fixtures');
-const RESOURCES = ['basic', 'unit', 'src', 'div', 'balbug', 'james', 'noequity', 'multiadj'];
+const RESOURCES = FIXTURE_NAMES;
 
 function readJson(name: string): any {
   return JSON.parse(fs.readFileSync(path.join(FIXTURES, name), 'utf8'));

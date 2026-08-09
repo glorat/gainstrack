@@ -1,0 +1,40 @@
+option "operating_currency" "SGD"
+1900-01-01 commodity VTI
+  name: VTI Fund
+  tags: equity,global
+  ticker: VTI.X
+2010-01-24 open Equity:Opening SGD
+  multiAsset: true
+2010-03-04 open Assets:Bank:B0 SGD
+  fundingAccount: Equity:Opening
+2010-03-12 open Assets:Broker:B0 SGD
+  multiAsset: true
+  automaticReinvestment: true
+  fundingAccount: Assets:Bank:B0
+2010-03-18 open Assets:Broker:B1 EUR
+  multiAsset: true
+  fundingAccount: Assets:Bank:B0
+2010-03-31 open Income:Salary SGD
+  fundingAccount: Assets:Bank:B0
+2010-04-07 open Income:Bonus SGD
+  fundingAccount: Assets:Bank:B0
+2010-04-12 open Expenses:Rent SGD
+  fundingAccount: Assets:Bank:B0
+2010-04-16 open Expenses:Travel SGD
+  fundingAccount: Assets:Bank:B0
+2010-04-29 unit Assets:Broker:B1 296 VCSH @54.442 EUR
+2010-05-31 earn Income:Bonus 3882.2943 SGD
+2010-07-09 trade Assets:Broker:B0 82 VWRL @363.2380 SGD
+2010-07-29 trade Assets:Broker:B0 109 BRK-B @459.1050 SGD
+2010-08-24 earn Bonus Assets:Bank:B0 1425.00 SGD
+2010-09-11 fund Assets:Broker:B0 Income:Salary 8230 SGD
+2010-09-25 spend Expenses:Rent Assets:Bank:B0 694.709 SGD
+2010-11-01 tfr Assets:Broker:B0 Assets:Bank:B0 4092 SGD
+2010-11-09 unit Assets:Broker:B0 496 FTSE @49.255 SGD
+2010-11-17 bal Assets:Bank:B0 23911 SGD Equity:Opening
+2010-11-20 price BRK-B 28.5143 GBP
+2010-11-24 price IVV 240.53 HKD
+2010-11-26 price FTSE 264 HKD
+2010-12-02 tfr Assets:Bank:B0 Equity:Opening 1311.12 SGD
+2010-12-24 price VCSH 374.194 HKD
+2011-01-16 fund Assets:Bank:B0 6216 SGD

@@ -1,0 +1,36 @@
+option "operating_currency" "HKD"
+1900-01-01 commodity FTSE
+  name: FTSE Fund
+  tags: equity,global
+  ticker: FTSE.X
+2010-01-16 open Equity:Opening HKD
+  multiAsset: true
+2010-02-12 open Assets:Bank:B0 HKD
+  fundingAccount: Equity:Opening
+2010-03-15 open Assets:Broker:B0 GBP
+  multiAsset: true
+  automaticReinvestment: true
+  fundingAccount: Assets:Bank:B0
+2010-03-29 open Income:Salary HKD
+  fundingAccount: Assets:Bank:B0
+2010-04-01 open Income:Bonus HKD
+  fundingAccount: Assets:Bank:B0
+2010-05-02 open Income:Interest HKD
+  fundingAccount: Assets:Bank:B0
+2010-05-29 open Expenses:Food HKD extraTokenHere
+  fundingAccount: Assets:Bank:B0
+2010-06-01 open Expenses:Travel HKD
+  fundingAccount: Assets:Bank:B0
+2010-06-08 unit Assets:Broker:B0 474 VWRL @226.8139 GBP
+2010-07-05 spend Food 363.1470 HKD
+2010-07-14 trade Assets:Broker:B0 79 VWRL @40.653 GBP
+2010-07-28 bal Assets:Bank:B0 11968.190 HKD Equity:Opening
+2010-08-19 adj Assets:Bank:B0 11069 HKD Equity:Opening
+2010-09-19 price FTSE 38 HKD
+2010-10-13 price FTSE 3.501 HKD
+2010-11-21 tfr Assets:Bank:B0 Expenses:Travel 4297.34 HKD
+2010-12-03 unit Assets:Broker:B0 185 FTSE @231 GBP
+2010-12-04 spend Expenses:Food 88 HKD
+2010-12-31 bal Assets:Bank:B0 10189.809 HKD Equity:Opening
+2011-01-22 bal Assets:Bank:B0 7225.396 HKD Equity:Opening
+2011-03-03 yield Assets:Broker:B0 FTSE 171.087 GBP

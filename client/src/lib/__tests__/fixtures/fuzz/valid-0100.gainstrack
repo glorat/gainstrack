@@ -1,0 +1,38 @@
+option "operating_currency" "GBP"
+1900-01-01 commodity FTSE
+  name: FTSE Fund
+  tags: equity,global
+  ticker: FTSE.X
+2010-02-06 open Equity:Opening GBP
+  multiAsset: true
+2010-02-27 open Assets:Bank:B0 USD
+  fundingAccount: Equity:Opening
+2010-03-20 open Assets:Bank:B1 GBP
+  fundingAccount: Equity:Opening
+2010-04-04 open Assets:Broker:B0 GBP
+  multiAsset: true
+  automaticReinvestment: true
+  fundingAccount: Assets:Bank:B0
+2010-04-14 open Assets:Broker:B1 GBP
+  multiAsset: true
+  fundingAccount: Assets:Bank:B1
+2010-05-07 open Income:Salary GBP
+  fundingAccount: Assets:Bank:B1
+2010-06-04 open Income:Interest GBP
+  fundingAccount: Assets:Bank:B1
+2010-07-09 open Expenses:Food GBP
+  fundingAccount: Assets:Bank:B0
+2010-08-18 open Expenses:Rent GBP
+  fundingAccount: Assets:Bank:B1
+2010-09-14 open Liabilities:Card GBP
+  fundingAccount: Assets:Bank:B0
+2010-10-05 tfr Assets:Broker:B1 Income:Salary 4272.68 GBP
+2010-11-03 spend Expenses:Rent 673.8256 GBP
+2010-12-12 spend Food Assets:Bank:B1 360 GBP
+2011-01-21 earn Income:Salary 7961 GBP
+2011-02-17 bal Assets:Bank:B0 22396 USD Equity:Opening
+2011-03-05 tfr Assets:Broker:B1 Income:Salary 688 GBP
+2011-03-10 trade Assets:Broker:B1 142 VWRL @432.32 GBP C7 GBP
+2011-04-07 tfr Assets:Broker:B1 Liabilities:Card 1005.6882 GBP
+2011-04-25 fund Assets:Bank:B1 15157 GBP
+2011-05-11 fund Assets:Bank:B0 14297 USD

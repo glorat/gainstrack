@@ -1,0 +1,50 @@
+option "operating_currency" "SGD"
+2010-01-12 open Equity:Opening SGD
+  multiAsset: true
+2010-02-14 open Assets:Bank:B0 SGD
+  fundingAccount: Equity:Opening
+2010-02-17 open Assets:Broker:B0 EUR
+  multiAsset: true
+  automaticReinvestment: true
+  fundingAccount: Assets:Bank:B0
+2010-03-06 open Income:Salary SGD
+  fundingAccount: Assets:Bank:B0
+2010-04-09 open Income:Bonus SGD
+  fundingAccount: Assets:Bank:B0
+2010-05-02 open Income:Interest SGD
+  fundingAccount: Assets:Bank:B0
+2010-06-03 open Expenses:Food SGD
+  fundingAccount: Assets:Bank:B0
+2010-06-08 open Expenses:Travel SGD
+  fundingAccount: Assets:Bank:B0
+2010-07-04 open Liabilities:Card SGD
+  fundingAccount: Assets:Bank:B0
+2010-07-16 tfr Assets:Broker:B0 Expenses:Food 2080.15 EUR 700.965 SGD
+2010-08-20 unit Assets:Broker:B0 451 IVV @241.64 EUR
+2010-09-16 unit Assets:Broker:B0 88 IVV @18.07 EUR
+2010-09-22 price VWRL 46 EUR
+2010-10-13 yield Assets:Broker:B0 IVV 46 EUR
+2010-10-18 tfr Assets:Bank:B0 Income:Interest 3514.416 SGD
+2010-11-24 trade Assets:Broker:B0 191 VWRL @33 EUR
+2010-11-30 spend Expenses:Travel 367.224 SGD
+2010-12-15 trade Assets:Broker:B0 -8 VWRL @457 EUR
+2011-01-07 fund Assets:Broker:B0 13708.16 EUR
+2011-02-15 yield Assets:Bank:B0 50.2978 SGD
+2011-03-24 price VWRL 254 USD
+2011-04-05 spend Expenses:Food 498.182 SGD
+2011-04-08 yield Assets:Broker:B0 VWRL 116.731 EUR
+2011-04-23 unit Assets:Broker:B0 474 VCSH @325.338 EUR
+2011-05-29 earn Interest 8162.209 SGD
+2011-06-17 yield Assets:Broker:B0 IVV 119.55 EUR
+2011-06-22 price FTSE 273 EUR
+2011-07-20 spend Expenses:Travel Assets:Bank:B0 300 SGD
+2011-08-21 spend Expenses:Travel 790 SGD
+2011-09-28 fund Assets:Broker:B0 15481.015 EUR
+2011-10-14 yield Assets:Broker:B0 VCSH 89.43 EUR
+2011-10-15 earn Income:Bonus 7832 SGD
+2011-10-31 bal Assets:Bank:B0 6790 SGD Equity:Opening
+2011-11-10 unit Assets:Broker:B0 339 IVV @96.54 EUR
+2011-11-19 price VCSH 345.014 SGD
+2011-12-18 unit Assets:Broker:B0 72 IVV @312.12 EUR
+2012-01-23 price BRK-B 100 EUR
+2012-02-03 price IVV 220.6095 GBP

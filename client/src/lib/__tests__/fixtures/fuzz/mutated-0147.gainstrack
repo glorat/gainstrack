@@ -1,0 +1,60 @@
+option "operating_currency" "GBP"
+1900-01-01 commodity IVV
+  name: IVV Fund
+  tags: equity,global
+  ticker: IVV.X
+2010-01-20 open Equity:Opening GBP
+  multiAsset: true
+2010-02-10 open Assets:Bank:B0 GBP
+  fundingAccount: Equity:Opening
+2010-03-10 open Assets:Bank:B1 GBP
+  fundingAccount: Equity:Opening
+2010-03-31 open Assets:Bank:B2 GBP
+  fundingAccount: Equity:Opening
+2010-04-23 open Assets:Broker:B0 GBP
+  multiAsset: true
+  fundingAccount: Assets:Bank:B1
+2010-04-25 open Assets:Broker:B1 GBP
+  multiAsset: true
+  fundingAccount: Assets:Bank:B0
+2010-05-21 open Income:Salary GBP
+  fundingAccount: Assets:Bank:B2
+2010-05-25 open Income:Bonus GBP
+  fundingAccount: Assets:Bank:B2
+2010-06-14 open Income:Interest GBP
+  fundingAccount: Assets:Bank:B1
+2010-07-13 open Expenses:Food GBP
+  fundingAccount: Assets:Bank:B2
+2010-08-04 open Expenses:Rent GBP
+  fundingAccount: Assets:Bank:B0
+2010-08-19 open Expenses:Travel GBP
+  fundingAccount: Assets:Bank:B2
+2010-09-11 open Liabilities:Card GBP
+  fundingAccount: Assets:Bank:B2
+2010-09-29 adj Assets:Bank:B0 5454.383 GBP Equity:Opening
+2010-10-22 price BRK-B 352.583 GBP
+2010-11-11 fund Assets:Broker:B1 6826.3838 GBP
+2010-11-19 price VCSH 326 GBP
+2010-11-25 earn Interest 3978.867 GBP
+2010-11-30 unit Assets:Broker:B1 251 BRK-B @2.17 GBP
+2010-12-31 trade Assets:Broker:B0 200 VCSH @445.75 GBP
+2011-01-29 spend Travel Assets:Bank:B2 596.250 GBP
+2011-03-04 bal Assets:Bank:B0 15074.531 GBP Equity:Opening
+2011-03-08 unit Assets:Broker:B1 283 IVV @58 GBP
+2011-03-25 price FTSE 295 GBP
+2011-03-31 spend Expenses:Rent 695 GBP
+2011-04-28 tfr Assets:Broker:B0 Assets:Bank:B2 1264 GBP
+2011-04-29 spend Food 453.7706 GBP
+2011-05-31 price BRK-B 130.211 HKD
+2011-06-30 unit Assets:Broker:B1 98 VTI @258.045 GBP
+2011-07-19 bal Assets:Bank:B2 23673 GBP Equity:Opening
+2011-08-01 tfr Assets:Broker:B0 Assets:Broker:B1 2504 GBP
+2011-08-31 fund Assets:Bank:B1 5214.829 GBP
+2011-09-15 spend Travel 59 GBP
+2011-09-16 spend Rent 190.277 GBP
+2011-10-21 tfr Equity:Opening Income:Bonus 4535.85 GBP
+2011-11-01 earn Income:Salary 509 GBP
+2011-11-27 trade Assets:Broker:B0 79 FTSE @121 GBP
+2011-12-15 spend Expenses:Travel Assets:Bank:B2 87.384 GBP
+2012-01-18 trade Assets:Broker:B0 -4 VCSH @265.463 GBP
+2012-02-12 adj Assets:Bank:B2 4905.78 GBP Equity:Opening

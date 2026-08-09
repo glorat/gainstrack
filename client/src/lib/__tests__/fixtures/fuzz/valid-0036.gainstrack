@@ -1,0 +1,59 @@
+option "operating_currency" "SGD"
+2010-01-12 open Equity:Opening SGD
+  multiAsset: true
+2010-02-05 open Assets:Bank:B0 SGD
+  fundingAccount: Equity:Opening
+2010-02-20 open Assets:Broker:B0 SGD
+  multiAsset: true
+  fundingAccount: Assets:Bank:B0
+2010-03-30 open Assets:Broker:B1 USD
+  multiAsset: true
+  fundingAccount: Assets:Bank:B0
+2010-05-09 open Income:Bonus SGD
+  fundingAccount: Assets:Bank:B0
+2010-05-15 open Income:Interest SGD
+  fundingAccount: Assets:Bank:B0
+2010-05-24 open Expenses:Food SGD
+  fundingAccount: Assets:Bank:B0
+2010-05-26 open Expenses:Rent SGD
+  fundingAccount: Assets:Bank:B0
+2010-06-06 open Expenses:Travel SGD
+  fundingAccount: Assets:Bank:B0
+2010-06-13 open Liabilities:Card SGD
+  fundingAccount: Assets:Bank:B0
+2010-06-21 fund Assets:Broker:B1 Expenses:Rent 16677 USD
+2010-07-24 bal Assets:Bank:B0 22086 SGD Equity:Opening
+2010-08-17 tfr Assets:Broker:B1 Assets:Broker:B0 3890.22 USD 3877.249 SGD
+2010-09-21 trade Assets:Broker:B1 179 VWRL @29 USD
+2010-09-22 yield Assets:Bank:B0 155.222 SGD
+2010-10-18 fund Assets:Broker:B0 14045.422 SGD
+2010-11-05 trade Assets:Broker:B0 163 BRK-B @72.60 SGD
+2010-12-15 unit Assets:Broker:B0 87 VTI @210.9985 SGD
+2010-12-26 trade Assets:Broker:B1 131 VCSH @456 USD
+2011-01-10 bal Assets:Bank:B0 27049 SGD Equity:Opening
+2011-01-31 fund Assets:Broker:B1 15005.407 USD
+2011-02-07 unit Assets:Broker:B0 402 VWRL @162 SGD
+2011-03-14 tfr Equity:Opening Expenses:Rent 4095 SGD
+2011-04-15 bal Assets:Bank:B0 24836.604 SGD Equity:Opening
+2011-04-17 trade Assets:Broker:B0 54 FTSE @292.08 SGD C10.7875 SGD
+2011-05-26 tfr Assets:Broker:B1 Equity:Opening 4013 USD
+2011-06-15 fund Assets:Bank:B0 18247.677 SGD
+2011-07-09 earn Bonus 4839 SGD
+2011-07-13 price FTSE 39.93 SGD
+2011-07-23 tfr Assets:Bank:B0 Income:Bonus 2176 SGD
+2011-08-19 yield Assets:Broker:B0 VTI 4 SGD
+2011-09-14 adj Assets:Bank:B0 27230 SGD Equity:Opening
+2011-10-22 unit Assets:Broker:B1 403 VCSH @365.60 USD
+2011-12-01 yield Assets:Broker:B1 VCSH 155 USD
+2011-12-13 trade Assets:Broker:B0 92 VWRL @62.34 SGD
+2011-12-26 fund Assets:Broker:B0 19535.445 SGD
+2012-02-03 spend Expenses:Food 23 SGD
+2012-02-19 adj Assets:Bank:B0 22540.798 SGD Equity:Opening
+2012-03-28 unit Assets:Broker:B1 150 VCSH @299 USD
+2012-05-05 earn Interest Assets:Bank:B0 5180.155 SGD
+2012-06-07 spend Expenses:Travel 777.12 SGD
+2012-06-24 unit Assets:Broker:B1 179 VCSH @382.97 USD
+2012-07-12 bal Assets:Bank:B0 23320.67 SGD Equity:Opening
+2012-07-26 price FTSE 450 HKD
+2012-08-27 bal Assets:Bank:B0 24471 SGD Equity:Opening
+2012-09-10 yield Assets:Broker:B1 VWRL 24.92 USD

@@ -1,0 +1,40 @@
+1900-01-01 commodity FTSE
+  name: FTSE Fund
+  tags: equity,global
+  ticker: FTSE.X
+2010-01-31 open Equity:Opening USD
+  multiAsset: true
+2010-03-12 open Assets:Bank:B0 USD
+  fundingAccount: Equity:Opening
+2010-03-18 open Assets:Bank:B1 HKD
+  fundingAccount: Equity:Opening
+2010-04-18 open Assets:Broker:B0 GBP
+  multiAsset: true
+  fundingAccount: Assets:Bank:B1
+2010-05-01 open Income:Interest USD
+  fundingAccount: Assets:Bank:B1
+2010-05-09 open Expenses:Food USD
+  fundingAccount: Assets:Bank:B1
+2010-06-10 open Liabilities:Card USD
+  fundingAccount: Assets:Bank:B1
+2010-07-14 price FTSE 52.23 GBP
+2010-07-26 unit Assets:Broker:B0 6 FTSE @86.984 GBP
+2010-08-16 trade Assets:Broker:B0 -14 FTSE @249.7725 GBP C9.66 GBP
+2010-08-23 bal Assets:Bank:B0 12871.13 USD Equity:Opening
+2010-08-26 tfr Assets:Bank:B0 Equity:Opening 4796.20 USD
+2010-09-24 yield Assets:Broker:B0 FTSE 149 GBP
+2010-10-22 bal Assets:Bank:B0 9129.68 USD Equity:Opening
+2010-11-09 earn Income:Interest 183.6273 USD
+2010-12-19 spend Expenses:Food 381.094 USD
+2011-01-04 adj Assets:Bank:B1 18294.215 HKD Equity:Opening
+2011-01-11 earn Interest 4818.8379 USD
+2011-02-07 fund Assets:Bank:B0 2643 USD
+2011-03-14 tfr Assets:Broker:B0 Assets:Bank:B1 2768.7325 GBP 4151 HKD
+2011-03-30 spend Food 5.418 USD
+2011-03-31 trade Assets:Broker:B0 81 VTI @135 GBP C11.3573 GBP
+2011-04-21 tfr Equity:Opening Income:Interest 1866 USD
+2011-05-11 yield Assets:Broker:B0 FTSE 28.3306 GBP
+2011-05-20 unit Assets:Broker:B0 258 VWRL @104.13 GBP
+2011-05-26 bal Assets:Bank:B1 6682.53 HKD Equity:Opening
+2011-07-01 unit Assets:Broker:B0 462 IVV @102.2202 GBP
+2011-07-26 tfr Assets:Bank:B0 Assets:Bank:B1 1625 USD 1687.24 HKD

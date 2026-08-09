@@ -1,0 +1,57 @@
+option "operating_currency" "HKD"
+1900-01-01 commodity BRK-B
+  name: BRK-B Fund
+  tags: equity,global
+  ticker: BRK-B.X
+2010-02-04 open Equity:Opening HKD
+  multiAsset: true
+2010-02-21 open Assets:Bank:B0 HKD
+  fundingAccount: Equity:Opening
+2010-02-25 open Assets:Bank:B1 HKD
+  fundingAccount: Equity:Opening
+2010-02-28 open Assets:Broker:B0 GBP
+  multiAsset: true
+  automaticReinvestment: true
+  fundingAccount: Assets:Bank:B1
+2010-03-12 open Assets:Broker:B1 HKD
+  multiAsset: true
+  automaticReinvestment: true
+  fundingAccount: Assets:Bank:B1
+2010-04-19 open Income:Salary HKD
+  fundingAccount: Assets:Bank:B1
+2010-04-29 open Income:Bonus HKD
+  fundingAccount: Assets:Bank:B0
+2010-05-22 open Income:Interest HKD
+  fundingAccount: Assets:Bank:B1
+2010-06-21 open Expenses:Rent HKD
+  fundingAccount: Assets:Bank:B0
+2010-06-22 open Expenses:Travel HKD
+  fundingAccount: Assets:Bank:B1
+2010-07-10 spend Expenses:Rent 186.41 HKD
+2010-07-25 earn Income:Salary 6424 HKD
+2010-07-28 price VCSH 112.162 GBP
+2010-08-31 unit Assets:Broker:B0 319 VWRL @10 GBP
+2010-10-08 yield Assets:Bank:B1 125.977 HKD
+2010-11-04 spend Rent 342.4166 HKD
+2010-12-10 bal Assets:Bank:B0 1750.841 HKD Equity:Opening
+2011-01-09 bal Assets:Bank:B0 2281 HKD Equity:Opening
+2011-02-01 spend Rent 72.5144 HKD
+2011-02-07 adj Assets:Bank:B0 -1967.29 HKD Equity:Opening
+2011-03-01 earn Bonus 6611.557 HKD
+2011-04-10 tfr Assets:Broker:B1 Income:Salary 3142 HKD
+2011-05-03 tfr Assets:Bank:B0 Expenses:Rent 4864.33 HKD
+2011-05-16 earn Interest Assets:Bank:B0 5844.300 HKD
+2011-06-21 fund Assets:Bank:B1 9269.1223 HKD
+2011-07-20 spend Expenses:Travel 171 HKD
+2011-08-22 trade Assets:Broker:B0 -17 VWRL @439.9104 GBP
+2011-09-25 bal Assets:Bank:B0 3441.64 HKD Equity:Opening
+2011-10-12 yield Assets:Broker:B0 VWRL 58.2431 GBP
+2011-11-07 yield Assets:Bank:B0 52.75 HKD
+2011-11-15 unit Assets:Broker:B1 80 BRK-B @358.7249 HKD
+2011-11-30 adj Assets:Bank:B0 16356 HKD Equity:Opening
+2011-12-23 tfr Equity:Opening Assets:Bank:B1 3033 HKD
+2012-01-30 yield Assets:Broker:B1 BRK-B 179.660 HKD
+2012-02-05 trade Assets:Broker:B0 6 VWRL @186.39 GBP C13.26 GBP
+2012-02-09 price VWRL 60.6266 HKD
+2012-02-14 trade Assets:Broker:B1 -13 BRK-B @61.901 HKD C3.94 HKD
+2012-02-17 trade Assets:Broker:B0 56 VTI @401 GBP

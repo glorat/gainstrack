@@ -1,0 +1,44 @@
+option "operating_currency" "EUR"
+1900-01-01 commodity IVV
+  name: IVV Fund
+  tags: equity,global
+  ticker: IVV.X
+2010-01-21 open Equity:Opening EUR
+  multiAsset: true
+2010-02-19 open Assets:Bank:B0 USD
+  fundingAccount: Equity:Opening
+2010-03-29 frobnicate Assets:Bank:B1 SGD
+  fundingAccount: Equity:Opening
+2010-03-30 open Assets:Bank:B2 GBP
+  fundingAccount: Equity:Opening
+2010-04-10 open Assets:Broker:B0 EUR
+  multiAsset: true
+  fundingAccount: Assets:Bank:B2
+2010-04-16 open Income:Salary EUR
+  fundingAccount: Assets:Bank:B2
+2010-04-19 open Income:Interest EUR
+  fundingAccount: Assets:Bank:B2
+2010-05-28 open Expenses:Food EUR
+  fundingAccount: Assets:Bank:B1
+2010-06-16 open Expenses:Rent EUR
+  fundingAccount: Assets:Bank:B2
+2010-07-01 open Liabilities:Card EUR
+  fundingAccount: Assets:Bank:B2
+2010-07-27 fund Assets:Bank:B0 9020.1725 USD
+2010-08-11 unit Assets:Broker:B0 197 FTSE @293.6097 EUR
+2010-09-18 spend Food 633.913 EUR
+2010-10-02 earn Salary 4961.875 EUR
+2010-10-10 fund Assets:Bank:B0 13844.6765 USD
+2010-11-13 earn Income:Interest 8224 EUR
+2010-11-21 trade Assets:Broker:B0 108 FTSE @98.82 EUR C14 EUR
+2010-11-25 unit Assets:Broker:B0 363 VTI @378.14 EUR
+2010-12-13 trade Assets:Broker:B0 18 VWRL @259.357 EUR
+2011-01-14 spend Rent 58.311 EUR
+2011-01-20 trade Assets:Broker:B0 83 BRK-B @309.15 EUR C10.4982 EUR
+2011-01-23 earn Salary 8227.196 EUR
+2011-03-04 adj Assets:Bank:B1 13784 SGD Equity:Opening
+2011-03-20 adj Assets:Bank:B1 18676.27 SGD Equity:Opening
+2011-04-09 bal Assets:Bank:B0 22897.243 USD Equity:Opening
+2011-05-06 yield Assets:Broker:B0 VWRL 139.886 EUR
+2011-05-25 spend Expenses:Food 597.76 EUR
+2011-06-07 unit Assets:Broker:B0 35 BRK-B @296 EUR

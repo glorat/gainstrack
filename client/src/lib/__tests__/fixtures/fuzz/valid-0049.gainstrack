@@ -1,0 +1,42 @@
+option "operating_currency" "GBP"
+2010-02-02 open Equity:Opening GBP
+  multiAsset: true
+2010-02-11 open Assets:Bank:B0 GBP
+  fundingAccount: Equity:Opening
+2010-03-11 open Assets:Broker:B0 GBP
+  multiAsset: true
+  automaticReinvestment: true
+  fundingAccount: Assets:Bank:B0
+2010-03-22 open Income:Salary GBP
+  fundingAccount: Assets:Bank:B0
+2010-04-07 open Income:Bonus GBP
+  fundingAccount: Assets:Bank:B0
+2010-05-12 open Income:Interest GBP
+  fundingAccount: Assets:Bank:B0
+2010-05-31 open Expenses:Food GBP
+  fundingAccount: Assets:Bank:B0
+2010-07-06 open Expenses:Rent GBP
+  fundingAccount: Assets:Bank:B0
+2010-07-18 open Expenses:Travel GBP
+  fundingAccount: Assets:Bank:B0
+2010-07-29 bal Assets:Bank:B0 18435 GBP Equity:Opening
+2010-08-14 bal Assets:Bank:B0 23160 GBP Equity:Opening
+2010-09-13 spend Expenses:Food 43.4620 GBP
+2010-10-18 tfr Assets:Broker:B0 Income:Bonus 1136.705 GBP
+2010-11-13 earn Income:Bonus 8085.5180 GBP
+2010-11-14 tfr Equity:Opening Assets:Broker:B0 2425 GBP
+2010-12-11 trade Assets:Broker:B0 131 VCSH @422.08 GBP
+2010-12-12 adj Assets:Bank:B0 12690.101 GBP Equity:Opening
+2011-01-21 price FTSE 105.1697 GBP
+2011-02-19 price IVV 225.291 SGD
+2011-03-04 spend Food 235.685 GBP
+2011-03-07 tfr Assets:Bank:B0 Income:Salary 4038.710 GBP
+2011-04-12 bal Assets:Bank:B0 22356.62 GBP Equity:Opening
+2011-05-09 fund Assets:Bank:B0 15972.85 GBP
+2011-06-03 spend Expenses:Rent 343 GBP
+2011-07-13 price BRK-B 485.9129 USD
+2011-07-16 bal Assets:Bank:B0 12635.91 GBP Equity:Opening
+2011-08-08 earn Income:Bonus 4745 GBP
+2011-08-10 adj Assets:Bank:B0 13998.8830 GBP Equity:Opening
+2011-09-14 tfr Assets:Bank:B0 Income:Salary 4573.2819 GBP
+2011-10-04 spend Expenses:Travel 41.429 GBP

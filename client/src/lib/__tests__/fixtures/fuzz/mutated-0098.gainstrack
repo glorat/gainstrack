@@ -1,0 +1,32 @@
+option "operating_currency" "HKD"
+1900-01-01 commodity VTI
+  name: VTI Fund
+  tags: equity,global
+  ticker: VTI.X
+2010-01-08 open Equity:Opening HKD
+  multiAsset: true
+2010-02-04 open Assets:Bank:B0 HKD
+  fundingAccount: Equity:Opening
+2010-02-07 open Assets:Broker:B0 HKD
+  multiAsset: true
+  fundingAccount: Assets:Bank:B0
+2010-03-04 open Assets:Broker:B1 HKD
+  multiAsset: true
+  fundingAccount: Assets:Bank:B0
+2010-03-20 open Income:Bonus HKD
+  fundingAccount: Assets:Bank:B0
+2010-03-22 open Income:Interest HKD
+  fundingAccount: Assets:Bank:B0
+2010-04-19 open Expenses:Food HKD
+  fundingAccount: Assets:Bank:B0
+2010-05-29 open Expenses:Rent HKD
+  fundingAccount: Assets:Bank:B0
+2010-05-31 open Expenses:Travel HKD
+  fundingAccount: Assets:Bank:B0
+2010-06-01 open Liabilities:Card HKD
+  fundingAccount: Assets:Bank:B0
+2010-07-08 tfr Assets:Broker:B1 Equity:Opening 405.8434 HKD
+2010-07-28 yield Assets:Bank:B0 13.428 HKD
+2010-08-28 spend Expenses:Food 301.7644 HKD
+2010-08-30 bal Assets:Bank:B0 21673.675 HKD Equity:Opening extraTokenHere
+2010-09-19 trade Assets:Broker:B1 164 BRK-B @76.716 HKD C8 HKD

@@ -1,0 +1,49 @@
+option "operating_currency" "GBP"
+1900-01-01 commodity IVV
+  name: IVV Fund
+  tags: equity,global
+  ticker: IVV.X
+2010-01-04 open Equity:Opening GBP
+  multiAsset: true
+2010-01-31 open Assets:Bank:B0 GBP
+  fundingAccount: Equity:Opening
+2010-02-03 open Assets:Bank:B1 GBP
+  fundingAccount: Equity:Opening
+2010-02-27 open Assets:Broker:B0 HKD
+  multiAsset: true
+  automaticReinvestment: true
+  fundingAccount: Assets:Bank:B0
+2010-04-06 open Income:Bonus GBP
+  fundingAccount: Assets:Bank:B0
+2010-04-10 open Income:Interest GBP
+  fundingAccount: Assets:Bank:B0
+2010-05-01 open Expenses:Food GBP
+  fundingAccount: Assets:Bank:B0
+2010-05-20 unit Assets:Broker:B0 82 VCSH @270.5245 HKD
+2010-06-23 adj Assets:Bank:B1 29266.3445 GBP Equity:Opening
+2010-07-10 earn Bonus 1846.62 GBP
+2010-07-30 price VTI 467 HKD
+2010-08-10 fund Assets:Broker:B0 Expenses:Food 5449.635 HKD
+2010-09-03 yield Assets:Bank:B1 32 GBP
+2010-09-09 price VTI 192.459 USD
+2010-10-09 price IVV 210.769 SGD
+2010-11-18 yield Assets:Bank:B0 45.454 GBP
+2010-12-07 adj Assets:Bank:B0 15110 GBP Equity:Opening
+2010-12-24 fund Assets:Bank:B0 Income:Bonus 8569.6013 GBP
+2011-01-30 tfr Assets:Bank:B0 Equity:Opening 905.74 GBP
+2011-02-24 earn Bonus Assets:Bank:B1 725.330 GBP
+2011-04-05 bal Assets:Bank:B1 11570.5144 GBP Equity:Opening
+2011-04-06 tfr Assets:Broker:B0 Assets:Bank:B0 593 HKD
+2011-04-07 spend Expenses:Food Assets:Bank:B0 398.843 GBP
+2011-05-07 earn Bonus Assets:Bank:B1 2198.275 GBP
+2011-05-27 yield Assets:Broker:B0 VCSH 62 HKD
+2011-06-04 unit Assets:Broker:B0 4 IVV @50 HKD
+2011-06-29 unit Assets:Broker:B0 138 BRK-B @258.7763 HKD
+2011-07-15 bal Assets:Bank:B0 9214 GBP Equity:Opening
+2011-08-09 trade Assets:Broker:B0 -2 IVV @267.58 HKD C16.635 HKD
+2011-09-03 spend Expenses:Food 278.554 GBP
+2011-09-23 fund Assets:Bank:B1 Equity:Opening 10415.97 GBP
+2011-10-23 bal Assets:Bank:B1 22509 GBP Equity:Opening
+2011-10-28 fund Assets:Bank:B1 16360.076 GBP
+2011-11-03 fund Assets:Bank:B0 6876 GBP
+2011-11-16 bal Assets:Bank:B1 28340 GBP Equity:Opening

@@ -1,0 +1,36 @@
+option "operating_currency" "EUR"
+1900-01-01 commodity VTI
+  name: VTI Fund
+  tags: equity,global
+  ticker: VTI.X
+2010-01-23 open Equity:Opening EUR
+  multiAsset: true
+2010-02-16 open Assets:Bank:B0 EUR
+  fundingAccount: Equity:Opening
+notanumber-03-11 open Assets:Bank:B1 EUR
+  fundingAccount: Equity:Opening
+2010-04-02 open Assets:Broker:B0 EUR
+  multiAsset: true
+  automaticReinvestment: true
+  fundingAccount: Assets:Bank:B0
+2010-04-13 open Income:Salary EUR
+  fundingAccount: Assets:Bank:B1
+2010-04-18 open Income:Interest EUR
+  fundingAccount: Assets:Bank:B1
+2010-05-20 open Expenses:Food EUR
+  fundingAccount: Assets:Bank:B1
+2010-05-21 open Expenses:Rent EUR
+  fundingAccount: Assets:Bank:B1
+2010-05-23 tfr Equity:Opening Assets:Bank:B0 1627.01 EUR
+2010-06-05 unit Assets:Broker:B0 53 FTSE @107 EUR
+2010-07-11 tfr Assets:Broker:B0 Assets:Bank:B0 1626.65 EUR
+2010-08-06 trade Assets:Broker:B0 187 VCSH @406 EUR
+2010-08-08 earn Income:Salary 1428.48 EUR
+2010-08-18 price VTI 353.328 EUR
+2010-08-19 unit Assets:Broker:B0 488 IVV @84.147 EUR
+2010-08-24 fund Assets:Broker:B0 Assets:Bank:B1 9597.019 EUR
+2010-09-20 bal Assets:Bank:B0 23509.8847 EUR Equity:Opening
+2010-09-21 earn Salary 7009 EUR
+2010-09-24 trade Assets:Broker:B0 -2 IVV @26 EUR C13.95 EUR
+2010-10-05 bal Assets:Bank:B1 29195 EUR Equity:Opening
+2010-10-06 bal Assets:Bank:B0 21361.57 EUR Equity:Opening

@@ -1,0 +1,36 @@
+2010-01-19 open Equity:Opening USD
+  multiAsset: true
+2010-01-30 open Assets:Bank:B0 USD
+  fundingAccount: Equity:Opening
+2010-03-02 open Assets:Bank:B1 USD
+  fundingAccount: Equity:Opening
+2010-03-10 open Assets:Bank:B2 HKD
+  fundingAccount: Equity:Opening
+2010-04-15 open Assets:Broker:B0 USD
+  multiAsset: true
+  fundingAccount: Assets:Bank:B2
+2010-04-28 open Assets:Broker:B1 USD
+  multiAsset: true
+  automaticReinvestment: true
+  fundingAccount: Assets:Bank:B0
+2010-05-13 open Income:Bonus USD
+  fundingAccount: Assets:Bank:B0
+2010-05-19 open Income:Interest USD
+  fundingAccount: Assets:Bank:B1
+2010-06-17 open Expenses:Food USD
+  fundingAccount: Assets:Bank:B1
+2010-07-23 open Expenses:Rent USD
+  fundingAccount: Assets:Bank:B1
+2010-09-01 open Expenses:Travel USD
+  fundingAccount: Assets:Bank:B0
+2010-09-25 adj Assets:Bank:B1 11121.3225 USD Equity:Opening
+2010-10-27 tfr Assets:Broker:B1 Equity:Opening 3125.215 USD
+2010-11-28 adj Assets:Bank:B1 10884 USD Equity:Opening
+2010-12-28 earn Income:Bonus 2620.4088 USD
+2011-01-12 adj Assets:Bank:B1 9619.2302 USD Equity:Opening
+2011-01-29 trade Assets:Broker:B1 159 VTI @197.009 USD
+2011-03-09 earn Interest Assets:Bank:B0 1581.3749 USD
+2011-03-12 unit Assets:Broker:B0 57 BRK-B @345 USD
+2011-04-03 unit Assets:Broker:B0 498 FTSE @397 USD
+2011-04-08 unit Assets:Broker:B1 269 FTSE @274.79 USD
+2011-05-01 fund Assets:Bank:B1 Assets:Broker:B0 16492.717 USD

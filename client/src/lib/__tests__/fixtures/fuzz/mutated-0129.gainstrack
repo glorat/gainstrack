@@ -1,0 +1,40 @@
+1900-01-01 commodity FTSE
+  name: FTSE Fund
+  tags: equity,global
+  ticker: FTSE.X
+2010-01-23 open Equity:Opening USD
+  multiAsset: true
+2010-02-20 open Assets:Bank:B0 USD
+  fundingAccount: Equity:Opening
+2010-03-16 open Assets:Bank:B1 USD
+  fundingAccount: Equity:Opening
+2010-04-07 open Assets:Broker:B0 USD
+  multiAsset: true
+  automaticReinvestment: true
+  fundingAccount: Assets:Bank:B0
+2010-04-14 open Assets:Broker:B1 USD
+  multiAsset: true
+  fundingAccount: Assets:Bank:B1
+2010-04-17 open Income:Salary USD
+  fundingAccount: Assets:Bank:B0
+2010-05-09 open Income:Interest USD
+  fundingAccount: Assets:Bank:B0
+2010-06-12 open Expenses:Food USD
+  fundingAccount: Assets:Bank:B0
+2010-07-09 open Expenses:Travel USD
+  fundingAccount: Assets:Bank:B1
+2010-08-16 open Liabilities:Card USD
+  fundingAccount: Assets:Bank:B1
+2010-09-10 trade Assets:Broker:B1 83 BRK-B @147.093 USD C7.3285 USD
+2010-09-30 adj Assets:Bank:B0 5293.689 USD Equity:Opening
+2010-10-06 trade Assets:Broker:B1 -10 BRK-B @36.313 USD C3.18 USD
+2010-10-19 price IVV 450.32 GBP
+2010-11-23 bal Assets:Bank:B1 24114.327 USD Equity:Opening
+2010-12-22 tfr Assets:Bank:B0 Income:Salary 4483 USD
+2011-01-24 earn Salary Assets:Bank:B0 2508.261 USD
+2011-02-13 adj Assets:Bank:B1 9574.31 USD Equity:Opening
+2011-03-16 earn Salary 7571.8082 USD
+2011-04-24 bal Assets:Bank:B0 6970.87 USD Equity:Opening
+2011-05-29 price VCSH 221.417 ZZZ
+2011-06-13 tfr Assets:Bank:B1 Income:Interest 2318 USD
+2011-06-15 fund Assets:Broker:B0 15703.96 USD

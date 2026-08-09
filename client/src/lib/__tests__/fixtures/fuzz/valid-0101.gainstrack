@@ -1,0 +1,50 @@
+2010-01-23 open Equity:Opening USD
+  multiAsset: true
+2010-02-20 open Assets:Bank:B0 USD
+  fundingAccount: Equity:Opening
+2010-03-31 open Assets:Bank:B1 USD
+  fundingAccount: Equity:Opening
+2010-04-16 open Assets:Broker:B0 USD
+  multiAsset: true
+  fundingAccount: Assets:Bank:B0
+2010-04-19 open Income:Bonus USD
+  fundingAccount: Assets:Bank:B0
+2010-04-27 open Income:Interest USD
+  fundingAccount: Assets:Bank:B0
+2010-05-23 open Expenses:Rent USD
+  fundingAccount: Assets:Bank:B0
+2010-05-26 open Expenses:Travel USD
+  fundingAccount: Assets:Bank:B1
+2010-06-13 open Liabilities:Card USD
+  fundingAccount: Assets:Bank:B1
+2010-07-20 earn Bonus 5800 USD
+2010-07-27 fund Assets:Broker:B0 3009.379 USD
+2010-08-27 spend Rent 254.2586 USD
+2010-09-14 tfr Assets:Broker:B0 Equity:Opening 4161.745 USD
+2010-10-03 bal Assets:Bank:B0 6589 USD Equity:Opening
+2010-10-17 yield Assets:Bank:B0 22.79 USD
+2010-11-16 yield Assets:Bank:B0 122.2340 USD
+2010-12-20 earn Income:Interest 5594.24 USD
+2011-01-03 unit Assets:Broker:B0 481 FTSE @325.73 USD
+2011-01-10 yield Assets:Bank:B0 77.453 USD
+2011-01-15 bal Assets:Bank:B0 26926.5339 USD Equity:Opening
+2011-02-02 tfr Assets:Bank:B1 Assets:Broker:B0 2601 USD
+2011-02-20 adj Assets:Bank:B0 16779.352 USD Equity:Opening
+2011-03-05 spend Expenses:Rent Assets:Bank:B0 810.0335 USD
+2011-03-15 tfr Assets:Bank:B0 Assets:Broker:B0 1532 USD
+2011-04-24 price BRK-B 313.6059 SGD
+2011-05-23 yield Assets:Broker:B0 FTSE 177.012 USD
+2011-06-04 adj Assets:Bank:B0 796.683 USD Equity:Opening
+2011-06-06 bal Assets:Bank:B1 8629.99 USD Equity:Opening
+2011-06-16 yield Assets:Bank:B0 54.77 USD
+2011-07-03 yield Assets:Broker:B0 FTSE 128.1184 USD
+2011-07-19 unit Assets:Broker:B0 311 VCSH @2.8290 USD
+2011-08-18 price FTSE 297 EUR
+2011-09-23 unit Assets:Broker:B0 302 FTSE @21.68 USD
+2011-10-10 bal Assets:Bank:B1 12964.656 USD Equity:Opening
+2011-10-13 yield Assets:Bank:B1 68.84 USD
+2011-10-24 tfr Assets:Broker:B0 Assets:Bank:B1 978.38 USD
+2011-11-15 spend Expenses:Travel Assets:Bank:B1 6 USD
+2011-12-04 tfr Assets:Bank:B0 Liabilities:Card 2348.40 USD
+2011-12-24 yield Assets:Broker:B0 VCSH 158.939 USD
+2012-01-04 spend Rent 186.28 USD

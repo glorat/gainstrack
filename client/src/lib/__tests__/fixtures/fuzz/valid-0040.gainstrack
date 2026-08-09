@@ -1,0 +1,62 @@
+option "operating_currency" "EUR"
+2010-01-03 open Equity:Opening EUR
+  multiAsset: true
+2010-02-03 open Assets:Bank:B0 EUR
+  fundingAccount: Equity:Opening
+2010-02-07 open Assets:Bank:B1 USD
+  fundingAccount: Equity:Opening
+2010-02-23 open Assets:Bank:B2 USD
+  fundingAccount: Equity:Opening
+2010-03-12 open Assets:Broker:B0 EUR
+  multiAsset: true
+  fundingAccount: Assets:Bank:B0
+2010-04-10 open Income:Salary EUR
+  fundingAccount: Assets:Bank:B2
+2010-05-06 open Income:Bonus EUR
+  fundingAccount: Assets:Bank:B2
+2010-05-13 open Income:Interest EUR
+  fundingAccount: Assets:Bank:B1
+2010-06-19 open Expenses:Food EUR
+  fundingAccount: Assets:Bank:B0
+2010-07-14 open Expenses:Rent EUR
+  fundingAccount: Assets:Bank:B2
+2010-08-08 open Liabilities:Card EUR
+  fundingAccount: Assets:Bank:B2
+2010-09-15 spend Expenses:Rent 248.31 EUR
+2010-09-24 earn Income:Bonus 399.77 EUR
+2010-09-26 fund Assets:Bank:B0 1874.977 EUR
+2010-10-16 bal Assets:Bank:B2 19845.766 USD Equity:Opening
+2010-11-23 tfr Assets:Bank:B2 Liabilities:Card 2625.66 USD
+2010-12-03 bal Assets:Bank:B1 26096.861 USD Equity:Opening
+2010-12-12 fund Assets:Bank:B0 Equity:Opening 18335.756 EUR
+2010-12-23 price FTSE 314.7856 HKD
+2011-01-01 earn Bonus 8297 EUR
+2011-01-31 spend Expenses:Rent 274 EUR
+2011-02-18 bal Assets:Bank:B0 4092.364 EUR Equity:Opening
+2011-02-19 price VCSH 141.62 SGD
+2011-03-18 fund Assets:Bank:B2 Income:Salary 9502.5602 USD
+2011-03-26 yield Assets:Bank:B1 15.38 USD
+2011-04-05 yield Assets:Bank:B2 42.86 USD
+2011-04-13 spend Rent 613.9877 EUR
+2011-04-16 unit Assets:Broker:B0 19 FTSE @391 EUR
+2011-05-02 bal Assets:Bank:B0 25690.811 EUR Equity:Opening
+2011-05-22 fund Assets:Broker:B0 15392.340 EUR
+2011-06-05 fund Assets:Bank:B2 19006 USD
+2011-06-07 yield Assets:Broker:B0 FTSE 99.6771 EUR
+2011-07-13 yield Assets:Bank:B0 142.11 EUR
+2011-07-26 tfr Assets:Bank:B1 Assets:Broker:B0 1987.10 USD 2186 EUR
+2011-08-05 spend Rent 63.90 EUR
+2011-09-09 adj Assets:Bank:B1 21321.40 USD Equity:Opening
+2011-10-14 earn Income:Salary 6850 EUR
+2011-11-12 tfr Assets:Bank:B0 Equity:Opening 251.24 EUR
+2011-12-08 bal Assets:Bank:B2 4081.77 USD Equity:Opening
+2011-12-25 tfr Assets:Bank:B0 Income:Salary 1988 EUR
+2012-01-30 fund Assets:Bank:B0 8738 EUR
+2012-02-08 unit Assets:Broker:B0 390 VWRL @318 EUR
+2012-02-11 spend Expenses:Rent 559.87 EUR
+2012-02-18 adj Assets:Bank:B0 5033.85 EUR Equity:Opening
+2012-03-24 yield Assets:Broker:B0 FTSE 94 EUR
+2012-03-30 yield Assets:Bank:B0 120.0294 EUR
+2012-04-11 tfr Equity:Opening Assets:Bank:B1 1632.04 EUR
+2012-05-12 spend Food 693 EUR
+2012-06-01 trade Assets:Broker:B0 116 BRK-B @155 EUR

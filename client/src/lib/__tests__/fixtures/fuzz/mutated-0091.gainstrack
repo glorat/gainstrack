@@ -1,0 +1,64 @@
+option "operating_currency" "EUR"
+1900-01-01 commodity VCSH
+  name: VCSH Fund
+  tags: equity,global
+  ticker: VCSH.X
+2010-01-19 open Equity:Opening EUR
+  multiAsset: true
+2010-01-26 open Assets:Bank:B0 HKD
+  fundingAccount: Equity:Opening
+2010-01-29 open Assets:Broker:B0 GBP
+  multiAsset: true
+  fundingAccount: Assets:Bank:B0
+2010-01-31 open Income:Salary EUR
+  fundingAccount: Assets:Bank:B0
+2010-03-05 open Income:Bonus EUR
+  fundingAccount: Assets:Bank:B0
+2010-03-25 open Income:Interest EUR
+  fundingAccount: Assets:Bank:B0
+2010-04-27 open Expenses:Food EUR
+  fundingAccount: Assets:Bank:B0
+2010-06-06 open Expenses:Rent EUR
+  fundingAccount: Assets:Bank:B0
+2010-07-02 open Liabilities:Card EUR
+  fundingAccount: Assets:Bank:B0
+2010-08-02 price BRK-B 116 SGD
+2010-09-06 trade Assets:Broker:B0 190 VWRL @158.970 GBP
+2010-10-15 adj Assets:Bank:B0 14984.224 HKD Equity:Opening
+2010-10-29 earn Income:Interest Assets:Bank:B0 220.2606 EUR
+2010-11-28 fund Assets:Bank:B0 18169.637 HKD
+2010-12-16 trade Assets:Broker:B0 148 BRK-B @224.0530 GBP
+2010-12-31 fund Assets:Broker:B0 8423.8972 GBP
+2011-01-10 trade Assets:Broker:B0 -1 BRK-B @232 GBP C10.7300 GBP
+2011-01-17 price VWRL 375.858 GBP
+2011-01-18 unit Assets:Broker:B0 309 IVV @180.57 GBP
+2011-02-09 unit Assets:Broker:B0 288 VWRL @305.898 GBP
+2011-02-25 earn Income:Interest Assets:Bank:B0 2534.11 EUR
+2011-03-29 spend Food Assets:Bank:B0 726 EUR
+2011-05-04 price VCSH 44.0255 EUR
+2011-06-08 earn Interest 202 EUR
+2011-06-23 spend Expenses:Food Assets:Bank:B0 759.580 EUR
+2011-07-03 fund Assets:Broker:B0 Expenses:Food 18420.55 GBP
+2011-07-25 tfr Equity:Opening Income:Bonus 722.426 EUR
+2011-08-03 adj Assets:Bank:B0 15711.1477 HKD Equity:Opening
+2011-08-16 earn Interest Assets:Bank:B0 7136.2969 EUR
+2011-08-25 spend Food 715 EUR
+2011-09-09 earn Income:Bonus 1558.003 EUR
+2011-10-19 price VTI 437.79 EUR
+2011-11-25 spend Food 801 EUR
+2011-12-19 trade Assets:Broker:B0 24 VCSH @289.126 GBP
+2012-01-09 spend Rent 375 EUR
+2012-01-13 fund Assets:Broker:B0 4106.247 GBP
+2012-02-04 tfr Equity:Opening Assets:Bank:B0 734 EUR 2280 HKD
+2012-02-21 bal Assets:Bank:B0 23947.6034 HKD Equity:Opening
+2012-03-09 trade Assets:Broker:B0 52 FTSE @494.975 GBP C19.315 GBP
+2012-04-03 fund Assets:Bank:B0 Expenses:Rent 7645.8111 HKD
+2012-04-08 fund Assets:Bank:B0 Income:Bonus 8812 HKD
+2012-05-14 bal Assets:Bank:B0 25195 HKD Equity:Opening
+2012-05-22 unit Assets:Broker:B0 260 VWRL @210.482 GBP
+2012-06-02 spend Food Assets:Bank:B0 298.0261 EUR
+2012-07-05 tfr Assets:Bank:B0 Income:Interest 1078.5055 HKD 1340 EUR
+2012-08-11 spend Expenses:Food 725.5363 EUR
+2012-09-10 price BRK-B 441.0704 GBP
+2012-09-28 unit Assets:Broker:B0 256 VCSH @90.3717 GBP
+2012-10-26 price VCSH 441.8995 HKD

@@ -1,0 +1,59 @@
+1900-01-01 commodity FTSE
+  name: FTSE Fund
+  tags: equity,global
+  ticker: FTSE.X
+2010-01-14 open Equity:Opening USD
+  multiAsset: true
+2010-02-04 open Assets:Bank:B0 USD
+  fundingAccount: Equity:Opening
+2010-02-13 open Assets:Broker:B0 USD
+  multiAsset: true
+  fundingAccount: Assets:Bank:B0
+2010-03-15 open Assets:Broker:B1 SGD
+  multiAsset: true
+  fundingAccount: Assets:Bank:B0
+2010-04-11 open Income:Salary USD
+  fundingAccount: Assets:Bank:B0
+2010-04-21 open Income:Interest USD
+  fundingAccount: Assets:Bank:B0
+2010-04-28 open Expenses:Food USD
+  fundingAccount: Assets:Bank:B0
+2010-06-05 open Expenses:Travel USD
+  fundingAccount: Assets:Bank:B0
+2010-07-12 yield Assets:Bank:B0 44 USD
+2010-08-02 bal Assets:Bank:B0 24292.86 USD Equity:Opening
+2010-09-08 spend Food 613.6011 USD
+2010-09-09 unit Assets:Broker:B1 182 BRK-B @118 SGD
+2010-09-10 spend Expenses:Travel Assets:Bank:B0 627 USD
+2010-09-17 adj Assets:Bank:B0 7829 USD Equity:Opening
+2010-10-21 adj Assets:Bank:B0 20616 USD Equity:Opening
+2010-10-28 yield Assets:Bank:B0 84 USD
+2010-11-07 unit Assets:Broker:B1 353 VWRL @197 SGD
+2010-12-16 unit Assets:Broker:B1 397 VCSH @338 SGD
+2010-12-19 adj Assets:Bank:B0 16807.9328 USD Equity:Opening
+2011-01-12 unit Assets:Broker:B0 103 BRK-B @388.86 USD
+2011-01-18 price VWRL 221 GBP
+2011-01-19 bal Assets:Bank:B0 7644.3780 USD Equity:Opening
+2011-01-25 spend Travel Assets:Bank:B0 543.71 USD
+2011-01-30 yield Assets:Broker:B0 BRK-B 24.3839 USD
+2011-02-09 adj Assets:Bank:B0 9597 USD Equity:Opening
+2011-02-28 trade Assets:Broker:B1 -4 BRK-B @148.7105 SGD
+2011-03-31 earn Income:Interest 8894 USD
+2011-04-29 earn Interest 4799.3818 USD
+2011-06-04 spend Expenses:Food Assets:Bank:B0 859 USD
+2011-06-11 bal Assets:Bank:B0 3833 USD Equity:Opening
+2011-07-05 fund Assets:Broker:B1 Expenses:Travel 7873 SGD
+2011-07-15 bal Assets:Bank:B0 4340.396 USD Equity:Opening
+2011-07-29 tfr Assets:Broker:B1 Assets:Broker:B0 2384.7295 SGD
+2011-08-12 bal Assets:Bank:B0 17266 USD Equity:Opening
+2011-09-15 spend Travel Assets:Bank:B0 860.878 USD
+2011-10-10 price IVV 443.39 GBP
+2011-10-23 fund Assets:Bank:B0 Income:Salary 15619.02 USD
+2011-11-25 price VTI 243.1826 EUR
+2011-12-05 earn Income:Interest 941.002 USD
+2011-12-27 spend Expenses:Food 491.0345 USD
+2012-02-01 fund Assets:Broker:B1 Assets:Broker:B0 10214 SGD
+2012-02-24 bal Assets:Bank:B0 6425.352 USD Equity:Opening
+2012-02-25 tfr Assets:Bank:B0 Equity:Opening 2396 USD
+2012-03-02 price BRK-B 75.1843 USD
+2012-03-24 unit Assets:Broker:B0 161 VCSH @112 USD

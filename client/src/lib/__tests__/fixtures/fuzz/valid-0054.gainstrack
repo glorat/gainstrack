@@ -1,0 +1,59 @@
+option "operating_currency" "GBP"
+2010-01-14 open Equity:Opening GBP
+  multiAsset: true
+2010-02-11 open Assets:Bank:B0 GBP
+  fundingAccount: Equity:Opening
+2010-03-13 open Assets:Bank:B1 GBP
+  fundingAccount: Equity:Opening
+2010-04-08 open Assets:Broker:B0 GBP
+  multiAsset: true
+  fundingAccount: Assets:Bank:B0
+2010-05-06 open Assets:Broker:B1 GBP
+  multiAsset: true
+  fundingAccount: Assets:Bank:B0
+2010-06-10 open Income:Salary GBP
+  fundingAccount: Assets:Bank:B1
+2010-06-23 open Income:Bonus GBP
+  fundingAccount: Assets:Bank:B1
+2010-07-05 open Income:Interest GBP
+  fundingAccount: Assets:Bank:B1
+2010-07-17 open Expenses:Food GBP
+  fundingAccount: Assets:Bank:B0
+2010-08-22 open Expenses:Travel GBP
+  fundingAccount: Assets:Bank:B0
+2010-09-13 open Liabilities:Card GBP
+  fundingAccount: Assets:Bank:B1
+2010-09-21 earn Salary 1976 GBP
+2010-09-30 earn Salary Assets:Bank:B1 321 GBP
+2010-10-31 unit Assets:Broker:B1 455 IVV @172.42 GBP
+2010-12-07 unit Assets:Broker:B1 112 VWRL @229 GBP
+2010-12-11 price IVV 408.47 SGD
+2010-12-21 tfr Assets:Bank:B0 Assets:Broker:B0 667.9708 GBP
+2011-01-09 trade Assets:Broker:B0 9 FTSE @249.138 GBP
+2011-02-15 unit Assets:Broker:B0 473 VWRL @24.0964 GBP
+2011-03-26 price IVV 395.706 SGD
+2011-05-03 trade Assets:Broker:B1 121 VCSH @318 GBP C6 GBP
+2011-05-31 earn Income:Interest Assets:Bank:B1 1461.0174 GBP
+2011-07-03 yield Assets:Broker:B1 VCSH 28.4091 GBP
+2011-07-09 adj Assets:Bank:B0 12558.58 GBP Equity:Opening
+2011-07-24 earn Income:Bonus 5197.868 GBP
+2011-08-05 tfr Assets:Broker:B1 Expenses:Travel 2778.134 GBP
+2011-08-20 bal Assets:Bank:B0 4549.7539 GBP Equity:Opening
+2011-09-12 fund Assets:Bank:B0 19038.8645 GBP
+2011-09-23 bal Assets:Bank:B1 2114.14 GBP Equity:Opening
+2011-10-07 bal Assets:Bank:B0 10495.018 GBP Equity:Opening
+2011-10-15 trade Assets:Broker:B0 159 VWRL @399 GBP
+2011-10-31 price BRK-B 2 GBP
+2011-11-19 yield Assets:Broker:B0 VWRL 54.54 GBP
+2011-12-22 trade Assets:Broker:B0 -6 FTSE @295.888 GBP
+2012-01-27 price BRK-B 479.3293 HKD
+2012-02-05 adj Assets:Bank:B0 3707.69 GBP Equity:Opening
+2012-02-09 yield Assets:Bank:B1 121.943 GBP
+2012-03-18 bal Assets:Bank:B1 26695.24 GBP Equity:Opening
+2012-04-09 bal Assets:Bank:B1 26715.522 GBP Equity:Opening
+2012-05-06 trade Assets:Broker:B1 109 FTSE @361.772 GBP C2.05 GBP
+2012-05-28 bal Assets:Bank:B1 14291.4151 GBP Equity:Opening
+2012-06-05 trade Assets:Broker:B0 25 FTSE @358.335 GBP
+2012-07-06 spend Expenses:Food 459.021 GBP
+2012-08-04 fund Assets:Bank:B1 11640.98 GBP
+2012-08-29 adj Assets:Bank:B1 12137.2522 GBP Equity:Opening

@@ -10,6 +10,7 @@ import type { GBalanceState } from 'src/lib/gen/balanceState';
 import { AdjCmd, BalCmd, GCommand } from 'src/lib/gen/commands';
 import { adjustmentDate, adjustmentTransfers, RawTx, tradeToTx, unitToTx } from 'src/lib/gen/expand';
 import { LocalDate } from '@js-joda/core';
+import type Decimal from 'decimal.js';
 import { GAmount, ZERO } from 'src/lib/gen/money';
 import { commandToTransfers, isCommandNeedsAccounts, transferToTransaction } from 'src/lib/gen/transfer';
 import { GTransaction, txToDTO } from 'src/lib/gen/transaction';
@@ -37,7 +38,14 @@ export function buildTransactions(commands: GCommand[], acct: GAccountState, bal
 }
 
 export function buildBeancountCommands(commands: GCommand[], acct: GAccountState, balanceState: GBalanceState): BeancountCmd[] {
-  const running = new Map<string, GAmount>(); // running balance per account from accumulated txs
+  // Running balance per account from the transactions accumulated so far, kept PER CURRENCY.
+  // Scala holds `Map[AccountId, PositionSet]` and reads it with `getBalance(ccy)`; an account can
+  // legitimately hold several currencies (a transfer posts the source currency into a plain
+  // target account), and collapsing them into one number makes an adjustment's prior value the
+  // sum of unrelated currencies.
+  const running = new Map<string, Map<string, Decimal>>();
+  const runningBalance = (accountId: string, ccy: string): Decimal =>
+    running.get(accountId)?.get(ccy) ?? ZERO;
   const txs: GTransaction[] = [];
   const stream: BeancountCmd[] = [];
   let id = 0;
@@ -66,7 +74,19 @@ export function buildBeancountCommands(commands: GCommand[], acct: GAccountState
     }
     if (cmd.kind === 'adj' || cmd.kind === 'bal') {
       const targetAccountId = targetAccountFor(cmd);
-      const oldValue = new GAmount(running.get(targetAccountId)?.number ?? ZERO, cmd.balance.ccy);
+
+      // `TransactionState.process(BalanceAdjustment)` cross-checks the two passes against each
+      // other: BalanceState has already folded this adjustment in, so reading the balance back
+      // out must return exactly what was asserted. It does not when a ledger states two
+      // conflicting balances for the same account and date — the later one wins in BalanceState
+      // while the earlier is still asserted here. Without this check the generator silently
+      // produces a ledger whose transactions do not add up to its own balance assertions.
+      const setValue = balanceState.getAccountBalance(targetAccountId, minusDay(adjustmentDate(cmd)));
+      if (!setValue.number.eq(cmd.balance.number) || setValue.ccy !== cmd.balance.ccy) {
+        throw new Error(`TransactionState Internal logic fail ${cmd.balance.number} != ${setValue.number}`);
+      }
+
+      const oldValue = new GAmount(runningBalance(targetAccountId, cmd.balance.ccy), cmd.balance.ccy);
       const transfers = adjustmentTransfers(cmd.accountId, cmd.adjAccount, cmd.balance, oldValue, adjustmentDate(cmd), acct.lookup);
       return transfers.map(transferToTransaction);
     }
@@ -82,8 +102,9 @@ export function buildBeancountCommands(commands: GCommand[], acct: GAccountState
       stream.push({ kind: 'tx', tx });
       for (const p of raw.postings) {
         if (!p.value) continue;
-        const prev = running.get(p.account)?.number ?? ZERO;
-        running.set(p.account, new GAmount(prev.plus(p.value.number), p.value.ccy));
+        let byCcy = running.get(p.account);
+        if (!byCcy) { byCcy = new Map(); running.set(p.account, byCcy); }
+        byCcy.set(p.value.ccy, (byCcy.get(p.value.ccy) ?? ZERO).plus(p.value.number));
       }
     }
 

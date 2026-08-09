@@ -29,7 +29,7 @@ class DumpToGainstrack extends AnyFlatSpec {
   private val outDir = Paths.get("client/src/lib/__tests__/fixtures")
   private val localDir = outDir.resolve("local")
 
-  private val resources = Seq("basic", "unit", "src", "div", "balbug", "james", "noequity", "multiadj")
+  private val resources = Fixtures.names
 
   private def blocksFor(text: String): Seq[Seq[String]] = {
     val parser = new GainstrackParser

@@ -1,0 +1,50 @@
+option "operating_currency" "EUR"
+1900-01-01 commodity VCSH
+  name: VCSH Fund
+  tags: equity,global
+  ticker: VCSH.X
+2010-01-28 open Equity:Opening EUR
+  multiAsset: true
+2010-02-08 open Assets:Bank:B0 EUR
+  fundingAccount: Equity:Opening
+2010-03-16 open Assets:Broker:B0 EUR
+  multiAsset: true
+  automaticReinvestment: true
+  fundingAccount: Assets:Bank:B0
+2010-04-06 open Assets:Broker:B1 EUR
+  multiAsset: true
+  automaticReinvestment: true
+  fundingAccount: Assets:Bank:B0
+2010-04-07 open Income:Salary EUR
+  fundingAccount: Assets:Bank:B0
+2010-04-10 open Income:Bonus EUR
+  fundingAccount: Assets:Bank:B0
+2010-04-21 open Income:Interest EUR
+  fundingAccount: Assets:Bank:B0
+2010-05-23 open Expenses:Food EUR
+  fundingAccount: Assets:Bank:B0
+2010-05-30 open Expenses:Rent EUR
+  fundingAccount: Assets:Bank:B0
+2010-06-12 open Liabilities:Card EUR
+  fundingAccount: Assets:Bank:B0
+2010-06-14 fund Assets:Broker:B0 4978.98 EUR
+2010-06-27 adj Assets:Bank:B0 14256 EUR Equity:Opening
+2010-07-09 spend Expenses:Food 625.31 EUR
+2010-08-16 trade Assets:Broker:B1 23 VWRL @450 EUR C7.848 EUR
+2010-09-14 price IVV 354 HKD
+2010-10-17 earn Income:Interest 3934.214 EUR
+2010-11-10 tfr Assets:Broker:B0 Assets:Broker:B1 2254.3161 EUR
+2010-12-20 bal Assets:Bank:B0 16356 EUR Equity:Opening
+2010-12-25 yield Assets:Broker:B1 VWRL 19.6346 EUR
+2010-12-31 price IVV 355.01 HKD
+2011-01-07 yield Assets:Broker:B1 VWRL 177 EUR
+2011-02-08 tfr Equity:Opening Expenses:Rent 1855 EUR
+2011-03-10 yield Assets:Bank:B0 42.589 EUR
+2011-03-18 fund Assets:Broker:B1 5901 EUR
+2011-04-01 fund Assets:Bank:B0 11489.80 EUR
+2011-04-08 unit Assets:Broker:B0 218 VTI @167.924 EUR
+2011-04-22 bal Assets:Bank:B0 14857.876 EUR Equity:Opening
+2011-05-16 spend Expenses:Food Assets:Bank:B0 203 EUR
+2011-06-13 tfr Equity:Opening Assets:Broker:B1 221.65 EUR
+2011-07-03 tfr Assets:Broker:B0 Liabilities:Card 4060.38 EUR
+2011-08-07 unit Assets:Broker:B1 226 VCSH @59.4918 EUR

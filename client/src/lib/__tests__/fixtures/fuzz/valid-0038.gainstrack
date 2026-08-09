@@ -1,0 +1,46 @@
+option "operating_currency" "EUR"
+2010-01-04 open Equity:Opening EUR
+  multiAsset: true
+2010-01-22 open Assets:Bank:B0 GBP
+  fundingAccount: Equity:Opening
+2010-03-02 open Assets:Bank:B1 EUR
+  fundingAccount: Equity:Opening
+2010-03-23 open Assets:Bank:B2 EUR
+  fundingAccount: Equity:Opening
+2010-04-28 open Assets:Broker:B0 EUR
+  multiAsset: true
+  fundingAccount: Assets:Bank:B2
+2010-06-06 open Income:Salary EUR
+  fundingAccount: Assets:Bank:B2
+2010-06-24 open Income:Bonus EUR
+  fundingAccount: Assets:Bank:B2
+2010-07-15 open Income:Interest EUR
+  fundingAccount: Assets:Bank:B1
+2010-08-13 open Expenses:Food EUR
+  fundingAccount: Assets:Bank:B0
+2010-09-21 price BRK-B 180.272 USD
+2010-09-24 yield Assets:Bank:B0 99.609 GBP
+2010-10-12 tfr Assets:Bank:B2 Income:Bonus 4677.3639 EUR
+2010-11-17 tfr Assets:Bank:B1 Income:Interest 1400 EUR
+2010-12-19 fund Assets:Bank:B1 Expenses:Food 10807.20 EUR
+2011-01-26 earn Income:Salary 3148.5121 EUR
+2011-02-16 fund Assets:Broker:B0 15733 EUR
+2011-03-10 adj Assets:Bank:B0 19804 GBP Equity:Opening
+2011-04-01 fund Assets:Bank:B0 Income:Salary 17267 GBP
+2011-04-08 adj Assets:Bank:B0 12801 GBP Equity:Opening
+2011-05-04 unit Assets:Broker:B0 430 IVV @173.83 EUR
+2011-05-08 yield Assets:Bank:B1 111.7147 EUR
+2011-06-16 earn Income:Interest 3831.47 EUR
+2011-06-21 yield Assets:Broker:B0 IVV 110.1053 EUR
+2011-07-21 trade Assets:Broker:B0 158 BRK-B @257.62 EUR C11.3336 EUR
+2011-08-21 price VTI 286.488 EUR
+2011-09-21 adj Assets:Bank:B0 21185.573 GBP Equity:Opening
+2011-10-15 price FTSE 50.0100 HKD
+2011-10-24 tfr Assets:Broker:B0 Income:Interest 2667.61 EUR
+2011-10-29 price VCSH 239.14 GBP
+2011-12-01 trade Assets:Broker:B0 198 VWRL @206 EUR C11 EUR
+2012-01-08 bal Assets:Bank:B1 21604.4172 EUR Equity:Opening
+2012-02-06 unit Assets:Broker:B0 226 BRK-B @33.436 EUR
+2012-02-13 tfr Assets:Broker:B0 Equity:Opening 1033.844 EUR
+2012-02-20 adj Assets:Bank:B2 8222 EUR Equity:Opening
+2012-03-27 fund Assets:Bank:B1 1520.7298 EUR

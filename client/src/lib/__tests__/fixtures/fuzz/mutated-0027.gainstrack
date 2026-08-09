@@ -1,0 +1,46 @@
+option "operating_currency" "HKD"
+1900-01-01 commodity VWRL
+  name: VWRL Fund
+  tags: equity,global
+  ticker: VWRL.X
+2010-01-08 open Equity:Opening HKD
+  multiAsset: true
+2010-01-19 open Assets:Bank:B0 HKD
+  fundingAccount: Equity:Opening
+2010-02-07 open Assets:Bank:B1 HKD
+  fundingAccount: Equity:Opening
+2010-02-23 open Assets:Bank:B2 HKD
+  fundingAccount: Equity:Opening
+2010-02-24 open Assets:Broker:B0 HKD
+  multiAsset: true
+  automaticReinvestment: true
+  fundingAccount: Assets:Bank:B1
+2010-04-01 open Assets:Broker:B1 HKD
+  multiAsset: true
+  fundingAccount: Assets:Bank:B1
+2010-05-04 open Income:Salary HKD
+  fundingAccount: Assets:Bank:B1
+2010-05-12 open Income:Bonus HKD
+  fundingAccount: Assets:Bank:B2
+2010-05-20 open Income:Interest HKD
+  fundingAccount: Assets:Bank:B0
+2010-06-16 open Expenses:Food HKD
+  fundingAccount: Assets:Bank:B1
+2010-06-23 open Expenses:Rent HKD
+  fundingAccount: Assets:Bank:B2
+2010-07-12 spend Expenses:Food 253.1355 HKD
+2010-07-21 unit Assets:Broker:B0 351 IVV @10.48 HKD
+2010-08-05 yield Assets:Broker:B0 IVV 18.1797 HKD extraTokenHere
+2010-08-20 tfr Equity:Opening Assets:Bank:B1 1279 HKD
+2010-09-18 unit Assets:Broker:B0 304 VTI @104.73 HKD
+2010-10-09 unit Assets:Broker:B1 258 VWRL @47.96 HKD
+2010-10-21 earn Income:Salary 6079.54 HKD
+2010-11-09 yield Assets:Broker:B1 VWRL 81.567 HKD
+2010-11-11 adj Assets:Bank:B0 7777.2481 HKD Equity:Opening
+2010-12-10 earn Interest 4986 HKD
+2011-01-03 trade Assets:Broker:B0 68 VTI @280.7406 HKD C4 HKD
+2011-01-15 bal Assets:Bank:B0 6259 HKD Equity:Opening
+2011-01-29 trade Assets:Broker:B1 -4 VWRL @361.7205 HKD C1 HKD
+2011-03-09 tfr Equity:Opening Expenses:Rent 4769.75 HKD
+2011-03-20 spend Expenses:Rent Assets:Bank:B1 148 HKD
+2011-04-14 tfr Assets:Broker:B0 Assets:Bank:B0 3686.18 HKD

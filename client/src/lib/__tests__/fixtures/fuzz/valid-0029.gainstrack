@@ -1,0 +1,47 @@
+option "operating_currency" "GBP"
+1900-01-01 commodity IVV
+  name: IVV Fund
+  tags: equity,global
+  ticker: IVV.X
+2010-01-11 open Equity:Opening GBP
+  multiAsset: true
+2010-01-26 open Assets:Bank:B0 GBP
+  fundingAccount: Equity:Opening
+2010-02-05 open Assets:Bank:B1 GBP
+  fundingAccount: Equity:Opening
+2010-03-07 open Assets:Broker:B0 GBP
+  multiAsset: true
+  fundingAccount: Assets:Bank:B1
+2010-03-10 open Income:Bonus GBP
+  fundingAccount: Assets:Bank:B1
+2010-03-14 open Expenses:Travel GBP
+  fundingAccount: Assets:Bank:B1
+2010-03-17 open Liabilities:Card GBP
+  fundingAccount: Assets:Bank:B0
+2010-03-28 tfr Equity:Opening Assets:Bank:B1 3129 GBP
+2010-05-03 adj Assets:Bank:B1 8513.976 GBP Equity:Opening
+2010-06-05 fund Assets:Bank:B0 5889 GBP
+2010-07-05 trade Assets:Broker:B0 122 VWRL @58.314 GBP C5.764 GBP
+2010-07-24 trade Assets:Broker:B0 181 VWRL @394.544 GBP C18 GBP
+2010-08-12 trade Assets:Broker:B0 -4 VWRL @194 GBP C17.888 GBP
+2010-08-16 trade Assets:Broker:B0 45 FTSE @330.007 GBP C19.95 GBP
+2010-09-13 bal Assets:Bank:B1 27225.3640 GBP Equity:Opening
+2010-10-18 spend Expenses:Travel 284.8705 GBP
+2010-11-23 trade Assets:Broker:B0 34 FTSE @113 GBP
+2010-12-21 earn Income:Bonus Assets:Bank:B1 1232.28 GBP
+2011-01-14 unit Assets:Broker:B0 219 VCSH @4.85 GBP
+2011-01-26 bal Assets:Bank:B0 9005 GBP Equity:Opening
+2011-02-22 yield Assets:Bank:B0 198.354 GBP
+2011-03-17 earn Income:Bonus Assets:Bank:B0 8196.72 GBP
+2011-04-25 adj Assets:Bank:B1 14802.9931 GBP Equity:Opening
+2011-05-27 spend Travel 888.429 GBP
+2011-07-05 fund Assets:Bank:B0 7175 GBP
+2011-07-17 price VCSH 402 HKD
+2011-08-21 adj Assets:Bank:B1 15593 GBP Equity:Opening
+2011-09-09 unit Assets:Broker:B0 424 BRK-B @347.58 GBP
+2011-09-24 fund Assets:Bank:B1 15865 GBP
+2011-10-04 tfr Assets:Broker:B0 Liabilities:Card 3749.47 GBP
+2011-10-30 bal Assets:Bank:B1 7427 GBP Equity:Opening
+2011-11-01 price VWRL 188.59 USD
+2011-11-18 bal Assets:Bank:B1 13761.022 GBP Equity:Opening
+2011-12-09 yield Assets:Broker:B0 VCSH 168 GBP

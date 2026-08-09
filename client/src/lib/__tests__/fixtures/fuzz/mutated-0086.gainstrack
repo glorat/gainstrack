@@ -1,0 +1,47 @@
+2010-02-01 open Equity:Opening USD
+  multiAsset: true
+2010-02-02 open Assets:Bank:B0 USD
+  fundingAccount: Equity:Opening
+2010-03-06 open Assets:Bank:B1 USD
+  fundingAccount: Equity:Opening
+2010-03-07 frobnicate Assets:Bank:B2 EUR
+  fundingAccount: Equity:Opening
+2010-03-13 open Assets:Broker:B0 USD
+  multiAsset: true
+  automaticReinvestment: true
+  fundingAccount: Assets:Bank:B1
+2010-03-19 open Income:Salary USD
+  fundingAccount: Assets:Bank:B2
+2010-04-18 open Income:Interest USD
+  fundingAccount: Assets:Bank:B2
+2010-05-10 open Expenses:Food USD
+  fundingAccount: Assets:Bank:B1
+2010-05-19 open Expenses:Rent USD
+  fundingAccount: Assets:Bank:B2
+2010-06-09 open Expenses:Travel USD
+  fundingAccount: Assets:Bank:B2
+2010-07-11 open Liabilities:Card USD
+  fundingAccount: Assets:Bank:B2
+2010-07-16 earn Interest 3931.9898 USD
+2010-08-13 spend Rent Assets:Bank:B2 85.5445 USD
+2010-08-21 tfr Assets:Bank:B1 Expenses:Travel 2762 USD
+2010-09-06 trade Assets:Broker:B0 20 VCSH @338.85 USD C18.73 USD
+2010-10-10 price BRK-B 310.090 USD
+2010-10-25 earn Salary Assets:Bank:B1 8065.3741 USD
+2010-11-19 earn Interest 6473 USD
+2010-12-24 adj Assets:Bank:B1 9652.896 USD Equity:Opening
+2011-01-04 earn Salary 8322 USD
+2011-02-11 unit Assets:Broker:B0 390 VWRL @243.558 USD
+2011-02-22 unit Assets:Broker:B0 111 BRK-B @322.761 USD
+2011-03-13 earn Salary 6194.47 USD
+2011-03-23 trade Assets:Broker:B0 -11 BRK-B @443.06 USD
+2011-04-07 trade Assets:Broker:B0 197 BRK-B @165.5147 USD
+2011-04-13 bal Assets:Bank:B0 13422 USD Equity:Opening
+2011-05-09 trade Assets:Broker:B0 44 VTI @54 USD
+2011-05-14 unit Assets:Broker:B0 239 BRK-B @339.5264 USD
+2011-05-17 tfr Assets:Bank:B1 Assets:Bank:B0 3445.78 USD
+2011-06-17 tfr Assets:Broker:B0 Income:Salary 2301 USD
+2011-06-30 trade Assets:Broker:B0 95 FTSE @430.2555 USD
+2011-07-28 adj Assets:Bank:B0 12146.9595 USD Equity:Opening
+2011-08-15 price VTI 209.380 EUR
+2011-09-19 fund Assets:Bank:B1 1166 USD

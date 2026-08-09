@@ -1,0 +1,53 @@
+2010-01-14 open Equity:Opening USD
+  multiAsset: true
+2010-02-01 open Assets:Bank:B0 USD
+  fundingAccount: Equity:Opening
+2010-02-22 open Assets:Bank:B1 GBP
+  fundingAccount: Equity:Opening
+2010-03-15 open Assets:Bank:B2 USD
+  fundingAccount: Equity:Opening
+2010-04-23 open Assets:Broker:B0 USD
+  multiAsset: true
+  automaticReinvestment: true
+  fundingAccount: Assets:Bank:B1
+2010-04-29 open Income:Salary USD
+  fundingAccount: Assets:Bank:B0
+2010-05-17 open Income:Bonus USD
+  fundingAccount: Assets:Bank:B1
+2010-06-01 open Expenses:Rent USD
+  fundingAccount: Assets:Bank:B1
+2010-06-22 open Expenses:Travel USD
+  fundingAccount: Assets:Bank:B0
+2010-07-05 open Liabilities:Card USD
+  fundingAccount: Assets:Bank:B2
+2010-08-10 unit Assets:Broker:B0 325 BRK-B @124 USD
+2010-08-15 tfr Assets:Broker:B0 Income:Bonus 2023 USD
+2010-09-02 adj Assets:Bank:B2 5998.77 USD Equity:Opening
+2010-09-24 unit Assets:Broker:B0 58 VTI @43.7554 USD
+2010-10-02 fund Assets:Broker:B0 15906.156 USD
+2010-10-04 trade Assets:Broker:B0 151 VWRL @420.6785 USD C5.8705 USD
+2010-11-12 tfr Equity:Opening Income:Bonus 1989.8623 USD
+2010-11-25 unit Assets:Broker:B0 268 BRK-B @161.863 USD
+2010-12-24 bal Assets:Bank:B1 7980.01 GBP Equity:Opening
+2010-12-28 yield Assets:Broker:B0 BRK-B 116.2269 USD
+2011-01-02 earn Income:Salary 1035.447 USD
+2011-01-27 spend Rent 95.76 USD
+2011-02-17 earn Salary 4431.958 USD
+2011-03-07 yield Assets:Broker:B0 VWRL 107.89 USD
+2011-03-20 bal Assets:Bank:B2 16883.20 USD Equity:Opening
+2011-03-29 yield Assets:Bank:B2 45 USD
+2011-05-07 spend Travel Assets:Bank:B0 416 USD
+2011-05-19 bal Assets:Bank:B0 381.412 USD Equity:Opening
+2011-06-17 bal Assets:Bank:B0 7038 USD Equity:Opening
+2011-06-29 yield Assets:Bank:B0 68.3845
+2011-06-30 tfr Assets:Bank:B0 Income:Bonus 3261.7228 USD
+2011-07-24 earn Income:Salary 1260 USD
+2011-08-17 bal Assets:Bank:B1 25658.825 GBP Equity:Opening
+2011-09-01 yield Assets:Broker:B0 VWRL 141.81 USD
+2011-10-08 earn Income:Salary 7234.3469 USD
+2011-10-11 unit Assets:Broker:B0 410 VTI @289.730 USD
+2011-11-17 fund Assets:Bank:B0 Assets:Bank:B2 4555 USD
+2011-11-28 trade Assets:Broker:B0 139 VTI @154 USD
+2011-12-30 unit Assets:Broker:B0 41 VWRL @263 USD
+2012-01-25 bal Assets:Bank:B0 20355.094 USD Equity:Opening
+2012-02-26 price FTSE 102 SGD

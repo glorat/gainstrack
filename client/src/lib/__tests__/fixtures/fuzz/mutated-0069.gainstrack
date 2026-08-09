@@ -1,0 +1,33 @@
+option "operating_currency" "EUR"
+1900-01-01 commodity BRK-B
+  name: BRK-B Fund
+  tags: equity,global
+  ticker: BRK-B.X
+2010-02-04 open Equity:Opening EUR
+  multiAsset: true
+2010-03-03 open Assets:Bank:B0 EUR
+  fundingAccount: Equity:Opening
+2010-04-06 open Assets:Bank:B1 EUR
+  fundingAccount: Equity:Opening
+2010-04-25 open Assets:Bank:B2 SGD
+  fundingAccount: Equity:Opening
+2010-05-02 open Assets:Broker:B0 EUR
+  multiAsset: true
+  automaticReinvestment: true
+  fundingAccount: Assets:Bank:B1
+2010-05-26 open Assets:Broker:B1 EUR
+  multiAsset: true
+  fundingAccount: Assets:Bank:B0
+2010-06-02 open Expenses:Food EUR
+  fundingAccount: Assets:Bank:B1
+2010-06-12 open Expenses:Rent EUR
+  fundingAccount: Assets:Bank:B1
+2010-07-18 open Expenses:Travel EUR
+  fundingAccount: Assets:Bank:B2
+2010-07-26 spend Rent Assets:Bank:B0 164.6206 EUR
+2010-08-14 unit Assets:Broker:B0 367 VCSH @281.0933 EUR
+2010-08-30 adj Assets:Bank:B0 11514.7786 EUR Equity:Opening
+2010-09-22 trade Assets:Broker:B0 104 VCSH @428 EUR C13.92 EUR
+2010-10-23 price IVV 313.1113 USD
+2010-11-08 adj Assets:Bank:B1 22179.047 EUR Equity:Opening
+2010-11-28 tfr Equity:Opening Assets:DoesNotExist 3393 EUR

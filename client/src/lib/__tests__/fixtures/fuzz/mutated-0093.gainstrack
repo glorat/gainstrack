@@ -1,0 +1,41 @@
+option "operating_currency" "GBP"
+1900-01-01 commodity FTSE
+  name: FTSE Fund
+  tags: equity,global
+  ticker: FTSE.X
+2010-02-03 open Equity:Opening GBP
+  multiAsset: true
+2010-02-16 open Assets:Bank:B0 GBP
+  fundingAccount: Equity:Opening
+2010-02-19 open Assets:Bank:B1 SGD
+  fundingAccount: Equity:Opening
+2010-03-16 open Assets:Bank:B2 GBP
+  fundingAccount: Equity:Opening
+2010-04-06 open Assets:Broker:B0 HKD
+  multiAsset: true
+  automaticReinvestment: true
+  fundingAccount: Assets:Bank:B0
+2010-04-14 open Assets:Broker:B1 GBP
+  multiAsset: true
+  automaticReinvestment: true
+  fundingAccount: Assets:Bank:B2
+2010-05-19 open Income:Bonus GBP extraTokenHere
+  fundingAccount: Assets:Bank:B0
+2010-06-22 open Income:Interest GBP
+  fundingAccount: Assets:Bank:B1
+2010-07-18 open Expenses:Food GBP
+  fundingAccount: Assets:Bank:B2
+2010-08-27 earn Bonus 8717 GBP
+2010-09-27 unit Assets:Broker:B0 221 BRK-B @284 HKD
+2010-10-11 spend Expenses:Food 822.372 GBP
+2010-10-16 price FTSE 138.255 HKD
+2010-11-19 adj Assets:Bank:B2 23206 GBP Equity:Opening
+2010-12-22 yield Assets:Bank:B2 8.982 GBP
+2011-01-18 earn Bonus 5037 GBP
+2011-01-21 bal Assets:Bank:B0 1522 GBP Equity:Opening
+2011-01-23 yield Assets:Bank:B1 146.65 SGD
+2011-02-01 spend Expenses:Food 154.129 GBP
+2011-02-20 fund Assets:Broker:B1 11608.5592 GBP
+2011-03-21 bal Assets:Bank:B0 21101.2467 GBP Equity:Opening
+2011-04-06 unit Assets:Broker:B0 430 FTSE @228.96 HKD
+2011-04-24 unit Assets:Broker:B0 73 VCSH @392 HKD

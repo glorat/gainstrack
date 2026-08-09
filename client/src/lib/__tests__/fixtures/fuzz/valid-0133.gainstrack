@@ -1,0 +1,65 @@
+option "operating_currency" "HKD"
+2010-02-01 open Equity:Opening HKD
+  multiAsset: true
+2010-02-22 open Assets:Bank:B0 HKD
+  fundingAccount: Equity:Opening
+2010-03-15 open Assets:Bank:B1 HKD
+  fundingAccount: Equity:Opening
+2010-04-11 open Assets:Bank:B2 HKD
+  fundingAccount: Equity:Opening
+2010-05-07 open Assets:Broker:B0 HKD
+  multiAsset: true
+  fundingAccount: Assets:Bank:B0
+2010-06-02 open Assets:Broker:B1 GBP
+  multiAsset: true
+  fundingAccount: Assets:Bank:B1
+2010-06-23 open Income:Salary HKD
+  fundingAccount: Assets:Bank:B0
+2010-07-17 open Income:Bonus HKD
+  fundingAccount: Assets:Bank:B2
+2010-08-21 open Income:Interest HKD
+  fundingAccount: Assets:Bank:B2
+2010-08-26 open Expenses:Food HKD
+  fundingAccount: Assets:Bank:B2
+2010-09-11 open Expenses:Rent HKD
+  fundingAccount: Assets:Bank:B0
+2010-09-28 open Expenses:Travel HKD
+  fundingAccount: Assets:Bank:B0
+2010-09-30 tfr Assets:Bank:B0 Income:Interest 1395.4659 HKD
+2010-10-28 trade Assets:Broker:B1 178 VWRL @69.74 GBP
+2010-11-05 earn Bonus 3028.710 HKD
+2010-12-13 tfr Equity:Opening Expenses:Rent 3305.24 HKD
+2010-12-17 unit Assets:Broker:B1 306 IVV @341 GBP
+2010-12-31 bal Assets:Bank:B0 14102 HKD Equity:Opening
+2011-01-11 fund Assets:Bank:B1 Income:Salary 15149.074 HKD
+2011-01-24 bal Assets:Bank:B2 2677.1122 HKD Equity:Opening
+2011-02-13 tfr Equity:Opening Income:Bonus 4251 HKD
+2011-02-19 adj Assets:Bank:B2 7442.607 HKD Equity:Opening
+2011-03-16 tfr Assets:Bank:B2 Income:Bonus 3051.5636 HKD
+2011-04-14 spend Food 82 HKD
+2011-05-01 adj Assets:Bank:B1 8442.69 HKD Equity:Opening
+2011-06-05 trade Assets:Broker:B1 116 VWRL @49.05 GBP
+2011-06-20 spend Expenses:Rent 28 HKD
+2011-07-29 price FTSE 180 EUR
+2011-08-26 earn Bonus 821.8745 HKD
+2011-08-29 spend Travel Assets:Bank:B0 766 HKD
+2011-10-08 adj Assets:Bank:B0 -940.564 HKD Equity:Opening
+2011-11-05 fund Assets:Bank:B1 7237 HKD
+2011-11-22 trade Assets:Broker:B1 113 VWRL @301 GBP
+2011-12-31 fund Assets:Broker:B0 Expenses:Rent 17471.935 HKD
+2012-01-06 unit Assets:Broker:B1 86 BRK-B @122.9705 GBP
+2012-02-10 unit Assets:Broker:B1 127 VCSH @175.7956 GBP
+2012-03-18 spend Expenses:Travel 813 HKD
+2012-03-25 price BRK-B 287.40 GBP
+2012-04-07 fund Assets:Bank:B0 878 HKD
+2012-04-13 spend Expenses:Food 233.53 HKD
+2012-05-19 spend Food 496 HKD
+2012-05-22 bal Assets:Bank:B0 5034.933 HKD Equity:Opening
+2012-06-24 spend Rent 79.141 HKD
+2012-06-28 bal Assets:Bank:B0 26730.31 HKD Equity:Opening
+2012-07-05 adj Assets:Bank:B0 21760.195 HKD Equity:Opening
+2012-07-07 yield Assets:Bank:B0 35.03 HKD
+2012-07-29 bal Assets:Bank:B1 6562.1182 HKD Equity:Opening
+2012-08-04 trade Assets:Broker:B1 138 VCSH @290.851 GBP
+2012-08-11 fund Assets:Bank:B0 6868 HKD
+2012-09-05 adj Assets:Bank:B0 2791.80 HKD Equity:Opening

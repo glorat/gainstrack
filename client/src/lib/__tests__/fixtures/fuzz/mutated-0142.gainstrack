@@ -1,0 +1,60 @@
+option "operating_currency" "EUR"
+2010-01-19 open Equity:Opening EUR
+  multiAsset: true
+2010-02-14 open Assets:Bank:B0 GBP
+  fundingAccount: Equity:Opening
+2010-03-20 open Assets:Bank:B1 EUR
+  fundingAccount: Equity:Opening
+2010-03-23 open Assets:Bank:B2 SGD
+  fundingAccount: Equity:Opening
+2010-04-06 open Assets:Broker:B0 EUR
+  multiAsset: true
+  fundingAccount: Assets:Bank:B2
+2010-04-08 open Assets:Broker:B1 EUR
+  multiAsset: true
+  fundingAccount: Assets:Bank:B2
+2010-04-28 open Income:Salary EUR
+  fundingAccount: Assets:Bank:B2
+2010-05-30 open Expenses:Food EUR
+  fundingAccount: Assets:Bank:B1
+2010-07-04 open Liabilities:Card EUR
+  fundingAccount: Assets:Bank:B0
+2010-07-30 bal Assets:Bank:B0 23573.623 GBP Equity:Opening
+2010-08-12 unit Assets:Broker:B1 393 IVV @183.78 EUR
+2010-08-22 price VCSH 310.277 GBP
+2010-09-01 spend Expenses:Food Assets:Bank:B2 21.04 EUR
+2010-10-06 unit Assets:Broker:B0 292 FTSE @232.94 EUR
+2010-10-28 tfr Assets:Broker:B0 Liabilities:Card 3292.239 EUR
+2010-11-12 yield Assets:Broker:B1 IVV 194 EUR
+2010-11-24 adj Assets:Bank:B0 -186 GBP Equity:Opening
+2010-12-07 spend Food 129.96 EUR
+2010-12-08 adj Assets:Bank:B2 5967.137 SGD Equity:Opening
+2011-01-12 tfr Assets:Broker:B0 Equity:Opening 1290 EUR
+2011-02-04 earn Income:Salary 2960.163 EUR
+2011-02-28 earn Salary Assets:Bank:B1 1080.12 EUR
+2011-03-23 trade Assets:Broker:B0 184 VCSH @12.276 EUR C20 EUR
+2011-04-09 unit Assets:Broker:B1 389 BRK-B @363 EUR
+2011-04-25 bal Assets:Bank:B0 13908.2616 GBP Equity:Opening
+2011-05-14 price IVV 115.27 HKD
+2011-06-11 tfr Equity:Opening Assets:Bank:B0 2074.736 EUR 404 GBP
+2011-07-10 earn Income:Salary 6463.79 EUR
+2011-07-11 unit Assets:Broker:B1 103 IVV @389 EUR
+2011-07-24 trade Assets:Broker:B0 -9 FTSE @15 EUR
+2011-08-28 spend Expenses:Food Assets:Bank:B0 357.160 EUR
+2011-10-01 bal Assets:Bank:B0 9317 GBP Equity:Opening
+2011-10-25 bal Assets:Bank:B1 28561 EUR Equity:Opening
+2019-13-45 adj Assets:Bank:B0 10138.2996 GBP Equity:Opening
+2011-12-08 trade Assets:Broker:B1 -10 BRK-B @369 EUR
+2011-12-19 spend Expenses:Food 598.93 EUR
+2012-01-02 adj Assets:Bank:B0 -871 GBP Equity:Opening
+2012-01-25 spend Expenses:Food 68.121 EUR
+2012-02-17 price FTSE 89.07 HKD
+2012-03-27 yield Assets:Bank:B2 166 SGD
+2012-04-04 yield Assets:Broker:B0 FTSE 122.7392 EUR
+2012-05-01 adj Assets:Bank:B2 12950 SGD Equity:Opening
+2012-06-10 yield Assets:Broker:B1 IVV 175.114 EUR
+2012-07-01 adj Assets:Bank:B0 3383 GBP Equity:Opening
+2012-07-17 earn Salary 4765 EUR
+2012-07-19 yield Assets:Broker:B0 VCSH 200 EUR
+2012-07-23 adj Assets:Bank:B0 23807.88 GBP Equity:Opening
+2012-08-15 unit Assets:Broker:B0 75 VTI @214.43 EUR

@@ -1,0 +1,40 @@
+2010-01-18 open Equity:Opening USD
+  multiAsset: true
+2010-01-23 open Assets:Bank:B0 HKD
+  fundingAccount: Equity:Opening
+2010-02-14 open Assets:Broker:B0 USD
+  multiAsset: true
+  fundingAccount: Assets:Bank:B0
+2010-02-23 open Income:Salary USD
+  fundingAccount: Assets:Bank:B0
+2010-03-24 open Income:Bonus USD
+  fundingAccount: Assets:Bank:B0
+2010-04-23 open Income:Interest USD
+  fundingAccount: Assets:Bank:B0
+2010-05-24 open Expenses:Food USD
+  fundingAccount: Assets:Bank:B0
+2010-06-29 open Expenses:Rent USD
+  fundingAccount: Assets:Bank:B0
+2010-07-28 open Expenses:Travel USD
+  fundingAccount: Assets:Bank:B0
+2010-09-06 open Liabilities:Card USD
+  fundingAccount: Assets:Bank:B0
+2010-10-06 spend Travel 767.72 USD
+2010-10-14 spend Expenses:Travel 721 USD
+2010-11-09 trade Assets:Broker:B0 159 VCSH @99.1693 USD
+2010-11-26 fund Assets:Bank:B0 Assets:Broker:B0 16245.95 HKD
+2011-01-04 fund Assets:Bank:B0 9194.9105 HKD
+2011-01-16 fund Assets:Broker:B0 5935.37 USD
+2011-02-13 tfr Assets:Broker:B0 Equity:Opening 2419 USD
+2011-02-27 tfr Assets:Bank:B0 Income:Bonus 2495.54 HKD 161.47 USD
+2011-03-15 earn Salary 6664 USD
+2011-03-20 yield Assets:Bank:B0 148.1001 HKD
+2011-03-31 tfr Equity:Opening Expenses:Travel 4647 USD
+2011-05-09 unit Assets:Broker:B0 14 FTSE @159.2995 USD
+2011-05-28 earn Income:Interest 2675 USD
+2011-06-30 unit Assets:Broker:B0 190 VTI @310 USD
+2011-07-16 earn Salary Assets:Bank:B0 957 USD
+2011-08-20 price FTSE 367.84 GBP
+2011-09-29 spend Food 162.500 USD
+2011-10-13 tfr Equity:Opening Liabilities:Card 4480 USD
+2011-10-24 yield Assets:Bank:B0 108.5994 HKD

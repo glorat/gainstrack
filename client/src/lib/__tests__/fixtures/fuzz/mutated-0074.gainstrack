@@ -1,0 +1,46 @@
+2010-02-10 open Equity:Opening USD
+  multiAsset: true
+2010-03-18 open Assets:Bank:B0 GBP
+  fundingAccount: Equity:Opening
+2010-04-20 open Assets:Bank:B1 USD
+  fundingAccount: Equity:Opening
+2010-05-08 open Assets:Broker:B0 HKD
+  multiAsset: true
+  automaticReinvestment: true
+  fundingAccount: Assets:Bank:B1
+2010-06-03 open Assets:Broker:B1 USD
+  multiAsset: true
+  fundingAccount: Assets:Bank:B0
+2010-06-10 open Income:Salary USD
+  fundingAccount: Assets:Bank:B1
+2010-06-24 open Income:Bonus USD
+  fundingAccount: Assets:Bank:B0
+2010-07-13 open Income:Interest USD
+  fundingAccount: Assets:Bank:B1
+2010-08-20 open Expenses:Food USD
+  fundingAccount: Assets:Bank:B0
+2010-09-25 fund Assets:Bank:B0 Income:Salary 11861 GBP
+2010-10-04 fund Assets:Broker:B1 1630.33 USD
+2010-10-26 bal Assets:Bank:B1 17256.12 USD Equity:Opening
+2010-11-01 unit Assets:Broker:B0 411 IVV @101 HKD
+2010-12-09 fund Assets:Bank:B1 16706.0832 USD
+2011-01-13 trade Assets:Broker:B1 92 VTI @461.8433 USD
+2011-01-25 spend Food 276.08 USD
+2011-03-04 earn Income:Bonus 7071
+2011-03-05 earn Interest 8674 USD
+2011-03-19 earn Income:Bonus 4576.793 USD
+2011-04-26 price VCSH 230 SGD
+2011-04-29 spend Expenses:Food 424.8750 USD
+2011-05-20 tfr Assets:Broker:B1 Expenses:Food 3507.131 USD
+2011-05-24 earn Income:Bonus 1432 USD
+2011-05-26 earn Salary 1014.5477 USD
+2011-06-19 yield Assets:Broker:B1 VTI 4.118 USD
+2011-07-20 bal Assets:Bank:B0 20078.23 GBP Equity:Opening
+2011-07-29 trade Assets:Broker:B1 119 IVV @459.545 USD C16 USD
+2011-09-07 tfr Assets:Broker:B0 Assets:Bank:B1 4100.174 HKD 3815 USD
+2011-09-24 bal Assets:Bank:B1 28127.57 USD Equity:Opening
+2011-10-12 adj Assets:Bank:B0 27604.26 GBP Equity:Opening
+2011-11-21 tfr Assets:Broker:B1 Income:Salary 3945 USD
+2011-11-22 tfr Assets:Broker:B0 Assets:Bank:B0 969.3414 HKD
+2011-12-09 spend Expenses:Food 148.47 USD
+2011-12-25 bal Assets:Bank:B0 25066.60 GBP Equity:Opening

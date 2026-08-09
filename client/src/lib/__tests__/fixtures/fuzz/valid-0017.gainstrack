@@ -1,0 +1,29 @@
+option "operating_currency" "EUR"
+1900-01-01 commodity FTSE
+  name: FTSE Fund
+  tags: equity,global
+  ticker: FTSE.X
+2010-01-08 open Equity:Opening EUR
+  multiAsset: true
+2010-01-30 open Assets:Bank:B0 GBP
+  fundingAccount: Equity:Opening
+2010-02-07 open Assets:Broker:B0 GBP
+  multiAsset: true
+  automaticReinvestment: true
+  fundingAccount: Assets:Bank:B0
+2010-02-19 open Income:Salary EUR
+  fundingAccount: Assets:Bank:B0
+2010-03-18 open Income:Bonus EUR
+  fundingAccount: Assets:Bank:B0
+2010-04-10 open Income:Interest EUR
+  fundingAccount: Assets:Bank:B0
+2010-04-13 open Expenses:Food EUR
+  fundingAccount: Assets:Bank:B0
+2010-05-09 open Expenses:Travel EUR
+  fundingAccount: Assets:Bank:B0
+2010-05-19 bal Assets:Bank:B0 28711 GBP Equity:Opening
+2010-05-24 adj Assets:Bank:B0 10506.68 GBP Equity:Opening
+2010-06-24 spend Travel 172 EUR
+2010-07-27 unit Assets:Broker:B0 239 VWRL @368.7191 GBP
+2010-07-31 adj Assets:Bank:B0 6640 GBP Equity:Opening
+2010-08-28 earn Income:Bonus 5008.4263 EUR

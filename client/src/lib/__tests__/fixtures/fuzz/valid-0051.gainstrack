@@ -1,0 +1,31 @@
+1900-01-01 commodity VTI
+  name: VTI Fund
+  tags: equity,global
+  ticker: VTI.X
+2010-01-05 open Equity:Opening USD
+  multiAsset: true
+2010-01-24 open Assets:Bank:B0 USD
+  fundingAccount: Equity:Opening
+2010-02-20 open Assets:Broker:B0 GBP
+  multiAsset: true
+  fundingAccount: Assets:Bank:B0
+2010-03-01 open Income:Salary USD
+  fundingAccount: Assets:Bank:B0
+2010-04-05 open Income:Interest USD
+  fundingAccount: Assets:Bank:B0
+2010-04-21 open Expenses:Food USD
+  fundingAccount: Assets:Bank:B0
+2010-05-13 open Expenses:Rent USD
+  fundingAccount: Assets:Bank:B0
+2010-05-20 open Expenses:Travel USD
+  fundingAccount: Assets:Bank:B0
+2010-06-21 open Liabilities:Card USD
+  fundingAccount: Assets:Bank:B0
+2010-07-20 unit Assets:Broker:B0 63 BRK-B @224.09 GBP
+2010-07-29 tfr Assets:Bank:B0 Liabilities:Card 2734.3581 USD
+2010-08-04 adj Assets:Bank:B0 29346 USD Equity:Opening
+2010-09-02 fund Assets:Broker:B0 15049.02 GBP
+2010-09-24 yield Assets:Bank:B0 70 USD
+2010-10-29 fund Assets:Bank:B0 Expenses:Rent 5951 USD
+2010-11-13 tfr Assets:Bank:B0 Equity:Opening 475 USD
+2010-12-01 unit Assets:Broker:B0 466 VTI @132.2205 GBP

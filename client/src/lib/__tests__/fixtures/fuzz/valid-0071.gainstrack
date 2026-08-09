@@ -1,0 +1,40 @@
+option "operating_currency" "EUR"
+1900-01-01 commodity FTSE
+  name: FTSE Fund
+  tags: equity,global
+  ticker: FTSE.X
+2010-01-29 open Equity:Opening EUR
+  multiAsset: true
+2010-02-06 open Assets:Bank:B0 EUR
+  fundingAccount: Equity:Opening
+2010-02-24 open Assets:Bank:B1 GBP
+  fundingAccount: Equity:Opening
+2010-03-30 open Assets:Broker:B0 EUR
+  multiAsset: true
+  fundingAccount: Assets:Bank:B1
+2010-04-21 open Assets:Broker:B1 HKD
+  multiAsset: true
+  fundingAccount: Assets:Bank:B1
+2010-05-18 open Income:Bonus EUR
+  fundingAccount: Assets:Bank:B1
+2010-05-30 open Income:Interest EUR
+  fundingAccount: Assets:Bank:B0
+2010-07-05 open Expenses:Food EUR
+  fundingAccount: Assets:Bank:B0
+2010-07-12 open Expenses:Rent EUR
+  fundingAccount: Assets:Bank:B0
+2010-07-21 open Expenses:Travel EUR
+  fundingAccount: Assets:Bank:B0
+2010-08-09 unit Assets:Broker:B0 416 VCSH @150.260 EUR
+2010-08-14 bal Assets:Bank:B1 6511.28 GBP Equity:Opening
+2010-08-31 adj Assets:Bank:B1 7344 GBP Equity:Opening
+2010-09-10 spend Travel Assets:Bank:B1 705.42 EUR
+2010-10-04 earn Bonus 7396 EUR
+2010-11-08 adj Assets:Bank:B1 25760 GBP Equity:Opening
+2010-12-10 adj Assets:Bank:B0 23176.1046 EUR Equity:Opening
+2010-12-26 price VTI 59 SGD
+2011-01-11 fund Assets:Bank:B1 Income:Interest 17580.6329 GBP
+2011-01-23 trade Assets:Broker:B0 17 VCSH @430.0121 EUR C16.8636 EUR
+2011-02-07 trade Assets:Broker:B1 129 FTSE @67.7305 HKD
+2011-02-18 unit Assets:Broker:B1 320 IVV @91 HKD
+2011-03-17 yield Assets:Broker:B1 FTSE 121.6627 HKD

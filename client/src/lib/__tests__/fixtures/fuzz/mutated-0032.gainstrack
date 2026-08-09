@@ -1,0 +1,53 @@
+option "operating_currency" "GBP"
+2010-01-12 open Equity:Opening GBP
+  multiAsset: true
+2010-01-31 open Assets:Bank:B0 GBP
+  fundingAccount: Equity:Opening
+2010-02-23 open Assets:Bank:B1 GBP
+  fundingAccount: Equity:Opening
+2010-03-07 open Assets:Bank:B2 SGD
+  fundingAccount: Equity:Opening
+2010-03-18 open Assets:Broker:B0 HKD
+  multiAsset: true
+  automaticReinvestment: true
+  fundingAccount: Assets:Bank:B0
+2010-04-11 open Income:Salary GBP
+  fundingAccount: Assets:Bank:B1
+2010-04-19 open Income:Bonus GBP
+  fundingAccount: Assets:Bank:B1
+2010-05-08 open Expenses:Rent GBP
+  fundingAccount: Assets:Bank:B0
+2010-05-13 trade Assets:Broker:B0 132 VCSH @384 HKD
+2010-05-15 spend Expenses:Rent 70.9106 GBP
+2010-06-21 yield Assets:Bank:B1 49.2123 GBP
+2010-07-31 spend Rent 751.15 GBP
+2010-08-18 adj Assets:Bank:B1 6876 GBP Equity:Opening
+2010-09-08 spend Expenses:Rent 456.88 GBP
+2010-09-17 price VTI 38 SGD
+2010-10-12 yield Assets:Bank:B2 67.13 SGD
+2010-10-13 spend Expenses:Rent Assets:Bank:B1 150.58 GBP
+2010-10-15 earn Income:Salary Assets:Bank:B1 6585.091 GBP
+2010-11-20 unit Assets:Broker:B0 205 IVV @277.828 HKD
+2010-12-19 fund Assets:Bank:B1 Equity:Opening 6417.4830 GBP
+2011-01-18 unit Assets:Broker:B0 304 VWRL @63 HKD
+2011-02-27 yield Assets:Broker:B0 VWRL 127.79 HKD
+2011-03-11 unit Assets:Broker:B0 38 VTI @280.888 HKD
+2011-04-05 tfr Assets:Broker:B0 Equity:Opening 169 HKD
+2011-04-14 tfr Assets:Bank:B2 Income:Salary 1810 SGD
+2011-05-15 spend Expenses:Rent 446.017 GBP
+2011-05-23 adj Assets:Bank:B0 4724.311 GBP Equity:Opening
+2011-06-02 unit Assets:Broker:B0 296 IVV @321 HKD
+2011-06-04 adj Assets:Bank:B0 4648.74 GBP Equity:Opening
+2011-07-02 trade Assets:Broker:B0 32 VTI @343.49 HKD
+2011-08-01 price VCSH 392.4568 SGD
+2011-09-09 trade Assets:Broker:B0 142 FTSE @49.3135 HKD C5 HKD
+2011-10-18 fund Assets:Bank:B1 4716 GBP
+2011-11-27 earn Income:Bonus 193.82 GBP
+2011-12-12 earn Income:Salary 2176 GBP
+2012-01-13 trade Assets:Broker:B0 159 VCSH @141.1767 HKD
+2012-02-13 unit Assets:Broker:B0 478 VWRL @218 HKD
+2012-03-21 yield Assets:Bank:B1 49.21 GBP
+2012-04-04 adj Assets:Bank:B2 23184 SGD Equity:Opening
+2012-04-23 trade Assets:Broker:B0 -6 VCSH @394.71 HKD
+2012-04-24 bal Assets:Bank:B0 28986 GBP Equity:Opening extraTokenHere
+2012-05-12 spend Expenses:Rent 56.74 GBP

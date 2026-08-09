@@ -1,0 +1,64 @@
+option "operating_currency" "HKD"
+2010-01-31 open Equity:Opening HKD
+  multiAsset: true
+2010-02-12 open Assets:Bank:B0 HKD
+  fundingAccount: Equity:Opening
+2010-02-16 open Assets:Bank:B1 HKD
+  fundingAccount: Equity:Opening
+2010-03-25 open Assets:Bank:B2 HKD
+  fundingAccount: Equity:Opening
+2010-05-01 open Assets:Broker:B0 HKD
+  multiAsset: true
+  automaticReinvestment: true
+  fundingAccount: Assets:Bank:B2
+2010-06-09 open Assets:Broker:B1 HKD
+  multiAsset: true
+  automaticReinvestment: true
+  fundingAccount: Assets:Bank:B2
+2010-06-21 open Income:Salary HKD
+  fundingAccount: Assets:Bank:B1
+2010-07-01 open Income:Bonus HKD
+  fundingAccount: Assets:Bank:B2
+2010-07-26 open Expenses:Food HKD
+  fundingAccount: Assets:Bank:B2
+2010-08-23 open Expenses:Rent HKD
+  fundingAccount: Assets:Bank:B1
+2010-09-25 open Liabilities:Card HKD
+  fundingAccount: Assets:Bank:B2
+2010-10-24 earn Income:Salary 5973.271 HKD
+2010-11-04 trade Assets:Broker:B0 148 IVV @467 HKD C11.1137 HKD
+2010-11-26 bal Assets:Bank:B1 28692 HKD Equity:Opening
+2010-12-23 earn Bonus 5005.98 HKD
+2011-01-11 price VTI 448.38 HKD
+2011-02-07 earn Bonus 2209.05 HKD
+2011-02-17 adj Assets:Bank:B1 22843.37 HKD Equity:Opening
+2011-03-29 adj Assets:Bank:B2 17873.24 HKD Equity:Opening
+2011-04-13 earn Income:Bonus 2373.7536 HKD
+2011-05-01 price BRK-B 160.39 EUR
+2011-05-23 unit Assets:Broker:B0 82 VTI @382.55 HKD
+2011-06-02 yield Assets:Bank:B2 97.72 HKD
+2011-06-13 unit Assets:Broker:B1 42 IVV @300.5503 HKD
+2011-06-24 unit Assets:Broker:B0 372 BRK-B @269.497 HKD
+2011-07-01 price VCSH 459.292 SGD
+2011-07-18 earn Income:Salary 1912 HKD
+2011-07-29 bal Assets:Bank:B1 11179 HKD Equity:Opening
+2011-08-09 spend Expenses:Rent 125 HKD
+2011-08-25 unit Assets:Broker:B1 475 IVV @48.25 HKD
+2011-09-11 tfr Assets:Bank:B0 Assets:Broker:B0 1787 HKD
+2011-10-03 spend Rent 521 HKD
+2011-10-22 trade Assets:Broker:B1 7 FTSE @102.559 HKD C14 HKD
+2011-11-10 tfr Equity:Opening Assets:Broker:B1 3503.98 HKD
+2011-11-22 bal Assets:Bank:B2 5727 HKD Equity:Opening
+2012-01-01 bal Assets:Bank:B0 3874.36 HKD Equity:Opening
+2012-01-23 unit Assets:Broker:B1 327 BRK-B @53.5093 HKD
+2012-02-08 adj Assets:Bank:B2 11409.210 HKD Equity:Opening
+2012-02-13 tfr Equity:Opening Assets:Bank:B0 466.98 HKD
+2012-03-23 fund Assets:Broker:B1 11598 HKD
+2012-03-29 bal Assets:Bank:B2 1949 HKD Equity:Opening
+2012-04-28 adj Assets:Bank:B2 -59.7347 HKD Equity:Opening
+2012-05-06 unit Assets:Broker:B1 323 VTI @283.0155 HKD
+2012-05-22 fund Assets:Bank:B1 Assets:Bank:B0 3524 HKD
+2012-06-29 fund Assets:Bank:B0 6467.32 HKD
+2012-07-20 adj Assets:Bank:B1 943.49 HKD Equity:Opening
+2012-07-24 spend Food 492 HKD
+2012-08-09 tfr Assets:Bank:B1 Assets:Bank:B2 4321.81 HKD

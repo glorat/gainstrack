@@ -81,6 +81,7 @@ pnpm run lint            # ESLint
 pnpm run type-check      # vue-tsc type check (no emit)
 pnpm run test:unit       # Vitest (all tests)
 pnpm run test:unit:watch # Vitest watch mode
+pnpm run fixtures:fuzz   # regenerate the differential corpus (then re-dump Scala goldens)
 ```
 
 ### Run a single Vitest test file:
@@ -133,14 +134,42 @@ The TypeScript port is verified against Scala by golden files. The Scala side du
 
 ```bash
 # from repo root — dump goldens (Dump* suites are no-ops without -DdumpFixtures)
+sbt -DdumpFixtures=1 "core/testOnly com.gainstrack.core.test.DumpParserCases"    # parser behaviour corpus
+sbt -DdumpFixtures=1 "core/testOnly com.gainstrack.core.test.DumpGeneratorCases" # generator ok/error corpus
+sbt -DdumpFixtures=1 "core/testOnly com.gainstrack.core.test.DumpParserDTOs"     # per-ledger command DTOs
+sbt -DdumpFixtures=1 "core/testOnly com.gainstrack.core.test.DumpGeneratorDTOs"  # allState + full transactions
 sbt -DdumpFixtures=1 "core/testOnly com.gainstrack.core.test.DumpToGainstrack"
 sbt -DdumpFixtures=1 "core/testOnly com.gainstrack.core.test.DumpToBeancount"
+sbt -DdumpFixtures=1 "core/testOnly com.gainstrack.core.test.DumpFuzzGoldens"    # the 300-ledger corpus
 sbt -DdumpFixtures=1 "core/testOnly com.gainstrack.core.test.DumpLocalAllState"
 ```
 
-- Checked-in goldens live in `client/src/lib/__tests__/fixtures/` and cover 8 synthetic ledgers.
+**Adding a fixture ledger** means adding it in exactly two places: `Fixtures.names` (Scala) and `fixtureNames.ts` (TS). `fixtureNames.spec.ts` fails if the two drift or if any golden is missing, so a half-added fixture cannot pass silently.
+
+The layers, in rough order of what they catch:
+
+| Spec | Compares | Notes |
+|---|---|---|
+| `GainstrackParserDiff` | parser ok/error/crash + command DTOs | shared corpus `parser_cases.txt` |
+| `GeneratorDiff` | generator ok/error | shared corpus `gen_cases.txt` |
+| `Generator` / `localGoldens` | `allState` per ledger | 9 synthetic + 1 private |
+| `txsFull` | full `Transaction`, **including `description` and `id`** | `TransactionDTO` drops both — that gap hid four real bugs |
+| `gainstrackExport` / `beancountExport` | whole-file exports, byte-exact | plus export → re-import round trip |
+| `fuzzDiff` | **300 generated ledgers**, every artifact | the broadest net; see below |
+| `exportInvariance` | `generate(export(x)) ≡ generate(x)` | no oracle — outlives Scala |
+| `beancountOracle` | our output vs **beancount** | independent engine; opt-in, see below |
+| `gen/invariants` | guards no ledger can reach | each one added because a mutation survived |
+
+**The generated corpus** (`fixtures/fuzz/`) is 150 valid ledgers plus 150 targeted mutations of them, produced deterministically by `ledgerGenerator.ts`. Both the ledgers and the gzipped goldens are checked in on purpose: once Scala is gone they are the only surviving record of its behaviour, and `fuzzDiff` becomes a regression suite without any change. Regenerate with `pnpm run fixtures:fuzz`, then re-run `DumpFuzzGoldens`.
+
+**Beancount as an independent oracle** (`beancountOracle.spec.ts`) is the one check that does not depend on Scala at all: it runs our export through the real beancount CLI, which verifies every transaction balances, no account is used before opening, and `AllState.balances` reconciles with the postings `TransactionState` produced. Opt in with `BEAN_CHECK=/path/to/bean-check`; it skips cleanly otherwise.
+
 - `fixtures/local/` is **gitignored** — it holds goldens for a private real ledger. Specs that consume it gate on `fs.existsSync` and skip cleanly, so a fresh checkout is unaffected. **Any new spec reading a private/ignored file must do the same**, or it breaks CI.
-- Known, deliberate divergences are documented in the specs: Scala `BigDecimal` preserves trailing-zero scale where decimal.js normalizes; Scala iterates account `Set`s in JVM hash order where TS sorts.
+- Known, deliberate divergences, each documented at its assertion:
+  - Scala `BigDecimal` preserves trailing-zero scale where decimal.js normalizes (`__tests__/scale.ts` strips it, and every spec that does also asserts the residue is *only* trailing zeros).
+  - Scala iterates account `Set`s in JVM hash order where TS sorts.
+  - Scala's `Set[AccountCreation]` keys on the whole case class, so one account id can be stored **twice** with different options and resolved by hash order — it even emits duplicate beancount `open` directives, which bean-check rejects. The TS port keys by id and is first-write-wins. This is deliberately *better* than the oracle, and `gen/invariants.spec.ts` pins the choice since no differential test can.
+- Some ledgers are legal gainstrack but not expressible in beancount (`open X GBP` constrains the account to GBP; gainstrack lets any currency post into it). `beancountOracle` detects and skips those, and reports how many.
 
 ## Data Flow
 

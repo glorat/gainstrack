@@ -15,10 +15,12 @@ import { buildCommands } from 'src/lib/gen/commands';
 import { accountLines, beancountSections, toBeancountFile } from 'src/lib/export/beancountExport';
 import { defaultOptions, GAccount } from 'src/lib/gen/account';
 import { GAccountOptions } from 'src/lib/gen/commands';
+import { FIXTURE_NAMES } from 'src/lib/__tests__/fixtureNames';
+import { stripScale } from 'src/lib/__tests__/scale';
 
 const FIXTURES = path.join(__dirname, 'fixtures');
 const LOCAL = path.join(FIXTURES, 'local');
-const GOLDENS = ['basic', 'unit', 'src', 'div', 'balbug', 'james', 'noequity', 'multiadj'];
+const GOLDENS = FIXTURE_NAMES;
 
 interface Sections { headers: string[]; accounts: string[]; commands: string[] }
 
@@ -26,20 +28,6 @@ function sectionsFor(text: string): Sections {
   const parser = new GainstrackParser();
   parser.parseString(text);
   return beancountSections(buildCommands(parser.getTypedCommands()));
-}
-
-/**
- * Strip trailing-zero scale from every number in a line.
- *
- * Scala money is `BigDecimal`, which carries a scale: a literal written `127873.130` stays
- * three-dp, and `46111.55 - 46106.55` yields `5.00` because subtraction takes the max scale of
- * its operands. decimal.js has no scale — it normalizes to the shortest exact representation —
- * so it renders those as `127873.13` and `5`. The VALUES are identical; only the trailing zeros
- * differ. Reproducing BigDecimal scale would mean threading a scale through every arithmetic
- * operation in the money type, which is a large change to code whose parity is already proven.
- */
-function stripScale(line: string): string {
-  return line.replace(/-?\d+\.\d+/g, m => m.replace(/0+$/, '').replace(/\.$/, ''));
 }
 
 function compare(text: string, golden: Sections) {

@@ -1,0 +1,30 @@
+2010-01-04 open Equity:Opening USD
+  multiAsset: true
+2010-01-26 open Assets:Bank:B0 USD
+  fundingAccount: Equity:Opening
+2010-02-26 open Assets:Bank:B1 USD
+  fundingAccount: Equity:Opening
+2010-04-06 open Assets:Bank:B2 USD
+  fundingAccount: Equity:Opening
+2010-04-30 open Assets:Broker:B0 SGD
+  multiAsset: true
+  fundingAccount: Assets:Bank:B2
+2010-05-20 open Assets:Broker:B1 USD
+  multiAsset: true
+  fundingAccount: Assets:Bank:B0
+2010-06-07 open Expenses:Food USD
+  fundingAccount: Assets:Bank:B2
+2010-07-03 open Expenses:Rent USD
+  fundingAccount: Assets:Bank:B0
+2010-08-05 open Expenses:Travel USD
+  fundingAccount: Assets:Bank:B0
+2010-09-09 open Liabilities:Card USD
+  fundingAccount: Assets:Bank:B2
+2010-10-18 price VTI 54 GBP
+2010-11-23 fund Assets:Broker:B1 17394.23 USD
+2011-01-01 price VCSH 430 EUR
+2011-02-03 unit Assets:Broker:B0 316 VWRL @12.988 SGD
+2011-03-11 spend Rent 268 USD
+2011-03-31 fund Assets:Broker:B0 Assets:Bank:B1 14759.591 SGD
+2011-04-12 unit Assets:Broker:B1 94 VTI @321.2641 USD
+2011-04-17 yield Assets:Broker:B1 VTI 11 USD

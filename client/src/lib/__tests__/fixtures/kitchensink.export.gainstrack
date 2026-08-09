@@ -1,0 +1,67 @@
+; Kitchen-sink ledger: every parseable command kind and every settable account option, in one
+; place, so the golden parity tests cover the whole surface rather than whatever the organically
+; grown fixtures happen to contain.
+; 
+; Deliberately NOT here:
+;   - tradingAccount / hidden / placeholder: `AccountOptions.withOption` rejects them, so they
+;     cannot be set from text at all (see parser_cases.txt).
+;   - close: TypeScript-only, so Scala cannot be an oracle for it (see closing.spec.ts).
+option "operating_currency" "GBP"
+
+2000-01-01 open Assets:Bank:Current GBP
+  fundingAccount: Equity:Opening
+; --- funding: with an implied source, and with an explicit one
+2000-01-02 fund Assets:Bank:Current 10000 GBP
+; --- transfers: same currency, and cross-currency with an explicit target leg
+2000-03-01 tfr Assets:Bank:Current Assets:Broker 3000 GBP
+2000-03-03 tfr Assets:Bank:Current Liabilities:CreditCard 250 GBP
+; --- income on holdings. A multiAsset account MUST name the asset and a plain account must NOT
+; (YieldCommand.toTransfers requires both ways round), so this needs one of each.
+2000-06-01 yield Assets:Bank:Current 12.00 GBP
+
+2000-01-01 open Assets:Bank:Savings USD
+  fundingAccount: Equity:Opening
+2000-01-02 fund Assets:Bank:Savings Equity:Opening 5000.00 USD
+2000-03-02 tfr Assets:Bank:Savings Assets:Broker 1000 USD 780.50 GBP
+2000-07-01 adj Assets:Bank:Savings 4100.00 USD Equity:Opening
+2000-07-03 bal Assets:Bank:Savings 4100.00 USD Equity:Opening
+
+; Every settable option at once.
+2000-01-01 open Assets:Broker GBP
+  expenseAccount: Expenses:Broker
+  incomeAccount: Income:Broker
+  fundingAccount: Assets:Bank:Current
+  multiAsset:true
+  automaticReinvestment:true
+; --- trades: buy, buy with commission, sell with commission
+2000-04-01 trade Assets:Broker 100 VWRL @25.00 GBP
+2000-04-02 trade Assets:Broker 50 VWRL @26.50 GBP C9.95 GBP
+2000-05-01 trade Assets:Broker -30 VWRL @28.00 GBP C9.95 GBP
+2000-06-02 yield Assets:Broker VWRL 31.20 GBP
+2000-07-02 unit Assets:Broker 120 VWRL @27.75 GBP
+
+2000-01-01 open Equity:Opening GBP
+  multiAsset:true
+
+2000-01-01 open Expenses:Food GBP
+  fundingAccount: Assets:Bank:Current
+2000-02-03 spend Food 42.50 GBP
+2000-02-04 spend Expenses:Food Assets:Bank:Current 17.25 GBP
+
+2000-01-01 open Income:Salary GBP
+  fundingAccount: Assets:Bank:Current
+; --- earn/spend: bare tag, already-qualified tag, and with an explicit other account
+2000-02-01 earn Salary 2500.00 GBP
+2000-02-02 earn Income:Salary Assets:Bank:Current 2500.00 GBP
+
+2000-01-01 open Liabilities:CreditCard GBP
+  fundingAccount: Assets:Bank:Current
+
+1900-01-01 commodity VWRL
+  name: Vanguard FTSE All-World
+  tags: equity,global
+  ticker: VWRL.LON
+  assetClass: equity
+1900-01-01 commodity BARE
+; --- statements
+2000-07-01 price VWRL 27.7500 GBP

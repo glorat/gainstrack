@@ -1,0 +1,53 @@
+option "operating_currency" "HKD"
+1900-01-01 commodity VTI
+  name: VTI Fund
+  tags: equity,global
+  ticker: VTI.X
+2010-01-04 open Equity:Opening HKD
+  multiAsset: true
+2010-01-15 open Assets:Bank:B0 USD
+  fundingAccount: Equity:Opening
+2010-01-23 open Assets:Broker:B0 HKD
+  multiAsset: true
+  automaticReinvestment: true
+  fundingAccount: Assets:Bank:B0
+2010-02-11 open Assets:Broker:B1 HKD
+  multiAsset: true
+  fundingAccount: Assets:Bank:B0
+2010-02-24 open Income:Salary HKD
+  fundingAccount: Assets:Bank:B0
+2010-04-04 open Income:Bonus HKD
+  fundingAccount: Assets:Bank:B0
+2010-04-30 open Expenses:Food HKD
+  fundingAccount: Assets:Bank:B0
+2010-05-13 open Expenses:Rent HKD
+  fundingAccount: Assets:Bank:B0
+2010-06-11 open Expenses:Travel HKD
+  fundingAccount: Assets:Bank:B0
+2010-07-07 open Liabilities:Card HKD
+  fundingAccount: Assets:Bank:B0
+2010-07-11 tfr Assets:Broker:B1 Expenses:Rent 4205.83 HKD
+2010-08-06 adj Assets:Bank:B0 13566 USD Equity:Opening
+2010-08-07 price VWRL 305.05 USD
+2010-08-25 earn Salary 7357.239 HKD
+2010-09-29 price VCSH 35.170 EUR
+2010-10-31 unit Assets:Broker:B0 433 FTSE @260 HKD
+2010-11-15 tfr Assets:Broker:B1 Assets:Bank:B0 1012.854 HKD 1034.106 USD
+2010-11-24 yield Assets:Broker:B0 FTSE 163.98 HKD
+2010-12-15 unit Assets:Broker:B0 464 BRK-B @116.7282 HKD
+2011-01-05 bal Assets:Bank:B0 12228.46 USD Equity:Opening
+2011-01-14 yield Assets:Bank:B0 122.0505 USD
+2011-01-31 bal Assets:Bank:B0 24034.12 USD Equity:Opening
+2011-03-06 adj Assets:Bank:B0 7308.76 USD Equity:Opening
+2011-04-04 bal Assets:Bank:B0 29812.47 USD Equity:Opening
+2011-05-08 spend Travel 456.364 HKD
+2011-05-24 adj Assets:Bank:B0 13389.5343 USD Equity:Opening
+2011-06-18 fund Assets:Broker:B0 19577 HKD
+2011-06-24 trade Assets:Broker:B1 85 BRK-B @90.615 HKD C11.45 HKD
+2011-06-28 bal Assets:Bank:B0 13663.13 USD Equity:Opening
+2011-07-07 yield Assets:Bank:B0 98.51 USD
+2011-07-27 tfr Assets:Broker:B1 Expenses:Rent 1584.87 HKD
+2011-08-12 earn Salary Assets:Bank:B0 935 HKD
+2011-08-28 trade Assets:Broker:B1 2 VTI @392 HKD
+2011-09-01 tfr Assets:Broker:B1 Equity:Opening 3481.07 HKD
+2011-09-03 trade Assets:Broker:B0 -1 FTSE @318.538 HKD C10 HKD

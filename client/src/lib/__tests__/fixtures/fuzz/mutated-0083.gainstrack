@@ -1,0 +1,32 @@
+option "operating_currency" "EUR"
+1900-01-01 commodity FTSE
+  name: FTSE Fund
+  tags: equity,global
+  ticker: FTSE.X
+2010-01-25 open Equity:Opening EUR
+  multiAsset: true
+2010-02-03 open Assets:Bank:B0 EUR
+  fundingAccount: Equity:Opening
+2010-02-09 open Assets:Bank:B1 EUR
+  fundingAccount: Equity:Opening
+2010-03-15 open Assets:Bank:B2 HKD
+  fundingAccount: Equity:Opening
+2010-04-13 open Assets:Broker:B0 EUR
+  multiAsset: true
+  fundingAccount: Assets:Bank:B1
+2010-04-22 open Assets:Broker:B1 EUR
+  multiAsset: true
+  fundingAccount: Assets:Bank:B1
+2010-04-26 open Income:Salary EUR
+  fundingAccount: Assets:Bank:B2
+2010-05-03 open Income:Bonus EUR
+  fundingAccount: Assets:Bank:B1
+2010-05-13 open Liabilities:Card EUR
+  fundingAccount: Assets:Bank:B2
+2010-06-22 fund Assets:Bank:B2 8606 HKD
+2010-07-28 tfr Equity:Opening Assets:Broker:B1 4941 EUR
+2010-08-26 trade Assets:Broker:B1 3 FTSE @493.45 EUR
+2010-09-11 trade Assets:Broker:B1 -19 FTSE @94.0325 EUR C14 EUR
+2010-10-17 unit Assets:Broker:B1 166 VCSH @136.6845 EUR
+2010-11-20 yield Assets:Broker:B1 FTSE 7.1884 EUR
+2010-12-11 price BRK-B 110.292 USD

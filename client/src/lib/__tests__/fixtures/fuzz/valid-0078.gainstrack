@@ -1,0 +1,50 @@
+option "operating_currency" "HKD"
+1900-01-01 commodity VTI
+  name: VTI Fund
+  tags: equity,global
+  ticker: VTI.X
+2010-01-26 open Equity:Opening HKD
+  multiAsset: true
+2010-02-15 open Assets:Bank:B0 GBP
+  fundingAccount: Equity:Opening
+2010-03-21 open Assets:Bank:B1 HKD
+  fundingAccount: Equity:Opening
+2010-03-24 open Assets:Bank:B2 HKD
+  fundingAccount: Equity:Opening
+2010-04-04 open Assets:Broker:B0 GBP
+  multiAsset: true
+  fundingAccount: Assets:Bank:B2
+2010-04-24 open Income:Salary HKD
+  fundingAccount: Assets:Bank:B2
+2010-05-23 open Income:Interest HKD
+  fundingAccount: Assets:Bank:B0
+2010-07-02 open Expenses:Food HKD
+  fundingAccount: Assets:Bank:B1
+2010-08-02 open Expenses:Rent HKD
+  fundingAccount: Assets:Bank:B1
+2010-09-05 open Liabilities:Card HKD
+  fundingAccount: Assets:Bank:B2
+2010-09-14 trade Assets:Broker:B0 39 IVV @299 GBP C9 GBP
+2010-10-02 yield Assets:Broker:B0 IVV 90.70 GBP
+2010-11-02 price VWRL 278 SGD
+2010-12-02 unit Assets:Broker:B0 226 VTI @15.23 GBP
+2011-01-11 spend Food Assets:Bank:B2 822.9463 HKD
+2011-01-29 unit Assets:Broker:B0 19 IVV @285 GBP
+2011-01-31 bal Assets:Bank:B2 2374 HKD Equity:Opening
+2011-02-26 spend Food 617.81 HKD
+2011-03-29 earn Income:Salary Assets:Bank:B1 6352.42 HKD
+2011-05-06 price FTSE 195 EUR
+2011-05-24 price BRK-B 464 GBP
+2011-07-03 tfr Assets:Bank:B0 Equity:Opening 3375.63 GBP 4382.444 HKD
+2011-07-13 earn Interest Assets:Bank:B1 1044.3009 HKD
+2011-08-03 adj Assets:Bank:B1 28314.57 HKD Equity:Opening
+2011-08-31 tfr Equity:Opening Assets:Bank:B2 382.8169 HKD
+2011-09-09 price VWRL 124.268 SGD
+2011-09-24 price VCSH 14.537 USD
+2011-10-22 spend Rent Assets:Bank:B0 98.449 HKD
+2011-10-31 spend Expenses:Rent 314.6421 HKD
+2011-11-13 adj Assets:Bank:B1 22401 HKD Equity:Opening
+2011-12-23 unit Assets:Broker:B0 396 VTI @288.54 GBP
+2012-01-30 fund Assets:Bank:B0 218.71 GBP
+2012-02-13 price VTI 283 EUR
+2012-03-14 yield Assets:Broker:B0 VTI 78 GBP

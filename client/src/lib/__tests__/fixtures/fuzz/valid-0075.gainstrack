@@ -1,0 +1,31 @@
+option "operating_currency" "GBP"
+1900-01-01 commodity VCSH
+  name: VCSH Fund
+  tags: equity,global
+  ticker: VCSH.X
+2010-01-02 open Equity:Opening GBP
+  multiAsset: true
+2010-02-09 open Assets:Bank:B0 SGD
+  fundingAccount: Equity:Opening
+2010-02-15 open Assets:Bank:B1 GBP
+  fundingAccount: Equity:Opening
+2010-03-05 open Assets:Broker:B0 EUR
+  multiAsset: true
+  fundingAccount: Assets:Bank:B0
+2010-03-30 open Income:Interest GBP
+  fundingAccount: Assets:Bank:B1
+2010-04-11 open Expenses:Food GBP
+  fundingAccount: Assets:Bank:B1
+2010-04-16 open Expenses:Rent GBP
+  fundingAccount: Assets:Bank:B0
+2010-05-24 open Expenses:Travel GBP
+  fundingAccount: Assets:Bank:B1
+2010-06-04 open Liabilities:Card GBP
+  fundingAccount: Assets:Bank:B0
+2010-06-07 unit Assets:Broker:B0 243 VTI @398.64 EUR
+2010-06-22 yield Assets:Broker:B0 VTI 140 EUR
+2010-06-27 adj Assets:Bank:B1 11427 GBP Equity:Opening
+2010-07-16 unit Assets:Broker:B0 350 VCSH @35 EUR
+2010-08-03 unit Assets:Broker:B0 366 IVV @87.73 EUR
+2010-08-27 spend Food 646.21 GBP
+2010-10-02 adj Assets:Bank:B1 6200.745 GBP Equity:Opening

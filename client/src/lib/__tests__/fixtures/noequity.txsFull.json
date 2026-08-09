@@ -1,0 +1,56 @@
+[ {
+  "id" : 1,
+  "postDate" : "2018-10-31",
+  "description" : "BUY 5275.0 SCGBP @7.344 GBP",
+  "postings" : [ {
+    "account" : "Assets:SCBSG:GBP",
+    "value" : {
+      "number" : -38739.6000,
+      "ccy" : "GBP"
+    }
+  }, {
+    "account" : "Assets:SCBSG:SCGBP",
+    "value" : {
+      "number" : 5275.0,
+      "ccy" : "SCGBP"
+    },
+    "price" : {
+      "number" : 7.344,
+      "ccy" : "GBP"
+    }
+  } ]
+}, {
+  "id" : 2,
+  "postDate" : "2019-10-30",
+  "description" : "Adjustment: -38739.6000 GBP -> 34652.93 GBP",
+  "postings" : [ {
+    "account" : "Income:Opening:GBP",
+    "value" : {
+      "number" : -73392.5300,
+      "ccy" : "GBP"
+    }
+  }, {
+    "account" : "Assets:SCBSG:GBP",
+    "value" : {
+      "number" : 73392.5300,
+      "ccy" : "GBP"
+    }
+  } ]
+}, {
+  "id" : 3,
+  "postDate" : "2019-10-30",
+  "description" : "Adjustment: 0 USD -> 66991.65 USD",
+  "postings" : [ {
+    "account" : "Income:Opening:USD",
+    "value" : {
+      "number" : -66991.65,
+      "ccy" : "USD"
+    }
+  }, {
+    "account" : "Assets:SCBSG:USD",
+    "value" : {
+      "number" : 66991.65,
+      "ccy" : "USD"
+    }
+  } ]
+} ]

@@ -1,0 +1,43 @@
+option "operating_currency" "EUR"
+2010-01-31 open Equity:Opening EUR
+  multiAsset: true
+2010-02-14 open Assets:Bank:B0 EUR
+  fundingAccount: Equity:Opening
+2010-03-16 open Assets:Broker:B0 EUR
+  multiAsset: true
+  automaticReinvestment: true
+  fundingAccount: Assets:Bank:B0
+2010-04-14 open Income:Salary EUR
+  fundingAccount: Assets:Bank:B0
+2010-05-15 open Income:Bonus EUR
+  fundingAccount: Assets:Bank:B0
+2010-06-18 open Expenses:Food EUR
+  fundingAccount: Assets:Bank:B0
+2010-07-14 fund Assets:Bank:B0 Income:Bonus 5649 EUR
+2010-08-10 yield Assets:Bank:B0 166.96 EUR
+2010-08-26 tfr Equity:Opening Expenses:Food 50.04 EUR
+2010-09-13 bal Assets:Bank:B0 19664.004 EUR Equity:Opening
+2010-09-29 earn Income:Bonus 7350 EUR
+2010-10-31 trade Assets:Broker:B0 185 BRK-B @185.54 EUR
+2010-12-02 tfr Assets:Broker:B0 Equity:Opening 4634 EUR
+2011-01-05 unit Assets:Broker:B0 233 VTI @193 EUR
+2011-01-10 yield Assets:Broker:B0 VTI 114 EUR
+2011-02-01 bal Assets:Bank:B0 13613.514 EUR Equity:Opening
+2011-02-06 tfr Equity:Opening Expenses:Food 1832 EUR
+2011-02-20 yield Assets:Broker:B0 BRK-B 15.362 EUR
+2011-03-15 trade Assets:Broker:B0 95 FTSE @337 EUR C18.72 EUR
+2011-04-18 trade Assets:Broker:B0 37 IVV @29 EUR
+2011-05-15 yield Assets:Broker:B0 IVV 94 EUR
+2011-05-16 spend Food 808.070 EUR
+2011-05-30 trade Assets:Broker:B0 -8 FTSE @366.02 EUR
+2011-06-03 unit Assets:Broker:B0 414 VTI @261.53 EUR
+2011-07-03 spend Expenses:Food Assets:Bank:B0 152.210 EUR
+2011-08-06 unit Assets:Broker:B0 104 VTI @130.082 EUR
+2011-08-22 fund Assets:Bank:B0 13391 EUR
+2011-09-13 adj Assets:Bank:B0 2394.31 EUR Equity:Opening
+2011-10-13 spend Expenses:Food Assets:Bank:B0 159.904 EUR
+2011-10-14 price IVV 133 EUR
+2011-11-07 yield Assets:Broker:B0 FTSE 38.15 EUR
+2011-11-17 price VTI 68 USD
+2011-12-09 unit Assets:Broker:B0 458 VCSH @147.5446 EUR
+2012-01-05 adj Assets:Bank:B0 -769 EUR Equity:Opening

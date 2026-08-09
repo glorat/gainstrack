@@ -1,0 +1,34 @@
+option "operating_currency" "SGD"
+1900-01-01 commodity VTI
+  name: VTI Fund
+  tags: equity,global
+  ticker: VTI.X
+2010-01-09 open Equity:Opening SGD
+  multiAsset: true
+2010-01-12 open Assets:Bank:B0 SGD
+  fundingAccount: Equity:Opening
+2010-02-15 open Assets:Bank:B1 SGD
+  fundingAccount: Equity:Opening
+2010-02-26 open Assets:Bank:B2 HKD
+  fundingAccount: Equity:Opening
+2010-04-02 open Assets:Broker:B0 SGD
+  multiAsset: true
+  fundingAccount: Assets:Bank:B0
+2010-05-06 open Assets:Broker:B1 SGD
+  multiAsset: true
+  fundingAccount: Assets:Bank:B0
+2010-05-17 open Income:Salary SGD
+  fundingAccount: Assets:Bank:B2
+2010-06-09 open Income:Bonus SGD
+  fundingAccount: Assets:Bank:B0
+2010-06-29 open Income:Interest SGD
+  fundingAccount: Assets:Bank:B1
+2010-07-12 open Expenses:Rent SGD
+  fundingAccount: Assets:Bank:B1
+2010-07-30 fund Assets:Broker:B1 10043.634 SGD
+2010-08-22 earn Income:Salary Assets:Bank:B2 6579.5373 SGD
+2010-08-24 yield Assets:Bank:B1 118.34 SGD
+2010-09-07 fund Assets:Bank:B2 Income:Bonus 4652.7711 HKD
+2010-10-12 adj Assets:Bank:B2 4686.256 HKD Equity:Opening
+2010-11-02 earn Income:Bonus Assets:Bank:B2 8506.163 SGD
+2010-12-10 trade Assets:Broker:B0 36 BRK-B @58.77 SGD

@@ -1,0 +1,57 @@
+2010-01-31 open Equity:Opening USD
+  multiAsset: true
+2010-02-02 open Assets:Bank:B0 GBP
+  fundingAccount: Equity:Opening
+2010-02-13 open Assets:Bank:B1 USD
+  fundingAccount: Equity:Opening
+2010-02-23 open Assets:Broker:B0 USD
+  multiAsset: true
+  fundingAccount: Assets:Bank:B0
+2010-04-04 open Income:Interest USD
+  fundingAccount: Assets:Bank:B0
+2010-05-06 open Expenses:Food USD
+  fundingAccount: Assets:Bank:B0
+2010-06-12 open Expenses:Rent USD
+  fundingAccount: Assets:Bank:B1
+2010-07-22 open Expenses:Travel USD
+  fundingAccount: Assets:Bank:B0
+2010-08-18 open Liabilities:Card USD
+  fundingAccount: Assets:Bank:B0
+2010-08-20 bal Assets:Bank:B1 19577.1766 USD Equity:Opening
+2010-08-31 bal Assets:Bank:B1 10269 USD Equity:Opening
+2010-09-09 price IVV 93 USD
+2010-09-14 adj Assets:Bank:B0 2335.56 GBP Equity:Opening
+2010-10-20 trade Assets:Broker:B0 62 VTI @61.226 USD C11.960 USD
+2010-11-02 bal Assets:Bank:B0 12879 GBP Equity:Opening
+2010-11-03 earn Interest Assets:Bank:B1 2837.8403 USD
+2010-11-09 fund Assets:Broker:B0 Equity:Opening 10365 USD
+2010-11-27 price VWRL 112 GBP
+2011-01-01 bal Assets:Bank:B1 15555.9703 USD Equity:Opening
+2011-01-18 spend Expenses:Travel 563 USD
+2011-02-25 earn Income:Interest Assets:Bank:B1 5979.46 USD
+2011-03-04 price BRK-B 168.165 HKD
+2011-04-04 fund Assets:Bank:B1 Equity:Opening 17168.05 USD
+2011-04-05 tfr Assets:Bank:B0 Equity:Opening 2018.35 GBP 2934.2786 USD
+2011-05-11 yield Assets:Bank:B1 20 USD
+2011-05-12 adj Assets:Bank:B0 28418 GBP Equity:Opening
+2011-06-12 earn Income:Interest 1354 USD
+2011-06-30 bal Assets:Bank:B0 11857.921 GBP Equity:Opening
+2011-07-09 unit Assets:Broker:B0 213 VCSH @316.2681 USD
+2011-07-12 tfr Assets:Broker:B0 Income:Interest 2822 USD
+2011-07-22 unit Assets:Broker:B0 14 VWRL @178.1078 USD
+2011-07-24 tfr Assets:Bank:B1 Expenses:Travel 4887.80 USD
+2011-08-14 adj Assets:Bank:B0 9178.74 GBP Equity:Opening
+2011-09-13 bal Assets:Bank:B1 8756.4713 USD Equity:Opening
+2011-09-25 earn Interest Assets:Bank:B1 1455.473 USD
+2011-11-01 bal Assets:Bank:B0 16076.42 GBP Equity:Opening
+2011-11-30 bal Assets:Bank:B1 7177.18 USD Equity:Opening
+2012-01-04 trade Assets:Broker:B0 121 FTSE @172.83 USD
+2012-01-14 fund Assets:Broker:B0 14205 USD
+2012-02-13 earn Income:Interest 2805.439 USD
+2012-02-29 trade Assets:Broker:B0 -1 VWRL @177.421 USD
+2012-03-31 adj Assets:Bank:B1 22772.535 USD Equity:Opening
+2012-05-09 fund Assets:Bank:B0 14478.4853 GBP
+2012-05-20 adj Assets:Bank:B1 5757 USD Equity:Opening
+2012-06-21 adj Assets:Bank:B0 6756.5833 GBP Equity:Opening
+2012-07-30 unit Assets:Broker:B0 130 VWRL @142 USD
+2012-08-26 trade Assets:Broker:B0 -5 VWRL @126.66 USD

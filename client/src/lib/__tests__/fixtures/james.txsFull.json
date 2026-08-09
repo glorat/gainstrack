@@ -1,0 +1,69 @@
+[ {
+  "id" : 1,
+  "postDate" : "2019-01-01",
+  "description" : "Transfer 50000.0 GBP Equity:Opening -> Assets:Bank:HSBCGBP",
+  "postings" : [ {
+    "account" : "Equity:Opening:GBP",
+    "value" : {
+      "number" : -50000.0,
+      "ccy" : "GBP"
+    }
+  }, {
+    "account" : "Assets:Bank:HSBCGBP",
+    "value" : {
+      "number" : 50000.0,
+      "ccy" : "GBP"
+    }
+  } ]
+}, {
+  "id" : 2,
+  "postDate" : "2019-01-01",
+  "description" : "Transfer 100000.0 USD Equity:Opening -> Assets:Bank:HSBCUSD",
+  "postings" : [ {
+    "account" : "Equity:Opening:USD",
+    "value" : {
+      "number" : -100000.0,
+      "ccy" : "USD"
+    }
+  }, {
+    "account" : "Assets:Bank:HSBCUSD",
+    "value" : {
+      "number" : 100000.0,
+      "ccy" : "USD"
+    }
+  } ]
+}, {
+  "id" : 3,
+  "postDate" : "2019-01-01",
+  "description" : "Transfer 10000 GBP Equity:Opening -> Assets:Equities:GBPStock",
+  "postings" : [ {
+    "account" : "Equity:Opening:GBP",
+    "value" : {
+      "number" : -10000,
+      "ccy" : "GBP"
+    }
+  }, {
+    "account" : "Assets:Equities:GBPStock",
+    "value" : {
+      "number" : 10000,
+      "ccy" : "GBP"
+    }
+  } ]
+}, {
+  "id" : 4,
+  "postDate" : "2019-01-01",
+  "description" : "Transfer 25000 USD Equity:Opening -> Assets:Equities:USDStock",
+  "postings" : [ {
+    "account" : "Equity:Opening:USD",
+    "value" : {
+      "number" : -25000,
+      "ccy" : "USD"
+    }
+  }, {
+    "account" : "Assets:Equities:USDStock",
+    "value" : {
+      "number" : 25000,
+      "ccy" : "USD"
+    }
+  } ]
+} ]

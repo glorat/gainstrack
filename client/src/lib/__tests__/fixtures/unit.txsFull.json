@@ -1,0 +1,333 @@
+[ {
+  "id" : 1,
+  "postDate" : "2004-10-14",
+  "description" : "Fund 500 GBP",
+  "postings" : [ {
+    "account" : "Equity:Opening:GBP",
+    "value" : {
+      "number" : -500,
+      "ccy" : "GBP"
+    }
+  }, {
+    "account" : "Assets:Pension:Barclays:GBP",
+    "value" : {
+      "number" : 500,
+      "ccy" : "GBP"
+    }
+  } ]
+}, {
+  "id" : 2,
+  "postDate" : "2004-10-14",
+  "description" : "Fund 500 GBP",
+  "postings" : [ {
+    "account" : "Assets:Pension:Barclays:GBP",
+    "value" : {
+      "number" : -500,
+      "ccy" : "GBP"
+    }
+  }, {
+    "account" : "Income:Pension:Barclays:GBP",
+    "value" : {
+      "number" : 500,
+      "ccy" : "GBP"
+    }
+  } ]
+}, {
+  "id" : 3,
+  "postDate" : "2004-10-14",
+  "description" : "Fund 500 GBP",
+  "postings" : [ {
+    "account" : "Equity:Opening:GBP",
+    "value" : {
+      "number" : -500,
+      "ccy" : "GBP"
+    }
+  }, {
+    "account" : "Assets:Pension:Barclays:GBP",
+    "value" : {
+      "number" : 500,
+      "ccy" : "GBP"
+    }
+  } ]
+}, {
+  "id" : 4,
+  "postDate" : "2004-10-14",
+  "description" : "Fund 500 GBP",
+  "postings" : [ {
+    "account" : "Assets:Pension:Barclays:GBP",
+    "value" : {
+      "number" : -500,
+      "ccy" : "GBP"
+    }
+  }, {
+    "account" : "Income:Pension:Barclays:GBP",
+    "value" : {
+      "number" : 500,
+      "ccy" : "GBP"
+    }
+  } ]
+}, {
+  "id" : 5,
+  "postDate" : "2004-10-14",
+  "description" : "Fund 7000 GBP",
+  "postings" : [ {
+    "account" : "Assets:Bank:England",
+    "value" : {
+      "number" : -7000,
+      "ccy" : "GBP"
+    }
+  }, {
+    "account" : "Assets:ISA:London",
+    "value" : {
+      "number" : 7000,
+      "ccy" : "GBP"
+    }
+  } ]
+}, {
+  "id" : 6,
+  "postDate" : "2004-10-15",
+  "description" : "Unit statement: 500 BGIL @2 GBP",
+  "postings" : [ {
+    "account" : "Income:Pension:Barclays:GBP",
+    "value" : {
+      "number" : -1000,
+      "ccy" : "GBP"
+    }
+  }, {
+    "account" : "Assets:Pension:Barclays:BGIL",
+    "value" : {
+      "number" : 500,
+      "ccy" : "BGIL"
+    },
+    "price" : {
+      "number" : 2,
+      "ccy" : "GBP"
+    }
+  } ]
+}, {
+  "id" : 7,
+  "postDate" : "2005-07-26",
+  "description" : "Earn 25000.00 GBP Salary",
+  "postings" : [ {
+    "account" : "Income:Salary:GBP",
+    "value" : {
+      "number" : -25000.00,
+      "ccy" : "GBP"
+    }
+  }, {
+    "account" : "Assets:Bank:England",
+    "value" : {
+      "number" : 25000.00,
+      "ccy" : "GBP"
+    }
+  } ]
+}, {
+  "id" : 8,
+  "postDate" : "2005-07-26",
+  "description" : "Earn 25000.00 GBP Salary",
+  "postings" : [ {
+    "account" : "Income:Salary:GBP",
+    "value" : {
+      "number" : -25000.00,
+      "ccy" : "GBP"
+    }
+  }, {
+    "account" : "Assets:Bank:England",
+    "value" : {
+      "number" : 25000.00,
+      "ccy" : "GBP"
+    }
+  } ]
+}, {
+  "id" : 9,
+  "postDate" : "2005-08-01",
+  "description" : "England yield 10 GBP",
+  "postings" : [ {
+    "account" : "Income:Bank:England",
+    "value" : {
+      "number" : -10,
+      "ccy" : "GBP"
+    }
+  }, {
+    "account" : "Assets:Bank:England",
+    "value" : {
+      "number" : 10,
+      "ccy" : "GBP"
+    }
+  } ]
+}, {
+  "id" : 10,
+  "postDate" : "2005-10-13",
+  "description" : "Adjustment: 7000 GBP -> 8000 GBP",
+  "postings" : [ {
+    "account" : "Income:ISA:London",
+    "value" : {
+      "number" : -1000,
+      "ccy" : "GBP"
+    }
+  }, {
+    "account" : "Assets:ISA:London",
+    "value" : {
+      "number" : 1000,
+      "ccy" : "GBP"
+    }
+  } ]
+}, {
+  "id" : 11,
+  "postDate" : "2005-10-15",
+  "description" : "London yield 15 GBP",
+  "postings" : [ {
+    "account" : "Income:ISA:London",
+    "value" : {
+      "number" : -15,
+      "ccy" : "GBP"
+    }
+  }, {
+    "account" : "Assets:Bank:England",
+    "value" : {
+      "number" : 15,
+      "ccy" : "GBP"
+    }
+  } ]
+}, {
+  "id" : 12,
+  "postDate" : "2006-11-01",
+  "description" : "Fund 1000 GBP",
+  "postings" : [ {
+    "account" : "Assets:Bank:England",
+    "value" : {
+      "number" : -1000,
+      "ccy" : "GBP"
+    }
+  }, {
+    "account" : "Assets:Investment:Stocks:GBP",
+    "value" : {
+      "number" : 1000,
+      "ccy" : "GBP"
+    }
+  } ]
+}, {
+  "id" : 13,
+  "postDate" : "2006-11-02",
+  "description" : "BUY 50 FTSE @10 GBP",
+  "postings" : [ {
+    "account" : "Assets:Investment:Stocks:GBP",
+    "value" : {
+      "number" : -500,
+      "ccy" : "GBP"
+    }
+  }, {
+    "account" : "Assets:Investment:Stocks:FTSE",
+    "value" : {
+      "number" : 50,
+      "ccy" : "FTSE"
+    },
+    "price" : {
+      "number" : 10,
+      "ccy" : "GBP"
+    }
+  } ]
+}, {
+  "id" : 14,
+  "postDate" : "2006-11-02",
+  "description" : "BUY 50 VWRL @10 GBP",
+  "postings" : [ {
+    "account" : "Assets:Investment:Stocks:GBP",
+    "value" : {
+      "number" : -500.20,
+      "ccy" : "GBP"
+    }
+  }, {
+    "account" : "Assets:Investment:Stocks:VWRL",
+    "value" : {
+      "number" : 50,
+      "ccy" : "VWRL"
+    },
+    "price" : {
+      "number" : 10,
+      "ccy" : "GBP"
+    }
+  }, {
+    "account" : "Expenses:Investment:Stocks:GBP",
+    "value" : {
+      "number" : 0.20,
+      "ccy" : "GBP"
+    }
+  } ]
+}, {
+  "id" : 15,
+  "postDate" : "2006-11-15",
+  "description" : "FTSE yield 10 GBP",
+  "postings" : [ {
+    "account" : "Income:Investment:Stocks:FTSE",
+    "value" : {
+      "number" : -10,
+      "ccy" : "GBP"
+    }
+  }, {
+    "account" : "Assets:Investment:Stocks:GBP",
+    "value" : {
+      "number" : 10,
+      "ccy" : "GBP"
+    }
+  } ]
+}, {
+  "id" : 16,
+  "postDate" : "2006-11-15",
+  "description" : "VWRL yield 10 USD",
+  "postings" : [ {
+    "account" : "Income:Investment:Stocks:VWRL",
+    "value" : {
+      "number" : -10,
+      "ccy" : "USD"
+    }
+  }, {
+    "account" : "Assets:Investment:Stocks:USD",
+    "value" : {
+      "number" : 10,
+      "ccy" : "USD"
+    }
+  } ]
+}, {
+  "id" : 17,
+  "postDate" : "2006-11-15",
+  "description" : "Transfer 10 USD Assets:Investment:Stocks -> Assets:Investment:Stocks@1.111111",
+  "postings" : [ {
+    "account" : "Assets:Investment:Stocks:USD",
+    "value" : {
+      "number" : -10,
+      "ccy" : "USD"
+    }
+  }, {
+    "account" : "Assets:Investment:Stocks:GBP",
+    "value" : {
+      "number" : 9,
+      "ccy" : "GBP"
+    },
+    "price" : {
+      "number" : 1.111111111111111111111111111111111,
+      "ccy" : "USD"
+    }
+  } ]
+}, {
+  "id" : 18,
+  "postDate" : "2019-04-18",
+  "description" : "Unit statement: 600 BGIL @5 GBP",
+  "postings" : [ {
+    "account" : "Income:Pension:Barclays:GBP",
+    "value" : {
+      "number" : -500,
+      "ccy" : "GBP"
+    }
+  }, {
+    "account" : "Assets:Pension:Barclays:BGIL",
+    "value" : {
+      "number" : 100,
+      "ccy" : "BGIL"
+    },
+    "price" : {
+      "number" : 5,
+      "ccy" : "GBP"
+    }
+  } ]
+} ]

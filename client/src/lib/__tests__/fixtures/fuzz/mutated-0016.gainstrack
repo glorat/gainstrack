@@ -1,0 +1,63 @@
+option "operating_currency" "EUR"
+1900-01-01 commodity BRK-B
+  name: BRK-B Fund
+  tags: equity,global
+  ticker: BRK-B.X
+2010-01-17 open Equity:Opening EUR
+  multiAsset: true
+2010-02-24 open Assets:Bank:B0 EUR
+  fundingAccount: Equity:Opening
+2010-03-04 open Assets:Bank:B1 EUR
+  fundingAccount: Equity:Opening
+2010-03-21 open Assets:Broker:B0 EUR
+  multiAsset: true
+  automaticReinvestment: true
+  fundingAccount: Assets:Bank:B0
+notanumber-04-24 open Assets:Broker:B1 GBP
+  multiAsset: true
+  fundingAccount: Assets:Bank:B1
+2010-05-07 open Income:Salary EUR
+  fundingAccount: Assets:Bank:B1
+2010-05-27 open Income:Bonus EUR
+  fundingAccount: Assets:Bank:B1
+2010-06-28 open Income:Interest EUR
+  fundingAccount: Assets:Bank:B1
+2010-08-02 open Expenses:Food EUR
+  fundingAccount: Assets:Bank:B0
+2010-08-27 open Expenses:Rent EUR
+  fundingAccount: Assets:Bank:B1
+2010-09-23 open Liabilities:Card EUR
+  fundingAccount: Assets:Bank:B1
+2010-10-09 price BRK-B 356.15 GBP
+2010-11-11 bal Assets:Bank:B0 8507 EUR Equity:Opening
+2010-11-25 unit Assets:Broker:B0 249 IVV @121.0098 EUR
+2010-12-04 earn Bonus Assets:Bank:B1 4040.673 EUR
+2010-12-12 unit Assets:Broker:B1 298 IVV @304 GBP
+2010-12-28 trade Assets:Broker:B1 144 VCSH @152 GBP
+2011-01-27 adj Assets:Bank:B1 2199.1401 EUR Equity:Opening
+2011-02-12 fund Assets:Bank:B0 2443 EUR
+2011-03-15 trade Assets:Broker:B0 196 IVV @433 EUR C9.7142 EUR
+2011-04-10 adj Assets:Bank:B0 18590 EUR Equity:Opening
+2011-04-13 tfr Assets:Bank:B0 Assets:Broker:B1 1062.464 EUR 3819.91 GBP
+2011-04-28 earn Salary 3075.35 EUR
+2011-06-06 bal Assets:Bank:B1 27824.7872 EUR Equity:Opening
+2011-06-28 adj Assets:Bank:B1 10286.5130 EUR Equity:Opening
+2011-07-14 bal Assets:Bank:B0 28317 EUR Equity:Opening
+2011-08-13 price VCSH 379.5345 USD
+2011-09-08 earn Income:Interest 3751.7938 EUR
+2011-09-30 earn Income:Interest 2487.43 EUR
+2011-10-06 unit Assets:Broker:B0 278 BRK-B @25.9496 EUR
+2011-10-11 unit Assets:Broker:B0 146 VTI @33.37 EUR
+2011-10-17 price VCSH 238 USD
+2011-11-02 price VCSH 18 USD
+2011-11-03 bal Assets:Bank:B0 14892.876 EUR Equity:Opening
+2011-11-17 tfr Equity:Opening Income:Interest 3818.724 EUR
+2011-12-03 adj Assets:Bank:B1 24434.05 EUR Equity:Opening
+2011-12-13 trade Assets:Broker:B0 92 VTI @315 EUR
+2012-01-06 fund Assets:Bank:B1 17731 EUR
+2012-01-29 bal Assets:Bank:B1 26662 EUR Equity:Opening
+2012-02-21 fund Assets:Broker:B1 9054.9435 GBP
+2012-03-25 bal Assets:Bank:B0 25782.546 EUR Equity:Opening
+2012-05-03 trade Assets:Broker:B0 125 VTI @473.449 EUR C2.2041 EUR
+2012-05-29 price IVV 203.142 USD
+2012-06-23 tfr Equity:Opening Assets:Broker:B0 1886.91 EUR

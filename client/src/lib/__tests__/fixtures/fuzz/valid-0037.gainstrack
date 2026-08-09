@@ -1,0 +1,57 @@
+option "operating_currency" "HKD"
+2010-01-03 open Equity:Opening HKD
+  multiAsset: true
+2010-01-27 open Assets:Bank:B0 HKD
+  fundingAccount: Equity:Opening
+2010-03-07 open Assets:Bank:B1 HKD
+  fundingAccount: Equity:Opening
+2010-03-31 open Assets:Bank:B2 HKD
+  fundingAccount: Equity:Opening
+2010-05-09 open Assets:Broker:B0 SGD
+  multiAsset: true
+  fundingAccount: Assets:Bank:B0
+2010-05-14 open Assets:Broker:B1 HKD
+  multiAsset: true
+  fundingAccount: Assets:Bank:B0
+2010-06-10 open Income:Salary HKD
+  fundingAccount: Assets:Bank:B0
+2010-06-23 open Income:Bonus HKD
+  fundingAccount: Assets:Bank:B2
+2010-07-17 open Income:Interest HKD
+  fundingAccount: Assets:Bank:B1
+2010-08-07 open Expenses:Rent HKD
+  fundingAccount: Assets:Bank:B1
+2010-09-13 open Expenses:Travel HKD
+  fundingAccount: Assets:Bank:B2
+2010-10-06 open Liabilities:Card HKD
+  fundingAccount: Assets:Bank:B0
+2010-10-19 bal Assets:Bank:B0 6546.88 HKD Equity:Opening
+2010-11-11 price VCSH 26 GBP
+2010-12-17 unit Assets:Broker:B0 373 BRK-B @197 SGD
+2011-01-05 price FTSE 129 USD
+2011-02-04 trade Assets:Broker:B0 182 BRK-B @246 SGD
+2011-02-17 tfr Assets:Broker:B1 Assets:Bank:B2 1367.40 HKD
+2011-03-26 adj Assets:Bank:B0 -734 HKD Equity:Opening
+2011-04-11 spend Expenses:Rent Assets:Bank:B1 721.4419 HKD
+2011-04-22 earn Income:Salary Assets:Bank:B1 806 HKD
+2011-05-22 yield Assets:Bank:B1 77.273 HKD
+2011-06-17 trade Assets:Broker:B0 -1 BRK-B @105.498 SGD C2 SGD
+2011-06-18 spend Expenses:Rent 72 HKD
+2011-07-18 tfr Equity:Opening Assets:Broker:B1 820.55 HKD
+2011-08-08 bal Assets:Bank:B2 9035.3062 HKD Equity:Opening
+2011-09-06 price VCSH 107.713 GBP
+2011-09-28 unit Assets:Broker:B1 368 VTI @293 HKD
+2011-10-10 earn Income:Interest 8917 HKD
+2011-10-11 earn Interest 8950.9195 HKD
+2011-11-09 earn Income:Bonus 3605.029 HKD
+2011-12-17 adj Assets:Bank:B0 6123.576 HKD Equity:Opening
+2012-01-19 bal Assets:Bank:B2 21538.187 HKD Equity:Opening
+2012-02-10 trade Assets:Broker:B1 83 VTI @485.9561 HKD C1 HKD
+2012-03-19 fund Assets:Broker:B0 11884 SGD
+2012-04-26 fund Assets:Bank:B2 17764.7192 HKD
+2012-05-01 adj Assets:Bank:B1 25707 HKD Equity:Opening
+2012-05-18 bal Assets:Bank:B0 8171.953 HKD Equity:Opening
+2012-05-20 yield Assets:Broker:B1 VTI 180 HKD
+2012-05-28 trade Assets:Broker:B1 -10 VTI @326.204 HKD C11 HKD
+2012-06-24 bal Assets:Bank:B0 353.978 HKD Equity:Opening
+2012-07-10 adj Assets:Bank:B1 1129 HKD Equity:Opening

@@ -4,7 +4,7 @@ import java.nio.charset.StandardCharsets
 import java.nio.file.{Files, Paths}
 
 import com.gainstrack.command.GainstrackParser
-import com.gainstrack.core.GainstrackJsonSerializers
+import com.gainstrack.core.{GainstrackJsonSerializers, Transaction}
 import com.gainstrack.report.GainstrackGenerator
 import org.json4s.Formats
 import org.json4s.jackson.Serialization
@@ -25,7 +25,7 @@ class DumpGeneratorDTOs extends AnyFlatSpec {
 
   private val outDir = Paths.get("client/src/lib/__tests__/fixtures")
 
-  private val resources = Seq("basic", "unit", "src", "div", "balbug", "james", "noequity", "multiadj")
+  private val resources = Fixtures.names
 
   "generator goldens" should "be generated for each resource" in {
     assume(sys.props.contains("dumpFixtures"), "golden dump — run with -DdumpFixtures=1")
@@ -41,6 +41,21 @@ class DumpGeneratorDTOs extends AnyFlatSpec {
         Serialization.writePretty(all("accounts").asInstanceOf[AnyRef]).getBytes(StandardCharsets.UTF_8))
       Files.write(outDir.resolve(s"$name.txs.json"),
         Serialization.writePretty(all("txs").asInstanceOf[AnyRef]).getBytes(StandardCharsets.UTF_8))
+
+      // The FULL transaction, not `toDTO`. `TransactionDTO` drops `description` and `id`, so a
+      // golden built from `allState("txs")` cannot see either — which is how four wrong
+      // transaction descriptions survived every parity test until the beancount export exposed
+      // them. Dump the case class so those fields are compared directly rather than incidentally.
+      val fullTxs = bg.txState.cmds.collect { case t: Transaction =>
+        Map[String, Any](
+          "id" -> t.id,
+          "postDate" -> t.postDate.toString,
+          "description" -> t.description,
+          "postings" -> t.postings,
+        )
+      }
+      Files.write(outDir.resolve(s"$name.txsFull.json"),
+        Serialization.writePretty(fullTxs).getBytes(StandardCharsets.UTF_8))
       Files.write(outDir.resolve(s"$name.balances.json"),
         Serialization.writePretty(all("balances").asInstanceOf[AnyRef]).getBytes(StandardCharsets.UTF_8))
       Seq("priceState", "assetState", "fxMapper", "proxyMapper", "ccys", "tradeFx").foreach { field =>

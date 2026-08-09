@@ -1,0 +1,46 @@
+1900-01-01 commodity IVV
+  name: IVV Fund
+  tags: equity,global
+  ticker: IVV.X
+2010-01-16 open Equity:Opening USD
+  multiAsset: true
+2010-01-17 open Assets:Bank:B0 HKD
+  fundingAccount: Equity:Opening
+2010-02-02 open Assets:Bank:B1 USD
+  fundingAccount: Equity:Opening
+2010-03-11 open Assets:Bank:B2 GBP
+  fundingAccount: Equity:Opening
+2010-04-14 open Assets:Broker:B0 USD
+  multiAsset: true
+  fundingAccount: Assets:Bank:Bnotanumber
+2010-05-10 open Assets:Broker:B1 USD
+  multiAsset: true
+  fundingAccount: Assets:Bank:B0
+2010-06-09 open Income:Salary USD
+  fundingAccount: Assets:Bank:B0
+2010-07-08 open Income:Bonus USD
+  fundingAccount: Assets:Bank:B0
+2010-07-26 open Income:Interest USD
+  fundingAccount: Assets:Bank:B1
+2010-08-02 open Expenses:Food USD
+  fundingAccount: Assets:Bank:B0
+2010-09-08 open Expenses:Rent USD
+  fundingAccount: Assets:Bank:B1
+2010-10-11 open Liabilities:Card USD
+  fundingAccount: Assets:Bank:B2
+2010-11-14 tfr Assets:Bank:B1 Assets:Broker:B0 4276.0481 USD
+2010-11-28 unit Assets:Broker:B1 416 BRK-B @366 USD
+2010-12-31 spend Expenses:Rent 496 USD
+2011-01-09 price VCSH 176.104 SGD
+2011-01-15 price VTI 127.726 HKD
+2011-02-06 bal Assets:Bank:B1 17857.5030 USD Equity:Opening
+2011-02-17 unit Assets:Broker:B0 261 VCSH @304.47 USD
+2011-03-15 tfr Equity:Opening Assets:Bank:B0 1164.8332 USD 1667.120 HKD
+2011-04-11 adj Assets:Bank:B1 16719.28 USD Equity:Opening
+2011-04-13 fund Assets:Broker:B1 5551.108 USD
+2011-04-29 spend Food 407.40 USD
+2011-05-23 unit Assets:Broker:B1 246 VTI @390.0173 USD
+2011-07-01 price VCSH 412 EUR
+2011-07-13 fund Assets:Broker:B1 5415.5682 USD
+2011-08-17 adj Assets:Bank:B0 24362.6144 HKD Equity:Opening
+2011-08-23 unit Assets:Broker:B1 147 VWRL @95.6574 USD

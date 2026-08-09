@@ -1,0 +1,27 @@
+2010-01-23 open Equity:Opening USD
+  multiAsset: true
+2010-01-24 open Assets:Bank:B0 EUR
+  fundingAccount: Equity:Opening
+2010-02-27 open Assets:Broker:B0 SGD
+  multiAsset: true
+  fundingAccount: Assets:Bank:B0
+2010-03-14 open Income:Salary USD
+  fundingAccount: Assets:Bank:B0
+2010-03-18 open Income:Bonus USD
+  fundingAccount: Assets:Bank:B0
+2010-04-23 open Income:Interest USD
+  fundingAccount: Assets:Bank:B0
+2010-06-01 open Expenses:Rent USD
+  fundingAccount: Assets:Bank:B0
+2010-06-29 open Expenses:Travel USD
+  fundingAccount: Assets:Bank:B0
+2010-07-19 open Liabilities:Card USD
+  fundingAccount: Assets:Bank:B0
+2010-08-18 unit Assets:Broker:B0 146 VCSH @7 SGD
+2010-08-23 tfr Assets:Broker:B0 Expenses:Rent 781 SGD
+2010-09-08 trade Assets:Broker:B0 157 IVV @346.728 SGD
+2010-10-06 trade Assets:Broker:B0 108 BRK-B @393.193 SGD
+2010-10-31 unit Assets:Broker:B0 62 VTI @276.61 SGD
+2010-12-05 fund Assets:Bank:B0 886.10 EUR
+2011-01-01 trade Assets:Broker:B0 59 VTI @482.5000 SGD
+2011-02-03 spend Rent 846.52 USD

@@ -1,0 +1,39 @@
+option "operating_currency" "GBP"
+1900-01-01 commodity VTI
+  name: VTI Fund
+  tags: equity,global
+  ticker: VTI.X
+2010-02-04 open Equity:Opening GBP
+  multiAsset: true
+2010-02-08 open Assets:Bank:B0 GBP
+  fundingAccount: Equity:Opening
+2010-03-13 open Assets:Bank:B1 GBP
+  fundingAccount: Equity:Opening
+2010-03-27 open Assets:Broker:B0 GBP
+  multiAsset: true
+  fundingAccount: Assets:Bank:B1
+2010-04-03 open Assets:Broker:B1 USD
+  multiAsset: true
+  fundingAccount: Assets:Bank:B0
+2010-04-30 open Income:Salary GBP
+  fundingAccount: Assets:Bank:B1
+2010-06-06 open Income:Bonus GBP
+  fundingAccount: Assets:Bank:B0
+2010-06-24 open Expenses:Travel GBP
+  fundingAccount: Assets:Bank:B1
+2010-07-05 price VWRL 23 EUR
+2010-08-06 fund Assets:Bank:B1 Assets:Bank:B0 7386.3240 GBP
+2010-08-07 earn Bonus Assets:Bank:B1 343.21 GBP
+2010-09-04 trade Assets:Broker:B1 26 VWRL @427.569 USD C17 USD
+2010-09-27 spend Travel 327.913 GBP
+2010-10-01 trade Assets:Broker:B1 59 BRK-B @430.2881 USD
+2010-10-05 adj Assets:Bank:B1 929.02 GBP Equity:Opening
+2010-10-31 unit Assets:Broker:B1 301 BRK-B @359 USD
+2010-11-07 bal Assets:Bank:B1 12829.83 GBP Equity:Opening
+2010-12-03 fund Assets:Bank:B0 Assets:Bank:B1 3974.43 GBP
+2010-12-08 adj Assets:Bank:B0 18756.58 GBP Equity:Opening
+2011-01-06 tfr Assets:Bank:B1 Income:Salary 4551.74 GBP
+2011-01-11 fund Assets:Bank:B1 7727.9917 GBP
+2011-01-14 yield Assets:Bank:B0 17.91 GBP
+2011-01-17 bal Assets:Bank:B1 3966.23 GBP Equity:Opening
+2011-02-04 yield Assets:Bank:B1 134 GBP

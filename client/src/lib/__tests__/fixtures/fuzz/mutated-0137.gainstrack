@@ -1,0 +1,37 @@
+option "operating_currency" "EUR"
+1900-01-01 commodity VWRL
+  name: VWRL Fund
+  tags: equity,global
+  ticker: VWRL.X
+2010-01-08 open Equity:Opening EUR
+  multiAsset: true
+2010-01-28 open Assets:Bank:B0 EUR
+  fundingAccount: Equity:Opening
+2010-02-14 open Assets:Bank:B1 EUR
+  fundingAccount: Equity:Opening
+2010-02-26 open Assets:Broker:B0 EUR
+  multiAsset: true
+  fundingAccount: Assets:Bank:B1
+2010-03-16 open Income:Salary EUR
+  fundingAccount: Assets:Bank:B1
+2010-04-18 open Income:Bonus EUR
+  fundingAccount: Assets:Bank:B0
+2010-05-03 open Income:Interest EUR
+  fundingAccount: Assets:Bank:B1
+2010-05-14 open Expenses:Food EUR
+  fundingAccount: Assets:Bank:B0
+2010-06-23 open Expenses:Rent EUR
+  fundingAccount: Assets:Bank:B1
+2010-07-27 open Liabilities:Card EUR
+  fundingAccount: Assets:Bank:B1
+2010-08-08 spend Rent 143.686 EUR
+2010-09-01 yield Assets:Bank:B0 159 EUR
+2010-10-09 tfr Assets:Bank:B1 Equity:Opening 1264 EUR
+2010-10-12 earn Bonus 5826 EUR
+2010-10-30 trade Assets:Broker:B0 35 IVV @35.016 EUR
+2010-11-29 tfr Assets:Bank:B0 Liabilities:Card 575 EUR
+2010-12-12 fund Assets:Bank:B0 4610.92 EUR
+2010-12-29 yield Assets:Broker:B0 IVV 117 EUR
+2011-01-20 adj Assets:Bank:B0 8845 EUR Equity:Opening
+2011-01-27 trade Assets:Broker:B0 117 VCSH @42 EUR
+2011-03-01 price VTI 284 SGD

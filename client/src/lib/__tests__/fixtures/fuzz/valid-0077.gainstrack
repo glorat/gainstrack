@@ -1,0 +1,38 @@
+option "operating_currency" "HKD"
+1900-01-01 commodity BRK-B
+  name: BRK-B Fund
+  tags: equity,global
+  ticker: BRK-B.X
+2010-01-21 open Equity:Opening HKD
+  multiAsset: true
+2010-02-22 open Assets:Bank:B0 SGD
+  fundingAccount: Equity:Opening
+2010-03-22 open Assets:Broker:B0 HKD
+  multiAsset: true
+  fundingAccount: Assets:Bank:B0
+2010-03-28 open Income:Salary HKD
+  fundingAccount: Assets:Bank:B0
+2010-04-18 open Income:Bonus HKD
+  fundingAccount: Assets:Bank:B0
+2010-04-28 open Expenses:Food HKD
+  fundingAccount: Assets:Bank:B0
+2010-05-07 open Expenses:Rent HKD
+  fundingAccount: Assets:Bank:B0
+2010-05-28 open Expenses:Travel HKD
+  fundingAccount: Assets:Bank:B0
+2010-06-10 open Liabilities:Card HKD
+  fundingAccount: Assets:Bank:B0
+2010-07-04 spend Expenses:Travel 531.69 HKD
+2010-07-17 unit Assets:Broker:B0 64 VCSH @362.7765 HKD
+2010-07-30 tfr Equity:Opening Expenses:Rent 4238.698 HKD
+2010-08-22 spend Travel 307.683 HKD
+2010-09-13 bal Assets:Bank:B0 15634.514 SGD Equity:Opening
+2010-10-02 yield Assets:Bank:B0 92 SGD
+2010-10-07 fund Assets:Bank:B0 Income:Bonus 4959 SGD
+2010-11-01 fund Assets:Bank:B0 13573.111 SGD
+2010-11-14 bal Assets:Bank:B0 29746 SGD Equity:Opening
+2010-11-15 adj Assets:Bank:B0 -868.36 SGD Equity:Opening
+2010-12-18 trade Assets:Broker:B0 19 VTI @406.17 HKD C3 HKD
+2011-01-08 price FTSE 409.153 GBP
+2011-01-09 spend Expenses:Food 690.84 HKD
+2011-01-17 adj Assets:Bank:B0 15462.14 SGD Equity:Opening

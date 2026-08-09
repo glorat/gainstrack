@@ -793,4 +793,36 @@
     "commandType" : "commodity",
     "description" : "VWRD"
   } ]
+}, {
+  "id" : "open-tradingAccount-not-parseable",
+  "status" : "error"
+}, {
+  "id" : "open-hidden-not-parseable",
+  "status" : "error"
+}, {
+  "id" : "open-placeholder-not-parseable",
+  "status" : "error"
+}, {
+  "id" : "open-expenseAccount",
+  "status" : "ok",
+  "commands" : [ {
+    "accountId" : "Assets:Broker",
+    "date" : "2019-01-01",
+    "balance" : {
+      "number" : 0,
+      "ccy" : "USD"
+    },
+    "options" : {
+      "expenseAccount" : "Expenses:Broker",
+      "tradingAccount" : false,
+      "description" : "",
+      "multiAsset" : false,
+      "automaticReinvestment" : false,
+      "generatedAccount" : false,
+      "hidden" : false,
+      "placeholder" : false
+    },
+    "commandType" : "open",
+    "description" : "Account opened"
+  } ]
 } ]

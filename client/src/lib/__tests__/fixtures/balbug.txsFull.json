@@ -1,0 +1,290 @@
+[ {
+  "id" : 1,
+  "postDate" : "2010-04-08",
+  "description" : "Adjustment: 0 GBP -> 14854.91 GBP",
+  "postings" : [ {
+    "account" : "Equity:Opening:GBP",
+    "value" : {
+      "number" : -14854.91,
+      "ccy" : "GBP"
+    }
+  }, {
+    "account" : "Assets:Bank:Barclays",
+    "value" : {
+      "number" : 14854.91,
+      "ccy" : "GBP"
+    }
+  } ]
+}, {
+  "id" : 2,
+  "postDate" : "2010-05-17",
+  "description" : "Adjustment: 0 GBP -> 54342.0 GBP",
+  "postings" : [ {
+    "account" : "Equity:Opening:GBP",
+    "value" : {
+      "number" : -54342.0,
+      "ccy" : "GBP"
+    }
+  }, {
+    "account" : "Assets:Bank:HSBCUK",
+    "value" : {
+      "number" : 54342.0,
+      "ccy" : "GBP"
+    }
+  } ]
+}, {
+  "id" : 3,
+  "postDate" : "2010-12-30",
+  "description" : "Earn 120000.0 CNY Salary",
+  "postings" : [ {
+    "account" : "Income:Salary",
+    "value" : {
+      "number" : -120000.0,
+      "ccy" : "CNY"
+    }
+  }, {
+    "account" : "Assets:Bank:HSBCCN",
+    "value" : {
+      "number" : 120000.0,
+      "ccy" : "CNY"
+    }
+  } ]
+}, {
+  "id" : 4,
+  "postDate" : "2017-01-05",
+  "description" : "Adjustment: 0 HKD -> 234835.3 HKD",
+  "postings" : [ {
+    "account" : "Expenses:General:HKD",
+    "value" : {
+      "number" : -234835.3,
+      "ccy" : "HKD"
+    }
+  }, {
+    "account" : "Assets:Bank:HSBCHK:HKD",
+    "value" : {
+      "number" : 234835.3,
+      "ccy" : "HKD"
+    }
+  } ]
+}, {
+  "id" : 5,
+  "postDate" : "2018-06-08",
+  "description" : "Adjustment: 120000.0 CNY -> 458728.28 CNY",
+  "postings" : [ {
+    "account" : "Expenses:General:CNY",
+    "value" : {
+      "number" : -338728.28,
+      "ccy" : "CNY"
+    }
+  }, {
+    "account" : "Assets:Bank:HSBCCN",
+    "value" : {
+      "number" : 338728.28,
+      "ccy" : "CNY"
+    }
+  } ]
+}, {
+  "id" : 6,
+  "postDate" : "2019-04-17",
+  "description" : "Spend 152520.0 CNY Expenses:Chloe",
+  "postings" : [ {
+    "account" : "Assets:Bank:HSBCCN",
+    "value" : {
+      "number" : -152520.0,
+      "ccy" : "CNY"
+    }
+  }, {
+    "account" : "Expenses:Chloe:CNY",
+    "value" : {
+      "number" : 152520.0,
+      "ccy" : "CNY"
+    }
+  } ]
+}, {
+  "id" : 7,
+  "postDate" : "2020-03-23",
+  "description" : "Spend 10000.0 CNY Expenses:Chloe",
+  "postings" : [ {
+    "account" : "Assets:Bank:HSBCCN",
+    "value" : {
+      "number" : -10000.0,
+      "ccy" : "CNY"
+    }
+  }, {
+    "account" : "Expenses:Chloe:CNY",
+    "value" : {
+      "number" : 10000.0,
+      "ccy" : "CNY"
+    }
+  } ]
+}, {
+  "id" : 8,
+  "postDate" : "2020-06-19",
+  "description" : "Spend 12073.7 CNY Expenses:Chloe",
+  "postings" : [ {
+    "account" : "Assets:Bank:HSBCCN",
+    "value" : {
+      "number" : -12073.7,
+      "ccy" : "CNY"
+    }
+  }, {
+    "account" : "Expenses:Chloe:CNY",
+    "value" : {
+      "number" : 12073.7,
+      "ccy" : "CNY"
+    }
+  } ]
+}, {
+  "id" : 9,
+  "postDate" : "2020-08-27",
+  "description" : "Spend 57800.0 CNY Expenses:Aiden",
+  "postings" : [ {
+    "account" : "Assets:Bank:HSBCCN",
+    "value" : {
+      "number" : -57800.0,
+      "ccy" : "CNY"
+    }
+  }, {
+    "account" : "Expenses:Aiden:CNY",
+    "value" : {
+      "number" : 57800.0,
+      "ccy" : "CNY"
+    }
+  } ]
+}, {
+  "id" : 10,
+  "postDate" : "2020-10-26",
+  "description" : "Spend 53800.0 CNY Expenses:Aiden",
+  "postings" : [ {
+    "account" : "Assets:Bank:HSBCCN",
+    "value" : {
+      "number" : -53800.0,
+      "ccy" : "CNY"
+    }
+  }, {
+    "account" : "Expenses:Aiden:CNY",
+    "value" : {
+      "number" : 53800.0,
+      "ccy" : "CNY"
+    }
+  } ]
+}, {
+  "id" : 11,
+  "postDate" : "2020-10-26",
+  "description" : "Spend 57000.0 CNY Expenses:Chloe",
+  "postings" : [ {
+    "account" : "Assets:Bank:HSBCCN",
+    "value" : {
+      "number" : -57000.0,
+      "ccy" : "CNY"
+    }
+  }, {
+    "account" : "Expenses:Chloe:CNY",
+    "value" : {
+      "number" : 57000.0,
+      "ccy" : "CNY"
+    }
+  } ]
+}, {
+  "id" : 12,
+  "postDate" : "2021-03-07",
+  "description" : "Spend 53650.0 CNY Expenses:Aiden",
+  "postings" : [ {
+    "account" : "Assets:Bank:SC:CNY",
+    "value" : {
+      "number" : -53650.0,
+      "ccy" : "CNY"
+    }
+  }, {
+    "account" : "Expenses:Aiden:CNY",
+    "value" : {
+      "number" : 53650.0,
+      "ccy" : "CNY"
+    }
+  } ]
+}, {
+  "id" : 13,
+  "postDate" : "2021-03-07",
+  "description" : "Spend 56850.0 CNY Expenses:Chloe",
+  "postings" : [ {
+    "account" : "Assets:Bank:SC:CNY",
+    "value" : {
+      "number" : -56850.0,
+      "ccy" : "CNY"
+    }
+  }, {
+    "account" : "Expenses:Chloe:CNY",
+    "value" : {
+      "number" : 56850.0,
+      "ccy" : "CNY"
+    }
+  } ]
+}, {
+  "id" : 14,
+  "postDate" : "2021-07-10",
+  "description" : "Adjustment: -110500.0 CNY -> 131398.0 CNY",
+  "postings" : [ {
+    "account" : "Expenses:General:CNY",
+    "value" : {
+      "number" : -241898.0,
+      "ccy" : "CNY"
+    }
+  }, {
+    "account" : "Assets:Bank:SC:CNY",
+    "value" : {
+      "number" : 241898.0,
+      "ccy" : "CNY"
+    }
+  } ]
+}, {
+  "id" : 15,
+  "postDate" : "2021-07-22",
+  "description" : "Fund 53838.56 CNY",
+  "postings" : [ {
+    "account" : "Income:Salary",
+    "value" : {
+      "number" : -53838.56,
+      "ccy" : "CNY"
+    }
+  }, {
+    "account" : "Assets:Bank:SC:CNY",
+    "value" : {
+      "number" : 53838.56,
+      "ccy" : "CNY"
+    }
+  } ]
+}, {
+  "id" : 16,
+  "postDate" : "2021-08-04",
+  "description" : "Adjustment: 0 SGD -> 29184.67 SGD",
+  "postings" : [ {
+    "account" : "Expenses:General:SGD",
+    "value" : {
+      "number" : -29184.67,
+      "ccy" : "SGD"
+    }
+  }, {
+    "account" : "Assets:Bank:SCSG:SGD",
+    "value" : {
+      "number" : 29184.67,
+      "ccy" : "SGD"
+    }
+  } ]
+}, {
+  "id" : 17,
+  "postDate" : "2021-08-10",
+  "description" : "Adjustment: 185236.56 CNY -> 158085.55 CNY",
+  "postings" : [ {
+    "account" : "Expenses:General:CNY",
+    "value" : {
+      "number" : 27151.01,
+      "ccy" : "CNY"
+    }
+  }, {
+    "account" : "Assets:Bank:SC:CNY",
+    "value" : {
+      "number" : -27151.01,
+      "ccy" : "CNY"
+    }
+  } ]
+} ]

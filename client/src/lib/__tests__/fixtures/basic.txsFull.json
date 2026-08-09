@@ -1,0 +1,507 @@
+[ {
+  "id" : 1,
+  "postDate" : "2008-01-01",
+  "description" : "Adjustment: 0 USD -> 1412.24 USD",
+  "postings" : [ {
+    "account" : "Equity:Opening",
+    "value" : {
+      "number" : -1412.24,
+      "ccy" : "USD"
+    }
+  }, {
+    "account" : "Assets:BestBank:Checking",
+    "value" : {
+      "number" : 1412.24,
+      "ccy" : "USD"
+    }
+  } ]
+}, {
+  "id" : 2,
+  "postDate" : "2008-01-01",
+  "description" : "Adjustment: 0 USD -> 12000 USD",
+  "postings" : [ {
+    "account" : "Equity:Opening",
+    "value" : {
+      "number" : -12000,
+      "ccy" : "USD"
+    }
+  }, {
+    "account" : "Assets:BestBank:Savings",
+    "value" : {
+      "number" : 12000,
+      "ccy" : "USD"
+    }
+  } ]
+}, {
+  "id" : 3,
+  "postDate" : "2008-01-01",
+  "description" : "Adjustment: 0 USD -> 31273.02 USD",
+  "postings" : [ {
+    "account" : "Equity:Opening",
+    "value" : {
+      "number" : -31273.02,
+      "ccy" : "USD"
+    }
+  }, {
+    "account" : "Assets:UTrade:Account:USD",
+    "value" : {
+      "number" : 31273.02,
+      "ccy" : "USD"
+    }
+  } ]
+}, {
+  "id" : 4,
+  "postDate" : "2008-01-02",
+  "description" : "Transfer 42.69 USD Assets:BestBank:Checking -> Expenses:Insurance:Life",
+  "postings" : [ {
+    "account" : "Assets:BestBank:Checking",
+    "value" : {
+      "number" : -42.69,
+      "ccy" : "USD"
+    }
+  }, {
+    "account" : "Expenses:Insurance:Life",
+    "value" : {
+      "number" : 42.69,
+      "ccy" : "USD"
+    }
+  } ]
+}, {
+  "id" : 5,
+  "postDate" : "2008-01-03",
+  "description" : "Savings yield 95.69 USD",
+  "postings" : [ {
+    "account" : "Income:BestBank:Savings",
+    "value" : {
+      "number" : -95.69,
+      "ccy" : "USD"
+    }
+  }, {
+    "account" : "Equity:Opening",
+    "value" : {
+      "number" : 95.69,
+      "ccy" : "USD"
+    }
+  } ]
+}, {
+  "id" : 6,
+  "postDate" : "2008-01-05",
+  "description" : "Transfer 77.76 USD Expenses:Taxes:US-Federal -> Assets:BestBank:Checking",
+  "postings" : [ {
+    "account" : "Expenses:Taxes:US-Federal",
+    "value" : {
+      "number" : -77.76,
+      "ccy" : "USD"
+    }
+  }, {
+    "account" : "Assets:BestBank:Checking",
+    "value" : {
+      "number" : 77.76,
+      "ccy" : "USD"
+    }
+  } ]
+}, {
+  "id" : 7,
+  "postDate" : "2008-01-07",
+  "description" : "Transfer 89.00 USD Assets:BestBank:Checking -> Expenses:Sports:Gear",
+  "postings" : [ {
+    "account" : "Assets:BestBank:Checking",
+    "value" : {
+      "number" : -89.00,
+      "ccy" : "USD"
+    }
+  }, {
+    "account" : "Expenses:Sports:Gear",
+    "value" : {
+      "number" : 89.00,
+      "ccy" : "USD"
+    }
+  } ]
+}, {
+  "id" : 8,
+  "postDate" : "2008-01-07",
+  "description" : "Transfer 4.00 USD Assets:BestBank:Checking -> Expenses:Financial:Fees",
+  "postings" : [ {
+    "account" : "Assets:BestBank:Checking",
+    "value" : {
+      "number" : -4.00,
+      "ccy" : "USD"
+    }
+  }, {
+    "account" : "Expenses:Financial:Fees",
+    "value" : {
+      "number" : 4.00,
+      "ccy" : "USD"
+    }
+  } ]
+}, {
+  "id" : 9,
+  "postDate" : "2008-01-08",
+  "description" : "BUY 30 AAPL @185.40 USD",
+  "postings" : [ {
+    "account" : "Assets:UTrade:Account:USD",
+    "value" : {
+      "number" : -5571.95,
+      "ccy" : "USD"
+    }
+  }, {
+    "account" : "Assets:UTrade:Account:AAPL",
+    "value" : {
+      "number" : 30,
+      "ccy" : "AAPL"
+    },
+    "price" : {
+      "number" : 185.40,
+      "ccy" : "USD"
+    }
+  }, {
+    "account" : "Expenses:UTrade:Account:USD",
+    "value" : {
+      "number" : 9.95,
+      "ccy" : "USD"
+    }
+  } ]
+}, {
+  "id" : 10,
+  "postDate" : "2008-01-10",
+  "description" : "Earn 2000.00 USD Salary:AcmeCo",
+  "postings" : [ {
+    "account" : "Income:Salary:AcmeCo:USD",
+    "value" : {
+      "number" : -2000.00,
+      "ccy" : "USD"
+    }
+  }, {
+    "account" : "Assets:BestBank:Checking",
+    "value" : {
+      "number" : 2000.00,
+      "ccy" : "USD"
+    }
+  } ]
+}, {
+  "id" : 11,
+  "postDate" : "2008-01-12",
+  "description" : "Transfer 300 USD Assets:BestBank:Checking -> Assets:Cash",
+  "postings" : [ {
+    "account" : "Assets:BestBank:Checking",
+    "value" : {
+      "number" : -300,
+      "ccy" : "USD"
+    }
+  }, {
+    "account" : "Assets:Cash",
+    "value" : {
+      "number" : 300,
+      "ccy" : "USD"
+    }
+  } ]
+}, {
+  "id" : 12,
+  "postDate" : "2008-01-12",
+  "description" : "Checking yield 0.02 USD",
+  "postings" : [ {
+    "account" : "Income:BestBank:Checking",
+    "value" : {
+      "number" : -0.02,
+      "ccy" : "USD"
+    }
+  }, {
+    "account" : "Assets:BestBank:Checking",
+    "value" : {
+      "number" : 0.02,
+      "ccy" : "USD"
+    }
+  } ]
+}, {
+  "id" : 13,
+  "postDate" : "2008-01-25",
+  "description" : "Earn 2000.00 USD Salary:AcmeCo",
+  "postings" : [ {
+    "account" : "Income:Salary:AcmeCo:USD",
+    "value" : {
+      "number" : -2000.00,
+      "ccy" : "USD"
+    }
+  }, {
+    "account" : "Assets:BestBank:Checking",
+    "value" : {
+      "number" : 2000.00,
+      "ccy" : "USD"
+    }
+  } ]
+}, {
+  "id" : 14,
+  "postDate" : "2008-01-29",
+  "description" : "Transfer 2000.00 USD Assets:BestBank:Checking -> Assets:BestBank:Savings",
+  "postings" : [ {
+    "account" : "Assets:BestBank:Checking",
+    "value" : {
+      "number" : -2000.00,
+      "ccy" : "USD"
+    }
+  }, {
+    "account" : "Assets:BestBank:Savings",
+    "value" : {
+      "number" : 2000.00,
+      "ccy" : "USD"
+    }
+  } ]
+}, {
+  "id" : 15,
+  "postDate" : "2008-01-30",
+  "description" : "Transfer 800 USD Assets:BestBank:Checking -> Assets:Cash",
+  "postings" : [ {
+    "account" : "Assets:BestBank:Checking",
+    "value" : {
+      "number" : -800,
+      "ccy" : "USD"
+    }
+  }, {
+    "account" : "Assets:Cash",
+    "value" : {
+      "number" : 800,
+      "ccy" : "USD"
+    }
+  } ]
+}, {
+  "id" : 16,
+  "postDate" : "2008-02-01",
+  "description" : "Adjustment: 2254.33 USD -> 661.49 USD",
+  "postings" : [ {
+    "account" : "Equity:Opening",
+    "value" : {
+      "number" : 1592.84,
+      "ccy" : "USD"
+    }
+  }, {
+    "account" : "Assets:BestBank:Checking",
+    "value" : {
+      "number" : -1592.84,
+      "ccy" : "USD"
+    }
+  } ]
+}, {
+  "id" : 17,
+  "postDate" : "2008-02-02",
+  "description" : "AAPL yield 0.68 USD",
+  "postings" : [ {
+    "account" : "Income:UTrade:Account:AAPL",
+    "value" : {
+      "number" : -0.68,
+      "ccy" : "USD"
+    }
+  }, {
+    "account" : "Assets:UTrade:Account:USD",
+    "value" : {
+      "number" : 0.68,
+      "ccy" : "USD"
+    }
+  } ]
+}, {
+  "id" : 18,
+  "postDate" : "2008-02-03",
+  "description" : "Savings yield 102.34 USD",
+  "postings" : [ {
+    "account" : "Income:BestBank:Savings",
+    "value" : {
+      "number" : -102.34,
+      "ccy" : "USD"
+    }
+  }, {
+    "account" : "Equity:Opening",
+    "value" : {
+      "number" : 102.34,
+      "ccy" : "USD"
+    }
+  } ]
+}, {
+  "id" : 19,
+  "postDate" : "2008-02-03",
+  "description" : "Fund 10000 USD",
+  "postings" : [ {
+    "account" : "Assets:BestBank:Savings",
+    "value" : {
+      "number" : -10000,
+      "ccy" : "USD"
+    }
+  }, {
+    "account" : "Assets:UTrade:Account:USD",
+    "value" : {
+      "number" : 10000,
+      "ccy" : "USD"
+    }
+  } ]
+}, {
+  "id" : 20,
+  "postDate" : "2008-02-10",
+  "description" : "Earn 2000.00 USD Salary:AcmeCo",
+  "postings" : [ {
+    "account" : "Income:Salary:AcmeCo:USD",
+    "value" : {
+      "number" : -2000.00,
+      "ccy" : "USD"
+    }
+  }, {
+    "account" : "Assets:BestBank:Checking",
+    "value" : {
+      "number" : 2000.00,
+      "ccy" : "USD"
+    }
+  } ]
+}, {
+  "id" : 21,
+  "postDate" : "2008-02-10",
+  "description" : "BUY 100 EWJ @13.34 USD",
+  "postings" : [ {
+    "account" : "Assets:UTrade:Account:USD",
+    "value" : {
+      "number" : -1343.95,
+      "ccy" : "USD"
+    }
+  }, {
+    "account" : "Assets:UTrade:Account:EWJ",
+    "value" : {
+      "number" : 100,
+      "ccy" : "EWJ"
+    },
+    "price" : {
+      "number" : 13.34,
+      "ccy" : "USD"
+    }
+  }, {
+    "account" : "Expenses:UTrade:Account:USD",
+    "value" : {
+      "number" : 9.95,
+      "ccy" : "USD"
+    }
+  } ]
+}, {
+  "id" : 22,
+  "postDate" : "2008-02-20",
+  "description" : "Transfer 500 USD Assets:BestBank:Checking -> Assets:Cash",
+  "postings" : [ {
+    "account" : "Assets:BestBank:Checking",
+    "value" : {
+      "number" : -500,
+      "ccy" : "USD"
+    }
+  }, {
+    "account" : "Assets:Cash",
+    "value" : {
+      "number" : 500,
+      "ccy" : "USD"
+    }
+  } ]
+}, {
+  "id" : 23,
+  "postDate" : "2008-02-24",
+  "description" : "Transfer 500 USD Assets:BestBank:Checking -> Assets:Cash",
+  "postings" : [ {
+    "account" : "Assets:BestBank:Checking",
+    "value" : {
+      "number" : -500,
+      "ccy" : "USD"
+    }
+  }, {
+    "account" : "Assets:Cash",
+    "value" : {
+      "number" : 500,
+      "ccy" : "USD"
+    }
+  } ]
+}, {
+  "id" : 24,
+  "postDate" : "2008-02-25",
+  "description" : "Earn 2000.00 USD Salary:AcmeCo",
+  "postings" : [ {
+    "account" : "Income:Salary:AcmeCo:USD",
+    "value" : {
+      "number" : -2000.00,
+      "ccy" : "USD"
+    }
+  }, {
+    "account" : "Assets:BestBank:Checking",
+    "value" : {
+      "number" : 2000.00,
+      "ccy" : "USD"
+    }
+  } ]
+}, {
+  "id" : 25,
+  "postDate" : "2008-02-28",
+  "description" : "SELL -30 AAPL @193.02 USD",
+  "postings" : [ {
+    "account" : "Assets:UTrade:Account:USD",
+    "value" : {
+      "number" : 5780.65,
+      "ccy" : "USD"
+    }
+  }, {
+    "account" : "Assets:UTrade:Account:AAPL",
+    "value" : {
+      "number" : -30,
+      "ccy" : "AAPL"
+    },
+    "price" : {
+      "number" : 193.02,
+      "ccy" : "USD"
+    }
+  }, {
+    "account" : "Expenses:UTrade:Account:USD",
+    "value" : {
+      "number" : 9.95,
+      "ccy" : "USD"
+    }
+  } ]
+}, {
+  "id" : 26,
+  "postDate" : "2008-03-01",
+  "description" : "Adjustment: 4000.00 USD -> 2340.19 USD",
+  "postings" : [ {
+    "account" : "Equity:Opening",
+    "value" : {
+      "number" : 1659.81,
+      "ccy" : "USD"
+    }
+  }, {
+    "account" : "Assets:BestBank:Savings",
+    "value" : {
+      "number" : -1659.81,
+      "ccy" : "USD"
+    }
+  } ]
+}, {
+  "id" : 27,
+  "postDate" : "2008-03-26",
+  "description" : "Transfer 431.92 USD Assets:Cash -> Assets:AccountsReceivable",
+  "postings" : [ {
+    "account" : "Assets:Cash",
+    "value" : {
+      "number" : -431.92,
+      "ccy" : "USD"
+    }
+  }, {
+    "account" : "Assets:AccountsReceivable",
+    "value" : {
+      "number" : 431.92,
+      "ccy" : "USD"
+    }
+  } ]
+}, {
+  "id" : 28,
+  "postDate" : "2008-04-02",
+  "description" : "Transfer 431.92 USD Assets:AccountsReceivable -> Assets:Cash",
+  "postings" : [ {
+    "account" : "Assets:AccountsReceivable",
+    "value" : {
+      "number" : -431.92,
+      "ccy" : "USD"
+    }
+  }, {
+    "account" : "Assets:Cash",
+    "value" : {
+      "number" : 431.92,
+      "ccy" : "USD"
+    }
+  } ]
+} ]

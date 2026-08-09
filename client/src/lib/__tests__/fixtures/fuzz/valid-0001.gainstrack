@@ -1,0 +1,42 @@
+option "operating_currency" "EUR"
+1900-01-01 commodity FTSE
+  name: FTSE Fund
+  tags: equity,global
+  ticker: FTSE.X
+2010-02-10 open Equity:Opening EUR
+  multiAsset: true
+2010-03-07 open Assets:Bank:B0 EUR
+  fundingAccount: Equity:Opening
+2010-04-16 open Assets:Bank:B1 HKD
+  fundingAccount: Equity:Opening
+2010-05-06 open Assets:Bank:B2 EUR
+  fundingAccount: Equity:Opening
+2010-05-26 open Assets:Broker:B0 EUR
+  multiAsset: true
+  automaticReinvestment: true
+  fundingAccount: Assets:Bank:B1
+2010-06-26 open Income:Salary EUR
+  fundingAccount: Assets:Bank:B1
+2010-06-28 open Income:Bonus EUR
+  fundingAccount: Assets:Bank:B0
+2010-07-30 open Income:Interest EUR
+  fundingAccount: Assets:Bank:B1
+2010-08-26 open Expenses:Food EUR
+  fundingAccount: Assets:Bank:B0
+2010-09-03 open Expenses:Rent EUR
+  fundingAccount: Assets:Bank:B2
+2010-10-13 open Liabilities:Card EUR
+  fundingAccount: Assets:Bank:B2
+2010-11-13 earn Salary 1411.190 EUR
+2010-11-19 spend Expenses:Food 218.4523 EUR
+2010-12-06 tfr Assets:Bank:B2 Liabilities:Card 4617.4226 EUR
+2011-01-09 price VWRL 20.68 SGD
+2011-01-30 price BRK-B 83.9623 USD
+2011-03-11 earn Bonus Assets:Bank:B1 5935.086 EUR
+2011-03-15 bal Assets:Bank:B2 8184 EUR Equity:Opening
+2011-03-28 bal Assets:Bank:B0 4311.874 EUR Equity:Opening
+2011-04-10 earn Income:Salary Assets:Bank:B0 5880 EUR
+2011-05-01 unit Assets:Broker:B0 127 BRK-B @396.6699 EUR
+2011-05-02 earn Salary 6500.04 EUR
+2011-05-13 bal Assets:Bank:B2 23755 EUR Equity:Opening
+2011-05-17 earn Bonus 7967 EUR

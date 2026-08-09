@@ -1,0 +1,65 @@
+1900-01-01 commodity VCSH
+  name: VCSH Fund
+  tags: equity,global
+  ticker: VCSH.X
+2010-01-29 open Equity:Opening USD
+  multiAsset: true
+2010-02-17 open Assets:Bank:B0 USD
+  fundingAccount: Equity:Opening
+2010-03-12 open Assets:Bank:B1 USD
+  fundingAccount: Equity:Opening
+2010-04-02 open Assets:Broker:B0 USD
+  multiAsset: true
+  fundingAccount: Assets:Bank:B0
+2010-04-24 open Assets:Broker:B1 USD
+  multiAsset: true
+  automaticReinvestment: true
+  fundingAccount: Assets:Bank:B0
+2010-05-04 open Income:Salary USD
+  fundingAccount: Assets:Bank:B1
+2010-05-11 open Income:Interest USD
+  fundingAccount: Assets:Bank:B0
+2010-06-11 open Expenses:Food USD
+  fundingAccount: Assets:Bank:B1
+2010-07-04 open Expenses:Rent USD
+  fundingAccount: Assets:Bank:B1
+2010-08-12 open Expenses:Travel USD
+  fundingAccount: Assets:Bank:B1
+2010-09-15 fund Assets:Bank:B0 Assets:Broker:B1 502 USD
+2010-10-16 tfr Assets:Bank:B1 Income:Salary 4731.6436 USD
+2010-10-30 tfr Equity:Opening Assets:Bank:B1 4566 USD
+2010-11-07 fund Assets:Broker:B0 11002.666 USD
+2010-12-14 earn Income:Interest 8646.461 USD
+2011-01-22 price FTSE 409 HKD
+2011-02-05 adj Assets:Bank:B1 22173.323 USD Equity:Opening
+2011-03-10 trade Assets:Broker:B1 111 BRK-B @13.0123 USD C5 USD
+2011-04-05 fund Assets:Broker:B0 14365.31 USD
+2011-05-15 yield Assets:Bank:B1 166 USD
+2011-06-24 unit Assets:Broker:B1 199 VWRL @85.0569 USD
+2011-07-24 yield Assets:Bank:B1 147.555 USD
+2011-08-03 unit Assets:Broker:B1 95 VCSH @222.403 USD
+2011-08-11 spend Rent 8 USD
+2011-08-12 earn Interest 1611.370 USD
+2011-09-11 tfr Assets:Bank:B0 Expenses:Rent 3556.564 USD
+2011-10-13 trade Assets:Broker:B1 -16 VWRL @387.561 USD C5.7918 USD
+2011-11-19 spend Expenses:Rent 366.614 USD
+2011-12-07 tfr Assets:Bank:B1 Assets:Broker:B0 4422.1106 USD
+2012-01-10 trade Assets:Broker:B0 187 BRK-B @329 USD
+2012-02-07 tfr Assets:Broker:B0 Expenses:Rent 1925 USD
+2012-02-11 yield Assets:Bank:B1 64 USD
+2012-02-14 adj Assets:Bank:B1 23093.9876 USD Equity:Opening
+2012-02-24 price IVV 269.6771 EUR
+2012-03-20 adj Assets:Bank:B1 17014 USD Equity:Opening
+2012-04-23 trade Assets:Broker:B0 112 VTI @444.13 USD
+2012-04-28 spend Expenses:Rent 772.2524 USD
+2012-05-10 trade Assets:Broker:B1 67 BRK-B @484.84 USD
+2012-05-17 adj Assets:Bank:B0 640.70 USD Equity:Opening
+2012-06-10 spend Travel 404.76 USD
+2012-06-14 tfr Assets:Broker:B0 Expenses:Food 1367.05 USD
+2012-07-04 trade Assets:Broker:B1 -7 VCSH @416 USD
+2012-07-12 adj Assets:Bank:B1 7020.470 USD Equity:Opening
+2012-07-25 fund Assets:DoesNotExist 13899 USD
+2012-08-15 fund Assets:Broker:B0 15606 USD
+2012-09-14 earn Salary Assets:Bank:B1 349.2895 USD
+2012-10-04 unit Assets:Broker:B1 260 IVV @30.7218 USD
+2012-11-07 fund Assets:Broker:B0 Equity:Opening 18417 USD

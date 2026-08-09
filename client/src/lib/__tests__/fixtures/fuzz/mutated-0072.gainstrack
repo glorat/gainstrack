@@ -1,0 +1,31 @@
+option "operating_currency" "GBP"
+1900-01-01 commodity IVV
+  name: IVV Fund
+  tags: equity,global
+  ticker: IVV.X
+2010-01-06 open Equity:Opening GBP
+  multiAsset: true
+2010-02-09 open Assets:Bank:B0 GBP
+  fundingAccount: Equity:Opening extraTokenHere
+2010-02-18 open Assets:Broker:B0 GBP
+  multiAsset: true
+  fundingAccount: Assets:Bank:B0
+2010-03-10 open Assets:Broker:B1 GBP
+  multiAsset: true
+  automaticReinvestment: true
+  fundingAccount: Assets:Bank:B0
+2010-04-05 open Income:Salary GBP
+  fundingAccount: Assets:Bank:B0
+2010-04-30 open Income:Bonus GBP
+  fundingAccount: Assets:Bank:B0
+2010-05-01 open Income:Interest GBP
+  fundingAccount: Assets:Bank:B0
+2010-06-02 open Expenses:Food GBP
+  fundingAccount: Assets:Bank:B0
+2010-06-25 open Liabilities:Card GBP
+  fundingAccount: Assets:Bank:B0
+2010-07-11 spend Expenses:Food Assets:Bank:B0 607.651 GBP
+2010-08-06 bal Assets:Bank:B0 28648.0462 GBP Equity:Opening
+2010-09-04 yield Assets:Bank:B0 118.4197 GBP
+2010-09-15 bal Assets:Bank:B0 9655.98 GBP Equity:Opening
+2010-10-22 price VWRL 101.61 USD

@@ -1,0 +1,43 @@
+option "operating_currency" "GBP"
+1900-01-01 commodity BRK-B
+  name: BRK-B Fund
+  tags: equity,global
+  ticker: BRK-B.X
+2010-02-03 open Equity:Opening GBP
+  multiAsset: true
+2010-02-28 open Assets:Bank:B0 HKD
+  fundingAccount: Equity:Opening
+2010-04-02 open Assets:Bank:B1 GBP
+  fundingAccount: Equity:Opening
+2010-04-25 open Assets:Bank:B2 GBP
+  fundingAccount: Equity:Opening
+2010-06-01 open Assets:Broker:B0 GBP
+  multiAsset: true
+  automaticReinvestment: true
+  fundingAccount: Assets:Bank:B2
+2010-06-13 open Assets:Broker:B1 EUR
+  multiAsset: true
+  fundingAccount: Assets:Bank:B1
+2010-07-11 open Income:Salary GBP
+  fundingAccount: Assets:Bank:B1
+2010-07-15 open Income:Bonus GBP
+  fundingAccount: Assets:Bank:B2
+2010-08-04 open Income:Interest GBP
+  fundingAccount: Assets:Bank:B0
+2010-09-12 open Expenses:Rent GBP
+  fundingAccount: Assets:Bank:B0
+2010-10-16 open Expenses:Travel GBP
+  fundingAccount: Assets:Bank:B1
+2010-10-20 fund Assets:Bank:B0 6504.5181 HKD
+2010-11-23 spend Expenses:Rent 677.3230 GBP
+2010-12-14 adj Assets:Bank:B1 10611.324 GBP Equity:Opening
+2011-01-13 tfr Assets:Bank:B1 Expenses:Travel 3637.912 GBP
+2011-01-18 spend Rent 798.33 GBP
+2011-02-12 fund Assets:Broker:B1 120.305 EUR
+2011-03-13 trade Assets:Broker:B0 52 VCSH @215.943 GBP
+2011-04-20 tfr Assets:Broker:B1 Income:Salary 4929.80 EUR 229.59 GBP
+2011-05-05 yield Assets:Bank:B2 96 GBP
+2011-05-31 trade Assets:Broker:B0 2 VWRL @238.0587 GBP
+2011-06-22 spend Travel Assets:Bank:B1 659 GBP
+2011-07-16 earn Salary 676.6500 GBP
+2011-08-22 bal Assets:Bank:B2 12517.329 GBP Equity:Opening

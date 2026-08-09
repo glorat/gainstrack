@@ -1,0 +1,28 @@
+2010-02-02 open Equity:Opening USD
+  multiAsset: true
+2010-02-22 open Assets:Bank:B0 USD
+  fundingAccount: Equity:Opening
+2010-03-24 open Assets:Bank:B1 USD extraTokenHere
+  fundingAccount: Equity:Opening
+2010-04-07 open Assets:Broker:B0 USD
+  multiAsset: true
+  fundingAccount: Assets:Bank:B1
+2010-05-03 open Assets:Broker:B1 USD
+  multiAsset: true
+  fundingAccount: Assets:Bank:B0
+2010-05-19 open Income:Bonus USD
+  fundingAccount: Assets:Bank:B1
+2010-06-24 open Expenses:Travel USD
+  fundingAccount: Assets:Bank:B0
+2010-07-01 open Liabilities:Card USD
+  fundingAccount: Assets:Bank:B0
+2010-08-07 tfr Equity:Opening Assets:Bank:B0 1972 USD
+2010-09-11 yield Assets:Bank:B1 45 USD
+2010-10-02 bal Assets:Bank:B0 24140 USD Equity:Opening
+2010-11-03 tfr Equity:Opening Assets:Bank:B0 3222.66 USD
+2010-11-20 tfr Assets:Bank:B1 Assets:Broker:B1 486.45 USD
+2010-11-25 yield Assets:Bank:B0 170.304 USD
+2010-12-21 trade Assets:Broker:B0 195 IVV @206 USD
+2011-01-13 price FTSE 150.44 SGD
+2011-01-29 bal Assets:Bank:B0 11106 USD Equity:Opening
+2011-02-08 spend Travel 414.92 USD

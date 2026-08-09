@@ -1,0 +1,54 @@
+option "operating_currency" "HKD"
+1900-01-01 commodity BRK-B
+  name: BRK-B Fund
+  tags: equity,global
+  ticker: BRK-B.X
+2010-01-10 open Equity:Opening HKD
+  multiAsset: true
+2010-01-25 open Assets:Bank:B0 HKD
+  fundingAccount: Equity:Opening
+2010-02-20 open Assets:Bank:B1 HKD
+  fundingAccount: Equity:Opening
+2010-03-10 open Assets:Broker:B0 EUR
+  multiAsset: true
+  automaticReinvestment: true
+  fundingAccount: Assets:Bank:B1
+2010-04-10 open Assets:Broker:B1 HKD
+  multiAsset: true
+  fundingAccount: Assets:Bank:B1
+2010-04-26 open Income:Bonus HKD
+  fundingAccount: Assets:Bank:B1
+2010-04-27 open Income:Interest HKD
+  fundingAccount: Assets:Bank:B0
+2010-05-10 open Expenses:Rent HKD
+  fundingAccount: Assets:Bank:B0
+2010-06-16 open Expenses:Travel HKD
+  fundingAccount: Assets:Bank:B1
+2010-07-26 unit Assets:Broker:B1 287 BRK-B @399.33 HKD
+2010-08-07 earn Bonus Assets:Bank:B0 7217.881 HKD
+2010-08-26 earn Interest 6086.6622 HKD
+2010-09-17 spend Expenses:Rent 597 HKD
+2010-09-28 tfr Assets:Bank:B0 Income:Bonus 834.229 HKD
+2010-10-01 tfr Equity:Opening Assets:Bank:B1 4561.9962 HKD
+2010-10-06 price BRK-B 389.49 SGD
+2010-10-16 bal Assets:Bank:B1 27219.17 HKD Equity:Opening
+2010-11-25 yield Assets:Bank:B1 178.794 HKD
+2010-12-20 price VTI 9.36 HKD
+2010-12-30 bal Assets:Bank:B0 4016 HKD Equity:Opening
+2011-01-30 adj Assets:Bank:B0 18763 HKD Equity:Opening extraTokenHere
+2011-03-01 price IVV 97 GBP
+2011-04-02 trade Assets:Broker:B1 -17 BRK-B @188.74 HKD
+2011-04-11 fund Assets:Broker:B1 Assets:Bank:B0 14172.9007 HKD
+2011-04-13 bal Assets:Bank:B1 23165.62 HKD Equity:Opening
+2011-04-19 trade Assets:Broker:B0 43 FTSE @171 EUR C8.1838 EUR
+2011-05-10 tfr Assets:Bank:B0 Expenses:Rent 731.5956 HKD
+2011-06-12 adj Assets:Bank:B1 222.657 HKD Equity:Opening
+2011-07-06 spend Expenses:Rent 130 HKD
+2011-07-19 unit Assets:Broker:B0 36 BRK-B @46.662 EUR
+2011-07-28 tfr Assets:Bank:B0 Income:Bonus 3838 HKD
+2011-09-06 trade Assets:Broker:B1 183 VTI @264.9476 HKD
+2011-09-10 unit Assets:Broker:B1 188 IVV @49.0067 HKD
+2011-10-18 bal Assets:Bank:B1 14400.9864 HKD Equity:Opening
+2011-11-26 trade Assets:Broker:B0 50 BRK-B @356 EUR
+2011-12-30 fund Assets:Bank:B1 1875.92 HKD
+2012-01-28 bal Assets:Bank:B0 4824.0981 HKD Equity:Opening

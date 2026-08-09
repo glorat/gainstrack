@@ -1,0 +1,40 @@
+1900-01-01 commodity VWRL
+  name: VWRL Fund
+  tags: equity,global
+  ticker: VWRL.X
+2010-02-06 open Equity:Opening USD
+  multiAsset: true
+2010-03-07 open Assets:Bank:B0 USD
+  fundingAccount: Equity:Opening
+2010-03-11 open Assets:Broker:B0 USD
+  multiAsset: true
+  automaticReinvestment: true
+  fundingAccount: Assets:Bank:B0
+2010-04-19 open Income:Bonus USD
+  fundingAccount: Assets:Bank:B0
+2010-04-22 open Income:Interest USD
+  fundingAccount: Assets:Bank:B0
+2010-04-29 open Expenses:Food USD
+  fundingAccount: Assets:Bank:B0
+2010-05-22 open Expenses:Rent USD
+  fundingAccount: Assets:Bank:B0
+2010-06-13 open Expenses:Travel USD
+  fundingAccount: Assets:Bank:B0
+2010-07-08 unit Assets:Broker:B0 474 VCSH @240 USD
+2010-07-27 spend Expenses:Food 44 USD
+2010-08-09 yield Assets:Broker:B0 VCSH 63.5025 USD
+2010-08-13 unit Assets:Broker:B0 74 VWRL @39 USD
+2010-08-18 spend Expenses:Food 9.289 USD
+2010-09-11 yield Assets:Broker:B0 VCSH 5.444 USD
+2010-09-15 yield Assets:Broker:B0 VCSH 147 USD
+2010-10-17 unit Assets:Broker:B0 289 VWRL @130.68 USD
+2010-11-14 trade Assets:Broker:B0 53 FTSE @139.3586 USD C6.206 USD
+2010-12-21 adj Assets:Bank:B0 19964 USD Equity:Opening
+2011-01-20 earn Interest 1056.1767 USD
+2011-01-26 earn Bonus 315.07 USD
+2011-02-22 earn Income:Interest 8710.3816 USD
+2011-03-05 bal Assets:Bank:B0 21512 USD Equity:Opening
+2011-03-14 unit Assets:Broker:B0 231 VTI @200.680 USD
+2011-04-12 adj Assets:Bank:B0 4893 USD Equity:Opening
+2011-04-20 earn Income:Bonus Assets:Bank:B0 228.2843 USD
+2011-05-11 earn Income:Interest 2251.95 USD

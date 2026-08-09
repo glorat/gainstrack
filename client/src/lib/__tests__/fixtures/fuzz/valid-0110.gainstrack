@@ -1,0 +1,37 @@
+2010-02-04 open Equity:Opening USD
+  multiAsset: true
+2010-02-20 open Assets:Bank:B0 USD
+  fundingAccount: Equity:Opening
+2010-03-25 open Assets:Bank:B1 USD
+  fundingAccount: Equity:Opening
+2010-05-02 open Assets:Bank:B2 USD
+  fundingAccount: Equity:Opening
+2010-05-13 open Assets:Broker:B0 EUR
+  multiAsset: true
+  automaticReinvestment: true
+  fundingAccount: Assets:Bank:B2
+2010-06-11 open Income:Salary USD
+  fundingAccount: Assets:Bank:B1
+2010-06-29 open Income:Interest USD
+  fundingAccount: Assets:Bank:B2
+2010-07-04 open Expenses:Food USD
+  fundingAccount: Assets:Bank:B0
+2010-08-10 open Liabilities:Card USD
+  fundingAccount: Assets:Bank:B1
+2010-08-20 price FTSE 119 USD
+2010-08-22 spend Expenses:Food Assets:Bank:B0 646.024 USD
+2010-08-29 bal Assets:Bank:B1 15098 USD Equity:Opening
+2010-09-19 adj Assets:Bank:B1 3612.88 USD Equity:Opening
+2010-09-28 bal Assets:Bank:B1 17552.161 USD Equity:Opening
+2010-10-04 unit Assets:Broker:B0 209 IVV @392.444 EUR
+2010-11-04 bal Assets:Bank:B2 19403.053 USD Equity:Opening
+2010-12-12 tfr Equity:Opening Income:Interest 3252.67 USD
+2011-01-20 price FTSE 351.57 SGD
+2011-02-05 fund Assets:Bank:B2 6023.3417 USD
+2011-02-11 bal Assets:Bank:B2 1685.7276 USD Equity:Opening
+2011-03-21 adj Assets:Bank:B1 1098.4927 USD Equity:Opening
+2011-03-28 trade Assets:Broker:B0 -1 IVV @302 EUR C18.5185 EUR
+2011-04-28 adj Assets:Bank:B0 23035.029 USD Equity:Opening
+2011-05-30 earn Income:Salary 775 USD
+2011-06-12 adj Assets:Bank:B0 2479.35 USD Equity:Opening
+2011-07-08 fund Assets:Bank:B0 583.03 USD

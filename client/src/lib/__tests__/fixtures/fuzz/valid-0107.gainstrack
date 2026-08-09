@@ -1,0 +1,62 @@
+option "operating_currency" "SGD"
+1900-01-01 commodity BRK-B
+  name: BRK-B Fund
+  tags: equity,global
+  ticker: BRK-B.X
+2010-01-22 open Equity:Opening SGD
+  multiAsset: true
+2010-01-29 open Assets:Bank:B0 SGD
+  fundingAccount: Equity:Opening
+2010-02-12 open Assets:Bank:B1 USD
+  fundingAccount: Equity:Opening
+2010-03-07 open Assets:Bank:B2 SGD
+  fundingAccount: Equity:Opening
+2010-03-08 open Assets:Broker:B0 SGD
+  multiAsset: true
+  automaticReinvestment: true
+  fundingAccount: Assets:Bank:B1
+2010-03-23 open Assets:Broker:B1 SGD
+  multiAsset: true
+  automaticReinvestment: true
+  fundingAccount: Assets:Bank:B2
+2010-04-14 open Income:Bonus SGD
+  fundingAccount: Assets:Bank:B1
+2010-04-29 open Income:Interest SGD
+  fundingAccount: Assets:Bank:B0
+2010-06-04 open Expenses:Travel SGD
+  fundingAccount: Assets:Bank:B2
+2010-06-07 open Liabilities:Card SGD
+  fundingAccount: Assets:Bank:B2
+2010-07-13 fund Assets:Broker:B0 Assets:Broker:B1 4697.3601 SGD
+2010-08-05 tfr Equity:Opening Expenses:Travel 4586 SGD
+2010-08-15 yield Assets:Bank:B0 120.9824 SGD
+2010-09-12 earn Income:Bonus 1934.584 SGD
+2010-10-18 unit Assets:Broker:B1 48 FTSE @217.140 SGD
+2010-10-31 earn Interest 1277.8924 SGD
+2010-11-19 bal Assets:Bank:B0 26021.702 SGD Equity:Opening
+2010-12-20 earn Bonus 7389 SGD
+2011-01-18 yield Assets:Broker:B1 FTSE 44.3924 SGD
+2011-02-18 yield Assets:Bank:B0 116.0107 SGD
+2011-03-23 trade Assets:Broker:B1 183 IVV @32.73 SGD C16.066 SGD
+2011-04-15 bal Assets:Bank:B1 16.1980 USD Equity:Opening
+2011-05-15 spend Expenses:Travel 267.91 SGD
+2011-06-14 spend Expenses:Travel Assets:Bank:B1 149.19 SGD
+2011-06-23 bal Assets:Bank:B0 6318 SGD Equity:Opening
+2011-07-27 spend Expenses:Travel 825.2349 SGD
+2011-07-29 spend Expenses:Travel 851.3029 SGD
+2011-08-17 yield Assets:Bank:B0 138.91 SGD
+2011-08-25 tfr Assets:Broker:B1 Liabilities:Card 3559.65 SGD
+2011-10-04 bal Assets:Bank:B0 237.893 SGD Equity:Opening
+2011-10-12 yield Assets:Bank:B1 147 USD
+2011-10-13 unit Assets:Broker:B1 137 VTI @138.1819 SGD
+2011-10-20 tfr Assets:Bank:B0 Assets:Bank:B2 2679 SGD
+2011-10-31 unit Assets:Broker:B1 346 BRK-B @270.0037 SGD
+2011-11-29 price VWRL 169.428 USD
+2011-12-14 adj Assets:Bank:B2 13776 SGD Equity:Opening
+2012-01-06 tfr Assets:Broker:B0 Assets:Bank:B2 3545.99 SGD
+2012-01-15 unit Assets:Broker:B0 172 VTI @248 SGD
+2012-02-09 yield Assets:Broker:B0 VTI 173 SGD
+2012-02-13 fund Assets:Broker:B0 1271 SGD
+2012-03-24 bal Assets:Bank:B1 22905.52 USD Equity:Opening
+2012-03-26 tfr Equity:Opening Income:Bonus 1500.2570 SGD
+2012-04-19 tfr Assets:Bank:B2 Liabilities:Card 2873.2327 SGD

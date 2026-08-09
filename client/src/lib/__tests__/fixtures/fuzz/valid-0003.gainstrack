@@ -1,0 +1,56 @@
+option "operating_currency" "EUR"
+1900-01-01 commodity VTI
+  name: VTI Fund
+  tags: equity,global
+  ticker: VTI.X
+2010-01-04 open Equity:Opening EUR
+  multiAsset: true
+2010-01-24 open Assets:Bank:B0 EUR
+  fundingAccount: Equity:Opening
+2010-02-04 open Assets:Bank:B1 EUR
+  fundingAccount: Equity:Opening
+2010-02-12 open Assets:Bank:B2 EUR
+  fundingAccount: Equity:Opening
+2010-03-20 open Assets:Broker:B0 EUR
+  multiAsset: true
+  fundingAccount: Assets:Bank:B2
+2010-04-01 open Income:Salary EUR
+  fundingAccount: Assets:Bank:B2
+2010-05-05 open Income:Bonus EUR
+  fundingAccount: Assets:Bank:B1
+2010-06-10 open Income:Interest EUR
+  fundingAccount: Assets:Bank:B0
+2010-07-11 open Expenses:Food EUR
+  fundingAccount: Assets:Bank:B2
+2010-07-18 open Expenses:Rent EUR
+  fundingAccount: Assets:Bank:B2
+2010-07-19 open Expenses:Travel EUR
+  fundingAccount: Assets:Bank:B2
+2010-08-23 open Liabilities:Card EUR
+  fundingAccount: Assets:Bank:B1
+2010-09-20 adj Assets:Bank:B1 16617 EUR Equity:Opening
+2010-10-05 unit Assets:Broker:B0 232 VTI @199.2075 EUR
+2010-11-09 yield Assets:Broker:B0 VTI 93.7925 EUR
+2010-12-08 yield Assets:Bank:B2 12 EUR
+2010-12-30 bal Assets:Bank:B1 16206 EUR Equity:Opening
+2011-01-18 unit Assets:Broker:B0 379 VTI @70.026 EUR
+2011-02-18 adj Assets:Bank:B0 11199 EUR Equity:Opening
+2011-03-18 adj Assets:Bank:B1 29572.3553 EUR Equity:Opening
+2011-04-11 bal Assets:Bank:B2 24406 EUR Equity:Opening
+2011-05-07 price VTI 300 EUR
+2011-05-29 spend Travel Assets:Bank:B2 384.83 EUR
+2011-06-25 earn Income:Salary 1657 EUR
+2011-07-02 yield Assets:Bank:B2 138.09 EUR
+2011-07-10 earn Income:Bonus 6567 EUR
+2011-08-18 fund Assets:Broker:B0 Income:Salary 10001.429 EUR
+2011-08-30 yield Assets:Broker:B0 VTI 68.013 EUR
+2011-10-09 fund Assets:Bank:B0 Assets:Bank:B1 17369.4120 EUR
+2011-10-25 fund Assets:Bank:B1 Assets:Bank:B0 2634.93 EUR
+2011-10-26 unit Assets:Broker:B0 481 VTI @357.84 EUR
+2011-11-08 spend Food 178.8574 EUR
+2011-11-21 unit Assets:Broker:B0 407 FTSE @10.59 EUR
+2011-11-25 fund Assets:Bank:B1 17345.770 EUR
+2011-12-30 yield Assets:Bank:B2 121 EUR
+2012-01-23 price FTSE 100 HKD
+2012-02-01 yield Assets:Bank:B0 161.74 EUR
+2012-02-11 price BRK-B 223.983 SGD

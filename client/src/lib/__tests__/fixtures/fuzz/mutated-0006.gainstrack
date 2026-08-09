@@ -1,0 +1,47 @@
+option "operating_currency" "HKD"
+1900-01-01 commodity FTSE
+  name: FTSE Fund
+  tags: equity,global
+  ticker: FTSE.X
+2010-01-10 open Equity:Opening HKD
+  multiAsset: true
+2010-01-11 open Assets:Bank:B0 HKD
+  fundingAccount: Equity:Opening
+2010-01-20 open Assets:Bank:B1 SGD
+  fundingAccount: Equity:Opening
+2010-02-08 open Assets:Broker:B0 HKD
+  multiAsset: true
+  automaticReinvestment: true
+  fundingAccount: Assets:Bank:B0
+2010-02-25 open Assets:Broker:B1 HKD
+  multiAsset: true
+  fundingAccount: Assets:Bank:B1
+2010-04-04 open Income:Salary HKD
+  fundingAccount: Assets:Bank:B1
+2010-05-09 open Income:Bonus HKD
+  fundingAccount: Assets:Bank:B1
+2010-06-17 open Expenses:Food HKD
+  fundingAccount: Assets:Bank:B1
+2010-06-26 open Expenses:Travel HKD
+  fundingAccount: Assets:Bank:B1
+2010-07-30 open Liabilities:Card HKD
+  fundingAccount: Assets:Bank:B0
+2010-08-23 unit Assets:Broker:B1 438 FTSE @285.70 HKD
+2010-09-27 bal Assets:Bank:B0 12579.361 HKD Equity:Opening
+2010-09-28 tfr Assets:Bank:B0 Assets:Broker:B0 1520 HKD
+2010-10-13 fund Assets:Bank:B1 Liabilities:Card 10059 SGD
+2010-11-02 trade Assets:Broker:B0 134 VTI @81.8454 HKD C6.50 HKD
+2010-12-02 bal Assets:Bank:B0 17780.3991 HKD Equity:Opening extraTokenHere
+2010-12-08 earn Income:Bonus Assets:Bank:B0 2733.343 HKD
+2011-01-13 adj Assets:Bank:B0 6718.467 HKD Equity:Opening
+2011-02-04 earn Salary Assets:Bank:B0 6687.20 HKD
+2011-03-01 fund Assets:Broker:B1 16487.4293 HKD
+2011-03-17 yield Assets:Broker:B0 VTI 42.55 HKD
+2011-04-02 fund Assets:Bank:B0 11848.69 HKD
+2011-05-11 price FTSE 298.39 GBP
+2011-05-27 unit Assets:Broker:B1 55 VCSH @101.38 HKD
+2011-06-02 adj Assets:Bank:B1 28647 SGD Equity:Opening
+2011-07-09 tfr Assets:Bank:B1 Income:Salary 1598 SGD
+2011-07-21 tfr Assets:Bank:B1 Income:Bonus 4639.6609 SGD 3872 HKD
+2011-08-11 trade Assets:Broker:B1 180 VWRL @89.0992 HKD C1.4730 HKD
+2011-08-23 trade Assets:Broker:B0 -20 VTI @263.13 HKD
