@@ -8,7 +8,7 @@ import { GAccountState } from 'src/lib/gen/accountState';
 import { closingTx } from 'src/lib/gen/closing';
 import type { GBalanceState } from 'src/lib/gen/balanceState';
 import { AdjCmd, BalCmd, GCommand } from 'src/lib/gen/commands';
-import { adjustmentDate, adjustmentTransfers, RawTx, tradeToTx, unitToTx } from 'src/lib/gen/expand';
+import { adjustmentDate, adjustmentTransfers, RawTx, tradeToTx, txToRawTx, unitToTx } from 'src/lib/gen/expand';
 import { LocalDate } from '@js-joda/core';
 import type Decimal from 'decimal.js';
 import { GAmount, ZERO } from 'src/lib/gen/money';
@@ -60,6 +60,7 @@ export function buildBeancountCommands(commands: GCommand[], acct: GAccountState
     if (isCommandNeedsAccounts(cmd)) {
       return commandToTransfers(cmd, acct.lookup).map(transferToTransaction);
     }
+    if (cmd.kind === 'tx') return [txToRawTx(cmd)];
     if (cmd.kind === 'trade') return [tradeToTx(cmd)];
     if (cmd.kind === 'unit') {
       const secAcct = Acct.subAccount(cmd.accountId, cmd.security.ccy);

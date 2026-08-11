@@ -5,7 +5,7 @@
 import { LocalDate } from '@js-joda/core';
 import { expenseAcctId as expAcctId, securityAccountId, cashAccountId } from 'src/lib/gen/account';
 import * as Acct from 'src/lib/gen/accountId';
-import { AdjCmd, BalCmd, TradeCmd, UnitCmd } from 'src/lib/gen/commands';
+import { AdjCmd, BalCmd, TradeCmd, TxCmd, UnitCmd } from 'src/lib/gen/commands';
 import { GAmount } from 'src/lib/gen/money';
 import { GPosting, posting } from 'src/lib/gen/posting';
 import { AccountLookup, GTransfer, makeTransfer, transferToTransaction, transferToTransfers } from 'src/lib/gen/transfer';
@@ -14,6 +14,15 @@ export interface RawTx { postDate: string; description: string; postings: GPosti
 
 function minusDay(date: string): string {
   return LocalDate.parse(date).minusDays(1).toString();
+}
+
+/**
+ * `tx` is already a RawTx — it is the one command that states its postings instead of deriving
+ * them, so there is no expansion to do. Named anyway so both state folds go through the same
+ * function and neither can drift from the other.
+ */
+export function txToRawTx(cmd: TxCmd): RawTx {
+  return { postDate: cmd.date, description: cmd.description, postings: cmd.postings };
 }
 
 /** SecurityPurchase.toTransaction. */

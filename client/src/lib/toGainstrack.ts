@@ -13,7 +13,7 @@
 //    everything else emits `name: value`. Both parse, but only one round-trips.
 
 import { AccountCommandDTO, Amount } from 'src/lib/assetdb/models';
-import { Kind, Parsed } from 'src/lib/GainstrackParser';
+import { Kind, Parsed, ParsedPosting } from 'src/lib/GainstrackParser';
 
 /** A command as stored: its command line plus any indented option lines. */
 export type CommandBlock = string[];
@@ -84,6 +84,14 @@ function commodityOptionLines(options: Record<string, unknown>): CommandBlock {
     ...stringStr('ticker', options.ticker),
     ...custom.flatMap(k => stringStr(k, options[k])),
   ];
+}
+
+/** One `tx` posting line: `  <account> <amount> [{cost}] [@price]`. */
+function txPostingLine(p: ParsedPosting): string {
+  const raws = p.raws ?? {};
+  const cost = p.cost ? ` {${amt(p.cost, raws.cost)}}` : '';
+  const price = p.price ? ` @${amt(p.price, raws.price)}` : '';
+  return `  ${p.account} ${amt(p.value, raws.value)}${cost}${price}`;
 }
 
 // ---- per-command serialization ---------------------------------------------
@@ -159,6 +167,12 @@ function commandLines(p: Parsed): CommandBlock {
 
     case 'close':
       return [`${date} close ${d.accountId}`];
+
+    case 'tx':
+      // Two-space indent on the postings, matching the option lines above and beancount's own
+      // convention. The parser requires the indent, so losing it here would produce a file that
+      // no longer parses as the same ledger.
+      return [`${date} tx "${p.txDescription ?? ''}"`, ...(p.postings ?? []).map(txPostingLine)];
 
     case 'global': {
       // GlobalCommand emits nothing at the default of USD, so a round trip drops the line.

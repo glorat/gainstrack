@@ -31,6 +31,14 @@ export function mainAccount(p: Parsed): string | undefined {
     case 'global':
       return undefined;
 
+    // A `tx` has no main account — it can touch any number of them, and filing it under one
+    // would scatter a single transaction's context away from the rest. It goes to the bottom
+    // section, which keeps every raw transaction together in date order. That is also the
+    // shape an imported beancount ledger naturally wants: accounts grouped at the top, the
+    // transaction stream chronological below.
+    case 'tx':
+      return undefined;
+
     case 'earn':
       return qualify(p.tag ?? p.dto.accountId, 'Income');
     case 'spend':

@@ -42,7 +42,7 @@ Gainstrack is a personal finance/investment tracking application. Users write fi
 - `com.gainstrack.report.GainstrackGenerator` — Multi-pass report engine: first pass builds `AccountState`, second pass `BalanceState`, third pass `TransactionState`/`PriceState`
 - `com.gainstrack.lifecycle.GainstrackEntity` — CQRS aggregate root wrapping the generator
 - Nothing the UI needs routes through this any more. It still compiles and links because the build graph is `web → quotes → core → dlstore` and `quotes` imports `com.gainstrack.core._` for the money/asset primitives. Its remaining active role is as the **oracle for parity tests** (see Testing).
-- The `close` command is TypeScript-only and has no Scala counterpart, so Scala cannot be an oracle for it.
+- The `close` and `tx` commands are TypeScript-only and have no Scala counterpart, so Scala cannot be an oracle for either. `tx` is the raw multi-posting transaction (`gen/__tests__/tx.spec.ts` pins its rules); it exists because every other command produces a fixed shape of postings, so a paycheck with withholding or any other N-legged transaction had no representation at all.
 
 ### 5. `client/functions/` — Firebase Cloud Functions (Node.js/TypeScript)
 - HTTP/callable functions for quote sources (Firestore reads/writes in `queries.ts`/`writes.ts`) and `setDisplayName`
@@ -159,6 +159,7 @@ The layers, in rough order of what they catch:
 | `exportInvariance` | `generate(export(x)) ≡ generate(x)` | no oracle — outlives Scala |
 | `beancountOracle` | our output vs **beancount** | independent engine; opt-in, see below |
 | `gen/invariants` | guards no ledger can reach | each one added because a mutation survived |
+| `gen/tx` | the `tx` command's rules | TS-only command, so no differential test can |
 
 **The generated corpus** (`fixtures/fuzz/`) is 150 valid ledgers plus 150 targeted mutations of them, produced deterministically by `ledgerGenerator.ts`. Both the ledgers and the gzipped goldens are checked in on purpose: once Scala is gone they are the only surviving record of its behaviour, and `fuzzDiff` becomes a regression suite without any change. Regenerate with `pnpm run fixtures:fuzz`, then re-run `DumpFuzzGoldens`.
 

@@ -143,6 +143,24 @@ export function buildAccountState(commands: GCommand[]): GAccountState {
 
   // Pass 2: discover inferred accounts from each command's posting targets.
   for (const cmd of commands) {
+    // A `tx` names its accounts outright, so there is nothing to expand — but it can still
+    // reference a multiAsset sub-account that no command has created yet, exactly like a
+    // transfer into one, and it needs the same inference.
+    //
+    // Only under a multiAsset parent, though. `withInferredAccount` THROWS when the parent is
+    // not multiAsset, which is the right answer for a transfer (the routing is impossible) but
+    // the wrong one here: a `tx` posting to an account nobody opened is an unopened-account
+    // error, and it should read as one instead of as a multi-asset complaint.
+    if (cmd.kind === 'tx') {
+      for (const id of cmd.postings.map(p => p.account)) {
+        if (state.accounts.has(id)) continue;
+        const parentId = Acct.parentAccountId(id);
+        if (parentId !== undefined && state.accounts.get(parentId)?.options.multiAsset) {
+          state.withInferredAccount(id);
+        }
+      }
+      continue;
+    }
     let transfers;
     if (isCommandNeedsAccounts(cmd)) transfers = commandToTransfers(cmd, state.lookup);
     else if (cmd.kind === 'adj' || cmd.kind === 'bal') transfers = adjBalToTransfers(cmd, state.lookup);

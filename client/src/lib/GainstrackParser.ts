@@ -10,7 +10,7 @@
 // strings (`description`) reproduce the Scala templates on a best-effort basis only.
 
 import { LocalDate } from '@js-joda/core';
-import { AccountCommandDTO, Amount } from 'src/lib/assetdb/models';
+import { AccountCommandDTO, Amount, Posting as DTOPosting } from 'src/lib/assetdb/models';
 
 // Display `description` and a couple of derived fields read known-present amounts.
 
@@ -38,13 +38,30 @@ const IGNORE_RE = /^\w*$/; // matches blank lines and bare single words (mirrors
 
 type Kind =
   | 'open' | 'earn' | 'spend' | 'tfr' | 'trade' | 'adj' | 'bal'
-  | 'price' | 'unit' | 'fund' | 'yield' | 'commodity' | 'close' | 'global';
+  | 'price' | 'unit' | 'fund' | 'yield' | 'commodity' | 'close' | 'tx' | 'global';
 
 // Where `close` books the period's income and expenses when the command names no account.
 export const RETAINED_EARNINGS_ID = 'Equity:RetainedEarnings';
 
 // DTO fields whose numeric literal is echoed back in a `description` template.
 type RawField = 'change' | 'balance' | 'price' | 'commission' | 'tfrTarget';
+
+/**
+ * One leg of a `tx` command.
+ *
+ * `raws` holds the numeric literals exactly as written, for the same reason the other commands
+ * do — but here it is load-bearing rather than cosmetic. `Amount.number` is a JS float, and a
+ * beancount ledger routinely carries lot costs with more precision than a float can hold. The
+ * generator builds this command's `GAmount`s from the raw strings so the postings sum to zero
+ * exactly, which is what the zero-sum rule then checks.
+ */
+export interface ParsedPosting {
+  account: string;
+  value: Amount;
+  cost?: Amount;
+  price?: Amount;
+  raws?: { value?: string; cost?: string; price?: string };
+}
 
 export interface Parsed {
   kind: Kind;
@@ -63,6 +80,13 @@ export interface Parsed {
   // Comment lines immediately preceding this command, without their leading `;`/`#` marker.
   // Carried so serialization can round-trip them (Scala `AccountCommand.comments`).
   comments?: string[];
+  // `tx` only: the indented posting block, accumulated from the lines following the command.
+  postings?: ParsedPosting[];
+  // `tx` only: the user's own narration. Every other command DERIVES its description from its
+  // fields (see `describe`), so there is nowhere in the DTO that survives a round trip for text
+  // the user actually typed — hence a field of its own rather than borrowing `dto.description`,
+  // which `finalize` overwrites.
+  txDescription?: string;
 }
 
 export type { Kind };
@@ -324,6 +348,27 @@ const COMMANDS: Record<string, (line: string) => Parsed> = {
     throw new ParseError('close command cannot be parsed');
   },
 
+  tx(line) {
+    // `<date> tx "<description>"` — the raw multi-posting command, and the only one whose
+    // description is the user's rather than generated. The postings arrive on the following
+    // indented lines and are attached by `tryParseLine`.
+    //
+    // The description cannot contain a double quote: it is emitted unescaped both here and by
+    // the beancount export, so accepting one would round-trip into a broken file. Rejecting it
+    // at the source beats corrupting it silently — the importer sanitizes on the way in.
+    const m = new RegExp(`^${DATE} tx "([^"]*)"$`).exec(line);
+    const bare = m ? null : new RegExp(`^${DATE} tx$`).exec(line);
+    if (m) {
+      const [, date, description] = m;
+      return { kind: 'tx', dto: { accountId: '', date }, txDescription: description, postings: [] };
+    }
+    if (bare) {
+      const [, date] = bare;
+      return { kind: 'tx', dto: { accountId: '', date }, txDescription: '', postings: [] };
+    }
+    throw new ParseError('tx command cannot be parsed');
+  },
+
   commodity(line) {
     const m = new RegExp(`^${DATE} commodity ${ASSET}$`).exec(line);
     if (!m) throw new ParseError('commodity command cannot be parsed');
@@ -334,6 +379,55 @@ const COMMANDS: Record<string, (line: string) => Parsed> = {
     };
   },
 };
+
+// ---- tx posting lines ------------------------------------------------------
+
+/**
+ * `<account> <number> <CCY> [{<number> <CCY>}] [@<number> <CCY>]`
+ *
+ * Parsed by peeling the optional segments off the end rather than with one regex: neither an
+ * account id nor a number can contain `{` or `@`, so the peel is unambiguous and the remainder
+ * is the plain `<account> <amount>` form every other command already uses.
+ *
+ * Elision is deliberately NOT supported — beancount's interpolation rules interact with booking,
+ * and reimplementing them is exactly what the CLI-based import exists to avoid. The importer
+ * emits amounts the beancount loader has already resolved, so every posting here is explicit.
+ */
+const COST_RE = /\s*\{([^{}]*)\}/;
+const PRICE_RE = /\s+@\s*(.+)$/;
+
+export function parseTxPosting(line: string): ParsedPosting {
+  let rest = line.trim();
+
+  let cost: Amount | undefined;
+  let costRaw: string | undefined;
+  const costMatch = COST_RE.exec(rest);
+  if (costMatch) {
+    cost = parseAmount(costMatch[1].trim());
+    costRaw = numOf(costMatch[1].trim());
+    rest = `${rest.slice(0, costMatch.index)}${rest.slice(costMatch.index + costMatch[0].length)}`;
+  }
+
+  let price: Amount | undefined;
+  let priceRaw: string | undefined;
+  const priceMatch = PRICE_RE.exec(rest);
+  if (priceMatch) {
+    price = parseAmount(priceMatch[1].trim());
+    priceRaw = numOf(priceMatch[1].trim());
+    rest = rest.slice(0, priceMatch.index);
+  }
+
+  const m = new RegExp(`^${ACCT} ${BAL}$`).exec(rest.trim());
+  if (!m) throw new ParseError(`posting cannot be parsed: ${line.trim()}`);
+  const [, account, valueStr] = m;
+  accountType(account); // same account-type validation every command applies
+  const value = parseAmount(valueStr);
+
+  const posting: ParsedPosting = { account, value, raws: { value: numOf(valueStr) } };
+  if (cost) { posting.cost = cost; posting.raws!.cost = costRaw; }
+  if (price) { posting.price = price; posting.raws!.price = priceRaw; }
+  return posting;
+}
 
 function incomeDto(date: string, tag: string, value: Amount, target?: string): AccountCommandDTO {
   const accountId = tag.startsWith('Income:') ? tag : `Income:${tag}`;
@@ -392,6 +486,8 @@ function describe(p: Parsed): string {
     }
     case 'commodity': return d.asset ?? '';
     case 'close': return `Close income and expenses to ${d.accountId}`;
+    // The one command whose description is not derived — see `Parsed.txDescription`.
+    case 'tx': return p.txDescription ?? '';
     case 'global': return 'global configuration';
   }
 }
@@ -554,9 +650,22 @@ export class GainstrackParser {
       return;
     }
 
+    // A `tx`'s postings are indented lines under it. Checked before the metadata branch so a
+    // posting always wins, and gated on the *raw* line being indented so a stray top-level line
+    // stays an "Unparsable" error rather than silently becoming a leg of the previous
+    // transaction — which would balance the books against something the user never wrote.
+    const last = this.commands[this.commands.length - 1];
+    if (last?.kind === 'tx' && /^\s/.test(fullLine) && line !== '' && !COMMENT_RE.test(line)) {
+      try {
+        last.postings!.push(parseTxPosting(line));
+      } catch (e) {
+        this.pushError(e instanceof Error ? e.message : String(e), line);
+      }
+      return;
+    }
+
     const meta = METADATA_RE.exec(line);
     if (meta) {
-      const last = this.commands[this.commands.length - 1];
       if (!last) {
         this.pushError(`Cannot apply ${meta[1]} to unknown command`, line);
         return;
@@ -642,6 +751,15 @@ export class GainstrackParser {
 
   private finalize(p: Parsed): AccountCommandDTO {
     const commandType = p.kind === 'global' ? '' : p.kind;
-    return { ...p.dto, commandType, description: describe(p) };
+    const dto: AccountCommandDTO = { ...p.dto, commandType, description: describe(p) };
+    if (p.kind === 'tx') {
+      dto.postings = (p.postings ?? []).map(pp => {
+        const out: DTOPosting = { account: pp.account, value: pp.value };
+        if (pp.price) out.price = pp.price;
+        if (pp.cost) out.cost = pp.cost;
+        return out;
+      });
+    }
+    return dto;
   }
 }

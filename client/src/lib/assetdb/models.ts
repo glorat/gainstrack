@@ -58,6 +58,8 @@ export interface AccountCommandDTO {
     // TODO: Put this in options or make it official
     commission?: Amount
   description?: string
+  /** `tx` only: the raw posting block. No other command carries postings on the wire. */
+  postings?: Posting[]
 }
 
 export interface AccountCommandEditing {
@@ -112,6 +114,12 @@ export interface Posting {
   account: string
   value: Amount
   price?: Amount
+  /**
+   * Lot basis. Only ever set by a `tx` posting written with `{...}`; the generated commands
+   * leave it undefined, which is why `GPosting.toDTO` emits it conditionally and no existing
+   * golden moves.
+   */
+  cost?: Amount
 }
 
 /** Denormalised posting view that includes Tx data*/

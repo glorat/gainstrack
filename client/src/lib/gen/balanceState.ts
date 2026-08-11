@@ -8,7 +8,7 @@ import { fromIntDate, isoToIntDate } from 'src/lib/SortedColumnMap';
 import * as Acct from 'src/lib/gen/accountId';
 import { GAccountState } from 'src/lib/gen/accountState';
 import { GCommand } from 'src/lib/gen/commands';
-import { adjustmentDate, adjustmentTransfers, RawTx, tradeToTx, unitToTx } from 'src/lib/gen/expand';
+import { adjustmentDate, adjustmentTransfers, RawTx, tradeToTx, txToRawTx, unitToTx } from 'src/lib/gen/expand';
 import { D, GAmount, ZERO } from 'src/lib/gen/money';
 import { commandToTransfers, isCommandNeedsAccounts, transferToTransaction } from 'src/lib/gen/transfer';
 
@@ -106,6 +106,7 @@ export class GBalanceState {
       commandToTransfers(cmd, this.acct.lookup).map(transferToTransaction).forEach(tx => this.processTx(tx));
       return;
     }
+    if (cmd.kind === 'tx') { this.processTx(txToRawTx(cmd)); return; }
     if (cmd.kind === 'trade') { this.processTx(tradeToTx(cmd)); return; }
     if (cmd.kind === 'unit') {
       const secAcct = Acct.subAccount(cmd.accountId, cmd.security.ccy);

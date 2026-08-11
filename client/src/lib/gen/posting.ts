@@ -28,6 +28,9 @@ export class GPosting {
   toDTO(): DTOPosting {
     const dto: DTOPosting = { account: this.account, value: this.value!.toDTO() };
     if (this.price) dto.price = this.price.toDTO();
+    // Emitted only when set, so no generated command's DTO changes shape — only a `tx` written
+    // with an explicit `{...}` lot basis reaches this.
+    if (this.cost) dto.cost = this.cost.toDTO();
     return dto;
   }
 }
