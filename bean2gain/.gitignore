@@ -1,0 +1,18 @@
+node_modules/
+dist/
+.venv/
+
+# The CLI's mtime→hash upload cache, written by `firebase deploy`. Machine-local by definition.
+.firebase/
+firebase-debug.log
+
+# Assembled by scripts/assets.ts from node_modules and the pinned pyodide CDN. ~25 MB of
+# interpreter, reproducible from the lockfile, so there is nothing here worth tracking.
+public/pyodide/
+
+# Corpus generated on demand by `pnpm run verify:example`.
+verify/__tests__/fixtures/generated/
+
+# Real ledgers, same convention as the rest of the repo: the specs glob this directory and skip
+# when it is absent.
+verify/__tests__/fixtures/local/

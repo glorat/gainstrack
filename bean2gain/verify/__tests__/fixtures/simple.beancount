@@ -1,0 +1,22 @@
+; The plain case: a couple of accounts and money moving between them.
+option "title" "Simple"
+option "operating_currency" "USD"
+
+2023-01-01 open Assets:Bank:Checking USD
+2023-01-01 open Equity:Opening-Balances
+2023-01-01 open Income:Salary USD
+2023-01-01 open Expenses:Rent USD
+
+2023-01-01 * "Opening"
+  Assets:Bank:Checking   1000.00 USD
+  Equity:Opening-Balances
+
+2023-01-25 * "Employer Inc" "January salary"
+  Assets:Bank:Checking   4321.55 USD
+  Income:Salary
+
+2023-02-01 * "Landlord" "February rent"
+  Assets:Bank:Checking  -1450.00 USD
+  Expenses:Rent          1450.00 USD
+
+2023-03-01 balance Assets:Bank:Checking  3871.55 USD

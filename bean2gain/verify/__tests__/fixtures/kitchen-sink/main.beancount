@@ -1,0 +1,75 @@
+; Everything dump.py has a branch for, plus an include so that the mounted filesystem is exercised
+; rather than assumed. Deliberately contains a *failing* balance assertion: the dump reports it in
+; `errors` instead of raising, and the two runtimes have to agree about that too.
+option "title" "Kitchen sink"
+option "operating_currency" "EUR"
+option "operating_currency" "GBP"
+option "booking_method" "FIFO"
+
+plugin "beancount.plugins.auto_accounts"
+
+include "prices.beancount"
+
+pushtag #migration
+
+2022-01-01 commodity EUR
+  name: "Euro"
+  asset-class: "cash"
+
+2022-01-01 commodity VWRL
+  name: "Vanguard FTSE All-World"
+  asset-class: "equity"
+
+2022-01-01 open Assets:Wallet
+2022-01-01 open Assets:Broker:Cash  GBP
+2022-01-01 open Assets:Broker:VWRL  VWRL
+2022-01-01 open Expenses:Fees       GBP
+2022-01-01 open Equity:Opening-Balances
+
+2022-01-02 * "Seed" "multi-currency wallet"
+  Assets:Wallet            500.00 EUR
+  Assets:Wallet            250.00 GBP
+  Equity:Opening-Balances -500.00 EUR
+  Equity:Opening-Balances -250.00 GBP
+
+2022-02-01 * "Broker" "fund the account" #funding ^wire-4711
+  transfer-id: "T-0001"
+  Assets:Broker:Cash   10000.00 GBP
+    note: "same-day"
+  Assets:Wallet       -10000.00 GBP
+  Equity:Opening-Balances
+
+2022-03-15 * "Broker" "buy"
+  Assets:Broker:VWRL     100 VWRL {88.4321 GBP}
+  Expenses:Fees          5.95 GBP
+  Assets:Broker:Cash
+
+; 3 × 91.3316 is 273.9948, which misses the cash leg by 0.0048 — inside the tolerance inferred
+; from a two-decimal amount, so beancount accepts a transaction that does not sum to zero and
+; carries the residue silently. Whether both runtimes infer the same tolerance and round the same
+; way is exactly what this file is here to find out.
+2022-04-01 * "Broker" "odd lot, residue within tolerance"
+  Assets:Broker:VWRL       3 VWRL @ 91.3316 GBP
+  Assets:Broker:Cash -273.99 GBP
+
+; And the same thing one thousandth over the line, which beancount rejects. The rejection is
+; reported in `errors` rather than raised, so it is part of the comparison too.
+2022-04-02 * "Broker" "odd lot, residue over tolerance"
+  Assets:Broker:VWRL       3 VWRL @ 91.3350 GBP
+  Assets:Broker:Cash -273.99 GBP
+
+2022-05-01 pad Assets:Wallet Equity:Opening-Balances
+2022-05-02 balance Assets:Wallet  600.00 EUR
+
+; This one is wrong on purpose.
+2022-06-01 balance Assets:Broker:Cash  1.00 GBP
+
+2022-07-01 note Assets:Wallet "counted it by hand"
+2022-07-02 event "location" "Lisbon"
+2022-07-03 document Assets:Broker:Cash "/statements/2022-07.pdf"
+2022-07-04 query "fees" "SELECT account, sum(position) WHERE account ~ 'Fees'"
+2022-07-05 custom "budget" Expenses:Fees 40.00 GBP
+
+2022-08-01 close Assets:Wallet
+
+poptag #migration

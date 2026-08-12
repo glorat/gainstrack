@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>bean2gain — beancount to JSON, in your browser</title>
+    <meta
+      name="description"
+      content="Loads a beancount ledger with beancount's own loader, compiled to WebAssembly, and gives you the fully resolved entries as JSON. Runs entirely in your browser."
+    />
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><text y='14' font-size='14'>🫘</text></svg>" />
+    <link rel="stylesheet" href="/src/app.css" />
+  </head>
+  <body>
+    <header>
+      <h1>bean<span>2</span>gain</h1>
+      <p class="tagline">
+        Your beancount ledger, loaded by beancount itself and handed back as JSON — with lot
+        booking, elided amounts, includes and <code>pad</code> already resolved.
+      </p>
+      <p class="privacy">
+        Nothing is uploaded. The Python interpreter and beancount are downloaded once and run
+        inside this tab; your ledger never leaves the machine.
+      </p>
+    </header>
+
+    <main>
+      <section class="panel" id="input-panel">
+        <div class="panel-head">
+          <h2>Ledger</h2>
+          <div class="panel-actions">
+            <label class="button" for="file">Open files…</label>
+            <input id="file" type="file" multiple accept=".beancount,.bean,.txt" hidden />
+            <button type="button" id="sample" class="button ghost">Load a sample</button>
+          </div>
+        </div>
+
+        <div id="drop" class="drop">
+          <textarea
+            id="source"
+            spellcheck="false"
+            placeholder="Paste a ledger here, or drop .beancount files onto this box.&#10;&#10;2024-01-01 open Assets:Cash USD&#10;2024-01-02 * &quot;Coffee&quot;&#10;  Expenses:Food   4.50 USD&#10;  Assets:Cash"
+          ></textarea>
+          <ul id="files" class="files" hidden></ul>
+        </div>
+
+        <div class="panel-foot">
+          <button type="button" id="convert" class="button primary">Convert to JSON</button>
+          <span id="status" class="status" role="status"></span>
+        </div>
+      </section>
+
+      <section class="panel" id="output-panel">
+        <div class="panel-head">
+          <h2>JSON</h2>
+          <div class="panel-actions">
+            <button type="button" id="copy" class="button ghost" disabled>Copy</button>
+            <button type="button" id="download" class="button ghost" disabled>Download</button>
+          </div>
+        </div>
+
+        <dl id="summary" class="summary" hidden></dl>
+        <ul id="errors" class="errors" hidden></ul>
+        <pre id="output" class="output" tabindex="0"></pre>
+      </section>
+    </main>
+
+    <footer>
+      <p>
+        <strong>bean2gain</strong> is free software under the
+        <a href="https://www.gnu.org/licenses/old-licenses/gpl-2.0.html">GNU GPL, version 2</a>,
+        the licence of <a href="https://beancount.github.io/">beancount</a> itself, which it
+        contains. It is a separate program from anything that embeds it and talks to it only by
+        passing JSON.
+      </p>
+      <p>
+        <span id="runtime" class="runtime"></span>
+        <button type="button" id="offline" class="button ghost">Make available offline</button>
+      </p>
+    </footer>
+
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>

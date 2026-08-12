@@ -1,0 +1,32 @@
+{
+  "name": "bean2gain",
+  "version": "0.1.0",
+  "private": true,
+  "license": "GPL-2.0-only",
+  "type": "module",
+  "description": "A static site that loads a beancount ledger with beancount's own loader, compiled to WebAssembly, and hands back JSON",
+  "scripts": {
+    "assets": "node scripts/assets.ts",
+    "dev": "pnpm run assets && vite",
+    "build": "pnpm run assets && vite build",
+    "preview": "vite preview",
+    "deploy": "pnpm run build && firebase deploy --only hosting",
+    "type-check": "tsc --noEmit",
+    "test:unit": "pnpm run assets && vitest run",
+    "test:unit:watch": "pnpm run assets && vitest",
+    "verify": "node verify/compare.ts",
+    "verify:fixtures": "node verify/compare.ts verify/__tests__/fixtures/*.beancount verify/__tests__/fixtures/kitchen-sink/main.beancount",
+    "verify:example": "node verify/example.ts",
+    "verify:dump": "node verify/dumpWasm.ts"
+  },
+  "dependencies": {
+    "beancount-wasm": "^0.3.2",
+    "pyodide": "0.29.3"
+  },
+  "devDependencies": {
+    "@types/node": "^24.10.1",
+    "typescript": "^5.9.3",
+    "vite": "^7.2.7",
+    "vitest": "^3.2.4"
+  }
+}

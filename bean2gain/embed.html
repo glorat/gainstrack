@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>bean2gain — embedded converter</title>
+    <meta name="robots" content="noindex" />
+    <style>
+      html {
+        color-scheme: light dark;
+        font: 13px/1.5 ui-sans-serif, system-ui, sans-serif;
+      }
+      body {
+        margin: 0;
+        padding: 0.75rem;
+      }
+      p {
+        margin: 0;
+        opacity: 0.7;
+      }
+    </style>
+  </head>
+  <body>
+    <!--
+      This page is meant to be loaded in a hidden iframe and driven over a MessageChannel; see
+      docs/embedding.md. Everything visible here is for the case where someone opens it directly.
+    -->
+    <p id="status">Starting…</p>
+    <script type="module" src="/src/embed.ts"></script>
+  </body>
+</html>

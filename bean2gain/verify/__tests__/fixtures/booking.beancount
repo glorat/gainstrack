@@ -1,0 +1,44 @@
+; Lot booking under each of the methods beancount offers, which is the part of the loader that
+; would be hardest to reimplement and therefore the part most worth checking runs identically.
+;
+; AVERAGE is unimplemented in beancount 3.2.0 and produces a loader error rather than a booking.
+; That is deliberate: the error text is part of the document, so both runtimes have to fail the
+; same way as well as succeed the same way.
+option "title" "Booking"
+option "operating_currency" "USD"
+
+2023-01-01 open Assets:Cash          USD
+2023-01-01 open Assets:Broker:STRICT "STRICT"
+2023-01-01 open Assets:Broker:FIFO   "FIFO"
+2023-01-01 open Assets:Broker:AVG    "AVERAGE"
+2023-01-01 open Income:PnL           USD
+2023-01-01 open Equity:Opening-Balances
+
+2023-01-01 * "Fund"
+  Assets:Cash            100000.00 USD
+  Equity:Opening-Balances
+
+2023-01-10 * "Buy lot one"
+  Assets:Broker:FIFO   10 AAPL {130.25 USD}
+  Assets:Broker:AVG    10 AAPL {130.25 USD}
+  Assets:Broker:STRICT 10 AAPL {130.25 USD}
+  Assets:Cash
+
+2023-04-10 * "Buy lot two, different price"
+  Assets:Broker:FIFO   10 AAPL {165.50 USD}
+  Assets:Broker:AVG    10 AAPL {165.50 USD}
+  Assets:Broker:STRICT 10 AAPL {165.50 USD}
+  Assets:Cash
+
+; FIFO picks the January lot; AVERAGE has merged them; STRICT has to be told which.
+2023-09-01 * "Sell twelve"
+  Assets:Broker:FIFO   -12 AAPL {} @ 180.00 USD
+  Assets:Broker:AVG    -12 AAPL {} @ 180.00 USD
+  Assets:Broker:STRICT -10 AAPL {130.25 USD} @ 180.00 USD
+  Assets:Broker:STRICT  -2 AAPL {165.50 USD} @ 180.00 USD
+  Assets:Cash          6480.00 USD
+  Assets:Cash          6480.00 USD
+  Assets:Cash          6480.00 USD
+  Income:PnL
+
+2023-12-31 price AAPL 192.53 USD

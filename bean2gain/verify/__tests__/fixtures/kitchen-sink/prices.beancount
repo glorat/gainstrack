@@ -1,0 +1,6 @@
+; Included from main.beancount — its entries carry this filename in their metadata, so the
+; comparison also covers the include path itself.
+2022-03-15 price VWRL  88.4321 GBP
+2022-06-30 price VWRL  81.1900 GBP
+2022-06-30 price EUR    0.8612 GBP
+2022-12-30 price VWRL  92.0500 GBP
