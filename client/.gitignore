@@ -56,6 +56,12 @@ pnpm-debug.log*
 # Goldens dumped from a private ledger — machine-local, regenerate with `pnpm run fixtures:local`
 src/lib/__tests__/fixtures/local/
 
+# Machine-local tests whose ASSERTIONS contain private data, so the spec itself can never be
+# committed. Vitest discovers them via its default glob; see local/README.md for the convention
+# and for when to use an existsSync-guarded tracked spec instead.
+/local/*
+!/local/README.md
+
 # Firebase emulator artifacts (left behind by `pnpm run test:rules`)
 firestore-debug.log
 ui-debug.log

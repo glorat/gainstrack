@@ -33,12 +33,28 @@ import { FIXTURE_NAMES } from 'src/lib/__tests__/fixtureNames';
 
 const FIXTURES = path.join(__dirname, 'fixtures');
 
+/**
+ * A `bean-check` that actually runs.
+ *
+ * Existence is not enough: a stale install leaves an executable shim on PATH whose entry point
+ * imports a `beancount` that is no longer there, so it exits non-zero on everything. Selecting it
+ * would turn this whole file red for a reason that has nothing to do with the ledger. Probe it
+ * once and treat a non-working binary the same as an absent one.
+ */
 function findBeanCheck(): string | undefined {
+  const works = (p: string) =>
+    fs.existsSync(p) && spawnSync(p, ['--version'], { encoding: 'utf8' }).status === 0;
+
   const configured = process.env.BEAN_CHECK;
-  if (configured && fs.existsSync(configured)) return configured;
-  const found = spawnSync('which', ['bean-check'], { encoding: 'utf8' });
-  const p = found.stdout?.trim();
-  return p && fs.existsSync(p) ? p : undefined;
+  if (configured) {
+    if (works(configured)) return configured;
+    // Explicitly asked for and broken is worth saying out loud — silently skipping would look
+    // like the check ran.
+    console.warn(`BEAN_CHECK=${configured} is not a working bean-check; skipping beancount oracle`);
+    return undefined;
+  }
+  const onPath = spawnSync('which', ['bean-check'], { encoding: 'utf8' }).stdout?.trim();
+  return onPath && works(onPath) ? onPath : undefined;
 }
 
 const BEAN_CHECK = findBeanCheck();

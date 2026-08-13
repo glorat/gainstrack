@@ -22,6 +22,10 @@ export default defineConfig({
     globals: true,
     environment: 'jsdom',
     setupFiles: ['test/setup.ts'],
+    // No explicit `include`: the default `**/*.{test,spec}.*` glob is what lets `local/` work.
+    // That directory is gitignored and holds specs whose assertions contain private data, so
+    // they run for whoever has them and simply do not exist for anyone else — see
+    // local/README.md before narrowing this.
     coverage: {
       provider: 'v8',
     },

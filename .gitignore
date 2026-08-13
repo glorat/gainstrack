@@ -8,6 +8,7 @@ lib_managed/
 .cache
 python/__pycache__/
 python/env/
+__pycache__/
 .idea
 
 .settings
