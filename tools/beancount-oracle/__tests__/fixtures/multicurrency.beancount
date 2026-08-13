@@ -1,0 +1,34 @@
+; One account holding two currencies — legal beancount, and the case gainstrack has to split
+; into per-currency sub-accounts because it ties one account to one asset. This is the fixture
+; that exercises the account-folding map.
+option "operating_currency" "GBP"
+
+2019-01-01 open Assets:Wallet
+2019-01-01 open Assets:UkBank GBP
+2019-01-01 open Income:Salary GBP
+2019-01-01 open Expenses:Travel
+2019-01-01 open Equity:Opening
+
+2019-01-05 * "Employer" "January salary"
+  Assets:UkBank    3000.00 GBP
+  Income:Salary   -3000.00 GBP
+
+; Cross-currency: a two-leg transfer at an explicit rate, which lifts to the two-amount `tfr`.
+2019-02-01 * "Bureau" "Buy euros for the trip"
+  Assets:Wallet      500.00 EUR @ 0.88 GBP
+  Assets:UkBank     -440.00 GBP
+
+2019-02-03 * "Cash withdrawal"
+  Assets:Wallet      200.00 GBP
+  Assets:UkBank     -200.00 GBP
+
+2019-02-10 * "Hotel" "Paris"
+  Expenses:Travel    180.00 EUR
+  Assets:Wallet     -180.00 EUR
+
+2019-02-11 * "Taxi" "Home from the airport"
+  Expenses:Travel     35.00 GBP
+  Assets:Wallet      -35.00 GBP
+
+2019-03-01 balance Assets:Wallet 320.00 EUR
+2019-03-01 balance Assets:Wallet 165.00 GBP

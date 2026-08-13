@@ -6,7 +6,7 @@
 // should ever start to — which is also what keeps this side free of beancount's licence.
 //
 // How the document arrives is not this file's business, and there are two ways: `dump.py` run
-// against a local python (`tools/beancount-import/cli.ts`), or the same script under WASM on
+// against a local python (`tools/beancount-oracle/cli.ts`), or the same script under WASM on
 // bean2gain's origin, answering over `postMessage` (`src/lib/bean2gain/bridge.ts`). Both produce
 // the identical document, which is why the conversion below is written once.
 //

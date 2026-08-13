@@ -1,0 +1,33 @@
+{
+  "name": "@gainstrack/beancount-oracle",
+  "version": "0.1.0",
+  "description": "The beancount oracle for the beancount -> gainstrack import, plus an optional CLI. The conversion itself is in client/src/lib/import/; never links beancount.",
+  "license": "AGPL-3.0-only",
+  "private": true,
+  "type": "commonjs",
+  "packageManager": "pnpm@11.6.0",
+  "scripts": {
+    "import": "esbuild cli.ts --bundle --platform=node --format=cjs --alias:src=../../client/src --log-level=warning --outfile=node_modules/.cache/beancount-oracle/cli.cjs && node node_modules/.cache/beancount-oracle/cli.cjs",
+    "test:unit": "vitest run",
+    "test:unit:watch": "vitest",
+    "type-check": "tsc --noEmit",
+    "lint": "eslint ."
+  },
+  "dependencies": {
+    "@js-joda/core": "^6.0.1",
+    "decimal.js": "^10.6.0"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@types/node": "^24.13.2",
+    "esbuild": "^0.27.2",
+    "eslint": "^10.5.0",
+    "globals": "^17.6.0",
+    "typescript": "^6.0.3",
+    "typescript-eslint": "^8.61.0",
+    "vitest": "^4.1.8"
+  },
+  "engines": {
+    "node": ">= 24"
+  }
+}

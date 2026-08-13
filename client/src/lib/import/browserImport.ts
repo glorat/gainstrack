@@ -1,7 +1,7 @@
 // The beancount import as the browser runs it: convert, lower, lift, and then check the result
 // against beancount itself before anyone is asked to keep it.
 //
-// The CLI has an oracle — `tools/beancount-import/__tests__/beancountImportOracle.spec.ts` loads
+// The CLI has an oracle — `tools/beancount-oracle/__tests__/beancountImportOracle.spec.ts` loads
 // the original ledger and the re-export through the same beancount and compares totals. A user
 // importing through the website has no python and no test suite, and "trust the migration report"
 // is not an answer when the subject is somebody's entire financial history. So the same check

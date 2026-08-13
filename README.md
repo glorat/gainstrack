@@ -140,7 +140,7 @@ Everything that touches beancount is therefore quarantined in `bean2gain/`: a pa
 scripts for the command line, and around them a standalone website. Run from the CLI it distributes
 no beancount at all — the user installs it — so no obligation is triggered; the website ships a
 wheel and really does distribute it, which is why it is a separate program rather than a directory
-of ours. `tools/beancount-import/` consumes only the JSON, and GPL does not reach a program's
+of ours. `tools/beancount-oracle/` consumes only the JSON, and GPL does not reach a program's
 output, so that JSON and the `.gainstrack` file it becomes are unencumbered.
 
 Three rules keep the two programs two:

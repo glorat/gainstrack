@@ -1,0 +1,60 @@
+; The everyday shapes: income with withholding, ordinary spending, transfers between
+; accounts, a checkpoint, and the directives that have no gainstrack equivalent.
+option "operating_currency" "USD"
+
+2019-01-01 open Assets:Bank:Checking USD
+2019-01-01 open Assets:Bank:Savings USD
+2019-01-01 open Liabilities:CreditCard USD
+2019-01-01 open Income:Salary USD
+2019-01-01 open Expenses:Tax:Withholding USD
+2019-01-01 open Expenses:Food USD
+2019-01-01 open Expenses:Rent USD
+2019-01-01 open Equity:Opening
+
+2019-01-01 commodity USD
+  name: "US Dollar"
+
+; The reason `tx` had to exist: three legs, and no gainstrack command produces three.
+2019-01-31 * "ACME Corp" "Salary January"
+  Assets:Bank:Checking     4500.00 USD
+  Expenses:Tax:Withholding 1500.00 USD
+  Income:Salary           -6000.00 USD
+
+; Two legs, so the lifting passes should recognize these.
+2019-02-01 * "Landlord" "February rent"
+  Expenses:Rent          1200.00 USD
+  Assets:Bank:Checking  -1200.00 USD
+
+2019-02-03 * "Grocer" "Weekly shop"
+  Expenses:Food            85.40 USD
+  Liabilities:CreditCard  -85.40 USD
+
+2019-02-05 * "Move savings"
+  Assets:Bank:Savings    1000.00 USD
+  Assets:Bank:Checking  -1000.00 USD
+
+; An elided amount — the loader interpolates it, so the importer never has to.
+2019-02-10 * "Grocer" "Elided leg"
+  Expenses:Food            42.00 USD
+  Liabilities:CreditCard
+
+; Opening balances via pad: the loader synthesizes a flagged transaction, and the assertion
+; that follows is what gainstrack's `bal` says in one line.
+2019-01-01 pad Assets:Bank:Savings Equity:Opening
+2019-02-06 balance Assets:Bank:Savings 6000.00 USD
+
+; A movement ON the assertion date. This is here to pin the one-day shift between the two
+; formats: beancount checks a `balance` at the START of its date, so this transaction is NOT
+; included, while a gainstrack `bal` states the balance the following morning and would be. Get
+; the shift wrong and 2300 becomes 2000 — which is why the assertion below is deliberately on a
+; date where the two answers differ.
+2019-02-11 * "Grocer" "Same-day shop"
+  Expenses:Food           300.00 USD
+  Assets:Bank:Checking   -300.00 USD
+
+; A bare assertion, with nothing to plug.
+2019-02-11 balance Assets:Bank:Checking 2300.00 USD
+
+2019-02-12 note Assets:Bank:Checking "called the bank"
+2019-02-13 event "location" "London"
+2019-03-01 close Liabilities:CreditCard

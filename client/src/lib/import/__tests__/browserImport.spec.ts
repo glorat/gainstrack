@@ -4,7 +4,7 @@
 // and, above all, the verification: that the round trip runs, that a preserved ledger reports
 // clean, and that each way an import can go wrong is actually noticed rather than swallowed. The
 // conversion itself is pinned by `beancountImport.spec.ts` and, against a real beancount, by
-// `tools/beancount-import/__tests__/beancountImportOracle.spec.ts`.
+// `tools/beancount-oracle/__tests__/beancountImportOracle.spec.ts`.
 
 import type { ConvertResult, LedgerFile } from 'src/lib/bean2gain/bridge';
 import { DumpDocument } from '../beancountDump';

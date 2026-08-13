@@ -1,0 +1,7 @@
+# esbuild ships a postinstall that swaps its JS entry point for the native binary. pnpm has
+# already written .bin/esbuild as a shim that runs the target through `node`, so letting that
+# postinstall run leaves `esbuild` invoking a Mach-O file as JavaScript. This package calls the
+# esbuild CLI directly (see the "import" script), unlike client/ which only uses the JS API — so
+# here the shim has to survive and the optimization has to be skipped.
+allowBuilds:
+  esbuild: false

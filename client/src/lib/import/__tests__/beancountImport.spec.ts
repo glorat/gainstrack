@@ -1,6 +1,6 @@
 // One case per row of the lowering mapping table, plus the lifting rules.
 //
-// The oracle spec in `tools/beancount-import/` is the stronger check, but it needs python and
+// The oracle spec in `tools/beancount-oracle/` is the stronger check, but it needs python and
 // beancount and so it skips on most machines. These run everywhere, and they pin the individual
 // decisions rather than the aggregate — when the oracle goes red, this file says which mapping
 // is wrong. The dump documents they run on are built by `dumpFixtures.ts`.

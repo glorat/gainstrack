@@ -1,0 +1,53 @@
+; Lot costs, a sale that realizes a gain, a dividend, and a commission — the shapes where the
+; import is genuinely lossy (lot identity) and where the 2-posting lifting rules must NOT fire.
+option "operating_currency" "USD"
+
+2019-01-01 open Assets:Bank USD
+2019-01-01 open Assets:Broker:Cash USD
+2019-01-01 open Assets:Broker:AAPL AAPL
+2019-01-01 open Assets:Broker:VBMPX VBMPX
+2019-01-01 open Income:Broker:Dividend USD
+2019-01-01 open Income:Broker:Gains USD
+2019-01-01 open Expenses:Broker:Commission USD
+2019-01-01 open Equity:Opening
+
+2019-01-01 commodity AAPL
+  name: "Apple Inc"
+
+2019-01-01 * "Opening" "Seed the bank account"
+  Assets:Bank      50000.00 USD
+  Equity:Opening
+
+2019-01-05 * "Fund the brokerage"
+  Assets:Broker:Cash  20000.00 USD
+  Assets:Bank        -20000.00 USD
+
+; Buy with an explicit lot cost and a commission — three legs, stays a raw tx.
+2019-02-01 * "Broker" "Buy AAPL"
+  Assets:Broker:AAPL           100 AAPL {150.00 USD}
+  Expenses:Broker:Commission  9.95 USD
+  Assets:Broker:Cash     -15009.95 USD
+
+2019-03-01 * "Broker" "Dividend"
+  Assets:Broker:Cash        73.00 USD
+  Income:Broker:Dividend   -73.00 USD
+
+; A sale: beancount's booking resolves the lot, and the realized gain is an explicit leg.
+2019-06-01 * "Broker" "Sell half at a gain"
+  Assets:Broker:AAPL           -50 AAPL {150.00 USD} @ 175.00 USD
+  Assets:Broker:Cash       8740.05 USD
+  Expenses:Broker:Commission  9.95 USD
+  Income:Broker:Gains     -1250.00 USD
+
+; Fractional shares at a per-unit cost: 5.030 x 95.43 is 480.0129, not 480.01. Beancount
+; tolerates the 0.0029 and carries it; gainstrack's `tx` will not, so the importer has to make
+; the residue an explicit posting. Without that this transaction does not balance at all — which
+; is the point of having it in the corpus.
+2019-04-01 * "Broker" "Reinvest into fractional shares"
+  Assets:Broker:VBMPX     5.030 VBMPX {95.43 USD}
+  Assets:Broker:Cash    -480.01 USD
+
+2019-01-01 price AAPL 150.00 USD
+2019-06-01 price AAPL 175.00 USD
+
+2019-07-01 balance Assets:Broker:AAPL 50 AAPL

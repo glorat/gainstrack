@@ -50,7 +50,7 @@ Walkthrough: `docs/beancount-import.md`. **Root `README.md` § Licensing is the 
 
 - `bean2gain/` — **GPL-2.0-only**, the entire GPL side: `python/dump.py` (ledger → versioned JSON), `python/balances.py`, and a standalone Pyodide website that runs the same script in a browser. Own package, own domain, meant to be extractable — nothing inside points out. `bean2gain/README.md`.
 - `client/src/lib/import/` — the conversion, AGPL-3.0 and part of the app: `beancountDump.ts` (the JSON contract + schema-version check), `beancountImport.ts` (lowering: every beancount transaction becomes a raw `tx`), `lift.ts` (intent rules, each disableable), `browserImport.ts` + `balances.ts` (the in-browser front end and its round-trip check, behind `/port/beancount`, lazily routed). It reads JSON and never beancount syntax. The CLI oracle imports `balances.ts`'s `fold`/`pluggedAmounts` rather than reimplementing them — keep it that way or the two drift.
-- `tools/beancount-import/` — AGPL-3.0, own pnpm package: `cli.ts` and the oracle spec, i.e. only what cannot go in a browser bundle. Imports `client/src` via an `src/*` alias; one-directional and the only coupling. `tools/beancount-import/README.md`.
+- `tools/beancount-oracle/` — AGPL-3.0, own pnpm package, holding what cannot go in a browser bundle. Its reason to exist is the oracle spec: the only test that runs a real beancount over the conversion, and unmovable (`client/` would carry a suite that spawns python and skips by default; `bean2gain/` may not hold gainstrack logic). `cli.ts` ships alongside it as an optional front end — nothing imports it and the browser import covers the same ground. Imports `client/src` via an `src/*` alias; one-directional and the only coupling. `tools/beancount-oracle/README.md`.
 
 Nothing in `client/` imports `bean2gain/` — it drives a hidden iframe over `postMessage` (`client/src/lib/bean2gain/bridge.ts`, an independent implementation of `bean2gain/docs/embedding.md`). Three rules keep the two programs two:
 
@@ -109,11 +109,11 @@ pnpm run test:unit        # bridge protocol + browser module + comparison agains
 pnpm run verify:fixtures  # the differential harness, human-readable
 ```
 
-### Beancount import CLI (run from `tools/beancount-import/`)
-Own package, own lockfile — `pnpm install` here, separately from `client/`. The conversion it drives lives in `client/src/lib/import/` and is tested by `client/`'s suite; only the oracle runs here.
+### Beancount oracle, and the import CLI beside it (run from `tools/beancount-oracle/`)
+Own package, own lockfile — `pnpm install` here, separately from `client/`. The conversion itself lives in `client/src/lib/import/` and is tested by `client/`'s suite; what runs here is the oracle, plus an optional CLI nothing depends on.
 ```bash
-pnpm run import ledger.json -o ledger.gainstrack   # see docs/beancount-import.md
-BEAN_PYTHON=… pnpm run test:unit                   # the oracle round trip
+BEAN_PYTHON=… pnpm run test:unit                   # the oracle round trip — the point of the package
+pnpm run import ledger.json -o ledger.gainstrack   # optional CLI; see docs/beancount-import.md
 pnpm run type-check      # tsc --noEmit (no Vue here)
 pnpm run lint
 ```
@@ -210,11 +210,11 @@ The layers, in rough order of what they catch:
 | `bean2gain/src/bridge` ‡ | the `postMessage` contract | over a real MessageChannel with a stub engine |
 | `client/lib/bean2gain/bridge` | the client half of that contract | jsdom plays the converter; no beancount involved |
 
-† in `tools/beancount-import/`, ‡ in `bean2gain/` — separate packages, each with its own `pnpm run test:unit`. `client/`'s does not run either. Everything unmarked is `client/`'s.
+† in `tools/beancount-oracle/`, ‡ in `bean2gain/` — separate packages, each with its own `pnpm run test:unit`. `client/`'s does not run either. Everything unmarked is `client/`'s.
 
 **The generated corpus** (`fixtures/fuzz/`) is 150 valid ledgers plus 150 targeted mutations of them, produced deterministically by `ledgerGenerator.ts`. Both the ledgers and the gzipped goldens are checked in on purpose: once Scala is gone they are the only surviving record of its behaviour, and `fuzzDiff` becomes a regression suite without any change. Regenerate with `pnpm run fixtures:fuzz`, then re-run `DumpFuzzGoldens`.
 
-**The import oracle** checks the beancount importer by running the original ledger and the converted-then-re-exported one through the *same* beancount loader, comparing per-(account, currency) totals — on both the lowered and the lifted output, so a failure says which half broke. It lives in its own package and `client/`'s suite does not run it: `cd tools/beancount-import && BEAN_PYTHON=… pnpm run test:unit`, which skips whole without that python. Details and how to widen the corpus: `tools/beancount-import/README.md`.
+**The import oracle** checks the beancount importer by running the original ledger and the converted-then-re-exported one through the *same* beancount loader, comparing per-(account, currency) totals — on both the lowered and the lifted output, so a failure says which half broke. It lives in its own package and `client/`'s suite does not run it: `cd tools/beancount-oracle && BEAN_PYTHON=… pnpm run test:unit`, which skips whole without that python. Details and how to widen the corpus: `tools/beancount-oracle/README.md`.
 
 **Beancount as an independent oracle** (`beancountOracle.spec.ts`) is the one check that does not depend on Scala at all: it runs our export through the real beancount CLI, which verifies every transaction balances, no account is used before opening, and `AllState.balances` reconciles with the postings `TransactionState` produced. Opt in with `BEAN_CHECK=/path/to/bean-check`; it skips cleanly otherwise.
 

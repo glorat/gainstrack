@@ -1,0 +1,6 @@
+node_modules/
+
+# Real beancount ledgers to run the import oracle against: the spec globs the directory and simply
+# finds nothing on a fresh clone. Drop any .beancount file in here — your own, or `bean-example -o`
+# output — and it joins the corpus.
+__tests__/fixtures/local/
