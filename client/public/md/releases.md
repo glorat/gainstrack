@@ -1,6 +1,26 @@
 
 # Release notes
 
+### v3.0.0
+August 2026
+- **Gainstrack now runs in your browser.** Parsing, every report and every export are computed
+  locally instead of on a server. Nothing about your ledger leaves the machine to be turned into
+  a report, and the app stays responsive while you edit.
+- **Your data is saved as you go**, to your own Firestore document, as a stream of changes rather
+  than a file that gets overwritten. Signed out or browsing anonymously, everything still works —
+  it simply computes locally and saves nothing.
+- **Sign in with Google**, replacing the old Auth0 login and its glitches.
+- **Import from Beancount** — Import / Export → *Import from Beancount*. Your ledger is loaded by
+  beancount itself, running in your browser, then converted. The result is exported back out and
+  checked against your original account by account, so you can see the migration is faithful
+  before you trust it.
+- **Export to Beancount** now includes price and balance directives, so a re-import lands where
+  it started.
+- **Two new commands**: `tx` for a transaction with any number of postings (a paycheck with
+  withholding, say), and `close` for booking a period's income and expenses to equity.
+- The new in-browser engine was checked against the previous one over hundreds of generated
+  ledgers, and against beancount as an independent second opinion.
+
 ### v2.4.0
 Dec
 Auth0 login glitches cleaned up
