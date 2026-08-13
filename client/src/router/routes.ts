@@ -79,6 +79,13 @@ const gainstrackRoutes: RouteRecordRaw[] = [
     meta: {title: 'Import/Export'},
   },
   {
+    // Lazily loaded on purpose: this is the only page that pulls in the converter bridge and the
+    // beancount conversion, and neither belongs in the bundle everyone else downloads.
+    path: '/port/beancount',
+    component: () => import('pages/ImportBeancount.vue'),
+    meta: {title: 'Import Beancount'},
+  },
+  {
     path: '/history',
     component: History,
     meta: {title: 'History'},

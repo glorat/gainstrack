@@ -9,6 +9,12 @@
             <li><a href="#" @click.prevent="exportBeancount">Export Beancount...</a></li>
         </ul>
 
+        You can also migrate a ledger in from Beancount. It is loaded by beancount itself in your
+        browser, and the result is checked back against beancount before you keep anything
+        <ul>
+            <li><router-link to="/port/beancount">Import from Beancount...</router-link></li>
+        </ul>
+
         If you have exported your Gainstrack file, you can re-upload and apply it here
       <q-file
         v-model="file"
