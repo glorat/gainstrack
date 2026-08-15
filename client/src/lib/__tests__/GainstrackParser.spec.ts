@@ -65,6 +65,49 @@ describe('GainstrackParser per-command shape', () => {
     expect(c.options).toMatchObject({ multiAsset: true, fundingAccount: 'Assets:Bank', automaticReinvestment: false });
   });
 
+  // The cash flow tags. TypeScript-only: Scala's `applyOption` rejects both keys, so these are
+  // asserted directly rather than through a fixture ledger — there could be no golden for one.
+  describe('cash flow options', () => {
+    test('cashEquivalent parses as a boolean, both ways', () => {
+      const [t] = parse('2019-01-01 open Assets:Bank GBP\n  cashEquivalent: true');
+      expect(t.options).toMatchObject({ cashEquivalent: true });
+      const [f] = parse('2019-01-01 open Assets:Bank:Escrow GBP\n  cashEquivalent: false');
+      expect(f.options).toMatchObject({ cashEquivalent: false });
+    });
+
+    test('cashflowClass accepts the three IAS 7 classes plus adjustment', () => {
+      // `adjustment` is not an activity: it marks an account whose flows are real movements of cash
+      // that belong outside the subtotals, which is how a suspense account is expressed.
+      for (const c of ['operating', 'investing', 'financing', 'adjustment']) {
+        expect(parse(`2019-01-01 open Assets:X GBP\n  cashflowClass: ${c}`)[0].options)
+          .toMatchObject({ cashflowClass: c });
+      }
+    });
+
+    test('an unrecognised cashflowClass is rejected rather than stored', () => {
+      // A misspelt class would match no account at report time and fall through to the root-based
+      // default — a wrong statement with no error anywhere. It has to fail at parse.
+      const p = new GainstrackParser();
+      expect(() => p.parseString('2019-01-01 open Assets:X GBP\n  cashflowClass: operatng')).toThrow();
+      expect(p.parserErrors[0].message).toContain('cashflowClass must be one of');
+    });
+
+    test('neither option is present unless written', () => {
+      // This is what keeps every existing golden intact: the DTO is byte-identical to before.
+      const [c] = parse('2019-01-01 open Assets:Bank GBP');
+      expect(c.options).not.toHaveProperty('cashEquivalent');
+      expect(c.options).not.toHaveProperty('cashflowClass');
+    });
+
+    test('unknown account options still throw', () => {
+      // The guard the `commodity` command deliberately lacks: an `open`'s options drive the
+      // generator, so a typo must error rather than become inert metadata.
+      const p = new GainstrackParser();
+      expect(() => p.parseString('2019-01-01 open Assets:X GBP\n  fundingAcount: Assets:Bank')).toThrow();
+      expect(p.parserErrors[0].message).toContain('Unknown account option');
+    });
+  });
+
   test('earn (simple + with target)', () => {
     expect(parse('2019-01-01 earn Salary 1000 USD')[0]).toMatchObject({
       accountId: 'Income:Salary', commandType: 'earn', change: { number: 1000, ccy: 'USD' },

@@ -22,6 +22,9 @@ export interface AccountOptions {
     autoReinvestment: boolean
     multiAsset: boolean
     generatedAccount: boolean
+    /** Cash flow tags; absent unless the `open` directive set them. See `gen/commands.ts`. */
+    cashEquivalent?: boolean
+    cashflowClass?: 'operating' | 'investing' | 'financing' | 'adjustment'
 }
 
 export interface Amount {

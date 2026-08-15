@@ -11,6 +11,7 @@
 
 import { LocalDate } from '@js-joda/core';
 import { AccountCommandDTO, Amount, Posting as DTOPosting } from 'src/lib/assetdb/models';
+import { CASHFLOW_TAGS, CashflowTag } from 'src/lib/gen/cashflowClass';
 
 // Display `description` and a couple of derived fields read known-present amounts.
 
@@ -498,6 +499,17 @@ function stringToBool(valueStr: string): boolean {
   return valueStr !== 'false';
 }
 
+/**
+ * `cashflowClass` is the one option with a closed value set, so it validates rather than storing
+ * whatever was typed. A misspelt class would otherwise match no account at report time and simply
+ * make the flow fall through to the root-based default — a wrong statement with no error anywhere.
+ */
+function parseCashflowClass(value: string): CashflowTag {
+  const found = CASHFLOW_TAGS.find(c => c === value);
+  if (!found) throw new ParseError(`cashflowClass must be one of ${CASHFLOW_TAGS.join('|')}, got: ${value}`);
+  return found;
+}
+
 // Apply an indented `key: value` metadata line to the last command (mirrors withOption).
 function applyOption(p: Parsed, key: string, value: string): void {
   if (p.kind === 'open') {
@@ -508,6 +520,12 @@ function applyOption(p: Parsed, key: string, value: string): void {
       case 'fundingAccount': opts.fundingAccount = value; break;
       case 'multiAsset': opts.multiAsset = stringToBool(value); break;
       case 'automaticReinvestment': opts.automaticReinvestment = stringToBool(value); break;
+      // TypeScript-only options. Scala's parser throws `Unknown account option` on both, so a
+      // ledger using them cannot be dumped as a golden — the cash flow tests use inline ledgers.
+      case 'cashEquivalent': opts.cashEquivalent = stringToBool(value); break;
+      case 'cashflowClass': opts.cashflowClass = parseCashflowClass(value); break;
+      // Kept deliberately: unlike `commodity` below, an `open`'s options drive the generator, so a
+      // typo (`fundingAcount:`) has to error rather than become inert metadata.
       default: throw new ParseError(`Unknown account option: ${key}`);
     }
   } else if (p.kind === 'commodity') {

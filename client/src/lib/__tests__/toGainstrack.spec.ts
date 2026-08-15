@@ -103,4 +103,28 @@ describe('serialization details that must not drift', () => {
     expect(blocksFor('option "operating_currency" "GBP"\n2019-01-01 open Assets:Bank GBP')[0])
       .toEqual(['option "operating_currency" "GBP"']);
   });
+
+  // The cash flow tags — TypeScript-only, so inline rather than golden-backed. This round trip is
+  // what stops a save silently dropping them: the Firestore stream stores these very strings.
+  describe('cash flow options', () => {
+    test('cashEquivalent and cashflowClass round trip', () => {
+      expect(one('2019-01-01 open Assets:Bank GBP\n  cashEquivalent: true\n  cashflowClass: operating'))
+        .toEqual(['2019-01-01 open Assets:Bank GBP', '  cashEquivalent:true', '  cashflowClass: operating']);
+    });
+
+    test('an explicit false survives, unlike the Scala-mirrored booleans', () => {
+      // `hidden:false` and friends are dropped because absent and false mean the same thing. A
+      // false `cashEquivalent` does NOT: it is the only way to carve a child out of a tagged
+      // parent, so dropping it here would silently re-include the account on the next save.
+      expect(one('2019-01-01 open Assets:Bank:Escrow GBP\n  cashEquivalent: false'))
+        .toEqual(['2019-01-01 open Assets:Bank:Escrow GBP', '  cashEquivalent:false']);
+      expect(one('2019-01-01 open Assets:Bank GBP\n  multiAsset: false'))
+        .toEqual(['2019-01-01 open Assets:Bank GBP']);
+    });
+
+    test('an untagged open is unchanged', () => {
+      expect(one('2019-01-01 open Assets:Bank GBP\n  multiAsset: true'))
+        .toEqual(['2019-01-01 open Assets:Bank GBP', '  multiAsset:true']);
+    });
+  });
 });

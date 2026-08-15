@@ -36,6 +36,19 @@ function boolStr(name: string, value: unknown): CommandBlock {
   return value === true ? [`  ${name}:true`] : [];
 }
 
+/**
+ * `boolStrDefined` — emitted whenever the option is present, `false` included.
+ *
+ * `boolStr` above drops a false because every Scala-mirrored boolean defaults to false, so the
+ * absent and false spellings mean the same thing. `cashEquivalent` is different: it resolves by
+ * walking UP the account tree, so an explicit `false` on a child is the only way to carve it out
+ * of a tagged parent. Dropping it here would silently re-include the account on the next save,
+ * and since the Firestore stream stores the serialized text, that rewrite gets persisted.
+ */
+function boolStrDefined(name: string, value: unknown): CommandBlock {
+  return typeof value === 'boolean' ? [`  ${name}:${value}`] : [];
+}
+
 /** `stringStr` — emitted only when set AND non-empty, with a space after the colon. */
 function stringStr(name: string, value: unknown): CommandBlock {
   return typeof value === 'string' && value !== '' ? [`  ${name}: ${value}`] : [];
@@ -60,7 +73,12 @@ function setStr(name: string, values: unknown): CommandBlock {
   return [`  ${name}: ${items.join(',')}`];
 }
 
-/** AccountOptions.toGainstrack — field order is significant and matches the Scala source. */
+/**
+ * AccountOptions.toGainstrack — field order is significant and matches the Scala source.
+ *
+ * The two cash flow options are appended AFTER the Scala-mirrored block rather than slotted into
+ * it, so an untagged account serializes byte-identically to before and every export golden holds.
+ */
 function accountOptionLines(options: Record<string, unknown>): CommandBlock {
   return [
     ...acctStr('expenseAccount', options.expenseAccount),
@@ -71,6 +89,8 @@ function accountOptionLines(options: Record<string, unknown>): CommandBlock {
     ...boolStr('automaticReinvestment', options.automaticReinvestment),
     ...boolStr('hidden', options.hidden),
     ...boolStr('placeholder', options.placeholder),
+    ...boolStrDefined('cashEquivalent', options.cashEquivalent),
+    ...stringStr('cashflowClass', options.cashflowClass),
   ];
 }
 

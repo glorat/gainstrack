@@ -3,6 +3,7 @@
 
 import { Amount as DTOAmount } from 'src/lib/assetdb/models';
 import { Parsed, ParsedPosting, Kind } from 'src/lib/GainstrackParser';
+import { CashflowTag } from 'src/lib/gen/cashflowClass';
 import { GAmount } from 'src/lib/gen/money';
 import { GPosting } from 'src/lib/gen/posting';
 
@@ -19,6 +20,13 @@ export interface GAccountOptions {
   expenseAccount?: string;
   incomeAccount?: string;
   fundingAccount?: string;
+  // The cash flow tags. Both are OPTIONAL and absent unless written, which is what keeps them off
+  // every existing golden — see the note on `defaultAccountOptions` in the parser. They are also
+  // TypeScript-only: Scala's `applyOption` rejects both keys, so no fixture ledger may use them.
+  /** This account and its descendants are cash / cash equivalents. */
+  cashEquivalent?: boolean;
+  /** Flows against this account and its descendants classify here. */
+  cashflowClass?: CashflowTag;
 }
 
 export interface OpenCmd { kind: 'open'; date: string; accountId: string; assetId: string; options: GAccountOptions; }

@@ -97,3 +97,30 @@ describe('account creation is first-write-wins', () => {
     expect(acct.length).toBe(new Set(acct.map(a => a.accountId)).size);
   });
 });
+
+describe('the cash flow options are TypeScript-only', () => {
+  // Scala's `applyOption` throws `Unknown account option` on both keys, so no fixture ledger may
+  // use them and no differential test can reach them — the same position `close` and `tx` are in.
+  // What is pinned here is the property the whole design rests on: an UNTAGGED `open` produces
+  // exactly the options Scala produces, so every golden stays valid. If someone ever adds these
+  // to `defaultAccountOptions()`, this fails and the parity suites fail with it.
+  const optionsOf = (text: string) => {
+    const parser = new GainstrackParser();
+    parser.parseString(text);
+    return parser.getCommands()[0].options as Record<string, unknown>;
+  };
+
+  test('an untagged open carries neither key', () => {
+    expect(Object.keys(optionsOf('2019-01-01 open Assets:Bank USD')).sort()).toEqual([
+      'automaticReinvestment', 'description', 'generatedAccount',
+      'hidden', 'multiAsset', 'placeholder', 'tradingAccount',
+    ]);
+  });
+
+  test('a tagged open carries them and nothing else extra', () => {
+    const opts = optionsOf('2019-01-01 open Assets:Bank USD\n  cashEquivalent: true\n  cashflowClass: operating');
+    expect(opts.cashEquivalent).toBe(true);
+    expect(opts.cashflowClass).toBe('operating');
+    expect(Object.keys(opts)).toHaveLength(9);
+  });
+});

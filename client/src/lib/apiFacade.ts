@@ -10,6 +10,7 @@ import {AppStore} from 'src/stores';
 import {PLExplainDTO, pnlExplain, pnlExplainMonthly} from 'src/lib/PLExplain';
 import {accountInvestmentReport, CashflowTable, irrSummary} from 'src/lib/AccountInvestmentReport';
 import {AllStateEx} from 'src/lib/AllStateEx';
+import {cashflowStatement, CashflowStatement} from 'src/lib/cashflow';
 
 /*
  * The purpose of this file is to control the wiring between state from Component+Pinia
@@ -47,6 +48,10 @@ export async function apiIrrDetail(store: AppStore, props: Record<string, any>) 
 
 export async function apiAccountSummary(store: AppStore, props: Record<string, any>) {
   return apiLocalAccountSummary(store, props)
+}
+
+export async function apiCashflowStatement(store: AppStore, props: {fromDate: string, toDate: string}) {
+  return apiLocalCashflowStatement(store, props)
 }
 
 // Type safe command functions
@@ -165,6 +170,16 @@ function apiLocalPnlExplainDetail(store: AppStore, args: {fromDate:string, toDat
   const allCmds = store.allState.commands;
   return [pnlExplain(startDate, endDate, store.allPostingsEx, allCmds, store.baseCcy, store.fxConverter)];
 
+}
+
+function apiLocalCashflowStatement(store: AppStore, args: {fromDate:string, toDate:string}): CashflowStatement {
+  const state = store.allState;
+  // Whole transactions rather than flat postings: which class a flow belongs to is decided by the
+  // OTHER legs of its transaction, so the grouping cannot be recovered from `allPostingsEx`.
+  return cashflowStatement(
+    store.allTxs, state.commands, state.accounts, store.baseCcy,
+    LocalDate.parse(args.fromDate), LocalDate.parse(args.toDate), store.fxConverter,
+  );
 }
 
 function apiLocalIrrSummary(store: AppStore) {

@@ -17,6 +17,7 @@ Gainstrack is a personal finance/investment tracking application. Users write fi
 - `src/lib/ledger/` — the Firestore event stream: `replay.ts` (events → commands), `firestoreLedger.ts` (read), `append.ts` (optimistic-concurrency write), `baseLedger.ts` (starter ledger for users with no history)
 - `src/lib/export/` — `gainstrackExport.ts` and `beancountExport.ts` generate downloadable files locally (ported from `ExportController`)
 - `src/lib/AllStateEx.ts` — wraps `AllState` to derive postings and FX conversion from raw data
+- `src/lib/cashflow.ts` — the statement of cash flows (`/cash_flow`)
 - `src/lib/assetdb/models.ts` — all shared TypeScript types (DTOs)
 - `src/lib/pricer.ts`, `src/lib/fx.ts` — FX conversion chain used for local compute
 - Auth: Firebase Auth with Google sign-in (popup flow); setup in `src/lib/assetdb/myfirebase.ts`. Only properly signed-in users persist — anonymous and signed-out visitors compute locally and never write (`ledgerUid` / `canPersist` in the store).
@@ -43,6 +44,7 @@ Gainstrack is a personal finance/investment tracking application. Users write fi
 - `com.gainstrack.lifecycle.GainstrackEntity` — CQRS aggregate root wrapping the generator
 - Nothing the UI needs routes through this any more. It still compiles and links because the build graph is `web → quotes → core → dlstore` and `quotes` imports `com.gainstrack.core._` for the money/asset primitives. Its remaining active role is as the **oracle for parity tests** (see Testing).
 - The `close` and `tx` commands are TypeScript-only and have no Scala counterpart, so Scala cannot be an oracle for either. `tx` is the raw multi-posting transaction (`gen/__tests__/tx.spec.ts` pins its rules); it exists because every other command produces a fixed shape of postings, so a paycheck with withholding or any other N-legged transaction had no representation at all.
+- The `open` options `cashEquivalent` and `cashflowClass` are likewise TypeScript-only — Scala's `applyOption` throws `Unknown account option` on both, so **no fixture ledger may use them** and their tests are inline. They are optional and absent unless written, which is exactly what keeps every existing golden byte-identical; `gen/invariants.spec.ts` pins that. `cashflow.ts` resolves them by walking UP the account id at report time rather than through `GAccountState`: generated sub-accounts and interpolated parents are built with `defaultOptions()`, so making a *record* carry a tag downward would mean editing the parity-sensitive account fold. Resolve from the declared set and `gen/` stays untouched.
 
 ### 7. The beancount import — three packages either side of a licence boundary
 
@@ -203,6 +205,7 @@ The layers, in rough order of what they catch:
 | `gen/tx` | the `tx` command's rules | TS-only command, so no differential test can |
 | `lib/import/beancountImport` | one case per lowering/lifting row | inline dump documents, needs no python |
 | `lib/import/balances` | the totals arithmetic `balances.py` does | what the in-browser verification rests on |
+| `lib/cashflow` | tag resolution, classification, reconciliation | inline ledgers — tagged ones cannot be fixtures |
 | `lib/import/browserImport` | the import + its round trip, converter stubbed | one test per way an import can go wrong |
 | `beancountImportOracle` † | beancount ledger → import → export → **beancount** | balances compared through the same loader on both sides; opt-in via `BEAN_PYTHON` |
 | `bean2gain/verify/parity` ‡ | `dump.py` under WASM vs native CPython | 4 ledgers incl. a 2037-entry `bean-example`, byte-identical |
@@ -223,6 +226,7 @@ The layers, in rough order of what they catch:
   - Scala `BigDecimal` preserves trailing-zero scale where decimal.js normalizes (`__tests__/scale.ts` strips it, and every spec that does also asserts the residue is *only* trailing zeros).
   - Scala iterates account `Set`s in JVM hash order where TS sorts.
   - Scala's `Set[AccountCreation]` keys on the whole case class, so one account id can be stored **twice** with different options and resolved by hash order — it even emits duplicate beancount `open` directives, which bean-check rejects. The TS port keys by id and is first-write-wins. This is deliberately *better* than the oracle, and `gen/invariants.spec.ts` pins the choice since no differential test can.
+  - The `cashEquivalent` / `cashflowClass` account options exist only in TS. Untagged ledgers are unaffected, so the divergence is invisible to every golden; a tagged one simply cannot be dumped from Scala.
 - Some ledgers are legal gainstrack but not expressible in beancount (`open X GBP` constrains the account to GBP; gainstrack lets any currency post into it). `beancountOracle` detects and skips those, and reports how many.
 
 ## Data Flow

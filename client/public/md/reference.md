@@ -100,6 +100,47 @@ Addition options include:
 * fundingAccount: default account for funding to be sourced from
 * multiAsset: if "true", account will be multi-asset
 * automaticReinvestment: if "true", automatic reinvestment accounting is enabled (to be documented)
+* cashEquivalent: if "true", the account is cash for the cash flow statement (see below)
+* cashflowClass: how flows against this account are classified (`operating`, `investing`, `financing` or `adjustment`)
+
+### Cash flow tags
+
+The cash flow statement is driven entirely by these two options. Both are inherited by
+sub-accounts, so tagging `Assets:Bank` also covers `Assets:Bank:GBP` and any other sub-account
+gainstrack generates for you.
+
+```
+2019-01-01 open Assets:Bank GBP
+  cashEquivalent: true
+2019-01-01 open Assets:Property GBP
+  cashflowClass: investing
+```
+
+`cashEquivalent` declares what you treat as cash and cash equivalents. Nothing is cash by default.
+The statement asks you to say so rather than guessing, because the total it reports is the change
+in exactly these accounts. A transfer between two cash accounts is therefore not a cash flow at all
+and cancels on its own.
+
+`cashflowClass` classifies the *other* side of a flow. Without it, accounts fall back to a default
+by type: `Income` and `Expenses` are operating, `Equity` is financing, and `Assets` and
+`Liabilities` are investing. That default cannot tell a supplier payment from a machine purchase,
+which is what the tag is for. A credit card, for instance, is usually operating rather than the
+investing its `Liabilities` root would imply.
+
+The fourth value, `adjustment`, marks an account whose flows are real movements of cash that are
+not an activity (a suspense account a `bal` plugs to, say). Those are reported on their own line
+and still count toward the net change in cash, but stay out of the three activity subtotals. No
+command is special-cased: a balance assertion posts to the account you name and is classified by
+it, so `fund X Equity:Opening 100` and `bal X 100 USD Equity:Opening` land in the same place.
+
+A child can opt out of a tagged parent with `cashEquivalent: false`, which is how you exclude an
+escrow balance from an otherwise-cash bank tree.
+
+These two options are exported as beancount `open` metadata (`cash-equivalent`, `cashflow-class`),
+where the same convention is queryable from BQL and fava.
+
+See [Cash flow statement](/docs/cashflow) for the full guide, including how multi-posting
+transactions are split and what the "possible miscodings" table is telling you.
 
 ### Close
 This directive has not been defined, unlike other accounting platforms like Beancount. It may be added in future if required.

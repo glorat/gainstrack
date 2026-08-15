@@ -95,6 +95,44 @@ describe('account directives', () => {
       'plugin "beancount.plugins.book_conversions" "Assets:Broker,Income:Broker:USD"',
     ]);
   });
+
+  // The cash flow tags travel as beancount `open` metadata, which is where beancount itself puts
+  // this convention — so `open_meta()` / the `#accounts` table can group on it in fava. No golden
+  // covers these lines because no fixture ledger is tagged (Scala's parser rejects the options).
+  describe('cash flow metadata', () => {
+    test('cashEquivalent becomes a beancount boolean', () => {
+      expect(accountLines(account({ cashEquivalent: true }))).toEqual([
+        '2019-01-01 open Assets:Broker USD',
+        '  cash-equivalent: TRUE',
+      ]);
+      // false is emitted too — it is a meaningful carve-out from a tagged parent, not a default
+      expect(accountLines(account({ cashEquivalent: false }))).toEqual([
+        '2019-01-01 open Assets:Broker USD',
+        '  cash-equivalent: FALSE',
+      ]);
+    });
+
+    test('cashflowClass becomes a quoted string', () => {
+      expect(accountLines(account({ cashflowClass: 'investing' }))).toEqual([
+        '2019-01-01 open Assets:Broker USD',
+        '  cashflow-class: "investing"',
+      ]);
+    });
+
+    test('metadata precedes the book_conversions plugin line', () => {
+      // Order matters: beancount attaches metadata to the directive it follows, so a plugin line
+      // in between would orphan it.
+      expect(accountLines(account({ cashEquivalent: true, tradingAccount: true, incomeAccount: 'Income:Broker:USD' }))).toEqual([
+        '2019-01-01 open Assets:Broker USD',
+        '  cash-equivalent: TRUE',
+        'plugin "beancount.plugins.book_conversions" "Assets:Broker,Income:Broker:USD"',
+      ]);
+    });
+
+    test('an untagged account emits nothing extra', () => {
+      expect(accountLines(account({}))).toEqual(['2019-01-01 open Assets:Broker USD']);
+    });
+  });
 });
 
 describe('the assembled file', () => {

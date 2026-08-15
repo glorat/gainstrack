@@ -10,3 +10,13 @@ Unlike beancount, Gainstrack is (currently) not suitable for maintaining precise
 It may be best to start with an example. Beancount comes with a sample file at [https://raw.githubusercontent.com/beancount/beancount/master/examples/simple/basic.beancount](https://raw.githubusercontent.com/beancount/beancount/master/examples/simple/basic.beancount)
 
 The gainstrack equivalent can be found at (TBD link)
+
+## Reporting differences
+Fava builds an income statement and a balance sheet from your ledger with no configuration, but not
+a cash flow statement. Beancount's data model has no notion of operating, investing and financing
+activities, so the classification has to be reconstructed by hand in a query or a script.
+
+Gainstrack produces one. The convention is the one beancount itself points at, metadata on the
+`open` directive, so it survives an export in a form Fava can query. Two things differ. The tags are
+inherited by sub-accounts, and gainstrack knows which command produced each posting, giving it a
+second opinion to check your classification against. See [Cash flow statement](/docs/cashflow).

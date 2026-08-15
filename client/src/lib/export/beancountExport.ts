@@ -59,11 +59,34 @@ function commandLines(cmd: BeancountCmd): string[] {
   }
 }
 
+/**
+ * The cash flow tags, as beancount `open` metadata.
+ *
+ * Gainstrack's convention IS beancount's convention — account metadata on the open directive,
+ * reachable from BQL via `open_meta()` or the `#accounts` table — so an exported ledger carries it
+ * across intact and fava can group on it. Untagged accounts emit nothing, which is what keeps
+ * every byte-exact export golden valid.
+ *
+ * Beancount metadata keys must be lowercase and its booleans are `TRUE`/`FALSE`, so the names are
+ * transliterated rather than copied.
+ */
+function cashflowMetaLines(a: GAccount): string[] {
+  const lines: string[] = [];
+  if (typeof a.options.cashEquivalent === 'boolean') {
+    lines.push(`  cash-equivalent: ${a.options.cashEquivalent ? 'TRUE' : 'FALSE'}`);
+  }
+  if (a.options.cashflowClass !== undefined) {
+    lines.push(`  cashflow-class: "${a.options.cashflowClass}"`);
+  }
+  return lines;
+}
+
 /** `AccountCreation.toBeancount` — the open directive, plus book_conversions for trading accounts. */
 export function accountLines(a: GAccount): string[] {
   const open = `${a.date} open ${a.accountId} ${a.assetId}`;
-  if (!a.options.tradingAccount) return [open];
-  return [open, `plugin "beancount.plugins.book_conversions" "${a.accountId},${a.options.incomeAccount}"`];
+  const meta = cashflowMetaLines(a);
+  if (!a.options.tradingAccount) return [open, ...meta];
+  return [open, ...meta, `plugin "beancount.plugins.book_conversions" "${a.accountId},${a.options.incomeAccount}"`];
 }
 
 export function headerLines(operatingCurrency: string): string[] {

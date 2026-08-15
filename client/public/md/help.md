@@ -6,3 +6,4 @@ Gainstrack provides a lot of documentation. A high-level overview of how it’s 
 - [Background](/docs/background) discuss key topics and concepts at a fairly high level and provide useful background information and explanation.
 - [Reference](/docs/reference) contains technical references
 - [How-to](/docs/howto) guides are recipes. They guide you through the steps involved in addressing key problems and use-cases.
+  - [Cash flow statement](/docs/cashflow) sets up the third primary statement by tagging which accounts are cash.

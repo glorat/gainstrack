@@ -109,6 +109,12 @@ const gainstrackRoutes: RouteRecordRaw[] = [
   {path: '/pnlexplain', component: () => import(/* webpackChunkName: "PnlExplain" */ '../pages/PnlExplain.vue'), meta: {title: ' P&L Explain'}},
   {path: '/pnlexplain/:fromDate/:toDate', component: PnlExplainDetail,
     name: 'pnldetail', meta: {title: ' P&L Explain'}, props: true},
+  // Both spellings hit the same component: the bare path defaults to a trailing year, the dated
+  // one is what the date editors push. Lazily loaded — it is a report, not part of startup.
+  {path: '/cash_flow', component: () => import(/* webpackChunkName: "CashFlow" */ '../pages/CashFlow.vue'),
+    meta: {title: 'Cash Flow'}},
+  {path: '/cash_flow/:fromDate/:toDate', component: () => import(/* webpackChunkName: "CashFlow" */ '../pages/CashFlow.vue'),
+    name: 'cashflow', meta: {title: 'Cash Flow'}, props: true},
   {path: '/help', component: Markdown,
     props: {page: 'help.md'},  meta: {title: 'Help'}},
   {path: '/releases', component: Markdown,
@@ -126,7 +132,7 @@ const gainstrackRoutes: RouteRecordRaw[] = [
 
 const gainstrackNavBar = [
   ['assets', 'command'],
-  ['balance_sheet', 'income_statement', 'journal'],
+  ['balance_sheet', 'income_statement', 'cash_flow', 'journal'],
   ['pnlexplain', 'irr', 'aa'],
   ['prices', 'quotes', 'settings', 'user_profile', 'assetdb'],
   ['port', 'editor', 'add', 'history'],

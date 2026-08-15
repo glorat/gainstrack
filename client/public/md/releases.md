@@ -1,5 +1,32 @@
 # Release notes
 
+### v3.1.0
+
+August 2026
+
+- **Cash flow statement**, the third primary statement alongside the balance sheet and income
+  statement. It shows where the money actually went, split into operating, investing and financing
+  activities. Find it under _Cash Flow_ in the sidebar.
+- Two new `open` options drive it: `cashEquivalent` marks which accounts you treat as cash, and
+  `cashflowClass` classifies the other side of a flow. Both are inherited by sub-accounts, so you
+  tag a bank once rather than every currency and sub-account under it.
+- Balance assertions need no special handling. The difference a `bal` plugs is classified by the
+  account you plug to, so unitemised spending shows up as spending. If you keep books to an
+  accounting standard, tag the suspense account `cashflowClass: adjustment` and its flows are held
+  out of the activity subtotals while still counting toward the change in cash.
+- Transfers between your own cash accounts cancel rather than counting twice, multi-posting
+  transactions split across activities leg by leg, and foreign cash held across a period reports
+  its revaluation on the exchange-rate line the standards ask for.
+- A posting that states a cost basis or a price is valued by it, using the same weight rule that
+  makes the transaction balance. Buying shares with a commission reports the shares as investing
+  and the commission as operating, with no separate `price` directive needed. This is the shape an
+  imported beancount trade arrives in, since a cost basis is kept rather than interpreted.
+- Because gainstrack knows which command produced each posting, the report offers a second opinion:
+  flows where your account tag and the command disagree are listed as **possible miscodings**.
+- **Export to Beancount** carries the tags across as `open` metadata, so Fava can query them.
+  Neither beancount nor Fava produces this statement itself. See
+  [Cash flow statement](/docs/cashflow).
+
 ### v3.0.0
 
 August 2026
