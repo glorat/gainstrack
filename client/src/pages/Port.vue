@@ -13,6 +13,7 @@
         browser, and the result is checked back against beancount before you keep anything
         <ul>
             <li><router-link to="/port/beancount">Import from Beancount...</router-link></li>
+            <li><router-link to="/docs/beancount-import">What survives a conversion</router-link></li>
         </ul>
 
         If you have exported your Gainstrack file, you can re-upload and apply it here

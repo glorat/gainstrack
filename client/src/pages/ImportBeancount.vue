@@ -13,6 +13,11 @@
       Include every file your ledger pulls in with <code>include</code>, and
       name the top-level one below. The first conversion downloads a Python
       interpreter, so it takes a moment.
+      <router-link to="/docs/beancount-import"
+        >What survives a conversion</router-link
+      >
+      covers what is recognised, what is kept as a plain transaction, and what
+      is lost.
     </p>
 
     <q-file
