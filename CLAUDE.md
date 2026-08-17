@@ -48,7 +48,7 @@ Gainstrack is a personal finance/investment tracking application. Users write fi
 
 ### 7. The beancount import — three packages either side of a licence boundary
 
-Walkthrough: `docs/beancount-import.md`. **Root `README.md` § Licensing is the authority on the boundary** — read it before moving code across, and do not restate its argument here.
+Walkthrough: `client/public/md/beancount-import.md`, published at `/docs/beancount-import`. **Root `README.md` § Licensing is the authority on the boundary** — read it before moving code across, and do not restate its argument here.
 
 - `bean2gain/` — **GPL-2.0-only**, the entire GPL side: `python/dump.py` (ledger → versioned JSON), `python/balances.py`, and a standalone Pyodide website that runs the same script in a browser. Own package, own domain, meant to be extractable — nothing inside points out. `bean2gain/README.md`.
 - `client/src/lib/import/` — the conversion, AGPL-3.0 and part of the app: `beancountDump.ts` (the JSON contract + schema-version check), `beancountImport.ts` (lowering: every beancount transaction becomes a raw `tx`), `lift.ts` (intent rules, each disableable), `browserImport.ts` + `balances.ts` (the in-browser front end and its round-trip check, behind `/port/beancount`, lazily routed). It reads JSON and never beancount syntax. The CLI oracle imports `balances.ts`'s `fold`/`pluggedAmounts` rather than reimplementing them — keep it that way or the two drift.
@@ -115,7 +115,7 @@ pnpm run verify:fixtures  # the differential harness, human-readable
 Own package, own lockfile — `pnpm install` here, separately from `client/`. The conversion itself lives in `client/src/lib/import/` and is tested by `client/`'s suite; what runs here is the oracle, plus an optional CLI nothing depends on.
 ```bash
 BEAN_PYTHON=… pnpm run test:unit                   # the oracle round trip — the point of the package
-pnpm run import ledger.json -o ledger.gainstrack   # optional CLI; see docs/beancount-import.md
+pnpm run import ledger.json -o ledger.gainstrack   # optional CLI; see tools/beancount-oracle/README.md
 pnpm run type-check      # tsc --noEmit (no Vue here)
 pnpm run lint
 ```
