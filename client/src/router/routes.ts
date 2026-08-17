@@ -19,6 +19,8 @@ import {RouteRecordRaw} from 'vue-router';
 import Markdown from 'pages/Markdown.vue';
 import Assets from 'pages/Assets.vue';
 import BalanceSheet from 'pages/BalanceSheet.vue';
+import ChangesInEquity from 'pages/ChangesInEquity.vue';
+import TrialBalance from 'pages/TrialBalance.vue';
 import Quotes from 'pages/Quotes.vue';
 import Settings from 'pages/Settings.vue';
 import SourceErrors from 'components/SourceErrors.vue';
@@ -62,6 +64,8 @@ const gainstrackRoutes: RouteRecordRaw[] = [
     meta: {title: 'Assets', icon: matAccountBalance}
   },
   {path: '/income_statement', component: IncomeStatement, meta: {title: 'Income Statement'}},
+  {path: '/changes_in_equity', component: ChangesInEquity, meta: {title: 'Changes in Equity'}},
+  {path: '/trial_balance', component: TrialBalance, meta: {title: 'Trial Balance'}},
   {path: '/journal', component: Journal, meta: {title: 'Journal'}},
   {path: '/prices', component: Prices, meta: {title: 'Trade Prices'}},
   {path: '/quotes', component: Quotes, meta: {title: 'Market Prices'}},
@@ -132,7 +136,7 @@ const gainstrackRoutes: RouteRecordRaw[] = [
 
 const gainstrackNavBar = [
   ['assets', 'command'],
-  ['balance_sheet', 'income_statement', 'cash_flow', 'journal'],
+  ['balance_sheet', 'income_statement', 'changes_in_equity', 'cash_flow', 'trial_balance', 'journal'],
   ['pnlexplain', 'irr', 'aa'],
   ['prices', 'quotes', 'settings', 'user_profile', 'assetdb'],
   ['port', 'editor', 'add', 'history'],

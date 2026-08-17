@@ -11,6 +11,7 @@ import {PLExplainDTO, pnlExplain, pnlExplainMonthly} from 'src/lib/PLExplain';
 import {accountInvestmentReport, CashflowTable, irrSummary} from 'src/lib/AccountInvestmentReport';
 import {AllStateEx} from 'src/lib/AllStateEx';
 import {cashflowStatement, CashflowStatement} from 'src/lib/cashflow';
+import {changesInEquity, ChangesInEquity, trialBalance, TrialBalance} from 'src/lib/statements';
 
 /*
  * The purpose of this file is to control the wiring between state from Component+Pinia
@@ -52,6 +53,17 @@ export async function apiAccountSummary(store: AppStore, props: Record<string, a
 
 export async function apiCashflowStatement(store: AppStore, props: {fromDate: string, toDate: string}) {
   return apiLocalCashflowStatement(store, props)
+}
+
+export async function apiChangesInEquity(store: AppStore, props: {fromDate: string, toDate: string}): Promise<ChangesInEquity> {
+  // No conversion argument: statement builders always value in the base currency (see lib/statements).
+  return changesInEquity(
+    store.allStateEx, LocalDate.parse(props.fromDate), LocalDate.parse(props.toDate), store.fxConverter,
+  )
+}
+
+export async function apiTrialBalance(store: AppStore, props: {asOf: string}): Promise<TrialBalance> {
+  return trialBalance(store.allStateEx, LocalDate.parse(props.asOf), store.fxConverter)
 }
 
 // Type safe command functions
