@@ -8,7 +8,8 @@ import {
   emptyAllState,
   ParseError,
   PostingEx,
-  Transaction, TreeTableDTO
+  TimeSeries,
+  Transaction
 } from '../lib/assetdb/models'
 import { GlobalPricer } from '../lib/pricer'
 import { AllStateEx } from '../lib/AllStateEx'
@@ -20,26 +21,21 @@ import { BASE_GAINSTRACK, baseLedgerBlocks } from '../lib/ledger/baseLedger'
 import { GainstrackParser } from '../lib/GainstrackParser'
 import { toCommandBlocks } from '../lib/toGainstrack'
 import { includes, keys, mergeWith } from 'lodash'
-import { balanceTreeTable } from '../lib/TreeTable'
+import { sectionTrees, SectionTrees } from '../lib/statements/sectionTrees'
 import { LocalDate } from '@js-joda/core'
 import { toCommodityGainstrack } from '../lib/commandDefaulting'
 import { QuoteSource } from 'src/lib/assetdb/assetDb'
 import { User } from 'firebase/auth'
 import { Notify } from 'quasar'
 
-export interface TimeSeries {
-  x: string[]
-  y: number[]
-  name: string
-}
+// Re-exported for existing callers; the definition now lives in the pure DTO module so the FX
+// layer can import it without pulling in this store.
+export type { TimeSeries } from '../lib/assetdb/models'
 
-export interface AccountBalances {
-  Assets?: TreeTableDTO
-  Liabilities?: TreeTableDTO
-  Equities?: TreeTableDTO
-  Income?: TreeTableDTO
-  Expenses?: TreeTableDTO
-}
+// The five statement-root trees the balance-sheet and income-statement pages render. Shape and
+// composition now live in lib/statements/sectionTrees so the browser and the headless CLI share one
+// definition (including the pre-close rule); kept as `AccountBalances` here for existing callers.
+export type AccountBalances = SectionTrees
 
 type FXConverterWrapper = (fx: SingleFXConversion) => SingleFXConverter
 
@@ -142,21 +138,7 @@ export const useAppStore = defineStore('app', () => {
   async function computeBalances() {
     if (!balances.value.Assets) {
       const today = (dateOverride.value ?? LocalDate.now()) as LocalDate
-      const forCategory = (cat: string, postings: PostingEx[] = allPostingsEx.value) => balanceTreeTable(
-        cat, today, baseCcy.value, conversion.value,
-        allState.value.accounts, postings, fxConverter.value
-      )
-      // An income statement reports activity before the books were closed; a `close` command moves
-      // that activity to equity, so including its postings here would net the statement to zero.
-      const cmds = allState.value.commands
-      const preClose = allPostingsEx.value.filter(p => cmds[p.originIndex]?.commandType !== 'close')
-      const result: AccountBalances = {
-        Assets: forCategory('Assets'),
-        Liabilities: forCategory('Liabilities'),
-        Expenses: forCategory('Expenses', preClose),
-        Income: forCategory('Income', preClose),
-        Equities: forCategory('Equity')
-      }
+      const result = sectionTrees(allStateEx.value, today, conversion.value, fxConverter.value)
       balances.value = result
       return result
     }

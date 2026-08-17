@@ -4,6 +4,17 @@ export interface AccountCreation {
     options: AccountOptions;
 }
 
+/**
+ * A named price/quote series. Lives here (a pure DTO module) rather than in the Pinia store so the
+ * FX layer and everything downstream stays importable without pulling in the browser shell. The
+ * store re-exports it for existing callers.
+ */
+export interface TimeSeries {
+    x: string[]
+    y: number[]
+    name: string
+}
+
 export interface AccountDTO {
     date: string
     accountId: string
