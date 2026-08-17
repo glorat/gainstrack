@@ -1,5 +1,18 @@
 # Release notes
 
+### v3.2.0
+
+August 2026
+
+- **Statement of changes in equity** and a **trial balance**, joining the balance sheet, income
+  statement and cash flow as built-in views. Find them in the sidebar under _Changes in Equity_
+  and _Trial Balance_.
+- Changes in equity rolls each equity account forward — opening balance, movement, closing balance
+  — so a share issue and the period's result sit side by side.
+- The trial balance lists every account's debit or credit as at a date and checks the two columns
+  agree — the quickest way to see the books tie before you read the statements. It is a pre-closing
+  view: income and expense accounts still show, and retained earnings sits at its opening balance.
+
 ### v3.1.0
 
 August 2026
