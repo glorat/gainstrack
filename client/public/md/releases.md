@@ -2,7 +2,7 @@
 
 ### v3.16.0
 
-Unreleased
+August 2026
 
 - **Your data is saved as you go**, to your own Firestore document, as a stream of changes rather
   than a file that gets overwritten. Signed out or browsing anonymously, everything still works -
