@@ -7,7 +7,7 @@ Unreleased
 - **Your data is saved as you go**, to your own Firestore document, as a stream of changes rather
   than a file that gets overwritten. Signed out or browsing anonymously, everything still works -
   it simply computes locally and saves nothing.
-- **Import from Beancount** — Import / Export → _Import from Beancount_. Your ledger is loaded by
+- **Import from Beancount**, under Import / Export → _Import from Beancount_. Your ledger is loaded by
   beancount itself, running in your browser, then converted. The result is exported back out and
   checked against your original account by account, so you can see the migration is faithful
   before you trust it.
@@ -42,11 +42,12 @@ Unreleased
 - **Statement of changes in equity** and a **trial balance**, joining the balance sheet, income
   statement and cash flow as built-in views. Find them in the sidebar under _Changes in Equity_
   and _Trial Balance_.
-- Changes in equity rolls each equity account forward — opening balance, movement, closing balance
-  — so a share issue and the period's result sit side by side.
+- Changes in equity rolls each equity account forward (opening balance, movement, closing balance),
+  so a share issue and the period's result sit side by side.
 - The trial balance lists every account's debit or credit as at a date and checks the two columns
-  agree — the quickest way to see the books tie before you read the statements. It is a pre-closing
-  view: income and expense accounts still show, and retained earnings sits at its opening balance.
+  agree. That is the quickest way to see the books tie before you read the statements. It is a
+  pre-closing view: income and expense accounts still show, and retained earnings sits at its
+  opening balance.
 
 ### v3.14.3
 

@@ -24,6 +24,11 @@ db/
 gainstrack*.json
 .venv/
 
+# Node dependencies, at any depth. Each package (client/, bean2gain/, tools/*) also ignores its
+# own, so that they stay self-contained if extracted — this catches the repo root, which has a
+# node_modules of its own for semantic-release and was otherwise showing up as untracked.
+node_modules/
+
 # Private ledgers (real usage profiles). Kept out of git but usable as local regression
 # fixtures — see client/src/lib/__tests__/localFixtures.ts.
 # Anchored so the synthetic ledgers in core/src/test/resources stay tracked.

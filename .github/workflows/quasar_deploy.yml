@@ -164,6 +164,13 @@ jobs:
     # an npm release with no corresponding tag would be unreproducible.
     needs: [ pre_check, build ]
     if: needs.pre_check.outputs.new_release_published == 'true'
+    # Trusted publishing (OIDC): npm mints a short-lived token from this job's identity, so there
+    # is no NPM_TOKEN secret to leak or rotate. npm revoked classic tokens in December 2025 and
+    # caps granular ones at 90 days, so this is now the supported path rather than a nicety.
+    # The trusted publisher registered on npmjs.com names THIS file — renaming it breaks publishing.
+    permissions:
+      id-token: write
+      contents: read
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
@@ -176,6 +183,10 @@ jobs:
         with:
           node-version: 24.x
           registry-url: 'https://registry.npmjs.org'
+      - name: Ensure npm supports trusted publishing
+        # OIDC needs npm >= 11.5.1; the version bundled with Node varies by patch release, and an
+        # old one fails in a way that looks like an auth problem rather than a version problem.
+        run: npm install -g npm@latest && npm --version
       - name: Install client dependencies
         # The CLI bundles the engine out of client/src and shares the client's single
         # @js-joda/core copy — see tools/gainstrack-cli/README.md. Both must be on disk to build.
@@ -192,10 +203,10 @@ jobs:
         working-directory: ./tools/gainstrack-cli
       - name: Publish
         # `prepack` runs the esbuild bundle; the tarball is dist/cli.cjs, LICENSE and README alone.
+        # No token: auth comes from the OIDC permissions above. Provenance attestations are
+        # generated automatically under trusted publishing, so `--provenance` is not passed.
         run: npm publish
         working-directory: ./tools/gainstrack-cli
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
   release_backend:
     name: Build and test backend
     runs-on: ubuntu-latest
