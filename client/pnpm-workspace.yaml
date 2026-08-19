@@ -1,11 +1,11 @@
+# Security overrides: transitive deps whose parents still allow a vulnerable range.
+# Each one must name the advisory it closes, so it can be retired once the parent
+# catches up — a pin with no stated reason is how the last set went two months stale.
 overrides:
-  '@firebase/auth>undici': '^8.4.1'
-  serialize-javascript: '^7.0.5'
-  tmp: '^0.2.7'
-  # Temporary pins for packages published 2026-06-12; remove once all are >24h old (~18:00 UTC 2026-06-13)
-  eslint: '10.4.1'
-  protobufjs: '7.6.3'
-  bare-stream: '2.13.2'
+  # GHSA-g7r4-m6w7-qqqr — esbuild <0.28.1 lets any site read arbitrary files off the
+  # dev server. vite 8 already asks for ^0.28.1; only @quasar/app-vite caps at ^0.27.4,
+  # so the shared resolution loses without this. Retire when app-vite widens its range.
+  esbuild: '^0.28.1'
 
 allowBuilds:
   '@firebase/util': true

@@ -24,9 +24,9 @@
     "pyodide": "0.29.3"
   },
   "devDependencies": {
-    "@types/node": "^24.10.1",
+    "@types/node": "^24.13.3",
     "typescript": "^5.9.3",
-    "vite": "^7.2.7",
-    "vitest": "^3.2.4"
+    "vite": "^7.3.6",
+    "vitest": "^3.2.7"
   }
 }

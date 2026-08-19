@@ -14,18 +14,18 @@
     "lint": "eslint ."
   },
   "dependencies": {
-    "@js-joda/core": "^6.0.1",
+    "@js-joda/core": "^6.1.0",
     "decimal.js": "^10.6.0"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
-    "@types/node": "^24.13.2",
-    "esbuild": "^0.27.2",
-    "eslint": "^10.5.0",
-    "globals": "^17.6.0",
+    "@types/node": "^24.13.3",
+    "esbuild": "^0.28.2",
+    "eslint": "^10.8.1",
+    "globals": "^17.11.0",
     "typescript": "^6.0.3",
-    "typescript-eslint": "^8.61.0",
-    "vitest": "^4.1.8"
+    "typescript-eslint": "^8.67.0",
+    "vitest": "^4.1.10"
   },
   "engines": {
     "node": ">= 24"
