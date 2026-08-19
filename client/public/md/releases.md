@@ -1,22 +1,22 @@
 # Release notes
 
-### v3.2.0
+### v3.16.0
 
-August 2026
+Unreleased
 
-- **Statement of changes in equity** and a **trial balance**, joining the balance sheet, income
-  statement and cash flow as built-in views. Find them in the sidebar under _Changes in Equity_
-  and _Trial Balance_.
-- Changes in equity rolls each equity account forward — opening balance, movement, closing balance
-  — so a share issue and the period's result sit side by side.
-- The trial balance lists every account's debit or credit as at a date and checks the two columns
-  agree — the quickest way to see the books tie before you read the statements. It is a pre-closing
-  view: income and expense accounts still show, and retained earnings sits at its opening balance.
-
-### v3.1.0
-
-August 2026
-
+- **Your data is saved as you go**, to your own Firestore document, as a stream of changes rather
+  than a file that gets overwritten. Signed out or browsing anonymously, everything still works -
+  it simply computes locally and saves nothing.
+- **Import from Beancount** — Import / Export → _Import from Beancount_. Your ledger is loaded by
+  beancount itself, running in your browser, then converted. The result is exported back out and
+  checked against your original account by account, so you can see the migration is faithful
+  before you trust it.
+- **Export to Beancount** now includes price and balance directives, so a re-import lands where
+  it started.
+- **Two new commands**: `tx` for a transaction with any number of postings (a paycheck with
+  withholding, say), and `close` for booking a period's income and expenses to equity.
+- The in-browser engine was checked against the previous one over hundreds of generated ledgers,
+  and against beancount as an independent second opinion.
 - **Cash flow statement**, the third primary statement alongside the balance sheet and income
   statement. It shows where the money actually went, split into operating, investing and financing
   activities. Find it under _Cash Flow_ in the sidebar.
@@ -36,31 +36,32 @@ August 2026
   imported beancount trade arrives in, since a cost basis is kept rather than interpreted.
 - Because gainstrack knows which command produced each posting, the report offers a second opinion:
   flows where your account tag and the command disagree are listed as **possible miscodings**.
-- **Export to Beancount** carries the tags across as `open` metadata, so Fava can query them.
-  Neither beancount nor Fava produces this statement itself. See
+- **Export to Beancount** carries the cash flow tags across as `open` metadata, so Fava can query
+  them. Neither beancount nor Fava produces this statement itself. See
   [Cash flow statement](/docs/cashflow).
+- **Statement of changes in equity** and a **trial balance**, joining the balance sheet, income
+  statement and cash flow as built-in views. Find them in the sidebar under _Changes in Equity_
+  and _Trial Balance_.
+- Changes in equity rolls each equity account forward — opening balance, movement, closing balance
+  — so a share issue and the period's result sit side by side.
+- The trial balance lists every account's debit or credit as at a date and checks the two columns
+  agree — the quickest way to see the books tie before you read the statements. It is a pre-closing
+  view: income and expense accounts still show, and retained earnings sits at its opening balance.
 
-### v3.0.0
+### v3.14.3
 
-August 2026
+July 2026
+
+- **Sign in with Google**, replacing the old Auth0 login and its glitches. Rolled out across
+  v3.11.1 to v3.14.3, ending with a popup sign-in flow in place of the redirect.
+
+### v3.11.0
+
+June 2026
 
 - **Gainstrack now runs in your browser.** Parsing, every report and every export are computed
   locally instead of on a server. Nothing about your ledger leaves the machine to be turned into
   a report, and the app stays responsive while you edit.
-- **Your data is saved as you go**, to your own Firestore document, as a stream of changes rather
-  than a file that gets overwritten. Signed out or browsing anonymously, everything still works -
-  it simply computes locally and saves nothing.
-- **Sign in with Google**, replacing the old Auth0 login and its glitches.
-- **Import from Beancount** — Import / Export → _Import from Beancount_. Your ledger is loaded by
-  beancount itself, running in your browser, then converted. The result is exported back out and
-  checked against your original account by account, so you can see the migration is faithful
-  before you trust it.
-- **Export to Beancount** now includes price and balance directives, so a re-import lands where
-  it started.
-- **Two new commands**: `tx` for a transaction with any number of postings (a paycheck with
-  withholding, say), and `close` for booking a period's income and expenses to equity.
-- The new in-browser engine was checked against the previous one over hundreds of generated
-  ledgers, and against beancount as an independent second opinion.
 
 ### v2.4.0
 
