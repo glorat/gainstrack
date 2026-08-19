@@ -75,7 +75,7 @@ async function requestToSearchQuery(db: FirebaseFirestore.Firestore, req: Reques
 
 export const quoteSourcesHandler:(db: FirebaseFirestore.Firestore) => (req: Request, resp: Response) => void | Promise<void> = (db) => async(req, res) => {
   const qry = req.body.query ?? [{"where":["asset.type","==","ETF"]}];
-  const rows = await doQuoteSourceQuery(db, qry.query);
+  const rows = await doQuoteSourceQuery(db, qry);
   res.json({rows});
 };
 

@@ -1,6 +1,5 @@
 import {find, includes, keys, get} from 'lodash';
 import {EnumEntry} from './enums';
-import { CollectionReference, Query, QueryConstraint, query, where, orderBy } from 'firebase/firestore';
 
 export interface FieldProperty {
   name: string
@@ -121,18 +120,6 @@ export function searchObjToQuery(obj: any, fieldProps: FieldProperty[], fldFilte
     }
   });
   return ret;
-}
-
-export function applyQueries(col: CollectionReference, queries: any[]): Query {
-  const constraints: QueryConstraint[] = [];
-  queries.forEach(qry => {
-    if (qry.where && qry.where.length === 3) {
-      constraints.push(where(qry.where[0], qry.where[1], qry.where[2]));
-    } else if (qry.orderBy) {
-      constraints.push(orderBy(qry.orderBy[0], qry.orderBy[1]));
-    }
-  });
-  return query(col, ...constraints);
 }
 
 export function getFieldNameList(props: FieldProperty[], prefix = ''): EnumEntry[] {

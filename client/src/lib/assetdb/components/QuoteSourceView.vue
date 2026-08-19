@@ -65,7 +65,8 @@ import { ref, onMounted } from 'vue';
 import { getAllQuoteSources, QuoteSource } from '../assetDb';
 import { investmentAssetProperties, quoteSourceFieldProperties } from '../AssetSchema';
 import ObjectFieldView from './ObjectFieldView.vue';
-import { applyQueries, searchObjToQuery } from '../schema';
+import { searchObjToQuery } from '../schema';
+import { applyQueries } from '../schemaQuery';
 import { query, limit as firestoreLimit, CollectionReference } from 'firebase/firestore';
 
 const props = defineProps<{ qsrc: QuoteSource }>();

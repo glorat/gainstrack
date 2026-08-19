@@ -112,28 +112,42 @@ describe('quoteSourcesHandler', () => {
     const db = fakeDb({quoteSources: {abc: {name: 'Vanguard'}}});
     const res = fakeRes();
 
+    // req.body.query is the array of clauses, as introduced in f663827 and as the
+    // handler's own default literal is shaped.
     await quoteSourcesHandler(db)(
-      {body: {query: {query: []}}} as any,
+      {body: {query: []}} as any,
       res as any
     );
 
     expect(res.body).toEqual({rows: [{id: 'abc', name: 'Vanguard'}]});
   });
 
-  // Characterisation test, not an endorsement. queries.ts defaults `qry` to the ARRAY
-  // `[{where: ['asset.type','==','ETF']}]` and then immediately reads `qry.query`, which
-  // is undefined on an array — so applyQueries gets undefined and throws. The documented
-  // "default ETF query" branch has never worked; every caller must send
-  // `{query: {query: [...]}}`. Pinned here so the throw is visible rather than latent.
-  // Fixing queries.ts to use the array directly should flip this to the rows assertion.
-  it('currently throws instead of applying its default query (known bug)', async () => {
+  it('applies its default ETF query when the request carries none', async () => {
+    const {quoteSourcesHandler} = await import('../src/queries');
+    const db = fakeDb({quoteSources: {abc: {name: 'Vanguard'}}});
+    const res = fakeRes();
+
+    await quoteSourcesHandler(db)({body: {}} as any, res as any);
+
+    expect(res.body).toEqual({rows: [{id: 'abc', name: 'Vanguard'}]});
+  });
+
+  it('passes the default ETF clause through to the query', async () => {
     const {quoteSourcesHandler} = await import('../src/queries');
     const db = fakeDb({quoteSources: {}});
     const res = fakeRes();
+    const seen: any[] = [];
+    const orig = db.collection.bind(db);
+    db.collection = (name: string) => {
+      const col = orig(name);
+      const where = col.where.bind(col);
+      col.where = (...args: any[]) => { seen.push(args); return where(...args); };
+      return col;
+    };
 
-    await expect(
-      quoteSourcesHandler(db)({body: {}} as any, res as any)
-    ).rejects.toThrow(TypeError);
+    await quoteSourcesHandler(db)({body: {}} as any, res as any);
+
+    expect(seen).toEqual([['asset.type', '==', 'ETF']]);
   });
 });
 
