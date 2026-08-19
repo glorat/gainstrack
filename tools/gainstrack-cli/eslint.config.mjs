@@ -6,7 +6,8 @@ import tseslint from 'typescript-eslint'
 import globals from 'globals'
 
 export default tseslint.config(
-  { ignores: ['node_modules/**', '.cache/**'] },
+  // dist/ is the esbuild bundle — generated, and it carries client/src through it.
+  { ignores: ['node_modules/**', '.cache/**', 'dist/**'] },
 
   js.configs.recommended,
   tseslint.configs.recommended,

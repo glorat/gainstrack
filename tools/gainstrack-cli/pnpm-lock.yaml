@@ -7,13 +7,6 @@ settings:
 importers:
 
   .:
-    dependencies:
-      decimal.js:
-        specifier: ^10.6.0
-        version: 10.6.0
-      lodash:
-        specifier: ^4.17.21
-        version: 4.18.1
     devDependencies:
       '@eslint/js':
         specifier: ^10.0.1
@@ -24,6 +17,9 @@ importers:
       '@types/node':
         specifier: ^24.13.2
         version: 24.13.3
+      decimal.js:
+        specifier: ^10.6.0
+        version: 10.6.0
       esbuild:
         specifier: ^0.27.2
         version: 0.27.7
@@ -33,6 +29,9 @@ importers:
       globals:
         specifier: ^17.6.0
         version: 17.11.0
+      lodash:
+        specifier: ^4.17.21
+        version: 4.18.1
       typescript:
         specifier: ^6.0.3
         version: 6.0.3

@@ -2,6 +2,7 @@
   "name": "gainstrack",
   "version": "0.0.0-development",
   "description": "gainstrack",
+  "private": true,
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -17,17 +18,17 @@
     "url": "https://github.com/glorat/gainstrack/issues"
   },
   "homepage": "https://github.com/glorat/gainstrack#readme",
-  "publishConfig": {
-    "access": "restricted"
-  },
   "devDependencies": {
     "semantic-release": "^19.0.5"
   },
   "release": {
-    "branches": ["master"],
+    "branches": [
+      "master"
+    ],
     "plugins": [
       "@semantic-release/commit-analyzer",
       "@semantic-release/release-notes-generator",
-      "@semantic-release/github"]
+      "@semantic-release/github"
+    ]
   }
 }

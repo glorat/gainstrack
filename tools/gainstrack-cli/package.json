@@ -1,29 +1,59 @@
 {
-  "name": "@gainstrack/cli",
-  "version": "0.1.0",
-  "description": "Headless CLI over the gainstrack engine: turns a .gainstrack ledger into the primary financial statements as JSON, plus beancount/gainstrack export and a golden figures check. Imports the engine from client/src/lib; adds no logic of its own.",
+  "name": "gainstrack",
+  "version": "0.0.0-development",
+  "description": "Turn a plain-text gainstrack ledger into the primary financial statements as JSON — balance sheet, income statement, changes in equity, cash flow and trial balance — plus beancount export and a golden figures check.",
+  "keywords": [
+    "accounting",
+    "bookkeeping",
+    "financial-statements",
+    "balance-sheet",
+    "income-statement",
+    "cash-flow",
+    "trial-balance",
+    "beancount",
+    "plain-text-accounting",
+    "ledger"
+  ],
   "license": "AGPL-3.0-only",
-  "private": true,
+  "author": "Kevin Tam <kevin@glorat.net>",
+  "homepage": "https://github.com/glorat/gainstrack/tree/master/tools/gainstrack-cli#readme",
+  "bugs": {
+    "url": "https://github.com/glorat/gainstrack/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/glorat/gainstrack.git",
+    "directory": "tools/gainstrack-cli"
+  },
   "type": "commonjs",
+  "bin": {
+    "gainstrack": "dist/cli.cjs"
+  },
+  "files": [
+    "dist"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
   "packageManager": "pnpm@11.6.0",
   "scripts": {
-    "gainstrack": "esbuild cli.ts --bundle --platform=node --format=cjs --alias:src=../../client/src --alias:@js-joda/core=../../client/node_modules/@js-joda/core --log-level=warning --outfile=node_modules/.cache/gainstrack-cli/cli.cjs && node node_modules/.cache/gainstrack-cli/cli.cjs",
+    "build": "esbuild cli.ts --bundle --platform=node --target=node24 --format=cjs --alias:src=../../client/src --alias:@js-joda/core=../../client/node_modules/@js-joda/core --log-level=warning --outfile=dist/cli.cjs",
+    "prepack": "pnpm run build",
+    "gainstrack": "pnpm run build && node dist/cli.cjs",
     "test:unit": "vitest run",
     "test:unit:watch": "vitest",
     "type-check": "tsc --noEmit",
     "lint": "eslint ."
   },
-  "dependencies": {
-    "decimal.js": "^10.6.0",
-    "lodash": "^4.17.21"
-  },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
     "@types/lodash": "^4.17.7",
     "@types/node": "^24.13.2",
+    "decimal.js": "^10.6.0",
     "esbuild": "^0.27.2",
     "eslint": "^10.5.0",
     "globals": "^17.6.0",
+    "lodash": "^4.17.21",
     "typescript": "^6.0.3",
     "typescript-eslint": "^8.61.0",
     "vitest": "^4.1.8"

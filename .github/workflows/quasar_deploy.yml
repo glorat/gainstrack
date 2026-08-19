@@ -42,6 +42,25 @@ jobs:
       - name: Version check
         if: ${{ steps.semantic.outputs.new_release_published == 'true' }}
         run: echo "Preparing version ${{ steps.semantic.outputs.new_release_version }}"
+      - name: Release notes version check
+        # semantic-release owns the version line; client/public/md/releases.md is the curated
+        # user-facing account of it. The two drifted apart once already — the notes invented a
+        # v1.x/v2.x line that was never released, and re-used v3.0.0-v3.2.0 while the tags were
+        # at v3.15.0. So the top heading must name a version that really exists: either the one
+        # being released now, or an earlier tag (a patch release nobody wrote notes for). A
+        # version that is neither is fiction, and fails the build.
+        if: ${{ steps.semantic.outputs.new_release_published == 'true' }}
+        run: |
+          NOTES=$(grep -m1 -oE '^### v[0-9]+\.[0-9]+\.[0-9]+' public/md/releases.md | sed 's/^### v//')
+          NEXT="${{ steps.semantic.outputs.new_release_version }}"
+          if [ "${NEXT##*.}" != "0" ]; then
+            echo "v$NEXT is a patch release; release notes are not required."
+          elif [ "$NOTES" = "$NEXT" ]; then
+            echo "releases.md is headed v$NOTES — notes written for this release."
+          else
+            echo "::error::v$NEXT is a feature release but releases.md is headed v$NOTES. Add a '### v$NEXT' section to client/public/md/releases.md."
+            exit 1
+          fi
   build:
     name: Build front-end
     needs: [ pre_check ]
@@ -138,6 +157,45 @@ jobs:
           target: prod
           channelId: live
           entryPoint: ./client
+  publish_cli:
+    name: Publish CLI to npm
+    runs-on: ubuntu-latest
+    # Depends on `build` so the git tag and GitHub release exist before the npm version does —
+    # an npm release with no corresponding tag would be unreproducible.
+    needs: [ pre_check, build ]
+    if: needs.pre_check.outputs.new_release_published == 'true'
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+      - name: Set up pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 11.6.0
+      - name: Set up Node (24)
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24.x
+          registry-url: 'https://registry.npmjs.org'
+      - name: Install client dependencies
+        # The CLI bundles the engine out of client/src and shares the client's single
+        # @js-joda/core copy — see tools/gainstrack-cli/README.md. Both must be on disk to build.
+        run: pnpm install --frozen-lockfile
+        working-directory: ./client
+      - name: Install CLI dependencies
+        run: pnpm install --frozen-lockfile
+        working-directory: ./tools/gainstrack-cli
+      - name: Test
+        run: pnpm run test:unit
+        working-directory: ./tools/gainstrack-cli
+      - name: Stamp version
+        run: npm version ${{ needs.pre_check.outputs.new_release_version }} --no-git-tag-version
+        working-directory: ./tools/gainstrack-cli
+      - name: Publish
+        # `prepack` runs the esbuild bundle; the tarball is dist/cli.cjs, LICENSE and README alone.
+        run: npm publish
+        working-directory: ./tools/gainstrack-cli
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
   release_backend:
     name: Build and test backend
     runs-on: ubuntu-latest

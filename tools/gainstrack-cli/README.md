@@ -9,27 +9,38 @@ It adds no accounting logic of its own: every figure comes from `client/src/lib`
 SPA renders. The statement composition lives in `client/src/lib/statements/` (shared with the browser
 pages), and this package is a thin wrapper: parse → build reports → print JSON.
 
+## Install
+
+Published to npm as [`gainstrack`](https://www.npmjs.com/package/gainstrack) — a single bundled
+file with no runtime dependencies (Node ≥ 24):
+
+```bash
+npx gainstrack report balance-sheet ledger.gainstrack   # no install
+npm install -g gainstrack                               # or put it on PATH
+```
+
+To work on it in this repo instead, `pnpm install` here (own package, own lockfile) and use
+`pnpm run gainstrack --` in place of `gainstrack` in the examples below.
+
 ## Usage
 
 ```bash
-pnpm install                                   # own package, own lockfile (Node ≥ 24)
-
 # A statement (JSON to stdout). Dates default to the ledger's own earliest→latest posting span.
-pnpm run gainstrack -- report income-statement ledger.gainstrack --from 2025-05-24 --to 2026-04-30
-pnpm run gainstrack -- report balance-sheet    ledger.gainstrack --as-of 2026-04-30
-pnpm run gainstrack -- report changes-in-equity ledger.gainstrack --from 2025-05-24 --to 2026-04-30
-pnpm run gainstrack -- report cash-flow        ledger.gainstrack --from 2025-05-24 --to 2026-04-30
-pnpm run gainstrack -- report trial-balance    ledger.gainstrack --as-of 2026-04-30
+gainstrack report income-statement ledger.gainstrack --from 2025-05-24 --to 2026-04-30
+gainstrack report balance-sheet    ledger.gainstrack --as-of 2026-04-30
+gainstrack report changes-in-equity ledger.gainstrack --from 2025-05-24 --to 2026-04-30
+gainstrack report cash-flow        ledger.gainstrack --from 2025-05-24 --to 2026-04-30
+gainstrack report trial-balance    ledger.gainstrack --as-of 2026-04-30
 
 # Everything in one bundle — what a docx/report builder consumes:
-pnpm run gainstrack -- report all ledger.gainstrack --from 2025-05-24 --to 2026-04-30 --as-of 2026-04-30 -o statements.json
+gainstrack report all ledger.gainstrack --from 2025-05-24 --to 2026-04-30 --as-of 2026-04-30 -o statements.json
 
 # Exports:
-pnpm run gainstrack -- export beancount  ledger.gainstrack
-pnpm run gainstrack -- export gainstrack ledger.gainstrack
+gainstrack export beancount  ledger.gainstrack
+gainstrack export gainstrack ledger.gainstrack
 
 # Golden check: compare emitted figures to an expected subset, exit 1 on any mismatch.
-pnpm run gainstrack -- check ledger.gainstrack --expect figures.json --from 2025-05-24 --to 2026-04-30 --as-of 2026-04-30
+gainstrack check ledger.gainstrack --expect figures.json --from 2025-05-24 --to 2026-04-30 --as-of 2026-04-30
 ```
 
 `ledger` may be `-` or omitted to read stdin; JSON goes to stdout unless `-o/--output FILE`. A ledger
@@ -89,8 +100,27 @@ When the engine is extracted to `@gainstrack/core`, those alias declarations are
 ## Commands
 
 ```bash
-pnpm run gainstrack -- <args>   # bundle cli.ts with esbuild, then run on node
+pnpm run gainstrack -- <args>   # build, then run on node — the artifact users get
+pnpm run build                  # bundle cli.ts with esbuild into dist/cli.cjs
 pnpm run test:unit              # composition + check helpers (lib.ts), on a synthetic ledger
 pnpm run type-check             # tsc --noEmit
 pnpm run lint
 ```
+
+## Publishing
+
+`prepack` runs the bundle, so `npm publish` and `npm pack` always ship a freshly built
+`dist/cli.cjs`. The tarball is that file plus `README.md`, `LICENSE` and `package.json` — nothing
+else, which is why the `src/*` alias never has to resolve on a user's machine.
+
+Releases are automatic: the `publish_cli` job in `.github/workflows/quasar_deploy.yml` publishes on
+every push to `master` that semantic-release decides is a release, **at the same version as the web
+app**. That is deliberate — this package has no logic of its own, so what changes in it is the
+engine, and the engine ships with the app. The committed `version` is a `0.0.0-development`
+placeholder; CI stamps the real one with `npm version` just before publishing. Building it in CI
+needs `client/`'s dependencies installed as well as this package's, for the reason in the section
+above.
+
+To verify a change before it ships, `npm pack` and install the tarball somewhere outside this
+repo — that is the only check that the bundle is genuinely self-contained, since building it here
+always has `client/` on hand.
