@@ -244,7 +244,11 @@ The Scala `com.gainstrack.command` / `com.gainstrack.report` equivalents of step
 
 ```bash
 # Frontend to Firebase Hosting
-cd client && quasar build && firebase deploy --only hosting:poc
+# hosting:prod → www.gainstrack.com (the main site); hosting:poc → poc.gainstrack.com (backup).
+# Cite www.gainstrack.com in anything public-facing (docs links, READMEs, skills); every file in
+# client/public/md/ is served raw at /md/<name>.md and rendered at /docs/<name>.
+cd client && quasar build && firebase deploy --only hosting:prod
+firebase deploy --only hosting:poc   # backup site
 
 # Full backend image (slow)
 gcloud builds submit --config cloudbuild.yaml

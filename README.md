@@ -122,6 +122,19 @@ Test with:
 
 https://asia-northeast1-gainstrack.cloudfunctions.net/investpy?ticker=VWRD&marketRegion=LN
 
+### Agent skills (Claude Code plugin marketplace)
+
+This repo doubles as a Claude Code plugin marketplace (`.claude-plugin/marketplace.json`).
+Currently shipped: **fs-engagement** (`plugins/fs-engagement/`) — a playbook skill for preparing
+a company's financial statements from raw records using the published
+[`gainstrack`](https://www.npmjs.com/package/gainstrack) CLI as the accounting engine, bundled
+with a multi-lens FS review checklist. Install from any Claude Code session:
+
+```
+/plugin marketplace add glorat/gainstrack
+/plugin install fs-engagement@gainstrack
+```
+
 ### Licensing
 
 Gainstrack is **AGPL-3.0-only** (`LICENSE`), with one deliberate exception:

@@ -1,0 +1,18 @@
+{
+  "name": "gainstrack",
+  "owner": {
+    "name": "glorat",
+    "url": "https://github.com/glorat"
+  },
+  "metadata": {
+    "description": "Agent skills for the gainstrack plain-text accounting engine",
+    "version": "0.1.0"
+  },
+  "plugins": [
+    {
+      "name": "fs-engagement",
+      "source": "./plugins/fs-engagement",
+      "description": "Prepare a company's financial statements from raw records (bank statements, processor exports, expense logs) using the gainstrack CLI as the accounting engine. Includes an 8-phase engagement playbook and a multi-lens FS review checklist."
+    }
+  ]
+}

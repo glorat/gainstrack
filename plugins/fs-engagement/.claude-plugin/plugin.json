@@ -1,0 +1,18 @@
+{
+  "name": "fs-engagement",
+  "description": "Playbook for preparing a company's financial statements from raw records (bank statements, payment-processor exports, expense logs) using gainstrack as the accounting engine, with a bundled multi-lens review checklist.",
+  "version": "0.1.0",
+  "author": {
+    "name": "glorat",
+    "url": "https://github.com/glorat"
+  },
+  "homepage": "https://www.gainstrack.com",
+  "repository": "https://github.com/glorat/gainstrack",
+  "license": "AGPL-3.0-only",
+  "keywords": [
+    "accounting",
+    "bookkeeping",
+    "financial-statements",
+    "gainstrack"
+  ]
+}
