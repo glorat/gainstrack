@@ -148,6 +148,11 @@ gcloud builds submit --machine-type=N1_HIGHCPU_8 --config fast.cloudbuild.yaml
 
 ## Deployment
 
+Normal deployment is automatic: a push to `master` with a releasable commit tags a version and
+ships every artifact from it. **[docs/RELEASING.md](docs/RELEASING.md) is the process** — what
+triggers a release, what carries the version, where release notes go, and how to roll back. The
+commands below are the manual paths, for when CI is not available.
+
 App server:
 
 ```bash

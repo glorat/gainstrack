@@ -4,6 +4,12 @@ on:
   push:
     branches: [ master ]
 
+# One release at a time. The `release` job pushes a version-bump commit to master, so two
+# overlapping runs would race to push and the loser would fail after tagging.
+concurrency:
+  group: release-master
+  cancel-in-progress: false
+
 jobs:
   pre_check:
     name: Test and semver
@@ -31,11 +37,19 @@ jobs:
         run: pnpm install --frozen-lockfile
       - name: Test
         run: pnpm test:unit:ci
-      - name: Semantic Release
+      - name: Semantic Release (dry run)
+        # This is the ONLY place the version number is computed. The `release` job executes the
+        # release and every other job stamps `needs.pre_check.outputs.new_release_version`, so
+        # there is one number per run by construction. Keep SEMANTIC_VERSION and extra_plugins
+        # identical to the `release` job — a difference there is a difference in the version.
         id: semantic
         uses: cycjimmy/semantic-release-action@v4
         with:
           semantic_version: 23.1.0
+          extra_plugins: |
+            @semantic-release/changelog@6.0.3
+            @semantic-release/git@10.0.1
+            conventional-changelog-conventionalcommits@7.0.2
           dry_run: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -61,9 +75,55 @@ jobs:
             echo "::error::v$NEXT is a feature release but releases.md is headed v$NOTES. Add a '### v$NEXT' section to client/public/md/releases.md."
             exit 1
           fi
+  release:
+    name: Tag and release
+    needs: [ pre_check ]
+    if: needs.pre_check.outputs.new_release_published == 'true'
+    runs-on: ubuntu-latest
+    # @semantic-release/git pushes the version bump and CHANGELOG.md back to master; the GitHub
+    # plugin comments on the issues and PRs a release closes.
+    permissions:
+      contents: write
+      issues: write
+      pull-requests: write
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          # semantic-release reads the whole tag history to work out the previous release.
+          fetch-depth: 0
+      - name: Set up Node (24)
+        # semantic-release 23 needs Node >= 20; pin it rather than inherit the runner default.
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24.x
+      - name: Semantic Release
+        id: semantic
+        uses: cycjimmy/semantic-release-action@v4
+        with:
+          semantic_version: 23.1.0
+          extra_plugins: |
+            @semantic-release/changelog@6.0.3
+            @semantic-release/git@10.0.1
+            conventional-changelog-conventionalcommits@7.0.2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Version agreement check
+        # pre_check and this job run semantic-release twice over the same commits with the same
+        # config, so they must agree. If they ever do not, the artifacts downstream would be
+        # stamped with a version that does not match the tag — fail instead.
+        run: |
+          PLANNED="${{ needs.pre_check.outputs.new_release_version }}"
+          ACTUAL="${{ steps.semantic.outputs.new_release_version }}"
+          if [ "$PLANNED" != "$ACTUAL" ]; then
+            echo "::error::pre_check planned v$PLANNED but the release published v$ACTUAL."
+            exit 1
+          fi
+          echo "Released v$ACTUAL."
   build:
     name: Build front-end
-    needs: [ pre_check ]
+    # `release` has already tagged, so the version this job stamps is a version that exists.
+    needs: [ pre_check, release ]
     if: needs.pre_check.outputs.new_release_published == 'true'
     outputs:
       new_release_published: ${{ needs.pre_check.outputs.new_release_published }}
@@ -86,15 +146,10 @@ jobs:
           cache-dependency-path: client/pnpm-lock.yaml
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
-      - name: Semantic Release
-        id: semantic
-        uses: cycjimmy/semantic-release-action@v4
-        with:
-         semantic_version: 19.0.5
-        env:
-         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Set package.json version
-        run: pnpm version ${{ steps.semantic.outputs.new_release_version }} --no-git-tag-version
+        # Same value @semantic-release/npm committed to client/package.json on master; stamped
+        # again here because this job checked out the commit from before that push.
+        run: pnpm version ${{ needs.pre_check.outputs.new_release_version }} --no-git-tag-version
       - name: Build
         run: pnpm exec quasar build --publish sentry
       - name: Determine version
@@ -160,9 +215,9 @@ jobs:
   publish_cli:
     name: Publish CLI to npm
     runs-on: ubuntu-latest
-    # Depends on `build` so the git tag and GitHub release exist before the npm version does —
+    # Depends on `release` so the git tag and GitHub release exist before the npm version does —
     # an npm release with no corresponding tag would be unreproducible.
-    needs: [ pre_check, build ]
+    needs: [ pre_check, release ]
     if: needs.pre_check.outputs.new_release_published == 'true'
     # Trusted publishing (OIDC): npm mints a short-lived token from this job's identity, so there
     # is no NPM_TOKEN secret to leak or rotate. npm revoked classic tokens in December 2025 and
@@ -210,10 +265,11 @@ jobs:
   release_backend:
     name: Build and test backend
     runs-on: ubuntu-latest
-    needs: [ pre_check ]
+    needs: [ pre_check, release ]
     if: needs.pre_check.outputs.new_release_published == 'true'
     env:
       IMAGE_NAME: gcr.io/${{ secrets.GCP_PROJECT_ID }}/${{ secrets.GCP_APP_NAME }}
+      VERSION: ${{ needs.pre_check.outputs.new_release_version }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -230,14 +286,19 @@ jobs:
         run: gcloud auth configure-docker --quiet
 
       - name: Build Docker image
-        run: docker build . --file fast.Dockerfile -t $IMAGE_NAME
+        # Tagged with the release version so a running revision can be traced back to a commit,
+        # and rolled back by redeploying an earlier tag. `latest` is kept for cloudbuild.yaml and
+        # docker_push.sh, which still pull it untagged.
+        run: docker build . --file fast.Dockerfile -t $IMAGE_NAME:$VERSION -t $IMAGE_NAME:latest
 
       - name: Push Docker image
-        run: docker push $IMAGE_NAME
+        run: |
+          docker push $IMAGE_NAME:$VERSION
+          docker push $IMAGE_NAME:latest
   deploy_backend:
     name: Deploy backend
     runs-on: ubuntu-latest
-    needs: [ release_backend ]
+    needs: [ pre_check, release_backend ]
     strategy:
       matrix:
         server: [ "quotes", "appserver" ]
@@ -250,9 +311,11 @@ jobs:
       uses: 'google-github-actions/setup-gcloud@v2'
     - name: Release ${{ matrix.server }} server
       run: |-
+        # This image path must match release_backend's IMAGE_NAME
+        # (gcr.io/$GCP_PROJECT_ID/$GCP_APP_NAME) or this deploys an image nobody just built.
         gcloud run deploy ${{ matrix.server }} \
           --region asia-northeast1 \
-          --image gcr.io/gainstrack/gainstrack \
+          --image gcr.io/gainstrack/gainstrack:${{ needs.pre_check.outputs.new_release_version }} \
           --platform managed \
           --allow-unauthenticated \
           --project gainstrack

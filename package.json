@@ -19,15 +19,89 @@
   },
   "homepage": "https://github.com/glorat/gainstrack#readme",
   "devDependencies": {
-    "semantic-release": "^19.0.5"
+    "@semantic-release/changelog": "^6.0.3",
+    "@semantic-release/git": "^10.0.1",
+    "conventional-changelog-conventionalcommits": "^7.0.2",
+    "semantic-release": "^23.1.0"
   },
   "release": {
     "branches": [
       "master"
     ],
     "plugins": [
-      "@semantic-release/commit-analyzer",
-      "@semantic-release/release-notes-generator",
+      [
+        "@semantic-release/commit-analyzer",
+        {
+          "preset": "conventionalcommits",
+          "releaseRules": [
+            {
+              "type": "refactor",
+              "release": "patch"
+            }
+          ]
+        }
+      ],
+      [
+        "@semantic-release/release-notes-generator",
+        {
+          "preset": "conventionalcommits",
+          "presetConfig": {
+            "types": [
+              {
+                "type": "feat",
+                "section": "Features"
+              },
+              {
+                "type": "fix",
+                "section": "Bug Fixes"
+              },
+              {
+                "type": "perf",
+                "section": "Performance"
+              },
+              {
+                "type": "refactor",
+                "section": "Changes"
+              },
+              {
+                "type": "revert",
+                "section": "Reverts"
+              }
+            ]
+          }
+        }
+      ],
+      [
+        "@semantic-release/npm",
+        {
+          "npmPublish": false,
+          "pkgRoot": "client"
+        }
+      ],
+      [
+        "@semantic-release/npm",
+        {
+          "npmPublish": false,
+          "pkgRoot": "tools/gainstrack-cli"
+        }
+      ],
+      [
+        "@semantic-release/changelog",
+        {
+          "changelogTitle": "# Changelog"
+        }
+      ],
+      [
+        "@semantic-release/git",
+        {
+          "assets": [
+            "CHANGELOG.md",
+            "client/package.json",
+            "tools/gainstrack-cli/package.json"
+          ],
+          "message": "chore(release): ${nextRelease.version} [skip ci]\n\n${nextRelease.notes}"
+        }
+      ],
       "@semantic-release/github"
     ]
   }

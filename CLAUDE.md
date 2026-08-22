@@ -242,6 +242,14 @@ The Scala `com.gainstrack.command` / `com.gainstrack.report` equivalents of step
 
 ## Build & Deployment
 
+Releases are automatic on a push to `master` and version everything from one semantic-release run
+— see **`docs/RELEASING.md`**. Never hand-edit a version field or `CHANGELOG.md`; both are
+generated. A commit that changes behaviour must be typed `feat:`/`fix:`/`refactor:`/`perf:`, or it
+ships nothing. A minor or major release fails CI unless `client/public/md/releases.md` is headed
+with that version.
+
+The commands below are the manual equivalents.
+
 ```bash
 # Frontend to Firebase Hosting
 # hosting:prod → www.gainstrack.com (the main site); hosting:poc → poc.gainstrack.com (backup).
