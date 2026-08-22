@@ -1,7 +1,7 @@
 {
   "name": "gainstrack",
-  "version": "3.16.1",
-  "description": "Turn a plain-text gainstrack ledger into the primary financial statements as JSON \u2014 balance sheet, income statement, changes in equity, cash flow and trial balance \u2014 plus beancount export and a golden figures check.",
+  "version": "3.16.2",
+  "description": "Turn a plain-text gainstrack ledger into the primary financial statements as JSON — balance sheet, income statement, changes in equity, cash flow and trial balance — plus beancount export and a golden figures check.",
   "keywords": [
     "accounting",
     "bookkeeping",
