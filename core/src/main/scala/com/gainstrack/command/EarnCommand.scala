@@ -2,15 +2,20 @@ package com.gainstrack.command
 
 import com.gainstrack.core._
 
-case class EarnCommand(date:LocalDate, incomeTag:String, value:Amount, targetAccountIdOpt:Option[AccountId] = None, comments:Seq[String] = Seq()) extends CommandNeedsAccounts {
-  val mainIncomeAccountId: AccountId = if (incomeTag.startsWith("Income:")) AccountId(incomeTag) else AccountId(s"Income:${incomeTag}")
+// The account is held RESOLVED, never as the bare tag the source may have used, so that
+// `toGainstrack` round-trips to an equal command (asserted by First and TransactionBalance).
+// `EarnCommand.parse` is the only constructor; it does the qualifying.
+case class EarnCommand(date:LocalDate, incomeAccountId:AccountId, value:Amount, targetAccountIdOpt:Option[AccountId] = None, comments:Seq[String] = Seq()) extends CommandNeedsAccounts {
+  require(incomeAccountId.accountType == Income, s"${incomeAccountId} is not an Income account")
+
+  val mainIncomeAccountId: AccountId = incomeAccountId
 
 
   // private val incomeAccountId = AccountId(s"${mainIncomeAccountId}:${value.ccy.symbol}")
 
   override def commandString: String = EarnCommand.prefix
 
-  override def description: String = s"Earn ${value} ${incomeTag}"
+  override def description: String = s"Earn ${value} ${incomeAccountId}"
 
   override def mainAccount: Option[AccountId] = Some(mainIncomeAccountId)
 
@@ -33,10 +38,10 @@ case class EarnCommand(date:LocalDate, incomeTag:String, value:Amount, targetAcc
 
   def toGainstrack: Seq[String] = {
     if (targetAccountIdOpt.isDefined) {
-      Seq(s"${date} earn ${incomeTag} ${targetAccountIdOpt.get.toGainstrack} ${value}")
+      Seq(s"${date} earn ${incomeAccountId.toGainstrack} ${targetAccountIdOpt.get.toGainstrack} ${value}")
     }
     else {
-      Seq(s"${date} earn ${incomeTag} ${value}")
+      Seq(s"${date} earn ${incomeAccountId.toGainstrack} ${value}")
     }
   }
 
@@ -63,9 +68,9 @@ object EarnCommand extends CommandParser {
   override def parse(str: String): AccountCommand = {
     str match {
       case Earning(date, incomeTag, tgtAcct, value) =>
-        EarnCommand(parseDate(date), incomeTag, value, Some(AccountId(tgtAcct)) )
+        EarnCommand(parseDate(date), qualifiedAccount(incomeTag, Income), value, Some(AccountId(tgtAcct)) )
       case SimpleEarning(date, incomeTag, value) =>
-        EarnCommand(parseDate(date), incomeTag, value, None)
+        EarnCommand(parseDate(date), qualifiedAccount(incomeTag, Income), value, None)
     }
   }
 }

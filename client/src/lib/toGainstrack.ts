@@ -120,25 +120,26 @@ function commandLines(p: Parsed): CommandBlock {
   const kind: Kind = p.kind;
   const d: AccountCommandDTO = p.dto;
   const raws = p.raws ?? {};
-  const tag = p.tag;
   const date = d.date;
   switch (kind) {
     case 'open':
       return [`${date} open ${d.accountId} ${d.balance!.ccy}`,
         ...accountOptionLines(d.options as Record<string, unknown>)];
 
+    // Always written with the mandatory `Income:`/`Expenses:` prefix, even when the source
+    // omitted it. The bare form still parses, so this is how a legacy ledger migrates itself.
     case 'earn': {
       const value = amt(d.change!, raws.change);
       return [d.otherAccount
-        ? `${date} earn ${tag} ${d.otherAccount} ${value}`
-        : `${date} earn ${tag} ${value}`];
+        ? `${date} earn ${d.accountId} ${d.otherAccount} ${value}`
+        : `${date} earn ${d.accountId} ${value}`];
     }
 
     case 'spend': {
       const value = amt(d.change!, raws.change);
       return [d.otherAccount
-        ? `${date} spend ${tag} ${d.otherAccount} ${value}`
-        : `${date} spend ${tag} ${value}`];
+        ? `${date} spend ${d.accountId} ${d.otherAccount} ${value}`
+        : `${date} spend ${d.accountId} ${value}`];
     }
 
     case 'tfr': {

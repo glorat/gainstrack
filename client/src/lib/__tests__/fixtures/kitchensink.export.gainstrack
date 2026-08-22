@@ -45,13 +45,13 @@ option "operating_currency" "GBP"
 
 2000-01-01 open Expenses:Food GBP
   fundingAccount: Assets:Bank:Current
-2000-02-03 spend Food 42.50 GBP
+2000-02-03 spend Expenses:Food 42.50 GBP
 2000-02-04 spend Expenses:Food Assets:Bank:Current 17.25 GBP
 
 2000-01-01 open Income:Salary GBP
   fundingAccount: Assets:Bank:Current
 ; --- earn/spend: bare tag, already-qualified tag, and with an explicit other account
-2000-02-01 earn Salary 2500.00 GBP
+2000-02-01 earn Income:Salary 2500.00 GBP
 2000-02-02 earn Income:Salary Assets:Bank:Current 2500.00 GBP
 
 2000-01-01 open Liabilities:CreditCard GBP

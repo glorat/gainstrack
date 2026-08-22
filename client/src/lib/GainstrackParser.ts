@@ -74,10 +74,6 @@ export interface Parsed {
   // `BigDecimal.toPlainString`, which preserves the literal's scale ("2000.00", "265000.0"),
   // so display parity needs the original text rather than the parsed JS number.
   raws?: Partial<Record<RawField, string>>;
-  // earn/spend echo the tag exactly as written (Scala `incomeTag`/`expenseTag`), which is not
-  // recoverable from `accountId` — "Income:Salary" and "Salary" both yield accountId
-  // "Income:Salary" but print differently.
-  tag?: string;
   // Comment lines immediately preceding this command, without their leading `;`/`#` marker.
   // Carried so serialization can round-trip them (Scala `AccountCommand.comments`).
   comments?: string[];
@@ -140,6 +136,24 @@ function requireAssetsAccount(accountId: string): void {
   }
 }
 
+// earn/spend may name their account with or without its mandatory root prefix: `earn Salary`
+// and `earn Income:Salary` both mean `Income:Salary`. The bare form is legacy — still parsed,
+// but re-serialized qualified (see `toGainstrack`), so a ledger migrates itself on first save.
+// A tag whose FIRST SEGMENT is a known account type must name the right one, so `earn
+// Expenses:Food` is now rejected instead of silently resolving to `Income:Expenses:Food`.
+// Tested on the segment rather than `startsWith`, which would misread `IncomeTaxSG` as
+// qualified; `Salary:AcmeCo` has a colon but no account type for a root, so it stays implicit.
+function qualifyAccount(tag: string, expected: 'Income' | 'Expenses'): string {
+  const root = tag.split(':')[0];
+  if (ACCOUNT_TYPES.has(root)) {
+    if (root !== expected) {
+      throw new ParseError(`requirement failed: ${tag} is not an ${expected} account`);
+    }
+    return tag;
+  }
+  return `${expected}:${tag}`;
+}
+
 // Parse "<number> <CCY>" into an Amount (mirrors Amount.parse + parseNumber/AssetId).
 function parseAmount(str: string): Amount {
   const m = /^(\S+) (\S+)$/.exec(str);
@@ -185,11 +199,11 @@ const COMMANDS: Record<string, (line: string) => Parsed> = {
     const short = long ? null : new RegExp(`^${DATE} earn ${ACCT} ${BAL}$`).exec(line);
     if (long) {
       const [, date, tag, tgt, value] = long;
-      return { kind: 'earn', dto: incomeDto(date, tag, parseAmount(value), tgt), tag, raws: { change: numOf(value) } };
+      return { kind: 'earn', dto: incomeDto(date, tag, parseAmount(value), tgt), raws: { change: numOf(value) } };
     }
     if (short) {
       const [, date, tag, value] = short;
-      return { kind: 'earn', dto: incomeDto(date, tag, parseAmount(value)), tag, raws: { change: numOf(value) } };
+      return { kind: 'earn', dto: incomeDto(date, tag, parseAmount(value)), raws: { change: numOf(value) } };
     }
     throw new ParseError('earn command cannot be parsed');
   },
@@ -199,11 +213,11 @@ const COMMANDS: Record<string, (line: string) => Parsed> = {
     const short = long ? null : new RegExp(`^${DATE} spend ${ACCT} ${BAL}$`).exec(line);
     if (long) {
       const [, date, tag, other, value] = long;
-      return { kind: 'spend', dto: expenseDto(date, tag, parseAmount(value), other), tag, raws: { change: numOf(value) } };
+      return { kind: 'spend', dto: expenseDto(date, tag, parseAmount(value), other), raws: { change: numOf(value) } };
     }
     if (short) {
       const [, date, tag, value] = short;
-      return { kind: 'spend', dto: expenseDto(date, tag, parseAmount(value)), tag, raws: { change: numOf(value) } };
+      return { kind: 'spend', dto: expenseDto(date, tag, parseAmount(value)), raws: { change: numOf(value) } };
     }
     throw new ParseError('spend command cannot be parsed');
   },
@@ -431,14 +445,14 @@ export function parseTxPosting(line: string): ParsedPosting {
 }
 
 function incomeDto(date: string, tag: string, value: Amount, target?: string): AccountCommandDTO {
-  const accountId = tag.startsWith('Income:') ? tag : `Income:${tag}`;
+  const accountId = qualifyAccount(tag, 'Income');
   const dto: AccountCommandDTO = { accountId, date, change: value };
   if (target) dto.otherAccount = target;
   return dto;
 }
 
 function expenseDto(date: string, tag: string, value: Amount, other?: string): AccountCommandDTO {
-  const accountId = tag.startsWith('Expenses:') ? tag : `Expenses:${tag}`;
+  const accountId = qualifyAccount(tag, 'Expenses');
   const dto: AccountCommandDTO = { accountId, date, change: value };
   if (other) dto.otherAccount = other;
   return dto;
@@ -466,8 +480,8 @@ function describe(p: Parsed): string {
   const r = p.raws ?? {};
   switch (p.kind) {
     case 'open': return 'Account opened';
-    case 'earn': return `Earn ${amtStr(d.change!, r.change)} ${p.tag}`;
-    case 'spend': return `Spend ${amtStr(d.change!, r.change)} ${p.tag}`;
+    case 'earn': return `Earn ${amtStr(d.change!, r.change)} ${d.accountId}`;
+    case 'spend': return `Spend ${amtStr(d.change!, r.change)} ${d.accountId}`;
     case 'tfr': {
       // Scala compares the SOURCE and TARGET currencies; `price.ccy` is always the source ccy,
       // so the target has to come from `tfrTarget`.

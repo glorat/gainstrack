@@ -172,7 +172,7 @@
     "ccy" : "GBP"
   },
   "commandType" : "earn",
-  "description" : "Earn 25000.00 GBP Salary"
+  "description" : "Earn 25000.00 GBP Income:Salary"
 }, {
   "accountId" : "Income:Salary",
   "date" : "2005-07-26",
@@ -182,7 +182,7 @@
   },
   "otherAccount" : "Assets:Bank:England",
   "commandType" : "earn",
-  "description" : "Earn 25000.00 GBP Salary"
+  "description" : "Earn 25000.00 GBP Income:Salary"
 }, {
   "accountId" : "Assets:Bank:England",
   "date" : "2005-08-01",

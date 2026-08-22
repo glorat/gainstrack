@@ -2,7 +2,8 @@ FROM sbtscala/scala-sbt:eclipse-temurin-17.0.15_6_1.11.3_2.13.16 AS builder
 # Install beancount for the bean-check step exercised by `sbt test` below.
 RUN apt-get update && apt-get -y install python3 python3-pip python3-dev libxml2-dev libxslt-dev gcc musl-dev g++ && rm -rf /var/lib/apt/lists/*
 # Pinned to the validated version; --break-system-packages because this base is
-# PEP-668 externally-managed (same as scalabase.Dockerfile).
+# PEP-668 externally-managed (same as scalabase.Dockerfile). Build-time only --
+# the runtime image ships no beancount.
 RUN pip3 install --break-system-packages beancount==2.3.6
 
 WORKDIR /build
@@ -39,10 +40,6 @@ RUN pnpm build
 
 FROM eclipse-temurin:17-jre-jammy
 RUN apt-get update && apt-get -y install wget python3 python3-pip python3-dev libxml2-dev libxslt-dev gcc musl-dev g++ && rm -rf /var/lib/apt/lists/*
-# Pin beancount alongside fava so the runtime bean-check uses the validated 2.3.6
-# (fava 1.30.x is compatible with beancount 2.3.6). python/requirements.txt below
-# reaffirms the same pin.
-RUN pip3 install fava beancount==2.3.6
 RUN mkdir -p /app
 WORKDIR /app
 

@@ -35,8 +35,8 @@
 2000-01-01 open Equity:Opening GBP
   multiAsset:true
 
-2005-07-26 earn Salary 25000.00 GBP
-2005-07-26 earn Salary Assets:Bank:England 25000.00 GBP
+2005-07-26 earn Income:Salary 25000.00 GBP
+2005-07-26 earn Income:Salary Assets:Bank:England 25000.00 GBP
 
 2005-07-26 open Income:Salary:GBP GBP
   fundingAccount: Assets:Bank:England

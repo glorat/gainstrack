@@ -43,7 +43,7 @@ const isValid = computed(() => !!dc.value.accountId && dc.value.change.number &&
 
 const toGainstrack = computed(() => {
   const cmd = dc.value
-  if (isValid.value) return `${cmd.date} earn ${cmd.accountId.substring(7)} ${cmd.change.number} ${cmd.change.ccy}`
+  if (isValid.value) return `${cmd.date} earn ${cmd.accountId} ${cmd.change.number} ${cmd.change.ccy}`
   return ''
 })
 

@@ -236,6 +236,12 @@ would fund Assets:Bank with 1000 USD from Income:Salary.
 The funding account can be specified explicitly if desired:
 `2010-01-01 earn Income:Salary Assets:OtherBank 1000 USD`
 
+Older ledgers may write the account without its `Income:` prefix — `2010-01-01 earn Salary 1000 USD`
+means the same thing. That spelling is still accepted, but it is no longer the recommended one, and
+saving or exporting the ledger rewrites it with the prefix. A tag that *does* start with an account
+type must start with the right one: `earn Expenses:Food` is an error rather than a shorthand for
+`Income:Expenses:Food`.
+
 ### spend
 Record an expense, deducting from a funding account. For example, given
 ```
@@ -249,6 +255,9 @@ would deduct 20 USD from Assets:Bank and record it as a Taxi expense.
 
 The source account can be specified explicitly if desired:
 `2010-01-01 spend Expenses:Taxi Assets:Bank 20 USD`
+
+As with `earn`, the legacy prefix-less spelling (`2010-01-01 spend Taxi 20 USD`) is still accepted
+and is rewritten to `Expenses:Taxi` on save.
 
 ### tx
 A transaction with any number of postings, written out in full. This is the one directive that infers nothing, so use it when none of the directives above fit. The usual case is a transaction with three or more legs, such as a paycheck with withholding:

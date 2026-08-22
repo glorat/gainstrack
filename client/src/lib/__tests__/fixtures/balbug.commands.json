@@ -162,7 +162,7 @@
     "ccy" : "CNY"
   },
   "commandType" : "earn",
-  "description" : "Earn 120000.0 CNY Salary"
+  "description" : "Earn 120000.0 CNY Income:Salary"
 }, {
   "accountId" : "Expenses:Aiden",
   "date" : "2016-01-01",

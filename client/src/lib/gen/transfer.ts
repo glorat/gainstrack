@@ -88,8 +88,8 @@ function earnToTransfers(cmd: EarnCmd, lookup: AccountLookup): GTransfer[] {
   const targetAccountId = cmd.target ?? incomeAccount.options.fundingAccount;
   if (!targetAccountId) throw new Error(`Cannot earn from ${incomeAccount.accountId} without a fundingAccount`);
   if (!lookup(targetAccountId)) throw new Error(`Target account ${targetAccountId} does not exist`);
-  // Scala `EarnCommand.description`, narrated with the tag as written, not the resolved account.
-  const description = `Earn ${cmd.value.toString()} ${cmd.tag}`;
+  // Scala `EarnCommand.description`.
+  const description = `Earn ${cmd.value.toString()} ${cmd.accountId}`;
   return transferToTransfers(makeTransfer(incomeAccount.accountId, targetAccountId, cmd.date, cmd.value, cmd.value, description), lookup);
 }
 
@@ -99,7 +99,7 @@ function spendToTransfers(cmd: SpendCmd, lookup: AccountLookup): GTransfer[] {
   const sourceAccountId = cmd.other ?? expenseAccount.options.fundingAccount;
   if (!sourceAccountId) throw new Error(`Cannot spend from ${expenseAccount.accountId} without a fundingAccount`);
   if (!lookup(sourceAccountId)) throw new Error(`Target account ${sourceAccountId} does not exist`);
-  const description = `Spend ${cmd.value.toString()} ${cmd.tag}`;
+  const description = `Spend ${cmd.value.toString()} ${cmd.accountId}`;
   return transferToTransfers(makeTransfer(sourceAccountId, expenseAccount.accountId, cmd.date, cmd.value, cmd.value, description), lookup);
 }
 

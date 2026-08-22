@@ -46,7 +46,7 @@ option "operating_currency" "GBP"
 
 2010-01-01 open Income:Salary CNY
   fundingAccount: Assets:Bank:HSBCCN
-2010-12-30 earn Salary 120000.0 CNY
+2010-12-30 earn Income:Salary 120000.0 CNY
 
 2017-12-31 price CNY 0.1141 GBP
 2017-12-31 price HKD 0.0947 GBP

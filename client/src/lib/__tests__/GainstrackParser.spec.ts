@@ -123,6 +123,27 @@ describe('GainstrackParser per-command shape', () => {
     });
   });
 
+  test('earn/spend accept the qualified form and reject the wrong root', () => {
+    // Qualification is by first SEGMENT, so a tag rooted at an account type must be rooted at
+    // the right one rather than nesting under it (`Income:Expenses:Food`).
+    expect(parse('2019-01-01 earn Income:Salary 1000 USD')[0]).toMatchObject({ accountId: 'Income:Salary' });
+    expect(parse('2019-01-01 spend Expenses:Food 30 USD')[0]).toMatchObject({ accountId: 'Expenses:Food' });
+    // `IncomeTaxSG` starts with "Income" but its first segment is not an account type, so it is
+    // a bare tag; `Salary:AcmeCo` is a bare tag that happens to contain a colon.
+    expect(parse('2019-01-01 earn IncomeTaxSG 10 USD')[0]).toMatchObject({ accountId: 'Income:IncomeTaxSG' });
+    expect(parse('2019-01-01 earn Salary:AcmeCo 10 USD')[0]).toMatchObject({ accountId: 'Income:Salary:AcmeCo' });
+
+    for (const [line, msg] of [
+      ['2019-01-01 earn Expenses:Food 100 USD', 'Expenses:Food is not an Income account'],
+      ['2019-01-01 spend Income:Salary 100 USD', 'Income:Salary is not an Expenses account'],
+      ['2019-01-01 earn Assets:Bank 100 USD', 'Assets:Bank is not an Income account'],
+    ]) {
+      const p = new GainstrackParser();
+      expect(() => p.parseString(line)).toThrow();
+      expect(p.parserErrors[0].message).toContain(msg);
+    }
+  });
+
   test('tfr emits change + fx-rate price + dest (matches Scala DTO, not targetChange)', () => {
     const [c] = parse('2019-01-02 tfr Assets:HSBCHK Assets:USD 40000 HKD 5084.91 USD');
     expect(c).toMatchObject({

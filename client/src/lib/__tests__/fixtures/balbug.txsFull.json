@@ -35,7 +35,7 @@
 }, {
   "id" : 3,
   "postDate" : "2010-12-30",
-  "description" : "Earn 120000.0 CNY Salary",
+  "description" : "Earn 120000.0 CNY Income:Salary",
   "postings" : [ {
     "account" : "Income:Salary",
     "value" : {

@@ -46,8 +46,8 @@ If you'd like a sample to start, here is something you can enter
 
 2005-07-26 open Income:Salary:GBP GBP
     fundingAccount: Assets:Bank:England
-2005-07-26 earn Salary 25000.00 GBP
-2005-07-26 earn Salary Assets:Bank:England 25000.00 GBP
+2005-07-26 earn Income:Salary 25000.00 GBP
+2005-07-26 earn Income:Salary Assets:Bank:England 25000.00 GBP
 
 ; Earn some interest
 2005-08-01 yield Assets:Bank:England 10 GBP

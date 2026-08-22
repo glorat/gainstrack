@@ -123,10 +123,10 @@
 
 1970-01-01 open Income:Interest:Savings USD
 
-2008-01-10 earn Salary:AcmeCo 2000.00 USD
-2008-01-25 earn Salary:AcmeCo 2000.00 USD
-2008-02-10 earn Salary:AcmeCo 2000.00 USD
-2008-02-25 earn Salary:AcmeCo 2000.00 USD
+2008-01-10 earn Income:Salary:AcmeCo 2000.00 USD
+2008-01-25 earn Income:Salary:AcmeCo 2000.00 USD
+2008-02-10 earn Income:Salary:AcmeCo 2000.00 USD
+2008-02-25 earn Income:Salary:AcmeCo 2000.00 USD
 
 ; BUG - should not have this suffix
 1970-01-01 open Income:Salary:AcmeCo:USD USD

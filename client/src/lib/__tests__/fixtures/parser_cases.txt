@@ -239,3 +239,12 @@ option "operating_currency" "gbp"
 ### id: open-expenseAccount
 2019-01-01 open Assets:Broker USD
   expenseAccount: Expenses:Broker
+
+### id: earn-wrong-root
+2019-01-01 earn Expenses:Food 100 USD
+
+### id: spend-wrong-root
+2019-01-01 spend Income:Salary 100 USD
+
+### id: earn-nontype-root-stays-implicit
+2019-01-01 earn Salary:AcmeCo 100 USD

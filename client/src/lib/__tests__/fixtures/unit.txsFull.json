@@ -107,7 +107,7 @@
 }, {
   "id" : 7,
   "postDate" : "2005-07-26",
-  "description" : "Earn 25000.00 GBP Salary",
+  "description" : "Earn 25000.00 GBP Income:Salary",
   "postings" : [ {
     "account" : "Income:Salary:GBP",
     "value" : {
@@ -124,7 +124,7 @@
 }, {
   "id" : 8,
   "postDate" : "2005-07-26",
-  "description" : "Earn 25000.00 GBP Salary",
+  "description" : "Earn 25000.00 GBP Income:Salary",
   "postings" : [ {
     "account" : "Income:Salary:GBP",
     "value" : {

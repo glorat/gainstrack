@@ -19,10 +19,6 @@ import { toGainstrackWithComments } from 'src/lib/toGainstrack';
  * The account a command files under (Scala `AccountCommand.mainAccount`).
  *
  * `undefined` means the command is account-less and sorts to the bottom section.
- * earn/spend are the awkward pair: they file under the *tag's* account, which is the tag
- * itself when already qualified ("Income:Salary") and otherwise the tag prefixed with its
- * type ("Salary" -> "Income:Salary"). Deriving this from `dto.accountId` would work today but
- * silently breaks if the DTO's accountId ever stops being the resolved income/expense account.
  */
 export function mainAccount(p: Parsed): string | undefined {
   switch (p.kind) {
@@ -39,14 +35,13 @@ export function mainAccount(p: Parsed): string | undefined {
     case 'tx':
       return undefined;
 
+    // Everything else files under its own account — earn/spend included, since the parser
+    // resolves their (optionally bare) tag to the full `Income:`/`Expenses:` account id.
+    // Two more worth naming: `tfr` files under its SOURCE leg, which is what `accountId` holds
+    // (the target is `otherAccount`); and `close` has no Scala counterpart, so filing it under
+    // its account simply follows the rest.
     case 'earn':
-      return qualify(p.tag ?? p.dto.accountId, 'Income');
     case 'spend':
-      return qualify(p.tag ?? p.dto.accountId, 'Expenses');
-
-    // Everything else files under its own account. Two worth naming: `tfr` files under its
-    // SOURCE leg, which is what `accountId` holds (the target is `otherAccount`); and `close`
-    // has no Scala counterpart, so filing it under its account simply follows the rest.
     case 'tfr':
     case 'open':
     case 'trade':
@@ -60,9 +55,6 @@ export function mainAccount(p: Parsed): string | undefined {
   }
 }
 
-function qualify(tag: string, type: 'Income' | 'Expenses'): string {
-  return tag.startsWith(`${type}:`) ? tag : `${type}:${tag}`;
-}
 
 /**
  * Serialize commands to a complete gainstrack file.

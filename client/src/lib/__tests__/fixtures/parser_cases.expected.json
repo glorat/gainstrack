@@ -61,7 +61,7 @@
       "ccy" : "USD"
     },
     "commandType" : "earn",
-    "description" : "Earn 1000 USD Salary"
+    "description" : "Earn 1000 USD Income:Salary"
   } ]
 }, {
   "id" : "earn-with-target",
@@ -75,7 +75,7 @@
     },
     "otherAccount" : "Assets:Bank",
     "commandType" : "earn",
-    "description" : "Earn 1000 USD Salary"
+    "description" : "Earn 1000 USD Income:Salary"
   } ]
 }, {
   "id" : "earn-already-prefixed",
@@ -101,7 +101,7 @@
       "ccy" : "USD"
     },
     "commandType" : "spend",
-    "description" : "Spend 30 USD Food"
+    "description" : "Spend 30 USD Expenses:Food"
   } ]
 }, {
   "id" : "spend-with-account",
@@ -115,7 +115,7 @@
     },
     "otherAccount" : "Assets:Bank",
     "commandType" : "spend",
-    "description" : "Spend 30 USD Food"
+    "description" : "Spend 30 USD Expenses:Food"
   } ]
 }, {
   "id" : "tfr-simple",
@@ -674,7 +674,7 @@
       "ccy" : "USD"
     },
     "commandType" : "earn",
-    "description" : "Earn 0 USD Salary"
+    "description" : "Earn 0 USD Income:Salary"
   } ]
 }, {
   "id" : "trade-zero-price",
@@ -824,5 +824,24 @@
     },
     "commandType" : "open",
     "description" : "Account opened"
+  } ]
+}, {
+  "id" : "earn-wrong-root",
+  "status" : "error"
+}, {
+  "id" : "spend-wrong-root",
+  "status" : "error"
+}, {
+  "id" : "earn-nontype-root-stays-implicit",
+  "status" : "ok",
+  "commands" : [ {
+    "accountId" : "Income:Salary:AcmeCo",
+    "date" : "2019-01-01",
+    "change" : {
+      "number" : 100,
+      "ccy" : "USD"
+    },
+    "commandType" : "earn",
+    "description" : "Earn 100 USD Income:Salary:AcmeCo"
   } ]
 } ]

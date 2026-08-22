@@ -164,7 +164,7 @@
 }, {
   "id" : 10,
   "postDate" : "2008-01-10",
-  "description" : "Earn 2000.00 USD Salary:AcmeCo",
+  "description" : "Earn 2000.00 USD Income:Salary:AcmeCo",
   "postings" : [ {
     "account" : "Income:Salary:AcmeCo:USD",
     "value" : {
@@ -215,7 +215,7 @@
 }, {
   "id" : 13,
   "postDate" : "2008-01-25",
-  "description" : "Earn 2000.00 USD Salary:AcmeCo",
+  "description" : "Earn 2000.00 USD Income:Salary:AcmeCo",
   "postings" : [ {
     "account" : "Income:Salary:AcmeCo:USD",
     "value" : {
@@ -334,7 +334,7 @@
 }, {
   "id" : 20,
   "postDate" : "2008-02-10",
-  "description" : "Earn 2000.00 USD Salary:AcmeCo",
+  "description" : "Earn 2000.00 USD Income:Salary:AcmeCo",
   "postings" : [ {
     "account" : "Income:Salary:AcmeCo:USD",
     "value" : {
@@ -412,7 +412,7 @@
 }, {
   "id" : 24,
   "postDate" : "2008-02-25",
-  "description" : "Earn 2000.00 USD Salary:AcmeCo",
+  "description" : "Earn 2000.00 USD Income:Salary:AcmeCo",
   "postings" : [ {
     "account" : "Income:Salary:AcmeCo:USD",
     "value" : {

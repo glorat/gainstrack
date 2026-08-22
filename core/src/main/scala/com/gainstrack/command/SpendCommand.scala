@@ -2,14 +2,18 @@ package com.gainstrack.command
 
 import com.gainstrack.core._
 
-case class SpendCommand(date:LocalDate, expenseTag:String, value:Amount, otherAccountIdOpt:Option[AccountId] = None, comments:Seq[String] = Seq()) extends CommandNeedsAccounts {
-  val mainIncomeAccountId: AccountId = if (expenseTag.startsWith("Expenses:")) AccountId(expenseTag) else AccountId(s"Expenses:${expenseTag}")
+// See EarnCommand: the account is held RESOLVED so that `toGainstrack` round-trips to an
+// equal command. `SpendCommand.parse` is the only constructor; it does the qualifying.
+case class SpendCommand(date:LocalDate, expenseAccountId:AccountId, value:Amount, otherAccountIdOpt:Option[AccountId] = None, comments:Seq[String] = Seq()) extends CommandNeedsAccounts {
+  require(expenseAccountId.accountType == Expenses, s"${expenseAccountId} is not an Expenses account")
+
+  val mainIncomeAccountId: AccountId = expenseAccountId
 
   // private val incomeAccountId = AccountId(s"${mainIncomeAccountId}:${value.ccy.symbol}")
 
   override def commandString: String = SpendCommand.prefix
 
-  override def description: String = s"Spend ${value} ${expenseTag}"
+  override def description: String = s"Spend ${value} ${expenseAccountId}"
 
   override def mainAccount: Option[AccountId] = Some(mainIncomeAccountId)
 
@@ -32,10 +36,10 @@ case class SpendCommand(date:LocalDate, expenseTag:String, value:Amount, otherAc
 
   def toGainstrack: Seq[String] = {
     if (otherAccountIdOpt.isDefined) {
-      Seq(s"${date} spend ${expenseTag} ${otherAccountIdOpt.get.toGainstrack} ${value}")
+      Seq(s"${date} spend ${expenseAccountId.toGainstrack} ${otherAccountIdOpt.get.toGainstrack} ${value}")
     }
     else {
-      Seq(s"${date} spend ${expenseTag} ${value}")
+      Seq(s"${date} spend ${expenseAccountId.toGainstrack} ${value}")
     }
   }
 
@@ -59,9 +63,9 @@ object SpendCommand extends CommandParser {
   override def parse(str: String): AccountCommand = {
     str match {
       case Spending(date, expenseTag, otherAcct, value) =>
-        SpendCommand(parseDate(date), expenseTag, value, Some(AccountId(otherAcct)) )
+        SpendCommand(parseDate(date), qualifiedAccount(expenseTag, Expenses), value, Some(AccountId(otherAcct)) )
       case SimpleSpending(date, expenseTag, value) =>
-        SpendCommand(parseDate(date), expenseTag, value, None)
+        SpendCommand(parseDate(date), qualifiedAccount(expenseTag, Expenses), value, None)
     }
   }
 }

@@ -761,7 +761,7 @@
     "ccy" : "USD"
   },
   "commandType" : "earn",
-  "description" : "Earn 2000.00 USD Salary:AcmeCo"
+  "description" : "Earn 2000.00 USD Income:Salary:AcmeCo"
 }, {
   "accountId" : "Assets:BestBank:Checking",
   "date" : "2008-01-12",
@@ -793,7 +793,7 @@
     "ccy" : "USD"
   },
   "commandType" : "earn",
-  "description" : "Earn 2000.00 USD Salary:AcmeCo"
+  "description" : "Earn 2000.00 USD Income:Salary:AcmeCo"
 }, {
   "accountId" : "Assets:BestBank:Checking",
   "date" : "2008-01-29",
@@ -868,7 +868,7 @@
     "ccy" : "USD"
   },
   "commandType" : "earn",
-  "description" : "Earn 2000.00 USD Salary:AcmeCo"
+  "description" : "Earn 2000.00 USD Income:Salary:AcmeCo"
 }, {
   "accountId" : "Assets:UTrade:Account",
   "date" : "2008-02-10",
@@ -922,7 +922,7 @@
     "ccy" : "USD"
   },
   "commandType" : "earn",
-  "description" : "Earn 2000.00 USD Salary:AcmeCo"
+  "description" : "Earn 2000.00 USD Income:Salary:AcmeCo"
 }, {
   "accountId" : "Assets:UTrade:Account",
   "date" : "2008-02-28",

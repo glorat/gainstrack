@@ -82,9 +82,15 @@ describe('serialization details that must not drift', () => {
       .toEqual(['2010-01-01 trade Assets:B 10 IVV @12.3 USD C5 USD']);
   });
 
-  test('earn/spend echo the tag as written, not the derived account', () => {
+  test('earn/spend write the mandatory prefix back in, however the source spelled it', () => {
     expect(one('2019-01-01 earn Income:Salary 100 USD')).toEqual(['2019-01-01 earn Income:Salary 100 USD']);
-    expect(one('2019-01-01 earn Salary 100 USD')).toEqual(['2019-01-01 earn Salary 100 USD']);
+    // The bare form stays legal forever, but is re-serialized qualified — which is how an old
+    // ledger migrates itself the first time it round-trips through a save or an export.
+    expect(one('2019-01-01 earn Salary 100 USD')).toEqual(['2019-01-01 earn Income:Salary 100 USD']);
+    expect(one('2019-01-01 spend Food Assets:Bank 30 USD'))
+      .toEqual(['2019-01-01 spend Expenses:Food Assets:Bank 30 USD']);
+    // A tag whose first segment is not an account type is implicit in full, colons and all.
+    expect(one('2019-01-01 earn Salary:AcmeCo 100 USD')).toEqual(['2019-01-01 earn Income:Salary:AcmeCo 100 USD']);
   });
 
   test('commodity tags are sorted and de-duplicated, not source order', () => {
