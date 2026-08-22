@@ -1,8 +1,7 @@
 # beancount-oracle
 
 This package verifies the beancount to gainstrack import against beancount itself. It also includes
-a command line that runs the same conversion outside a browser. See `docs/beancount-import.md` for
-what survives a conversion and what does not.
+a command line that runs the same conversion outside a browser.
 
 The conversion is not here. It lives in `client/src/lib/import/`, next to the engine it builds on,
 because the browser import consumes the identical JSON document:
@@ -11,7 +10,7 @@ because the browser import consumes the identical JSON document:
 |---|---|
 | `beancountDump.ts` | the JSON contract with `dump.py`, and the schema-version check |
 | `beancountImport.ts` | lowering (every beancount transaction becomes a raw `tx`), always correct and intent-free |
-| `lift.ts` | lifting (recognizing `trade`, `yield`, `tfr` and the rest), one disableable rule at a time |
+| `lift.ts` | lifting (recognizing `tfr`, `earn`, `spend` and `fund`), one disableable rule at a time |
 
 ## Why the package exists
 
